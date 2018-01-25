@@ -15,41 +15,41 @@ Open source Point of Sale Solution
 
 ## Directory Structure
 
-- **docs\** (Minimal Documentation)
-- **libs\** (Reference Libs)
-	- fastreport\ (FastReport Dll Reference)
-	- xpo_14_1_5\ (Xpo Dll Reference)
-- **logicpos\** _(LogicPos Main Application)_
-- **logicpos.datalayer\** 
-- **logicpos.financial\**
-	- **logicpos.financial.console\**
-	- **logicpos.financial.library\**
-	- **logicpos.financial.service\**
-	- **logicpos.financial.servicewcf\**
-- **logicpos.hardware\**
-	- **logicpos.printer.generic\**
-	- **logicpos.printer.genericlinux\**
-	- **logicpos.printer.genericsocket\**
-	- **logicpos.printer.genericusb\**
-	- **logicpos.printer.genericwindows\**
-- **logicpos.plugins\**
-	- **logicpos.plugin.contracts\**
-	- **logicpos.plugin.library\**
-	- **plugins\**
-		- **acme**
-			- **acme.softwarevendor.plugin**
-- **logicpos.resources\**
-- **logicpos.shared\**
-- **others\**
-	- **windowsruntime**
-- **packages\**
-	- **LibUsbDotNet.2.2.8\**
-	- **log4net.2.0.5\**
-	- **MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\**
-	- **MySql.Data.6.9.9\**
-	- **MySqlBackup.NET.2.0.9.4\**
-	- **Newtonsoft.Json.9.0.1\**
-	- **System.Data.SQLite.Core.1.0.103\**
-	- **Unofficial.Ionic.Zip.1.9.1.8\**
-- **tools\**
-	- **FastReport.Net (FastReports Runtime Designer)**
+- **docs** _(Minimal Documentation)_
+- **libs** _(Reference Libs)_
+	- **fastreport** _(FastReport Dll Reference)_
+	- **xpo_14_1_5** _(Xpo Dll Reference)_
+- **logicpos** _(LogicPos Main Application)_
+- **logicpos.datalayer** _(DataLayer Project)_
+- **logicpos.financial** _(Financial Projects)_
+	- **logicpos.financial.console** _(Console Test Financial Project )_
+	- **logicpos.financial.library** _(Financial Library Project )_
+	- **logicpos.financial.service** _(Autoridade Tributária : WebService Financial Project )_
+	- **logicpos.financial.servicewcf**_(Autoridade Tributária : Windows Communication Foundation WebService Project )_
+- **logicpos.hardware** _(Hardware Projects )_
+	- **logicpos.printer.generic**  _(Thermal Printer Base)_
+	- **logicpos.printer.genericlinux** _(Thermal Printer Linux)_
+	- **logicpos.printer.genericsocket** _(Thermal Printer Socket)_
+	- **logicpos.printer.genericusb** _(Thermal Printer Usb)_
+	- **logicpos.printer.genericwindows** _(Thermal Printer Windows)_
+- **logicpos.plugins** _(Plugins Projects and Plugin Implementations)_
+	- **logicpos.plugin.contracts** _(Plugin Contracts/Interfaces)_
+	- **logicpos.plugin.library** _(Plugin Main Library)_
+	- **plugins** _(Plugin Implementations)_
+		- **acme** _(Sample Plugins)_
+			- **acme.softwarevendor.plugin** _(Sample Plugin SoftwareVendor Implementation)_
+- **logicpos.resources** _(Resources Project)_
+- **logicpos.shared** _(main Solution Shared Library Project)_
+- **others** _(Others)_
+	- **windowsruntime** _(Windows Runtime/GTK)_
+- **packages** _(NuGet Packages)_
+	- **LibUsbDotNet.2.2.8** _(Used in Usb Hardware Devices)_
+	- **log4net.2.0.5** _(Used in Log)_
+	- **MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3**  _(Required Dependency)_
+	- **MySql.Data.6.9.9**  _(MySql Connector)_
+	- **MySqlBackup.NET.2.0.9.4** _(MySql Backup)_
+	- **Newtonsoft.Json.9.0.1** _(Used in Json Serialization)_
+	- **System.Data.SQLite.Core.1.0.103** _(Sqlite Dependency)_
+	- **Unofficial.Ionic.Zip.1.9.1.8** _(Zip Dependency, used in Backups)_
+- **tools** _(Helper Tools)_
+	- **FastReport.Net (FastReports Runtime Designer)** _(FastReports Designer Runtime)_
