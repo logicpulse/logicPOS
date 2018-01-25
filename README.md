@@ -66,4 +66,4 @@ Open source Point of Sale Solution
 	
 	Read the [others\windowsruntime\README.txt](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/README.txt) to install `libnodoka.dll`
 
-2) 
+- [Install Visual Studio 2017](https://www.visualstudio.com)
