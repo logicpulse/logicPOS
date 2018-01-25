@@ -1,8 +1,0 @@
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\bin\Debug\PluginLibrary.dll
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\bin\Debug\PluginLibrary.pdb
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\bin\Debug\PluginContracts.dll
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\bin\Debug\PluginContracts.pdb
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\obj\Debug\PluginLibrary.csprojResolveAssemblyReference.cache
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\obj\Debug\PluginLibrary.csproj.CoreCompileInputs.cache
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\obj\Debug\PluginLibrary.dll
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\obj\Debug\PluginLibrary.pdb

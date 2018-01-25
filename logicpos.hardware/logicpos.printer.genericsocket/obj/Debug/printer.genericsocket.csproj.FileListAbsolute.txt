@@ -1,6 +1,0 @@
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericsocket\bin\Debug\printer.genericsocket.dll
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericsocket\bin\Debug\printer.genericsocket.pdb
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericsocket\obj\Debug\printer.genericsocket.csprojResolveAssemblyReference.cache
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericsocket\obj\Debug\printer.genericsocket.csproj.CoreCompileInputs.cache
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericsocket\obj\Debug\printer.genericsocket.dll
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericsocket\obj\Debug\printer.genericsocket.pdb

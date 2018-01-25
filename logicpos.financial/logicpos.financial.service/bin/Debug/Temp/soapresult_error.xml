@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-<SOAP-ENV:Header/>
-<SOAP-ENV:Body>
-<SOAP-ENV:Fault>
-<faultcode>33</faultcode>
-<faultstring>simple-type 1: element Addressdetail of type {https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/}SAFPTtextTypeMandatoryMax100Car may not be empty</faultstring>
-<detail>sgdtws.gdgtqua</detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
