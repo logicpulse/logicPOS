@@ -74,7 +74,7 @@ Open source Point of Sale Solution
 
 	- Buid Solution
 
-	-  Set **logicpos** as Startup Project
+	- Set **logicpos** as Startup Project
 
 	- Run **logicpos**
 
