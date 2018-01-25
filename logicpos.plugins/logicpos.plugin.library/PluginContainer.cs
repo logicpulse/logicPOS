@@ -66,7 +66,7 @@ namespace logicpos.plugin.library
             }
 
             // Always return first Founded
-            return founded[0];
+            return (founded.Count > 0) ? founded[0] : default(T);
         }
 
         // Get Pluggins of Interface Type

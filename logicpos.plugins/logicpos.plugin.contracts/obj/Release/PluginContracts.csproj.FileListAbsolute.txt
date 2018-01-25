@@ -1,5 +1,0 @@
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\bin\Release\PluginContracts.dll
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\bin\Release\PluginContracts.pdb
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\obj\Release\PluginContracts.csproj.CoreCompileInputs.cache
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\obj\Release\PluginContracts.dll
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\obj\Release\PluginContracts.pdb
