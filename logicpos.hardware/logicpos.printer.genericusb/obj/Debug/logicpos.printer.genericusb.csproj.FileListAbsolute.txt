@@ -20,7 +20,6 @@ C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericusb\bin\Debug\LibUsbDotNet.dll
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericusb\bin\Debug\log4net.dll
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericusb\bin\Debug\log4net.xml
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericusb\obj\Debug\logicpos.printer.genericusb.csprojResolveAssemblyReference.cache
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericusb\obj\Debug\logicpos.printer.genericusb.csproj.CoreCompileInputs.cache
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericusb\obj\Debug\LogicposPrinterGenericUsb.dll
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericusb\obj\Debug\LogicposPrinterGenericUsb.pdb

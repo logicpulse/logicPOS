@@ -10,7 +10,6 @@ C:\SVN\logicpos\trunk\src\logicpos_pos_opensource\logicpos.hardware\logicpos.pri
 C:\SVN\logicpos\trunk\src\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericwindows\obj\Debug\LogicposPrinterGenericWindows.pdb
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericwindows\bin\Debug\LogicposPrinterGenericWindows.dll
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericwindows\bin\Debug\LogicposPrinterGenericWindows.pdb
-C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericwindows\obj\Debug\logicpos.printer.genericwindows.csprojResolveAssemblyReference.cache
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericwindows\obj\Debug\logicpos.printer.genericwindows.csproj.CoreCompileInputs.cache
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericwindows\obj\Debug\LogicposPrinterGenericWindows.dll
 C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos_pos_opensource\logicpos.hardware\logicpos.printer.genericwindows\obj\Debug\LogicposPrinterGenericWindows.pdb
