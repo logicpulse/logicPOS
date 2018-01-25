@@ -60,7 +60,7 @@ Open source Point of Sale Solution
 
 ## Install Development Environment
 
-- Install .NET 4.5 _(If not already in system)_
+- Install [.NET 4.5](https://www.microsoft.com/pt-pt/download/details.aspx?id=30653) _(If not already in system)_
 
 - Install [others\windowsruntime\gtk-sharp-2.12.22.msi](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi?raw=true)
 	
