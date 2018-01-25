@@ -8,6 +8,10 @@ Open source Point of Sale Solution
 - [GTK#](https://www.gtk.org/)
 - [FastReports](https://www.fast-report.com)
 - [DevExpress eXpressPersistent Objects™ (XPO)](https://www.devexpress.com/products/net/orm/)
+- Databases
+	- [Microsoft SqlServer](https://www.microsoft.com/en-us/sql-server/sql-server-2017)
+	- [MySql Server](https://dev.mysql.com/downloads/mysql/)
+	- [Sqlite](https://sqlite.org/)
 
 ## Tools/Ides
 
