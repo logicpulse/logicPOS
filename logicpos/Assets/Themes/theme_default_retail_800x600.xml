@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+	<Frontoffice>
+		<Window ID="PosBaseWindow">
+			<Globals>
+				<Name>PosBaseWindow</Name>
+				<ScreenWidth>800</ScreenWidth>
+				<ScreenHeight>600</ScreenHeight>
+				<ScreenBackgroundColor>Cfg[colorFullScreenUsefullAreaBackground]</ScreenBackgroundColor>
+				<ScreenBackgroundColorOuter>Cfg[colorFullScreenBackground]</ScreenBackgroundColorOuter>
+			</Globals>
+		</Window>
+
+		<Window ID="StartupWindow">
+			<Globals>
+				<Title>StartupWindow</Title>
+				<ImageFileName>Cfg[fileImageBackgroundWindowStartup]</ImageFileName>
+			</Globals>
+			<Objects>
+				<TablePadUser>
+					<Position>65,170</Position>
+					<ButtonSize>86,76</ButtonSize>
+					<TableConfig>Cfg[tableConfigTablePadLoginUser]</TableConfig>
+					<Visible>true</Visible>
+					
+					<TablePadUserButtonPrev>
+						<Position>64,146</Position>
+						<Size>86,22</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_family_scroll_up.png</ImageFileName>
+					</TablePadUserButtonPrev>
+					
+					<TablePadUserButtonNext>
+						<Position>65,476</Position>
+						<Size>86,22</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_family_scroll_down.png</ImageFileName>
+					</TablePadUserButtonNext>
+				</TablePadUser>
+			
+				<NumberPadPin>
+					<Position>486,154</Position>
+					<ButtonSize>78,44</ButtonSize>
+					<Font>Cfg[fontNumberPadPinButtonKeysTextAndLabel]</Font>
+					<FontColor>255,255,255</FontColor>
+					<RowSpacingLabelStatus>10</RowSpacingLabelStatus>
+					<RowSpacingSystemButtons>14</RowSpacingSystemButtons>					
+					
+					<LabelStatus>
+						<Font>bold 10</Font>
+						<FontColor>200,200,200</FontColor>
+					</LabelStatus>
+				</NumberPadPin>
+
+				<LabelVersion>
+					<Position>696,558</Position>
+					<Font>7</Font>
+					<FontColor>255,255,255</FontColor>
+				</LabelVersion>
+			</Objects>
+		</Window>
+		
+		<Window ID="PosMainWindow">
+			<Globals>
+				<Name>PosMainWindow</Name>
+				<ImageFileName>Cfg[fileImageBackgroundWindowPos]</ImageFileName>
+			</Globals>
+			
+			<Objects>
+				<EventBoxImageLogo         >
+					<Position>540,4</Position>
+					<Size>255,59</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>Cfg[colorPosHelperBoxsBackground]</BackgroundColor>
+				</EventBoxImageLogo>
+				
+				<EventBoxStatusBar1>
+					<Position>4,4</Position>
+					<Size>528,30</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>Cfg[colorPosStatusBar1Background]</BackgroundColor>
+					
+					<LabelTerminalInfo>
+						<Font>Bold 9</Font>
+						<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+						<AlignmentX>0,0</AlignmentX>
+					</LabelTerminalInfo>
+					
+					<LabelClock>
+						<Font>Bold 9</Font>
+						<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+						<AlignmentX>1,0</AlignmentX>
+					</LabelClock>
+				</EventBoxStatusBar1>       
+				
+				<EventBoxStatusBar2>
+					<Position>110,35</Position>
+					<Size>316,30</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>Cfg[colorPosStatusBar2Background]</BackgroundColor>
+
+					<LabelCurrentTableLabel>
+						<Font>Cfg[fontPosStatusBarSmall]</Font>
+						<FontColor>Cfg[colorPosStatusBarFontSmall]</FontColor>
+						<AlignmentX>0,0</AlignmentX>
+					</LabelCurrentTableLabel>
+					
+					<LabelCurrentTable>
+						<Font>Bold 8</Font>
+						<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+						<AlignmentX>0,0</AlignmentX>
+					</LabelCurrentTable>
+					
+					<LabelTotalTableLabel>
+						<Font>Cfg[fontPosStatusBarSmall]</Font>
+						<FontColor>Cfg[colorPosStatusBarFontSmall]</FontColor>
+						<AlignmentX>1,0</AlignmentX>		
+					</LabelTotalTableLabel>
+					
+					<LabelTotalTable>
+						<Font>Bold 8</Font>
+						<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+						<AlignmentX>1,0</AlignmentX>	
+					</LabelTotalTable>				
+				</EventBoxStatusBar2>
+				
+				<ButtonFavorites>
+					<Position>2,63</Position>
+					<Size>107,77</Size>
+					<ImageFileName></ImageFileName>
+					<Text>Resx[global_favorites]</Text>
+					<FontSize>Cfg[fontPosBaseButtonSize]</FontSize>
+					<UseImageOverlay>Cfg[useImageOverlay]</UseImageOverlay>
+					<Visible>true</Visible>
+				</ButtonFavorites>
+				
+				<TablePadFamily>
+					<Position>2,139</Position>
+					<ButtonSize>107,76</ButtonSize>
+					<TableConfig>Cfg[tableConfigTablePadFamily]</TableConfig>
+					<Visible>true</Visible>
+					<TablePadFamilyButtonPrev>
+						<Position>3,37</Position>
+						<Size>104,24</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_family_scroll_up.png</ImageFileName>
+					</TablePadFamilyButtonPrev> 
+					<TablePadFamilyButtonNext>
+						<Position>3,518</Position>
+						<Size>104,24</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_family_scroll_down.png</ImageFileName>
+					</TablePadFamilyButtonNext>
+				</TablePadFamily>
+
+				<TablePadSubFamily>
+					<Position>109,63</Position>
+					<ButtonSize>107,76</ButtonSize>
+					<TableConfig>Cfg[tableConfigTablePadSubFamily]</TableConfig>
+					<Visible>true</Visible>
+					<TablePadSubFamilyButtonPrev>
+						<Position>440,37</Position>
+						<Size>25,25</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_subfamily_article_scroll_left.png</ImageFileName>
+					</TablePadSubFamilyButtonPrev> 
+					<TablePadSubFamilyButtonNext>
+						<Position>494,37</Position>
+						<Size>25,25</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_subfamily_article_scroll_right.png</ImageFileName>
+					</TablePadSubFamilyButtonNext>
+				</TablePadSubFamily>
+
+				<TablePadArticle>
+					<Position>109,139</Position>
+					<ButtonSize>107,76</ButtonSize>
+					<TableConfig>Cfg[tableConfigTablePadArticle]</TableConfig>
+					<Visible>true</Visible>
+					
+					<TablePadArticleButtonPrev>
+						<Position>440,518</Position>
+						<Size>25,25</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_subfamily_article_scroll_left.png</ImageFileName>
+					</TablePadArticleButtonPrev> 
+					
+					<TablePadArticleButtonNext>
+						<Position>494,518</Position>
+						<Size>25,25</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_subfamily_article_scroll_right.png</ImageFileName>
+					</TablePadArticleButtonNext>
+				</TablePadArticle>
+				
+				<EventboxToolbar>
+					<Position>4,546</Position>
+					<Size>527,48</Size>
+					<ButtonSize>75,49</ButtonSize>					
+					<IconSize>18,18</IconSize>
+					<Font>7</Font>
+					<FontColor>Cfg[colorPosToolbarDefaultButtonFont]</FontColor>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>Cfg[colorPosHelperBoxsBackground]</BackgroundColor>
+					<Buttons>
+						<ButtonApplicationClose>
+							<Name>touchButtonPosToolbarApplicationClose_Red</Name>
+							<Text>Resx[global_application_close]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_application_close.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonApplicationClose>
+
+						<ButtonBackOffice>
+							<Name>touchButtonPosToolbarBackOffice_DarkGrey</Name>
+							<Text>Resx[global_backoffice]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_back_office.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonBackOffice>
+
+						<ButtonReports>
+							<Name>touchButtonPosToolbarReports_DarkGrey</Name>
+							<Text>Resx[global_reports]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_reports.png</ImageFileName>
+							<!-- Hidden--> 	
+							<Visible>false</Visible>
+						</ButtonReports>
+
+						<ButtonShowSystemDialog>
+							<Name>touchButtonPosToolbarShowSystemDialog_DarkGrey</Name>
+							<Text>Resx[global_reports]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_system.png</ImageFileName>
+							<!-- Hidden--> 	
+							<Visible>false</Visible>
+						</ButtonShowSystemDialog>
+
+						<ButtonLogoutUser>
+							<Name>touchButtonPosToolbarLogoutUser_DarkGrey</Name>
+							<Text>Resx[global_application_logout_user]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_logout_user.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonLogoutUser>
+
+						<ButtonShowChangeUserDialog>
+							<Name>touchButtonPosToolbarShowChangeUserDialog_DarkGrey</Name>
+							<Text>Resx[global_change_user]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_show_change_user_dialog.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonShowChangeUserDialog>
+
+						<ButtonCashDrawer>
+							<Name>touchButtonPosToolbarCashDrawer_DarkGrey</Name>
+							<Text>Resx[pos_button_label_cashdrawer]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_cashdrawer.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonCashDrawer>
+
+						<ButtonFinanceDocuments>
+							<Name>touchButtonPosToolbarFinanceDocuments_DarkGrey</Name>
+							<Text>Resx[dialog_button_label_select_record_finance_documents_small]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_finance_document.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonFinanceDocuments>
+
+						<ButtonNewFinanceDocument>
+							<Name>touchButtonPosToolbarNewFinanceDocument_DarkGrey</Name>
+							<Text>Resx[dialog_button_label_new_finance_documents]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_finance_new_document.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonNewFinanceDocument>
+					</Buttons>
+				</EventboxToolbar>
+				
+				<EventBoxPosTicketList>
+					<Position>543,70</Position>
+					<Size>249,370</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>true</VisibleWindow>
+					<BackgroundColor>255,0,0</BackgroundColor>
+					<Columns>
+						<FontTitle>Bold 7</FontTitle>
+						<FontData>7</FontData>
+					</Columns> 
+					<EventBoxTotal>
+						<BackgroundColor>Cfg[colorFullScreenUsefullAreaBackground]</BackgroundColor>
+						<LabelLabelTotal>
+							<Font>Bold 10</Font>
+							<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+							<AlignmentX>0,0</AlignmentX>		
+						</LabelLabelTotal>
+						
+						<LabelTotal>
+							<Font>10</Font>
+							<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+							<AlignmentX>1,0</AlignmentX>	
+						</LabelTotal>
+					</EventBoxTotal>
+				</EventBoxPosTicketList>
+				
+				<EventBoxPosTicketPad>
+					<Position>543,338</Position>
+					<Size>249,253</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>255,0,0</BackgroundColor>
+					<Buttons>
+					<IconSize>22,22</IconSize>
+					<Font>7</Font>
+					<FontColor>Cfg[colorTicketPadButtonFont]</FontColor>
+						
+						<ButtonPrev>
+							<Name>touchButtonPosTicketPadPrev</Name>
+							<Text>Resx[pos_button_label_prev]</Text>
+							<Position>543,440</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_prev.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonPrev>
+
+						<ButtonNext>
+							<Name>touchButtonPosTicketPadNext</Name>
+							<Text>Resx[pos_button_label_next]</Text>
+							<Position>543,491</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_next.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonNext>
+
+						<ButtonDecrease>
+							<Name>touchButtonPosTicketPadDecrease</Name>
+							<Text>Resx[pos_button_label_decrease]</Text>
+							<Position>606,491</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_decrease.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonDecrease>
+
+						<ButtonIncrease>
+							<Name>touchButtonPosTicketPadIncrease</Name>
+							<Text>Resx[pos_button_label_increase]</Text>
+							<Position>606,440</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_increase.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonIncrease>
+
+						<ButtonDelete>
+							<Name>touchButtonPosTicketPadDelete</Name>
+							<Text>Resx[pos_button_label_delete]</Text>
+							<Position>543,542</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_delete.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonDelete>
+
+						<ButtonChangeQuantity>
+							<Name>touchButtonPosTicketPadChangeQuantity</Name>
+							<Text>Resx[pos_button_label_change_quantity_small]</Text>
+							<Position>606,542</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_change_quantity.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonChangeQuantity>
+
+						<ButtonChangePrice>
+							<Name>touchButtonPosTicketPadChangePrice</Name>
+							<Text>Resx[pos_button_label_change_price]</Text>
+							<Position>669,542</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_change_price.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonChangePrice>
+
+						<ButtonListMode>
+							<Name>touchButtonPosTicketPadListMode</Name>
+							<Text>Resx[pos_button_label_list_mode]</Text>
+							<Position>732,542</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_list_mode.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonListMode>
+
+						<ButtonListOrder>
+							<Name>touchButtonPosTicketPadListOrder</Name>
+							<Text>Resx[pos_button_label_orders]</Text>
+							<Position>669,491</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_orderlist.png</ImageFileName>
+							<!-- Disabled -->
+							<Visible>false</Visible>
+						</ButtonListOrder>
+
+						<ButtonBarCode>
+							<Name>touchButtonPosTicketPadBarCode</Name>
+							<Text>Resx[global_barcode_small]</Text>
+							<Position>669,542</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_barcode.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonBarCode>
+
+						<ButtonWeight>
+							<Name>touchButtonPosTicketPadWeight</Name>
+							<Text>Resx[global_weight]</Text>
+							<Position>732,542</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_weight.png</ImageFileName>
+							<!-- Disabled--> 	
+							<Visible>false</Visible>
+						</ButtonWeight>
+
+						<ButtonGifts>
+							<Name>touchButtonPosTicketPadGifts</Name>
+							<Text>Resx[global_gifts]</Text>
+							<Position>669,542</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_gifts.png</ImageFileName>
+							<!-- Disabled -->
+							<Visible>false</Visible>
+						</ButtonGifts>
+
+						<ButtonMessages>
+							<Name>touchButtonPosTicketPadMessages</Name>
+							<Text>Resx[global_messages_small]</Text>
+							<Position>732,542</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_messages.png</ImageFileName>
+							<!-- Disabled -->
+							<Visible>false</Visible>
+						</ButtonMessages>
+
+						<ButtonSplitAccount>
+							<Name>touchButtonPosTicketPadSplitAccount</Name>
+							<Text>Resx[global_split_account_small]</Text>
+							<Position>0,0</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_splitaccount.png</ImageFileName>
+							<!-- Disabled -->
+							<Visible>false</Visible>
+						</ButtonSplitAccount>
+
+						<ButtonChangeTable>
+							<Name>touchButtonPosTicketPadChangeTable</Name>
+							<Text>Resx[pos_button_label_change_table_small]</Text>
+							<Position>732,491</Position>
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_changetable.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonChangeTable>
+
+						<ButtonSelectTable>
+							<Name>touchButtonPosTicketPadSelectTable_Green</Name>
+							<!--<Text>Resx[pos_button_label_tables_appmode_default]</Text>-->
+							<Text>Resx[pos_button_label_tables_appmode_retail]</Text>
+							<Position>669,440</Position>
+							<Size>62,51</Size>
+							<!--<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_tables.png</ImageFileName>-->
+							<ImageFileName>Assets/Images/Icons/icon_pos_retail_view_orders.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonSelectTable>
+
+						<ButtonFinishOrder>
+							<Name>touchButtonPosTicketPadFinishOrder_Green</Name>
+							<Text>Resx[pos_button_label_finish_order_small]</Text>
+							<Position>732,440</Position>							
+							<Size>62,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_order.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonFinishOrder>
+
+						<ButtonPayments>
+							<Name>touchButtonPosTicketPadPayments_Green</Name>
+							<Text>Resx[pos_button_label_payments]</Text>
+							<Position>669,491</Position>
+							<Size>125,51</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_payments.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonPayments>
+					</Buttons>					
+				</EventBoxPosTicketPad>
+			</Objects>
+		</Window>
+	</Frontoffice>
+</Theme>

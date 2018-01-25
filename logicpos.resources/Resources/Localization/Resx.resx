@@ -1,0 +1,2796 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_error_application_unlicenced_function_disabled" xml:space="preserve">
+    <value>{0}
+
+Application not licensed</value>
+  </data>
+  <data name="app_error_contact_support" xml:space="preserve">
+    <value>Application Error! Please contact tecnical support</value>
+  </data>
+  <data name="app_error_rendering_theme" xml:space="preserve">
+    <value>Application Error! Error rending theme:
+
+{0}
+
+{1}</value>
+  </data>
+  <data name="app_info_show_ignored_cancelled_documents" xml:space="preserve">
+    <value>The follow documents are not cancelled, because they are previously cancelled, are realated with other documents, date day is in the past, or user press cancel in reason dialog.
+{0}</value>
+  </data>
+  <data name="articlesubfamily_edit_dialog_tab1_label" xml:space="preserve">
+    <value>Details 1</value>
+  </data>
+  <data name="articlesubfamily_edit_dialog_tab2_label" xml:space="preserve">
+    <value>Details 2</value>
+  </data>
+  <data name="article_edit_dialog_tab1_label" xml:space="preserve">
+    <value>Details 1</value>
+  </data>
+  <data name="article_edit_dialog_tab2_label" xml:space="preserve">
+    <value>Details 2</value>
+  </data>
+  <data name="article_edit_dialog_tab3_label" xml:space="preserve">
+    <value>Details 3</value>
+  </data>
+  <data name="article_normal_price" xml:space="preserve">
+    <value>Normal Price</value>
+  </data>
+  <data name="article_price1" xml:space="preserve">
+    <value>Price 1</value>
+  </data>
+  <data name="article_price2" xml:space="preserve">
+    <value>Price 2</value>
+  </data>
+  <data name="article_price3" xml:space="preserve">
+    <value>Price 3</value>
+  </data>
+  <data name="article_price4" xml:space="preserve">
+    <value>Price 4</value>
+  </data>
+  <data name="article_price5" xml:space="preserve">
+    <value>Price 5</value>
+  </data>
+  <data name="article_promotion_price" xml:space="preserve">
+    <value>Promotion Price</value>
+  </data>
+  <data name="article_use_promotion_price" xml:space="preserve">
+    <value>Use Promotion</value>
+  </data>
+  <data name="audit_message_app_close" xml:space="preserve">
+    <value>Application Close</value>
+  </data>
+  <data name="audit_message_app_start" xml:space="preserve">
+    <value>Application Started</value>
+  </data>
+  <data name="audit_message_database_backup" xml:space="preserve">
+    <value>Database Backup : {0}</value>
+  </data>
+  <data name="audit_message_database_restore" xml:space="preserve">
+    <value>Database Restore: {0}</value>
+  </data>
+  <data name="audit_message_cashdrawer_open" xml:space="preserve">
+    <value>Drawer Open</value>
+  </data>
+  <data name="audit_message_export_saft" xml:space="preserve">
+    <value>Saf-t Exported: {0} from {1} to {2}</value>
+  </data>
+  <data name="audit_message_finance_series_created" xml:space="preserve">
+    <value>Finance Series [{0}] for Terminal: [{1}] Created by User: {2}</value>
+  </data>
+  <data name="audit_message_order_article_removed" xml:space="preserve">
+    <value>Order Article {0} - Quantity: {1}/{2} removed by User: {3}</value>
+  </data>
+  <data name="audit_message_stock_movement_in" xml:space="preserve">
+    <value>Stock In: Article: {0} - Quantity: {1}</value>
+  </data>
+  <data name="audit_message_stock_movement_out" xml:space="preserve">
+    <value>Goods Issue: Item: {0} - Quantity: {1}</value>
+  </data>
+  <data name="audit_message_table_close" xml:space="preserve">
+    <value>Table Close: {0}</value>
+  </data>
+  <data name="audit_message_table_open" xml:space="preserve">
+    <value>Table Open: {0}</value>
+  </data>
+  <data name="audit_message_table_reserved" xml:space="preserve">
+    <value>Table Reserved: {0}</value>
+  </data>
+  <data name="audit_message_table_unreserved" xml:space="preserve">
+    <value>Table Unreserved: {0}</value>
+  </data>
+  <data name="audit_message_used_forced_logout" xml:space="preserve">
+    <value>Application Closed, Forced Logout User: {0}</value>
+  </data>
+  <data name="audit_message_user_change" xml:space="preserve">
+    <value>User Changed: {0}</value>
+  </data>
+  <data name="audit_message_user_change_password" xml:space="preserve">
+    <value>User Changed Password: {0}</value>
+  </data>
+  <data name="audit_message_user_login" xml:space="preserve">
+    <value>User Logged In: {0}</value>
+  </data>
+  <data name="audit_message_user_login_error" xml:space="preserve">
+    <value>User Login Error: {0}</value>
+  </data>
+  <data name="audit_message_user_logout" xml:space="preserve">
+    <value>User Logged Out: {0}</value>
+  </data>
+  <data name="dialog_button_label_new_finance_documents" xml:space="preserve">
+    <value>New Doc.</value>
+  </data>
+  <data name="dialog_button_label_select_finance_documents_cc" xml:space="preserve">
+    <value>Curr.Account</value>
+  </data>
+  <data name="dialog_button_label_select_finance_documents_ft_unpaid" xml:space="preserve">
+    <value>Pay Documents</value>
+  </data>
+  <data name="dialog_button_label_select_merchandise_entry" xml:space="preserve">
+    <value>Merchandise Entry</value>
+  </data>
+  <data name="dialog_button_label_select_payments" xml:space="preserve">
+    <value>Payments</value>
+  </data>
+  <data name="dialog_button_label_select_record_finance_documents" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="dialog_button_label_select_record_finance_documents_small" xml:space="preserve">
+    <value>Docs</value>
+    <comment>Used in 800x600 Theme</comment>
+  </data>
+  <data name="dialog_button_label_select_worksession_period" xml:space="preserve">
+    <value>WorkSession</value>
+  </data>
+  <data name="dialog_edit_articlesubfamily_tab1_label" xml:space="preserve">
+    <value>Details 1</value>
+  </data>
+  <data name="dialog_edit_articlesubfamily_tab2_label" xml:space="preserve">
+    <value>Details 2</value>
+  </data>
+  <data name="dialog_edit_article_tab2_label" xml:space="preserve">
+    <value>Finance details</value>
+  </data>
+  <data name="dialog_edit_article_tab3_label" xml:space="preserve">
+    <value>Physical details</value>
+  </data>
+  <data name="dialog_edit_ConfigurationCashRegister_tab1_label" xml:space="preserve">
+    <value>Edit cash registers</value>
+  </data>
+  <data name="dialog_edit_ConfigurationCurrency_tab1_label" xml:space="preserve">
+    <value>Edit currency</value>
+  </data>
+  <data name="dialog_edit_ConfigurationDevice_tab1_label" xml:space="preserve">
+    <value>Edit devices</value>
+  </data>
+  <data name="dialog_edit_ConfigurationKeyboard_tab1_label" xml:space="preserve">
+    <value>Edit keyboards</value>
+  </data>
+  <data name="dialog_edit_ConfigurationMaintenance_tab1_label" xml:space="preserve">
+    <value>Manage maintenance</value>
+  </data>
+  <data name="dialog_edit_ConfigurationPaymentCondition_tab1_label" xml:space="preserve">
+    <value>Edit payment conditions</value>
+  </data>
+  <data name="dialog_edit_ConfigurationPaymentMethod_tab1_label" xml:space="preserve">
+    <value>Edit payment methods</value>
+  </data>
+  <data name="dialog_edit_ConfigurationPlaceMovementType_tab1_label" xml:space="preserve">
+    <value>Edit types of movements</value>
+  </data>
+  <data name="dialog_edit_ConfigurationPlaceTable_tab1_label" xml:space="preserve">
+    <value>Edit tables</value>
+  </data>
+  <data name="dialog_edit_ConfigurationPlaceTerminal_tab1_label" xml:space="preserve">
+    <value>Edit terminals</value>
+  </data>
+  <data name="dialog_edit_ConfigurationPriceType_tab1_label" xml:space="preserve">
+    <value>Edit type of price</value>
+  </data>
+  <data name="dialog_edit_ConfigurationUnitMeasure_tab1_label" xml:space="preserve">
+    <value>Edit units of measure</value>
+  </data>
+  <data name="dialog_edit_ConfigurationUnitSize_tab1_label" xml:space="preserve">
+    <value>Edit units of measure</value>
+  </data>
+  <data name="dialog_edit_configurationvatrate_tab1_label" xml:space="preserve">
+    <value>Edit Vat rate</value>
+  </data>
+  <data name="dialog_edit_CustomerDiscountGroup_tab1_label" xml:space="preserve">
+    <value>Edit discounts</value>
+  </data>
+  <data name="dialog_edit_CustomerType_tab1_label" xml:space="preserve">
+    <value>Edit clients</value>
+  </data>
+  <data name="dialog_edit_DialogConfigurationPrintersType_tab1_label" xml:space="preserve">
+    <value>Edit type of printer</value>
+  </data>
+  <data name="dialog_edit_DialogConfigurationPrinters_tab1_label" xml:space="preserve">
+    <value>Edit printer</value>
+  </data>
+  <data name="dialog_edit_DocumentFinanceSeries_tab1_label" xml:space="preserve">
+    <value>Edit serie</value>
+  </data>
+  <data name="dialog_message_article_without_vat_exception_reason_detected" xml:space="preserve">
+    <value>To create financial documents containing items exempt from Vat, assign default Vat Exception Reason in BackOffice.</value>
+  </data>
+  <data name="dialog_message_cant_create_cc_document_with_default_entity" xml:space="preserve">
+    <value>Cant create current account documents with final consumer or without a customer with name and fiscal number!
+Please use a valid customer and try again.</value>
+  </data>
+  <data name="dialog_message_cashdrawer_money_out_error" xml:space="preserve">
+    <value>Can not remove the entered value [{0}] out of the cashdrawer, 
+it is superior to the amount[{1}] in cashdrawer! 
+Please enter a valid amount.</value>
+  </data>
+  <data name="dialog_message_cashdrawer_open_close_total_enter_diferent_from_total_in_cashdrawer" xml:space="preserve">
+    <value>The Total entered did not match the total in the cashdrawer, check the existing amount again. To procced you can enter the total displayed above (Total CashDrawer) , but dont forget to make a cash flow (input/output) corresponding to the difference after open CashDrawer for the next time.
+
+Total CashDrawer: {0}
+Total Entered: {1}
+Diference: {2}</value>
+  </data>
+  <data name="dialog_message_cashdrawer_open_successfully" xml:space="preserve">
+    <value>CashDrawer successfully opened!</value>
+  </data>
+  <data name="dialog_message_customer_updated_save_changes" xml:space="preserve">
+    <value>Customer Updated!
+
+Do you want to update customer changes?</value>
+  </data>
+  <data name="dialog_message_database_backup_error" xml:space="preserve">
+    <value>Error Backup DataBase
+{0}!</value>
+  </data>
+  <data name="dialog_message_database_backup_successfully" xml:space="preserve">
+    <value>DataBase Backup
+{0}
+done successfully!</value>
+  </data>
+  <data name="dialog_message_database_restore_error" xml:space="preserve">
+    <value>Error Restore DataBase
+{0}!</value>
+  </data>
+  <data name="dialog_message_database_restore_error_invalid_backup_file" xml:space="preserve">
+    <value>Error Restore DataBase
+{0}!
+Invalid backup file. The file seems corrupted or modified by user.</value>
+  </data>
+  <data name="dialog_message_database_restore_missing_file" xml:space="preserve">
+    <value>Cant find Backup File!
+Please, confirm that backup file exists
+{0}</value>
+  </data>
+  <data name="dialog_message_database_restore_successfully" xml:space="preserve">
+    <value>DataBase Restore
+{0}
+done successfully!
+
+Aplication will be closed, please start it manually after close!</value>
+  </data>
+  <data name="dialog_message_datepicker_existing_date_error" xml:space="preserve">
+    <value>Error! This date already exist!</value>
+  </data>
+  <data name="dialog_message_datepicker_existing_date_error_outside_range" xml:space="preserve">
+    <value>Invalid date! Valid date are in the range of {0} to {1}</value>
+  </data>
+  <data name="dialog_message_delete_record" xml:space="preserve">
+    <value>Are you sure you want to delete the selected record?</value>
+  </data>
+  <data name="dialog_message_delete_record_constraint_violation_exception" xml:space="preserve">
+    <value>Error can't delete record! Referential integrity Violation!</value>
+  </data>
+  <data name="dialog_message_delete_record_show_protected_record" xml:space="preserve">
+    <value>Cant delete the selected record!
+This record is necessary for the proper functioning of the application!</value>
+  </data>
+  <data name="dialog_message_error_create_directory" xml:space="preserve">
+    <value>Error cant create directory
+{0}</value>
+  </data>
+  <data name="dialog_message_error_create_directory_backups" xml:space="preserve">
+    <value>Error cant create backup directory
+{0}
+
+Backups disable, continue?</value>
+  </data>
+  <data name="dialog_message_error_creating_financial_document" xml:space="preserve">
+    <value>Error! Can't create financial document!
+
+{0}</value>
+  </data>
+  <data name="dialog_message_error_creating_financial_document_commit_session" xml:space="preserve">
+    <value>Commit/Persist document problem.</value>
+  </data>
+  <data name="dialog_message_error_creating_financial_document_invalid_documentnumber" xml:space="preserve">
+    <value>Invalid Document Number</value>
+  </data>
+  <data name="dialog_message_error_creating_financial_document_missing_series" xml:space="preserve">
+    <value>Missing series for this movement, to create financial documents, first you must do the following:
+
+- Start Fiscal Year Opening (If You Have Not Been Started)
+- Create Fiscal Series for the respective Terminal</value>
+  </data>
+  <data name="dialog_message_error_printing_ticket" xml:space="preserve">
+    <value>Error printing ticket!
+
+PrinterName: {0}
+Network Name: {1}
+
+Error: {2}</value>
+  </data>
+  <data name="dialog_message_error_protected_files_invalid_files_detected" xml:space="preserve">
+    <value>Error! Detected missed, corrupted or changes application files.
+
+{0}</value>
+  </data>
+  <data name="dialog_message_error_protected_files_invalid_files_detected_print_document_ignored" xml:space="preserve">
+    <value>Fiscal document [{0}] processed but the print of document is ignored.
+Re-print document later!</value>
+  </data>
+  <data name="dialog_message_error_register_new_terminal" xml:space="preserve">
+    <value>Cant create a new Terminal with HardwareId: [{0}].
+Please check if Terminal with same Hardware Id is not previously created, or is created, and is not disabled!</value>
+  </data>
+  <data name="dialog_message_field_validation_error" xml:space="preserve">
+    <value>Validation Error/Missing Required Field!
+Please correct/fill your entry(s) and try again.
+
+Invalid Fields: {0}</value>
+  </data>
+  <data name="dialog_message_field_validation_error_keyboardpad" xml:space="preserve">
+    <value>Error! Invalid Input
+Please correct your input and try again!</value>
+  </data>
+  <data name="dialog_message_filepicker_existing_file_error" xml:space="preserve">
+    <value>Error! This file already exist!</value>
+  </data>
+  <data name="dialog_message_info_all_lines_from_this_document_was_already_credited" xml:space="preserve">
+    <value>You can´t issue a credito note in this Document!
+All lines from this document was already credited in above credit notes:
+{0}</value>
+  </data>
+  <data name="dialog_message_invalid_customer_card_detected" xml:space="preserve">
+    <value>Invalid customer!
+
+Recharge customer card Article detected, to recharge customer card you must  work with a customer with a valid customer card!</value>
+  </data>
+  <data name="dialog_message_invalid_or_missing_printer_template" xml:space="preserve">
+    <value>Error! Invalid or Missing printer Template {0}. </value>
+  </data>
+  <data name="dialog_message_low_resolution_detected" xml:space="preserve">
+    <value>Error! Low resolution detected!
+This Application only runs on monitors with resolutions of {0} x {1} or above!</value>
+  </data>
+  <data name="dialog_message_operation_successfully" xml:space="preserve">
+    <value>Operation successfully!</value>
+  </data>
+  <data name="dialog_message_request_backup" xml:space="preserve">
+    <value>Do you want to Backup Database?</value>
+  </data>
+  <data name="dialog_message_request_close_open_ticket" xml:space="preserve">
+    <value>There are currently an Open Ticket!
+Do you want to close it and proceed?</value>
+  </data>
+  <data name="dialog_message_request_print_document_confirmation" xml:space="preserve">
+    <value>Do you want to print finance document?</value>
+  </data>
+  <data name="dialog_message_required_valid_printer" xml:space="preserve">
+    <value>To use this function you must hava a valid printer associated with your terminal terminal!</value>
+  </data>
+  <data name="dialog_message_required_valid_printer_and_template" xml:space="preserve">
+    <value>To use this function you must hava a printer and a working template associated with your terminal terminal!</value>
+  </data>
+  <data name="dialog_message_saftpt_exported_error" xml:space="preserve">
+    <value>Error Exporting SAF-T File!</value>
+  </data>
+  <data name="dialog_message_saftpt_exported_successfully" xml:space="preserve">
+    <value>SAF-T PT Exported to 
+{0}</value>
+  </data>
+  <data name="dialog_message_series_create_confirmation_text" xml:space="preserve">
+    <value>Do you want to continue and create new finance series?
+All the series related to selected terminals will be deleted and new ones created!
+
+By accepting the conditions you are responsible for creating the series. 
+We recall that under applicable law may not use series that have been used in the past.</value>
+  </data>
+  <data name="dialog_message_series_create_document_type_series" xml:space="preserve">
+    <value>Create fiscal series for all types of finance documents/terminals?</value>
+  </data>
+  <data name="dialog_message_series_create_document_type_series_already_exist" xml:space="preserve">
+    <value>There are already fiscal series active, to create new fiscal series you have to disable the current series and create new ones.
+Continue and turn off the current series and create new?</value>
+  </data>
+  <data name="dialog_message_series_create_document_type_series_miss_year" xml:space="preserve">
+    <value>To create the document series, first create a fiscal year.</value>
+  </data>
+  <data name="dialog_message_series_create_error" xml:space="preserve">
+    <value>Error creating fiscal series with acronym [{0}]!
+Some series already has been used in the past, other acronym to create new series.</value>
+  </data>
+  <data name="dialog_message_series_fiscal_year_close_current" xml:space="preserve">
+    <value>Currently there is an active fiscal year [{0}].
+To continue and start a new fiscal year, you have to close the active fiscal year.
+Note: This operation will close the active fiscal year and can not be broken!
+Are you sure you want to close the active fiscal and create a new one?</value>
+  </data>
+  <data name="dialog_message_show_printer_undefined_on_print" xml:space="preserve">
+    <value>Cant print document "{0}"!
+
+Current terminal dont have associated printer.
+
+Show this message next time?</value>
+    <comment>O Documento {0} não foi impresso!
+
+O terminal não tem uma impressora válida atribuida.
+
+Mostrar esta mensagem nas próximas vezes que imprimir?</comment>
+  </data>
+  <data name="dialog_message_systementry_is_less_than_last_finance_document" xml:space="preserve">
+    <value>The system date is smaller than the date of the last fiscal document issued!
+
+Want to proceed and issue the tax document?</value>
+  </data>
+  <data name="dialog_message_systementry_is_less_than_last_finance_document_series" xml:space="preserve">
+    <value>The system date is smaller than the date of the last fiscal document issued!
+
+You cant issue finance documents with dates smaller than system date!</value>
+  </data>
+  <data name="dialog_message_table_is_not_free" xml:space="preserve">
+    <value>The selected table is not free!</value>
+  </data>
+  <data name="dialog_message_under_construction_function" xml:space="preserve">
+    <value>Under Construction! This function is not implemented!</value>
+  </data>
+  <data name="dialog_message_user_profile_changed_request_logoff" xml:space="preserve">
+    <value>The currently registered user profile was changed!
+
+To apply changes, you have logout and login to apply this profile privileges!</value>
+  </data>
+  <data name="dialog_message_user_request_change_password" xml:space="preserve">
+    <value>The password for user [{0}] needs to be changed for security purposes!
+
+To change the password, enter the default password "{1}", followed by the new password and their respective confirmation.</value>
+  </data>
+  <data name="dialog_message_validate_all_fields_to_proceed" xml:space="preserve">
+    <value>Please validate all fields before proceed!</value>
+  </data>
+  <data name="dialog_message_value_exceed_customer_card_credit" xml:space="preserve">
+    <value>Invalid customer card ot the card dont have credit to pay this amount, please add credit to card and try again.
+
+Current Card Credit: {0}
+Movement Amount: {1}</value>
+  </data>
+  <data name="dialog_message_value_exceed_simplified_invoice_max_value" xml:space="preserve">
+    <value>The total value exceed the maximum value defined for simplified invoices.
+
+{0}
+
+{1}</value>
+  </data>
+  <data name="dialog_message_worksession_day_close_successfully" xml:space="preserve">
+    <value>Working day session successfully closed!
+
+{0}</value>
+  </data>
+  <data name="dialog_message_worksession_period_warning_open_orders_tables" xml:space="preserve">
+    <value>Warning! You have {0} Open Order(s)! Before proceed please close open Order(s) in Table(s) : {1}</value>
+  </data>
+  <data name="dialog_message_worksession_period_warning_open_terminals" xml:space="preserve">
+    <value>Warning! You have {0} Open Terminal(s)!
+Before proceed please close open Terminal(s) : {1}</value>
+  </data>
+  <data name="dialog_message_worksession_terminal_close_successfully" xml:space="preserve">
+    <value>CashDrawer session successfully closed!
+
+{0}</value>
+  </data>
+  <data name="dialog_orders_button_label_print_order" xml:space="preserve">
+    <value>Print Order</value>
+  </data>
+  <data name="dialog_orders_button_label_tables_all" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="dialog_orders_button_label_tables_free" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="dialog_orders_button_label_tables_open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="dialog_orders_button_label_tables_reserved" xml:space="preserve">
+    <value>Reserved</value>
+  </data>
+  <data name="dialog_orders_button_label_table_consult" xml:space="preserve">
+    <value>Table Consult</value>
+  </data>
+  <data name="dialog_orders_button_label_view_orders" xml:space="preserve">
+    <value>View orders</value>
+  </data>
+  <data name="dialog_orders_button_label_view_tables" xml:space="preserve">
+    <value>View tables</value>
+  </data>
+  <data name="global_accesspassword" xml:space="preserve">
+    <value>Can change the password </value>
+  </data>
+  <data name="global_access_card_number" xml:space="preserve">
+    <value>Access card number</value>
+  </data>
+  <data name="global_access_pin" xml:space="preserve">
+    <value>Access pin</value>
+  </data>
+  <data name="global_accounting" xml:space="preserve">
+    <value>Accounting</value>
+  </data>
+  <data name="global_acronym" xml:space="preserve">
+    <value>Acronym/Identification</value>
+  </data>
+  <data name="global_address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="global_application_close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="global_application_logout_user" xml:space="preserve">
+    <value>LogOut</value>
+  </data>
+  <data name="global_application_main_menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="global_application_setup" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="global_article" xml:space="preserve">
+    <value>Article</value>
+  </data>
+  <data name="global_articles" xml:space="preserve">
+    <value>Articles</value>
+  </data>
+  <data name="global_articletype_haveprice" xml:space="preserve">
+    <value>Have price</value>
+  </data>
+  <data name="global_article_acronym" xml:space="preserve">
+    <value>Art.</value>
+  </data>
+  <data name="global_article_article" xml:space="preserve">
+    <value>Article</value>
+  </data>
+  <data name="global_article_class" xml:space="preserve">
+    <value>Article class</value>
+  </data>
+  <data name="global_article_code" xml:space="preserve">
+    <value>Code</value>
+    <comment>Used in Report Columns</comment>
+  </data>
+  <data name="global_article_default_quantity" xml:space="preserve">
+    <value>Default quantity</value>
+  </data>
+  <data name="global_article_family" xml:space="preserve">
+    <value>Family</value>
+  </data>
+  <data name="global_article_haveprice" xml:space="preserve">
+    <value>Have price</value>
+  </data>
+  <data name="global_article_subfamily" xml:space="preserve">
+    <value>Subfamily</value>
+  </data>
+  <data name="global_article_type" xml:space="preserve">
+    <value>Article type</value>
+  </data>
+  <data name="global_article_types" xml:space="preserve">
+    <value>Article Types</value>
+  </data>
+  <data name="global_assigned_seating" xml:space="preserve">
+    <value>Assigned Seating</value>
+  </data>
+  <data name="global_attended_by" xml:space="preserve">
+    <value>Attended By</value>
+  </data>
+  <data name="global_audit" xml:space="preserve">
+    <value>Audit</value>
+  </data>
+  <data name="global_backoffice" xml:space="preserve">
+    <value>BackOffice</value>
+  </data>
+  <data name="global_barcode" xml:space="preserve">
+    <value>Barcode</value>
+  </data>
+  <data name="global_barcode_small" xml:space="preserve">
+    <value>BarCode</value>
+  </data>
+  <data name="global_base_consumption" xml:space="preserve">
+    <value>Consumption base</value>
+  </data>
+  <data name="global_base_offers" xml:space="preserve">
+    <value>Base offers</value>
+  </data>
+  <data name="global_button_icon" xml:space="preserve">
+    <value>Button icon</value>
+  </data>
+  <data name="global_button_image" xml:space="preserve">
+    <value>Button image</value>
+  </data>
+  <data name="global_button_label_cancel" xml:space="preserve">
+    <value>_Cancel</value>
+  </data>
+  <data name="global_button_label_cancel_document" xml:space="preserve">
+    <value>_Cancel</value>
+  </data>
+  <data name="global_button_label_close" xml:space="preserve">
+    <value>_Close</value>
+  </data>
+  <data name="global_button_label_export" xml:space="preserve">
+    <value>E_xport XML</value>
+  </data>
+  <data name="global_button_label_help" xml:space="preserve">
+    <value>_Help</value>
+  </data>
+  <data name="global_button_label_new_financial_document" xml:space="preserve">
+    <value>_New</value>
+  </data>
+  <data name="global_button_label_no" xml:space="preserve">
+    <value>_No</value>
+  </data>
+  <data name="global_button_label_ok" xml:space="preserve">
+    <value>_Ok</value>
+  </data>
+  <data name="global_button_label_pay" xml:space="preserve">
+    <value>Pay</value>
+  </data>
+  <data name="global_button_label_payment_dialog_clear_client" xml:space="preserve">
+    <value>Clear Client</value>
+  </data>
+  <data name="global_button_label_payment_dialog_full_payment" xml:space="preserve">
+    <value>Full Pay</value>
+  </data>
+  <data name="global_button_label_payment_dialog_partial_payment" xml:space="preserve">
+    <value>Partial Pay</value>
+  </data>
+  <data name="global_button_label_pay_invoice" xml:space="preserve">
+    <value>Pay</value>
+  </data>
+  <data name="global_button_label_print" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="global_button_label_print_as" xml:space="preserve">
+    <value>Print As</value>
+  </data>
+  <data name="global_button_label_readcard" xml:space="preserve">
+    <value>Read card</value>
+  </data>
+  <data name="global_button_label_yes" xml:space="preserve">
+    <value>_Yes</value>
+  </data>
+  <data name="global_button_name" xml:space="preserve">
+    <value>Button name</value>
+  </data>
+  <data name="global_callposcomposer" xml:space="preserve">
+    <value>Open POS_Composer</value>
+  </data>
+  <data name="global_cancel_document_input_text_label" xml:space="preserve">
+    <value>Reason to Cancel Document: {0}</value>
+  </data>
+  <data name="global_card_credit_amount" xml:space="preserve">
+    <value>Credit Amount</value>
+  </data>
+  <data name="global_card_number" xml:space="preserve">
+    <value>Card number</value>
+  </data>
+  <data name="global_cashdrawer_money_in" xml:space="preserve">
+    <value>Cash Drawer Money In</value>
+  </data>
+  <data name="global_cashdrawer_money_out" xml:space="preserve">
+    <value>Cash Drawer Money Out</value>
+  </data>
+  <data name="global_cashdrawer_without_movements" xml:space="preserve">
+    <value>Without Movements...</value>
+  </data>
+  <data name="global_cash_registers" xml:space="preserve">
+    <value>Cash registers</value>
+  </data>
+  <data name="global_change_user" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="global_characters" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="global_city" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="global_commission_group" xml:space="preserve">
+    <value>Commission group</value>
+  </data>
+  <data name="global_configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="global_ConfigurationCashRegister" xml:space="preserve">
+    <value>Cash register</value>
+  </data>
+  <data name="global_ConfigurationCashRegister_ActiveSales" xml:space="preserve">
+    <value>Active sales</value>
+  </data>
+  <data name="global_ConfigurationCashRegister_AllowChargeBacks" xml:space="preserve">
+    <value>Allow chargebacks</value>
+  </data>
+  <data name="global_ConfigurationCashRegister_AutomaticDrawer" xml:space="preserve">
+    <value>Automatic drawer</value>
+  </data>
+  <data name="global_ConfigurationCashRegister_Drawer" xml:space="preserve">
+    <value>Drawer</value>
+  </data>
+  <data name="global_ConfigurationCashRegister_Printer" xml:space="preserve">
+    <value>Printer</value>
+  </data>
+  <data name="global_ConfigurationCurrency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="global_ConfigurationCurrency_Acronym" xml:space="preserve">
+    <value>Acronym</value>
+  </data>
+  <data name="global_ConfigurationCurrency_Entity" xml:space="preserve">
+    <value>Entity</value>
+  </data>
+  <data name="global_ConfigurationDevice_PlaceTerminal" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="global_ConfigurationDevice_Type" xml:space="preserve">
+    <value>Device type</value>
+  </data>
+  <data name="global_ConfigurationKeyboard_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="global_ConfigurationKeyboard_VirtualKeyboard" xml:space="preserve">
+    <value>Virtual keyboard</value>
+  </data>
+  <data name="global_ConfigurationMaintenance_Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="global_ConfigurationMaintenance_PasswordAccess" xml:space="preserve">
+    <value>Password access</value>
+  </data>
+  <data name="global_ConfigurationMaintenance_Remarks" xml:space="preserve">
+    <value>Remarks</value>
+  </data>
+  <data name="global_ConfigurationMaintenance_Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="global_ConfigurationPaymentCondition_Acronym" xml:space="preserve">
+    <value>Acronym</value>
+  </data>
+  <data name="global_ConfigurationPaymentMethod_Acronym" xml:space="preserve">
+    <value>Acronym</value>
+  </data>
+  <data name="global_ConfigurationPaymentMethod_Symbol" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="global_ConfigurationPaymentMethod_Token" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="global_ConfigurationPlaceTablePlace" xml:space="preserve">
+    <value>Place</value>
+  </data>
+  <data name="global_configurationplaceterminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="global_ConfigurationPlace_MovementType" xml:space="preserve">
+    <value>Movement type</value>
+  </data>
+  <data name="global_ConfigurationPlace_PriceType" xml:space="preserve">
+    <value>Price type</value>
+  </data>
+  <data name="global_ConfigurationPriceType_IndexPos" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="global_configurationprinter" xml:space="preserve">
+    <value>Printer</value>
+  </data>
+  <data name="global_ConfigurationPrinters" xml:space="preserve">
+    <value>Printers</value>
+  </data>
+  <data name="global_configurationprintersTemplate" xml:space="preserve">
+    <value>Printer template</value>
+  </data>
+  <data name="global_ConfigurationPrintersTemplates" xml:space="preserve">
+    <value>Printer templates</value>
+  </data>
+  <data name="global_ConfigurationPrintersType" xml:space="preserve">
+    <value>Printers type</value>
+  </data>
+  <data name="global_configurationprinters_template_table_consult" xml:space="preserve">
+    <value>Table Consult</value>
+  </data>
+  <data name="global_configurationprinters_template_ticket" xml:space="preserve">
+    <value>Ticket</value>
+  </data>
+  <data name="global_ConfigurationUnitMeasure_Acronym" xml:space="preserve">
+    <value>Acronym</value>
+  </data>
+  <data name="global_contract_date" xml:space="preserve">
+    <value>Contract date</value>
+  </data>
+  <data name="global_country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="global_currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="global_current_acount" xml:space="preserve">
+    <value>Current Account</value>
+  </data>
+  <data name="global_customer" xml:space="preserve">
+    <value>Customer</value>
+  </data>
+  <data name="global_customers" xml:space="preserve">
+    <value>Customers</value>
+  </data>
+  <data name="global_customer_code" xml:space="preserve">
+    <value>Customer ID</value>
+  </data>
+  <data name="global_customer_discount_groups" xml:space="preserve">
+    <value>Discount groups</value>
+  </data>
+  <data name="global_customer_fiscal_number" xml:space="preserve">
+    <value>Cust.Fiscal Number</value>
+  </data>
+  <data name="global_customer_types" xml:space="preserve">
+    <value>Customer type</value>
+  </data>
+  <data name="global_database_backup" xml:space="preserve">
+    <value>Backup Database</value>
+  </data>
+  <data name="global_database_restore" xml:space="preserve">
+    <value>Restore DB</value>
+  </data>
+  <data name="global_database_restore_from_file" xml:space="preserve">
+    <value>Restore DB (File)</value>
+  </data>
+  <data name="global_date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="global_datepicker_add_date" xml:space="preserve">
+    <value>Add Date</value>
+  </data>
+  <data name="global_date_end" xml:space="preserve">
+    <value>Date End</value>
+  </data>
+  <data name="global_date_start" xml:space="preserve">
+    <value>Date Start</value>
+  </data>
+  <data name="global_debit" xml:space="preserve">
+    <value>Debit</value>
+  </data>
+  <data name="global_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="global_designation" xml:space="preserve">
+    <value>Designation</value>
+  </data>
+  <data name="global_designation_Drawer" xml:space="preserve">
+    <value>Drawer</value>
+  </data>
+  <data name="global_details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="global_devices" xml:space="preserve">
+    <value>Devices</value>
+  </data>
+  <data name="global_device_printer" xml:space="preserve">
+    <value>Device printer</value>
+  </data>
+  <data name="global_DialogConfigurationPrintersTypetoken" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="global_discount" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="global_discount_acronym" xml:space="preserve">
+    <value>Disc</value>
+    <comment>Used in Report Columns</comment>
+  </data>
+  <data name="global_discount_group" xml:space="preserve">
+    <value>Discount group</value>
+  </data>
+  <data name="global_dob" xml:space="preserve">
+    <value>Birthdate</value>
+  </data>
+  <data name="global_documentfinanceseries_DocumentNumberRangeBegin" xml:space="preserve">
+    <value>Lower limit</value>
+  </data>
+  <data name="global_documentfinanceseries_DocumentNumberRangeEnd" xml:space="preserve">
+    <value>Upper limit</value>
+  </data>
+  <data name="global_documentfinanceseries_documenttype" xml:space="preserve">
+    <value>Document type</value>
+  </data>
+  <data name="global_documentfinanceseries_NextDocumentNumber" xml:space="preserve">
+    <value>Next number</value>
+  </data>
+  <data name="global_documentfinanceseries_NumberOfCopies" xml:space="preserve">
+    <value>Number of copies</value>
+  </data>
+  <data name="global_documentfinance_discount_customer" xml:space="preserve">
+    <value>Customer Discount</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_discount_payment_conditions" xml:space="preserve">
+    <value>Discount Pay.Cond.</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_series" xml:space="preserve">
+    <value>Series</value>
+  </data>
+  <data name="global_documentfinance_totalfinal" xml:space="preserve">
+    <value>Total Gross</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_totalgross" xml:space="preserve">
+    <value>Total Net</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_totaltax" xml:space="preserve">
+    <value>Total Tax</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_type" xml:space="preserve">
+    <value>Document type</value>
+  </data>
+  <data name="global_documentfinance_types" xml:space="preserve">
+    <value>Types of documents</value>
+  </data>
+  <data name="global_documentfinance_type_report_invoice_footer_at" xml:space="preserve">
+    <value>Billed articles were placed to the customer's exposure on this date - paragraph f) n.5 of art. 36 of the Vat Code</value>
+  </data>
+  <data name="global_documentfinance_type_report_non_invoice_footer_at" xml:space="preserve">
+    <value>This document does not serve as invoice</value>
+  </data>
+  <data name="global_documentfinance_type_title_cc" xml:space="preserve">
+    <value>Current Account Input</value>
+  </data>
+  <data name="global_documentfinance_type_title_dc" xml:space="preserve">
+    <value>Paper Conference</value>
+  </data>
+  <data name="global_documentfinance_type_title_fr" xml:space="preserve">
+    <value>Invoice-Receipt </value>
+  </data>
+  <data name="global_documentfinance_type_title_fs" xml:space="preserve">
+    <value>Simplified Invoice</value>
+  </data>
+  <data name="global_documentfinance_type_title_ft" xml:space="preserve">
+    <value>Invoice</value>
+  </data>
+  <data name="global_documentfinance_type_title_ga" xml:space="preserve">
+    <value>Fixed Assets movement Guide</value>
+  </data>
+  <data name="global_documentfinance_type_title_gc" xml:space="preserve">
+    <value>Guide Consignment</value>
+  </data>
+  <data name="global_documentfinance_type_title_gd" xml:space="preserve">
+    <value>Guide or Return Note</value>
+  </data>
+  <data name="global_documentfinance_type_title_gr" xml:space="preserve">
+    <value>Delivery Note</value>
+  </data>
+  <data name="global_documentfinance_type_title_gt" xml:space="preserve">
+    <value>Transportation Guide</value>
+  </data>
+  <data name="global_documentfinance_type_title_nc" xml:space="preserve">
+    <value>Credit Note</value>
+  </data>
+  <data name="global_documentfinance_type_title_nd" xml:space="preserve">
+    <value>Debit Note</value>
+  </data>
+  <data name="global_documentfinance_type_title_rc" xml:space="preserve">
+    <value>Payment</value>
+  </data>
+  <data name="global_documentfinance_waybill_comments" xml:space="preserve">
+    <value>Comments</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_waybill_data_load" xml:space="preserve">
+    <value>Data Load</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_waybill_date_download" xml:space="preserve">
+    <value>Date Download</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_waybill_expedition" xml:space="preserve">
+    <value>Expedition</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_waybill_local_download" xml:space="preserve">
+    <value>Local Download</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_waybill_local_load" xml:space="preserve">
+    <value>Local Load</value>
+    <comment>Used in Report Label</comment>
+  </data>
+  <data name="global_documentfinance_years" xml:space="preserve">
+    <value>Opening of fiscal year</value>
+  </data>
+  <data name="global_documentfinance_yearsseriesterminal" xml:space="preserve">
+    <value>Series/Terminal </value>
+  </data>
+  <data name="global_documents" xml:space="preserve">
+    <value>Fiscal information</value>
+  </data>
+  <data name="global_documents_status_document_invoiced" xml:space="preserve">
+    <value>Document Invoiced: {0}</value>
+  </data>
+  <data name="global_documentticket_type_title_ar" xml:space="preserve">
+    <value>Article Request</value>
+  </data>
+  <data name="global_documentticket_type_title_cs" xml:space="preserve">
+    <value>CashDrawer Money In/Out</value>
+  </data>
+  <data name="global_documentticket_type_title_tt" xml:space="preserve">
+    <value>Table Ticket</value>
+  </data>
+  <data name="global_documentticket_type_title_ws" xml:space="preserve">
+    <value>Work Session Movement</value>
+  </data>
+  <data name="global_document_cancelled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="global_document_created" xml:space="preserve">
+    <value>Document Created</value>
+  </data>
+  <data name="global_document_date" xml:space="preserve">
+    <value>Document Date</value>
+  </data>
+  <data name="global_document_number" xml:space="preserve">
+    <value>Document Number</value>
+  </data>
+  <data name="global_document_number_acronym" xml:space="preserve">
+    <value>Doc.Number</value>
+  </data>
+  <data name="global_document_series" xml:space="preserve">
+    <value>Finance Series</value>
+  </data>
+  <data name="global_document_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="global_document_total" xml:space="preserve">
+    <value>Total Doc.</value>
+  </data>
+  <data name="global_email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="global_entity" xml:space="preserve">
+    <value>Entity</value>
+  </data>
+  <data name="global_error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="global_exchangerate" xml:space="preserve">
+    <value>Exchange Rate</value>
+  </data>
+  <data name="global_export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="global_export_saftpt" xml:space="preserve">
+    <value>Export SAF-T PT</value>
+  </data>
+  <data name="global_export_saftpt_custom" xml:space="preserve">
+    <value>SAF-T Custom</value>
+  </data>
+  <data name="global_export_saftpt_last_month" xml:space="preserve">
+    <value>SAF-T Last Month</value>
+  </data>
+  <data name="global_export_saftpt_whole_year" xml:space="preserve">
+    <value>SAF-T Whole Year</value>
+  </data>
+  <data name="global_families" xml:space="preserve">
+    <value>Families</value>
+  </data>
+  <data name="global_family" xml:space="preserve">
+    <value>Familia</value>
+  </data>
+  <data name="global_favorite" xml:space="preserve">
+    <value>Favorite</value>
+  </data>
+  <data name="global_favorites" xml:space="preserve">
+    <value>Favorites</value>
+  </data>
+  <data name="global_fax" xml:space="preserve">
+    <value>Fax:</value>
+  </data>
+  <data name="global_file" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="global_files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="global_filesize" xml:space="preserve">
+    <value>FileSize</value>
+  </data>
+  <data name="global_file_image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="global_finance_document" xml:space="preserve">
+    <value>Finance document</value>
+  </data>
+  <data name="global_financialtemplate" xml:space="preserve">
+    <value>Financial template</value>
+  </data>
+  <data name="global_fiscal_number" xml:space="preserve">
+    <value>Fiscal Number</value>
+  </data>
+  <data name="global_fiscal_number_acronym" xml:space="preserve">
+    <value>NIF</value>
+  </data>
+  <data name="global_fiscal_year" xml:space="preserve">
+    <value>Fiscal Year</value>
+  </data>
+  <data name="global_frontoffice" xml:space="preserve">
+    <value>FrontOffice</value>
+  </data>
+  <data name="global_gifts" xml:space="preserve">
+    <value>Gifts</value>
+  </data>
+  <data name="global_groups" xml:space="preserve">
+    <value>Groups</value>
+  </data>
+  <data name="global_hardware_id" xml:space="preserve">
+    <value>Hardware ID</value>
+  </data>
+  <data name="global_hour" xml:space="preserve">
+    <value>Hour</value>
+  </data>
+  <data name="global_information" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="global_internal_document_footer1" xml:space="preserve">
+    <value>Internal document - Solely for the purpose of establishing</value>
+  </data>
+  <data name="global_in_progress" xml:space="preserve">
+    <value>In progress...</value>
+  </data>
+  <data name="global_issue_date" xml:space="preserve">
+    <value>Issue Date</value>
+  </data>
+  <data name="global_keyboard" xml:space="preserve">
+    <value>Keyboard</value>
+  </data>
+  <data name="global_keyboards" xml:space="preserve">
+    <value>Keyboards</value>
+  </data>
+  <data name="global_language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="global_licensed_to" xml:space="preserve">
+    <value>Licensed to {0}</value>
+  </data>
+  <data name="global_locality" xml:space="preserve">
+    <value>Locality</value>
+  </data>
+  <data name="global_login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="global_maintenance" xml:space="preserve">
+    <value>Maintenance</value>
+  </data>
+  <data name="global_maximum" xml:space="preserve">
+    <value>Maximum</value>
+  </data>
+  <data name="global_messages" xml:space="preserve">
+    <value>Messages</value>
+  </data>
+  <data name="global_messages_small" xml:space="preserve">
+    <value>Messag.</value>
+    <comment>Used in 800x600 Theme</comment>
+  </data>
+  <data name="global_mobile_phone" xml:space="preserve">
+    <value>Mobile Phone</value>
+  </data>
+  <data name="global_money" xml:space="preserve">
+    <value>Money</value>
+  </data>
+  <data name="global_movement_amount" xml:space="preserve">
+    <value>Movement Amount</value>
+  </data>
+  <data name="global_movement_type" xml:space="preserve">
+    <value>Movement type</value>
+  </data>
+  <data name="global_name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="global_networkname" xml:space="preserve">
+    <value>Network name</value>
+  </data>
+  <data name="global_notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="global_open_drawer" xml:space="preserve">
+    <value>Open Drawer</value>
+  </data>
+  <data name="global_order_request" xml:space="preserve">
+    <value>Order Request</value>
+  </data>
+  <data name="global_others" xml:space="preserve">
+    <value>Others</value>
+  </data>
+  <data name="global_other_payments" xml:space="preserve">
+    <value>Other payments</value>
+  </data>
+  <data name="global_password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="global_payment_condition" xml:space="preserve">
+    <value>Payment condition</value>
+  </data>
+  <data name="global_payment_conditions" xml:space="preserve">
+    <value>Payment conditions</value>
+  </data>
+  <data name="global_payment_document" xml:space="preserve">
+    <value>Payment Document</value>
+  </data>
+  <data name="global_payment_method" xml:space="preserve">
+    <value>Payment method</value>
+  </data>
+  <data name="global_payment_methods" xml:space="preserve">
+    <value>Payment methods</value>
+  </data>
+  <data name="global_personal_data" xml:space="preserve">
+    <value>Personal data</value>
+  </data>
+  <data name="global_phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="global_places" xml:space="preserve">
+    <value>Places</value>
+  </data>
+  <data name="global_places_movement_type" xml:space="preserve">
+    <value>Movement type</value>
+  </data>
+  <data name="global_places_terminals" xml:space="preserve">
+    <value>Terminals</value>
+  </data>
+  <data name="global_placetable_dateclosed" xml:space="preserve">
+    <value>Close date</value>
+  </data>
+  <data name="global_placetable_dateopen" xml:space="preserve">
+    <value>Open date</value>
+  </data>
+  <data name="global_placetable_MovementType" xml:space="preserve">
+    <value>Movement type</value>
+  </data>
+  <data name="global_placetable_place" xml:space="preserve">
+    <value>Place</value>
+  </data>
+  <data name="global_placetable_PriceType" xml:space="preserve">
+    <value>Price type</value>
+  </data>
+  <data name="global_placetable_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="global_placetable_totalopen" xml:space="preserve">
+    <value>Total open</value>
+  </data>
+  <data name="global_place_table" xml:space="preserve">
+    <value>Table</value>
+  </data>
+  <data name="global_place_tables" xml:space="preserve">
+    <value>Tables</value>
+  </data>
+  <data name="global_pos" xml:space="preserve">
+    <value>POS</value>
+  </data>
+  <data name="global_postal_code" xml:space="preserve">
+    <value>Postal code</value>
+  </data>
+  <data name="global_preferenceparameter" xml:space="preserve">
+    <value>System parameters</value>
+  </data>
+  <data name="global_preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="global_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="global_price_offers" xml:space="preserve">
+    <value>Price offers</value>
+  </data>
+  <data name="global_price_type" xml:space="preserve">
+    <value>Price Type</value>
+  </data>
+  <data name="global_price_with_vat" xml:space="preserve">
+    <value>Price with VAT</value>
+  </data>
+  <data name="global_printed" xml:space="preserve">
+    <value>Printed</value>
+  </data>
+  <data name="global_printers" xml:space="preserve">
+    <value>Printers</value>
+  </data>
+  <data name="global_printer_type" xml:space="preserve">
+    <value>Printer type</value>
+  </data>
+  <data name="global_printing_function_disabled" xml:space="preserve">
+    <value>Printing function disabled.</value>
+  </data>
+  <data name="global_print_copies" xml:space="preserve">
+    <value>Copies</value>
+  </data>
+  <data name="global_print_copy_title1" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="global_print_copy_title2" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="global_print_copy_title3" xml:space="preserve">
+    <value>Triplicate</value>
+  </data>
+  <data name="global_print_copy_title4" xml:space="preserve">
+    <value>Quadriplicate</value>
+  </data>
+  <data name="global_print_copy_title5" xml:space="preserve">
+    <value>Quintuplicate</value>
+  </data>
+  <data name="global_print_copy_title6" xml:space="preserve">
+    <value>Sextuplicate</value>
+  </data>
+  <data name="global_print_request_confirmation" xml:space="preserve">
+    <value>Request Print Confirmation</value>
+  </data>
+  <data name="global_print_second_print" xml:space="preserve">
+    <value>Second Print</value>
+  </data>
+  <data name="global_privilege_active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="global_privilege_property" xml:space="preserve">
+    <value>Property</value>
+  </data>
+  <data name="global_profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="global_quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="global_quantity_acronym" xml:space="preserve">
+    <value>Qnt</value>
+    <comment>Used in Report Columns</comment>
+  </data>
+  <data name="global_quit" xml:space="preserve">
+    <value>Quit application</value>
+  </data>
+  <data name="global_quit_message" xml:space="preserve">
+    <value>Do you really want to exit the application?</value>
+  </data>
+  <data name="global_quit_title" xml:space="preserve">
+    <value>Quit</value>
+  </data>
+  <data name="global_read_card" xml:space="preserve">
+    <value>Read card</value>
+  </data>
+  <data name="global_reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="global_record_code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="global_record_date_created" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="global_record_date_updated" xml:space="preserve">
+    <value>Updated</value>
+  </data>
+  <data name="global_record_disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="global_record_enabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="global_record_main_detail" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="global_record_modified" xml:space="preserve">
+    <value>Modified Record</value>
+  </data>
+  <data name="global_record_order" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="global_record_user_update" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="global_region" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="global_remarks" xml:space="preserve">
+    <value>Observations</value>
+  </data>
+  <data name="global_remote_connection_start" xml:space="preserve">
+    <value>Start remote connection</value>
+  </data>
+  <data name="global_remote_connection_stop" xml:space="preserve">
+    <value>Stop remote connection</value>
+  </data>
+  <data name="global_report" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="global_reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="global_report_overlay_software_certification" xml:space="preserve">
+    <value>{0} by certificate program No {1}/AT</value>
+  </data>
+  <data name="global_report_overlay_software_certification_emitted" xml:space="preserve">
+    <value>Emitted</value>
+  </data>
+  <data name="global_report_overlay_software_certification_processed" xml:space="preserve">
+    <value>Processed</value>
+  </data>
+  <data name="global_reprint_original_motive" xml:space="preserve">
+    <value>Original re-print motive</value>
+  </data>
+  <data name="global_reserved_table" xml:space="preserve">
+    <value>Reserved table</value>
+  </data>
+  <data name="global_reset_password" xml:space="preserve">
+    <value>Reset Password</value>
+  </data>
+  <data name="global_second_copy" xml:space="preserve">
+    <value>Second copy</value>
+  </data>
+  <data name="global_seriesforeachterminal" xml:space="preserve">
+    <value>Independently series for each terminal</value>
+  </data>
+  <data name="global_services" xml:space="preserve">
+    <value>Services</value>
+  </data>
+  <data name="global_ship_from_delivery_date" xml:space="preserve">
+    <value>Expedition Date</value>
+  </data>
+  <data name="global_ship_from_delivery_date_report" xml:space="preserve">
+    <value>Expedition Date</value>
+    <comment>Expedition Date</comment>
+  </data>
+  <data name="global_ship_from_delivery_id" xml:space="preserve">
+    <value>Delivery Identifier / Plate Name</value>
+  </data>
+  <data name="global_ship_from_delivery_id_report" xml:space="preserve">
+    <value>Plate Name</value>
+    <comment>Delivery Identifier / Plate Name</comment>
+  </data>
+  <data name="global_ship_from_location_id" xml:space="preserve">
+    <value>Location of property in departure warehouse</value>
+  </data>
+  <data name="global_ship_from_location_id_report" xml:space="preserve">
+    <value>Loc.Prop.Dep.WH</value>
+    <comment>Location of property in departure warehouse</comment>
+  </data>
+  <data name="global_ship_from_warehouse_id" xml:space="preserve">
+    <value>Departure warehouse identifier</value>
+  </data>
+  <data name="global_ship_from_warehouse_id_report" xml:space="preserve">
+    <value>Dep. WH Ident.</value>
+    <comment>Departure warehouse identifier</comment>
+  </data>
+  <data name="global_ship_to_delivery_date" xml:space="preserve">
+    <value>Delivery Date</value>
+  </data>
+  <data name="global_ship_to_delivery_date_report" xml:space="preserve">
+    <value>Delivery Date</value>
+    <comment>Delivery Date</comment>
+  </data>
+  <data name="global_ship_to_delivery_id" xml:space="preserve">
+    <value>Delivery Identifier</value>
+  </data>
+  <data name="global_ship_to_delivery_id_report" xml:space="preserve">
+    <value>Delivery Identifier</value>
+    <comment>Delivery Identifier</comment>
+  </data>
+  <data name="global_ship_to_location_id" xml:space="preserve">
+    <value>Location of property in the destination warehouse</value>
+  </data>
+  <data name="global_ship_to_location_id_report" xml:space="preserve">
+    <value>Loc.Prop.Dest.WH</value>
+    <comment>Location of property in the destination warehouse</comment>
+  </data>
+  <data name="global_ship_to_warehouse_id" xml:space="preserve">
+    <value>Warehouse target  identifier</value>
+  </data>
+  <data name="global_ship_to_warehouse_id_report" xml:space="preserve">
+    <value>WH Target Ident.</value>
+    <comment>Warehouse target  identifier</comment>
+  </data>
+  <data name="global_short_quantity" xml:space="preserve">
+    <value>Qnt.</value>
+  </data>
+  <data name="global_short_subtotal" xml:space="preserve">
+    <value>SubT.</value>
+  </data>
+  <data name="global_source_document" xml:space="preserve">
+    <value>Source Document</value>
+  </data>
+  <data name="global_source_finance_document" xml:space="preserve">
+    <value>Source Document</value>
+  </data>
+  <data name="global_split_account" xml:space="preserve">
+    <value>Split account</value>
+  </data>
+  <data name="global_split_account_small" xml:space="preserve">
+    <value>Split A.</value>
+    <comment>Used in 800x600 Theme</comment>
+  </data>
+  <data name="global_statusbar" xml:space="preserve">
+    <value>Status bar</value>
+  </data>
+  <data name="global_stock_capital" xml:space="preserve">
+    <value>Stock Capital</value>
+  </data>
+  <data name="global_stock_movement" xml:space="preserve">
+    <value>Movement</value>
+  </data>
+  <data name="global_stock_movements" xml:space="preserve">
+    <value>Stock Movements</value>
+  </data>
+  <data name="global_stock_movement_in" xml:space="preserve">
+    <value>Stock In</value>
+  </data>
+  <data name="global_stock_movement_out" xml:space="preserve">
+    <value>Stock Out</value>
+  </data>
+  <data name="global_subfamilies" xml:space="preserve">
+    <value>Subfamilies</value>
+  </data>
+  <data name="global_subfamily" xml:space="preserve">
+    <value>SubFamilia</value>
+  </data>
+  <data name="global_supplier" xml:space="preserve">
+    <value>Supplier</value>
+  </data>
+  <data name="global_system" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="global_table_appmode_default" xml:space="preserve">
+    <value>Table</value>
+  </data>
+  <data name="global_table_appmode_retail" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="global_tare" xml:space="preserve">
+    <value>Tare</value>
+  </data>
+  <data name="global_tax" xml:space="preserve">
+    <value>Tax</value>
+  </data>
+  <data name="global_terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="global_terminal_name" xml:space="preserve">
+    <value>Terminal Name</value>
+  </data>
+  <data name="global_ticket_number" xml:space="preserve">
+    <value>Ticket Number</value>
+  </data>
+  <data name="global_title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="global_total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="global_totalfinal_acronym" xml:space="preserve">
+    <value>T.Gross</value>
+    <comment>Used in Report Columns</comment>
+  </data>
+  <data name="global_totalnet" xml:space="preserve">
+    <value>Total Net</value>
+  </data>
+  <data name="global_totalnet_acronym" xml:space="preserve">
+    <value>T.Net</value>
+    <comment>Used in Report Columns</comment>
+  </data>
+  <data name="global_total_by_type_of_payment" xml:space="preserve">
+    <value>Total by type of payment</value>
+  </data>
+  <data name="global_total_cashdrawer" xml:space="preserve">
+    <value>Total in CashDrawer</value>
+  </data>
+  <data name="global_total_cashdrawer_on_open" xml:space="preserve">
+    <value>Total on Open</value>
+  </data>
+  <data name="global_total_change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="global_total_deliver" xml:space="preserve">
+    <value>Total deliver</value>
+  </data>
+  <data name="global_total_extended_label" xml:space="preserve">
+    <value>We received the amount of:</value>
+  </data>
+  <data name="global_total_payed_acronym" xml:space="preserve">
+    <value>Total Payed</value>
+  </data>
+  <data name="global_total_price_to_pay" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="global_total_stock" xml:space="preserve">
+    <value>Total Stock</value>
+  </data>
+  <data name="global_total_table_tickets" xml:space="preserve">
+    <value>Total table</value>
+  </data>
+  <data name="global_total_tax_base" xml:space="preserve">
+    <value>Tax Base</value>
+  </data>
+  <data name="global_total_ticket" xml:space="preserve">
+    <value>Ticket total</value>
+  </data>
+  <data name="global_treeview_false" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="global_treeview_true" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="global_type_of_payment" xml:space="preserve">
+    <value>Type of Payment</value>
+  </data>
+  <data name="global_units_amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="global_units_measure" xml:space="preserve">
+    <value>Measure units</value>
+  </data>
+  <data name="global_units_size" xml:space="preserve">
+    <value>Size units</value>
+  </data>
+  <data name="global_unit_measure" xml:space="preserve">
+    <value>Measure unit</value>
+  </data>
+  <data name="global_unit_measure_acronym" xml:space="preserve">
+    <value>UM</value>
+    <comment>Used in Report Columns</comment>
+  </data>
+  <data name="global_unit_size" xml:space="preserve">
+    <value>Size unit</value>
+  </data>
+  <data name="global_user" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="global_users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="global_user_access_card_number" xml:space="preserve">
+    <value>Card</value>
+  </data>
+  <data name="global_user_apply_privileges" xml:space="preserve">
+    <value>Apply Privileges</value>
+  </data>
+  <data name="global_user_assigned_seating" xml:space="preserve">
+    <value>Assigned tables</value>
+  </data>
+  <data name="global_user_base_consumption" xml:space="preserve">
+    <value>Base consumption</value>
+  </data>
+  <data name="global_user_base_offers" xml:space="preserve">
+    <value>Base offers</value>
+  </data>
+  <data name="global_user_city" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="global_user_commission_groups" xml:space="preserve">
+    <value>Commission groups</value>
+  </data>
+  <data name="global_user_contract" xml:space="preserve">
+    <value>Contract date</value>
+  </data>
+  <data name="global_user_email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="global_user_fiscal_number" xml:space="preserve">
+    <value>Fiscal number</value>
+  </data>
+  <data name="global_user_locality" xml:space="preserve">
+    <value>Locality</value>
+  </data>
+  <data name="global_user_mobile" xml:space="preserve">
+    <value>Mobile</value>
+  </data>
+  <data name="global_user_name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="global_user_password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="global_user_permissions" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="global_user_personal" xml:space="preserve">
+    <value>Personal data</value>
+  </data>
+  <data name="global_user_phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="global_user_postal_code" xml:space="preserve">
+    <value>Postal code</value>
+  </data>
+  <data name="global_user_profiles" xml:space="preserve">
+    <value>User profiles</value>
+  </data>
+  <data name="global_user_pvp_offers" xml:space="preserve">
+    <value>PVP Offers</value>
+  </data>
+  <data name="global_user_residence" xml:space="preserve">
+    <value>Residence</value>
+  </data>
+  <data name="global_value" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="global_variable_price" xml:space="preserve">
+    <value>Variable price</value>
+  </data>
+  <data name="global_vat_direct_selling" xml:space="preserve">
+    <value>Vat direct selling</value>
+  </data>
+  <data name="global_vat_exemption_reason" xml:space="preserve">
+    <value>Vat Exemption Reason</value>
+  </data>
+  <data name="global_vat_exemption_reason_acronym" xml:space="preserve">
+    <value>TER</value>
+  </data>
+  <data name="global_vat_on_table" xml:space="preserve">
+    <value>Vat on table</value>
+  </data>
+  <data name="global_vat_rate" xml:space="preserve">
+    <value>Taxa </value>
+  </data>
+  <data name="global_vat_rates" xml:space="preserve">
+    <value>Vat rates</value>
+  </data>
+  <data name="global_vat_rate_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="global_vat_rate_reasoncode" xml:space="preserve">
+    <value>Reason code</value>
+  </data>
+  <data name="global_vat_rate_value" xml:space="preserve">
+    <value>Rate value</value>
+  </data>
+  <data name="global_version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="global_warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="global_website" xml:space="preserve">
+    <value>WebSite</value>
+  </data>
+  <data name="global_weight" xml:space="preserve">
+    <value>Weight</value>
+  </data>
+  <data name="global_without_current_acount" xml:space="preserve">
+    <value>Without Current Account</value>
+  </data>
+  <data name="global_words" xml:space="preserve">
+    <value>Words</value>
+  </data>
+  <data name="global_worksession_close_datetime" xml:space="preserve">
+    <value>Close Date</value>
+  </data>
+  <data name="global_worksession_close_day" xml:space="preserve">
+    <value>Close day</value>
+  </data>
+  <data name="global_worksession_close_total_cashdrawer" xml:space="preserve">
+    <value>Total CashDrawer(s)</value>
+  </data>
+  <data name="global_worksession_open_datetime" xml:space="preserve">
+    <value>Open Date</value>
+  </data>
+  <data name="global_worksession_open_day" xml:space="preserve">
+    <value>Open day</value>
+  </data>
+  <data name="global_worksession_open_total_cashdrawer" xml:space="preserve">
+    <value>Total on Open</value>
+  </data>
+  <data name="global_worksession_resume_finance_documents" xml:space="preserve">
+    <value>Finance Documents</value>
+  </data>
+  <data name="global_worksession_resume_paymens_documents" xml:space="preserve">
+    <value>Payment Documents</value>
+  </data>
+  <data name="global_worksession_total_money_in" xml:space="preserve">
+    <value>Total Cash In </value>
+  </data>
+  <data name="global_worksession_total_money_out" xml:space="preserve">
+    <value>Total Cash Out</value>
+  </data>
+  <data name="global_zipcode" xml:space="preserve">
+    <value>Zip Code</value>
+  </data>
+  <data name="pos_button_create_series" xml:space="preserve">
+    <value>Create Series</value>
+  </data>
+  <data name="pos_button_label_cashdrawer" xml:space="preserve">
+    <value>Session</value>
+  </data>
+  <data name="pos_button_label_cashdrawer_close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="pos_button_label_cashdrawer_in" xml:space="preserve">
+    <value>In</value>
+  </data>
+  <data name="pos_button_label_cashdrawer_money_out" xml:space="preserve">
+    <value>Money Out</value>
+  </data>
+  <data name="pos_button_label_cashdrawer_open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="pos_button_label_cashdrawer_out" xml:space="preserve">
+    <value>Out</value>
+  </data>
+  <data name="pos_button_label_cash_register" xml:space="preserve">
+    <value>Cash register</value>
+  </data>
+  <data name="pos_button_label_change_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="pos_button_label_change_quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="pos_button_label_change_quantity_small" xml:space="preserve">
+    <value>Quant.</value>
+    <comment>Used in 800x600 Theme</comment>
+  </data>
+  <data name="pos_button_label_change_table" xml:space="preserve">
+    <value>Change table</value>
+  </data>
+  <data name="pos_button_label_change_table_small" xml:space="preserve">
+    <value>Change T.</value>
+    <comment>Used in 800x600 Theme</comment>
+  </data>
+  <data name="pos_button_label_decrease" xml:space="preserve">
+    <value>Decrease</value>
+  </data>
+  <data name="pos_button_label_delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="pos_button_label_finish_order" xml:space="preserve">
+    <value>Finish order</value>
+  </data>
+  <data name="pos_button_label_finish_order_small" xml:space="preserve">
+    <value>Finish</value>
+    <comment>Used in 800x600 Theme</comment>
+  </data>
+  <data name="pos_button_label_increase" xml:space="preserve">
+    <value>Increase</value>
+  </data>
+  <data name="pos_button_label_list_mode" xml:space="preserve">
+    <value>List mode</value>
+  </data>
+  <data name="pos_button_label_next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="pos_button_label_next_pages_toolbar" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="pos_button_label_orders" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="pos_button_label_payments" xml:space="preserve">
+    <value>Payments</value>
+  </data>
+  <data name="pos_button_label_payment_type_bank_check" xml:space="preserve">
+    <value>Bank check</value>
+  </data>
+  <data name="pos_button_label_payment_type_cash_machine" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="pos_button_label_payment_type_credit_card" xml:space="preserve">
+    <value>Credit Card</value>
+  </data>
+  <data name="pos_button_label_payment_type_current_account" xml:space="preserve">
+    <value>Current account</value>
+  </data>
+  <data name="pos_button_label_payment_type_customer_card" xml:space="preserve">
+    <value>Client Card</value>
+  </data>
+  <data name="pos_button_label_payment_type_money" xml:space="preserve">
+    <value>Money</value>
+  </data>
+  <data name="pos_button_label_payment_type_visa" xml:space="preserve">
+    <value>Visa</value>
+  </data>
+  <data name="pos_button_label_prev" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="pos_button_label_prev_pages_toolbar" xml:space="preserve">
+    <value>Prev.</value>
+  </data>
+  <data name="pos_button_label_report_average_placing" xml:space="preserve">
+    <value>Average placing</value>
+  </data>
+  <data name="pos_button_label_report_costumer_balance" xml:space="preserve">
+    <value>Costumer balance</value>
+  </data>
+  <data name="pos_button_label_report_day" xml:space="preserve">
+    <value>Total day</value>
+  </data>
+  <data name="pos_button_label_report_employees_activity" xml:space="preserve">
+    <value>Employees activity</value>
+  </data>
+  <data name="pos_button_label_report_employees_closure" xml:space="preserve">
+    <value>Top closure Employees</value>
+  </data>
+  <data name="pos_button_label_report_employees_register" xml:space="preserve">
+    <value>Top register Employees</value>
+  </data>
+  <data name="pos_button_label_report_family" xml:space="preserve">
+    <value>Total family</value>
+  </data>
+  <data name="pos_button_label_report_offers" xml:space="preserve">
+    <value>Total offers</value>
+  </data>
+  <data name="pos_button_label_report_terminal" xml:space="preserve">
+    <value>Total terminal</value>
+  </data>
+  <data name="pos_button_label_report_top_closure" xml:space="preserve">
+    <value>Top peak time closure</value>
+  </data>
+  <data name="pos_button_label_report_top_register" xml:space="preserve">
+    <value>Top peak time register</value>
+  </data>
+  <data name="pos_button_label_report_zone" xml:space="preserve">
+    <value>Total zone</value>
+  </data>
+  <data name="pos_button_label_report_zone_table" xml:space="preserve">
+    <value>Total zone/table</value>
+  </data>
+  <data name="pos_button_label_tables_appmode_default" xml:space="preserve">
+    <value>Tables</value>
+  </data>
+  <data name="pos_button_label_tables_appmode_retail" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="pos_button_label_table_open_at" xml:space="preserve">
+    <value>Open at: {0}</value>
+  </data>
+  <data name="pos_button_label_table_reservation" xml:space="preserve">
+    <value>Reservation</value>
+  </data>
+  <data name="pos_pinpad_message_password_changed" xml:space="preserve">
+    <value>Password successfully changed!</value>
+  </data>
+  <data name="pos_pinpad_message_password_confirmation_error" xml:space="preserve">
+    <value>The password confirmation is different, please retype new password and confirmation password!</value>
+  </data>
+  <data name="pos_pinpad_message_password_equal_error" xml:space="preserve">
+    <value>The new password is equal to old password. You must input a different password!</value>
+  </data>
+  <data name="pos_pinpad_message_password_request_change_password" xml:space="preserve">
+    <value>The selected user never login in system.
+To proceed you must change the old password!</value>
+  </data>
+  <data name="pos_pinpad_message_type_new_password" xml:space="preserve">
+    <value>Type new password</value>
+  </data>
+  <data name="pos_pinpad_message_type_new_password_confirm" xml:space="preserve">
+    <value>Confirm new password</value>
+  </data>
+  <data name="pos_pinpad_message_type_old_password" xml:space="preserve">
+    <value>Type old password</value>
+  </data>
+  <data name="pos_pinpad_message_type_password" xml:space="preserve">
+    <value>Type user password</value>
+  </data>
+  <data name="pos_ticketlist_label_designation" xml:space="preserve">
+    <value>Designation</value>
+  </data>
+  <data name="pos_ticketlist_label_discount" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="pos_ticketlist_label_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="pos_ticketlist_label_quantity" xml:space="preserve">
+    <value>Qtd.</value>
+  </data>
+  <data name="pos_ticketlist_label_total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="pos_ticketlist_label_vat" xml:space="preserve">
+    <value>VAT</value>
+  </data>
+  <data name="prefparam_company_address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="prefparam_company_business_name" xml:space="preserve">
+    <value>Business Name (Slogan)</value>
+  </data>
+  <data name="prefparam_company_cae" xml:space="preserve">
+    <value>Company CAE</value>
+  </data>
+  <data name="prefparam_company_city" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="prefparam_company_civil_registration" xml:space="preserve">
+    <value>Civil Registration</value>
+  </data>
+  <data name="prefparam_company_civil_registration_id" xml:space="preserve">
+    <value>Civil Registration Number</value>
+  </data>
+  <data name="prefparam_company_country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="prefparam_company_email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="prefparam_company_fax" xml:space="preserve">
+    <value>Fax</value>
+  </data>
+  <data name="prefparam_company_fiscalnumber" xml:space="preserve">
+    <value>Fiscal Number</value>
+  </data>
+  <data name="prefparam_company_mobilephone" xml:space="preserve">
+    <value>Mobile Phone</value>
+  </data>
+  <data name="prefparam_company_name" xml:space="preserve">
+    <value>Company Name</value>
+  </data>
+  <data name="prefparam_company_postalcode" xml:space="preserve">
+    <value>Zip Code</value>
+  </data>
+  <data name="prefparam_company_region" xml:space="preserve">
+    <value>Locality</value>
+  </data>
+  <data name="prefparam_company_stock_capital" xml:space="preserve">
+    <value>Share Capital</value>
+  </data>
+  <data name="prefparam_company_tax_entity" xml:space="preserve">
+    <value>Tax Entity</value>
+  </data>
+  <data name="prefparam_company_telephone" xml:space="preserve">
+    <value>Telephone</value>
+  </data>
+  <data name="prefparam_company_website" xml:space="preserve">
+    <value>Web Site</value>
+  </data>
+  <data name="report_label_account_balance" xml:space="preserve">
+    <value>Account balance</value>
+  </data>
+  <data name="report_label_balance_sheet" xml:space="preserve">
+    <value>Balance sheet</value>
+  </data>
+  <data name="report_label_canceled_articles_per_employee" xml:space="preserve">
+    <value>Canceled articles per employee</value>
+  </data>
+  <data name="report_label_cash_total" xml:space="preserve">
+    <value>Cash total</value>
+  </data>
+  <data name="report_label_close_peak_hour" xml:space="preserve">
+    <value>Close peak hour</value>
+  </data>
+  <data name="report_label_consumption_per_user" xml:space="preserve">
+    <value>Consumption per user</value>
+  </data>
+  <data name="report_label_courier_deliver" xml:space="preserve">
+    <value>Courier deliver</value>
+  </data>
+  <data name="report_label_discounts_per_user" xml:space="preserve">
+    <value>Discounts per user</value>
+  </data>
+  <data name="report_label_employee_movements" xml:space="preserve">
+    <value>Employee movements</value>
+  </data>
+  <data name="report_label_inventory" xml:space="preserve">
+    <value>Inventory</value>
+  </data>
+  <data name="report_label_occupation_average" xml:space="preserve">
+    <value>Occupation average</value>
+  </data>
+  <data name="report_label_record_peak_hour" xml:space="preserve">
+    <value>Record peak hour</value>
+  </data>
+  <data name="report_label_sales_per_date" xml:space="preserve">
+    <value>Sales per date</value>
+  </data>
+  <data name="report_label_sales_per_employee" xml:space="preserve">
+    <value>Sales per employee</value>
+  </data>
+  <data name="report_label_sales_per_family" xml:space="preserve">
+    <value>Sales per family</value>
+  </data>
+  <data name="report_label_sales_per_finance_document" xml:space="preserve">
+    <value>Sales per finance document</value>
+  </data>
+  <data name="report_label_sales_per_payment_method" xml:space="preserve">
+    <value>Sales per payment method</value>
+  </data>
+  <data name="report_label_sales_per_zone_table" xml:space="preserve">
+    <value>Sales per zone/table</value>
+  </data>
+  <data name="report_label_service_hours" xml:space="preserve">
+    <value>Service hours</value>
+  </data>
+  <data name="report_label_top_close_employees" xml:space="preserve">
+    <value>Top close employees</value>
+  </data>
+  <data name="report_label_top_employee_records" xml:space="preserve">
+    <value>Top employee records</value>
+  </data>
+  <data name="report_label_top_offers" xml:space="preserve">
+    <value>Top offers</value>
+  </data>
+  <data name="report_label_total_per_terminal" xml:space="preserve">
+    <value>Total per terminal</value>
+  </data>
+  <data name="report_label_withholding_tax" xml:space="preserve">
+    <value>Withholding tax</value>
+  </data>
+  <data name="report_label_zone_total" xml:space="preserve">
+    <value>Zone total</value>
+  </data>
+  <data name="saft_value_unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="status_message_open_cashdrawer" xml:space="preserve">
+    <value>Open session/cashdrawer to start work</value>
+  </data>
+  <data name="status_message_pin_error" xml:space="preserve">
+    <value>Wrong password!</value>
+  </data>
+  <data name="status_message_select_order_or_table_appmode_default" xml:space="preserve">
+    <value>Select Table to Start Work</value>
+  </data>
+  <data name="status_message_select_order_or_table_appmode_retail" xml:space="preserve">
+    <value>Select Order to Start Work</value>
+  </data>
+  <data name="ticket_title_worksession_day_close" xml:space="preserve">
+    <value>Close Day</value>
+  </data>
+  <data name="ticket_title_worksession_day_resume" xml:space="preserve">
+    <value>Day Resume</value>
+  </data>
+  <data name="ticket_title_worksession_money_in" xml:space="preserve">
+    <value>Cash Drawer Money In</value>
+  </data>
+  <data name="ticket_title_worksession_money_out" xml:space="preserve">
+    <value>CashDrawer Money Out</value>
+  </data>
+  <data name="ticket_title_worksession_terminal_close" xml:space="preserve">
+    <value>Close Cash Drawer</value>
+  </data>
+  <data name="ticket_title_worksession_terminal_open" xml:space="preserve">
+    <value>CashDrawer Open</value>
+  </data>
+  <data name="ticket_title_worksession_terminal_resume" xml:space="preserve">
+    <value>CashDrawer Resume</value>
+  </data>
+  <data name="widget_combobox_undefined" xml:space="preserve">
+    <value>--- Undefined ---</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_insert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_page_first" xml:space="preserve">
+    <value>First page</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_page_last" xml:space="preserve">
+    <value>Last page</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_page_next" xml:space="preserve">
+    <value>Next page</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_page_prev" xml:space="preserve">
+    <value>Previous page</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_record_next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_record_prev" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_update" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="widget_generictreeviewnavigator_view" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="widget_generictreeviewsearch_search_advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="widget_generictreeviewsearch_search_label" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="window_title_backoffice" xml:space="preserve">
+    <value>BackOffice</value>
+  </data>
+  <data name="window_title_default_input_text_dialog" xml:space="preserve">
+    <value>Input Text</value>
+  </data>
+  <data name="window_title_dialog_article_stock" xml:space="preserve">
+    <value>Stocks</value>
+  </data>
+  <data name="window_title_dialog_cash" xml:space="preserve">
+    <value>WorkSession</value>
+  </data>
+  <data name="window_title_dialog_cashdrawer" xml:space="preserve">
+    <value>CashDrawer : Total in CashDrawer: {0}</value>
+  </data>
+  <data name="window_title_dialog_change_password" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="window_title_dialog_change_user" xml:space="preserve">
+    <value>Change user</value>
+  </data>
+  <data name="window_title_dialog_datepicker" xml:space="preserve">
+    <value>Select Date</value>
+  </data>
+  <data name="window_title_dialog_datepicket_startend" xml:space="preserve">
+    <value>Choose Start/End Date</value>
+  </data>
+  <data name="window_title_dialog_delete_record" xml:space="preserve">
+    <value>Delete Record</value>
+  </data>
+  <data name="window_title_dialog_documentfinance_preview_totals_mode_confirm" xml:space="preserve">
+    <value>Do you want continue processing new finance document?</value>
+  </data>
+  <data name="window_title_dialog_documentfinance_preview_totals_mode_preview" xml:space="preserve">
+    <value>Finance document totals</value>
+  </data>
+  <data name="window_title_dialog_document_finance" xml:space="preserve">
+    <value>Documents</value>
+  </data>
+  <data name="window_title_dialog_document_finance_page1" xml:space="preserve">
+    <value>Document</value>
+  </data>
+  <data name="window_title_dialog_document_finance_page2" xml:space="preserve">
+    <value>Customer/Entity</value>
+  </data>
+  <data name="window_title_dialog_document_finance_page3" xml:space="preserve">
+    <value>Articles</value>
+  </data>
+  <data name="window_title_dialog_document_finance_page4" xml:space="preserve">
+    <value>WayBill : Ship To</value>
+  </data>
+  <data name="window_title_dialog_document_finance_page5" xml:space="preserve">
+    <value>WayBill : Ship From</value>
+  </data>
+  <data name="window_title_dialog_document_finance_page6" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="window_title_dialog_document_finance_print" xml:space="preserve">
+    <value>Doc.No: {0}</value>
+  </data>
+  <data name="window_title_dialog_exception_error" xml:space="preserve">
+    <value>Exception Error</value>
+  </data>
+  <data name="window_title_dialog_filepicker" xml:space="preserve">
+    <value>Select FileName</value>
+  </data>
+  <data name="window_title_dialog_message_dialog" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="window_title_dialog_moneypad" xml:space="preserve">
+    <value>Input Amount</value>
+  </data>
+  <data name="window_title_dialog_moneypad_product_price" xml:space="preserve">
+    <value>Product Price</value>
+  </data>
+  <data name="window_title_dialog_new_finance_document" xml:space="preserve">
+    <value>New Finance Document</value>
+  </data>
+  <data name="window_title_dialog_notification" xml:space="preserve">
+    <value>Notification</value>
+  </data>
+  <data name="window_title_dialog_orders" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="window_title_dialog_partial_payment" xml:space="preserve">
+    <value>Partial Payment</value>
+  </data>
+  <data name="window_title_dialog_payments" xml:space="preserve">
+    <value>Payments</value>
+  </data>
+  <data name="window_title_dialog_pay_invoices" xml:space="preserve">
+    <value>Pay Invoices</value>
+  </data>
+  <data name="window_title_dialog_readcard" xml:space="preserve">
+    <value>Read card</value>
+  </data>
+  <data name="window_title_dialog_request_user_pin" xml:space="preserve">
+    <value>User authentication</value>
+  </data>
+  <data name="window_title_dialog_select_record" xml:space="preserve">
+    <value>Select Record</value>
+  </data>
+  <data name="window_title_dialog_send_message" xml:space="preserve">
+    <value>Send message</value>
+  </data>
+  <data name="window_title_dialog_system" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="window_title_dialog_tables_appmode_default" xml:space="preserve">
+    <value>Tables</value>
+  </data>
+  <data name="window_title_dialog_tables_appmode_retail" xml:space="preserve">
+    <value>Orders</value>
+  </data>
+  <data name="window_title_dialog_template" xml:space="preserve">
+    <value>Template</value>
+  </data>
+  <data name="window_title_dialog_validation_error" xml:space="preserve">
+    <value>Validation Error</value>
+  </data>
+  <data name="window_title_dialog_vatrate_free_article_detected" xml:space="preserve">
+    <value>Article exempt from Vat</value>
+  </data>
+  <data name="window_title_dialog_virtual_keyboard" xml:space="preserve">
+    <value>Virtual keyboard</value>
+  </data>
+  <data name="window_title_edit_article" xml:space="preserve">
+    <value>Edit articles</value>
+  </data>
+  <data name="window_title_edit_articlefamily" xml:space="preserve">
+    <value>Edit article families</value>
+  </data>
+  <data name="window_title_edit_articlesubfamily" xml:space="preserve">
+    <value>Edit article subfamilies</value>
+  </data>
+  <data name="window_title_edit_articletype" xml:space="preserve">
+    <value>Edit article type</value>
+  </data>
+  <data name="window_title_edit_commission_groups" xml:space="preserve">
+    <value>Edit comission groups</value>
+  </data>
+  <data name="window_title_edit_configurationcashregister" xml:space="preserve">
+    <value>Edit cash register</value>
+  </data>
+  <data name="window_title_edit_configurationcurrency" xml:space="preserve">
+    <value>Edit currency</value>
+  </data>
+  <data name="window_title_edit_configurationdevice" xml:space="preserve">
+    <value>Edit device</value>
+  </data>
+  <data name="window_title_edit_configurationkeyboard" xml:space="preserve">
+    <value>Edit keyboard</value>
+  </data>
+  <data name="window_title_edit_configurationmaintenance" xml:space="preserve">
+    <value>Manage maintenance</value>
+  </data>
+  <data name="window_title_edit_configurationpaymentcondition" xml:space="preserve">
+    <value>Edit payment conditions</value>
+  </data>
+  <data name="window_title_edit_configurationpaymentmethod" xml:space="preserve">
+    <value>Edit payment methods</value>
+  </data>
+  <data name="window_title_edit_configurationplacemovementtype" xml:space="preserve">
+    <value>Edit movement type</value>
+  </data>
+  <data name="window_title_edit_configurationplacetable" xml:space="preserve">
+    <value>Associate tables to places</value>
+  </data>
+  <data name="window_title_edit_configurationplaceterminal" xml:space="preserve">
+    <value>Associate terminals to places</value>
+  </data>
+  <data name="window_title_edit_configurationpreferenceparameter" xml:space="preserve">
+    <value>Edit system parameters</value>
+  </data>
+  <data name="window_title_edit_configurationpricetype" xml:space="preserve">
+    <value>Edit price type</value>
+  </data>
+  <data name="window_title_edit_configurationunitmeasure" xml:space="preserve">
+    <value>Edit unit measure</value>
+  </data>
+  <data name="window_title_edit_configurationunitsize" xml:space="preserve">
+    <value>Edit unit size</value>
+  </data>
+  <data name="window_title_edit_configurationvatrate" xml:space="preserve">
+    <value>Edit Vat rate</value>
+  </data>
+  <data name="window_title_edit_customer" xml:space="preserve">
+    <value>Edit customer</value>
+  </data>
+  <data name="window_title_edit_customerdiscountgroup" xml:space="preserve">
+    <value>Edit discounts</value>
+  </data>
+  <data name="window_title_edit_customertype" xml:space="preserve">
+    <value>Edit customer type</value>
+  </data>
+  <data name="window_title_edit_dialogconfigurationprinters" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="window_title_edit_dialogconfigurationprinterstype" xml:space="preserve">
+    <value>Edit printers type</value>
+  </data>
+  <data name="window_title_edit_documentfinanceseries" xml:space="preserve">
+    <value>Edit series</value>
+  </data>
+  <data name="window_title_edit_template" xml:space="preserve">
+    <value>Edit template</value>
+  </data>
+  <data name="window_title_edit_user" xml:space="preserve">
+    <value>Edit users</value>
+  </data>
+  <data name="window_title_edit_user_commission_group" xml:space="preserve">
+    <value>Edit commission groups</value>
+  </data>
+  <data name="window_title_edit_user_profile" xml:space="preserve">
+    <value>Edit user profiles</value>
+  </data>
+  <data name="window_title_reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="window_title_select_backup_filename" xml:space="preserve">
+    <value>Select Backup Filename</value>
+  </data>
+  <data name="window_title_select_country" xml:space="preserve">
+    <value>Select Country</value>
+  </data>
+  <data name="window_title_select_customer" xml:space="preserve">
+    <value>Select customer</value>
+  </data>
+  <data name="window_title_select_finance_document" xml:space="preserve">
+    <value>Select Finance Document</value>
+  </data>
+  <data name="window_title_select_finance_document_cc" xml:space="preserve">
+    <value>Select Current Account Documents</value>
+  </data>
+  <data name="window_title_select_finance_document_ft_unpaid" xml:space="preserve">
+    <value>Select Unpaid Invoices</value>
+  </data>
+  <data name="window_title_select_payments" xml:space="preserve">
+    <value>Select Payments</value>
+  </data>
+  <data name="window_title_select_ticket" xml:space="preserve">
+    <value>Select Ticket</value>
+  </data>
+  <data name="window_title_select_worksession_period_day" xml:space="preserve">
+    <value>Select WorkSession Period (Day)</value>
+  </data>
+  <data name="window_title_series_create_document_type_series" xml:space="preserve">
+    <value>Create Series</value>
+  </data>
+  <data name="window_title_series_create_series" xml:space="preserve">
+    <value>Create Finance Series</value>
+  </data>
+  <data name="window_title_series_fiscal_year_close_current" xml:space="preserve">
+    <value>Close/Open Fiscal Year</value>
+  </data>
+  <data name="xml_value_unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog" xml:space="preserve">
+    <value>Do you want to emmit a Invoice with Payment to override simplified invoices limit?</value>
+  </data>
+  <data name="dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog_documentfinancedialog" xml:space="preserve">
+    <value>To proceed select other type of document.</value>
+  </data>
+  <data name="global_printed_on_date" xml:space="preserve">
+    <value>Printed on</value>
+  </data>
+  <data name="global_report_page" xml:space="preserve">
+    <value>Pag.:</value>
+  </data>
+  <data name="global_documentfinance_type_title_fc" xml:space="preserve">
+    <value>Invoice Consignment</value>
+  </data>
+  <data name="global_documentfinance_type_title_fp" xml:space="preserve">
+    <value>Proforma invoice</value>
+  </data>
+  <data name="global_documentfinance_type_title_or" xml:space="preserve">
+    <value>Budget</value>
+  </data>
+  <data name="audit_message_cashdrawer_in" xml:space="preserve">
+    <value>Cash Drawer In : {0} - {1}</value>
+  </data>
+  <data name="audit_message_cashdrawer_out" xml:space="preserve">
+    <value>Cash Drawer Out : {0} - {1}</value>
+  </data>
+  <data name="dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer" xml:space="preserve">
+    <value>The total value exceed the maximum value defined for invoices using the final consumer customer, or a customer without de required details filled.
+
+{0}
+{1}
+
+To continue, select other client, or fill the required fields.
+
+Name, Address, ZipCode, City, Country, Fiscal Number</value>
+  </data>
+  <data name="global_internal_document_footer2" xml:space="preserve">
+    <value>For exclusive use ot the establishment</value>
+  </data>
+  <data name="global_internal_document_footer3" xml:space="preserve">
+    <value>This document cant be used has Invoice</value>
+  </data>
+  <data name="widget_pospinpad_change_password" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="widget_pospinpad_login" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="widget_pospinpad_ok" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="dialog_message_license_aplication_registered" xml:space="preserve">
+    <value>Software registration successfully!
+
+Thanks for your input.</value>
+  </data>
+  <data name="dialog_message_license_blocked" xml:space="preserve">
+    <value>Your license has been blocked! Contact technical support.</value>
+  </data>
+  <data name="dialog_message_license_updated" xml:space="preserve">
+    <value>Your license has been updated!
+
+You have to restart the application.</value>
+  </data>
+  <data name="dialog_message_license_ws_connection_error" xml:space="preserve">
+    <value>Could not establish communication to make registration!
+
+Contact technical support!</value>
+  </data>
+  <data name="dialog_message_license_ws_connection_timeout" xml:space="preserve">
+    <value>The server took too long to respond.</value>
+  </data>
+  <data name="dialog_message_license_ws_save_license_error" xml:space="preserve">
+    <value>Could not save the license file.
+
+Try later!</value>
+  </data>
+  <data name="global_company" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="pos_button_label_licence_continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="pos_button_label_licence_register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="window_license_label_info" xml:space="preserve">
+    <value>Through this form, you have the ability to register the software. 
+The entries will be kept confidential and not released to third parties for advertising.</value>
+  </data>
+  <data name="window_license_label_internet_registration" xml:space="preserve">
+    <value>Internet Registration</value>
+  </data>
+  <data name="window_license_label_welcome" xml:space="preserve">
+    <value>Welcome</value>
+  </data>
+  <data name="window_license_label_without_internet_contact_info" xml:space="preserve">
+    <value>Make the registration through the following contacts:</value>
+  </data>
+  <data name="window_license_label_without_internet_registration" xml:space="preserve">
+    <value>Don't have internet connection?</value>
+  </data>
+  <data name="window_title_license" xml:space="preserve">
+    <value>LogicPulse : Licensing Mechanism</value>
+  </data>
+  <data name="dialog_message_finance_dialog_confirm_cancel" xml:space="preserve">
+    <value>Do you want to continue and lost current document?</value>
+  </data>
+  <data name="global_record_code_dealer" xml:space="preserve">
+    <value>Code Dealer</value>
+  </data>
+  <data name="dialog_message_error_in_at_webservice" xml:space="preserve">
+    <value>Error communicating with ATWebService!
+
+ReturnCode: {0}
+ReturnMessage: {1}
+
+Try Again?</value>
+  </data>
+  <data name="global_at_atdoccodeid" xml:space="preserve">
+    <value>Document Code Identification</value>
+  </data>
+  <data name="global_holidays" xml:space="preserve">
+    <value>Holidays</value>
+  </data>
+  <data name="global_country_code2" xml:space="preserve">
+    <value>Country Code (2 Char)</value>
+  </data>
+  <data name="global_country_code3" xml:space="preserve">
+    <value>Country Code (3 Chars)</value>
+  </data>
+  <data name="global_country_global_capital" xml:space="preserve">
+    <value>Capital</value>
+  </data>
+  <data name="global_currency_code" xml:space="preserve">
+    <value>Currency Code</value>
+  </data>
+  <data name="global_regex_fiscal_number" xml:space="preserve">
+    <value>Regular Expression Fiscal Number</value>
+  </data>
+  <data name="global_regex_postal_code" xml:space="preserve">
+    <value>Regular Expression Postal Code</value>
+  </data>
+  <data name="global_work_in_stock" xml:space="preserve">
+    <value>Work in Stock</value>
+  </data>
+  <data name="window_title_edit_dialog_article_class" xml:space="preserve">
+    <value>Edit Article Class</value>
+  </data>
+  <data name="window_title_edit_dialog_configuration_country" xml:space="preserve">
+    <value>Edit Countrys</value>
+  </data>
+  <data name="window_title_edit_dialog_configuration_holydays" xml:space="preserve">
+    <value>Edit Holidays</value>
+  </data>
+  <data name="global_country_capital" xml:space="preserve">
+    <value>Capital</value>
+  </data>
+  <data name="dialog_message_update_record_show_protected_record" xml:space="preserve">
+    <value>Cant update the selected record!
+This record is necessary for the proper functioning of the application!</value>
+  </data>
+  <data name="global_day" xml:space="preserve">
+    <value>Day</value>
+  </data>
+  <data name="global_month" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="global_year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="window_title_dialog_update_record" xml:space="preserve">
+    <value>Update Record</value>
+  </data>
+  <data name="global_contacts" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="global_token" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="global_vat_rate_tax_code" xml:space="preserve">
+    <value>Tax Code</value>
+  </data>
+  <data name="global_vat_rate_tax_country_region" xml:space="preserve">
+    <value>Tax Country Region Code</value>
+  </data>
+  <data name="global_vat_rate_tax_type" xml:space="preserve">
+    <value>Tax Type</value>
+  </data>
+  <data name="prefparam_company_country_code2" xml:space="preserve">
+    <value>Country Code2</value>
+  </data>
+  <data name="prefparam_report_filename_logo" xml:space="preserve">
+    <value>Report Logo FileName</value>
+  </data>
+  <data name="prefparam_report_footer_line1" xml:space="preserve">
+    <value>Report Footer Line 1</value>
+  </data>
+  <data name="prefparam_report_footer_line2" xml:space="preserve">
+    <value>Report Footer Line 2</value>
+  </data>
+  <data name="prefparam_system_currency" xml:space="preserve">
+    <value>System Currency</value>
+  </data>
+  <data name="prefparam_ticket_filename_logo" xml:space="preserve">
+    <value>Ticket Logo FileName</value>
+  </data>
+  <data name="prefparam_ticket_footer_line1" xml:space="preserve">
+    <value>Ticket Footer Line 1</value>
+  </data>
+  <data name="prefparam_ticket_footer_line2" xml:space="preserve">
+    <value>Ticket Footer Line 2</value>
+  </data>
+  <data name="global_commission" xml:space="preserve">
+    <value>Commission</value>
+  </data>
+</root>

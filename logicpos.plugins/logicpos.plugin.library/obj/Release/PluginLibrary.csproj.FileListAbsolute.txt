@@ -1,0 +1,8 @@
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\bin\Release\PluginLibrary.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\bin\Release\PluginLibrary.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\bin\Release\PluginContracts.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\bin\Release\PluginContracts.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\obj\Release\PluginLibrary.csprojResolveAssemblyReference.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\obj\Release\PluginLibrary.csproj.CoreCompileInputs.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\obj\Release\PluginLibrary.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginLibrary\obj\Release\PluginLibrary.pdb

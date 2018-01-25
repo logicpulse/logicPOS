@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Styles>
+  <Style Name="TitleReport" Font="Arial, 18pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+  <Style Name="TitleColumn" TextFill.Color="Red" ApplyBorder="false" ApplyFill="false" ApplyFont="false"/>
+</Styles>

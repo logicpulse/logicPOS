@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7F643F3C-0F7B-451A-AA16-A9A25A56CCF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>logicpos.financial.library</RootNamespace>
+    <AssemblyName>LogicposFinancialLibrary</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Data.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\xpo_14_1_5\DevExpress.Data.v14.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\xpo_14_1_5\DevExpress.Xpo.v14.1.dll</HintPath>
+    </Reference>
+    <Reference Include="FastReport.Mono, Version=2014.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\fastreport\FastReport.Mono.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App\GlobalFramework.cs" />
+    <Compile Include="App\SettingsApp.cs" />
+    <Compile Include="Classes\Finance\ExtendValue.cs" />
+    <Compile Include="Classes\Finance\ProcessFinanceDocument.cs" />
+    <Compile Include="Classes\Finance\ProcessFinanceDocumentParameter.cs" />
+    <Compile Include="Classes\Finance\ProcessFinanceDocumentSeries.cs" />
+    <Compile Include="Classes\Finance\ProcessFinanceDocumentValidation.cs" />
+    <Compile Include="Classes\Finance\ProcessFinanceDocumentValidationException.cs" />
+    <Compile Include="Classes\Finance\SaftPt.cs" />
+    <Compile Include="Classes\Finance\FiscalNumber.cs" />
+    <Compile Include="Classes\HardWare\Printers\PrintRouter.cs" />
+    <Compile Include="Classes\HardWare\Printers\PrintTicket.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Enums\ThermalPrinterGenericType.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Enums\TicketColumnsAlign.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Enums\WriteLineTextMode.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\PrintTransportObject.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\ThermalPrinterGeneric.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\TicketColumn.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ChildBaseTemplate\ThermalPrinterInternalDocumentTemplate.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ThermalPrinterBaseFinanceTemplate.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ThermalPrinterBaseInternalTemplate.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ThermalPrinterBaseTemplate.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ThermalPrinterFinanceDocumentMaster.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ThermalPrinterFinanceDocumentPayment.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ThermalPrinterInternalDocumentCashDrawer.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ThermalPrinterInternalDocumentOrderRequest.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\Tickets\ThermalPrinterInternalDocumentWorkSession.cs" />
+    <Compile Include="Classes\HardWare\Printers\Thermal\TicketTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticle.cs" />
+    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleFamily.cs" />
+    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleSubFamily.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceDetail.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMaster.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterTotal.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePayment.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePaymentDocument.cs" />
+    <Compile Include="Classes\Reports\BOs\FRBOBaseObject.cs" />
+    <Compile Include="Classes\Reports\BOs\FRBOGenericCollection.cs" />
+    <Compile Include="Classes\Reports\BOs\FRBOTemplate.cs" />
+    <Compile Include="Classes\Reports\BOs\FRBOHelper.cs" />
+    <Compile Include="Classes\Reports\CustomFunctions.cs" />
+    <Compile Include="Classes\Reports\CustomReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes\Stocks\ProcessArticleStock.cs" />
+    <Compile Include="Classes\Stocks\ProcessArticleStockParameter.cs" />
+    <Compile Include="Classes\Utils\ProtectedFile.cs" />
+    <Compile Include="Classes\Utils\ProtectedFiles.cs" />
+    <Compile Include="Classes\WorkSession\ProcessWorkSessionMovement.cs" />
+    <Compile Include="Classes\WorkSession\ProcessWorkSessionPeriod.cs" />
+    <Compile Include="Classes\Results\FrameworkCallsResult.cs" />
+    <Compile Include="App\FrameworkUtils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\logicpos.datalayer\logicpos.datalayer.csproj">
+      <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
+      <Name>logicpos.datalayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericlinux\logicpos.printer.genericlinux.csproj">
+      <Project>{07ef0127-5b26-431d-aa4e-3a9507d86893}</Project>
+      <Name>logicpos.printer.genericlinux</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericsocket\logicpos.printer.genericsocket.csproj">
+      <Project>{7bc439de-3799-461a-8fc1-d7f1644667fb}</Project>
+      <Name>logicpos.printer.genericsocket</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericusb\logicpos.printer.genericusb.csproj">
+      <Project>{ff9298dd-4b4b-412f-a260-e504d0079ead}</Project>
+      <Name>logicpos.printer.genericusb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericwindows\logicpos.printer.genericwindows.csproj">
+      <Project>{d0f2b3c4-ae83-46e1-82f7-5fb9b6ca352f}</Project>
+      <Name>logicpos.printer.genericwindows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.generic\logicpos.printer.generic.csproj">
+      <Project>{692407af-fe0e-4d94-8db1-be8b210017ba}</Project>
+      <Name>logicpos.printer.generic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
+      <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
+      <Name>logicpos.plugin.contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.resources\logicpos.resources.csproj">
+      <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
+      <Name>logicpos.resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.shared\logicpos.shared.csproj">
+      <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
+      <Name>logicpos.shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

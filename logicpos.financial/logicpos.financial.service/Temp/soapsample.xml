@@ -1,0 +1,15 @@
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Head>
+    <h:talkId s:mustknow="1" xmlns:h="urn:schemas-test:testgate:hotel:2012-06">
+      sfasfasfasfsfsf</h:talkId>
+    </s:Head>
+  <s:Body>
+    <bookHotelResponse xmlns="urn:schemas-test:testgate:hotel:2012-06" xmlns:d="http://someURL" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+      <d:bookingReference>123456</d:bookingReference>
+      <d:bookingStatus>successful</d:bookingStatus>
+      <d:price xmlns:p="moreURL">
+        <d:total>105</d:total>
+      </d:price>
+    </bookHotelResponse>
+  </s:Body>
+</s:Envelope>

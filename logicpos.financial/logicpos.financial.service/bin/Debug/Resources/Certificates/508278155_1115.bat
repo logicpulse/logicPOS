@@ -1,0 +1,4 @@
+@ECHO OFF
+CLS 
+
+certutil -dump 508278155_1115.cer > 508278155_1115.info

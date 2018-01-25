@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="Ping">
+        <s:complexType />
+      </s:element>
+      <s:element name="PingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PingResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Version">
+        <s:complexType />
+      </s:element>
+      <s:element name="VersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="VersionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSecurityToken">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pLogin" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pPassword" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetSecurityTokenResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetSecurityTokenResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ValidateSecurityToken">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ValidateSecurityTokenResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ValidateSecurityTokenResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RemoveSecurityToken">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RemoveSecurityTokenResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="RemoveSecurityTokenResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ClearArticleBag">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ClearArticleBagResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ClearArticleBagResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddItemToArticleBag">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pArticle" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pDesignation" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="pPrice" type="s:decimal" />
+            <s:element minOccurs="1" maxOccurs="1" name="pDiscount" type="s:decimal" />
+            <s:element minOccurs="1" maxOccurs="1" name="pVat" type="s:decimal" />
+            <s:element minOccurs="0" maxOccurs="1" name="pPlace" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pTable" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="pPriceType" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="pCode" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="pQuantity" type="s:decimal" />
+            <s:element minOccurs="0" maxOccurs="1" name="pUnitMeasure" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pToken1" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pToken2" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddItemToArticleBagResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AddItemToArticleBagResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PersistFinanceDocument">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pDocumentType" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PersistFinanceDocumentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PersistFinanceDocumentResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPDFOfDocumentMaster">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pOid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPDFOfDocumentMasterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPDFOfDocumentMasterResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataTableWithData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pData" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pFilter" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDataTableWithDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDataTableWithDataResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pData" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pParams" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="pValues" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="InsertDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="InsertDataResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pData" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pOid" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pParams" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="pValues" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UpdateDataResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="pSecurityToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pData" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="pOid" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DeleteDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="DeleteDataResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="PingSoapIn">
+    <wsdl:part name="parameters" element="tns:Ping" />
+  </wsdl:message>
+  <wsdl:message name="PingSoapOut">
+    <wsdl:part name="parameters" element="tns:PingResponse" />
+  </wsdl:message>
+  <wsdl:message name="VersionSoapIn">
+    <wsdl:part name="parameters" element="tns:Version" />
+  </wsdl:message>
+  <wsdl:message name="VersionSoapOut">
+    <wsdl:part name="parameters" element="tns:VersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSecurityTokenSoapIn">
+    <wsdl:part name="parameters" element="tns:GetSecurityToken" />
+  </wsdl:message>
+  <wsdl:message name="GetSecurityTokenSoapOut">
+    <wsdl:part name="parameters" element="tns:GetSecurityTokenResponse" />
+  </wsdl:message>
+  <wsdl:message name="ValidateSecurityTokenSoapIn">
+    <wsdl:part name="parameters" element="tns:ValidateSecurityToken" />
+  </wsdl:message>
+  <wsdl:message name="ValidateSecurityTokenSoapOut">
+    <wsdl:part name="parameters" element="tns:ValidateSecurityTokenResponse" />
+  </wsdl:message>
+  <wsdl:message name="RemoveSecurityTokenSoapIn">
+    <wsdl:part name="parameters" element="tns:RemoveSecurityToken" />
+  </wsdl:message>
+  <wsdl:message name="RemoveSecurityTokenSoapOut">
+    <wsdl:part name="parameters" element="tns:RemoveSecurityTokenResponse" />
+  </wsdl:message>
+  <wsdl:message name="ClearArticleBagSoapIn">
+    <wsdl:part name="parameters" element="tns:ClearArticleBag" />
+  </wsdl:message>
+  <wsdl:message name="ClearArticleBagSoapOut">
+    <wsdl:part name="parameters" element="tns:ClearArticleBagResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddItemToArticleBagSoapIn">
+    <wsdl:part name="parameters" element="tns:AddItemToArticleBag" />
+  </wsdl:message>
+  <wsdl:message name="AddItemToArticleBagSoapOut">
+    <wsdl:part name="parameters" element="tns:AddItemToArticleBagResponse" />
+  </wsdl:message>
+  <wsdl:message name="PersistFinanceDocumentSoapIn">
+    <wsdl:part name="parameters" element="tns:PersistFinanceDocument" />
+  </wsdl:message>
+  <wsdl:message name="PersistFinanceDocumentSoapOut">
+    <wsdl:part name="parameters" element="tns:PersistFinanceDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPDFOfDocumentMasterSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPDFOfDocumentMaster" />
+  </wsdl:message>
+  <wsdl:message name="GetPDFOfDocumentMasterSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPDFOfDocumentMasterResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDataTableWithDataSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDataTableWithData" />
+  </wsdl:message>
+  <wsdl:message name="GetDataTableWithDataSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDataTableWithDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="InsertDataSoapIn">
+    <wsdl:part name="parameters" element="tns:InsertData" />
+  </wsdl:message>
+  <wsdl:message name="InsertDataSoapOut">
+    <wsdl:part name="parameters" element="tns:InsertDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateDataSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateData" />
+  </wsdl:message>
+  <wsdl:message name="UpdateDataSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteDataSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteData" />
+  </wsdl:message>
+  <wsdl:message name="DeleteDataSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteDataResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WSInterfaceSoap">
+    <wsdl:operation name="Ping">
+      <wsdl:input message="tns:PingSoapIn" />
+      <wsdl:output message="tns:PingSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Version">
+      <wsdl:input message="tns:VersionSoapIn" />
+      <wsdl:output message="tns:VersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSecurityToken">
+      <wsdl:input message="tns:GetSecurityTokenSoapIn" />
+      <wsdl:output message="tns:GetSecurityTokenSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ValidateSecurityToken">
+      <wsdl:input message="tns:ValidateSecurityTokenSoapIn" />
+      <wsdl:output message="tns:ValidateSecurityTokenSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RemoveSecurityToken">
+      <wsdl:input message="tns:RemoveSecurityTokenSoapIn" />
+      <wsdl:output message="tns:RemoveSecurityTokenSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ClearArticleBag">
+      <wsdl:input message="tns:ClearArticleBagSoapIn" />
+      <wsdl:output message="tns:ClearArticleBagSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AddItemToArticleBag">
+      <wsdl:input message="tns:AddItemToArticleBagSoapIn" />
+      <wsdl:output message="tns:AddItemToArticleBagSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PersistFinanceDocument">
+      <wsdl:input message="tns:PersistFinanceDocumentSoapIn" />
+      <wsdl:output message="tns:PersistFinanceDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPDFOfDocumentMaster">
+      <wsdl:input message="tns:GetPDFOfDocumentMasterSoapIn" />
+      <wsdl:output message="tns:GetPDFOfDocumentMasterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDataTableWithData">
+      <wsdl:input message="tns:GetDataTableWithDataSoapIn" />
+      <wsdl:output message="tns:GetDataTableWithDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertData">
+      <wsdl:input message="tns:InsertDataSoapIn" />
+      <wsdl:output message="tns:InsertDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateData">
+      <wsdl:input message="tns:UpdateDataSoapIn" />
+      <wsdl:output message="tns:UpdateDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteData">
+      <wsdl:input message="tns:DeleteDataSoapIn" />
+      <wsdl:output message="tns:DeleteDataSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WSInterfaceSoap" type="tns:WSInterfaceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Ping">
+      <soap:operation soapAction="http://tempuri.org/Ping" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Version">
+      <soap:operation soapAction="http://tempuri.org/Version" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSecurityToken">
+      <soap:operation soapAction="http://tempuri.org/GetSecurityToken" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ValidateSecurityToken">
+      <soap:operation soapAction="http://tempuri.org/ValidateSecurityToken" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RemoveSecurityToken">
+      <soap:operation soapAction="http://tempuri.org/RemoveSecurityToken" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ClearArticleBag">
+      <soap:operation soapAction="http://tempuri.org/ClearArticleBag" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddItemToArticleBag">
+      <soap:operation soapAction="http://tempuri.org/AddItemToArticleBag" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PersistFinanceDocument">
+      <soap:operation soapAction="http://tempuri.org/PersistFinanceDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPDFOfDocumentMaster">
+      <soap:operation soapAction="http://tempuri.org/GetPDFOfDocumentMaster" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataTableWithData">
+      <soap:operation soapAction="http://tempuri.org/GetDataTableWithData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertData">
+      <soap:operation soapAction="http://tempuri.org/InsertData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateData">
+      <soap:operation soapAction="http://tempuri.org/UpdateData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteData">
+      <soap:operation soapAction="http://tempuri.org/DeleteData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WSInterfaceSoap12" type="tns:WSInterfaceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Ping">
+      <soap12:operation soapAction="http://tempuri.org/Ping" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Version">
+      <soap12:operation soapAction="http://tempuri.org/Version" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSecurityToken">
+      <soap12:operation soapAction="http://tempuri.org/GetSecurityToken" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ValidateSecurityToken">
+      <soap12:operation soapAction="http://tempuri.org/ValidateSecurityToken" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RemoveSecurityToken">
+      <soap12:operation soapAction="http://tempuri.org/RemoveSecurityToken" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ClearArticleBag">
+      <soap12:operation soapAction="http://tempuri.org/ClearArticleBag" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddItemToArticleBag">
+      <soap12:operation soapAction="http://tempuri.org/AddItemToArticleBag" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PersistFinanceDocument">
+      <soap12:operation soapAction="http://tempuri.org/PersistFinanceDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPDFOfDocumentMaster">
+      <soap12:operation soapAction="http://tempuri.org/GetPDFOfDocumentMaster" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDataTableWithData">
+      <soap12:operation soapAction="http://tempuri.org/GetDataTableWithData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertData">
+      <soap12:operation soapAction="http://tempuri.org/InsertData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateData">
+      <soap12:operation soapAction="http://tempuri.org/UpdateData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteData">
+      <soap12:operation soapAction="http://tempuri.org/DeleteData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WSInterface">
+    <wsdl:port name="WSInterfaceSoap" binding="tns:WSInterfaceSoap">
+      <soap:address location="http://localhost:51327/WSInterface.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WSInterfaceSoap12" binding="tns:WSInterfaceSoap12">
+      <soap12:address location="http://localhost:51327/WSInterface.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

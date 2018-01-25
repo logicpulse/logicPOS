@@ -1,0 +1,66 @@
+{
+	//Paste into C:\Users\[USER]\AppData\Roaming\Code\User\snippets\markdown.json
+	"MKDocs Admonition note|see Also": {
+		"prefix": "mknote",
+		"body": [
+			"!!! note|seealso \"$1\"",
+			"    $2"
+		]
+	},
+	"MKDocs Admonition summary|tldr": {
+		"prefix": "mksummary",
+		"body": [
+			"!!! summary|tldr \"$1\"",
+			"    $2"
+		]
+	},
+	"MKDocs Admonition tip|hint|important": {
+		"prefix": "mktip",
+		"body": [
+			"!!! tip|hint|important \"$1\"",
+			"    $2"
+		]
+	},
+	"MKDocs Admonition success|check|done": {
+		"prefix": "mksuccess",
+		"body": [
+			"!!! success|check|done \"$1\"",
+			"    $2"
+		]
+	},
+	"MKDocs Admonition warning|caution|attention": {
+		"prefix": "mkwarning",
+		"body": [
+			"!!! warning|caution|attention \"$1\"",
+			"    $2"
+		]
+	},
+	"MKDocs Admonition failure|fail|missing": {
+		"prefix": "mkfailure",
+		"body": [
+			"!!! failure|fail|missing \"$1\"",
+			"    $2"
+		]
+	},
+	"MKDocs Admonition danger|error": {
+		"prefix": "mkdanger",
+		"body": [
+			"!!! danger|error \"$1\"",
+			"    $2"
+		]
+	},
+	"MKDocs Admonition bug": {
+		"prefix": "mkbug",
+		"body": [
+			"!!! bug \"$1\"",
+			"    $2"
+		]
+	},
+	"MKDocs Admonition UnderConstruction": {
+		"prefix": "mkunderconstruction",
+		"body": [
+			"!!! warning \"$1\"",
+			"    Under Construction..."
+		]
+	}
+}

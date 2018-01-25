@@ -1,0 +1,9 @@
+2018-01-15 17:44:53,609 [INFO ] logicpos.financial.console.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb_20160919_scripts;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-15 17:45:20,723 [ERROR] PrinterGeneric.PrintObject : O nome da impressora é inválido
+System.ComponentModel.Win32Exception (0x80004005): O nome da impressora é inválido
+   em PrinterGenericWindows.Print.WindowsPrint(String printerName, Byte[] document) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericwindows\Print.cs:line 58
+   em PrinterGeneric.PrintObject.OpenDoor(String pDriver, String pPrinterName, Int32 m, Int32 t1, Int32 t2) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\PrintObject.cs:line 496
+2018-01-15 17:45:20,813 [INFO ] logicpos.financial.FrameworkUtils : Audit(): CASHDRAWER_OPEN > Gaveta de dinheiro Aberta
+2018-01-15 17:45:22,574 [ERROR] PrinterGeneric.ThermalPrinter : Error: invalid settings for PrinterThermalCutCommand: []
+2018-01-15 17:45:30,191 [ERROR] PrinterGeneric.ThermalPrinter : Error: invalid settings for PrinterThermalCutCommand: []
+2018-01-24 18:36:34,735 [INFO ] logicpos.financial.console.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb_20160919_scripts;user id=root;password=admin#;persist security info=true;CharSet=utf8;]

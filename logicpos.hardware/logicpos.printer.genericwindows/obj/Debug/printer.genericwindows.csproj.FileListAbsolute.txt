@@ -1,0 +1,5 @@
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericwindows\bin\Debug\printer.genericwindows.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericwindows\bin\Debug\printer.genericwindows.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericwindows\obj\Debug\printer.genericwindows.csproj.CoreCompileInputs.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericwindows\obj\Debug\printer.genericwindows.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericwindows\obj\Debug\printer.genericwindows.pdb

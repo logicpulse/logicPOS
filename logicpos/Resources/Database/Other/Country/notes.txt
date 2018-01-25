@@ -1,0 +1,22 @@
+Get Country Oids
+	SELECT Code2,Oid FROM cfg_configurationcountry WHERE Code2 = 'GB' OR Code2 = 'PT' OR Code2 = 'AO' OR Code2 = 'MZ';
+
+	GB	1f65495d-4214-42a8-9213-aa006a880064
+	PT	e7e8c325-a0d4-4908-b148-508ed750676a
+	AO	9655510a-ff58-461e-9719-c037058f10ed
+	MZ	16fcd7f2-e885-48d8-9f8e-9d224cc36f32
+	
+Get Currency Oids
+	SELECT Acronym,Oid FROM cfg_configurationcurrency WHERE Acronym = 'GBP' OR Acronym = 'EUR' OR Acronym = 'AOA' OR Acronym = 'MZN';
+	
+	GBP	28dd66c7-0083-11e4-96ce-00ff2353398c
+	EUR	28dd2a3a-0083-11e4-96ce-00ff2353398c
+	AOA	28da9212-3423-11e4-96ce-00ff2353398c
+	MZN	28d16be0-0083-11e4-96ce-00ff2353398c
+
+Equal Files
+	AO\configurationprinters.sql
+	AO\configurationprinterstype.sql
+	MZ\configurationprinters.sql
+
+	

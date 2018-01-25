@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+	<S:Header>
+		<WorkContext xmlns="http://oracle.com/weblogic/soap/workarea/">rO0ABXdSABF3ZWJsb2dpYy5hcHAuZmV3cwAAANYAAAAjd2VibG9naWMud29ya2FyZWEuU3RyaW5nV29ya0NvbnRleHQAEDIwMTUwNzIyMDk1MzE0LjAAAA==</WorkContext>
+	</S:Header>
+	<S:Body>
+		<ns2:RegisterInvoiceResponseElem xmlns:ns2="http://servicos.portaldasfinancas.gov.pt/faturas/">
+			<ReturnCode>0</ReturnCode>
+			<ReturnMessage>Documento registado com sucesso.</ReturnMessage>
+		</ns2:RegisterInvoiceResponseElem>
+	</S:Body>
+</S:Envelope>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+	<S:Header>
+		<WorkContext xmlns="http://oracle.com/weblogic/soap/workarea/">rO0ABXdSABF3ZWJsb2dpYy5hcHAuZmV3cwAAANYAAAAjd2VibG9naWMud29ya2FyZWEuU3RyaW5nV29ya0NvbnRleHQAEDIwMTUwNzIyMDk1MzE0LjAAAA==</WorkContext>
+	</S:Header>
+	<S:Body>
+		<ns2:RegisterInvoiceResponseElem xmlns:ns2="http://servicos.portaldasfinancas.gov.pt/faturas/">
+			<ReturnCode>-99</ReturnCode>
+			<ReturnMessage>Erro de sistema. Por favor volte a tentar mais tarde.</ReturnMessage>
+		</ns2:RegisterInvoiceResponseElem>
+	</S:Body>
+</S:Envelope>
