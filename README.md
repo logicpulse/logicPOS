@@ -64,6 +64,6 @@ Open source Point of Sale Solution
 
 - Install [others\windowsruntime\gtk-sharp-2.12.22.msi](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi?raw=true)
 	
-	Read the `others\windowsruntime\README.txt` to install `libnodoka.dll`
+	Read the [others\windowsruntime\README.txt](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/README.txt) to install `libnodoka.dll`
 
 2) 
