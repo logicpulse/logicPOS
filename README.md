@@ -1,9 +1,24 @@
 # LogicPos LogicPos OpenSource
 
-Directory Structure
+Open source Point of Sale Solution
+
+## TechStack
+
+- [C#](https://docs.microsoft.com/en-us/dotnet/csharp/)
+- [GTK#](https://www.gtk.org/)
+- [FastReports](https://www.fast-report.com)
+- [DevExpress eXpressPersistent Objects™ (XPO)](https://www.devexpress.com/products/net/orm/)
+
+## Tools/Ides
+
+- Visual Studio 2017
+
+## Directory Structure
 
 - docs\
 - libs\
+	- fastreport\
+	- xpo_14_1_5\
 - logicpos\
 - logicpos.datalayer\
 - logicpos.financial\
@@ -28,7 +43,6 @@ Directory Structure
 - others\
 	- windowsruntime
 - packages\
-	- IntelliLock.Licensing.1.8.0.0\
 	- LibUsbDotNet.2.2.8\
 	- log4net.2.0.5\
 	- MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\
@@ -38,4 +52,4 @@ Directory Structure
 	- System.Data.SQLite.Core.1.0.103\
 	- Unofficial.Ionic.Zip.1.9.1.8\
 - tools\
-	- FastReport.Net
+	- FastReport.Net (FastReports Runtime Designer)
