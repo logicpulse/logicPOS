@@ -57,3 +57,13 @@ Open source Point of Sale Solution
 	- **Unofficial.Ionic.Zip.1.9.1.8** _(Zip Dependency, used in Backups)_
 - **tools** _(Helper Tools)_
 	- **FastReport.Net (FastReports Runtime Designer)** _(FastReports Designer Runtime)_
+
+## Install Development Environment
+
+- Install .NET 4.5 _(If not already in system)_
+
+- Install [others\windowsruntime\gtk-sharp-2.12.22.msi](logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi)
+	
+	Read the `others\windowsruntime\README.txt` to install `libnodoka.dll`
+
+2) 
