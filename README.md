@@ -1,1 +1,3 @@
-"# logicPOS" 
+# LogicPos LogicPos OpenSource
+
+
