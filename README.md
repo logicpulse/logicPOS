@@ -77,4 +77,3 @@ Open source Point of Sale Solution
 	- Set **logicpos** as Startup Project
 
 	- Run **logicpos**
-
