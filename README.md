@@ -62,7 +62,7 @@ Open source Point of Sale Solution
 
 - Install .NET 4.5 _(If not already in system)_
 
-- Install [others\windowsruntime\gtk-sharp-2.12.22.msi](logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi)
+- Install [others\windowsruntime\gtk-sharp-2.12.22.msi](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi?raw=true)
 	
 	Read the `others\windowsruntime\README.txt` to install `libnodoka.dll`
 
