@@ -1,0 +1,17 @@
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.generic.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.generic.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\log4net.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.genericlinux.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.genericsocket.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.genericusb.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.genericwindows.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\LibUsbDotNet.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.genericlinux.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.genericsocket.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.genericusb.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\printer.genericwindows.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\bin\Debug\log4net.xml
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\obj\Debug\printer.generic.csprojResolveAssemblyReference.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\obj\Debug\printer.generic.csproj.CoreCompileInputs.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\obj\Debug\printer.generic.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.generic\obj\Debug\printer.generic.pdb

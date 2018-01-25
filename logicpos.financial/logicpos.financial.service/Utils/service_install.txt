@@ -1,0 +1,41 @@
+Necessário atribuir user ao serviço senão não consegue ler os certificados em Service Mode e depois da o erro
+
+2016-08-19 17:47:41,217 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : A ligação subjacente foi fechada: Erro inesperado ao enviar.
+System.Net.WebException: A ligação subjacente foi fechada: Erro inesperado ao enviar. ---> System.IO.IOException: Falha da autenticação porque a parte remota fechou a sequência de transporte.
+   em System.Net.Security.SslState.StartReadFrame(Byte[] buffer, Int32 readBytes, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartReceiveBlob(Byte[] buffer, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.CheckCompletionBeforeNextReceive(ProtocolToken message, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartSendBlob(Byte[] incoming, Int32 count, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.ProcessReceivedBlob(Byte[] buffer, Int32 count, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartReadFrame(Byte[] buffer, Int32 readBytes, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartReceiveBlob(Byte[] buffer, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.CheckCompletionBeforeNextReceive(ProtocolToken message, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartSendBlob(Byte[] incoming, Int32 count, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.ProcessReceivedBlob(Byte[] buffer, Int32 count, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartReadFrame(Byte[] buffer, Int32 readBytes, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartReceiveBlob(Byte[] buffer, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.CheckCompletionBeforeNextReceive(ProtocolToken message, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartSendBlob(Byte[] incoming, Int32 count, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.ProcessReceivedBlob(Byte[] buffer, Int32 count, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartReadFrame(Byte[] buffer, Int32 readBytes, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartReceiveBlob(Byte[] buffer, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.CheckCompletionBeforeNextReceive(ProtocolToken message, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.StartSendBlob(Byte[] incoming, Int32 count, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.ForceAuthentication(Boolean receiveFirst, Byte[] buffer, AsyncProtocolRequest asyncRequest)
+   em System.Net.Security.SslState.ProcessAuthentication(LazyAsyncResult lazyResult)
+   em System.Net.TlsStream.CallProcessAuthentication(Object state)
+   em System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+   em System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean preserveSyncCtx)
+   em System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)
+   em System.Net.TlsStream.ProcessAuthentication(LazyAsyncResult result)
+   em System.Net.TlsStream.Write(Byte[] buffer, Int32 offset, Int32 size)
+   em System.Net.PooledStream.Write(Byte[] buffer, Int32 offset, Int32 size)
+   em System.Net.ConnectStream.WriteHeaders(Boolean async)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em System.Net.HttpWebRequest.GetRequestStream(TransportContext& context)
+   em System.Net.HttpWebRequest.GetRequestStream()
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.Send() em c:\SVN\logicpos\trunk\src\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 557
+
+ver imagem
+	service_install.png
+	

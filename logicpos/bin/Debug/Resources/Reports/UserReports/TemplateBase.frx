@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CustomReport ScriptLanguage="CSharp" ReportInfo.Author="LogicPulse logicpos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="02/12/2016 12:57:24" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.Copies="2" PrintSettings.CopyNames="Original&#13;&#10;Duplicado&#13;&#10;Triplicado&#13;&#10;Quadriplicado">
+  <Styles>
+    <Style Name="EvenRow" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+  </Styles>
+  <Dictionary/>
+  <ReportPage Name="Page1">
+    <PageHeaderBand Name="PageHeader1" Width="718.2" Height="207.9" AfterPrintEvent="PageHeader1_AfterPrint">
+      <PictureObject Name="PictureCompanyLogo" Width="116.85" Height="48.6" SizeMode="Normal" ImageLocation="Assets\Images\Reports\UserReports\company_logo.png"/>
+      <TextObject Name="TextLicenceName" Left="2" Top="66.15" Width="340.2" Height="18.9" Text="[GetParam(&quot;Company_Name&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 10pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextCompanyAddress" Left="2" Top="85.05" Width="340.2" Height="18.9" Text="[GetParam(&quot;Company_Address&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextCompanyPostalcode" Left="2" Top="103.95" Width="340.2" Height="18.9" Text="[GetParam(&quot;Company_Postalcode&quot;)] [GetParam(&quot;Company_City&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextCompanyEmail" Left="2" Top="160.65" Width="340.2" Height="18.9" Text="[Res(&quot;global_email&quot;)] : [GetParam(&quot;Company_Email&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextCompanyTelephone" Left="2" Top="122.85" Width="340.2" Height="18.9" Text="[Res(&quot;global_phone&quot;)] : [GetParam(&quot;Company_Telephone&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextCompanyFax" Left="2" Top="141.75" Width="340.2" Height="18.9" Text="[Res(&quot;global_fax&quot;)] : [GetParam(&quot;Company_Fax&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextCompanyWebsite" Left="2" Top="179.55" Width="340.2" Height="18.9" Text="[Res(&quot;global_website&quot;)] : [GetParam(&quot;Company_Website&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 9pt" Wysiwyg="true"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="211.1" Width="718.2" Height="18.9"/>
+    <PageFooterBand Name="PageFooter1" Top="233.2" Width="718.2" Height="47.25" Border.Lines="Top">
+      <TextObject Name="TextFooter1" Top="18" Width="718.2" Height="15.88" Text="[Res(&quot;global_fiscal_number&quot;)] : [GetParam(&quot;Company_Fiscalnumber&quot;)] | [Res(&quot;global_stock_capital&quot;)] : [GetParam(&quot;Company_Stock_Capital&quot;)] | [GetParam(&quot;Company_Civil_Registration&quot;)] [GetParam(&quot;Company_Civil_Registration_Id&quot;)]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="TextFooter2" Top="31" Width="718.2" Height="15.88" Text="[Res(&quot;global_printed_on_date&quot;)] : [GetParam(&quot;Date&quot;)] | [_pageNo]/[TotalPages#] | [GetParam(&quot;App_Company&quot;)] [GetParam(&quot;App_Name&quot;)] [GetParam(&quot;App_Version&quot;)]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+    </PageFooterBand>
+  </ReportPage>
+</CustomReport>

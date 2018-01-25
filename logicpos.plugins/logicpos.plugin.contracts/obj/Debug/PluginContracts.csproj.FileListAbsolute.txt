@@ -1,0 +1,16 @@
+f:\OneDrive\Documents\Development\VisualStudioProjects\_CreatingASimplePluginMechanism\C#\PluginContracts\bin\Debug\PluginContracts.dll
+f:\OneDrive\Documents\Development\VisualStudioProjects\_CreatingASimplePluginMechanism\C#\PluginContracts\bin\Debug\PluginContracts.pdb
+f:\OneDrive\Documents\Development\VisualStudioProjects\_CreatingASimplePluginMechanism\C#\PluginContracts\obj\Debug\PluginContracts.csprojResolveAssemblyReference.cache
+f:\OneDrive\Documents\Development\VisualStudioProjects\_CreatingASimplePluginMechanism\C#\PluginContracts\obj\Debug\PluginContracts.csproj.CoreCompileInputs.cache
+f:\OneDrive\Documents\Development\VisualStudioProjects\_CreatingASimplePluginMechanism\C#\PluginContracts\obj\Debug\PluginContracts.dll
+f:\OneDrive\Documents\Development\VisualStudioProjects\_CreatingASimplePluginMechanism\C#\PluginContracts\obj\Debug\PluginContracts.pdb
+F:\OneDrive\Documents\Development\VisualStudioProjects\_PluginArchitecture\Creating a Simple Plugin Mechanism\C#\PluginContracts\bin\Debug\PluginContracts.dll
+F:\OneDrive\Documents\Development\VisualStudioProjects\_PluginArchitecture\Creating a Simple Plugin Mechanism\C#\PluginContracts\bin\Debug\PluginContracts.pdb
+F:\OneDrive\Documents\Development\VisualStudioProjects\_PluginArchitecture\Creating a Simple Plugin Mechanism\C#\PluginContracts\obj\Debug\PluginContracts.csproj.CoreCompileInputs.cache
+F:\OneDrive\Documents\Development\VisualStudioProjects\_PluginArchitecture\Creating a Simple Plugin Mechanism\C#\PluginContracts\obj\Debug\PluginContracts.dll
+F:\OneDrive\Documents\Development\VisualStudioProjects\_PluginArchitecture\Creating a Simple Plugin Mechanism\C#\PluginContracts\obj\Debug\PluginContracts.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\bin\Debug\PluginContracts.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\bin\Debug\PluginContracts.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\obj\Debug\PluginContracts.csproj.CoreCompileInputs.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\obj\Debug\PluginContracts.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\PluginContracts\obj\Debug\PluginContracts.pdb

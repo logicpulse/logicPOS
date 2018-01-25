@@ -1,0 +1,5 @@
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericlinux\bin\Debug\printer.genericlinux.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericlinux\bin\Debug\printer.genericlinux.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericlinux\obj\Debug\printer.genericlinux.csproj.CoreCompileInputs.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericlinux\obj\Debug\printer.genericlinux.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.hardware\printer.genericlinux\obj\Debug\printer.genericlinux.pdb

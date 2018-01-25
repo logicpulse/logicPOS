@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+	<S:Header>
+		<work:WorkContext xmlns:work="http://oracle.com/weblogic/soap/workarea/">rO0ABXeXABh3ZWJsb2dpYy5hcHAud3NhdXRlbnRpY2EAAADWAAAAI3dlYmxvZ2ljLndvcmthcmVhLlN0cmluZ1dvcmtDb250ZXh0AAYxLjIuMTQAE3dlYmxvZ2ljLmFwcC5zZ2R0d3MAAADWAAAAI3dlYmxvZ2ljLndvcmthcmVhLlN0cmluZ1dvcmtDb250ZXh0AAYxLjIwLjUAAA==</work:WorkContext>
+	</S:Header>
+	<S:Body>
+		<ns0:envioDocumentoTransporteResponseElem xmlns:ns0="https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/">
+			<ResponseStatus>
+				<ReturnCode>0</ReturnCode>
+				<ReturnMessage>OK</ReturnMessage>
+			</ResponseStatus>
+			<DocumentNumber>GR GR001012016S01/4</DocumentNumber>
+			<ATDocCodeID>1097210119</ATDocCodeID>
+		</ns0:envioDocumentoTransporteResponseElem>
+	</S:Body>
+</S:Envelope>

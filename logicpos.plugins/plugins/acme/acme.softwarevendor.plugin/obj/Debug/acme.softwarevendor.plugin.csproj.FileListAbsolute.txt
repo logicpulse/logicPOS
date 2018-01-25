@@ -1,0 +1,14 @@
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\Resources\Reports\UserReports\ReportDocumentFinance.frx
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\Resources\Reports\UserReports\ReportArticle.frx
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\Resources\Reports\UserReports\ReportDocumentFinancePayment.frx
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\Resources\Reports\UserReports\ReportTest.frx
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\Resources\Reports\UserReports\TemplateBase.frx
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\Resources\Reports\UserReports\TemplateBaseSimple.frx
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\AcmeSoftwareVendorPlugin.dll.config
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\AcmeSoftwareVendorPlugin.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos\bin\Debug\Plugins\AcmeSoftwareVendorPlugin.pdb
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\plugins\acme\acme.softwarevendor.plugin\obj\Debug\acme.softwarevendor.plugin.csprojResolveAssemblyReference.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\plugins\acme\acme.softwarevendor.plugin\obj\Debug\acme.softwarevendor.plugin.csproj.CoreCompileInputs.cache
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\plugins\acme\acme.softwarevendor.plugin\obj\Debug\AcmeSoftwareVendorPlugin.dll
+C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.plugins\plugins\acme\acme.softwarevendor.plugin\obj\Debug\AcmeSoftwareVendorPlugin.pdb

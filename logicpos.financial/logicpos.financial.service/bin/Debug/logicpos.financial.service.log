@@ -1,0 +1,1257 @@
+2018-01-16 16:11:17,211 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-16 16:11:17,820 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-16 16:11:17,820 [DEBUG] logicpos.financial.service.Objects.Service.Service : Service Construct
+2018-01-16 16:11:17,820 [DEBUG] logicpos.financial.service.Program : Service.Run(service)
+2018-01-16 16:11:17,823 [DEBUG] logicpos.financial.service.Objects.Service.Service : Service OnStart
+2018-01-16 16:11:17,827 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-16 16:35:22,900 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS002012018S01/29]/WayBillMode: [False]
+2018-01-16 16:35:23,798 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [0]
+2018-01-16 16:35:23,798 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Documento registado com sucesso.]
+2018-01-16 16:36:18,716 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS002012018S01/30]/WayBillMode: [False]
+2018-01-16 16:36:19,109 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [0]
+2018-01-16 16:36:19,109 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Documento registado com sucesso.]
+2018-01-16 16:37:00,535 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/5]/WayBillMode: [True]
+2018-01-16 16:37:01,107 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [0]
+2018-01-16 16:37:01,107 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [OK]
+2018-01-16 17:14:24,646 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-16 17:14:25,268 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-16 17:14:25,271 [DEBUG] logicpos.financial.service.Objects.Service.Service : Service Construct
+2018-01-16 17:14:25,271 [DEBUG] logicpos.financial.service.Program : Service.Run(service)
+2018-01-16 17:14:25,273 [DEBUG] logicpos.financial.service.Objects.Service.Service : Service OnStart
+2018-01-16 17:14:25,285 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-16 17:14:25,286 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-16 17:14:31,831 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/2]/WayBillMode: [False]
+2018-01-16 17:14:32,544 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [0]
+2018-01-16 17:14:32,544 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Documento registado com sucesso.]
+2018-01-16 17:18:34,237 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/3]/WayBillMode: [False]
+2018-01-16 17:18:34,855 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [0]
+2018-01-16 17:18:34,855 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Documento registado com sucesso.]
+2018-01-16 17:19:20,516 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT004012018S01/1]/WayBillMode: [True]
+2018-01-16 17:19:21,075 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [0]
+2018-01-16 17:19:21,075 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [OK]
+2018-01-16 17:24:25,437 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/1]/WayBillMode: [False]
+2018-01-16 17:24:25,978 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [0]
+2018-01-16 17:24:25,978 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Documento registado com sucesso.]
+2018-01-16 17:24:25,994 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GR GR002012018S01/3]/WayBillMode: [True]
+2018-01-16 17:24:26,510 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [-3]
+2018-01-16 17:24:26,510 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Já foi inserido um Documento de Transporte com o número fornecido.]
+2018-01-16 17:24:26,535 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/2]/WayBillMode: [True]
+2018-01-16 17:24:26,703 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+System.Net.WebException: O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+   em System.Net.HttpWebRequest.GetResponse()
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.Send() em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 564
+2018-01-16 17:24:26,721 [DEBUG] logicpos.financial.service.Objects.Utils : Send ProtocolError StreamResult: [<?xml version="1.0" encoding="UTF-8"?>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+<SOAP-ENV:Fault>
+<faultcode>33</faultcode>
+<faultstring>simple-type 1: element Addressdetail of type {https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/}SAFPTtextTypeMandatoryMax100Car may not be empty</faultstring>
+<detail>sgdtws.gdgtqua</detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>]
+2018-01-16 17:34:25,431 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GR GR002012018S01/3]/WayBillMode: [True]
+2018-01-16 17:34:25,954 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [-3]
+2018-01-16 17:34:25,955 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Já foi inserido um Documento de Transporte com o número fornecido.]
+2018-01-16 17:34:25,961 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/2]/WayBillMode: [True]
+2018-01-16 17:34:26,119 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+System.Net.WebException: O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+   em System.Net.HttpWebRequest.GetResponse()
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.Send() em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 564
+2018-01-16 17:34:26,124 [DEBUG] logicpos.financial.service.Objects.Utils : Send ProtocolError StreamResult: [<?xml version="1.0" encoding="UTF-8"?>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+<SOAP-ENV:Fault>
+<faultcode>33</faultcode>
+<faultstring>simple-type 1: element Addressdetail of type {https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/}SAFPTtextTypeMandatoryMax100Car may not be empty</faultstring>
+<detail>sgdtws.gdgtqua</detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>]
+2018-01-16 17:44:25,433 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GR GR002012018S01/3]/WayBillMode: [True]
+2018-01-16 17:44:26,038 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [-3]
+2018-01-16 17:44:26,038 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Já foi inserido um Documento de Transporte com o número fornecido.]
+2018-01-16 17:44:26,063 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/2]/WayBillMode: [True]
+2018-01-16 17:44:26,223 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+System.Net.WebException: O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+   em System.Net.HttpWebRequest.GetResponse()
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.Send() em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 564
+2018-01-16 17:44:26,226 [DEBUG] logicpos.financial.service.Objects.Utils : Send ProtocolError StreamResult: [<?xml version="1.0" encoding="UTF-8"?>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+<SOAP-ENV:Fault>
+<faultcode>33</faultcode>
+<faultstring>simple-type 1: element Addressdetail of type {https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/}SAFPTtextTypeMandatoryMax100Car may not be empty</faultstring>
+<detail>sgdtws.gdgtqua</detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>]
+2018-01-16 17:54:25,452 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GR GR002012018S01/3]/WayBillMode: [True]
+2018-01-16 17:54:26,122 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [-3]
+2018-01-16 17:54:26,122 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Já foi inserido um Documento de Transporte com o número fornecido.]
+2018-01-16 17:54:26,139 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/2]/WayBillMode: [True]
+2018-01-16 17:54:26,306 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+System.Net.WebException: O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+   em System.Net.HttpWebRequest.GetResponse()
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.Send() em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 564
+2018-01-16 17:54:26,307 [DEBUG] logicpos.financial.service.Objects.Utils : Send ProtocolError StreamResult: [<?xml version="1.0" encoding="UTF-8"?>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+<SOAP-ENV:Fault>
+<faultcode>33</faultcode>
+<faultstring>simple-type 1: element Addressdetail of type {https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/}SAFPTtextTypeMandatoryMax100Car may not be empty</faultstring>
+<detail>sgdtws.gdgtqua</detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>]
+2018-01-16 18:04:25,445 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GR GR002012018S01/3]/WayBillMode: [True]
+2018-01-16 18:04:25,948 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [-3]
+2018-01-16 18:04:25,948 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Já foi inserido um Documento de Transporte com o número fornecido.]
+2018-01-16 18:04:25,960 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/2]/WayBillMode: [True]
+2018-01-16 18:04:26,120 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+System.Net.WebException: O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+   em System.Net.HttpWebRequest.GetResponse()
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.Send() em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 564
+2018-01-16 18:04:26,122 [DEBUG] logicpos.financial.service.Objects.Utils : Send ProtocolError StreamResult: [<?xml version="1.0" encoding="UTF-8"?>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+<SOAP-ENV:Fault>
+<faultcode>33</faultcode>
+<faultstring>simple-type 1: element Addressdetail of type {https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/}SAFPTtextTypeMandatoryMax100Car may not be empty</faultstring>
+<detail>sgdtws.gdgtqua</detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>]
+2018-01-16 18:14:25,442 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GR GR002012018S01/3]/WayBillMode: [True]
+2018-01-16 18:14:25,966 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnCode: [-3]
+2018-01-16 18:14:25,966 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document ReturnMessage: [Já foi inserido um Documento de Transporte com o número fornecido.]
+2018-01-16 18:14:25,997 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/2]/WayBillMode: [True]
+2018-01-16 18:14:26,151 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+System.Net.WebException: O servidor remoto devolveu um erro: (500) Erro interno de servidor.
+   em System.Net.HttpWebRequest.GetResponse()
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.Send() em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 564
+2018-01-16 18:14:26,154 [DEBUG] logicpos.financial.service.Objects.Utils : Send ProtocolError StreamResult: [<?xml version="1.0" encoding="UTF-8"?>
+
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Header/>
+<SOAP-ENV:Body>
+<SOAP-ENV:Fault>
+<faultcode>33</faultcode>
+<faultstring>simple-type 1: element Addressdetail of type {https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/}SAFPTtextTypeMandatoryMax100Car may not be empty</faultstring>
+<detail>sgdtws.gdgtqua</detail></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>]
+2018-01-16 18:15:04,705 [DEBUG] logicpos.financial.service.Objects.Service.Service : Service OnStop
+2018-01-16 18:15:04,705 [DEBUG] logicpos.financial.service.Program : Service Stoped
+2018-01-16 18:16:05,070 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-16 18:16:06,497 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-16 18:17:19,253 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-16 18:17:20,333 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-16 18:17:53,287 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-16 18:17:53,289 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-16 18:21:11,412 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-16 18:21:12,562 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-16 18:21:13,923 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-16 18:21:13,924 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 09:42:51,023 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 09:42:52,374 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 09:42:58,374 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 09:42:58,375 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 10:08:22,686 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:08:23,866 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:23:40,104 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:23:41,464 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:23:44,336 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 10:23:44,337 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 10:24:44,607 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:24:45,851 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:24:58,369 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 10:24:58,370 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 10:25:11,308 [DEBUG] logicpos.financial.service.Objects.Utils : Using FullPath pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:25:11,313 [DEBUG] logicpos.financial.service.Objects.Utils : Using FullPath Service pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:25:11,316 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:27:27,951 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:27:28,996 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:27:30,920 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 10:27:30,921 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 10:27:50,079 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:27:50,079 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:27:50,079 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:28:02,462 [DEBUG] logicpos.financial.service.Objects.Utils : Check file pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:28:03,719 [DEBUG] logicpos.financial.service.Objects.Utils : Check file _pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:29:24,068 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:29:25,064 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:29:27,145 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 10:29:27,146 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 10:29:32,772 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:29:32,772 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:29:32,772 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:29:39,715 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:29:44,430 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:29:56,065 [DEBUG] logicpos.financial.service.Program : Service Stoped
+2018-01-17 10:29:58,209 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:29:58,212 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:29:58,414 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{436712bf-20d0-48bf-8edf-6f99b25d81a6},{False},{17/01/2018 10:29:58},{17/01/2018 10:29:58},{17/01/2018 10:29:58},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{436712bf-20d0-48bf-8edf-6f99b25d81a6},{False},{17/01/2018 10:29:58},{17/01/2018 10:29:58},{17/01/2018 10:29:58},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:29:58,430 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:30:18,400 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:30:19,522 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:30:21,103 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 10:30:21,103 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 10:30:27,107 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:30:27,107 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:30:27,107 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:30:38,007 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:30:38,988 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:30:52,002 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:30:52,002 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:31:35,282 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:31:35,282 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:31:35,282 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:31:41,903 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:31:41,903 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:31:41,904 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:31:41,904 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:31:41,979 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Entering state 'BeginTransaction' from state 'CommitTransactionNonReenterant, CommitChangesToDataLayer, CommitChangesToDataLayerInner' is prohibited due to state 'CommitTransactionNonReenterant' for 'DevExpress.Xpo.Session(2)'.
+System.InvalidOperationException: Entering state 'BeginTransaction' from state 'CommitTransactionNonReenterant, CommitChangesToDataLayer, CommitChangesToDataLayerInner' is prohibited due to state 'CommitTransactionNonReenterant' for 'DevExpress.Xpo.Session(2)'.
+   em DevExpress.Xpo.Helpers.SessionStateStack.ThrowIfCantEnter(Session session, SessionState newState) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 722
+   em DevExpress.Xpo.Helpers.SessionStateStack.Enter(Session session, SessionState newState) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 742
+   em DevExpress.Xpo.Session.BeginTrackingChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2505
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1481
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:31:41,997 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:31:42,051 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{2e3a990b-0c37-4774-af18-d3f79aa246b6},{False},{17/01/2018 10:31:41},{17/01/2018 10:31:41},{17/01/2018 10:31:41},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{2e3a990b-0c37-4774-af18-d3f79aa246b6},{False},{17/01/2018 10:31:41},{17/01/2018 10:31:41},{17/01/2018 10:31:41},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:31:42,053 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:38:39,204 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:38:40,533 [DEBUG] logicpos.financial.service.Objects.Utils : BootStrap Framework Console Service Project....
+2018-01-17 10:38:40,534 [DEBUG] logicpos.financial.service.Objects.Utils : ServicesATDCTestMode: [False]
+2018-01-17 10:38:40,534 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:38:40,534 [DEBUG] logicpos.financial.service.Objects.Utils : Launch service? [Y or Enter] or any other key to run in interactive develop/debug mode
+2018-01-17 10:39:21,130 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:39:22,037 [DEBUG] logicpos.financial.service.Objects.Utils : BootStrap Framework Console Service Project....
+2018-01-17 10:39:22,047 [DEBUG] logicpos.financial.service.Objects.Utils : ServicesATEnableTestMode: [False]
+2018-01-17 10:39:22,047 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:39:22,047 [DEBUG] logicpos.financial.service.Objects.Utils : Launch service? [Y or Enter] or any other key to run in interactive develop/debug mode
+2018-01-17 10:42:36,407 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 10:42:36,409 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 10:42:36,515 [DEBUG] logicpos.financial.service.Objects.Utils : The service is ready at http://localhost:50391/Service1.svc
+2018-01-17 10:42:36,515 [DEBUG] logicpos.financial.service.Objects.Utils : Press any key to stop the service and exit
+2018-01-17 10:44:14,449 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:44:14,449 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:44:14,449 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:44:14,449 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:44:14,449 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:44:14,451 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:44:14,451 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:44:14,614 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{daf20325-6e8b-4456-ac27-7d07debf9a6f},{False},{17/01/2018 10:44:14},{17/01/2018 10:44:14},{17/01/2018 10:44:14},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{daf20325-6e8b-4456-ac27-7d07debf9a6f},{False},{17/01/2018 10:44:14},{17/01/2018 10:44:14},{17/01/2018 10:44:14},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:44:14,625 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:44:18,849 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:44:18,849 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:44:18,849 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:44:18,849 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:44:18,849 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:44:18,850 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:44:18,850 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:44:18,879 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{aeda1233-f701-438b-8439-723793f572d8},{False},{17/01/2018 10:44:18},{17/01/2018 10:44:18},{17/01/2018 10:44:18},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{aeda1233-f701-438b-8439-723793f572d8},{False},{17/01/2018 10:44:18},{17/01/2018 10:44:18},{17/01/2018 10:44:18},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:44:18,880 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:44:20,534 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:44:20,534 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:44:20,534 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:44:20,535 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:44:20,535 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:44:20,535 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:44:20,535 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:44:20,565 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{1a4b9101-a716-442c-9360-493c6e6e557a},{False},{17/01/2018 10:44:20},{17/01/2018 10:44:20},{17/01/2018 10:44:20},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{1a4b9101-a716-442c-9360-493c6e6e557a},{False},{17/01/2018 10:44:20},{17/01/2018 10:44:20},{17/01/2018 10:44:20},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:44:20,566 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:44:21,953 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:44:21,953 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:44:21,954 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:44:21,954 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:44:21,955 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:44:21,955 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:44:21,956 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:44:21,986 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{4830ecff-bd4e-4c31-8e0b-79601b2b1733},{False},{17/01/2018 10:44:21},{17/01/2018 10:44:21},{17/01/2018 10:44:21},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{4830ecff-bd4e-4c31-8e0b-79601b2b1733},{False},{17/01/2018 10:44:21},{17/01/2018 10:44:21},{17/01/2018 10:44:21},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:44:21,987 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:44:22,782 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:44:22,783 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:44:22,784 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:44:22,784 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:44:22,785 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:44:22,785 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:44:22,785 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:44:22,816 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{2fbab40a-bf1c-498d-8179-cce47da6ea85},{False},{17/01/2018 10:44:22},{17/01/2018 10:44:22},{17/01/2018 10:44:22},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{2fbab40a-bf1c-498d-8179-cce47da6ea85},{False},{17/01/2018 10:44:22},{17/01/2018 10:44:22},{17/01/2018 10:44:22},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:44:22,816 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:44:23,903 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:44:23,903 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:44:23,904 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:44:23,904 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathPublicKey: [Resources/Certificates/508278155_1115.cer]!
+2018-01-17 10:44:23,905 [DEBUG] logicpos.financial.service.Objects.Utils : Error cant find file pathCertificate: [Resources/Certificates/508278155.pfx]!
+2018-01-17 10:44:23,905 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:44:23,905 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:44:23,945 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{3f16108b-02ca-4c3b-a673-fdec5c31d71e},{False},{17/01/2018 10:44:23},{17/01/2018 10:44:23},{17/01/2018 10:44:23},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{3f16108b-02ca-4c3b-a673-fdec5c31d71e},{False},{17/01/2018 10:44:23},{17/01/2018 10:44:23},{17/01/2018 10:44:23},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 708
+2018-01-17 10:44:23,946 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:47:06,204 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 10:47:07,166 [DEBUG] logicpos.financial.service.Objects.Utils : BootStrap Framework Console Service Project....
+2018-01-17 10:47:07,166 [DEBUG] logicpos.financial.service.Objects.Utils : ServicesATEnableTestMode: [False]
+2018-01-17 10:47:07,167 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 10:47:07,167 [DEBUG] logicpos.financial.service.Objects.Utils : Launch service? [Y or Enter] or any other key to run in interactive develop/debug mode
+2018-01-17 10:47:22,739 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 10:47:22,740 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 10:47:22,859 [DEBUG] logicpos.financial.service.Objects.Utils : The service is ready at http://localhost:50391/Service1.svc
+2018-01-17 10:47:22,859 [DEBUG] logicpos.financial.service.Objects.Utils : Press any key to stop the service and exit
+2018-01-17 10:47:27,665 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:47:27,666 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:47:27,666 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:47:27,667 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:47:27,667 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:47:27,844 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{a8dd3f0a-22b8-4a36-84c2-6a8276b418cc},{False},{17/01/2018 10:47:27},{17/01/2018 10:47:27},{17/01/2018 10:47:27},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{a8dd3f0a-22b8-4a36-84c2-6a8276b418cc},{False},{17/01/2018 10:47:27},{17/01/2018 10:47:27},{17/01/2018 10:47:27},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:47:27,855 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:47:34,084 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:47:34,084 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:47:34,084 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:47:34,084 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:47:34,084 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:47:34,116 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{2f7b0c0b-8d5b-406f-a0e9-75c8824757f6},{False},{17/01/2018 10:47:34},{17/01/2018 10:47:34},{17/01/2018 10:47:34},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{2f7b0c0b-8d5b-406f-a0e9-75c8824757f6},{False},{17/01/2018 10:47:34},{17/01/2018 10:47:34},{17/01/2018 10:47:34},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:47:34,117 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:47:35,466 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:47:35,466 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:47:35,466 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:47:35,466 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:47:35,466 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:47:35,496 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{2225b289-d4ea-49fe-b2de-df327bbf5e5a},{False},{17/01/2018 10:47:35},{17/01/2018 10:47:35},{17/01/2018 10:47:35},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{2225b289-d4ea-49fe-b2de-df327bbf5e5a},{False},{17/01/2018 10:47:35},{17/01/2018 10:47:35},{17/01/2018 10:47:35},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:47:35,496 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:47:36,131 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:47:36,131 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:47:36,132 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:47:36,133 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:47:36,133 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:47:36,164 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{b632f808-fd40-4a09-8a68-bd17fb00b8f5},{False},{17/01/2018 10:47:36},{17/01/2018 10:47:36},{17/01/2018 10:47:36},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{b632f808-fd40-4a09-8a68-bd17fb00b8f5},{False},{17/01/2018 10:47:36},{17/01/2018 10:47:36},{17/01/2018 10:47:36},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:47:36,164 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:47:58,198 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:47:58,198 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:47:58,199 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:47:58,199 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:47:58,199 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:47:58,232 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{e5d55cb5-d52f-4bc9-8a4c-702f3fa3d38b},{False},{17/01/2018 10:47:58},{17/01/2018 10:47:58},{17/01/2018 10:47:58},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{e5d55cb5-d52f-4bc9-8a4c-702f3fa3d38b},{False},{17/01/2018 10:47:58},{17/01/2018 10:47:58},{17/01/2018 10:47:58},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:47:58,232 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:47:59,491 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:47:59,491 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:47:59,492 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:47:59,493 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:47:59,493 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:47:59,532 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{8a611176-2d4a-4d97-979e-3cc512672079},{False},{17/01/2018 10:47:59},{17/01/2018 10:47:59},{17/01/2018 10:47:59},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{8a611176-2d4a-4d97-979e-3cc512672079},{False},{17/01/2018 10:47:59},{17/01/2018 10:47:59},{17/01/2018 10:47:59},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:47:59,533 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:48:08,651 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:48:08,651 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:48:08,652 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:48:08,652 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:48:08,653 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:48:08,683 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{51ea68e0-f248-4924-b7de-c4c4e6822028},{False},{17/01/2018 10:48:08},{17/01/2018 10:48:08},{17/01/2018 10:48:08},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{51ea68e0-f248-4924-b7de-c4c4e6822028},{False},{17/01/2018 10:48:08},{17/01/2018 10:48:08},{17/01/2018 10:48:08},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:48:08,683 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:48:15,285 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:48:15,286 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:48:15,286 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:48:15,287 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:48:15,287 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:48:15,320 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{ef4432df-467b-4641-8dcd-31dac617647a},{False},{17/01/2018 10:48:15},{17/01/2018 10:48:15},{17/01/2018 10:48:15},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{ef4432df-467b-4641-8dcd-31dac617647a},{False},{17/01/2018 10:48:15},{17/01/2018 10:48:15},{17/01/2018 10:48:15},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:48:15,320 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:48:17,186 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:48:17,187 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:48:17,188 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:48:17,189 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:48:17,189 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:48:17,224 [ERROR] logicpos.financial.service.Objects.Modules.AT.ServicesAT : Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{df7875fa-f221-429b-91c6-a528f4f405de},{False},{17/01/2018 10:48:17},{17/01/2018 10:48:17},{17/01/2018 10:48:17},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)'
+DevExpress.Xpo.DB.Exceptions.SqlExecutionErrorException: Executing Sql 'insert into `SYS_SystemAuditAT`(`Oid`,`Disabled`,`Notes`,`CreatedAt`,`CreatedBy`,`CreatedWhere`,`UpdatedAt`,`UpdatedBy`,`UpdatedWhere`,`DeletedAt`,`DeletedBy`,`DeletedWhere`,`Date`,`Type`,`PostData`,`ReturnCode`,`ReturnMessage`,`ReturnRaw`,`DocumentNumber`,`ATDocCodeID`,`DocumentMaster`,`OptimisticLockField`)values(?p0,?p1,null,?p2,null,null,?p3,null,null,null,null,null,?p4,?p5,null,?p6,?p7,?p8,?p9,?p10,?p11,?p12)' with parameters '{df7875fa-f221-429b-91c6-a528f4f405de},{False},{17/01/2018 10:48:17},{17/01/2018 10:48:17},{17/01/2018 10:48:17},{1},{200},{Invalid Certificates: [Resources/Certificates/508278155_1115.cer...},{},{FS FS004012018S01/5},{},{28553785-7d35-49f6-b9d9-492b586a7b79},{0}' exception 'MySql.Data.MySqlClient.MySqlException (0x80004005): Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)' ---> MySql.Data.MySqlClient.MySqlException: Data too long for column 'ReturnMessage' at row 1
+   em MySql.Data.MySqlClient.MySqlStream.ReadPacket()
+   em MySql.Data.MySqlClient.NativeDriver.GetResult(Int32& affectedRow, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.GetResult(Int32 statementId, Int32& affectedRows, Int64& insertedId)
+   em MySql.Data.MySqlClient.Driver.NextResult(Int32 statementId, Boolean force)
+   em MySql.Data.MySqlClient.MySqlDataReader.NextResult()
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteReader(CommandBehavior behavior)
+   em MySql.Data.MySqlClient.MySqlCommand.ExecuteNonQuery()
+   em DevExpress.Xpo.DB.ConnectionProviderSql.<>c__DisplayClass2.<InternalExecSql>b__0()
+   em DevExpress.Xpo.Logger.LogManager.Log[T](String category, LogHandler`1 handler, MessageHandler`1 createMessageHandler)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.InternalExecSql(IDbCommand command)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   --- Fim do rastreio da pilha de excepção interna ---
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ExecSql(Query query)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.DoInsertRecord(InsertStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.UpdateRecord(ModificationStatement root, TaggedParametersHolder identities)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ProcessModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.DataStoreSerializedBase.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.DB.ConnectionProviderSql.ModifyData(ModificationStatement[] dmlStatements)
+   em DevExpress.Xpo.SimpleDataLayer.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\DataLayer.cs:line 274
+   em DevExpress.Xpo.Helpers.DataLayerWrapperS18452.ModifyData(ModificationStatement[] dmlStatements) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\XpoDefault.cs:line 73
+   em DevExpress.Xpo.SimpleObjectLayer.CommitChanges(Session session, ICollection fullListForDelete, ICollection completeListForSave) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\ObjectLayer.cs:line 338
+   em DevExpress.Xpo.Session.FlushChangesInsideTransaction() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2527
+   em DevExpress.Xpo.Session.FlushChanges() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 2610
+   em DevExpress.Xpo.Session.ProcessingProcess(ObjectSet markedObjectsHolder, Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1496
+   em DevExpress.Xpo.Session.Save(Object theObject) em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Session.cs:line 1505
+   em DevExpress.Xpo.XPBaseObject.Save() em C:\SVN\logicpos\trunk\src\DevExpress.Xpo\DevExpress.Xpo\Object.cs:line 1278
+   em logicpos.financial.service.Objects.Modules.AT.ServicesAT.PersistResult(ServicesATSoapResult pSoapResult) em C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\Objects\Modules\AT\ServicesAT.cs:line 709
+2018-01-17 10:48:17,225 [DEBUG] logicpos.financial.service.Objects.Utils : Error 200: [Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]]
+2018-01-17 10:57:22,859 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:57:22,859 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:57:22,862 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:57:22,863 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 10:57:22,864 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:57:22,871 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:57:22,872 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:57:22,873 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:57:22,874 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/4]/WayBillMode: [False]
+2018-01-17 10:57:22,875 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:57:22,883 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:57:22,883 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:57:22,885 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:57:22,885 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GR GR002012018S01/3]/WayBillMode: [True]
+2018-01-17 10:57:22,886 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 10:57:22,895 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 10:57:22,895 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 10:57:22,896 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 10:57:22,897 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/2]/WayBillMode: [True]
+2018-01-17 10:57:22,897 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 11:07:22,849 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 11:07:22,849 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 11:07:22,849 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 11:07:22,850 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/5]/WayBillMode: [False]
+2018-01-17 11:07:22,850 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 11:07:22,850 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 11:07:22,850 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 11:07:22,851 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 11:07:22,851 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [FS FS004012018S01/4]/WayBillMode: [False]
+2018-01-17 11:07:22,851 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 11:07:22,852 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 11:07:22,852 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 11:07:22,852 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 11:07:22,852 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GR GR002012018S01/3]/WayBillMode: [True]
+2018-01-17 11:07:22,853 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 11:07:22,854 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathPublicKey: [Resources/Certificates/508278155_1115.cer]
+2018-01-17 11:07:22,854 [DEBUG] logicpos.financial.service.Objects.Utils : Using pathCertificate: [Resources/Certificates/508278155.pfx]
+2018-01-17 11:07:22,854 [DEBUG] logicpos.financial.service.Objects.Utils : TaxRegistrationNumber :[508278155], AccountFiscalNumber: [508278155/2], AccountPassword: [logicpulse#2015X], PasswordCertificate: [logicpulse#2015X]
+2018-01-17 11:07:22,854 [DEBUG] logicpos.financial.service.Objects.Utils : Send Document DocumentNumber: [GT GT002012018S01/2]/WayBillMode: [True]
+2018-01-17 11:07:22,854 [DEBUG] logicpos.financial.service.Objects.Utils : Invalid Certificates: [Resources/Certificates/508278155_1115.cer], [Resources/Certificates/508278155.pfx] in current Directory [C:\SVN\logicpos\trunk\src\logicpos_pos\logicpos.framework\logicpos.financial.service\bin\Debug]
+2018-01-17 14:51:51,233 [INFO ] logicpos.financial.service.Program : Init XpoDefault.DataLayer: [XpoProvider=MySql;server=localhost;database=logicposdb;user id=root;password=admin#;persist security info=true;CharSet=utf8;]
+2018-01-17 14:51:52,998 [DEBUG] logicpos.financial.service.Objects.Utils : BootStrap Framework Console Service Project....
+2018-01-17 14:51:53,000 [DEBUG] logicpos.financial.service.Objects.Utils : ServicesATEnableTestMode: [False]
+2018-01-17 14:51:53,001 [DEBUG] logicpos.financial.service.Program : Service URI: http://localhost:50391/Service1.svc
+2018-01-17 14:51:53,001 [DEBUG] logicpos.financial.service.Objects.Utils : Launch service? [Y or Enter] or any other key to run in interactive develop/debug mode
+2018-01-17 14:52:42,207 [DEBUG] logicpos.financial.service.Program : Service Started
+2018-01-17 14:52:42,208 [DEBUG] logicpos.financial.service.Objects.Utils : ModifyHttpSettings: 'netsh http add urlacl url=http://+:50391/ user=\Todos'
+2018-01-17 14:52:42,500 [DEBUG] logicpos.financial.service.Objects.Utils : The service is ready at http://localhost:50391/Service1.svc
+2018-01-17 14:52:42,500 [DEBUG] logicpos.financial.service.Objects.Utils : Press any key to stop the service and exit

@@ -1,0 +1,49 @@
+Enter PFX password: 
+================ Certificate 0 ================
+================ Begin Nesting Level 1 ================
+Element 0:
+Serial Number: 1b0000000923e4cd20bd75eca5000000000009
+Issuer: CN=DGITA Root CA, DC=ritta, DC=local
+ NotBefore: 20/11/2015 12:42
+ NotAfter: 28/06/2025 14:03
+Subject: CN=DGITA Issuing CA1, DC=ritta, DC=local
+Versão da AC: V3.1
+Nome do modelo de certificado (Tipo de certificado): SubCA
+Non-root Certificate
+Template: SubCA
+Cert Hash(sha1): 813f9d4a49b35f91b4cc338fad632412ec3d223c
+----------------  End Nesting Level 1  ----------------
+No key provider information
+Não é possível encontrar o certificado e a chave particular para a desencriptação.
+
+================ Certificate 1 ================
+================ Begin Nesting Level 1 ================
+Element 1:
+Serial Number: 448d26cfeaeea0bc4e8312b416b2a36f
+Issuer: CN=DGITA Root CA, DC=ritta, DC=local
+ NotBefore: 28/06/2005 13:54
+ NotAfter: 28/06/2025 14:03
+Subject: CN=DGITA Root CA, DC=ritta, DC=local
+Versão da AC: V0.0
+Signature matches Public Key
+Root Certificate: Subject matches Issuer
+Cert Hash(sha1): 7e1add979cb0668fd4b93888f2a9679789203612
+----------------  End Nesting Level 1  ----------------
+No key provider information
+Não é possível encontrar o certificado e a chave particular para a desencriptação.
+
+================ Certificate 2 ================
+================ Begin Nesting Level 1 ================
+Element 2:
+Serial Number: 1200001ee818be62b65d8e06e3000300001ee8
+Issuer: CN=DGITA Issuing CA1, DC=ritta, DC=local
+ NotBefore: 20/04/2016 13:06
+ NotAfter: 17/10/2016 13:06
+Subject: CN=TesteWebServices, OU=ASI, O=AT - Autoridade Tributaria e Aduaneira, L=Lisboa, S=Lisboa, C=PT
+Non-root Certificate
+Template: 1.3.6.1.4.1.311.21.8.4411065.4437546.10439059.6138606.4612083.82.11331295.8959349
+Cert Hash(sha1): a17694106aa9024a04dd5dfdaae0f8608eeff4ed
+----------------  End Nesting Level 1  ----------------
+  Provider = Microsoft Enhanced Cryptographic Provider v1.0
+Encryption test passed
+CertUtil: -dump command completed successfully.

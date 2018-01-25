@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CustomReport ScriptLanguage="CSharp" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="01/12/2015 12:16:19" ReportInfo.CreatorVersion="2014.1.14.0">
+  <Dictionary/>
+  <ReportPage Name="Page1">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8" Fill.Color="Gainsboro">
+      <TextObject Name="Text1" Top="9.45" Width="170.1" Height="18.9" Text="ReportTitle" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text6" Left="236.25" Top="9.45" Width="94.5" Height="18.9" Text="TEXT6"/>
+      <TextObject Name="Text7" Left="368.55" Top="9.45" Width="94.5" Height="18.9" Text="TEXT7"/>
+      <TextObject Name="Text8" Left="481.95" Top="9.45" Width="94.5" Height="18.9" Text="TEXT8"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="41.8" Width="718.2" Height="28.35">
+      <TextObject Name="Text5" Width="94.5" Height="18.9" Text="PageHeader"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="74.15" Width="718.2" Height="75.6"/>
+    <PageFooterBand Name="PageFooter1" Top="153.75" Width="718.2" Height="18.9" Fill.Color="Gainsboro">
+      <TextObject Name="Text2" Width="170.1" Height="18.9" Text="ReportFooter"/>
+      <TextObject Name="Text3" Left="198.45" Width="274.05" Height="18.9" BeforePrintEvent="Text3_BeforePrint" Text="[PageN]/[TotalPages]" HorzAlign="Center"/>
+      <TextObject Name="Text4" Left="481.95" Width="236.25" Height="18.9" Text="Acme" HorzAlign="Right"/>
+    </PageFooterBand>
+  </ReportPage>
+</CustomReport>

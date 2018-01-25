@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Header>
+    <wss:Security xmlns:wss="http://schemas.xmlsoap.org/ws/2002/12/secext/">
+      <wss:UsernameToken>
+        <wss:Username>599999993/0037</wss:Username>
+        <wss:Password>pjsfCLNyYrMYOF8Ubyb27A==</wss:Password>
+        <wss:Nonce>gwIA0fZE4F6l2NNsziRNbYjIRHOaOa8oehnPPljOHSi0rRFrfbz5a7qJe+ALLkHuBZucQP2ZMGqNvCWgHCARMFYIki6SWw/5qEFGxfE514xqzrm4sid56X27GaZ0qWAXmAiwuFyWUUzLb76CGkKytogEONoPHRnB1z6VzhLlRMmIkOkME3vBJRMS91BgGmoRYh3lZW/x9uz6WZ0kRZ0JfHQ/MTprEqzUENEMKaB9RFs0JE60iU1v/+mPAclH5o+Ux/B5AHFKKr2VRYY7bESFLuls52Arv4LhAKDZZqTh/3kWL7LnK23U0G+VXDyiDno0tpLDZHz6NCOaQRZPeLTFWA==</wss:Nonce>
+        <wss:Created>lAdCOdYMoRepruRnK6txBuG6TpZH1bNo/V9q9D+rtKo=</wss:Created>
+      </wss:UsernameToken>
+    </wss:Security>
+  </S:Header>
+  <S:Body>
+    <ns2:envioDocumentoTransporteRequestElem xmlns:ns2="https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/">
+      <TaxRegistrationNumber>599999993</TaxRegistrationNumber>
+      <CompanyName>Luis Santos</CompanyName>
+      <CompanyAddress>
+        <Addressdetail>Rua Poeta João de Lemos</Addressdetail>
+        <City>Maiorca</City>
+        <PostalCode>3090-466</PostalCode>
+        <Country>PT</Country>
+      </CompanyAddress>
+      <DocumentNumber>GT GT002012018S01/4</DocumentNumber>
+      <MovementStatus>N</MovementStatus>
+      <MovementDate>2018-01-15</MovementDate>
+      <MovementType>GT</MovementType>
+      <CustomerTaxID>507287436</CustomerTaxID>
+      <CustomerAddress>
+        <Addressdetail>Rua Poeta João de Lemos</Addressdetail>
+        <City>Maiorca</City>
+        <PostalCode>3090-466</PostalCode>
+        <Country>PT</Country>
+      </CustomerAddress>
+      <CustomerName>Luis Santos</CustomerName>
+      <AddressTo>
+        <Addressdetail>Rua Poeta João de Lemos</Addressdetail>
+        <City>Maiorca</City>
+        <PostalCode>3090-466</PostalCode>
+        <Country>PT</Country>
+      </AddressTo>
+      <AddressFrom>
+        <Addressdetail>Rua Capitão Salgueiro Maia, nº7</Addressdetail>
+        <City>Figueira da Foz</City>
+        <PostalCode>3080-245</PostalCode>
+        <Country>PT</Country>
+      </AddressFrom>
+      <MovementStartTime>2018-01-15T18:28:09</MovementStartTime>
+      <Line>
+        <OrderReferences>
+          <OriginatingON>FS FS002012018S01/28</OriginatingON>
+        </OrderReferences>
+        <ProductDescription>Sande Americana</ProductDescription>
+        <Quantity>1.00</Quantity>
+        <UnitOfMeasure>Un</UnitOfMeasure>
+        <UnitPrice>40.65</UnitPrice>
+      </Line>
+    </ns2:envioDocumentoTransporteRequestElem>
+  </S:Body>
+</S:Envelope>

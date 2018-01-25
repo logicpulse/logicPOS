@@ -1,0 +1,10 @@
+site_name: Logicpulse LogicPos
+#theme: readthedocs
+theme: material
+markdown_extensions:
+  - admonition
+  - codehilite
+  - codehilite(linenums=true)  
+  - pymdownx.tasklist
+extra_css:
+    - css/custom.css

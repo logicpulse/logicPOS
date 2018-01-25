@@ -1,0 +1,2609 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FastReport.Web</name>
+    </assembly>
+    <members>
+        <member name="T:FastReport.Web.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.WebReport">
+            <summary>
+            Represents the Web Report.
+            </summary>        
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowRtfExport">
+            <summary>
+            Switch visibility of RTF export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RtfJpegQuality">
+            <summary>
+            Gets or sets the quality of Jpeg images in RTF file.
+            </summary>
+            <remarks>
+            Default value is 90. This property will be used if you select Jpeg
+            in the <see cref="P:FastReport.Web.WebReport.RtfImageFormat"/> property.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RtfImageFormat">
+            <summary>
+            Gets or sets the image format that will be used to save pictures in RTF file.
+            </summary>
+            <remarks>
+            Default value is <b>Metafile</b>. This format is better for exporting such objects as
+            <b>MSChartObject</b> and <b>ShapeObject</b>.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RtfPictures">
+            <summary>
+            Gets or sets a value indicating that pictures are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RtfPageBreaks">
+            <summary>
+            Gets or sets a value indicating that page breaks are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RtfWysiwyg">
+            <summary>
+            Gets or sets a value that determines whether the wysiwyg mode should be used
+            for better results.
+            </summary>
+            <remarks>
+            Default value is <b>true</b>. In wysiwyg mode, the resulting rtf file will look
+            as close as possible to the prepared report. On the other side, it may have a lot
+            of small rows/columns, which will make it less editable. If you set this property
+            to <b>false</b>, the number of rows/columns in the resulting file will be decreased.
+            You will get less wysiwyg, but more editable file.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RtfCreator">
+            <summary>
+            Gets or sets the creator of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RtfAutoSize">
+            <summary>
+            Gets or sets a value that determines whether the rows in the resulting table
+            should calculate its height automatically.
+            </summary>
+            <remarks>
+            Default value for this property is <b>false</b>. In this mode, each row in the
+            resulting table has fixed height to get maximum wysiwyg. If you set it to <b>true</b>,
+            the height of resulting table will be calculated automatically by the Word processor.
+            The document will be more editable, but less wysiwyg.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowMhtExport">
+            <summary>
+            Switch visibility of MHT (web-archive) export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.MhtPictures">
+            <summary>
+            Gets or sets a value indicating that pictures are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.MhtWysiwyg">
+            <summary>
+            Gets or sets a value that determines whether the wysiwyg mode should be used
+            for better results.
+            </summary>
+            <remarks>
+            Default value is <b>true</b>. In wysiwyg mode, the resulting rtf file will look
+            as close as possible to the prepared report. On the other side, it may have a lot
+            of small rows/columns, which will make it less editable. If you set this property
+            to <b>false</b>, the number of rows/columns in the resulting file will be decreased.
+            You will get less wysiwyg, but more editable file.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowOdsExport">
+            <summary>
+            Switch visibility of Open Office Spreadsheet (ODS) export in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.OdsPageBreaks">
+            <summary>
+            Gets or sets a value indicating that page breaks are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.OdsWysiwyg">
+            <summary>
+            Gets or sets a value that determines whether the wysiwyg mode should be used
+            for better results.
+            </summary>
+            <remarks>
+            Default value is <b>true</b>. In wysiwyg mode, the resulting rtf file will look
+            as close as possible to the prepared report. On the other side, it may have a lot
+            of small rows/columns, which will make it less editable. If you set this property
+            to <b>false</b>, the number of rows/columns in the resulting file will be decreased.
+            You will get less wysiwyg, but more editable file.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.OdsCreator">
+            <summary>
+            Gets or sets the creator of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowOdtExport">
+            <summary>
+            Switch visibility of Open Office Text (ODT) export in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.OdtPageBreaks">
+            <summary>
+            Gets or sets a value indicating that page breaks are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.OdtWysiwyg">
+            <summary>
+            Gets or sets a value that determines whether the wysiwyg mode should be used
+            for better results.
+            </summary>
+            <remarks>
+            Default value is <b>true</b>. In wysiwyg mode, the resulting rtf file will look
+            as close as possible to the prepared report. On the other side, it may have a lot
+            of small rows/columns, which will make it less editable. If you set this property
+            to <b>false</b>, the number of rows/columns in the resulting file will be decreased.
+            You will get less wysiwyg, but more editable file.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.OdtCreator">
+            <summary>
+            Gets or sets the creator of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowXpsExport">
+            <summary>
+            Switch visibility of XPS export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowDbfExport">
+            <summary>
+            Switch visibility of DBF export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowWord2007Export">
+            <summary>
+            Switch visibility of Word 2007 export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DocxMatrixBased">
+            <summary>
+            Enable or disable matrix view of Word 2007 document
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DocxRowHeightIs">
+            <summary>
+            Gets or sets value of RowHeightIs Word 2007 document
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowExcel2007Export">
+            <summary>
+            Switch visibility of Excel 2007 export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.XlsxPageBreaks">
+            <summary>
+             Gets or sets a value indicating that page breaks are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.XlsxSeamless">
+            <summary>
+             Gets or sets a value indicating that table without breaks are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.XlsxWysiwyg">
+            <summary>
+            Gets or sets a value that determines whether the wysiwyg mode should be used
+            for better results.
+            </summary>
+            <remarks>
+            Default value is <b>true</b>. In wysiwyg mode, the resulting rtf file will look
+            as close as possible to the prepared report. On the other side, it may have a lot
+            of small rows/columns, which will make it less editable. If you set this property
+            to <b>false</b>, the number of rows/columns in the resulting file will be decreased.
+            You will get less wysiwyg, but more editable file.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.XlsxDataOnly">
+            <summary>
+            Enable or disable of exporting data without any header/group bands.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowPowerPoint2007Export">
+            <summary>
+            Switch visibility of PowerPoint 2007 export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PptxImageFormat">
+            <summary>
+            Gets or sets the image format that will be used to save pictures in PowerPoint file.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowXmlExcelExport">
+            <summary>
+             Switch visibility of XML (Excel) export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.XmlExcelPageBreaks">
+            <summary>
+             Gets or sets a value indicating that page breaks are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.XmlExcelWysiwyg">
+            <summary>
+            Gets or sets a value that determines whether the wysiwyg mode should be used
+            for better results.
+            </summary>
+            <remarks>
+            Default value is <b>true</b>. In wysiwyg mode, the resulting rtf file will look
+            as close as possible to the prepared report. On the other side, it may have a lot
+            of small rows/columns, which will make it less editable. If you set this property
+            to <b>false</b>, the number of rows/columns in the resulting file will be decreased.
+            You will get less wysiwyg, but more editable file.
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.XmlExcelDataOnly">
+            <summary>
+            Enable or disable of exporting data without any header/group bands.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowPdfExport">
+            <summary>
+             Switch visibility of PDF (Adobe Acrobat) export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfEmbeddingFonts">
+            <summary>
+            Enable or disable of embedding the TrueType fonts.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfTextInCurves">
+            <summary>
+            Enable or disable export text in curves.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfBackground">
+            <summary>
+            Enable or disable of exporting the background.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfPrintOptimized">
+            <summary>
+            Enable or disable of optimization the images for printing.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfOutline">
+            <summary>
+            Enable or disable of document's Outline.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfDisplayDocTitle">
+            <summary>
+            Enable or disable of displaying document's title.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfHideToolbar">
+            <summary>
+            Enable or disable hide the toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfHideMenubar">
+            <summary>
+            Enable or disable hide the menu's bar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfHideWindowUI">
+            <summary>
+            Enable or disable hide the Windows UI.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfFitWindow">
+            <summary>
+            Enable or disable of fitting the window.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfCenterWindow">
+            <summary>
+             Enable or disable centering the window.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfPrintScaling">
+            <summary>
+            Enable or disable of scaling the page for shrink to printable area.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfTitle">
+            <summary>
+            Title of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfAuthor">
+            <summary>
+            Author of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfSubject">
+            <summary>
+             Subject of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfKeywords">
+            <summary>
+             Keywords of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfCreator">
+            <summary>
+            Creator of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfProducer">
+            <summary>
+            Producer of the document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfUserPassword">
+            <summary>
+            Sets the users password.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfOwnerPassword">
+            <summary>
+            Sets the owner password.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfAllowPrint">
+            <summary>
+            Enable or disable printing in protected document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfAllowModify">
+            <summary>
+            Enable or disable modifying in protected document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfAllowCopy">
+            <summary>
+            Enable or disable copying in protected document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfAllowAnnotate">
+            <summary>
+            Enable or disable annotating in protected document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfA">
+            <summary>
+            Enable or disable PDF/A document.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PdfShowPrintDialog">
+            <summary>
+            Enable or disable showing of Print Dialog.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowCsvExport">
+            <summary>
+            Switch visibility of CSV (comma separated values) export in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.CsvSeparator">
+            <summary>
+            Gets or sets of cells separator.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.CsvDataOnly">
+            <summary>
+            Enable or disable of exporting data without any header/group bands.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowPreparedReport">
+            <summary>
+             Switch visibility of prepared report export in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowTextExport">
+            <summary>
+             Switch visibility of text (plain text) export in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.TextDataOnly">
+            <summary>
+            Enable or disable of exporting data without any header/group bands.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.TextPageBreaks">
+            <summary>
+             Gets or sets a value indicating that page breaks are enabled.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.TextAllowFrames">
+            <summary>
+            Enable or disable frames in text file.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.TextSimpleFrames">
+            <summary>
+            Enable or disable simple (non graphic) frames in text file.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.TextEmptyLines">
+            <summary>
+            Enable or disable empty lines in text file.
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportCsv">
+            <summary>
+            Export in CSV format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportCsv(System.Web.HttpContext)">
+            <summary>
+            Export in CSV format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportText">
+            <summary>
+            Export in Text format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportText(System.Web.HttpContext)">
+            <summary>
+            Export in Text format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportDbf">
+            <summary>
+            Export in DBF format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportDbf(System.Web.HttpContext)">
+            <summary>
+            Export in DBF format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportPdf">
+            <summary>
+            Export in PDF format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportPdf(System.Boolean)">
+            <summary>
+            Export in PDF format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportPdf(System.Web.HttpContext)">
+            <summary>
+            Export in PDF format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportPdf(System.Web.HttpContext,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Export in PDF format inline
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportHtml(System.Web.HttpContext,System.Boolean,System.Boolean)">
+            <summary>
+            Export in HTML format inline
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportRtf">
+            <summary>
+            Export in RTF format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportRtf(System.Web.HttpContext)">
+            <summary>
+            Export in RTF format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportMht">
+            <summary>
+            Export in MHT format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportMht(System.Web.HttpContext)">
+            <summary>
+            Export in MHT format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportXmlExcel">
+            <summary>
+            Export in XML (Excel 2003) format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportXmlExcel(System.Web.HttpContext)">
+            <summary>
+            Export in XML (Excel 2003) format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportOds">
+            <summary>
+            Export in Open Office Spreadsheet format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportOds(System.Web.HttpContext)">
+            <summary>
+            Export in Open Office Spreadsheet format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportOdt">
+            <summary>
+            Export in Open Office Text format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportOdt(System.Web.HttpContext)">
+            <summary>
+            Export in Open Office Text format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportXps">
+            <summary>
+            Export in XPS format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportXps(System.Web.HttpContext)">
+            <summary>
+            Export in XPS format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportExcel2007">
+            <summary>
+            Export in Excel 2007 format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportExcel2007(System.Web.HttpContext)">
+            <summary>
+            Export in Excel 2007 format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportWord2007">
+            <summary>
+            Export in Word 2007 format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportWord2007(System.Web.HttpContext)">
+            <summary>
+            Export in Word 2007 format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportPowerPoint2007">
+            <summary>
+            Export in PowerPoint 2007 format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportPowerPoint2007(System.Web.HttpContext)">
+            <summary>
+            Export in PowerPoint 2007 format
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportPrepared">
+            <summary>
+            Export in prepared report
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.ExportPrepared(System.Web.HttpContext)">
+            <summary>
+            Export in prepared report
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.PrintPdf">
+            <summary>
+            Print in Adobe Acrobat
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.PrintPdf(System.Web.HttpContext)">
+            <summary>
+            Print in Adobe Acrobat
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.PrintPdf(System.Boolean)">
+            <summary>
+            Print in Adobe Acrobat
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.PrintPdf(System.Web.HttpContext,System.Boolean)">
+            <summary>
+            Print in Adobe Acrobat
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.PrintHtml">
+            <summary>
+            Print in browser
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.PrintHtml(System.Web.HttpContext)">
+            <summary>
+            Print in browser
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.AutoWidth">
+            <summary>
+            Used only if layers mode is off
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.AutoHeight">
+            <summary>
+            Used only if layers mode is off
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.InlineRegistration">
+            <summary>
+            Enable or disable inline object registration
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.EnableMargins">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ExternalJquery">
+            <summary>
+            Enable or disable using of external jQuery library
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Layers">
+            <summary>
+            Enable or disable layers mode visualisation
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Padding">
+            <summary>
+            Gets or sets Padding of Report section
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RefreshTimeout">
+            <summary>
+            Timeout in seconds for automatic refresh of report. Zero value disable auto-refresh.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.CacheDelay">
+            <summary>
+            Delay in cache in minutes
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.CachePriority">
+            <summary>
+            Priority of items in cache
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.CloudEnvironmet">
+            <summary>
+            Enable or disable the multiple instances environment
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DesignReport">
+            <summary>
+            Enable the Report Designer
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DesignScriptCode">
+            <summary>
+            Enable code editor in the Report Designer
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DesignerPath">
+            <summary>
+            Gets or sets path to the Report Designer
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DesignerSavePath">
+            <summary>
+            Gets or sets path to a folder for save designed reports
+            If value is empty then designer posts saved report in variable ReportFile on call the DesignerSaveCallBack
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DesignerSaveCallBack">
+            <summary>
+            Gets or sets path to callback page after Save from Designer
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DesignerLocale">
+            <summary>
+            Gets or sets the locale of Designer
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.DesignerConfig">
+            <summary>
+            Gets or sets the text of configuration of Online Designer
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ReportResourceString">
+            <summary>
+            Report Resource String
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ReportDataSources">
+            <summary>
+            Gets or sets report data source(s).
+            </summary>
+            <remarks>
+            To pass several datasources, use ';' delimiter, for example: 
+            "sqlDataSource1;sqlDataSource2"
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Pictures">
+            <summary>
+            Switch the pictures visibility in report
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.EmbedPictures">
+            <summary>
+            Enable or disable embedding pictures in HTML
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.SinglePage">
+            <summary>
+            Switch the pages layout between multiple pages and single page
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ReportFile">
+            <summary>
+            Gets or sets the name of report file.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ReportPath">
+            <summary>
+            Gets or sets default path for reports (including inherited).
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.LocalizationFile">
+            <summary>
+            Gets or sets the name of localization file.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Zoom">
+            <summary>
+            Set the zoom factor of previewed page between 0..1
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ZoomMode">
+            <summary>
+            Set the zoom mode of previewed page
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowAfterPrepare">
+            <summary>
+            Enable or disable of showing the report after call Prepare
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Debug">
+            <summary>
+            Enable or disable of showing the debug information on errors.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.LogFile">
+            <summary>
+            Gets or sets the log file.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.UnlimitedWidth">
+            <summary>
+            Enable or disable unlimited width of report pages.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.UnlimitedHeight">
+            <summary>
+            Enable or disable unlimited height of report pages.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Dialogs">
+            <summary>
+            Enable or disable showing the report dialogs.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ToolbarStyle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ToolbarIconsStyle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ToolbarBackgroundStyle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowToolbar">
+            <summary>
+             Switch toolbar visibility
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowBottomToolbar">
+            <summary>
+             Switch bottob toolbar visibility
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ButtonsPath">
+            <summary>
+            Sets the path to custom buttons on site. 
+            </summary>
+            <remarks>
+            Pictures should be named:
+            Checkbox.gif, Progress.gif, toolbar.png, toolbar_background.png, toolbar_big.png, toolbar_disabled.png, toolbar_disabled.png
+            </remarks>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowExports">
+            <summary>
+             Switch visibility of Exports in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowPrint">
+            <summary>
+             Switch visibility of Print button in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowFirstButton">
+            <summary>
+             Switch visibility of First Button in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowPrevButton">
+            <summary>
+             Switch visibility of Previous Button in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowNextButton">
+            <summary>
+             Switch visibility of Next Button in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowLastButton">
+            <summary>
+             Switch visibility of Last Button in toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowZoomButton">
+            <summary>
+            Switch visibility of Zoom in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowRefreshButton">
+            <summary>
+            Switch visibility of Refresh in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowPageNumber">
+            <summary>
+            Switch visibility of Page Number in toolbar.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowTabCloseButton">
+            <summary>
+            Switch visibility of Tab close buttons.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowBackButton">
+            <summary>
+            Switch visibility of Back buttons.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.TabPosition">
+            <summary>
+            Selects position of tabs 
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ToolbarColor">
+            <summary>
+            Set the Toolbar color.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ShowOutline">
+            <summary>
+            Switch outline visibility
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PrintInPdf">
+            <summary>
+            Enable or disable print in PDF
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PrintInBrowser">
+            <summary>
+            Enable or disable print in browser
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PrintWindowWidth">
+            <summary>
+            Sets the width of print window
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PrintWindowHeight">
+            <summary>
+            Sets the height of print window
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Prop">
+            <summary>
+            Direct access to Properties of report object
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Tabs">
+            <summary>
+            Direct access to Tabs
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.CurrentTabIndex">
+            <summary>
+            Gets or sets current tab index
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.CurrentTab">
+            <summary>
+            Gets current tab
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Toolbar">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.PreviewMode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.Report">
+            <summary>
+            Direct access to Report object
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.TotalPages">
+            <summary>
+            Gets total pages of current report
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.State">
+            <summary>
+            Gets or sets current state of report
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ReportDone">
+            <summary>
+            Return true if report done
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.CurrentPage">
+            <summary>
+            Gets or sets number of current page
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ReportGuid">
+            <summary>
+            Gets or sets guid of report
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.RequestHeaders">
+            <summary>
+            Gets or sets the request headers
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReport.ResponseHeaders">
+            <summary>
+            Gets or sets the response headers
+            </summary>
+        </member>
+        <member name="E:FastReport.Web.WebReport.StartReport">
+            <summary>
+            Occurs when report execution is started.
+            </summary>
+        </member>
+        <member name="E:FastReport.Web.WebReport.SaveDesignedReport">
+            <summary>
+            Occurs when designed report save is started.
+            </summary>
+        </member>
+        <member name="E:FastReport.Web.WebReport.CustomDraw">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.OnCustomDraw(FastReport.Export.Html.CustomDrawEventArgs)">
+            <summary>
+            
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FastReport.Web.WebReport.OnStartReport(System.EventArgs)">
+            <summary>
+            Runs on report start
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FastReport.Web.WebReport.OnSaveDesignedReport(FastReport.Web.SaveDesignedReportEventArgs)">
+            <summary>
+            Runs on designed report save
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:FastReport.Web.WebReport.NextPage">
+            <summary>
+            Force go to next report page
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.PrevPage">
+            <summary>
+            Force go to previous report page
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.FirstPage">
+            <summary>
+            Force go to first report page
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.LastPage">
+            <summary>
+            Force go to last report page
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.SetPage(System.Int32)">
+            <summary>
+            Force go to "value" report page
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.Prepare">
+            <summary>
+            Prepare the report
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.Refresh">
+            <summary>
+            Force refresh of report
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.AddTab(FastReport.Report,System.String)">
+            <summary>
+            Adds new report tab
+            </summary>
+            <param name="report"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.AddTab(FastReport.Report)">
+            <summary>
+            Adds new report tab
+            </summary>
+            <param name="report"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.AddTab(FastReport.Report,System.String,System.Boolean)">
+            <summary>
+            Adds new report tab
+            </summary>
+            <param name="report"></param>
+            <param name="name"></param>
+            <param name="reportDone"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RegisterDataAsp(FastReport.Report,System.Web.UI.IDataSource,System.String)">
+            <summary>
+            Registers the ASP.NET application data to use it in the report.
+            </summary>
+            <param name="report">The <b>Report</b> object.</param>
+            <param name="data">The application data.</param>
+            <param name="name">The name of the data.</param>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RegisterDataAsp(FastReport.Report,System.Collections.IEnumerable,System.String)">
+            <summary>
+            Registers the ASP.NET application data to use it in the report.
+            </summary>
+            <param name="report">The <b>Report</b> object.</param>
+            <param name="data">The application data.</param>
+            <param name="name">The name of the data.</param>
+        </member>
+        <member name="M:FastReport.Web.WebReport.OnLoad(System.EventArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FastReport.Web.WebReport.OnUnload(System.EventArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FastReport.Web.WebReport.OnInit(System.EventArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FastReport.Web.WebReport.AddAttributesToRender(System.Web.UI.HtmlTextWriter)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RenderContents(System.Web.UI.HtmlTextWriter)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FastReport.Web.WebReport.GetHtml">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.Scripts">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.Styles">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.SetSize(System.Web.UI.WebControls.Unit,System.Web.UI.WebControls.Unit)">
+            <summary>
+            
+            </summary>
+            <param name="width"></param>
+            <param name="height"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.SetStartEvent(System.EventHandler)">
+            <summary>
+            
+            </summary>
+            <param name="start"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.SetCustomDrawEvent(System.EventHandler{FastReport.Export.Html.CustomDrawEventArgs})">
+            <summary>
+            
+            </summary>
+            <param name="draw"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RegisterData(System.Data.DataSet,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RegisterData(System.Data.DataRelation,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RegisterData(System.Data.DataSet)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RegisterData(System.Data.DataTable,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RegisterData(System.Data.DataView,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.RegisterData(System.Collections.IEnumerable,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="data"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FastReport.Web.WebReport"/> class.
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReport.GetPropData">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.GetReportData">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.GetPreparedData">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReport.SetPropData(System.IO.Stream)">
+            <summary>
+            
+            </summary>
+            <param name="propStream"></param>
+        </member>
+        <member name="M:FastReport.Web.WebReport.SetReportData(System.IO.Stream)">
+            <summary>
+            
+            </summary>
+            <param name="reportStream"></param>
+        </member>
+        <member name="M:FastReport.Web.WebReport.SetPreparedData(System.IO.Stream)">
+            <summary>
+            
+            </summary>
+            <param name="reportStream"></param>
+        </member>
+        <member name="T:FastReport.Web.WebReportCache">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportCache.WebFarmMode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportCache.Delay">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportCache.Priority">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReportCache.PutObject(System.String,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="Name"></param>
+            <param name="Obj"></param>
+        </member>
+        <member name="M:FastReport.Web.WebReportCache.GetObject(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="Name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportCache.GetObject(System.String,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="Name"></param>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportCache.Remove(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="Name"></param>
+        </member>
+        <member name="M:FastReport.Web.WebReportCache.CleanFileStorage">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportCache.#ctor(System.Web.HttpContext)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="T:FastReport.Web.Handlers.WebExport">
+            <summary>
+            Web handler class
+            </summary>
+            <summary>
+            Web handler class
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.Handlers.WebExport.cache">
+            <summary>
+            You will need to configure this handler in the web.config file of your 
+            web and register it with IIS before being able to use it. For more information
+            see the following link: http://go.microsoft.com/?linkid=8101007
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.Handlers.WebExport.IsReusable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.Handlers.WebExport.ProcessRequest(System.Web.HttpContext)">
+            <summary>
+            Process Request
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="T:FastReport.Web.WebExportItem">
+            <summary>
+            Class for export item description
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebExportItem.File">
+            <summary>
+            Binary data of exported files
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebExportItem.FileName">
+            <summary>
+            Name of exported file
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebExportItem.Format">
+            <summary>
+            Format of exported file
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebExportItem.ContentType">
+            <summary>
+            MIME type of exported file
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.WebReportGlobals">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReportGlobals.Scripts">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportGlobals.ScriptsWOjQuery">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportGlobals.Styles">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportGlobals.StylesWOjQuery">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportGlobals.ScriptsAsString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportGlobals.ScriptsWOjQueryAsString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportGlobals.StylesAsString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebReportGlobals.StylesWOjQueryAsString">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:FastReport.Web.ReportTab">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.ReportTab.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.ReportTab.Report">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.ReportTab.Properties">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.ReportTab.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.ReportTab.#ctor(FastReport.Report)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.ReportTab.#ctor(FastReport.Report,FastReport.Web.WebReportProperties)">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.TabPosition">
+            <summary>
+            Tab position enum
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.TabPosition.InsideToolbar">
+            <summary>
+            Tabs inside toolbar
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.TabPosition.UnderToolbar">
+            <summary>
+            Tabs under toolbar
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.TabPosition.Hidden">
+            <summary>
+            Tabs are hidden
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.SaveDesignedReportEventArgs">
+            <summary>
+            Event arguments for Save report from Designer
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.SaveDesignedReportEventArgs.Stream">
+            <summary>
+            Contain the stream with designed report
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.ZoomMode">
+            <summary>
+            Zoom mode enum
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ZoomMode.Scale">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ZoomMode.Width">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ZoomMode.Page">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.ReportState">
+            <summary>
+            Report states enum
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ReportState.Empty">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ReportState.Forms">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ReportState.Report">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ReportState.Done">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ReportState.Canceled">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.WebReportProperties">
+            <summary>
+            WebReport Properies class
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ToolbarStyle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ToolbarIconsStyle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ToolbarBackgroundStyle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.AutoWidth">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.AutoHeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.Layers">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.Padding">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DesignReport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DesignScriptCode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DesignerPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DesignerSavePath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DesignerSaveCallBack">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DesignerLocale">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DesignerConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ReportResourceString">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ReportDataSources">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.Pictures">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.SinglePage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.InlineRegistration">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.EnableMargins">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ExternalJquery">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ReportFile">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ReportPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.LocalizationFile">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.Zoom">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ZoomMode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RefreshTimeout">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.CacheDelay">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.CachePriority">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.CloudEnvironmet">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.EmbedPictures">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowAfterPrepare">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.Debug">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.UnlimitedWidth">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.UnlimitedHeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.Dialogs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowToolbar">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowBottomToolbar">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ButtonsPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowExports">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowPrint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowFirstButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowPrevButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowNextButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowLastButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowZoomButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowRefreshButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowPageNumber">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowTabCloseButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowBackButton">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.TabPosition">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ToolbarColor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowOutline">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowRtfExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RtfJpegQuality">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RtfImageFormat">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RtfPictures">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RtfPageBreaks">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RtfWysiwyg">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RtfCreator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RtfAutoSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowMhtExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.MhtPictures">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.MhtWysiwyg">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowOdsExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.OdsPageBreaks">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.OdsWysiwyg">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.OdsCreator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowOdtExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.OdtPageBreaks">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.OdtWysiwyg">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.OdtCreator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowXpsExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowDbfExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowWord2007Export">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DocxMatrixBased">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.DocxRowHeightIs">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowExcel2007Export">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.XlsxPageBreaks">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.XlsxSeamless">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.XlsxWysiwyg">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.XlsxDataOnly">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowPowerPoint2007Export">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PptxImageFormat">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowXmlExcelExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.XmlExcelPageBreaks">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.XmlExcelWysiwyg">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.XmlExcelDataOnly">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowPdfExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfEmbeddingFonts">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfTextInCurves">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfBackground">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfPrintOptimized">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfOutline">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfDisplayDocTitle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfHideToolbar">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfHideMenubar">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfHideWindowUI">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfFitWindow">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfCenterWindow">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfPrintScaling">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfTitle">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfAuthor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfSubject">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfKeywords">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfCreator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfProducer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfUserPassword">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfOwnerPassword">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfAllowPrint">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfAllowModify">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfAllowCopy">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfAllowAnnotate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfA">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PdfShowPrintDialog">
+            <summary>
+            Enable or disable showing of Print Dialog
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowCsvExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.CsvSeparator">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.CsvDataOnly">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowPreparedReport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ShowTextExport">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.TextDataOnly">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.TextPageBreaks">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.TextAllowFrames">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.TextSimpleFrames">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.TextEmptyLines">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PrintInPdf">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PrintInBrowser">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PrintWindowWidth">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.PrintWindowHeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ControlVisible">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ReportDone">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.TotalPages">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.LogFile">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.RequestHeaders">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ResponseHeaders">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.CurrentPage">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.CurrentWidth">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.CurrentHeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ToolbarHeight">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.ControlID">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebReportProperties.HandlerURL">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebReportProperties.Assign(FastReport.Web.WebReportProperties)">
+            <summary>
+            Assigns another object values
+            </summary>
+            <param name="properties"></param>
+        </member>
+        <member name="T:FastReport.Web.WebReportStyles">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.WebTemplateMode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.WebTemplateMode.CSS">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.WebTemplateMode.HTML">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.WebTemplate">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebTemplate.Clean">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebTemplate.Prepared">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebTemplate.Source">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebTemplate.Variables">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebTemplate.Mode">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebTemplate.SetVariable(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:FastReport.Web.WebTemplate.GetVariable(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebTemplate.LoadFromStream(System.IO.Stream)">
+            <summary>
+            
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="M:FastReport.Web.WebTemplate.SavePreparedToStream(System.IO.Stream)">
+            <summary>
+            
+            </summary>
+            <param name="stream"></param>
+        </member>
+        <member name="M:FastReport.Web.WebTemplate.Prepare(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="template"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebTemplate.Prepare">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebTemplate.#ctor(System.String,FastReport.Web.WebTemplateMode,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="template"></param>
+            <param name="templateMode"></param>
+            <param name="humanreadable"></param>
+        </member>
+        <member name="M:FastReport.Web.WebTemplate.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.ToolbarStyle">
+            <summary>
+            Describes sizes of Toolbar enum 
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarStyle.Small">
+            <summary>
+            Small size toolbar
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarStyle.Large">
+            <summary>
+            Big size toolbar
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.ToolbarIconsStyle">
+            <summary>
+            Toolbar Icons Styles
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarIconsStyle.Red">
+            <summary>
+            Red Icons
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarIconsStyle.Green">
+            <summary>
+            Green Icons
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarIconsStyle.Blue">
+            <summary>
+            Blue Icons
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarIconsStyle.Black">
+            <summary>
+            Black Icons
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarIconsStyle.Custom">
+            <summary>
+            Custom Icons
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.ToolbarBackgroundStyle">
+            <summary>
+            Toolbar Background Styles.
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarBackgroundStyle.None">
+            <summary>
+            Transparent background.
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarBackgroundStyle.Light">
+            <summary>
+            Light background.
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarBackgroundStyle.Medium">
+            <summary>
+            Medium dark background.
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarBackgroundStyle.Dark">
+            <summary>
+            Dark background.
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.ToolbarBackgroundStyle.Custom">
+            <summary>
+            Custom background.
+            </summary>
+        </member>
+        <member name="T:FastReport.Web.WebToolbar">
+            <summary>
+            Web Toolbar
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebToolbar.BackgroundColor">
+            <summary>
+            Gets or sets the background color.
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebToolbar.CurrentTabIndex">
+            <summary>
+            Gets or sets current tab index
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebToolbar.EnableFit">
+            <summary>
+            Enable or disable fitting
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebToolbar.ReportProperties">
+            <summary>
+            Report properties 
+            </summary>
+        </member>
+        <member name="P:FastReport.Web.WebToolbar.Report">
+            <summary>
+            Current report 
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebToolbar.RegisterGlobals(System.String,System.Web.UI.ClientScriptManager,System.Type,System.Boolean)">
+            <summary>
+            Registration of scripts and styles in ClientScript
+            </summary>
+            <param name="ID"></param>
+            <param name="ClientScript"></param>
+            <param name="t"></param>
+            <param name="extJquery"></param>
+        </member>
+        <member name="M:FastReport.Web.WebToolbar.GetInlineRegistration(System.Boolean)">
+            <summary>
+            Gets Inline Registration as string
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebToolbar.GetCss">
+            <summary>
+            Gets CSS of toolbar
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebToolbar.GetHtmlBody">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebToolbar.GetHtmlProgress(System.String,System.String,System.Boolean,System.Web.UI.WebControls.Unit,System.Web.UI.WebControls.Unit)">
+            <summary>
+            
+            </summary>
+            <param name="handlerPath"></param>
+            <param name="ID"></param>
+            <param name="preview"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebToolbar.GetAutoRefresh(System.String,System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="handlerPath"></param>
+            <param name="ID"></param>
+            <param name="refreshTimeOut"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebToolbar.#ctor(System.String,System.Collections.Generic.List{FastReport.Web.ReportTab},System.Boolean,FastReport.Web.WebRes)">
+            <summary>
+            Constructor of WebToolbar
+            </summary>
+            <param name="guid"></param>
+            <param name="tabs"></param>
+            <param name="fit"></param>
+            <param name="Localization"></param>
+        </member>
+        <member name="T:FastReport.Web.WebUtils">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:FastReport.Web.WebUtils.HandlerFileName">
+            <summary>
+            Contain the filename of httphandler
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.IsAbsolutePhysicalPath(System.String)">
+            <summary>
+            Determines whether the path is an absolute physical path.
+            </summary>
+            <param name="path">The path to check.</param>
+            <returns><b>true</b> if the path is absolute physical path.</returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.ToHtmlString(System.Web.UI.WebControls.Unit)">
+            <summary>
+            
+            </summary>
+            <param name="unit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.HTMLColor(System.Drawing.Color)">
+            <summary>
+            Returns the HTML color representation;
+            </summary>
+            <param name="color"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.CheckHandlers">
+            <summary>
+            Check http handlers in web.config
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.AddHandlers(System.String)">
+            <summary>
+            Add http handlers in web.config
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.CheckHandlersRuntime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.GetHandlerError">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.ReverseString(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="str"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.GetGUID(System.Web.HttpContext,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="context"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.GetGUID">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.IsIE8(System.Web.HttpContext)">
+            <summary>
+            IE8 detection
+            </summary>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.AddNoCacheHeaders(System.Web.HttpContext)">
+            <summary>
+            Add NoCache haders in Context.Reponse
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:FastReport.Web.WebUtils.RGBAColor(System.Drawing.Color)">
+            <summary>
+            Converts Color in HTML format with transparency.
+            </summary>
+            <param name="color"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
