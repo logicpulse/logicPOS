@@ -15,11 +15,11 @@ Open source Point of Sale Solution
 
 ## Directory Structure
 
-- docs\
-- libs\
-	- fastreport\
-	- xpo_14_1_5\
-- logicpos\
+- docs\ (Minimal Documentation)
+- libs\ (Reference Libs)
+	- fastreport\ (FastReport Dll Reference)
+	- xpo_14_1_5\ (Xpo Dll Reference)
+- logicpos\ _(LogicPos Main Application)_
 - logicpos.datalayer\
 - logicpos.financial\
 	- logicpos.financial.console\
