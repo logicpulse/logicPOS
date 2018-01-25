@@ -62,8 +62,17 @@ Open source Point of Sale Solution
 
 - Install [.NET 4.5](https://www.microsoft.com/pt-pt/download/details.aspx?id=30653) _(If not already in system)_
 
-- Install [others\windowsruntime\gtk-sharp-2.12.22.msi](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi?raw=true)
+- [Install Visual Studio 2017](https://www.visualstudio.com)
+
+- Install GTK Runtime [others\windowsruntime\gtk-sharp-2.12.22.msi](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi?raw=true)
 	
 	Read the [others\windowsruntime\README.txt](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/README.txt) to install `libnodoka.dll`
 
-- [Install Visual Studio 2017](https://www.visualstudio.com)
+- Open Visual Studio 2017
+
+	- Open Solution `logicpos.sln` or Folder Source Folder
+
+	- Buid Solution
+
+	-  _Set_ **logicpos** _as Startup Project _ 
+
