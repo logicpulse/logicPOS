@@ -91,9 +91,11 @@ namespace logicpos.shared.App
         public static int DocumentsPadLength;
         //SAF-T(PT) : DateTime Formats 
         //Overrided by SoftwareVendor Plugin - ex: "yyyy-MM-dd"
-        public static string DateTimeFormatDocumentDate;
+        //Leave Default Here, in case we dont have Plugin Registered
+        public static string DateTimeFormatDocumentDate = "yyyy-MM-dd";
         //Overrided by SoftwareVendor Plugin - ex: "yyyy-MM-ddTHH:mm:ss"
-        public static string DateTimeFormatCombinedDateTime;
+        //Leave Default Here, in case we dont have Plugin Registered
+        public static string DateTimeFormatCombinedDateTime = "yyyy-MM-ddTHH:mm:ss";
         //Overrided by SoftwareVendor Plugin - ex: "999999990"
         public static string FinanceFinalConsumerFiscalNumber;
         //Overrided by SoftwareVendor Plugin - ex: "---------"
@@ -355,6 +357,7 @@ namespace logicpos.shared.App
         {
             bool debug = false;
 
+            // Override SettingsApp with Defaults from SoftwareVendor Plugin
             AppSoftwareName = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppSoftwareName), debug);
             AppCompanyName = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyName), debug);
             AppCompanyPhone = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyPhone), debug);
