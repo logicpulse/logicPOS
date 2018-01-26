@@ -395,31 +395,49 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <None Include="..\..\logicpos_pos_internal\logicpos.plugins\plugins\logicpulse\logicpulse.softwarevendor.plugin\Resources\Reports\UserReports\ReportArticle.frx">
+    <None Include="Resources\Reports\UserReports\ReportArticle.frx">
       <Link>Resources\Reports\UserReports\ReportArticle.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\logicpos_pos_internal\logicpos.plugins\plugins\logicpulse\logicpulse.softwarevendor.plugin\Resources\Reports\UserReports\ReportDocumentFinance.frx">
+    <None Include="Resources\Reports\UserReports\ReportArticle.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\ReportDocumentFinance.frx">
       <Link>Resources\Reports\UserReports\ReportDocumentFinance.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\logicpos_pos_internal\logicpos.plugins\plugins\logicpulse\logicpulse.softwarevendor.plugin\Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
+    <None Include="Resources\Reports\UserReports\ReportDocumentFinance.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
       <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\logicpos_pos_internal\logicpos.plugins\plugins\logicpulse\logicpulse.softwarevendor.plugin\Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
+    <None Include="Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
       <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\logicpos_pos_internal\logicpos.plugins\plugins\logicpulse\logicpulse.softwarevendor.plugin\Resources\Reports\UserReports\ReportTest.frx">
+    <None Include="Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\ReportTest.frx">
       <Link>Resources\Reports\UserReports\ReportTest.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\logicpos_pos_internal\logicpos.plugins\plugins\logicpulse\logicpulse.softwarevendor.plugin\Resources\Reports\UserReports\TemplateBase.frx">
+    <None Include="Resources\Reports\UserReports\ReportTest.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\TemplateBase.frx">
       <Link>Resources\Reports\UserReports\TemplateBase.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\..\logicpos_pos_internal\logicpos.plugins\plugins\logicpulse\logicpulse.softwarevendor.plugin\Resources\Reports\UserReports\TemplateBaseSimple.frx">
+    <None Include="Resources\Reports\UserReports\TemplateBase.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\TemplateBaseSimple.frx">
       <Link>Resources\Reports\UserReports\TemplateBaseSimple.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1861,6 +1879,9 @@
     <Content Include="Assets\Themes\theme_default_retail_800x600.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\Reports\UserReports\TemplateBaseSimple.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Service References\ServiceReference\logicpos.ServiceReference.CompositeType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -2355,7 +2376,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\logicpos_pos_internal\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
+    <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
       <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
       <Name>logicpos.financial.library</Name>
     </ProjectReference>

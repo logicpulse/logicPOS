@@ -35,13 +35,13 @@
   <ItemGroup>
     <Reference Include="DevExpress.Data.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\xpo_14_1_5\DevExpress.Data.v14.1.dll</HintPath>
+      <HintPath>..\libs\xpo_14_1_5\DevExpress.Data.v14.1.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Xpo.v14.1">
-      <HintPath>..\..\libs\xpo_14_1_5\DevExpress.Xpo.v14.1.dll</HintPath>
+      <HintPath>..\libs\xpo_14_1_5\DevExpress.Xpo.v14.1.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
