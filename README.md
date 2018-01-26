@@ -1,10 +1,10 @@
-# LogicPos LogicPos OpenSource
+# LogicPOS OpenSource
 
 Open source Point of Sale Solution
 
 ## TechStack
 
-- [C#](https://docs.microsoft.com/en-us/dotnet/csharp/)
+- [.NET C#](https://docs.microsoft.com/en-us/dotnet/csharp/)
 - [GTK#](https://www.gtk.org/)
 - [FastReports](https://www.fast-report.com)
 - [DevExpress eXpressPersistent Objects™ (XPO)](https://www.devexpress.com/products/net/orm/)
@@ -15,7 +15,7 @@ Open source Point of Sale Solution
 
 ## Tools/Ides
 
-- Visual Studio 2017
+- Visual Studio 2017 Community
 
 ## Directory Structure
 
@@ -62,7 +62,7 @@ Open source Point of Sale Solution
 
 - Install [.NET 4.5](https://www.microsoft.com/pt-pt/download/details.aspx?id=30653) _(If not already in system)_
 
-- [Install Visual Studio 2017](https://www.visualstudio.com)
+- [Install Visual Studio 2017 Community](https://www.visualstudio.com)
 
 - Install GTK Runtime [others\windowsruntime\gtk-sharp-2.12.22.msi](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi?raw=true)
 	
@@ -75,5 +75,7 @@ Open source Point of Sale Solution
 	- Buid Solution
 
 	- Set **logicpos** as Startup Project
+	
+	- Set application settings on App.config
 
 	- Run **logicpos**
