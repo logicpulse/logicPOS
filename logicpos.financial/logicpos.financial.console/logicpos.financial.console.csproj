@@ -123,7 +123,7 @@
     <None Include="Web References\qws\WSInterface.wsdl" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\logicpos_pos_internal\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
+    <ProjectReference Include="..\logicpos.financial.library\logicpos.financial.library.csproj">
       <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
       <Name>logicpos.financial.library</Name>
     </ProjectReference>

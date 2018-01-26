@@ -72,35 +72,33 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportArticle.frx">
+      <Link>Resources\Reports\UserReports\ReportArticle.frx</Link>
+    </None>
+    <None Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance.frx</Link>
+    </None>
+    <None Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment.frx</Link>
+    </None>
+    <None Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx</Link>
+    </None>
+    <None Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportTest.frx">
+      <Link>Resources\Reports\UserReports\ReportTest.frx</Link>
+    </None>
+    <None Include="..\..\..\..\logicpos\Resources\Reports\UserReports\TemplateBase.frx">
+      <Link>Resources\Reports\UserReports\TemplateBase.frx</Link>
+    </None>
+    <None Include="..\..\..\..\logicpos\Resources\Reports\UserReports\TemplateBaseSimple.frx">
+      <Link>Resources\Reports\UserReports\TemplateBaseSimple.frx</Link>
+    </None>
     <None Include="app.config" />
     <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinance.frx">
-      <SubType>
-      </SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Reports\UserReports\ReportArticle.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Reports\UserReports\ReportTest.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Reports\UserReports\TemplateBase.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Reports\UserReports\TemplateBaseSimple.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
