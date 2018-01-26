@@ -48,8 +48,8 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Settings
-                string dateTimeFormatDocumentDate = (GlobalFramework.PluginSoftwareVendor != null) ? GlobalFramework.PluginSoftwareVendor.GetDateTimeFormatDocumentDate() : null;//SettingsApp.DateTimeFormatDocumentDate;
-                string dateTimeFormatCombinedDateTime = (GlobalFramework.PluginSoftwareVendor != null) ? GlobalFramework.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
+                //string dateTimeFormatDocumentDate = (GlobalFramework.PluginSoftwareVendor != null) ? GlobalFramework.PluginSoftwareVendor.GetDateTimeFormatDocumentDate() : null;//SettingsApp.DateTimeFormatDocumentDate;
+                //string dateTimeFormatCombinedDateTime = (GlobalFramework.PluginSoftwareVendor != null) ? GlobalFramework.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
 
                 //If has DocumentDateTime from Parameters use it, else use Current Atomic DateTime : This is Optional, Now DocumentDateTime is assigned on Parameter Constructor
                 DateTime documentDateTime = (pParameters.DocumentDateTime != DateTime.MinValue) ? pParameters.DocumentDateTime : FrameworkUtils.CurrentDateTimeAtomic();
@@ -153,7 +153,7 @@ namespace logicpos.financial.library.Classes.Finance
                             if (documentFinanceType.Oid != SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
                             {
                                 //Assign Date and User for all Other
-                                documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(dateTimeFormatCombinedDateTime);
+                                documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
                                 documentFinanceMasterParentDocument.DocumentStatusUser = userDetail.CodeInternal;
                             }
                             //_log.Debug(String.Format("DocumentNumber: [{0}], DocumentStatusStatus: [{1}], DocumentStatusDate: [{2}], DocumentStatusUser: [{3}]", pParameters.OrderReferences[0].DocumentNumber, pParameters.OrderReferences[0].DocumentStatusStatus, pParameters.OrderReferences[0].DocumentStatusDate, pParameters.OrderReferences[0].DocumentStatusUser));
@@ -259,7 +259,7 @@ namespace logicpos.financial.library.Classes.Finance
                         documentFinanceMaster.DocumentStatusStatus = "N";
                     }
                     //Always assign DocumentStatusDate
-                    documentFinanceMaster.DocumentStatusDate = documentDateTime.ToString(dateTimeFormatCombinedDateTime);
+                    documentFinanceMaster.DocumentStatusDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
 
                     //Notes
                     if (documentFinanceMaster.Notes != null && pParameters.Notes != String.Empty)
@@ -432,8 +432,8 @@ namespace logicpos.financial.library.Classes.Finance
                     //Global Document Date
                     documentFinanceMaster.Date = documentDateTime;
                     //SAF-T(PT)
-                    documentFinanceMaster.DocumentDate = documentDateTime.ToString(dateTimeFormatDocumentDate);
-                    documentFinanceMaster.SystemEntryDate = documentDateTime.ToString(dateTimeFormatCombinedDateTime);
+                    documentFinanceMaster.DocumentDate = documentDateTime.ToString(SettingsApp.DateTimeFormatDocumentDate);
+                    documentFinanceMaster.SystemEntryDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
                     documentFinanceMaster.DocumentNumber = documentNumber;
                     documentFinanceMaster.TotalNet = pParameters.ArticleBag.TotalNet;
                     documentFinanceMaster.TotalGross = pParameters.ArticleBag.TotalGross;
