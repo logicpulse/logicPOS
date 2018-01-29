@@ -615,7 +615,8 @@ namespace logicpos.financial.library.Classes.Finance
             }
             else
             {
-                resultSignedHash = "INVALID KEY";
+                // Dont Sign it without SoftwareVendor
+                resultSignedHash = null;
             }
 
             //Debug
@@ -661,20 +662,28 @@ namespace logicpos.financial.library.Classes.Finance
         //Get 1º, 11º, 21º, 31º From Hash, Required for Printed Versions (Reports and Tickets)
         public static string GenDocumentHash4Chars(string pHash)
         {
-            string a = pHash.Substring(1 - 1, 1);
-            string b = pHash.Substring(11 - 1, 1);
-            string c = pHash.Substring(21 - 1, 1);
-            string d = pHash.Substring(31 - 1, 1);
+            // Protection In case of bad hash, ex when we dont have SoftwareVendorPlugin Registered
+            if (string.IsNullOrEmpty(pHash))
+            {
+                throw new Exception("GenDocumentHash4Chars cant get value with invalid/null document Hash! This Error occurs when the FinanceDocument is not Signed with a valid SoftwareVendor Plugin! Plase Install a SoftwareVendor Plugin!");
+            }
+            else
+            {
+                string a = pHash.Substring(1 - 1, 1);
+                string b = pHash.Substring(11 - 1, 1);
+                string c = pHash.Substring(21 - 1, 1);
+                string d = pHash.Substring(31 - 1, 1);
 
-            //_log.Debug(string.Format("pHash: [{0}] [{1}][{2}][{3}][{4}]", pHash, a, b, c, d));
-            //Ex.: Result [wESm]
-            //wQ5dp/AesYEgM9QFlh8aSyfIcpJIDnm+Z8cr4PNsmF7AoxIR9+EU8vIq2PDXE7aIMYH0j.....
-            //[w]:w
-            //[E]:wQ5dp/AesYE
-            //[S]:wQ5dp/AesYEgM9QFlh8aS
-            //[m]_wQ5dp/AesYEgM9QFlh8aSyfIcpJIDnm
+                //_log.Debug(string.Format("pHash: [{0}] [{1}][{2}][{3}][{4}]", pHash, a, b, c, d));
+                //Ex.: Result [wESm]
+                //wQ5dp/AesYEgM9QFlh8aSyfIcpJIDnm+Z8cr4PNsmF7AoxIR9+EU8vIq2PDXE7aIMYH0j.....
+                //[w]:w
+                //[E]:wQ5dp/AesYE
+                //[S]:wQ5dp/AesYEgM9QFlh8aS
+                //[m]_wQ5dp/AesYEgM9QFlh8aSyfIcpJIDnm
 
-            return string.Format("{0}{1}{2}{3}", a, b, c, d);
+                return string.Format("{0}{1}{2}{3}", a, b, c, d);
+            }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
