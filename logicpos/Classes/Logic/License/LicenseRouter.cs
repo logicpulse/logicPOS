@@ -9,7 +9,7 @@ namespace logicpos.Classes.Logic.License
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static bool showDebug = true;
+        public static bool showDebug = false;
         string hardwareID = string.Empty;
 
         private bool _loadApp = false;
@@ -232,7 +232,7 @@ namespace logicpos.Classes.Logic.License
             bool response = false;
             try
             {
-                _log.Debug("WriteByteArrayToFile: " + filePath);
+                if (showDebug) _log.Debug("WriteByteArrayToFile: " + filePath);
                 FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
                 BinaryWriter bw = new BinaryWriter(fs);
                 bw.Write(buff);
@@ -244,7 +244,7 @@ namespace logicpos.Classes.Logic.License
                 _log.Error("Error Writing ByteArrayToFile!", ex);
             }
 
-            _log.Debug("WriteByteArrayToFile response: " + response);
+            if (showDebug) _log.Debug("WriteByteArrayToFile response: " + response);
 
             return response;
         }

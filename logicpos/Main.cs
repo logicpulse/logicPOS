@@ -23,8 +23,12 @@ namespace logicpos
         {
             try
             {
+                // Show current Configuration File
+                _log.Info(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));   
+
                 // Init Settings Main Config Settings
                 GlobalFramework.Settings = ConfigurationManager.AppSettings;
+
                 // BootStrap Paths
                 InitPaths();
 
@@ -35,12 +39,19 @@ namespace logicpos
                 GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
+                    // Show Loaded Plugin
+                    _log.Info(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));   
+                    // Init Plugin
                     SettingsApp.InitSoftwareVendorPluginSettings();
                 }
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
                 if (! Debugger.IsAttached)
                 {
                     GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
+                    // Show Loaded Plugin
+                    if (GlobalFramework.PluginLicenceManager != null) {
+                        _log.Info(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                    }
                 }
 
                 // Required before LicenseRouter
