@@ -2789,4 +2789,19 @@ Cet enregistrement est nécessaire pour le système et est protégé contre l'é
   <data name="global_commission" xml:space="preserve">
     <value>Commission</value>
   </data>
+  <data name="dialog_message_error_creating_financial_document_bad_hash_detected" xml:space="preserve">
+    <value>Signature de hachage de document non valide!
+
+Vous ne pouvez pas extraire les 4 chiffres d'impression du Document Hash.
+Cette erreur se produit car vous ne disposez pas d'un plugin SoftwareVendor enregistré / installé qui est utilisé pour générer le document Hash.
+
+Installez un plugin SoftwareVendor, sinon les documents ne sont pas signés numériquement!</value>
+  </data>
+  <data name="dialog_message_error_plugin_softwarevendor_not_registered" xml:space="preserve">
+    <value>Manquant requis type de plugin SoftwareVendor détecté!
+
+Ce plugin est requis, certaines fonctionnalités sont désactivées sans cela!
+
+Veuillez installer un plugin SoftwareVendor valide!</value>
+  </data>
 </root>

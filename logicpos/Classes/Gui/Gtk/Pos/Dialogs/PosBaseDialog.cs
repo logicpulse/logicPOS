@@ -4,6 +4,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
@@ -95,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _windowTitleCloseButton = pWindowTitleCloseButton;
 
             //Init Window Black Mask
-            if (_useBaseDialogWindowMask)
+            if (_useBaseDialogWindowMask && ! Debugger.IsAttached)
             {
                 //Window Mask Background Hack
                 _windowMaskBackground = new Window("");
@@ -104,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _windowMaskBackground.Move(-100, -100);
                 _windowMaskBackground.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.Black));
                 //Prevent click outside Dialog
-                _windowMaskBackground.Opacity = 0.25F;//0.55F | 0.75F
+                _windowMaskBackground.Opacity = 0.35F;//0.55F | 0.75F
                 _windowMaskBackground.CanFocus = false;
                 _windowMaskBackground.AcceptFocus = false;
                 _windowMaskBackground.Sensitive = false;

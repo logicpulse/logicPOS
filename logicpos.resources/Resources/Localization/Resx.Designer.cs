@@ -907,6 +907,19 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bad Document Hash Detected!
+        ///
+        ///Cant get 4Chars from Document Hash, this Error occurs when the FinanceDocument is not Signed with a valid SoftwareVendor Plugin! 
+        ///
+        ///Please Install a SoftwareVendor Plugin!.
+        /// </summary>
+        public static string dialog_message_error_creating_financial_document_bad_hash_detected {
+            get {
+                return ResourceManager.GetString("dialog_message_error_creating_financial_document_bad_hash_detected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Commit/Persist document problem..
         /// </summary>
         public static string dialog_message_error_creating_financial_document_commit_session {
@@ -947,6 +960,19 @@ namespace logicpos.resources.Resources.Localization {
         public static string dialog_message_error_in_at_webservice {
             get {
                 return ResourceManager.GetString("dialog_message_error_in_at_webservice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing required plugin type SoftwareVendor detected!
+        ///
+        ///This plugin is required, some features are disable without it!
+        ///
+        ///Please install a valid SoftwareVendor Plugin!.
+        /// </summary>
+        public static string dialog_message_error_plugin_softwarevendor_not_registered {
+            get {
+                return ResourceManager.GetString("dialog_message_error_plugin_softwarevendor_not_registered", resourceCulture);
             }
         }
         

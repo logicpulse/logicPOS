@@ -2793,4 +2793,18 @@ This record is necessary for the proper functioning of the application!</value>
   <data name="global_commission" xml:space="preserve">
     <value>Commission</value>
   </data>
+  <data name="dialog_message_error_creating_financial_document_bad_hash_detected" xml:space="preserve">
+    <value>Bad Document Hash Detected!
+
+Cant get 4Chars from Document Hash, this Error occurs when the FinanceDocument is not Signed with a valid SoftwareVendor Plugin! 
+
+Please Install a SoftwareVendor Plugin!</value>
+  </data>
+  <data name="dialog_message_error_plugin_softwarevendor_not_registered" xml:space="preserve">
+    <value>Missing required plugin type SoftwareVendor detected!
+
+This plugin is required, some features are disable without it!
+
+Please install a valid SoftwareVendor Plugin!</value>
+  </data>
 </root>

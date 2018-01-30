@@ -17,6 +17,7 @@ namespace logicpos.financial.library.Classes.Finance
             get { return _exceptionErrors; }
             set { _exceptionErrors = value; }
         }
+
         public string ExceptionErrorsHasString
         {
             get

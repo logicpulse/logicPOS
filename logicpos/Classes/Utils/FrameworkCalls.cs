@@ -69,7 +69,7 @@ namespace logicpos
                     if (printDocument) PrintFinanceDocument(pSourceWindow, documentFinanceMaster);
                 }
             }
-            catch (ProcessFinanceDocumentValidationException ex)
+            catch (Exception ex)
             {
                 string errorMessage = string.Empty;
 
@@ -86,7 +86,7 @@ namespace logicpos
                         break;
                     //TODO: NEW CLASS FinanceDocumentValidate : IMPLEMENT HERE THE RESULT EXCEPTION FOR VALIDATE_SIMPLIFIED_INVOICE
                     default:
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Exception.Message);
+                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(

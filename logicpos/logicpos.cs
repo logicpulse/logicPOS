@@ -244,6 +244,12 @@ namespace logicpos
                 FrameworkUtils.Audit("APP_START", string.Format("{0} {1} clr {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion));
                 if (databaseCreated) FrameworkUtils.Audit("DATABASE_CREATE");
 
+                // Plugin Errors Messages
+                if (GlobalFramework.PluginSoftwareVendor == null)
+                {
+                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_error_plugin_softwarevendor_not_registered);
+                }
+
                 //Create SystemNotification
                 FrameworkUtils.SystemNotification();
             }

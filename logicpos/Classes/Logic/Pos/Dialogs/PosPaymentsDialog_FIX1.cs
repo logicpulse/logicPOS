@@ -250,18 +250,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     this.Run();
                 }
             }
-            catch (Exception ex)
+            catch (ProcessFinanceDocumentValidationException ex)
             {
                 _log.Error(ex.Message, ex);
                 string errorMessage = string.Empty;
-
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
                         errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, Resx.dialog_message_error_creating_financial_document_missing_series);
                         break;
                     default:
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Message);
+                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Exception.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
