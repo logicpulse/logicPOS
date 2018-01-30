@@ -1143,7 +1143,7 @@ namespace logicpos
         public static string GetWindowTitle(String pTitle)
         {
             //return string.Format("{0} {1} : {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, pTitle);
-           return string.Format("{0} : {1}", SettingsApp.AppName, pTitle);
+            return string.Format("{0} : {1}", SettingsApp.AppName, pTitle);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1410,7 +1410,7 @@ namespace logicpos
             try
             {
                 // Use HardwareId from Settings, must be added manually, its a hack and its not there, in setuo, only in debug config
-                if (! string.IsNullOrEmpty(GlobalFramework.Settings["appHardwareId"]))
+                if (!string.IsNullOrEmpty(GlobalFramework.Settings["appHardwareId"]))
                 {
                     GlobalFramework.LicenceHardwareId = GlobalFramework.Settings["appHardwareId"];
                 }
@@ -1775,13 +1775,13 @@ namespace logicpos
             T genericTreeView = default(T);
             try
             {
-                object[] constructor = new object[] 
-                { 
-                      pSourceWindow, 
+                object[] constructor = new object[]
+                {
+                      pSourceWindow,
                       null,         //Default Value
                       pCriteria,    //Criteria
                       null,         //DialogType
-                      GenericTreeViewMode.Default, 
+                      GenericTreeViewMode.Default,
                       GenericTreeViewNavigatorMode.Default
                 };
                 genericTreeView = (T)Activator.CreateInstance(typeof(T), constructor);

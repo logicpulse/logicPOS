@@ -665,7 +665,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Protection In case of bad hash, ex when we dont have SoftwareVendorPlugin Registered
             if (string.IsNullOrEmpty(pHash))
             {
-                throw new Exception("GenDocumentHash4Chars cant get value with invalid/null document Hash! This Error occurs when the FinanceDocument is not Signed with a valid SoftwareVendor Plugin! Plase Install a SoftwareVendor Plugin!");
+                throw new Exception(Resx.dialog_message_error_creating_financial_document_bad_hash_detected);
             }
             else
             {

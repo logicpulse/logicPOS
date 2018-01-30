@@ -2788,4 +2788,19 @@ Este registo é necessário ao sistema e está protegido contra edição!</value
   <data name="global_commission" xml:space="preserve">
     <value>Comissão</value>
   </data>
+  <data name="dialog_message_error_creating_financial_document_bad_hash_detected" xml:space="preserve">
+    <value>Assinatura Hash do Documento Inválida!
+
+Não se consegue extrair os 4 digitos de impressão a partir do Hash do Documento. 
+Este erro ocorre devido a não ter um plugin do tipo SoftwareVendor registado/instalado que é usado para gerar o Hash do Documento.
+
+Instale um SoftwareVendor Plugin, caso contrário os documentos não são Assinados digitalmente!</value>
+  </data>
+  <data name="dialog_message_error_plugin_softwarevendor_not_registered" xml:space="preserve">
+    <value>Detectado a falta de um plugin obrigatório do tipo SoftwareVendor!
+
+Este plugin é necessário, algumas funcionalidades ficaram desabilitadas!
+
+Instale um plugin SoftwareVendor válido!</value>
+  </data>
 </root>

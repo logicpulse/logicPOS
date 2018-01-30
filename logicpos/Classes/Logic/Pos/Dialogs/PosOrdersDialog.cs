@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Call Print New Document
                         FrameworkCalls.PrintFinanceDocument(this, newDocument);
                     }
-                    catch (ProcessFinanceDocumentValidationException ex)
+                    catch (Exception ex)
                     {
                         string errorMessage = string.Empty;
 
@@ -59,7 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 break;
                             case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                             default:
-                                errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Exception.Message);
+                                errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Message);
                                 break;
                         }
                         Utils.ShowMessageTouch(
@@ -71,6 +71,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                           Resx.global_error,
                           errorMessage
                         );
+
+                        this.Run();
                     }
                 }
             }

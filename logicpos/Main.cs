@@ -43,7 +43,12 @@ namespace logicpos
                     _log.Info(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));   
                     // Init Plugin
                     SettingsApp.InitSoftwareVendorPluginSettings();
+                } else
+                {
+                    // Show Loaded Plugin
+                    _log.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));   
                 }
+
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
                 if (! Debugger.IsAttached)
                 {
