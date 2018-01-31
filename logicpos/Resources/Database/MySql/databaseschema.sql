@@ -1011,7 +1011,7 @@ CREATE TABLE `fin_configurationvatexemptionreason` (
   `DeletedWhere` char(38) DEFAULT NULL,
   `Ord` int(10) unsigned DEFAULT NULL,
   `Code` int(10) unsigned DEFAULT NULL,
-  `Designation` varchar(255) DEFAULT NULL,
+  `Designation` varchar(60) DEFAULT NULL,
   `Acronym` varchar(3) DEFAULT NULL,
   `StandardApplicable` text,
   `OptimisticLockField` int(11) DEFAULT NULL,

@@ -582,20 +582,20 @@ namespace logicpos.shared.Classes.Finance
                         {
                             //Generate Key/Props
                             articleBagKey = new ArticleBagKey(
-                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("Article")].ToString()),   //ticketLine.Article.Oid
-                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Designation")]),  //ticketLine.Designation
-                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Price")]),       //ticketLine.Price
-                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Discount")]),    //ticketLine.Discount
-                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Vat")])          //ticketLine.Vat
+                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("Article")].ToString()),                                   //ticketLine.Article.Oid
+                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Designation")]),                                  //ticketLine.Designation
+                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Price")]),                                       //ticketLine.Price
+                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Discount")]),                                    //ticketLine.Discount
+                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Vat")])                                          //ticketLine.Vat
                             );
 
                             articleBagProps = new ArticleBagProperties(
-                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("ConfigurationPlace")].ToString()),                         //ticket.PlaceTable.Place.Oid
-                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("ConfigurationPlaceTable")].ToString()),                    //ticket.PlaceTable.Oid
-                                (PriceType)Enum.Parse(typeof(PriceType), row.Values[selectedDataOrders.GetFieldIndex("PriceType")].ToString()),  //ticket.PriceType
-                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Code")]),                                          //ticketLine.Code
-                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Quantity")]),                                     //ticketLine.Quantity
-                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("UnitMeasure")])                                    //ticketLine.UnitMeasure
+                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("ConfigurationPlace")].ToString()),                        //ticket.PlaceTable.Place.Oid
+                                new Guid(row.Values[selectedDataOrders.GetFieldIndex("ConfigurationPlaceTable")].ToString()),                   //ticket.PlaceTable.Oid
+                                (PriceType)Enum.Parse(typeof(PriceType), row.Values[selectedDataOrders.GetFieldIndex("PriceType")].ToString()), //ticket.PriceType
+                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Code")]),                                         //ticketLine.Code
+                                Convert.ToDecimal(row.Values[selectedDataOrders.GetFieldIndex("Quantity")]),                                    //ticketLine.Quantity
+                                Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("UnitMeasure")])                                   //ticketLine.UnitMeasure
                             );
 
                             //Detect and Assign VatExemptionReason
@@ -636,6 +636,7 @@ namespace logicpos.shared.Classes.Finance
                     {
                         foreach (SelectStatementResultRow row in selectedDataDocuments.Data)
                         {
+                            // If Not ConferenceDocument or TableConsult
                             if (row.Values[selectedDataDocuments.GetFieldIndex("DocumentType")].ToString() != SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument.ToString())
                             {
                                 //Generate Key/Props

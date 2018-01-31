@@ -34,7 +34,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fDesignation;
-        [Size(255)]
+        [Size(60)]
         public string Designation
         {
             get { return fDesignation; }
