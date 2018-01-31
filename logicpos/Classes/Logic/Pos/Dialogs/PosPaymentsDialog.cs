@@ -315,7 +315,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (articleBag != null)
             {
                 //Required to Update articleBag.
-                _discountGlobal = (_selectedCustomer.Discount > 0) ? _selectedCustomer.Discount : 0;
+                _discountGlobal = (_selectedCustomer != null &&_selectedCustomer.Discount > 0) ? _selectedCustomer.Discount : 0;
                 articleBag.DiscountGlobal = _discountGlobal;
                 articleBag.UpdateTotals();
                 //Update UI
@@ -516,6 +516,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Update EntryBoxs
                     _entryBoxSelectCustomerName.EntryValidation.Text = (_selectedCustomer != null) ? _selectedCustomer.Name : string.Empty;
                     _entryBoxCustomerDiscount.EntryValidation.Text = FrameworkUtils.DecimalToString(_discountGlobal);
+
                     _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text = (_selectedCustomer.FiscalNumber != null) ? _selectedCustomer.FiscalNumber.ToString() : string.Empty;
                     _entryBoxSelectCustomerCardNumber.EntryValidation.Text = (_selectedCustomer.CardNumber != null) ? _selectedCustomer.CardNumber.ToString() : string.Empty;
                     _entryBoxCustomerAddress.EntryValidation.Text = (_selectedCustomer.Address != null) ? _selectedCustomer.Address.ToString() : string.Empty;
@@ -1045,8 +1046,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _labelDeliveryValue.Text = FrameworkUtils.DecimalToStringCurrency(_totalDelivery);
                 _labelChangeValue.Text = FrameworkUtils.DecimalToStringCurrency(_totalChange);
                 //Update UI Buttons
-                _buttonFullPayment.Sensitive = false;
-                _buttonPartialPayment.Sensitive = true;
+                if (_buttonFullPayment != null) _buttonFullPayment.Sensitive = false;
+                if (_buttonPartialPayment != null) _buttonPartialPayment.Sensitive = true;
             }
 
             //Shared: Disable Payment Method if it is Assigned

@@ -50,6 +50,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             buttonPrintOrder.Clicked += buttonPrintOrder_Clicked;
             buttonTableConsult.Clicked += buttonTableConsult_Clicked;
             //buttonListFinanceDocuments.Clicked += buttonListFinanceDocuments_Clicked;
+
+            // Enable/Disable PtintTicket based on Printer Type, Currently PrintTicket is only Implemented in Thermal Printers
+            buttonPrintOrder.Sensitive = GlobalFramework.LoggedTerminal.Printer.PrinterType.Token.StartsWith("THERMAL_PRINTER_");
         }
     }
 }

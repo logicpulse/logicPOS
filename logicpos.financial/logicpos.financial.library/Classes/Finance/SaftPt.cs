@@ -82,7 +82,10 @@ namespace logicpos.financial.library.Classes.Finance
                     _xmlWriter.WriteStartDocument();
 
                     //<AuditFile>
-                    _xmlWriter.WriteStartElement("AuditFile", string.Format("urn:OECD:StandardAuditFile-Tax:{0}", string.Format("{0}_{1}", SettingsApp.SaftVersionPrefix, SettingsApp.SaftVersion)));
+                    string standardAuditFileTax = string.Format("{0}_{1}", SettingsApp.SaftVersionPrefix, SettingsApp.SaftVersion);
+                    _xmlWriter.WriteStartElement("AuditFile", string.Format("urn:OECD:StandardAuditFile-Tax:{0}", standardAuditFileTax));
+                    _xmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
+                    _xmlWriter.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
 
                     Header();
                     MasterFiles();
@@ -771,6 +774,8 @@ namespace logicpos.financial.library.Classes.Finance
 
             //<Invoice>
             //  <InvoiceNo>1T 1/6</InvoiceNo>
+            //  <!-- Added for 1.04_01-->
+            //  <ATCUD>0</ATCUD>
             //  <DocumentStatus>
             //    <InvoiceStatus>N</InvoiceStatus>
             //    <InvoiceStatusDate>2008-09-16T15:58:10</InvoiceStatusDate>
@@ -808,6 +813,8 @@ namespace logicpos.financial.library.Classes.Finance
             //      <TaxPercentage>20</TaxPercentage>
             //    </Tax>
             //    <TaxExemptionReason>Al... do n.º... do DL nº...</TaxExemptionReason>
+            //    <!-- Added for 1.04_01-->
+            //    <TaxExemptionCode>M05</TaxExemptionCode>
             //    <SettlementAmount>234.568</SettlementAmount>
             //  </Line>
             //  <DocumentTotals>
@@ -874,7 +881,8 @@ namespace logicpos.financial.library.Classes.Finance
                         fm.MovementStartTime,
                         fm.ATDocCodeID,
                         fm.ExchangeRate,
-                        cc.Acronym AS CurrencyCode
+                        cc.Acronym AS CurrencyCode, 
+                        0 AS ATCUD
                     FROM
                         fin_documentfinancemaster fm
                         left join fin_documentfinancetype ft ON (fm.DocumentType = ft.Oid)
@@ -909,6 +917,7 @@ namespace logicpos.financial.library.Classes.Finance
                     //<Invoice|StockMovement|WorkDocument>
                     _xmlWriter.WriteStartElement(pDocumentNodeNameChild);
                     WriteElement(pDocumentNodeNameChildNo, row.Values[xPSelectData.GetFieldIndex("DocumentNo")]);
+                    WriteElement("ATCUD", row.Values[xPSelectData.GetFieldIndex("ATCUD")]);
                     //<DocumentStatus>
                     _xmlWriter.WriteStartElement("DocumentStatus");
                     WriteElement(string.Format("{0}Status", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentStatusStatus")]);
@@ -1203,7 +1212,8 @@ namespace logicpos.financial.library.Classes.Finance
                         fdTotalNet AS NetTotal,
                         fdTotalFinal AS GrossTotal,
                         fdTotalDiscount AS SettlementAmount,
-                        fdVatExemptionReasonDesignation AS TaxExemptionReason
+                        fdVatExemptionReasonDesignation AS TaxExemptionReason,
+                        cxAcronym AS TaxExemptionCode
                     FROM  
                         view_documentfinance
                     WHERE 
@@ -1302,6 +1312,7 @@ namespace logicpos.financial.library.Classes.Finance
                         //</Tax>
 
                         WriteElement("TaxExemptionReason", row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")]);
+                        WriteElement("TaxExemptionCode", row.Values[xPSelectData.GetFieldIndex("TaxExemptionCode")]);
                         if (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]) > 0.0m)
                             WriteElement("SettlementAmount", FrameworkUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]), GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
 
@@ -1511,6 +1522,8 @@ namespace logicpos.financial.library.Classes.Finance
             //Sample for Payments
             //<Payment>
             //    <PaymentRefNo>PGT 1T1/1</PaymentRefNo>
+            //    <!-- Added for 1.04_01-->
+            //    <ATCUD>0</ATCUD>
             //    <Period>10</Period>
             //    <TransactionID>2008-10-22 BNC 4</TransactionID>
             //    <TransactionDate>2008-10-22</TransactionDate>
@@ -1585,7 +1598,8 @@ namespace logicpos.financial.library.Classes.Finance
 	                    EntityInternalCode as CustomerID,
                         CurrencyCode,
                         CurrencyAmount,
-                        ExchangeRate
+                        ExchangeRate, 
+                        0 AS ATCUD
                     FROM 
 	                    fin_documentfinancepayment
                     WHERE 
@@ -1610,6 +1624,7 @@ namespace logicpos.financial.library.Classes.Finance
                     //<Payment>
                     _xmlWriter.WriteStartElement("Payment");
                     WriteElement("PaymentRefNo", row.Values[xPSelectData.GetFieldIndex("PaymentRefNo")]);
+                    WriteElement("ATCUD", row.Values[xPSelectData.GetFieldIndex("ATCUD")]);
                     WriteElement("Period", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]).Month);
                     WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndex("TransactionID")]);
                     WriteElement("TransactionDate", row.Values[xPSelectData.GetFieldIndex("TransactionDate")]);
@@ -1694,6 +1709,8 @@ namespace logicpos.financial.library.Classes.Finance
             //        <TaxPercentage>0</TaxPercentage>
             //    </Tax>
             //    <TaxExemptionReason>Al... do n.º... do DL nº...</TaxExemptionReason>
+            //    <!-- Added for 1.04_01-->
+            //    <TaxExemptionCode>M05</TaxExemptionCode>
             //</Line>
 
             try

@@ -129,7 +129,7 @@ namespace logicpos.shared.App
         public static string SaftSoftwareCertificateNumber;
         //Overrided by SoftwareVendor Plugin - ex: "PT"
         public static string SaftVersionPrefix;
-        //Overrided by SoftwareVendor Plugin - ex: "1.03_01"
+        //Overrided by SoftwareVendor Plugin - ex: "1.04_01"
         public static string SaftVersion;
         //Versão da Chave Privada utilizada na criação da Assinatura 
         //Overrided by SoftwareVendor Plugin - ex: 1

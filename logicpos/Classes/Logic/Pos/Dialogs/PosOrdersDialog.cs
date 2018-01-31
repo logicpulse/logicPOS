@@ -2,11 +2,10 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
-using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
