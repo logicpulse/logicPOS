@@ -1,0 +1,454 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/25/2014 09:47:21" ReportInfo.Modified="02/16/2016 18:53:02" ReportInfo.CreatorVersion="2014.1.8.0">
+  <Dictionary>
+    <TableDataSource Name="configurationplace" ReferenceName="NewDataSet.configurationplace" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="Ord" DataType="System.Int16"/>
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <Column Name="TypeSubtotal" DataType="System.String"/>
+      <Column Name="AccountType" DataType="System.String"/>
+      <Column Name="OrderPrintMode" DataType="System.Int32"/>
+      <Column Name="PriceType" DataType="System.String"/>
+      <Column Name="MovementType" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="ButtonImage" DataType="System.String"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="configurationplacetable" ReferenceName="NewDataSet.configurationplacetable" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="Ord" DataType="System.Int16"/>
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <Column Name="TableStatus" DataType="System.Int32"/>
+      <Column Name="TotalOpen" DataType="System.Double"/>
+      <Column Name="DateTableOpen" DataType="System.DateTime"/>
+      <Column Name="DateTableClosed" DataType="System.DateTime"/>
+      <Column Name="Place" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="ButtonImage" DataType="System.String"/>
+      <Column Name="discount" DataType="System.Double"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="configurationplaceterminal" ReferenceName="NewDataSet.configurationplaceterminal" DataType="System.Int32" PropName="configurationplaceterminal1" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="Ord" DataType="System.Int16"/>
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <Column Name="Place" DataType="System.String"/>
+      <Column Name="Printer" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="TemplateTicket" DataType="System.String"/>
+      <Column Name="TemplateTablesConsult" DataType="System.String"/>
+      <Column Name="hardwareid" DataType="System.String"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="documentfinancedetail" ReferenceName="NewDataSet.documentfinancedetail" DataType="System.Int32" Enabled="true">
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <Column Name="Quantity" DataType="System.Double"/>
+      <Column Name="TotalFinal" DataType="System.Double"/>
+      <Column Name="DocumentMaster" DataType="System.String"/>
+      <Column Name="Article" DataType="System.String"/>
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="CreatedBy" DataType="System.String"/>
+      <Column Name="CreatedWhere" DataType="System.String"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="DeletedAt" DataType="System.DateTime"/>
+      <Column Name="DeletedBy" DataType="System.String"/>
+      <Column Name="DeletedWhere" DataType="System.String"/>
+      <Column Name="Ord" DataType="System.Int32"/>
+      <Column Name="UnitMeasure" DataType="System.String"/>
+      <Column Name="Price" DataType="System.Double"/>
+      <Column Name="Vat" DataType="System.Double"/>
+      <Column Name="VatExemptionReasonDesignation" DataType="System.String"/>
+      <Column Name="Discount" DataType="System.Double"/>
+      <Column Name="TotalGross" DataType="System.Double"/>
+      <Column Name="TotalDiscount" DataType="System.Double"/>
+      <Column Name="TotalTax" DataType="System.Double"/>
+      <Column Name="PriceType" DataType="System.Int32"/>
+      <Column Name="PriceFinal" DataType="System.Double"/>
+      <Column Name="Token1" DataType="System.String"/>
+      <Column Name="Token2" DataType="System.String"/>
+      <Column Name="VatRate" DataType="System.String"/>
+      <Column Name="VatExemptionReason" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+    </TableDataSource>
+    <TableDataSource Name="documentfinancemaster" ReferenceName="NewDataSet.documentfinancemaster" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="Date" DataType="System.DateTime"/>
+      <Column Name="DocumentDate" DataType="System.String"/>
+      <Column Name="SystemEntryDate" DataType="System.String"/>
+      <Column Name="DocumentNumber" DataType="System.String"/>
+      <Column Name="TotalTax" DataType="System.Double"/>
+      <Column Name="TotalDelivery" DataType="System.Double"/>
+      <Column Name="TotalChange" DataType="System.Double"/>
+      <Column Name="Hash" DataType="System.String"/>
+      <Column Name="ExternalDocument" DataType="System.String"/>
+      <Column Name="Discount" DataType="System.Double"/>
+      <Column Name="DiscountFinancial" DataType="System.Double"/>
+      <Column Name="ExchangeRate" DataType="System.Double"/>
+      <Column Name="EntityOid" DataType="System.String"/>
+      <Column Name="EntityName" DataType="System.String"/>
+      <Column Name="EntityAddress" DataType="System.String"/>
+      <Column Name="EntityZipCode" DataType="System.String"/>
+      <Column Name="EntityCity" DataType="System.String"/>
+      <Column Name="EntityFiscalNumber" DataType="System.String"/>
+      <Column Name="SourceOrderMain" DataType="System.String"/>
+      <Column Name="DocumentType" DataType="System.String"/>
+      <Column Name="DocumentSerie" DataType="System.String"/>
+      <Column Name="PaymentMethod" DataType="System.String"/>
+      <Column Name="Currency" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="DocumentStatusStatus" DataType="System.String"/>
+      <Column Name="DocumentStatusDate" DataType="System.String"/>
+      <Column Name="DocumentStatusReason" DataType="System.String"/>
+      <Column Name="DocumentStatusUser" DataType="System.String"/>
+      <Column Name="SourceBilling" DataType="System.String"/>
+      <Column Name="HashControl" DataType="System.String"/>
+      <Column Name="SelfBillingIndicator" DataType="System.Int32"/>
+      <Column Name="CashVATSchemeIndicator" DataType="System.Int32"/>
+      <Column Name="ThirdPartiesBillingIndicator" DataType="System.Int32"/>
+      <Column Name="DocumentCreatorUser" DataType="System.String"/>
+      <Column Name="EACCode" DataType="System.String"/>
+      <Column Name="TransactionID" DataType="System.String"/>
+      <Column Name="ShipToDeliveryID" DataType="System.String"/>
+      <Column Name="ShipToDeliveryDate" DataType="System.DateTime"/>
+      <Column Name="ShipToWarehouseID" DataType="System.String"/>
+      <Column Name="ShipToLocationID" DataType="System.String"/>
+      <Column Name="ShipToAddress" DataType="System.String"/>
+      <Column Name="ShipToBuildingNumber" DataType="System.String"/>
+      <Column Name="ShipToStreetName" DataType="System.String"/>
+      <Column Name="ShipToAddressDetail" DataType="System.String"/>
+      <Column Name="ShipToCity" DataType="System.String"/>
+      <Column Name="ShipToPostalCode" DataType="System.String"/>
+      <Column Name="ShipToRegion" DataType="System.String"/>
+      <Column Name="ShipToCountry" DataType="System.String"/>
+      <Column Name="ShipFromDeliveryID" DataType="System.String"/>
+      <Column Name="ShipFromDeliveryDate" DataType="System.DateTime"/>
+      <Column Name="ShipFromWarehouseID" DataType="System.String"/>
+      <Column Name="ShipFromLocationID" DataType="System.String"/>
+      <Column Name="ShipFromAddress" DataType="System.String"/>
+      <Column Name="ShipFromBuildingNumber" DataType="System.String"/>
+      <Column Name="ShipFromStreetName" DataType="System.String"/>
+      <Column Name="ShipFromAddressDetail" DataType="System.String"/>
+      <Column Name="ShipFromCity" DataType="System.String"/>
+      <Column Name="ShipFromPostalCode" DataType="System.String"/>
+      <Column Name="ShipFromRegion" DataType="System.String"/>
+      <Column Name="ShipFromCountry" DataType="System.String"/>
+      <Column Name="MovementStartTime" DataType="System.DateTime"/>
+      <Column Name="MovementEndTime" DataType="System.DateTime"/>
+      <Column Name="ATDocCodeID" DataType="System.String"/>
+      <Column Name="TotalGross" DataType="System.Double"/>
+      <Column Name="TotalDiscount" DataType="System.Double"/>
+      <Column Name="TotalFinal" DataType="System.Double"/>
+      <Column Name="TotalFinalRound" DataType="System.Double"/>
+      <Column Name="EntityInternalCode" DataType="System.String"/>
+      <Column Name="EntityCountry" DataType="System.String"/>
+      <Column Name="Payed" DataType="System.UInt64"/>
+      <Column Name="PayedDate" DataType="System.DateTime"/>
+      <Column Name="DocumentParent" DataType="System.String"/>
+      <Column Name="DocumentChild" DataType="System.String"/>
+      <Column Name="PaymentCondition" DataType="System.String"/>
+      <Column Name="CreatedBy" DataType="System.String"/>
+      <Column Name="CreatedWhere" DataType="System.String"/>
+      <Column Name="DeletedAt" DataType="System.DateTime"/>
+      <Column Name="DeletedBy" DataType="System.String"/>
+      <Column Name="DeletedWhere" DataType="System.String"/>
+      <Column Name="EntityLocality" DataType="System.String"/>
+      <Column Name="EntityCountryOid" DataType="System.String"/>
+      <Column Name="Printed" DataType="System.UInt64"/>
+    </TableDataSource>
+    <TableDataSource Name="documentfinancemastertotal" ReferenceName="NewDataSet.documentfinancemastertotal" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="Value" DataType="System.Double"/>
+      <Column Name="Total" DataType="System.Double"/>
+      <Column Name="TotalType" DataType="System.Int32"/>
+      <Column Name="DocumentMaster" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="totalbase" DataType="System.Double"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="documentorderdetail" ReferenceName="NewDataSet.documentorderdetail" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <Column Name="Quantity" DataType="System.Double"/>
+      <Column Name="UnitMeasure" DataType="System.String"/>
+      <Column Name="Price" DataType="System.Double"/>
+      <Column Name="Vat" DataType="System.Double"/>
+      <Column Name="Discount" DataType="System.Double"/>
+      <Column Name="OrderTicket" DataType="System.String"/>
+      <Column Name="Article" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="Ord" DataType="System.Int32"/>
+      <Column Name="totalgross" DataType="System.Double"/>
+      <Column Name="totaldiscount" DataType="System.Double"/>
+      <Column Name="totaltax" DataType="System.Double"/>
+      <Column Name="totalfinal" DataType="System.Double"/>
+      <Column Name="token1" DataType="System.String"/>
+      <Column Name="token2" DataType="System.String"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="documentordermain" ReferenceName="NewDataSet.documentordermain" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="DateStart" DataType="System.DateTime"/>
+      <Column Name="OrderStatus" DataType="System.Int32"/>
+      <Column Name="PlaceTable" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="documentorderticket" ReferenceName="NewDataSet.documentorderticket" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="TicketId" DataType="System.Int32"/>
+      <Column Name="DateStart" DataType="System.DateTime"/>
+      <Column Name="PriceType" DataType="System.Int32"/>
+      <Column Name="OrderMain" DataType="System.String"/>
+      <Column Name="PlaceTable" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="discount" DataType="System.Double"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="userdetail" ReferenceName="NewDataSet.userdetail" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="Ord" DataType="System.Int16"/>
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Name" DataType="System.String"/>
+      <Column Name="Residence" DataType="System.String"/>
+      <Column Name="Locality" DataType="System.String"/>
+      <Column Name="ZipCode" DataType="System.String"/>
+      <Column Name="City" DataType="System.String"/>
+      <Column Name="DateOfContract" DataType="System.String"/>
+      <Column Name="Phone" DataType="System.String"/>
+      <Column Name="MobilePhone" DataType="System.String"/>
+      <Column Name="Email" DataType="System.String"/>
+      <Column Name="FiscalNumber" DataType="System.String"/>
+      <Column Name="Language" DataType="System.String"/>
+      <Column Name="AssignedSeating" DataType="System.String"/>
+      <Column Name="AccessPin" DataType="System.String"/>
+      <Column Name="AccessCardNumber" DataType="System.String"/>
+      <Column Name="BaseConsumption" DataType="System.String"/>
+      <Column Name="BaseOffers" DataType="System.String"/>
+      <Column Name="PVPOffers" DataType="System.String"/>
+      <Column Name="Remarks" DataType="System.String"/>
+      <Column Name="Profile" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="codeinternal" DataType="System.String"/>
+      <Column Name="login" DataType="System.String"/>
+      <Column Name="password" DataType="System.String"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+      <Column Name="passwordreset" DataType="System.UInt64"/>
+      <Column Name="passwordresetdate" DataType="System.DateTime"/>
+      <Column Name="buttonimage" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="configurationpaymentmethod" ReferenceName="NewDataSet.configurationpaymentmethod" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.UInt64"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="Ord" DataType="System.Int32"/>
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Token" DataType="System.String"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <Column Name="ResourceString" DataType="System.String"/>
+      <Column Name="ButtonIcon" DataType="System.String"/>
+      <Column Name="Acronym" DataType="System.String"/>
+      <Column Name="AllowPayback" DataType="System.String"/>
+      <Column Name="Symbol" DataType="System.String"/>
+      <Column Name="OptimisticLockField" DataType="System.Int32"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <Relation Name="FK_ConfigurationPlaceTerminal_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplaceterminal" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlaceTerminal_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplaceterminal" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlaceTable_Place" ReferenceName="NewDataSet.FK_ConfigurationPlaceTable_Place" ParentDataSource="configurationplace" ChildDataSource="configurationplacetable" ParentColumns="Oid" ChildColumns="Place" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlaceTable_UpdatedWhere" ReferenceName="NewDataSet.FK_ConfigurationPlaceTable_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplacetable" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlaceTable_UpdatedBy" ReferenceName="NewDataSet.FK_ConfigurationPlaceTable_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationplacetable" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlaceTerminal_Place" ReferenceName="NewDataSet.FK_ConfigurationPlaceTerminal_Place" ParentDataSource="configurationplace" ChildDataSource="configurationplaceterminal" ParentColumns="Oid" ChildColumns="Place" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlaceTerminal_UpdatedWhere" ReferenceName="NewDataSet.FK_ConfigurationPlaceTerminal_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplaceterminal" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlaceTerminal_UpdatedBy" ReferenceName="NewDataSet.FK_ConfigurationPlaceTerminal_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationplaceterminal" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlace_UpdatedWhere" ReferenceName="NewDataSet.FK_ConfigurationPlace_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplace" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPlace_UpdatedBy" ReferenceName="NewDataSet.FK_ConfigurationPlace_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationplace" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceDetail_DocumentMaster" ReferenceName="NewDataSet.FK_DocumentFinanceDetail_DocumentMaster" ParentDataSource="documentfinancemaster" ChildDataSource="documentfinancedetail" ParentColumns="Oid" ChildColumns="DocumentMaster" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceDetail_UpdatedWhere" ReferenceName="NewDataSet.FK_DocumentFinanceDetail_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentfinancedetail" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceDetail_UpdatedBy" ReferenceName="NewDataSet.FK_DocumentFinanceDetail_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentfinancedetail" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceMasterTotal_DocumentMaster" ReferenceName="NewDataSet.FK_DocumentFinanceMasterTotal_DocumentMaster" ParentDataSource="documentfinancemaster" ChildDataSource="documentfinancemastertotal" ParentColumns="Oid" ChildColumns="DocumentMaster" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceMasterTotal_UpdatedWhere" ReferenceName="NewDataSet.FK_DocumentFinanceMasterTotal_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentfinancemastertotal" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceMasterTotal_UpdatedBy" ReferenceName="NewDataSet.FK_DocumentFinanceMasterTotal_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentfinancemastertotal" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceMaster_SourceOrderMain" ReferenceName="NewDataSet.FK_DocumentFinanceMaster_SourceOrderMain" ParentDataSource="documentordermain" ChildDataSource="documentfinancemaster" ParentColumns="Oid" ChildColumns="SourceOrderMain" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceMaster_UpdatedWhere" ReferenceName="NewDataSet.FK_DocumentFinanceMaster_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentfinancemaster" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceMaster_UpdatedBy" ReferenceName="NewDataSet.FK_DocumentFinanceMaster_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentfinancemaster" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderDetail_OrderTicket" ReferenceName="NewDataSet.FK_DocumentOrderDetail_OrderTicket" ParentDataSource="documentorderticket" ChildDataSource="documentorderdetail" ParentColumns="Oid" ChildColumns="OrderTicket" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderDetail_UpdatedWhere" ReferenceName="NewDataSet.FK_DocumentOrderDetail_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentorderdetail" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderDetail_UpdatedBy" ReferenceName="NewDataSet.FK_DocumentOrderDetail_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentorderdetail" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderMain_PlaceTable" ReferenceName="NewDataSet.FK_DocumentOrderMain_PlaceTable" ParentDataSource="configurationplacetable" ChildDataSource="documentordermain" ParentColumns="Oid" ChildColumns="PlaceTable" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderMain_UpdatedWhere" ReferenceName="NewDataSet.FK_DocumentOrderMain_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentordermain" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderMain_UpdatedBy" ReferenceName="NewDataSet.FK_DocumentOrderMain_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentordermain" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderTicket_OrderMain" ReferenceName="NewDataSet.FK_DocumentOrderTicket_OrderMain" ParentDataSource="documentordermain" ChildDataSource="documentorderticket" ParentColumns="Oid" ChildColumns="OrderMain" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderTicket_PlaceTable" ReferenceName="NewDataSet.FK_DocumentOrderTicket_PlaceTable" ParentDataSource="configurationplacetable" ChildDataSource="documentorderticket" ParentColumns="Oid" ChildColumns="PlaceTable" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderTicket_UpdatedWhere" ReferenceName="NewDataSet.FK_DocumentOrderTicket_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentorderticket" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_DocumentOrderTicket_UpdatedBy" ReferenceName="NewDataSet.FK_DocumentOrderTicket_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentorderticket" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_UserDetail_UpdatedWhere" ReferenceName="NewDataSet.FK_UserDetail_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="userdetail" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_UserDetail_UpdatedBy" ReferenceName="NewDataSet.FK_UserDetail_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="userdetail" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPaymentMethod_UpdatedWhere" ReferenceName="NewDataSet.FK_ConfigurationPaymentMethod_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationpaymentmethod" ParentColumns="Oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="FK_ConfigurationPaymentMethod_UpdatedBy" ReferenceName="NewDataSet.FK_ConfigurationPaymentMethod_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationpaymentmethod" ParentColumns="Oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="FK_DocumentFinanceMaster_PaymentMethod" ReferenceName="NewDataSet.FK_DocumentFinanceMaster_PaymentMethod" ParentDataSource="configurationpaymentmethod" ChildDataSource="documentfinancemaster" ParentColumns="Oid" ChildColumns="PaymentMethod" Enabled="true"/>
+    <Relation Name="fk_configurationpaymentmethod_UpdatedWhere" ReferenceName="NewDataSet.fk_configurationpaymentmethod_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationpaymentmethod" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_configurationpaymentmethod_UpdatedBy" ReferenceName="NewDataSet.fk_configurationpaymentmethod_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationpaymentmethod" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="fk_configurationplace_UpdatedWhere" ReferenceName="NewDataSet.fk_configurationplace_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplace" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_configurationplace_UpdatedBy" ReferenceName="NewDataSet.fk_configurationplace_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationplace" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="fk_configurationplacetable_place" ReferenceName="NewDataSet.fk_configurationplacetable_place" ParentDataSource="configurationplace" ChildDataSource="configurationplacetable" ParentColumns="oid" ChildColumns="place" Enabled="true"/>
+    <Relation Name="fk_configurationplacetable_UpdatedWhere" ReferenceName="NewDataSet.fk_configurationplacetable_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplacetable" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_configurationplacetable_UpdatedBy" ReferenceName="NewDataSet.fk_configurationplacetable_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationplacetable" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="fk_configurationplaceterminal_place" ReferenceName="NewDataSet.fk_configurationplaceterminal_place" ParentDataSource="configurationplace" ChildDataSource="configurationplaceterminal" ParentColumns="oid" ChildColumns="place" Enabled="true"/>
+    <Relation Name="fk_configurationplaceterminal_UpdatedWhere" ReferenceName="NewDataSet.fk_configurationplaceterminal_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplaceterminal" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_configurationplaceterminal_UpdatedBy" ReferenceName="NewDataSet.fk_configurationplaceterminal_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationplaceterminal" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="fk_documentfinancedetail_documentmaster" ReferenceName="NewDataSet.fk_documentfinancedetail_documentmaster" ParentDataSource="documentfinancemaster" ChildDataSource="documentfinancedetail" ParentColumns="Oid" ChildColumns="DocumentMaster" Enabled="true"/>
+    <Relation Name="fk_documentfinancedetail_UpdatedWhere" ReferenceName="NewDataSet.fk_documentfinancedetail_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentfinancedetail" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_documentfinancedetail_UpdatedBy" ReferenceName="NewDataSet.fk_documentfinancedetail_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentfinancedetail" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Total Name="Total" Expression="[documentfinancemaster.TotalFinalRound]" Evaluator="Data2" PrintOn="DataFooter2"/>
+  </Dictionary>
+  <ReportPage Name="Page1">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="113.4">
+      <ShapeObject Name="Shape1" Left="-170.1" Top="-141.75" Width="737.1" Height="94.5" Border.Color="Transparent" Fill.Color="WhiteSmoke"/>
+      <PictureObject Name="Picture1" Left="9.45" Top="18.9" Width="226.8" Height="66.15" Image="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"/>
+      <TextObject Name="Text_Report" Left="529.2" Top="18.9" Width="103.95" Height="18.9" Text="[Res(&quot;Report&quot;)]" HorzAlign="Right" Font="Arial, 15pt, style=Bold" TextFill.Color="YellowGreen"/>
+      <TextObject Name="Text_ReportTitle_TotalEmployee" Left="264.6" Top="47.25" Width="368.55" Height="18.9" Anchor="Top, Right" Text="[Res(&quot;Text_ReportTitle_TotalEmployee&quot;)]" HorzAlign="Right" Font="Arial, 15pt, style=Bold" TextFill.Color="61, 61, 61"/>
+      <PictureObject Name="Picture2" Left="642.6" Top="9.45" Width="75.6" Height="66.15" Image="iVBORw0KGgoAAAANSUhEUgAAAMMAAACwCAYAAACyydrFAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAACHDwAAjA8AAP1SAACBQAAAfXkAAOmLAAA85QAAGcxzPIV3AAAKOWlDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAEjHnZZ3VFTXFofPvXd6oc0wAlKG3rvAANJ7k15FYZgZYCgDDjM0sSGiAhFFRJoiSFDEgNFQJFZEsRAUVLAHJAgoMRhFVCxvRtaLrqy89/Ly++Osb+2z97n77L3PWhcAkqcvl5cGSwGQyhPwgzyc6RGRUXTsAIABHmCAKQBMVka6X7B7CBDJy82FniFyAl8EAfB6WLwCcNPQM4BOB/+fpFnpfIHomAARm7M5GSwRF4g4JUuQLrbPipgalyxmGCVmvihBEcuJOWGRDT77LLKjmNmpPLaIxTmns1PZYu4V8bZMIUfEiK+ICzO5nCwR3xKxRoowlSviN+LYVA4zAwAUSWwXcFiJIjYRMYkfEuQi4uUA4EgJX3HcVyzgZAvEl3JJS8/hcxMSBXQdli7d1NqaQffkZKVwBALDACYrmcln013SUtOZvBwAFu/8WTLi2tJFRbY0tba0NDQzMv2qUP91829K3NtFehn4uWcQrf+L7a/80hoAYMyJarPziy2uCoDOLQDI3fti0zgAgKSobx3Xv7oPTTwviQJBuo2xcVZWlhGXwzISF/QP/U+Hv6GvvmckPu6P8tBdOfFMYYqALq4bKy0lTcinZ6QzWRy64Z+H+B8H/nUeBkGceA6fwxNFhImmjMtLELWbx+YKuGk8Opf3n5r4D8P+pMW5FonS+BFQY4yA1HUqQH7tBygKESDR+8Vd/6NvvvgwIH554SqTi3P/7zf9Z8Gl4iWDm/A5ziUohM4S8jMX98TPEqABAUgCKpAHykAd6ABDYAasgC1wBG7AG/iDEBAJVgMWSASpgA+yQB7YBApBMdgJ9oBqUAcaQTNoBcdBJzgFzoNL4Bq4AW6D+2AUTIBnYBa8BgsQBGEhMkSB5CEVSBPSh8wgBmQPuUG+UBAUCcVCCRAPEkJ50GaoGCqDqqF6qBn6HjoJnYeuQIPQXWgMmoZ+h97BCEyCqbASrAUbwwzYCfaBQ+BVcAK8Bs6FC+AdcCXcAB+FO+Dz8DX4NjwKP4PnEIAQERqiihgiDMQF8UeikHiEj6xHipAKpAFpRbqRPuQmMorMIG9RGBQFRUcZomxRnqhQFAu1BrUeVYKqRh1GdaB6UTdRY6hZ1Ec0Ga2I1kfboL3QEegEdBa6EF2BbkK3oy+ib6Mn0K8xGAwNo42xwnhiIjFJmLWYEsw+TBvmHGYQM46Zw2Kx8lh9rB3WH8vECrCF2CrsUexZ7BB2AvsGR8Sp4Mxw7rgoHA+Xj6vAHcGdwQ3hJnELeCm8Jt4G749n43PwpfhGfDf+On4Cv0CQJmgT7AghhCTCJkIloZVwkfCA8JJIJKoRrYmBRC5xI7GSeIx4mThGfEuSIemRXEjRJCFpB+kQ6RzpLuklmUzWIjuSo8gC8g5yM/kC+RH5jQRFwkjCS4ItsUGiRqJDYkjiuSReUlPSSXK1ZK5kheQJyeuSM1J4KS0pFymm1HqpGqmTUiNSc9IUaVNpf+lU6RLpI9JXpKdksDJaMm4ybJkCmYMyF2TGKQhFneJCYVE2UxopFykTVAxVm+pFTaIWU7+jDlBnZWVkl8mGyWbL1sielh2lITQtmhcthVZKO04bpr1borTEaQlnyfYlrUuGlszLLZVzlOPIFcm1yd2WeydPl3eTT5bfJd8p/1ABpaCnEKiQpbBf4aLCzFLqUtulrKVFS48vvacIK+opBimuVTyo2K84p6Ss5KGUrlSldEFpRpmm7KicpFyufEZ5WoWiYq/CVSlXOavylC5Ld6Kn0CvpvfRZVUVVT1Whar3qgOqCmrZaqFq+WpvaQ3WCOkM9Xr1cvUd9VkNFw08jT6NF454mXpOhmai5V7NPc15LWytca6tWp9aUtpy2l3audov2Ax2yjoPOGp0GnVu6GF2GbrLuPt0berCehV6iXo3edX1Y31Kfq79Pf9AAbWBtwDNoMBgxJBk6GWYathiOGdGMfI3yjTqNnhtrGEcZ7zLuM/5oYmGSYtJoct9UxtTbNN+02/R3Mz0zllmN2S1zsrm7+QbzLvMXy/SXcZbtX3bHgmLhZ7HVosfig6WVJd+y1XLaSsMq1qrWaoRBZQQwShiXrdHWztYbrE9Zv7WxtBHYHLf5zdbQNtn2iO3Ucu3lnOWNy8ft1OyYdvV2o/Z0+1j7A/ajDqoOTIcGh8eO6o5sxybHSSddpySno07PnU2c+c7tzvMuNi7rXM65Iq4erkWuA24ybqFu1W6P3NXcE9xb3Gc9LDzWepzzRHv6eO7yHPFS8mJ5NXvNelt5r/Pu9SH5BPtU+zz21fPl+3b7wX7efrv9HqzQXMFb0ekP/L38d/s/DNAOWBPwYyAmMCCwJvBJkGlQXlBfMCU4JvhI8OsQ55DSkPuhOqHC0J4wybDosOaw+XDX8LLw0QjjiHUR1yIVIrmRXVHYqLCopqi5lW4r96yciLaILoweXqW9KnvVldUKq1NWn46RjGHGnIhFx4bHHol9z/RnNjDn4rziauNmWS6svaxnbEd2OXuaY8cp40zG28WXxU8l2CXsTphOdEisSJzhunCruS+SPJPqkuaT/ZMPJX9KCU9pS8Wlxqae5Mnwknm9acpp2WmD6frphemja2zW7Fkzy/fhN2VAGasyugRU0c9Uv1BHuEU4lmmfWZP5Jiss60S2dDYvuz9HL2d7zmSue+63a1FrWWt78lTzNuWNrXNaV78eWh+3vmeD+oaCDRMbPTYe3kTYlLzpp3yT/LL8V5vDN3cXKBVsLBjf4rGlpVCikF84stV2a9021DbutoHt5turtn8sYhddLTYprih+X8IqufqN6TeV33zaEb9joNSydP9OzE7ezuFdDrsOl0mX5ZaN7/bb3VFOLy8qf7UnZs+VimUVdXsJe4V7Ryt9K7uqNKp2Vr2vTqy+XeNc01arWLu9dn4fe9/Qfsf9rXVKdcV17w5wD9yp96jvaNBqqDiIOZh58EljWGPft4xvm5sUmoqbPhziHRo9HHS4t9mqufmI4pHSFrhF2DJ9NProje9cv+tqNWytb6O1FR8Dx4THnn4f+/3wcZ/jPScYJ1p/0Pyhtp3SXtQBdeR0zHYmdo52RXYNnvQ+2dNt293+o9GPh06pnqo5LXu69AzhTMGZT2dzz86dSz83cz7h/HhPTM/9CxEXbvUG9g5c9Ll4+ZL7pQt9Tn1nL9tdPnXF5srJq4yrndcsr3X0W/S3/2TxU/uA5UDHdavrXTesb3QPLh88M+QwdP6m681Lt7xuXbu94vbgcOjwnZHokdE77DtTd1PuvriXeW/h/sYH6AdFD6UeVjxSfNTws+7PbaOWo6fHXMf6Hwc/vj/OGn/2S8Yv7ycKnpCfVEyqTDZPmU2dmnafvvF05dOJZ+nPFmYKf5X+tfa5zvMffnP8rX82YnbiBf/Fp99LXsq/PPRq2aueuYC5R69TXy/MF72Rf3P4LeNt37vwd5MLWe+x7ys/6H7o/ujz8cGn1E+f/gUDmPP8usTo0wAAAAlwSFlzAAAXEQAAFxEByibzPwAAErlJREFUeF7tnT3S3TQUhrMElsASsgCKlJQUWQBZADO0dDSpM2wg9DTpaJlhAdDTUFKmyAI+znNjf/GVj23ZOpKOfc878xbXln+upVfnR5L9IrAf33zzzVfC74UfhB+FTwn/Ff4q/G44JBC4FqRxI4KfhZoAlogwXg2nCATOD2nQL4V/Dw38CLEUXw2nCwTOCWnECGGPNVgiYgpBBM4JabxWQhj5x3DqQOBckMZb4hot8efh9IHAOSCN9sekEVsRS/P1cJlAwD+kwZIJ0hrzlJR5J/xOiHgIlLVyKd8NlwkEfEMaK41ba8RTqhki2ZaTefo4FA8EfEMaK7291ohHfhiKqpD9jElsBd4vh+KBgF9IQ/0jabgpN1OkUmYr5vhxKBoI+IU01LVePSs9KuW+To5LGVmlgH8oDXfKX4dim1COnTLEEPAPaahrmaSwDIHHgTTUiBkCASANNbJJgQCQhlp7nOHfoXgg4B802KQBazw6Ah3xQuA8kAbLajatIZcS9ymmcgd8QxopAtjy9S2JZYnYIeAPSUNtxexxi0CgGZSG2oKx4CfgD0pDbcEQQ8AflIbagiGGgD8oDbUFQwwBf1AaaguGGAL+oDTUFgwxBPxBaagtGGII9IU0QuYQMY2CV0YySzVn+kUtMpeJd7dyL6+EMULdE1SAcGwcnnmoochxNDKOp+G3HGU+SsTJXCfmPB0apZbjvNfn4f9WDcNNeW4g3BsPL/t9Q1KWnp9jttYmnIU8A8TBlJE9z4FOIHcCYS9SR/1FITfh+UHRO34/3OompCw9If/nDD1/KXGtEHtWI5JyrLzzXNfUWT9ByMXpNbQb681sEUi5RxLAEnleTCXftBhSBnfYqyj4H33iJbmwNxfi5g4Nt7cIKUMvR+U/sgCWiMXAlVptVLKfZ0jQrp2jJ7M9AVMoN9KTVMxWBWIFrhID1CYdBRZg1VrIfrwDemTtHD24uqS2GpQb6UEqbfWTT7Kfns5ThZ2Nq6KQfbhOW+u+W7HPuItyI61JL79oDWRfiMCWW6LA8vZ2PR9SDIuLWmQfadFwh+oRK6B2QrI954UGNflwYlCDZNnuyVxfnYvuqWynHnoJ4qHEoL48S7b37pEelbhOMyvBNmGP+ngYMaiukWxvvRA/eE8a/SyWkG0IonXM9hBi+Hu47B1kO0LQygfbks5oNgLMtkmZFnwIMWgPOoTgi0uCYNqHVr4GLy+GmXsk20jjaWWDfTmbEsFvYSs39vJiuMtayO+WDze4n1rn1Wo+07XFMFzuGbKtpdkNHuNdQC2/W1nyS4th9ufYlpQJ+uPdhDn53WqG86XFMPvMq2xrZXKDx3kXSMvvEIMRU5NLzMDqOixE0BfpqF4NVfUM2dbKtb28GOJ7BCeH1GGrwbfLiwH2W9IXKILUXUu39iHEQCp1dd1CwBekvnBnW8d3DyGGkfilpOlWV7UF+kHqhikYxHQ91pI8lBiCwTWGGILBgSGGYHBgiCEYHBhiCAYHhhiCwYEhhmBwYIghGBwYYggGB4YYgsGBIYZgcGCIIeiKvEdpXN/AGw5Zy6CRfWM5q3lMIYZgF9LomZVKw2Yl2+JLiXPBOYZzcU4+M7BXJCGGYBPSMOnNm84almshEN6RhfC2xBFiCFYjjc/VVzW5FyGi1IQRYgiakoVU9MImApDzsMgH12dKE8synGu6gCjEEDQhPS3uyK6GKuXpqXGdRj+fgHjPS94oyzHjh925h11ClPIIjmMXv9tRFXJh7Y8Fz8ebCIZq3YSUpTem4dGAtfNZkmtwrdkbN1xhcsPBczJbBFKOnh93pOdrPUf3zd9a+MlNNuGbN2+efvjhB5XffvutekxQJY0q5xPBuD+9BbDEURg+AvvJjZnz9evXT2/fvn36888/n/7777+nHHz69Onpr7/+evrll19uwtHOG7z55avjAbIfn72FC2RFxjv6fP95RHJDJvzpp59uDdoC//zzz01Q2nUekPSkXT4RPFpvOqn379/fWMmi74p9TJHcSBF5MDTeGsCycH7tug9CevnFDJHsIx4wEwFWnYaf26lRP7///vutI9TOd4DtRZHcwGH+9ttvw2OpC66jXf/iXIwNZB8xgZk7RIdTatURhqE157+1iSmSC+8mJtLKJcoF1udBgm3cosV0pOwjXakdt5tYAut6RBSGloL/Wnf6SHLBXaRB1nKLtvAAgiCgVHtEtg/7teN2E3eIxEUt4D4Z1RWuUz0rkVxsF/mTPYEgtPu6AGnoai8o25ljpB1ziK3q0LjzUr8jXgzlQlmkN/EAKlO7vxNTDZTZJpzO3ylm684M62OYLie9bOs2JRfIIv5lTbO6F4Z+aW8ufTCe6c9mbhHsZdWNLcSiK3kIycmz2Dpg3gLCvED8oM7UlO3EB6ajx72tOu1Hu6+D5NnYCCI58SZJvXnEyVOuaowg28yFgJviAQzaafd3kKtZt2wkJ92kN6swBe6bds/O2UwIsFf2T0OF+iobpFNOuEivVmGEcW/TgjT22Rwj2VZFCAyEeUKl5Mfx2bDKyRbZK+jKBYM82n07pvZFzSpCgDwfb6hgHXh2x2KI5ESLJEA9A04003WWK5dtZI2qCOHBYr1jgkhOskhvJnYJJwmkPwyP/xmyjXEE0/TplF6tekVrrsZiq0hOsEjWJJwBxmm7GqTX0gJmBpG08ib06CKNqGjN971YQDmBSstBNipmnBMPrYWm3b8jzgI82WY6xSIlfrlnMO6h3bcR8z/Grxw8o2VueumPcw0rwTmOGzT3iIBZK2tG71nABq5t3hiEcuCMViOWW3PcrSqN82jn78yZe8RvofmqtJRYX89o4NryjLfjh+QglRbBF66Qdu6UFoNCTpeJatkj3iinlTVliOHGd8NjX4Zy0IwWo865+WSLiuMc2rk78t/hcT9DtlV3j0aGGJ657i4pB8xYij3rDpiBWgqHYtAG15q9uSLE8My/h8evQzlgxlLsyRZYxA3OxDBL78k23mChla3CEMMdl+cvKYXvaNE49wS0F7QMmlWoHjRPafFMa6LSHKUlquM8NyQFZ7QQg3beJZJmK4WjAFqLFZpaBWiZGq+BDp2XPvagFLwjgS/KPRpE7x1utxgpdZRanZlk2dbUKoz0tDIxRYf60q1DUmiTiAOzi5pJl26lQvf4g1bjGU5WvX0cHvEzZFtzqzDS69wkRKrdbwPOYwel0CFiikeRIICxh8/1BxGZRe+11xJV5CyvLduqTcTbote4oXG8MOXMhTUTwxJzxxesVmB1fLgp7xbtyG++h6CVa0YLF9QanV3a++SGUqA5LU24k+B5ls+WbaaveTlCbynWxilVjfdvI1EKNKVlBXX0P1PeTb2Q38xBImjTyjYjsZQn6+Ak0fElkFZ2NqP1giHHLlK3wDmll9jB0SKsL4G0srMJa+S+c+OTytRcpKoLd/bS0i09AqyTo/dcfZlWr+ysTqvM0RS5PQ3WCNcMVlpUomWRurtIU9IQe70yhnr3tt5kqKb2YqhRETzgnJ5GG92uYK7vVrLJ7+5ZJI09BOFRCAM/15myoyprmGj8YO1aKbVR9AoZjXQBj9k3FKzZUhCOhQA/W3NlRzVajTBPkbtoCDYQgxYvNJuqfYQIonYMgeAcCwF+rjdlRxXWCJh5yDnuETEKsYKWVmQbIjWqrNlbtJUyLol1rZF2JTbTrueNzSqLBmv9oHPMLgLY4wZwj1RejsAWeDcbUn43W822l3QQaUPlf7ONZ1sKrE2a3eP8uS5tB75qIgaLadkp1h4qgzkl4qMxHMw03Q3vy2++wKmV60o6kbHBL1lXOpK9r/DhXDw3LcXNNcc6wTUt6HBq8fvqYuDBWGOtodKzWeHAIF462OYueJ4KYQSNdM3K0rlMU9Ip2b/WuOm40mvye8uyN+bP1cVgHZytNdAaATqVrV1L46CBZ8g2V4NtmhCm4L9a9th0hGvWxZkg/qgqBmursCYEeqdayKwwbVWbm0wSdbEmhBGUKRUF1+IcuddzIoi6YrDsqfFHtWuMtA7Qp8hM32oL/7usaktJw96TSAA0UjofXJwcYSCAI3EG4FqWFukgP1YVw94KWAINfe1hUWFbIGjTBMO2nPuksrVrT6iJQSvXnBauKs+JZ8i56PUhDZ9tORZgC8bjPYdYrcJovBbIMaNblT26VzzwFGMlbAmCXm96TYXae1S1ck2Z01F4wcEMnhmrVZiVD5/zgLZcpNGqrIlhq9GMglrh7I0LSpmm5H9b9Nqt0NtdqlZhmNFS5JrONUzPsSaGPedZoDsx1BjfqY2MTqcaq1XYluuSgww//cY1TB/ulhjW7hnLMZZboCsx8OzOitx6t2a1CtMa3h5kZnBuXMO0sW+JAeLepcxM/bkSg0Vn1Au9rINbMWQErM9cA/HEWC5HDAV0I4YzWwXQK3aoVmFbQe0W9pjKrWuNQXhlMbhJrZ7ZKozY0xlasVqFlYCeQTvnEnMqn2BSS59eTQxWKe3e2OMmW9GlGPY2UPz6o6gshuZv0KsxP6sXGrtK9UagS3CkgXLMEWCFsBoZ2aItupibZDXq7wGNXaV6c5NKcEQMZHxKB5g4HpcLS6NdY4uDBp4h25q+Re/sgXOKxlmlemIY568c4dEewUIQIxDkgXx31/UMV3KRwDQT2ID11zO0JoIozWSNQFg7hdl1pduRGaPe0XAArv5Ktx4k8MLCWFmJHYK4G2uQ303XQF8RBrFcLl9eUgwjEQWuQ2lQiagye6hub8coyah5Bp2a9n+t2bSyehNhlIgiM5jr9t6kq8ULIwxT32v8nBZXdlyWWvqVXj/HnaJMZt67yxv1zjhDNQd0YNr/NWa9N+ph2kpxNL25Rk0MbKOR5zSmTP+1y7tWtf92FWj/15j13rV6NjGM+7eyMZn+a5e3cFslCzwi0yIf5lBN1xAD6VTKT6lNu94SA8etAesxPd8CtZHo6oNvVwb1ov1nI9b9PkNLMZD2XEKaEt0SA1xDWnaF6eBb1fEGes4ro7IY6n65p6UYtAY+Ih3BbCiGu2+6AdlWzVXasmhnR+WxhrrfdPMiBjD1N7fEsDW3JzNmgE2/9nl1Mex47ntZ/2ufLcWwlQWaukpbYqAHWsO4SCiTL4dHfAO/k/1mDDEcZv3vQLcUw1rMAHCVRuuwJQZt/xRaUL5CLatUZX1DiOEQZ4mO04shJ3gcR4/XxJAjqul1M0iMkA7AVfkEbojhEL8EziOUQsVsKQaYs+yTxqzNZmWEM2e258EKmT1w2Wb+/tUQw27OrQJQChaztRhqL2rZMRUjpTbmYG4dQgy7Ocv23aAULGZrMUCLay6hMLVX3TpcfZzBOLWqWwWgFC5mDzHAHHdpLwx6Jc06mA/CXRlH2sIK57HCCKVwMXuJAVoKInP6RQ4162A6tVuLh64CQzHM3mByB+WAYvYUA8SsljQOjq1tmmWb6bjDVlr4zND+70Hejf3MoBxQzN5iGEm6dM+CHspyzMFgeYva6yfN1jpcdT0DHZP2fw9wNu4zg3JQMb2IYSSNm/Np1mK0Ag0WnjPucDeBD8g2k4G4rXGSs8LozXokLO7GfFQkB5nQmxhGrg26NaL21j0Td+mqGaWdU2CWuO4ejVAOLGaIYZVaMP1jUuYQa2TTesPAYutjChqUg4vpVQyaK2HU8+zhkrtUPKu19uBja4zTaAo4+87eKpQTFJNKoTGXsFIQe4sPECs0zhjtoeYufSUsjh8sOiIvKLQKPMvtOGGK5ATBdtRmtSKI4kVAV0izImrtv2VStb6bSE4SbMu7N2kA2UZAXSQIrGrJO6J6ozCO49nlBcwpkhMF21KtOLYN+7RjsnhWQXDPBS7ycSGA5GTB9qQCZ76tbDMRxJleRtxVCCA5YbAP1WBPthULApIx8/5epcJ5YOVCAMlJg/24JojiKd9kZjyOQzADgOyhds+ZtBECSE4c7MslQZikXSENz4MosFSFGSO4P326huTkwf5cE4TZ62awFDRGbb5WTYyTIbV72kmehZ0QQHKBoA8iCDVPLttZNlocR0zJWz8QRq3xCc5L3FI4iDaS/54/xWIPkgsF/XDRF2a70MRt0ogrReMlqKUh56ZoKUd5juP4wlhAI//ZJj7QkFws6I+LyxRlH+shTK2EY87Wg5hDLlKthwmacdE/lu1fC5t/b7oh+W/7p1YcgVyoyoutguZcdRFkHx9FuVLHRjr5/vWPLSAXrfZS3KA5V4NH2U/nZv6isobk3pffYNECcgPvJjcU9M3NQFL28zqaM7lP3Ots4mI3yM3gf7LqisAs6J+bvjRlhHR0HgNt7ol7axMTBAIjpNFhLXCJe7pRCIB78GMFAo8NaYyMVeAFfBDWtBqcm2twrXpjBIGAFaSh4k5hOXC/6Lnx4fdkpyjLMRzLOTjXidyfFy/+B+vNx6n3WjlrAAAAAElFTkSuQmCC"/>
+      <TextObject Name="Text_StartDate" Left="519.75" Top="85.05" Width="85.05" Height="18.9" Anchor="Top, Right" Fill.Color="WhiteSmoke" Text="16/02/2016" HorzAlign="Center" Font="Arial, 10pt, style=Italic" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="Text_To" Left="604.8" Top="85.05" Width="28.35" Height="18.9" Anchor="Top, Right" Fill.Color="WhiteSmoke" Text="[Res(&quot;To&quot;)]" HorzAlign="Center" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="Text_EndDate" Left="633.15" Top="85.05" Width="85.05" Height="18.9" Anchor="Top, Right" Fill.Color="WhiteSmoke" Text="16/02/2016" HorzAlign="Center" Font="Arial, 10pt, style=Italic" TextFill.Color="61, 61, 61"/>
+    </ReportTitleBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="117.4" Width="718.2" Height="37.8" Fill.Color="LightGray" Condition="[documentfinancemaster.userdetail.Name]">
+      <TextObject Name="Text17" Top="9.45" Width="793.8" Height="18.9" Text="[documentfinancemaster.userdetail.Name]" Font="Arial, 14pt, style=Bold" TextFill.Color="61, 61, 61"/>
+      <DataBand Name="Data2" Top="201" Width="718.2" Height="28.35" CanBreak="true" DataSource="documentfinancemaster">
+        <TextObject Name="Text11" Left="633.15" Width="75.6" Height="9.45" Anchor="Top" Text="[documentfinancemaster.TotalFinalRound]" Format="Currency" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.CurrencySymbol="MZN" Format.PositivePattern="3" Format.NegativePattern="8" HorzAlign="Right" WordWrap="false" Font="Arial, 8.5pt" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text16" Left="85.05" Width="75.6" Height="9.45" Anchor="Top" Text="[documentfinancemaster.documentordermain.configurationplacetable.Designation]" Font="Arial, 8.5pt"/>
+        <TextObject Name="Text19" Left="453.6" Width="94.5" Height="9.45" Anchor="Top" Text="[documentfinancemaster.configurationplaceterminal.Designation]" Font="Arial, 8.5pt"/>
+        <TextObject Name="Text9" Left="548.1" Width="85.05" Height="9.45" Anchor="Top" Text="[documentfinancemaster.Date]" Format="Date" Format.Format="d" Font="Arial, 8.5pt"/>
+        <TextObject Name="Text22" Left="160.65" Width="189" Height="18.9" Anchor="Top" Text="[documentfinancemaster.DocumentNumber]" Font="Arial, 8.5pt"/>
+        <TextObject Name="Text7" Left="349.65" Width="122.85" Height="18.9" Anchor="Top" Text="[documentfinancemaster.configurationpaymentmethod.Designation]" Font="Arial, 8.5pt"/>
+        <TextObject Name="Text27" Width="85.05" Height="9.45" Anchor="Top" Text="[documentfinancemaster.documentordermain.configurationplacetable.configurationplace.Designation]" Font="Arial, 8.5pt"/>
+        <DataHeaderBand Name="DataHeader2" Top="159.2" Width="718.2" Height="37.8" Fill.Color="WhiteSmoke">
+          <TextObject Name="Text_Value" Left="633.15" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;Total&quot;)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61"/>
+          <TextObject Name="Text_Table" Left="85.05" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;Table&quot;)]" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61"/>
+          <TextObject Name="Text_MethodPayment" Left="349.65" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;PaymentMethod&quot;)]" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61"/>
+          <TextObject Name="Text_Terminal" Left="453.6" Top="9.45" Width="94.5" Height="18.9" Text="[Res(&quot;Terminal&quot;)]" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61"/>
+          <TextObject Name="Text_Date" Left="548.1" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;Date&quot;)]" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61"/>
+          <TextObject Name="Text_NDocument" Left="160.65" Top="9.45" Width="189" Height="18.9" Text="[Res(&quot;DocumentNumber&quot;)]" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61"/>
+          <TextObject Name="Text_Zone" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;Zone&quot;)]" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61"/>
+        </DataHeaderBand>
+        <DataFooterBand Name="DataFooter2" Top="233.35" Width="718.2" Height="37.8" Fill.Color="Gainsboro">
+          <TextObject Name="Text14" Left="519.75" Top="9.45" Width="189" Height="18.9" Anchor="Top, Right" Text="[Total]" Format="Currency" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.CurrencySymbol="MZN" Format.PositivePattern="3" Format.NegativePattern="8" HorzAlign="Right" Font="Arial, 14pt, style=Bold"/>
+          <TextObject Name="Text6" Left="425.25" Top="9.45" Width="94.5" Height="18.9" Anchor="Top, Right" Text="[Res(&quot;Total&quot;)]:" HorzAlign="Right" Font="Arial, 14pt, style=Bold" TextFill.Color="61, 61, 61"/>
+          <ChildBand Name="Child2" Top="275.15" Width="718.2" Height="28.35"/>
+        </DataFooterBand>
+      </DataBand>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="307.5" Width="718.2" Height="85.05">
+      <LineObject Name="Line1" Width="718.2" Border.Color="Gray" Border.Style="Dash" Border.Width="2"/>
+      <TextObject Name="Text8" Left="661.5" Top="56.7" Width="56.7" Height="18.9" Text="[PageN]" Font="Arial, 9pt" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="Text_DateHour" Top="56.7" Width="37.8" Height="18.9" Text="[Res(&quot;Date&quot;)]:" Font="Arial, 9pt" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="Text25" Left="37.8" Top="56.7" Width="330.75" Height="18.9" Text="[Date]" Format="Date" Format.Format="d" Font="Arial, 9pt" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="TxtLine1" Top="9.45" Width="718.2" Height="18.9" Text="Lic. Logicpulse Technologies" VertAlign="Center" Font="Arial, 9pt, style=Bold" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="TxtLine2" Top="28.35" Width="718.2" Height="18.9" Text="logicPOS" VertAlign="Center" Font="Arial, 9pt, style=Bold" TextFill.Color="61, 61, 61"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

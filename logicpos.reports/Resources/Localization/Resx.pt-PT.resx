@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="button_design" xml:space="preserve">
+    <value>Desenhar</value>
+  </data>
+  <data name="button_listArticles" xml:space="preserve">
+    <value>Lista de artigos</value>
+  </data>
+  <data name="button_closingBox" xml:space="preserve">
+    <value>Fecho da caixa</value>
+  </data>
+  <data name="button_closingDay" xml:space="preserve">
+    <value>Fecho do dia</value>
+  </data>
+  <data name="searchTerminalDates" xml:space="preserve">
+    <value>Procure novamente para\r\nTerminal ou datas</value>
+  </data>
+  <data name="bt_DetailsCurrentAccount" xml:space="preserve">
+    <value>C. C. cliente(detalhes)</value>
+  </data>
+  <data name="bt_CurrentAccount" xml:space="preserve">
+    <value>Cliente Conta Corrente</value>
+  </data>
+  <data name="button_movCustomers" xml:space="preserve">
+    <value>Movimentos por empregado</value>
+  </data>
+  <data name="button_occupationPlace" xml:space="preserve">
+    <value>Ocupação Zona/Mesa</value>
+  </data>
+  <data name="button_recordsCustomer" xml:space="preserve">
+    <value>Top registos por empregado</value>
+  </data>
+  <data name="button_totalCash" xml:space="preserve">
+    <value>Total caixa</value>
+  </data>
+  <data name="button_totalEmployee" xml:space="preserve">
+    <value>Total por empregado</value>
+  </data>
+  <data name="button_totalday" xml:space="preserve">
+    <value>Total por dia</value>
+  </data>
+  <data name="button_totalfamily" xml:space="preserve">
+    <value>Total por família</value>
+  </data>
+  <data name="button_totalterminal" xml:space="preserve">
+    <value>Total por terminal</value>
+  </data>
+  <data name="button_totalzone" xml:space="preserve">
+    <value>Total por zona</value>
+  </data>
+  <data name="button_totalzonetable" xml:space="preserve">
+    <value>Total por zona/mesa</value>
+  </data>
+  <data name="label_client" xml:space="preserve">
+    <value>Cliente:</value>
+  </data>
+  <data name="label_customer" xml:space="preserve">
+    <value>Empregado:</value>
+  </data>
+  <data name="label_EndDate" xml:space="preserve">
+    <value>Data final:</value>
+  </data>
+  <data name="label_family" xml:space="preserve">
+    <value>Família:</value>
+  </data>
+  <data name="label_StartDate" xml:space="preserve">
+    <value>Data inicial:</value>
+  </data>
+  <data name="label_table" xml:space="preserve">
+    <value>Mesa:</value>
+  </data>
+  <data name="label_terminal" xml:space="preserve">
+    <value>Terminal:</value>
+  </data>
+  <data name="label_typeMovement" xml:space="preserve">
+    <value>Tipo de movimento:</value>
+  </data>
+  <data name="label_TypePayment" xml:space="preserve">
+    <value>Tipo de pagamento:</value>
+  </data>
+  <data name="label_zone" xml:space="preserve">
+    <value>Zona:</value>
+  </data>
+  <data name="label_zones" xml:space="preserve">
+    <value>Zona:</value>
+  </data>
+  <data name="Msg_Designer" xml:space="preserve">
+    <value>Selecione um dos relatórios para poder desenhar!</value>
+  </data>
+  <data name="Msg_NoRecordsWereFound" xml:space="preserve">
+    <value>Não foram encontrados resultados para o intervalo de datas: </value>
+  </data>
+  <data name="Msg_Quit" xml:space="preserve">
+    <value>Deseja sair?</value>
+  </data>
+  <data name="codeErrorPin" xml:space="preserve">
+    <value>PIN errado!</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Sair</value>
+  </data>
+  <data name="Information" xml:space="preserve">
+    <value>Informação</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="AmountMovement" xml:space="preserve">
+    <value>Quantia movimento</value>
+  </data>
+  <data name="AmtDefault" xml:space="preserve">
+    <value>Qt. por defeito</value>
+  </data>
+  <data name="Article" xml:space="preserve">
+    <value>Artigo</value>
+  </data>
+  <data name="Average" xml:space="preserve">
+    <value>Média</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Preço</value>
+  </data>
+  <data name="BasePrice" xml:space="preserve">
+    <value>Preço base</value>
+  </data>
+  <data name="buttonCancel" xml:space="preserve">
+    <value>Não</value>
+  </data>
+  <data name="buttonOk" xml:space="preserve">
+    <value>Sim</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Código</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="DateTime" xml:space="preserve">
+    <value>Data/Hora</value>
+  </data>
+  <data name="DateTimePayment" xml:space="preserve">
+    <value>Data/Hora do pagamento</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="Designation" xml:space="preserve">
+    <value>Designação</value>
+  </data>
+  <data name="Discount" xml:space="preserve">
+    <value>Desconto</value>
+  </data>
+  <data name="DocumentDate" xml:space="preserve">
+    <value>Data do documento</value>
+  </data>
+  <data name="DocumentNumber" xml:space="preserve">
+    <value>Número do documento</value>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>Família</value>
+  </data>
+  <data name="In" xml:space="preserve">
+    <value>De</value>
+  </data>
+  <data name="NotPaid" xml:space="preserve">
+    <value>Não pago</value>
+  </data>
+  <data name="NTablesOccupied" xml:space="preserve">
+    <value>Nº mesas ocupadas</value>
+  </data>
+  <data name="Paid" xml:space="preserve">
+    <value>Pago</value>
+  </data>
+  <data name="PaymentMethod" xml:space="preserve">
+    <value>Método de pagamento</value>
+  </data>
+  <data name="Price1" xml:space="preserve">
+    <value>Preço 2</value>
+  </data>
+  <data name="lb_StatePay" xml:space="preserve">
+    <value>Estado do pagamento:</value>
+  </data>
+  <data name="Price2" xml:space="preserve">
+    <value>Preço 1</value>
+  </data>
+  <data name="Product" xml:space="preserve">
+    <value>Produto</value>
+  </data>
+  <data name="Qnt" xml:space="preserve">
+    <value>Qnt.</value>
+  </data>
+  <data name="Qt" xml:space="preserve">
+    <value>Qt.</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Quantidade</value>
+  </data>
+  <data name="Records" xml:space="preserve">
+    <value>Registos</value>
+  </data>
+  <data name="Report" xml:space="preserve">
+    <value>Relatório</value>
+  </data>
+  <data name="Subfamily" xml:space="preserve">
+    <value>Subfamília</value>
+  </data>
+  <data name="Table" xml:space="preserve">
+    <value>Mesa</value>
+  </data>
+  <data name="Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>até</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Total_allTerminal" xml:space="preserve">
+    <value>Total (todos os terminais/postos):</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="TypeMovement" xml:space="preserve">
+    <value>Tipo de movimento</value>
+  </data>
+  <data name="User" xml:space="preserve">
+    <value>Ultilizador</value>
+  </data>
+  <data name="VATRate" xml:space="preserve">
+    <value>Taxa de IVA</value>
+  </data>
+  <data name="Zone" xml:space="preserve">
+    <value>Zona</value>
+  </data>
+  <data name="Text_ReportTitle_ClosingBox" xml:space="preserve">
+    <value>Fecho da caixa</value>
+  </data>
+  <data name="Text_ReportTitle_ClosingDay" xml:space="preserve">
+    <value>Fecho do dia</value>
+  </data>
+  <data name="Text_ReportTitle_CurrentAccount" xml:space="preserve">
+    <value>Conta corrente do cliente</value>
+  </data>
+  <data name="Text_ReportTitle_DetailsCurrentAccount" xml:space="preserve">
+    <value>Conta corrente do cliente (detalhes)</value>
+  </data>
+  <data name="Text_ReportTitle_StockArticles" xml:space="preserve">
+    <value>Stock de artigos</value>
+  </data>
+  <data name="Output" xml:space="preserve">
+    <value>Saída</value>
+  </data>
+  <data name="Input" xml:space="preserve">
+    <value>Entrada</value>
+  </data>
+  <data name="Stock" xml:space="preserve">
+    <value>Stock</value>
+  </data>
+  <data name="UnitMeasure" xml:space="preserve">
+    <value>Unidade de medida</value>
+  </data>
+  <data name="Text_ReportTitle_ListArticles" xml:space="preserve">
+    <value>Lista de artigos</value>
+  </data>
+  <data name="Text_ReportTitle_MovEmployee" xml:space="preserve">
+    <value>Movimentos por empregado</value>
+  </data>
+  <data name="Text_ReportTitle_OccupationZoneTable" xml:space="preserve">
+    <value>Ocupação zona/mesa</value>
+  </data>
+  <data name="Text_ReportTitle_Totalcash" xml:space="preserve">
+    <value>Total da caixa</value>
+  </data>
+  <data name="Text_ReportTitle_TotalDay" xml:space="preserve">
+    <value>Total por dia</value>
+  </data>
+  <data name="Text_ReportTitle_TotalEmployee" xml:space="preserve">
+    <value>Total por empregado</value>
+  </data>
+  <data name="Text_ReportTitle_TotalFamily" xml:space="preserve">
+    <value>Total por família dos artigos</value>
+  </data>
+  <data name="Text_ReportTitle_TotalTerminal" xml:space="preserve">
+    <value>Total por terminal</value>
+  </data>
+  <data name="Text_ReportTitle_TotalZones" xml:space="preserve">
+    <value>Total por zonas</value>
+  </data>
+  <data name="Text_ReportTitle_TotalZoneTable" xml:space="preserve">
+    <value>Total por zona/mesa</value>
+  </data>
+  <data name="Text_RepotTitle_TopRecordsEmployee" xml:space="preserve">
+    <value>Top registos por empregado</value>
+  </data>
+  <data name="TotalClient" xml:space="preserve">
+    <value>Total por cliente</value>
+  </data>
+  <data name="TotalDocument" xml:space="preserve">
+    <value>Total por documento</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Sair logicPOS</value>
+  </data>
+  <data name="Msg_NoRecordsWereFound1" xml:space="preserve">
+    <value>Os critérios atuais não contêm dados para</value>
+  </data>
+  <data name="Msg_NoRecordsWereFound2" xml:space="preserve">
+    <value>gerar/mostrar o relatório!</value>
+  </data>
+  <data name="TotaAllZones" xml:space="preserve">
+    <value>Total todas as zonas</value>
+  </data>
+  <data name="TotalBase" xml:space="preserve">
+    <value>Total base</value>
+  </data>
+</root>

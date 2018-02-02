@@ -1,0 +1,313 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/01/2014 10:34:46" ReportInfo.Modified="02/16/2016 19:09:08" ReportInfo.CreatorVersion="2014.1.8.0">
+  <Dictionary>
+    <TableDataSource Name="documentfinancedetail" ReferenceName="NewDataSet.documentfinancedetail" DataType="System.Int32" Enabled="true">
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <Column Name="Quantity" DataType="System.Double"/>
+      <Column Name="TotalFinal" DataType="System.Double"/>
+      <Column Name="DocumentMaster" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="article" DataType="System.String"/>
+      <Column Name="OidDetail" DataType="System.String"/>
+      <Column Name="OidMaster" DataType="System.String"/>
+      <Column Name="DocumentNumber" DataType="System.String"/>
+      <Column Name="EntityName" DataType="System.String"/>
+      <Column Name="DocumentDate" DataType="System.String"/>
+      <Column Name="Payed" DataType="System.UInt64"/>
+      <Column Name="PayedDate" DataType="System.DateTime"/>
+    </TableDataSource>
+    <TableDataSource Name="documentfinancemaster" ReferenceName="NewDataSet.documentfinancemaster" DataType="System.Int32" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="DocumentDate" DataType="System.String"/>
+      <Column Name="DocumentNumber" DataType="System.String"/>
+      <Column Name="EntityName" DataType="System.String"/>
+      <Column Name="payed" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="payeddate" DataType="System.DateTime"/>
+      <Column Name="disabled" DataType="System.UInt64"/>
+      <Column Name="notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="date" DataType="System.DateTime"/>
+      <Column Name="systementrydate" DataType="System.String"/>
+      <Column Name="TotalTax" DataType="System.Double"/>
+      <Column Name="totaldelivery" DataType="System.Double"/>
+      <Column Name="totalchange" DataType="System.Double"/>
+      <Column Name="hash" DataType="System.String"/>
+      <Column Name="externaldocument" DataType="System.String"/>
+      <Column Name="discount" DataType="System.Double"/>
+      <Column Name="discountfinancial" DataType="System.Double"/>
+      <Column Name="exchangerate" DataType="System.Double"/>
+      <Column Name="entityoid" DataType="System.String"/>
+      <Column Name="entityaddress" DataType="System.String"/>
+      <Column Name="entityzipcode" DataType="System.String"/>
+      <Column Name="entitycity" DataType="System.String"/>
+      <Column Name="entityfiscalnumber" DataType="System.String"/>
+      <Column Name="sourceordermain" DataType="System.String"/>
+      <Column Name="documentparent" DataType="System.String"/>
+      <Column Name="documentchild" DataType="System.String"/>
+      <Column Name="documenttype" DataType="System.String"/>
+      <Column Name="documentserie" DataType="System.String"/>
+      <Column Name="paymentmethod" DataType="System.String"/>
+      <Column Name="currency" DataType="System.String"/>
+      <Column Name="optimisticlockfield" DataType="System.Int32"/>
+      <Column Name="documentstatusstatus" DataType="System.String"/>
+      <Column Name="documentstatusdate" DataType="System.String"/>
+      <Column Name="documentstatusreason" DataType="System.String"/>
+      <Column Name="documentstatususer" DataType="System.String"/>
+      <Column Name="sourcebilling" DataType="System.String"/>
+      <Column Name="hashcontrol" DataType="System.String"/>
+      <Column Name="selfbillingindicator" DataType="System.Int32"/>
+      <Column Name="cashvatschemeindicator" DataType="System.Int32"/>
+      <Column Name="thirdpartiesbillingindicator" DataType="System.Int32"/>
+      <Column Name="documentcreatoruser" DataType="System.String"/>
+      <Column Name="eaccode" DataType="System.String"/>
+      <Column Name="transactionid" DataType="System.String"/>
+      <Column Name="shiptodeliveryid" DataType="System.String"/>
+      <Column Name="shiptodeliverydate" DataType="System.DateTime"/>
+      <Column Name="shiptowarehouseid" DataType="System.String"/>
+      <Column Name="shiptolocationid" DataType="System.String"/>
+      <Column Name="shiptoaddress" DataType="System.String"/>
+      <Column Name="shiptobuildingnumber" DataType="System.String"/>
+      <Column Name="shiptostreetname" DataType="System.String"/>
+      <Column Name="shiptoaddressdetail" DataType="System.String"/>
+      <Column Name="shiptocity" DataType="System.String"/>
+      <Column Name="shiptopostalcode" DataType="System.String"/>
+      <Column Name="shiptoregion" DataType="System.String"/>
+      <Column Name="shiptocountry" DataType="System.String"/>
+      <Column Name="shipfromdeliveryid" DataType="System.String"/>
+      <Column Name="shipfromdeliverydate" DataType="System.DateTime"/>
+      <Column Name="shipfromwarehouseid" DataType="System.String"/>
+      <Column Name="shipfromlocationid" DataType="System.String"/>
+      <Column Name="shipfromaddress" DataType="System.String"/>
+      <Column Name="shipfrombuildingnumber" DataType="System.String"/>
+      <Column Name="shipfromstreetname" DataType="System.String"/>
+      <Column Name="shipfromaddressdetail" DataType="System.String"/>
+      <Column Name="shipfromcity" DataType="System.String"/>
+      <Column Name="shipfrompostalcode" DataType="System.String"/>
+      <Column Name="shipfromregion" DataType="System.String"/>
+      <Column Name="shipfromcountry" DataType="System.String"/>
+      <Column Name="movementstarttime" DataType="System.DateTime"/>
+      <Column Name="movementendtime" DataType="System.DateTime"/>
+      <Column Name="atdoccodeid" DataType="System.String"/>
+      <Column Name="totalgross" DataType="System.Double"/>
+      <Column Name="totaldiscount" DataType="System.Double"/>
+      <Column Name="totalfinal" DataType="System.Double"/>
+      <Column Name="totalfinalround" DataType="System.Double"/>
+      <Column Name="entityinternalcode" DataType="System.String"/>
+      <Column Name="entitycountry" DataType="System.String"/>
+      <Column Name="paymentcondition" DataType="System.String"/>
+      <Column Name="CreatedBy" DataType="System.String"/>
+      <Column Name="CreatedWhere" DataType="System.String"/>
+      <Column Name="DeletedAt" DataType="System.DateTime"/>
+      <Column Name="DeletedBy" DataType="System.String"/>
+      <Column Name="DeletedWhere" DataType="System.String"/>
+      <Column Name="EntityLocality" DataType="System.String"/>
+      <Column Name="EntityCountryOid" DataType="System.String"/>
+      <Column Name="Printed" DataType="System.UInt64"/>
+    </TableDataSource>
+    <TableDataSource Name="configurationplaceterminal" ReferenceName="NewDataSet.configurationplaceterminal" DataType="System.Int32" Enabled="true">
+      <Column Name="oid" DataType="System.String"/>
+      <Column Name="disabled" DataType="System.UInt64"/>
+      <Column Name="notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="ord" DataType="System.Int32"/>
+      <Column Name="code" DataType="System.Int32"/>
+      <Column Name="designation" DataType="System.String"/>
+      <Column Name="hardwareid" DataType="System.String"/>
+      <Column Name="place" DataType="System.String"/>
+      <Column Name="printer" DataType="System.String"/>
+      <Column Name="templateticket" DataType="System.String"/>
+      <Column Name="templatetablesconsult" DataType="System.String"/>
+      <Column Name="optimisticlockfield" DataType="System.Int32"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="article" ReferenceName="NewDataSet.article" DataType="System.Int32" Enabled="true">
+      <Column Name="oid" DataType="System.String"/>
+      <Column Name="disabled" DataType="System.UInt64"/>
+      <Column Name="notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="ord" DataType="System.Int32"/>
+      <Column Name="code" DataType="System.Int32"/>
+      <Column Name="designation" DataType="System.String"/>
+      <Column Name="buttonlabel" DataType="System.String"/>
+      <Column Name="buttonlabelhide" DataType="System.UInt64"/>
+      <Column Name="buttonimage" DataType="System.String"/>
+      <Column Name="buttonicon" DataType="System.String"/>
+      <Column Name="price1" DataType="System.Double"/>
+      <Column Name="price2" DataType="System.Double"/>
+      <Column Name="price3" DataType="System.Double"/>
+      <Column Name="price4" DataType="System.Double"/>
+      <Column Name="price5" DataType="System.Double"/>
+      <Column Name="price1promotion" DataType="System.Double"/>
+      <Column Name="price2promotion" DataType="System.Double"/>
+      <Column Name="price3promotion" DataType="System.Double"/>
+      <Column Name="price4promotion" DataType="System.Double"/>
+      <Column Name="price5promotion" DataType="System.Double"/>
+      <Column Name="price1usepromotionprice" DataType="System.UInt64"/>
+      <Column Name="price2usepromotionprice" DataType="System.UInt64"/>
+      <Column Name="price3usepromotionprice" DataType="System.UInt64"/>
+      <Column Name="price4usepromotionprice" DataType="System.UInt64"/>
+      <Column Name="price5usepromotionprice" DataType="System.UInt64"/>
+      <Column Name="discount" DataType="System.Double"/>
+      <Column Name="defaultquantity" DataType="System.Double"/>
+      <Column Name="accounting" DataType="System.Double"/>
+      <Column Name="tare" DataType="System.Double"/>
+      <Column Name="weight" DataType="System.Double"/>
+      <Column Name="barcode" DataType="System.String"/>
+      <Column Name="pvpvariable" DataType="System.UInt64"/>
+      <Column Name="favorite" DataType="System.UInt64"/>
+      <Column Name="family" DataType="System.String"/>
+      <Column Name="subfamily" DataType="System.String"/>
+      <Column Name="type" DataType="System.String"/>
+      <Column Name="unitmeasure" DataType="System.String"/>
+      <Column Name="unitsize" DataType="System.String"/>
+      <Column Name="commissiongroup" DataType="System.String"/>
+      <Column Name="discountgroup" DataType="System.String"/>
+      <Column Name="vatontable" DataType="System.String"/>
+      <Column Name="vatdirectselling" DataType="System.String"/>
+      <Column Name="printer" DataType="System.String"/>
+      <Column Name="template" DataType="System.String"/>
+      <Column Name="optimisticlockfield" DataType="System.Int32"/>
+      <Column Name="pricewithvat" DataType="System.UInt64"/>
+      <Column Name="token1" DataType="System.String"/>
+      <Column Name="token2" DataType="System.String"/>
+      <Column Name="class" DataType="System.String"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+    </TableDataSource>
+    <TableDataSource Name="userdetail" ReferenceName="NewDataSet.userdetail" DataType="System.Int32" Enabled="true">
+      <Column Name="oid" DataType="System.String"/>
+      <Column Name="disabled" DataType="System.UInt64"/>
+      <Column Name="notes" DataType="System.String"/>
+      <Column Name="UpdatedBy" DataType="System.String"/>
+      <Column Name="UpdatedWhere" DataType="System.String"/>
+      <Column Name="CreatedAt" DataType="System.DateTime"/>
+      <Column Name="UpdatedAt" DataType="System.DateTime"/>
+      <Column Name="ord" DataType="System.Int32"/>
+      <Column Name="code" DataType="System.Int32"/>
+      <Column Name="name" DataType="System.String"/>
+      <Column Name="residence" DataType="System.String"/>
+      <Column Name="locality" DataType="System.String"/>
+      <Column Name="zipcode" DataType="System.String"/>
+      <Column Name="city" DataType="System.String"/>
+      <Column Name="dateofcontract" DataType="System.String"/>
+      <Column Name="phone" DataType="System.String"/>
+      <Column Name="mobilephone" DataType="System.String"/>
+      <Column Name="email" DataType="System.String"/>
+      <Column Name="fiscalnumber" DataType="System.String"/>
+      <Column Name="language" DataType="System.String"/>
+      <Column Name="assignedseating" DataType="System.String"/>
+      <Column Name="accesspin" DataType="System.String"/>
+      <Column Name="accesscardnumber" DataType="System.String"/>
+      <Column Name="baseconsumption" DataType="System.String"/>
+      <Column Name="baseoffers" DataType="System.String"/>
+      <Column Name="pvpoffers" DataType="System.String"/>
+      <Column Name="remarks" DataType="System.String"/>
+      <Column Name="profile" DataType="System.String"/>
+      <Column Name="optimisticlockfield" DataType="System.Int32"/>
+      <Column Name="codeinternal" DataType="System.String"/>
+      <Column Name="login" DataType="System.String"/>
+      <Column Name="password" DataType="System.String"/>
+      <Column Name="createdby" DataType="System.String"/>
+      <Column Name="createdwhere" DataType="System.String"/>
+      <Column Name="deletedat" DataType="System.DateTime"/>
+      <Column Name="deletedby" DataType="System.String"/>
+      <Column Name="deletedwhere" DataType="System.String"/>
+      <Column Name="passwordreset" DataType="System.UInt64"/>
+      <Column Name="passwordresetdate" DataType="System.DateTime"/>
+      <Column Name="buttonimage" DataType="System.String"/>
+    </TableDataSource>
+    <Relation Name="FK_DocumentFinanceDetail_DocumentMaster" ReferenceName="NewDataSet.FK_DocumentFinanceDetail_DocumentMaster" ParentDataSource="documentfinancemaster" ChildDataSource="documentfinancedetail" ParentColumns="Oid" ChildColumns="DocumentMaster" Enabled="true"/>
+    <Relation Name="fk_configurationplaceterminal_UpdatedWhere" ReferenceName="NewDataSet.fk_configurationplaceterminal_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="configurationplaceterminal" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_configurationplaceterminal_UpdatedBy" ReferenceName="NewDataSet.fk_configurationplaceterminal_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="configurationplaceterminal" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="fk_documentfinancedetail_article" ReferenceName="NewDataSet.fk_documentfinancedetail_article" ParentDataSource="article" ChildDataSource="documentfinancedetail" ParentColumns="oid" ChildColumns="article" Enabled="true"/>
+    <Relation Name="fk_documentfinancedetail_documentmaster" ReferenceName="NewDataSet.fk_documentfinancedetail_documentmaster" ParentDataSource="documentfinancemaster" ChildDataSource="documentfinancedetail" ParentColumns="oid" ChildColumns="documentmaster" Enabled="true"/>
+    <Relation Name="fk_documentfinancedetail_UpdatedWhere" ReferenceName="NewDataSet.fk_documentfinancedetail_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentfinancedetail" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_documentfinancedetail_UpdatedBy" ReferenceName="NewDataSet.fk_documentfinancedetail_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentfinancedetail" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="fk_documentfinancemaster_UpdatedWhere" ReferenceName="NewDataSet.fk_documentfinancemaster_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="documentfinancemaster" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_documentfinancemaster_UpdatedBy" ReferenceName="NewDataSet.fk_documentfinancemaster_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="documentfinancemaster" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="fk_article_UpdatedWhere" ReferenceName="NewDataSet.fk_article_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="article" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_userdetail_UpdatedWhere" ReferenceName="NewDataSet.fk_userdetail_UpdatedWhere" ParentDataSource="configurationplaceterminal" ChildDataSource="userdetail" ParentColumns="oid" ChildColumns="UpdatedWhere" Enabled="true"/>
+    <Relation Name="fk_userdetail_UpdatedBy" ReferenceName="NewDataSet.fk_userdetail_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="userdetail" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Relation Name="fk_article_UpdatedBy" ReferenceName="NewDataSet.fk_article_UpdatedBy" ParentDataSource="userdetail" ChildDataSource="article" ParentColumns="oid" ChildColumns="UpdatedBy" Enabled="true"/>
+    <Total Name="Total" Expression="[documentfinancedetail.TotalFinal]" Evaluator="Data1" PrintOn="GroupFooter2"/>
+    <Total Name="Total1" Expression="[documentfinancedetail.TotalFinal]" Evaluator="Data1" PrintOn="GroupFooter1"/>
+  </Dictionary>
+  <ReportPage Name="Page1">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="113.4">
+      <PictureObject Name="Picture1" Left="9.45" Top="18.9" Width="226.8" Height="66.15" Image="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"/>
+      <TextObject Name="Text_Report" Left="529.2" Top="18.9" Width="103.95" Height="18.9" Text="[Res(&quot;Report&quot;)]" HorzAlign="Right" Font="Arial, 15pt, style=Bold" TextFill.Color="YellowGreen" Wysiwyg="true"/>
+      <TextObject Name="Text_ReportTitle_DetailsCurrentAccount" Left="236.25" Top="47.25" Width="396.9" Height="18.9" Anchor="Top, Right" Text="[Res(&quot;Text_ReportTitle_DetailsCurrentAccount&quot;)]" HorzAlign="Right" Font="Arial, 15pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+      <PictureObject Name="Picture2" Left="642.6" Top="9.45" Width="75.6" Height="66.15" Image="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"/>
+      <TextObject Name="Text_StartDate" Left="519.75" Top="85.05" Width="85.05" Height="18.9" Anchor="Top, Right" Fill.Color="WhiteSmoke" Text="01/01/2016" HorzAlign="Center" Font="Arial, 10pt, style=Italic" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="Text_To" Left="604.8" Top="85.05" Width="28.35" Height="18.9" Anchor="Top, Right" Fill.Color="WhiteSmoke" Text="[Res(&quot;To&quot;)]" HorzAlign="Center" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+      <TextObject Name="Text_EndDate" Left="633.15" Top="85.05" Width="85.05" Height="18.9" Anchor="Top, Right" Fill.Color="WhiteSmoke" Text="16/02/2016" HorzAlign="Center" Font="Arial, 10pt, style=Italic" TextFill.Color="61, 61, 61"/>
+    </ReportTitleBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="117.4" Width="718.2" Height="37.8" Fill.Color="Silver" StartNewPage="true" Condition="[documentfinancedetail.FK_DocumentFinanceDetail_DocumentMaster.EntityName]" KeepTogether="true">
+      <TextObject Name="Text11" Top="9.45" Width="699.3" Height="18.9" Text="[documentfinancedetail.FK_DocumentFinanceDetail_DocumentMaster.EntityName]" Font="Arial, 14pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+      <GroupHeaderBand Name="GroupHeader2" Top="191.55" Width="718.2" Height="37.8" Fill.Color="Gainsboro" Condition="[documentfinancedetail.FK_DocumentFinanceDetail_DocumentMaster.DocumentNumber]">
+        <TextObject Name="Text1" Left="9.45" Top="9.45" Width="189" Height="18.9" Text="[documentfinancedetail.FK_DocumentFinanceDetail_DocumentMaster.DocumentNumber]" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+        <TextObject Name="Text_DatePayed" Left="444.15" Top="9.45" Width="198.45" Height="18.9" Text="[documentfinancedetail.documentfinancemaster.payeddate]" Format="Date" Format.Format="d" Font="Arial, 9pt, style=Bold">
+          <Highlight>
+            <Condition Expression="Value == 0" Visible="false"/>
+          </Highlight>
+        </TextObject>
+        <TextObject Name="Text7" Left="198.45" Top="9.45" Width="170.1" Height="18.9" Text="[documentfinancedetail.FK_DocumentFinanceDetail_DocumentMaster.date]" Format="Date" Format.Format="d" Font="Arial, 9pt, style=Bold"/>
+        <CheckBoxObject Name="CheckBox1" Left="378" Top="9.45" Width="18.9" Height="18.9" UncheckedSymbol="Cross"/>
+        <DataHeaderBand Name="DataHeader2" Top="159.2" Width="718.2" Height="28.35" Fill.Color="Gainsboro">
+          <TextObject Name="Text_NDocument" Left="9.45" Top="9.45" Width="160.65" Height="18.9" Text="[Res(&quot;DocumentNumber&quot;)]" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+          <TextObject Name="Text_DateDocument" Left="198.45" Top="9.45" Width="170.1" Height="18.9" Text="[Res(&quot;DocumentDate&quot;)]" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+          <TextObject Name="Text_DateHourPayed" Left="444.15" Top="9.45" Width="189" Height="18.9" Text="[Res(&quot;DateTimePayment&quot;)]" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+          <TextObject Name="Text_Payed" Left="368.55" Top="9.45" Width="56.7" Height="18.9" Text="[Res(&quot;Paid&quot;)]" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+        </DataHeaderBand>
+        <DataBand Name="Data1" Top="265.7" Width="718.2" Height="18.9" CanBreak="true" DataSource="documentfinancedetail">
+          <TextObject Name="Text3" Left="37.8" Width="94.5" Height="18.9" Text="[documentfinancedetail.Code]" Font="Arial, 8.5pt"/>
+          <TextObject Name="Text4" Left="141.75" Width="217.35" Height="18.9" Text="[documentfinancedetail.Designation]" Font="Arial, 8.5pt"/>
+          <TextObject Name="Text5" Left="359.1" Width="113.4" Height="18.9" Text="[documentfinancedetail.Quantity]" Format="Number" Format.UseLocale="true" HorzAlign="Center" WordWrap="false" Font="Arial, 8.5pt" Trimming="EllipsisCharacter"/>
+          <TextObject Name="Text6" Left="614.25" Width="94.5" Height="18.9" Text="[documentfinancedetail.TotalFinal]" Format="Number" Format.UseLocale="true" HorzAlign="Right" WordWrap="false" Font="Arial, 8.5pt" Trimming="EllipsisCharacter"/>
+          <DataHeaderBand Name="DataHeader1" Top="233.35" Width="718.2" Height="28.35" Fill.Color="WhiteSmoke">
+            <TextObject Name="Text_CodeArticle" Left="9.45" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;Code&quot;)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+            <TextObject Name="Text_Product" Left="141.75" Top="9.45" Width="217.35" Height="18.9" Text="[Res(&quot;Product&quot;)]" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+            <TextObject Name="Text_Quantity" Left="359.1" Top="9.45" Width="113.4" Height="18.9" Text="[Res(&quot;Quantity&quot;)]" HorzAlign="Center" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+            <TextObject Name="Text33" Left="623.7" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;Total&quot;)]" HorzAlign="Right" Font="Arial, 10pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+          </DataHeaderBand>
+        </DataBand>
+        <GroupFooterBand Name="GroupFooter2" Top="288.6" Width="718.2" Height="37.8" Fill.Color="WhiteSmoke">
+          <TextObject Name="Text_TotalDoc" Left="359.1" Top="9.45" Width="217.35" Height="18.9" Anchor="Top, Right" Text="[Res(&quot;TotalDocument&quot;)]:" HorzAlign="Right" Font="Arial, 13pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+          <TextObject Name="Text35" Left="585.9" Top="9.45" Width="122.85" Height="18.9" Text="[Total]" Format="Currency" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.CurrencySymbol="MZN" Format.PositivePattern="3" Format.NegativePattern="8" HorzAlign="Right" Font="Arial, 13pt, style=Bold"/>
+          <ChildBand Name="Child2" Top="330.4" Width="718.2" Height="18.9"/>
+        </GroupFooterBand>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooter1" Top="353.3" Width="718.2" Height="47.25" Fill.Color="Gainsboro">
+        <TextObject Name="Text_TotalClient" Left="378" Top="9.45" Width="198.45" Height="18.9" Anchor="Top, Right" Text="[Res(&quot;TotalClient&quot;)]:" HorzAlign="Right" Font="Arial, 14pt, style=Bold" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+        <TextObject Name="Text9" Left="585.9" Top="9.45" Width="122.85" Height="18.9" Text="[Total1]" Format="Currency" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.CurrencySymbol="MZN" Format.PositivePattern="3" Format.NegativePattern="8" HorzAlign="Right" Font="Arial, 14pt, style=Bold"/>
+        <ChildBand Name="Child1" Top="404.55" Width="718.2" Height="103.95"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <PageFooterBand Name="PageFooter1" Top="512.5" Width="718.2" Height="85.05">
+      <LineObject Name="Line1" Width="718.2" Border.Color="Gray" Border.Style="Dash" Border.Width="2"/>
+      <TextObject Name="Text8" Left="661.5" Top="56.7" Width="56.7" Height="18.9" Text="[PageN]" Font="Arial, 9pt" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="Text_DateHour" Top="56.7" Width="37.8" Height="18.9" Text="[Res(&quot;Date&quot;)]:" Font="Arial, 9pt" TextFill.Color="61, 61, 61" Wysiwyg="true"/>
+      <TextObject Name="Text25" Left="37.8" Top="56.7" Width="330.75" Height="18.9" Text="[Date]" Format="Date" Format.Format="d" Font="Arial, 9pt" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="TxtLine1" Top="9.45" Width="718.2" Height="18.9" Text="Lic. Logicpulse Technologies" VertAlign="Center" Font="Arial, 9pt, style=Bold" TextFill.Color="61, 61, 61"/>
+      <TextObject Name="TxtLine2" Top="28.35" Width="718.2" Height="18.9" Text="logicPOS" VertAlign="Center" Font="Arial, 9pt, style=Bold" TextFill.Color="61, 61, 61"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>
