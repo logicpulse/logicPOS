@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.resources.Resources.Localization;
 using System;
@@ -424,11 +425,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Static Helpers to get Button References
-
-        public enum PosBaseDialogButtonType
-        {
-            Default, Ok, Cancel, Yes, No, Close, Print, PrintAs, Help
-        }
 
         public static TouchButtonIconWithText FactoryGetDialogButtonType(PosBaseDialogButtonType pButtonType)
         {

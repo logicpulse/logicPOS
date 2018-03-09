@@ -6,6 +6,7 @@ using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.printer.generic;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
 using System;
 using System.Collections.Generic;
@@ -171,11 +172,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
                             resultSystemPrint = SystemPrintInsert(pDocumentFinanceMaster, pPrinter.Designation, printCopies, pCopyNames, pSecondCopy, pMotive);
                             break;
-                        //case "VIRTUAL_SCREEN":
-                        //    logicpos.framework.PreviewForm prvForm = new logicpos.framework.PreviewForm();
-                        //    prvForm.previewTicket(dataTableLoop, dataTableStatic, fileTicket);
-                        //    prvForm.ShowDialog();
-                        //    break;
                     }
                     result = true;
                 }
@@ -274,11 +270,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
                             resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, pPrinter.Designation, printCopies, copyNames);
                             break;
-                        //case "VIRTUAL_SCREEN":
-                        //    logicpos.framework.PreviewForm prvForm = new logicpos.framework.PreviewForm();
-                        //    prvForm.previewTicket(dataTableLoop, dataTableStatic, fileTicket);
-                        //    prvForm.ShowDialog();
-                        //    break;
                     }
                     result = true;
                 }
@@ -322,11 +313,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             break;
                         case "REPORT_EXPORT_PDF":
                             break;
-                        //case "VIRTUAL_SCREEN":
-                        //    logicpos.framework.PreviewForm prvForm = new logicpos.framework.PreviewForm();
-                        //    prvForm.previewTicket(dataTableLoop, dataTableStatic, fileTicket);
-                        //    prvForm.ShowDialog();
-                        //    break;
                     }
                     result = true;
                 }
@@ -402,11 +388,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             ThermalPrinterInternalDocumentCashDrawer thermalPrinterInternalDocumentCashDrawer = new ThermalPrinterInternalDocumentCashDrawer(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, pMovementAmount, pMovementDescription);
                             thermalPrinterInternalDocumentCashDrawer.Print();
                             break;
-                        //case "VIRTUAL_SCREEN":
-                        //    framework.PreviewForm prvForm = new logicpos.framework.PreviewForm();
-                        //    prvForm.previewTicket(dataTableLoop, dataTableStatic, fileTicket);
-                        //    prvForm.ShowDialog();
-                        //    break;
                     }
                     result = true;
                 }

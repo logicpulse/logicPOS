@@ -253,6 +253,8 @@ namespace logicpos
             {
                 switch (pDataBaseType)
                 {
+                    case DatabaseType.MySql:
+                        break;
                     case DatabaseType.MonoLite:
                     case DatabaseType.SQLite:
                         //connectionstring = string.Format(GlobalFramework.Settings["xpoConnectionString"], databaseName);
@@ -261,16 +263,22 @@ namespace logicpos
                         //result.Add("dt.Table", "dt.[Table]");
                         result.Add(@"\\", @"\");
                         result.Add("\\n", "' || CHAR(13) || '");
+                        // view_articlestockmovement
+                        result.Add("DATE_FORMAT(stk.Date, '%Y-%m-%d') AS stkDateDay,", "strftime('%Y-%m-%d', stk.Date) AS stkDateDay,");
+                        // view_systemaudit
+                        result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "strftime('%Y-%m-%d', sau.Date) AS sauDateDay,");
                         break;
                     case DatabaseType.MSSqlServer:
                         //Replace content
                         result.Add(@"\\", @"\");
                         //Required to Replace with CHAR(13) else nothing seems to work
                         result.Add("\\n", "' + CHAR(13) + '");
+                        // view_articlestockmovement
+                        result.Add("DATE_FORMAT(stk.Date, '%Y-%m-%d') AS stkDateDay,", "FORMAT(stk.Date, 'yyyy-MM-dd', 'en-us') AS stkDateDay");
+                        // view_systemaudit
+                        result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "FORMAT(sau.Date, 'yyyy-MM-dd', 'en-us') AS sauDateDay");
                         //ByPass Default commandSeparator ;
                         commandSeparator = "GO";
-                        break;
-                    case DatabaseType.MySql:
                         break;
                 }
             }
@@ -312,6 +320,11 @@ namespace logicpos
                     }
                 }
 
+                //if (pFilename.Equals("Resources/Database/databasedata.sql"))
+                //{
+                //    log.Debug("DEBUG");
+                //}
+
                 object result;
                 string executeCommand;
                 string[] commandSeparators = new string[] { pCommandSeparator };
@@ -325,7 +338,13 @@ namespace logicpos
                     //TODO: Muga melhorar isto : Move it to Replacable in DataBase Type in a Dynamic Value Action
                     executeCommand = executeCommand.Replace("</NEWGUI>", Guid.NewGuid().ToString());
 
-                    if (executeCommand != string.Empty && executeCommand != "\r\n" && !executeCommand.Contains("--"))
+// use pReplaceables
+if (executeCommand.Contains("DATE_FORMAT"))
+{
+    log.Debug("DEBUG");
+}
+
+                    if (executeCommand != string.Empty && executeCommand != "\r\n" && !executeCommand.StartsWith("--"))
                     {
                         log.Debug(string.Format("{0}/{1}> [{2}]", i + 1, commands.Length - 1, executeCommand));
                         try
@@ -388,7 +407,7 @@ namespace logicpos
                         if (result)
                         {
                             //Ignore File if is in ignoreFilesForDeveloper List
-                            if (! ignoreFilesForDeveloper.Contains(filesArray[i]))
+                            if (!ignoreFilesForDeveloper.Contains(filesArray[i]))
                             {
                                 result = ProcessDump(pXpoSession, FrameworkUtils.OSSlash(filesArray[i]), pCommandSeparator, pReplaceables);
                             }

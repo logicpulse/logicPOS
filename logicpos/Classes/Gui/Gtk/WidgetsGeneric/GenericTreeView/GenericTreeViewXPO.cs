@@ -1,12 +1,12 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
-using logicpos.financial;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
-using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Parameters
             _sourceWindow = pSourceWindow;
             _dataSource = pXpoCollection;
-            
+
             if (_dataSource.Count > 0)
             {
                 _dataSourceRow = pXpoDefaultValue;
@@ -101,10 +101,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Prepare CRUD Privileges
             //Require to use Object Name Without Prefixs (Remove Prefixs PFX_)
             string objectNameWithoutPrefix = _xpoGuidObjectType.UnderlyingSystemType.Name.Substring(4, _xpoGuidObjectType.UnderlyingSystemType.Name.Length - 4);
-            string tokenAllowDelete = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperation, objectNameWithoutPrefix), "DELETE").ToUpper();
-            string tokenAllowInsert = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperation, objectNameWithoutPrefix), "CREATE").ToUpper();
-            string tokenAllowUpdate = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperation, objectNameWithoutPrefix), "EDIT").ToUpper();
-            string tokenAllowView = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperation, objectNameWithoutPrefix), "VIEW").ToUpper();
+            string tokenAllowDelete = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "DELETE").ToUpper();
+            string tokenAllowInsert = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "CREATE").ToUpper();
+            string tokenAllowUpdate = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "EDIT").ToUpper();
+            string tokenAllowView = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "VIEW").ToUpper();
 
             //Assign CRUD permissions to private members, Overriding Defaults
             if (GlobalFramework.LoggedUserPermissions != null)
@@ -157,13 +157,21 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             Int32 rowIndex = -1;
             foreach (XPGuidObject dataRow in (_XpCollection as XPCollection))
             {
+                // Increment RownIndex
                 rowIndex++;
-                
+                // reset undefinedRecord
+                bool undefinedRecord = false;
+
                 //Loop Fields : Generate Abstract Values to use in Model
                 for (int i = 0; i < _columnProperties.Count; i++)
                 {
                     //Default FieldName
                     fieldName = _columnProperties[i].Name;
+
+                    //if (fieldName == "Ord" || fieldName == "Code")
+                    //{
+                    //    _log.Debug("BREAK");
+                    //}
 
                     try
                     {
@@ -196,11 +204,22 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         //Get Default Value from Field Name
                         else
                         {
-                            //TODO: melhorar isto para ser generico e contemplar os outros campos
+                            // Check/Detect if is a undefinedRecord
+                            if (fieldName == "Oid")
+                            {
+                                undefinedRecord = ((new Guid(dataRow.GetMemberValue(_columnProperties[i].Name).ToString())).Equals(SettingsApp.XpoOidUndefinedRecord));
+                            }
+
+                            //TODO (Muga): melhorar isto para ser generico e contemplar os outros campos
                             if (dataRow.GetMemberValue(_columnProperties[i].Name) != null)
                             {
+                                // Detect UndefinedRecord and if is a Int Field, and Replace with string.Empty, this ways we Dont Show 0 in Null Undefined Records
+                                if (undefinedRecord && dataRow.GetMemberValue(_columnProperties[i].Name).GetType().Name.Equals("UInt32"))
+                                {
+                                    columnValues[i] = string.Empty;
+                                }
                                 //Boolean Fields
-                                if (dataRow.GetMemberValue(_columnProperties[i].Name).GetType().Name.Equals("Boolean"))
+                                else if (dataRow.GetMemberValue(_columnProperties[i].Name).GetType().Name.Equals("Boolean"))
                                 {
                                     bool booleanValue = Convert.ToBoolean(dataRow.GetMemberValue(_columnProperties[i].Name));
                                     columnValues[i] = (booleanValue) ? Resx.global_treeview_true : Resx.global_treeview_false;
@@ -333,7 +352,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if (_debug) _log.Debug(string.Format("XPCollection Count: [{0}]", _dataSource.Count));
         }
 
-        public override bool ShowDialog<T>(T pDataObject, BackOffice.DialogMode pDialogMode)
+        public override bool ShowDialog<T>(T pDataObject, DialogMode pDialogMode)
         {
             bool result = false;
 
@@ -402,7 +421,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     }
                 };
             }
-            
+
             if (!HasEventRecordBeforeUpdate())
             {
                 //_log.Debug("Create RecordBeforeUpdate Event");

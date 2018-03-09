@@ -11,6 +11,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {

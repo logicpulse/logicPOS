@@ -1730,7 +1730,7 @@ Avant de continuer devra fermer le terminal suivant (s): {1}</value>
     <value>Total</value>
   </data>
   <data name="global_total_tax_base" xml:space="preserve">
-    <value>Base TVA</value>
+    <value>Base VAT</value>
   </data>
   <data name="global_total_ticket" xml:space="preserve">
     <value>Total</value>
@@ -2175,7 +2175,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
   <data name="report_label_close_peak_hour" xml:space="preserve">
     <value>Heure de pointe Haut</value>
   </data>
-  <data name="report_label_consumption_per_user" xml:space="preserve">
+  <data name="report_label_list_consumption_per_user" xml:space="preserve">
     <value>Consommation par employé</value>
   </data>
   <data name="report_label_courier_deliver" xml:space="preserve">
@@ -2199,7 +2199,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
   <data name="report_label_sales_per_date" xml:space="preserve">
     <value>Ventes par jour</value>
   </data>
-  <data name="report_label_sales_per_employee" xml:space="preserve">
+  <data name="report_label_sales_per_user" xml:space="preserve">
     <value>Ventes par employé</value>
   </data>
   <data name="report_label_sales_per_family" xml:space="preserve">
@@ -2233,7 +2233,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
     <value>Retenue à la source</value>
   </data>
   <data name="report_label_zone_total" xml:space="preserve">
-    <value>Par zone totale</value>
+    <value>Ventes par zone totale</value>
   </data>
   <data name="saft_value_unknown" xml:space="preserve">
     <value>Inconnu</value>
@@ -2798,10 +2798,106 @@ Cette erreur se produit car vous ne disposez pas d'un plugin SoftwareVendor enre
 Installez un plugin SoftwareVendor, sinon les documents ne sont pas signés numériquement!</value>
   </data>
   <data name="dialog_message_error_plugin_softwarevendor_not_registered" xml:space="preserve">
-    <value>Manquant requis type de plugin SoftwareVendor détecté!
+    <value>Détecté l'absence d'un plugin softwareVendor obligatoire ou la liaison de clé privée entre les bibliothèques est invalide
 
-Ce plugin est requis, certaines fonctionnalités sont désactivées sans cela!
+Ce plugin est nécessaire, sans cela certaines fonctionnalités ont été désactivées!
 
-Veuillez installer un plugin SoftwareVendor valide!</value>
+Installez un plugin SoftwareVendor valide!</value>
+  </data>
+  <data name="global_record_count" xml:space="preserve">
+    <value>Total des Enregistrements</value>
+  </data>
+  <data name="report_label_close_worksession" xml:space="preserve">
+    <value>Verrouillage de Jour/ Caissier</value>
+  </data>
+  <data name="report_label_list_audit_table" xml:space="preserve">
+    <value>Tableaux d'Audit</value>
+  </data>
+  <data name="report_label_list_customers" xml:space="preserve">
+    <value>Clients</value>
+  </data>
+  <data name="report_label_list_family_subfamily_articles" xml:space="preserve">
+    <value>Familles, Sous-familles et Articles</value>
+  </data>
+  <data name="report_label_list_stock_movements" xml:space="preserve">
+    <value>Mouvements de Marchandises</value>
+  </data>
+  <data name="report_label_list_worksession" xml:space="preserve">
+    <value>Liste des Sessions de Travail</value>
+  </data>
+  <data name="report_label_sales_per_terminal" xml:space="preserve">
+    <value>Ventes par terminal</value>
+  </data>
+  <data name="report_sales_per_country" xml:space="preserve">
+    <value>Ventes par pays</value>
+  </data>
+  <data name="report_sales_per_currency" xml:space="preserve">
+    <value>Ventes par devise</value>
+  </data>
+  <data name="report_sales_per_customer" xml:space="preserve">
+    <value>Ventes par client</value>
+  </data>
+  <data name="report_sales_per_payment_condition" xml:space="preserve">
+    <value>Ventes par conditions de paiement</value>
+  </data>
+  <data name="global_total_discount_acronym" xml:space="preserve">
+    <value>T.Rab.</value>
+  </data>
+  <data name="global_total_tax_acronym" xml:space="preserve">
+    <value>T.Tax</value>
+  </data>
+  <data name="dialog_message_report_filter_no_records_with_criteria" xml:space="preserve">
+    <value>Les filtres actuels ne trouvent pas d'enregistrements dans ces conditions, reformatez les filtres et réessayez avec d'autres conditions!</value>
+  </data>
+  <data name="global_filter" xml:space="preserve">
+    <value>Filtrer</value>
+  </data>
+  <data name="report_sales_detail_group_postfix" xml:space="preserve">
+    <value>(Détaillé/Groupé)</value>
+  </data>
+  <data name="report_sales_detail_per_family_and_subfamily" xml:space="preserve">
+    <value>Ventes par famille / sous-famille</value>
+  </data>
+  <data name="report_sales_detail_per_place_table" xml:space="preserve">
+    <value>Ventes détaillées par zone / table</value>
+  </data>
+  <data name="report_sales_detail_postfix" xml:space="preserve">
+    <value>(Détaillé)</value>
+  </data>
+  <data name="report_sales_per_family" xml:space="preserve">
+    <value>Ventes par famille</value>
+  </data>
+  <data name="report_sales_per_family_and_subfamily" xml:space="preserve">
+    <value>Ventes par sous-famille</value>
+  </data>
+  <data name="report_sales_per_place" xml:space="preserve">
+    <value>Ventes par zone/table</value>
+  </data>
+  <data name="report_sales_per_place_table" xml:space="preserve">
+    <value>Ventes de table</value>
+  </data>
+  <data name="window_title_dialog_report_filter" xml:space="preserve">
+    <value>Filtrez le Rapport</value>
+  </data>
+  <data name="reporttype_label_type1" xml:space="preserve">
+    <value>Rapports Financiers (Résumé)</value>
+  </data>
+  <data name="reporttype_label_type2" xml:space="preserve">
+    <value>Rapports Financiers (Détaillés)</value>
+  </data>
+  <data name="reporttype_label_type3" xml:space="preserve">
+    <value>Rapports Financiers (Détaillés/Groupés)</value>
+  </data>
+  <data name="reporttype_label_type4" xml:space="preserve">
+    <value>Rapports Système</value>
+  </data>
+  <data name="reporttype_label_type5" xml:space="preserve">
+    <value>Tables Auxiliaires</value>
+  </data>
+  <data name="report_list_close_worksession" xml:space="preserve">
+    <value>Liste des Sessions de Travail Fermées</value>
+  </data>
+  <data name="global_audit_type" xml:space="preserve">
+    <value>Type d'Audit</value>
   </data>
 </root>

@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
+using logicpos.Classes.Enums.Widgets;
 
 namespace logicpos
 {

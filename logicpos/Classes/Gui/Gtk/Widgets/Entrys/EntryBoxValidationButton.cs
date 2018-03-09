@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 

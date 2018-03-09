@@ -12,12 +12,11 @@ namespace logicpos.plugin.library
 
         public static ICollection<T> LoadPlugins(string path)
         {
-
             string[] dllFileNames = null;
 
             if (Directory.Exists(path))
             {
-                dllFileNames = Directory.GetFiles(path, "*.dll");
+                dllFileNames = Directory.GetFiles(path, "*Plugin.dll");
 
                 ICollection<Assembly> assemblies = new List<Assembly>(dllFileNames.Length);
                 foreach (string dllFile in dllFileNames)

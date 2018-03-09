@@ -8,6 +8,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

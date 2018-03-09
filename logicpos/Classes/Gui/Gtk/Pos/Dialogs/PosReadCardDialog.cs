@@ -7,6 +7,8 @@ using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
 using System.Drawing;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -47,8 +49,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fixedContent.Put(vbox, 0, 0);
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();

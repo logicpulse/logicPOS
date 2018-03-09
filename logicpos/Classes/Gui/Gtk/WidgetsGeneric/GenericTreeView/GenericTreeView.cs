@@ -1,24 +1,16 @@
 ﻿using Gtk;
-using logicpos.financial;
 using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.resources.Resources.Localization;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
-
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    enum GenericTreeViewMode
-    {
-        Default, CheckBox
-    }
-
     /// <summary>Class used to render TreeView from generated liststore model, and column properties</summary>
     /// T1 DataSource Generic Type, T2 DataSourceRow Generic Type
     abstract class GenericTreeView<T1, T2> : Box, IGenericTreeView
@@ -750,7 +742,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
         }
 
-        public virtual bool ShowDialog<T>(T pDataObject, BackOffice.DialogMode pDialogMode)
+        public virtual bool ShowDialog<T>(T pDataObject, Enums.Dialogs.DialogMode pDialogMode)
         {
             try
             {
@@ -969,9 +961,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 _treePath = _listStoreModel.GetPath(_treeIter);
                 _treeView.SetCursor(_treePath, null, false);
-                //Fix: Require using use _sourceWindow.ExposeEvent to prevent scrollToCell move ActionButtons down problem (Occurs sometimes)
-                //Required if (_treeView.Columns.Length > 0), to prevent close Dialog ExposeEvent
-                _sourceWindow.ExposeEvent += delegate { if (_treeView.Columns.Length > 0) _treeView.ScrollToCell(_treePath, _treeView.Columns[0], false, 0, 0); };
+                try
+                {
+                    //Fix: Require using use _sourceWindow.ExposeEvent to prevent scrollToCell move ActionButtons down problem (Occurs sometimes)
+                    //Required if (_treeView.Columns.Length > 0), to prevent close Dialog ExposeEvent
+                    _sourceWindow.ExposeEvent += delegate { if (_treeView.Columns.Length > 0) _treeView.ScrollToCell(_treePath, _treeView.Columns[0], false, 0, 0); };
+                }
+                catch (Exception ex)
+                {
+                    _log.Error(ex.Message, ex);
+                    _log.Error(string.Format("Error! Required sourceWindow for ExposeEvent, current value is sourceWindow: [{0}]", _sourceWindow));
+                }
             }
         }
 

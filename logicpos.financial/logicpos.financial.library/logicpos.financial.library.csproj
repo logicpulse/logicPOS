@@ -96,16 +96,23 @@
     </Compile>
     <Compile Include="Classes\Reports\BOs\Articles\FRBOArticle.cs" />
     <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleFamily.cs" />
+    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockMovementView.cs" />
     <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleSubFamily.cs" />
+    <Compile Include="Classes\Reports\BOs\Customers\FRBOCustomer.cs" />
+    <Compile Include="Classes\Reports\BOs\Customers\FRBOCustomerType.cs" />
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceDetail.cs" />
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMaster.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterTotal.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePayment.cs" />
-    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePaymentDocument.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterDetailGroupView.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterDetailView.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterTotalView.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterView.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePaymentDocumentView.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePaymentView.cs" />
     <Compile Include="Classes\Reports\BOs\FRBOBaseObject.cs" />
     <Compile Include="Classes\Reports\BOs\FRBOGenericCollection.cs" />
     <Compile Include="Classes\Reports\BOs\FRBOTemplate.cs" />
     <Compile Include="Classes\Reports\BOs\FRBOHelper.cs" />
+    <Compile Include="Classes\Reports\BOs\System\FRBOSystemAuditView.cs" />
     <Compile Include="Classes\Reports\CustomFunctions.cs" />
     <Compile Include="Classes\Reports\CustomReport.cs">
       <SubType>Component</SubType>

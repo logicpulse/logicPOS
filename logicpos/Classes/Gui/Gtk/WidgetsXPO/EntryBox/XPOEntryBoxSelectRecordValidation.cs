@@ -1,13 +1,10 @@
-﻿using Gtk;
-using System;
-using System.Drawing;
-using logicpos.financial;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using DevExpress.Data.Filtering;
-using System.ComponentModel;
-using logicpos.Classes.Gui.Gtk.Widgets;
+﻿using DevExpress.Data.Filtering;
+using Gtk;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.DataLayer.Xpo;
+using System;
+using System.ComponentModel;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {

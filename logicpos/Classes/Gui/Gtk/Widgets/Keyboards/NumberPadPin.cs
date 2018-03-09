@@ -1,24 +1,15 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    public enum NumberPadPinMode
-    {
-        Password,           //Default Login
-        PasswordOld,        //Type Old Password
-        PasswordNew,        //Type New Password
-        PasswordNewConfirm, //Confirm Password
-        PasswordReset       //Reset Password
-    }
-
     public class NumberPadPin : Box
     {
         //Log4Net

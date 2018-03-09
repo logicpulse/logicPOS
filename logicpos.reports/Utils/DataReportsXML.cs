@@ -1,17 +1,17 @@
 ﻿using DevExpress.Xpo.DB;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.reports.App;
+using logicpos.reports.Resources.Localization;
+using Mono.Data.Sqlite;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using Mono.Data.Sqlite;
-using System.IO;
-using System.Xml.Linq;
 using System.Drawing;
 using System.Drawing.Imaging;
-using logicpos.financial;
-using logicpos.reports.Resources.Localization;
-using logicpos.financial.DataLayer.Xpo;
+using System.IO;
+using System.Xml.Linq;
 
 namespace logicpos.reports.Utils
 {
@@ -26,7 +26,6 @@ namespace logicpos.reports.Utils
         private static MySqlDataAdapter dtmysqlXMLReports;
         private static SqliteDataAdapter dtsqliteXMLReports;
         private static string _currency;
-        private static Image _logo;
         private static DataSet FDataSet = new DataSet();
         private static string FReportsFolder;
         private static string xpoOidDocumentFinanceTypeCurrentAccountInput = GlobalFramework.Settings["xpoOidDocumentFinanceTypeCurrentAccountInput"];

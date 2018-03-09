@@ -10,6 +10,7 @@ using logicpos.shared;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -62,8 +63,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             boxContent.PackStart(_pagePad, true, true, 0);
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", Resx.global_button_label_payment_dialog_clear_client, fileIconClearCustomer);
 
             _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", Resx.global_total, fileActionPreview);

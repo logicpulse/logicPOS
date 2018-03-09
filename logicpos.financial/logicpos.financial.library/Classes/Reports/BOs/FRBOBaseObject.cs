@@ -1,6 +1,4 @@
 ﻿using System;
-using logicpos;
-using System.Collections.Generic;
 
 namespace logicpos.financial.library.Classes.Reports.BOs
 {
@@ -10,8 +8,11 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         //AttributeTargets.Constructor |
         //AttributeTargets.Field |
         //AttributeTargets.Method |
-    AttributeTargets.Property,
-    AllowMultiple = true)]
+        AttributeTargets.Property,
+        AllowMultiple = true,
+        // Prevent Subclasses Inheritance else
+        // [ERROR] Foram encontrados vários atributos personalizados do mesmo tipo.        Inherited = false
+        )]
     public class FRBOAttribute : Attribute
     {
 
@@ -61,6 +62,18 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         {
             get { return _filter; }
             set { _filter = value; }
+        }
+
+        /// <summary>
+        /// Use in Class
+        /// Define Group By
+        /// ex [FRBO(Group="Date, Type, ...")]
+        /// </summary>
+        private string _group;
+        public string Group
+        {
+            get { return _group; }
+            set { _group = value; }
         }
 
         /// <summary>

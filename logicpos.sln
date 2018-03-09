@@ -1,4 +1,5 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -43,6 +44,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "acme", "acme", "{FDE14E3D-F7AC-4F68-B80F-52AF6310D06A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "acme.softwarevendor.plugin", "logicpos.plugins\plugins\acme\acme.softwarevendor.plugin\acme.softwarevendor.plugin.csproj", "{01F26AB4-E023-4E94-85F4-4BB027EA19BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.reports", "logicpos.reports\logicpos.reports.csproj", "{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -533,6 +536,36 @@ Global
 		{01F26AB4-E023-4E94-85F4-4BB027EA19BF}.WinForms|Mixed Platforms.Build.0 = Release|Any CPU
 		{01F26AB4-E023-4E94-85F4-4BB027EA19BF}.WinForms|x86.ActiveCfg = Release|Any CPU
 		{01F26AB4-E023-4E94-85F4-4BB027EA19BF}.WinForms|x86.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Basic|Any CPU.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Basic|Any CPU.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Basic|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Basic|Mixed Platforms.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Basic|x86.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Basic|x86.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Debug|x86.Build.0 = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Demo|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Demo|Any CPU.Build.0 = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Demo|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Demo|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Demo|x86.ActiveCfg = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Demo|x86.Build.0 = Debug|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Release|x86.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.Release|x86.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.WinForms|Any CPU.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.WinForms|Any CPU.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.WinForms|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.WinForms|Mixed Platforms.Build.0 = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.WinForms|x86.ActiveCfg = Release|Any CPU
+		{4BB31FD4-EC66-41E4-86AF-65E61AC7C23D}.WinForms|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,6 +18,8 @@ using logicpos.shared.Classes.Finance;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -86,9 +88,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_cancel_document.png");
 
             //Default/Shared ActionArea Buttons
-            TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Close);
-            TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
-            TouchButtonIconWithText buttonPrintDocumentAs = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.PrintAs, "touchButtonPrintDocumentAs_Green");
+            TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
+            TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
+            TouchButtonIconWithText buttonPrintDocumentAs = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.PrintAs, "touchButtonPrintDocumentAs_Green");
 
             TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonType("touchButtonCancelDocument_Green", Resx.global_button_label_cancel_document, _fileActionCancel);
             buttonPrintDocument.Sensitive = false;
@@ -796,8 +798,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void _touchButtonPosToolbarWorkSessionPeriods_Clicked(object sender, EventArgs e)
         {
             //Default ActionArea Buttons
-            TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
-            TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Close);
+            TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
+            TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
             buttonPrintDocument.Sensitive = false;
 
             //ActionArea Buttons
@@ -940,9 +942,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void _toolbarFinanceDocumentsPayments_Clicked(object sender, EventArgs e)
         {
             //Default ActionArea Buttons
-            TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Close);
-            TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
-            TouchButtonIconWithText buttonPrintDocumentAs = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.PrintAs, "touchButtonPrintDocumentAs_Green");
+            TouchButtonIconWithText buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
+            TouchButtonIconWithText buttonPrintDocument = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Print, "touchButtonPrintDocument_Green");
+            TouchButtonIconWithText buttonPrintDocumentAs = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.PrintAs, "touchButtonPrintDocumentAs_Green");
             TouchButtonIconWithText buttonCancelDocument = ActionAreaButton.FactoryGetDialogButtonType("touchButtonCancelDocument_Green", Resx.global_button_label_cancel_document, _fileActionCancel);
             buttonPrintDocument.Sensitive = false;
             buttonPrintDocumentAs.Sensitive = false;

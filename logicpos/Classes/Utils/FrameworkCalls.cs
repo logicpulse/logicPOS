@@ -11,6 +11,8 @@ using logicpos.shared.Classes.Orders;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using logicpos.Classes.Enums.Finance;
+using logicpos.Classes.Enums.Tickets;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -250,11 +252,6 @@ namespace logicpos
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ExportSaftPt
-
-        public enum ExportSaftPtMode
-        {
-            LastMonth, WholeYear, Custom
-        }
 
         public static string ExportSaftPt(Window pSourceWindow, ExportSaftPtMode pExportSaftPtMode)
         {
@@ -513,11 +510,6 @@ namespace logicpos
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        public enum TicketType
-        {
-            TableOrder, ArticleOrder, WorkSession, CashDrawer
-        }
 
         //Shared Method to call all other PrintTicketMethods to Check Licence and other Protections
         public static bool SharedPrintTicket(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, TicketType pTicketType)

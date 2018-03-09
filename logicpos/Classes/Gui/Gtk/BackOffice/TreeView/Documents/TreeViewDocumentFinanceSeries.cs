@@ -2,13 +2,14 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
-using logicpos.financial.library.Results;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Finance;
+using logicpos.financial.library.Results;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;

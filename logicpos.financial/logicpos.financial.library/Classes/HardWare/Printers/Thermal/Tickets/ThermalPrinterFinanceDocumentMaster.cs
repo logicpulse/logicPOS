@@ -3,6 +3,7 @@ using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports.BOs;
+using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         //Parameters Properties
         private FIN_DocumentFinanceMaster _documentMaster;
         //Business Objects
-        private List<FRBODocumentFinanceMaster> _documentFinanceMasterList;
+        private List<FRBODocumentFinanceMasterView> _documentFinanceMasterList;
         private List<FRBODocumentFinanceDetail> _documentFinanceDetailList;
-        private List<FRBODocumentFinanceMasterTotal> _documentFinanceMasterTotalList;
+        private List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
 
         public ThermalPrinterFinanceDocumentMaster(SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinanceMaster pDocumentMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
             : base(pPrinter, pDocumentMaster.DocumentType, pCopyNames, pSecondCopy)
@@ -320,7 +321,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 dataTable.Columns.Add(dcTaxBase);
                 dataTable.Columns.Add(dcTotal);
 
-                foreach (FRBODocumentFinanceMasterTotal item in _documentFinanceMasterTotalList)
+                foreach (FRBODocumentFinanceMasterTotalView item in _documentFinanceMasterTotalList)
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = item.Designation;

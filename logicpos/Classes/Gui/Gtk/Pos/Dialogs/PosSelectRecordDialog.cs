@@ -10,6 +10,8 @@ using logicpos.shared;
 using System;
 using System.Data;
 using System.Drawing;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -169,8 +171,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public ActionAreaButtons GetDefaultActionAreaButtons()
         {
             //Default ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 			_buttonOk.Sensitive = false;
             //ActionArea Buttons
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
@@ -220,9 +222,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public static DataTable GetSelected(Window pSourceWindow)
         {
             //Default ActionArea Buttons
-            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
+            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             buttonOk.Sensitive = false;
-            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             //ActionArea Buttons
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
             //Add references to Send to Event CursorChanged

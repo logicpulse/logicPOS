@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
+using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -29,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             // XPO column properties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_profile, Expand = true });
             //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
 

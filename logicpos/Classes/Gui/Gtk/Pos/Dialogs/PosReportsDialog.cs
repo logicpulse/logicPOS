@@ -1,82 +1,184 @@
-﻿using Gtk;
+﻿using DevExpress.Data.Filtering;
+using DevExpress.Xpo;
+using DevExpress.Xpo.DB;
+using Gtk;
 using logicpos.App;
-using logicpos.financial;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Reports;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
-using System.Drawing;
+using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     partial class PosReportsDialog : PosBaseDialog
     {
+        private ScrolledWindow _scrolledWindow;
+        private bool _showInsertLog = false;
+
         public PosReportsDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
             String windowTitle = Resx.global_reports;
-            Size windowSize = new Size(618, 553);
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+            System.Drawing.Size windowSize = new System.Drawing.Size(500, 509);//454
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
 
-            Size sizeIcon = new Size(50, 50);
-            int buttonWidth = 162;
-            int buttonHeight = 88;
-            uint tablePadding = 15;
+            System.Drawing.Size sizeIcon = new System.Drawing.Size(50, 50);
 
             //Icons
             String fileIconDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
 
-            //Buttons
-            TouchButtonIconWithText buttonReport1 = new TouchButtonIconWithText("touchButtonReport1_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_day, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport2 = new TouchButtonIconWithText("touchButtonReport2_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_zone_table, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport3 = new TouchButtonIconWithText("touchButtonReport3_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_top_register, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport4 = new TouchButtonIconWithText("touchButtonReport4_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_top_closure, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport5 = new TouchButtonIconWithText("touchButtonReport5_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_employees_register, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport6 = new TouchButtonIconWithText("touchButtonReport6_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_employees_closure, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport7 = new TouchButtonIconWithText("touchButtonReport7_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_average_placing, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport8 = new TouchButtonIconWithText("touchButtonReport8_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_zone, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport9 = new TouchButtonIconWithText("touchButtonReport9_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_family, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport10 = new TouchButtonIconWithText("touchButtonReport10_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_terminal, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport11 = new TouchButtonIconWithText("touchButtonReport11_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_offers, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonReport12 = new TouchButtonIconWithText("touchButtonReport12_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_report_employees_activity, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconDefault, sizeIcon, buttonWidth, buttonHeight);
-
-            //Table
-            Table table = new Table(4, 4, true);
-            table.BorderWidth = tablePadding;
-            //Row 1
-            table.Attach(buttonReport1, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(buttonReport2, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(buttonReport3, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            //Row 2
-            table.Attach(buttonReport4, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(buttonReport5, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(buttonReport6, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            //Row 3
-            table.Attach(buttonReport7, 0, 1, 2, 3, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(buttonReport8, 1, 2, 2, 3, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(buttonReport9, 2, 3, 2, 3, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            //Row 4
-            table.Attach(buttonReport10, 0, 1, 3, 4, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(buttonReport11, 1, 2, 3, 4, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
-            table.Attach(buttonReport12, 2, 3, 3, 4, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
+            // InitUI
+            InitUI();
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, table, null);
+            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _scrolledWindow, null);
+        }
 
-            //Events
-            buttonReport1.Clicked += buttonReport1_Clicked;
-            buttonReport2.Clicked += buttonReport2_Clicked;
-            buttonReport3.Clicked += buttonReport3_Clicked;
-            buttonReport4.Clicked += buttonReport4_Clicked;
-            buttonReport5.Clicked += buttonReport5_Clicked;
-            buttonReport6.Clicked += buttonReport5_Clicked;
-            buttonReport7.Clicked += buttonReport7_Clicked;
-            buttonReport8.Clicked += buttonReport8_Clicked;
-            buttonReport9.Clicked += buttonReport9_Clicked;
-            buttonReport10.Clicked += buttonReport10_Clicked;
-            buttonReport11.Clicked += buttonReport11_Clicked;
-            buttonReport12.Clicked += buttonReport12_Clicked;
+        private void InitUI()
+        {
+            // Build Accordion
+            Accordion accordion = new Accordion(GetAccordionDefinition(), SettingsApp.PrivilegesReportDialogFormat);
+            //Accordion.Clicked += accordion_Clicked;
+
+            //ViewPort
+            Viewport viewport = new Viewport() { ShadowType = ShadowType.None };
+            viewport.Add(accordion);
+            viewport.ResizeMode = ResizeMode.Parent;
+            //ScrolledWindow
+            _scrolledWindow = new ScrolledWindow();
+            _scrolledWindow.ShadowType = ShadowType.EtchedIn;
+            _scrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+            _scrolledWindow.Add(viewport);
+            _scrolledWindow.ResizeMode = ResizeMode.Parent;
+        }
+
+        /// <summary>
+        /// Get Accordion Definition and Generate Privileges (Outout to Console)
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, AccordionNode> GetAccordionDefinition()
+        {
+            //Init accordionDefinition
+            Dictionary<string, AccordionNode> accordionDefinition = null;
+            try
+            {
+                string buttonLabelReportTypeString = string.Empty;
+                string buttonLabel = string.Empty;
+                string buttonLabelString = string.Empty;
+                string buttonResourceString = string.Empty;
+                string buttoLabelPostfix = string.Empty;
+                string userpermissionitemToken = string.Empty;
+                Guid userpermissionitemGuid = Guid.Empty;
+                Guid userpermissionprofileGuid = Guid.Empty;
+                List<string> userpermissionitemInsert = new List<string>();
+                List<string> userpermissionprofileInsert = new List<string>();
+                string templatePermissionItem = "INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup) VALUES ('{0}',{1},{1},'{2}','{3}','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a');";
+                string userpermissionprofileItem = "INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('{0}',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','{1}');";
+                int userpermissionitemOrdAndCode = 3000;
+
+                // Init Accordion
+                accordionDefinition = new Dictionary<string, AccordionNode>();
+
+                // ReportType : Collection
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
+                SortProperty[] sortProperty = new SortProperty[2];
+                sortProperty[0] = new SortProperty("Ord", SortingDirection.Ascending);
+                sortProperty[1] = new SortProperty("Designation", SortingDirection.Ascending);
+                XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, typeof(RPT_ReportType), criteriaOperator, sortProperty);
+
+                // Report : Collection (ReportType Property Navigations)
+                SortingCollection sortingCollection = new SortingCollection();
+                sortingCollection.Add(new SortProperty("Ord", SortingDirection.Ascending));
+
+                foreach (RPT_ReportType reportType in xpoCollection)
+                {
+                    // Init AccordionChild
+                    Dictionary<string, AccordionNode> accordionChilds = new Dictionary<string, AccordionNode>();
+
+                    buttonLabelReportTypeString = Resx.ResourceManager.GetString(reportType.ResourceString);
+                    // Try to get Resource
+                    if (string.IsNullOrEmpty(buttonLabelReportTypeString))
+                    {
+                        // Log Before Exchange _ with - to show in button labels
+                        _log.Error(string.Format("Can't find resourceString: [{0}]", reportType.ResourceString));
+                        buttonLabelReportTypeString = string.Format("${0}$", reportType.ResourceString.Replace("_", "-"));
+                    }
+
+                    // Apply Sorting to childs of ReportType
+                    reportType.Report.Sorting = sortingCollection;
+
+                    foreach (RPT_Report report in reportType.Report)
+                    {
+                        if (!report.Disabled)
+                        {
+                            // Generate Insert for userpermissionitem and userpermissionitem
+                            userpermissionitemToken = report.Token;
+                            userpermissionitemGuid = Guid.NewGuid();
+                            userpermissionprofileGuid = Guid.NewGuid();
+                            userpermissionitemInsert.Add(string.Format(templatePermissionItem, userpermissionitemGuid, userpermissionitemOrdAndCode, userpermissionitemToken, report.Designation.Replace(" de ", " - ")));
+                            userpermissionprofileInsert.Add(string.Format(userpermissionprofileItem, userpermissionprofileGuid, userpermissionitemGuid));
+                            userpermissionitemOrdAndCode += 10;
+
+                            // Get common resource for all 3 types of Financial Reports
+                            Tuple<string, string> tuppleResourceString = CustomReport.GetResourceString(report.ResourceString);
+                            buttonLabelString = tuppleResourceString.Item1;
+                            buttoLabelPostfix = tuppleResourceString.Item2;
+
+                            // Try to get Resource
+                            if (string.IsNullOrEmpty(buttonLabelString))
+                            {
+                                // Log Before Exchange _ with - to show in button labels
+                                buttonLabelString = report.ResourceString;
+                                _log.Debug(string.Format("Error Missing resourceString! {0}", buttonLabelString));
+                                buttonLabelString = string.Format("${0}$", report.ResourceString.Replace("_", "-"));
+                            }
+                            // Used this for debug purposes, Add Code, usefull to identify Reports
+                            //buttonLabel = string.Format("[{0}] {1}{2}", report.Code, buttonResourceString, resourceStringPostfix);
+                            buttonLabel = string.Format("{0}{1}", buttonLabelString, buttoLabelPostfix);
+
+                            // Output Order and Labels 
+                            //_log.Debug(String.Format("Label: [{0}]", buttonLabel));
+
+                            // Add Child Menu
+                            accordionChilds.Add(userpermissionitemToken, new AccordionNode(buttonLabel)
+                            {
+                                Clicked = PrintReportRouter
+                            });
+                        }
+                    }
+
+                    // Add Main Accordion Parent Buttons
+                    accordionDefinition.Add($"TopMenu{reportType.Code}",
+                        new AccordionNode(buttonLabelReportTypeString)
+                        {
+                            Childs = accordionChilds,
+                            GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_artigos.png")
+                        });
+                }
+
+                // Output Inserts
+                if (_showInsertLog)
+                {
+                    _log.Debug("Generated Inserts");
+                    for (int i = 0; i < userpermissionitemInsert.Count; i++)
+                    {
+                        _log.Debug(userpermissionitemInsert[i]);
+                    }
+                    for (int i = 0; i < userpermissionprofileInsert.Count; i++)
+                    {
+                        _log.Debug(userpermissionprofileInsert[i]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            return accordionDefinition;
         }
     }
 }

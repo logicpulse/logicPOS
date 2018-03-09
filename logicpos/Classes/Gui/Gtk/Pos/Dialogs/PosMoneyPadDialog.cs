@@ -7,6 +7,7 @@ using System;
 using System.Drawing;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -85,8 +86,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fixedContent.Put(_moneyPad, 0, 0);
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             //Start Enable or Disable
             _buttonOk.Sensitive = (pInitialValue > 0 && pInitialValue > pTotalOrder) ? true : false;
 

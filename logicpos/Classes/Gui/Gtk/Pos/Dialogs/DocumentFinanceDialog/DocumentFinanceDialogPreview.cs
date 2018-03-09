@@ -8,14 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    enum DocumentFinanceDialogPreviewMode {
-        Preview, 
-        Confirmation
-    }
-
     class DocumentFinanceDialogPreview : PosBaseDialog
     {
         private bool _debug = false;
@@ -50,8 +46,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 windowTitle = Resx.window_title_dialog_documentfinance_preview_totals_mode_confirm;
                 //ActionArea Buttons
-                TouchButtonIconWithText buttonNo = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.No);
-                TouchButtonIconWithText buttonYes = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Yes);
+                TouchButtonIconWithText buttonNo = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.No);
+                TouchButtonIconWithText buttonYes = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Yes);
                 //ActionArea
                 actionAreaButtons.Add(new ActionAreaButton(buttonYes, ResponseType.Yes));
                 actionAreaButtons.Add(new ActionAreaButton(buttonNo, ResponseType.No));

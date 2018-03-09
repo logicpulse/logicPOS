@@ -1,17 +1,13 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.financial;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.shared;
 using System;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    enum MoneyPadMode
-    {
-        Money, NumberPad
-    }
 
     class MoneyPad : Box
     {

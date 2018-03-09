@@ -1,6 +1,6 @@
 ﻿using DevExpress.Xpo.DB;
-using logicpos.financial;
-using logicpos.financial.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.reports.App;
 using logicpos.reports.Resources.Localization;
 using logicpos.reports.Utils;
 using System;
@@ -95,7 +95,7 @@ namespace logicpos.reports
 
             table.Columns.Add("Name");
 
-                table.Rows.Add(Resx.All);
+            table.Rows.Add(Resx.All);
 
 
             try
@@ -125,7 +125,7 @@ namespace logicpos.reports
             string nameTable = "";
 
             DataTable table = new DataTable();
-         
+
 
             string strSql = @"SELECT entityname FROM documentfinancemaster
                                 WHERE documenttype = '" + xpoOidDocumentFinanceTypeCurrentAccountInput + "' GROUP BY entityname";
@@ -136,9 +136,9 @@ namespace logicpos.reports
 
             table.Columns.Add("Name");
 
-           
-                table.Rows.Add(Resx.All);
-           
+
+            table.Rows.Add(Resx.All);
+
 
             try
             {
@@ -176,8 +176,8 @@ namespace logicpos.reports
 
             table.Columns.Add("Name");
 
-                table.Rows.Add(Resx.All);
-            
+            table.Rows.Add(Resx.All);
+
 
 
             try
@@ -216,9 +216,9 @@ namespace logicpos.reports
 
             table.Columns.Add("Name");
 
-          
-                table.Rows.Add(Resx.All);
-           
+
+            table.Rows.Add(Resx.All);
+
             try
             {
                 foreach (SelectStatementResultRow parentRow in xPSelectData.Data)
@@ -254,8 +254,8 @@ namespace logicpos.reports
 
             table.Columns.Add("Name");
 
-                table.Rows.Add(Resx.All);
-           
+            table.Rows.Add(Resx.All);
+
 
 
             try
@@ -294,8 +294,8 @@ namespace logicpos.reports
 
             table.Columns.Add("Designation");
 
-              table.Rows.Add(Resx.All);
-           
+            table.Rows.Add(Resx.All);
+
 
             try
             {
@@ -334,9 +334,9 @@ namespace logicpos.reports
 
             table.Columns.Add("Designation");
 
-           
-                table.Rows.Add(Resx.All);
-            
+
+            table.Rows.Add(Resx.All);
+
 
 
             try
@@ -374,8 +374,8 @@ namespace logicpos.reports
 
             table.Columns.Add("Designation");
 
-                table.Rows.Add(Resx.All);
-           
+            table.Rows.Add(Resx.All);
+
 
 
             try
@@ -427,9 +427,9 @@ namespace logicpos.reports
                 }
                 else
                 {
-                    
-                        table.Rows.Add(Resx.All);
-                    
+
+                    table.Rows.Add(Resx.All);
+
 
                 }
             }
@@ -459,7 +459,7 @@ namespace logicpos.reports
                 {
                     strSql = string.Format(@"select dm.Oid from DocumentFinanceMaster dm, ConfigurationPlace p, ConfigurationPlaceTable pt, DocumentOrderMain d
                                           where p.Designation = '" + _zones + "'and pt.Place = p.Oid and d.PlaceTable = pt.Oid and dm.SourceOrderMain = d.Oid");
-    
+
                 }
                 else
                 {
@@ -488,7 +488,7 @@ namespace logicpos.reports
             {
                 data = DataReportsXML.GetDataDocumentFinanceMaster(result, _startDate, _endDate);
             }
-           
+
 
             return data;
 
@@ -511,9 +511,9 @@ namespace logicpos.reports
 
             table.Columns.Add("Designation");
 
-            
-                table.Rows.Add(Resx.All);
-          
+
+            table.Rows.Add(Resx.All);
+
 
             try
             {
@@ -554,9 +554,9 @@ namespace logicpos.reports
 
             table.Columns.Add("Designation");
 
-           
-                table.Rows.Add(Resx.All);
-            
+
+            table.Rows.Add(Resx.All);
+
             try
             {
                 foreach (SelectStatementResultRow parentRow in xPSelectData.Data)
@@ -588,7 +588,7 @@ namespace logicpos.reports
             List<string> listDocumentFinanceMaster = new List<string>();
             List<string> result = new List<string>();
 
-           string fileReport_CurrentAccount = "Reports/Conta_corrente_clientes.frx";
+            string fileReport_CurrentAccount = "Reports/Conta_corrente_clientes.frx";
 
             try
             {
@@ -648,7 +648,7 @@ namespace logicpos.reports
 
                 }
 
-                
+
                 xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(strSql);
 
                 foreach (SelectStatementResultRow parentRow in xPSelectData.Data)
@@ -681,7 +681,7 @@ namespace logicpos.reports
                     data = DataReportsXML.GetDataDocumentFinanceDetail_Clients(result, _startDate, _endDate);
                 }
             }
-          
+
 
             return data;
 
@@ -726,7 +726,7 @@ namespace logicpos.reports
                 data = DataReportsXML.GetDataDocumentFinanceMaster(result, _startDate, _endDate);
 
             }
-           
+
 
             return data;
 
@@ -770,12 +770,12 @@ namespace logicpos.reports
                 data = DataReportsXML.GetDataArticles(result);
 
             }
-           
+
             return data;
 
         }
 
-  
+
         public static DataSet GetArticleFamilyByDesignation(string _family, string _startDate, string _endDate)
         {
             DataSet data = new DataSet();
@@ -817,7 +817,7 @@ namespace logicpos.reports
                 data = DataReportsXML.GetDataDocumentOrderDetail(result, _startDate, _endDate);
                 return data;
             }
-          
+
             return data;
 
         }
@@ -1045,7 +1045,7 @@ namespace logicpos.reports
             {
                 data = DataReportsXML.GetDataSystemAudit(result, _startDate, _endDate);
             }
-           
+
 
             return data;
 
@@ -1082,10 +1082,12 @@ namespace logicpos.reports
                 dates.Add(startDate);
                 dates.Add(endDate);
 
-              
+
             }
-            catch (Exception exx)
-            { }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
             return dates;
         }
 
@@ -1412,7 +1414,7 @@ namespace logicpos.reports
                 startDate = Convert.ToString(yearSD + "-" + monthSD + "-" + daySD);
                 endDate = Convert.ToString(yearED + "-" + monthED + "-" + dayED);
 
-                
+
                 if (documentFiscal_CC != true)
                 {
                     strSql = string.Format(@"select d.Oid as OidDetail, d.Code, d.Designation, d.Quantity, d.TotalFinal, d.DocumentMaster, d.Article, m.Oid as OidMaster, m.DocumentNumber, m.EntityName, m.Date, m.Payed, m.PayedDate
@@ -1550,7 +1552,7 @@ namespace logicpos.reports
 
         }
 
-    
+
         public static DataSet GetTypePaymentByDesignation(string _typePayment, string _startDate, string _endDate)
         {
             string strSql = "";
@@ -1590,7 +1592,7 @@ namespace logicpos.reports
             {
                 data = DataReportsXML.GetDataWorkSessionMovement(result, _startDate, _endDate);
             }
-            
+
             return data;
 
         }
@@ -1631,7 +1633,7 @@ namespace logicpos.reports
             {
                 data = DataReportsXML.GetDataWorkSessionMovement(result, _startDate, _endDate);
             }
-            
+
 
             return data;
 
@@ -1653,9 +1655,9 @@ namespace logicpos.reports
 
             table.Columns.Add("Name");
 
-          
-                table.Rows.Add(Resx.All);
-           
+
+            table.Rows.Add(Resx.All);
+
 
             try
             {
@@ -1815,7 +1817,7 @@ namespace logicpos.reports
                 data = DataReportsXML.GetDataDocumenFinanceDetail(result, _startDate, _endDate);
 
             }
-           
+
             return data;
         }
 
@@ -1861,12 +1863,12 @@ namespace logicpos.reports
                 data = DataReportsXML.GetDataDocumentFinanceMaster(result, _startDate, _endDate);
 
             }
-            
+
             return data;
         }
 
 
-      
+
         public static DataSet GetStockArticlesByDates(string _startDate, string _endDate)
         {
             DataSet data = new DataSet();

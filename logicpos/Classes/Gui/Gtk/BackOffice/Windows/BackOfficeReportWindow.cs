@@ -1,5 +1,4 @@
-﻿using System;
-using Gtk;
+﻿using logicpos.App;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.resources.Resources.Localization;
 
@@ -20,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void InitUI()
         {
             //Init XPOAccordion
-            XPOAccordion _accordion = new XPOAccordion("reporttype", "report", "ReportType") { WidthRequest = _widthAccordion };
+            XPOAccordion _accordion = new XPOAccordion("reporttype", "report", "ReportType", SettingsApp.PrivilegesReportDialogFormat) { WidthRequest = _widthAccordion };
             _fixAccordion.Add(_accordion);
             _accordion.Clicked += accordion_Clicked;
             //Define Start Content

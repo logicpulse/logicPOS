@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.shared.Classes.Others;
 using System;
 

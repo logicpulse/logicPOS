@@ -1,4 +1,6 @@
 ﻿using Gtk;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.GenericTreeView;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -85,7 +87,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _dataSourceRow[_modelCheckBoxFieldIndex] = !pOldValue;
         }
 
-        public override bool ShowDialog<T>(T pDataObject, BackOffice.DialogMode pDialogMode)
+        public override bool ShowDialog<T>(T pDataObject, DialogMode pDialogMode)
         {
             return false;
         }

@@ -1,21 +1,12 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.GenericTreeView;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    enum GenericTreeViewColumnPropertyType
-    {
-        Text, CheckBox
-    }
-
-    enum NullBoolean
-    {
-        Null, True, False
-    }
-
     //TODO: Create GenericTreeViewColumns Class to Remove List<GenericTreeViewColumnProperty> and Replace with Dictionary<string, GenericTreeViewColumnProperty>  
     //This way we can Get Columns by Key :)
     //class GenericTreeViewColumns : Dictionary<string, GenericTreeViewColumnProperty>

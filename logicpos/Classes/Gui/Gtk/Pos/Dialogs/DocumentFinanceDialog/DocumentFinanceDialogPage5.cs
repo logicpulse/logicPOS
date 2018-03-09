@@ -1,14 +1,14 @@
-﻿using Gtk;
-using System;
-using logicpos.Classes.Gui.Gtk.Widgets;
+﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
-using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.datalayer.DataLayer.Xpo;
-using DevExpress.Data.Filtering;
-using logicpos.financial;
+using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Gui.Gtk.BackOffice;
+using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
+using System;
 
 //THIS CLASS is ALMOST EQUAL to DocumentFinanceDialogPage4, but with Search Replace 
 //"ShipTo" to "ShipFrom" and "_ship_to_" to ""_ship_from_""

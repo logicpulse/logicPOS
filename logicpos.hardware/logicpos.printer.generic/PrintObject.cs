@@ -392,7 +392,6 @@ namespace logicpos.printer.generic
 
             Util.PreparePrintDocument(ref printer, printobjectsCalculate, coluneSize, LineSize);
 
-
             switch (pDriver)
             {
                 case "THERMAL_PRINTER_WINDOWS":

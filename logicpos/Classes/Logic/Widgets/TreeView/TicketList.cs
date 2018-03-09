@@ -15,6 +15,7 @@ using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using System;
+using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -56,12 +57,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Change Quantity
         void _buttonKeyChangeQuantity_Clicked(object sender, EventArgs e)
         {
-            decimal oldValueQnt = _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
-            decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(_sourceWindow, oldValueQnt);
-
-            if (newValueQnt > 0)
+            try
             {
-                ChangeQuantity(newValueQnt);
+                decimal oldValueQnt = _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
+                decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(_sourceWindow, oldValueQnt);
+
+                if (newValueQnt > 0)
+                {
+                    ChangeQuantity(newValueQnt);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
             }
         }
 

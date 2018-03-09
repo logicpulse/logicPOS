@@ -1,22 +1,15 @@
-﻿using DevExpress.Xpo.DB;
-using FastReport;
+﻿using FastReport;
 using FastReport.Export;
 using FastReport.Utils;
-using logicpos.financial;
+using logicpos.reports.App;
 using logicpos.reports.Forms;
 using logicpos.reports.Resources.Localization;
 using logicpos.reports.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace logicpos.reports
 {
@@ -27,11 +20,9 @@ namespace logicpos.reports
         private Report FReport = new Report();
         private string FReportsFolder;
         private bool FReportRunning;
-        private DataSet ds;
         private string thisFolder = (string.Format("{0}", GlobalFramework.Path["reports"]));
         private string report;
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private int scrollVal;
         private string _startDate;
         private string _endDate;
         private string _startDateFormSelectTerminal;

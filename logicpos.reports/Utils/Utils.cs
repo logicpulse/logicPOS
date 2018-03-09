@@ -1,11 +1,11 @@
-﻿using System;
-using DevExpress.Xpo.DB;
-using logicpos.financial;
-using logicpos.financial.DataLayer.Xpo;
+﻿using DevExpress.Xpo.DB;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.reports.App;
+using System;
 
 namespace logicpos.reports.Utils
 {
-  public class Utils
+    public class Utils
   {
     //Log4Net
     private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

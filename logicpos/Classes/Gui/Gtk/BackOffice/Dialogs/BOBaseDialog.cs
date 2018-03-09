@@ -1,9 +1,10 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,6 @@ using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    public enum DialogMode
-    {
-        Insert, Update, View
-    }
-
     abstract class BOBaseDialog : Dialog
     {
         //Log4Net

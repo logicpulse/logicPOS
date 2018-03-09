@@ -1,4 +1,5 @@
 ﻿using logicpos.financial;
+using logicpos.reports.App;
 using logicpos.reports.Forms;
 using logicpos.reports.Resources.Localization;
 using System;

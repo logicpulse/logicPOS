@@ -4,6 +4,7 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.resources.Resources.Localization;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

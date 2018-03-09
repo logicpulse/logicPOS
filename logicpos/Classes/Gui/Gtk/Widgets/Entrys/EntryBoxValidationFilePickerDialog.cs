@@ -2,6 +2,7 @@
 using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using System;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {

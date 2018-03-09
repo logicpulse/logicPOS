@@ -1,17 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using DevExpress.Xpo.DB;
 
-namespace logicpos.financial.library.Classes.Reports.BOs
+namespace logicpos.financial.library.Classes.Reports.BOs.Articles
 {
+    [FRBO(Entity = "fin_article")]
     public class FRBOArticle : FRBOBaseObject
     {
-        public int Code { get; set; }
+        public UInt32 Ord { get; set; }
+        public string Code { get; set; }
+        public string CodeDealer { get; set; }
         public string Designation { get; set; }
-        public decimal Price1 { get; set; }
+        public string ButtonLabel { get; set; }
+        public bool ButtonLabelHide { get; set; }
         public string ButtonImage { get; set; }
+        public string ButtonIcon { get; set; }
+        public decimal Price1 { get; set; }
+        public decimal Price2 { get; set; }
+        public decimal Price3 { get; set; }
+        public decimal Price4 { get; set; }
+        public decimal Price5 { get; set; }
+        public decimal Price1Promotion { get; set; }
+        public decimal Price2Promotion { get; set; }
+        public decimal Price3Promotion { get; set; }
+        public decimal Price4Promotion { get; set; }
+        public decimal Price5Promotion { get; set; }
+        public bool Price1UsePromotionPrice { get; set; }
+        public bool Price2UsePromotionPrice { get; set; }
+        public bool Price3UsePromotionPrice { get; set; }
+        public bool Price4UsePromotionPrice { get; set; }
+        public bool Price5UsePromotionPrice { get; set; }
+        public bool PriceWithVat { get; set; }
+        public decimal Discount { get; set; }
+        public decimal DefaultQuantity { get; set; }
+        public decimal Accounting { get; set; }
+        public decimal Tare { get; set; }
+        public decimal Weight { get; set; }
         public string BarCode { get; set; }
+        public bool PVPVariable { get; set; }
+        public bool Favorite { get; set; }
+        public string Token1 { get; set; }
+        public string Token2 { get; set; }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Static
@@ -25,7 +52,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         //  //Disabled
         //  string sql = string.Format(@"
         //    SELECT 
-        //      Oid,Code,Designation,Price1
+        //      Oid,Code,Designation,Price1,Discount,BarCode
         //    FROM 
         //      fin_article
         //    {0}

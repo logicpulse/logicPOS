@@ -1,14 +1,14 @@
-﻿using Gtk;
-using System;
-using logicpos.Classes.Gui.Gtk.Widgets;
+﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
+using Gtk;
+using logicpos.App;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Gui.Gtk.BackOffice;
+using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using DevExpress.Data.Filtering;
-using logicpos.financial;
-using logicpos.App;
 using logicpos.resources.Resources.Localization;
+using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {

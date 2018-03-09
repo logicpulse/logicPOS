@@ -1,4 +1,5 @@
 ﻿using logicpos.App;
+using logicpos.Classes.Enums.App;
 using System;
 using System.IO;
 

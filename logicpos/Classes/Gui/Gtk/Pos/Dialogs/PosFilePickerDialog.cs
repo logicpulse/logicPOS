@@ -7,6 +7,7 @@ using logicpos.shared;
 using System;
 using System.Drawing;
 using System.IO;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -49,8 +50,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitUI();
 
             //ActionArea Buttons
-            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();

@@ -2651,6 +2651,7 @@ CREATE TABLE `rpt_report` (
   `Code` int(10) unsigned DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
   `ResourceString` varchar(100) DEFAULT NULL,
+  `Token` varchar(100) DEFAULT NULL,
   `FileName` varchar(100) DEFAULT NULL,
   `ParameterFields` varchar(100) DEFAULT NULL,
   `AuthorType` int(11) DEFAULT NULL,

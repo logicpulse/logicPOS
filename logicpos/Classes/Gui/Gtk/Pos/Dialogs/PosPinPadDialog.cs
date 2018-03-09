@@ -6,6 +6,8 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Drawing;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Widgets;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -41,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (showCancel)
             {
                 //ActionArea Buttons
-                TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+                TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
                 //ActionArea
                 actionAreaButtons = new ActionAreaButtons();
@@ -53,7 +55,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Init Mode
-            _numberPadPin.Mode = (_selectedUserDetail.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
+            _numberPadPin.Mode = (_selectedUserDetail.PasswordReset) ? NumberPadPinMode.PasswordOld : 
+                NumberPadPinMode.Password;
 
             //Events
             this.KeyReleaseEvent += PosPinPadDialog_KeyReleaseEvent;

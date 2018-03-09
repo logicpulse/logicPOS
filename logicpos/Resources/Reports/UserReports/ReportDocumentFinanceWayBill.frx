@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBase.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="GR GR001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="07/21/2016 15:38:55" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.Copies="1" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBase.frx" ScriptLanguage="CSharp" ReportInfo.Name="GR GR001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="07/21/2016 15:38:55" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.Copies="1" PrintSettings.CopyNames="Original">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,13 +48,8 @@ namespace FastReport
     }
   }
 }</ScriptText>
-  <Styles>
-    <Style Name="BackgroundColor1" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
-    <Style Name="BackgroundColor2" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
-    <Style Name="BoxBorder" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" ApplyTextFill="false" ApplyFont="false"/>
-  </Styles>
   <Dictionary>
-    <BusinessObjectDataSource Name="DocumentFinanceMaster" ReferenceName="DocumentFinanceMaster" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.FRBODocumentFinanceMaster, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+    <BusinessObjectDataSource Name="DocumentFinanceMaster" ReferenceName="DocumentFinanceMaster" DataType="logicpos.financial.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinanceMaster, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Oid" DataType="System.String"/>
       <Column Name="DocumentNumber" DataType="System.String"/>
       <Column Name="DocumentDate" DataType="System.String"/>
@@ -115,7 +110,7 @@ namespace FastReport
       <Column Name="PaymentConditionAcronym" DataType="System.String"/>
       <Column Name="CurrencyDesignation" DataType="System.String"/>
       <Column Name="CurrencyAcronym" DataType="System.String"/>
-      <BusinessObjectDataSource Name="DocumentFinanceDetail" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.FRBODocumentFinanceDetail, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+      <BusinessObjectDataSource Name="DocumentFinanceDetail" DataType="System.Collections.Generic.List`1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinanceDetail, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
         <Column Name="Code" DataType="System.String"/>
         <Column Name="Designation" DataType="System.String"/>
         <Column Name="Quantity" DataType="System.Decimal"/>
@@ -129,7 +124,7 @@ namespace FastReport
         <Column Name="VatExemptionReasonDesignation" DataType="System.String"/>
         <Column Name="Oid" DataType="System.String"/>
       </BusinessObjectDataSource>
-      <BusinessObjectDataSource Name="DocumentFinanceMasterTotal" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.FRBODocumentFinanceMasterTotal, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+      <BusinessObjectDataSource Name="DocumentFinanceMasterTotal" DataType="System.Collections.Generic.List`1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinanceMasterTotal, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
         <Column Name="Oid" DataType="System.String"/>
         <Column Name="DocumentMaster" DataType="System.String"/>
         <Column Name="Designation" DataType="System.String"/>
@@ -138,7 +133,7 @@ namespace FastReport
         <Column Name="Value" DataType="System.Decimal"/>
         <Column Name="Total" DataType="System.Decimal"/>
         <Column Name="TotalBase" DataType="System.Decimal"/>
-        <Column Name="TotalType" DataType="logicpos.datalayer.DataLayer.Xpo.FinanceMasterTotalType, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
+        <Column Name="TotalType" DataType="logicpos.financial.DataLayer.Xpo.FinanceMasterTotalType, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
       </BusinessObjectDataSource>
       <Column Name="EntityOid" DataType="System.String"/>
       <Column Name="EntityHidden" DataType="System.Boolean" BindableControl="CheckBox"/>

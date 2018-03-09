@@ -11,6 +11,8 @@ using logicpos.shared;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -181,9 +183,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 fixedContent.Put(vbox, 0, 0);
 
                 //ActionArea Buttons
-                _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-                _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
-                _buttonPrint = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Print);
+                _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+                _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+                _buttonPrint = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Print);
                 _buttonOk.Sensitive = false;
                 _buttonPrint.Sensitive = buttonOkSensitive;
 

@@ -47,6 +47,9 @@ namespace logicpos.financial.library.Classes.Stocks
                 //Get Objects in same Session
                 ERP_Customer customer = (ERP_Customer)pSession.GetObjectByKey(typeof(ERP_Customer), pCustomer.Oid);
                 FIN_Article article = (FIN_Article)pSession.GetObjectByKey(typeof(FIN_Article), pArticle.Oid);
+                POS_ConfigurationPlaceTerminal terminal = (POS_ConfigurationPlaceTerminal)pSession.GetObjectByKey(typeof(POS_ConfigurationPlaceTerminal), GlobalFramework.LoggedTerminal.Oid);
+                SYS_UserDetail userDetail = (SYS_UserDetail)pSession.GetObjectByKey(typeof(SYS_UserDetail), GlobalFramework.LoggedUser.Oid);
+
 
                 FIN_ArticleStock articleStock = new FIN_ArticleStock(pSession)
                 {
@@ -54,7 +57,9 @@ namespace logicpos.financial.library.Classes.Stocks
                     Date = pDocumentDate,
                     Article = article,
                     Quantity = quantity,
-                    Notes = pNotes
+                    Notes = pNotes,
+                    CreatedWhere = terminal,
+                    CreatedBy = userDetail
                 };
                 if (pDocumentNumber != string.Empty) articleStock.DocumentNumber = pDocumentNumber;
                 if (pDocumentDetail != null)

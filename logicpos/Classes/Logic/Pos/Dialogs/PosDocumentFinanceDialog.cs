@@ -12,6 +12,7 @@ using logicpos.shared.Classes.Finance;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -58,7 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                 }
             }
-            //Prevent Cancell Document
+            //Prevent Cancel Document
             else if (pResponse == ResponseType.Cancel)
             {
                 if (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.Count > 0)

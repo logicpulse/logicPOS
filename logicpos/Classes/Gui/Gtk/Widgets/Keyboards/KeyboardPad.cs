@@ -1,34 +1,18 @@
-﻿using System;
-using Gtk;
-using System.IO;
-using System.Xml;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Globalization;
-using logicpos.financial;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+﻿using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    //Keyboard Modes
-    public enum KeyboardMode
-    {
-        None, AlfaNumeric, Alfa, Numeric, Money
-    };
-
     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     //KeyBoardPad UI Widget
     class KeyBoardPad : Box
     {
-        //define Enum ModifierKey, used to store current Enabled Key
-        enum ModifierKeys
-        {
-            None, Shift, Alt, Ctrl
-        };
-
         //Log4Net
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -377,7 +361,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 case "enter":
                     if (_textEntry.Validated)
                     {
-                        ParentDialog.Respond(ResponseType.Ok);
+                        try
+                        {
+                            ParentDialog.Respond(ResponseType.Ok);
+                        }
+                        catch (Exception ex)
+                        {
+                            _log.Error(ex.Message, ex);
+                        }
                     }
                     else
                     {

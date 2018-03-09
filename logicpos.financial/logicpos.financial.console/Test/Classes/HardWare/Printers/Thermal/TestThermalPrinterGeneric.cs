@@ -5,6 +5,7 @@ using logicpos.financial.library.Classes.Hardware.Printers.Thermal;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Reports.BOs;
+using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using System;
 using System.Collections.Generic;
 
@@ -52,9 +53,9 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printers.Thermal
 
                 //Get Result Objects
                 ResultFRBODocumentFinanceMaster FRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(SettingsApp.XpoPrintFinanceDocument);
-                List<FRBODocumentFinanceMaster> gcDocumentFinanceMaster = FRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List;
+                List<FRBODocumentFinanceMasterView> gcDocumentFinanceMaster = FRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List;
                 List<FRBODocumentFinanceDetail> gcDocumentFinanceDetail = FRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceDetail;
-                List<FRBODocumentFinanceMasterTotal> gcDocumentFinanceMasterTotal = FRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceMasterTotal; ;
+                List<FRBODocumentFinanceMasterTotalView> gcDocumentFinanceMasterTotal = FRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceMasterTotal; ;
 
                 _log.Debug(string.Format("DocumentNumber: [{0}]", gcDocumentFinanceMaster[0].DocumentNumber));
 
@@ -63,7 +64,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printers.Thermal
                     _log.Debug(string.Format("Designation: [{0}], Price: [{1}]", item.Designation, item.Price));
                 }
 
-                foreach (FRBODocumentFinanceMasterTotal item in gcDocumentFinanceMasterTotal)
+                foreach (FRBODocumentFinanceMasterTotalView item in gcDocumentFinanceMasterTotal)
                 {
                     _log.Debug(string.Format("Designation: [{0}], Value :[{1}]", item.Designation, item.Value));
                 }

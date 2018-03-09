@@ -14,7 +14,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
       where T : FRBOBaseObject, new()
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static log4net.ILog _log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private bool _debug = false;
 
         //Used to Store if Object Has Attributes Defined or Not
@@ -28,12 +28,14 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         }
 
         //Constructors
-        public FRBOGenericCollection() : this("", "", 0) { }
-        public FRBOGenericCollection(string pFilter) : this(pFilter, "", 0) { }
-        public FRBOGenericCollection(int pLimit) : this("", "", pLimit) { }
-        public FRBOGenericCollection(string pFilter, int pLimit) : this(pFilter, "", pLimit) { }
-        public FRBOGenericCollection(string pFilter, string pOrder) : this(pFilter, pOrder, 0) { }
-        public FRBOGenericCollection(string pFilter, string pOrder, int pLimit)
+        public FRBOGenericCollection() : this("", "", "", "", 0) { }
+        public FRBOGenericCollection(string pFilter) : this(pFilter, "", "", "", 0) { }
+        public FRBOGenericCollection(int pLimit) : this("", "", "", "", pLimit) { }
+        public FRBOGenericCollection(string pFilter, int pLimit) : this(pFilter, "", "", "", pLimit) { }
+        public FRBOGenericCollection(string pFilter, string pOrder) : this(pFilter, "", pOrder, "", 0) { }
+        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder) : this(pFilter, pGroup, pOrder, "", 0) { }
+        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder, string pFields) : this(pFilter, pGroup, pOrder, pFields, 0) { }
+        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder, string pFields, int pLimit)
         {
             //Assign Attributes Defined
             _objectHaveAttributes = ((typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute) != null) ? true : false;
@@ -42,7 +44,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             string sqlQuery = (_objectHaveAttributes && (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Sql != null)
                 ? (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Sql
                 //If not SqlQuery Defined from Attributes, Create it From Reflection and FRBO Object Attributes
-                : GenQueryFromFRBOObject(pFilter, pOrder);
+                : GenQueryFromFRBOObject(pFilter, pGroup, pOrder, pFields);
 
             //Atributes: Limit
             int sqlLimit = 0;
@@ -57,82 +59,129 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 sqlLimit = (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Limit;
             }
 
-            //Start Process Collection
-
-            //Temporary GenericTypeObject to Add to Collection
-            T genericTypeObject;
-            XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlQuery);
-            PropertyInfo propertyInfo;
-            //Fields Props
-            string fieldName = String.Empty;
-            string fieldType = String.Empty;
-            string fieldTypeDB = String.Empty;
-            System.Object fieldValue;
-            int fieldIndex;
-
-            int i = 0;
-            foreach (SelectStatementResultRow rowData in xPSelectData.Data)
+            try
             {
-                i++;
-                //If sqlLimit Defined and is Greater Break Loop
-                if (sqlLimit > 0 && i > sqlLimit) break;
+                //Start Process Collection
 
-                //Create a new Fresh T Object to Insert into Collection
-                //Cannot create an instance of the variable type 'T' because it does not have the new() constraint
-                //Require Constrain new()
-                genericTypeObject = new T();
-                foreach (SelectStatementResultRow rowMeta in xPSelectData.Meta)
+                //Temporary GenericTypeObject to Add to Collection
+                T genericTypeObject;
+                XPSelectData xPSelectData;
+
+                xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlQuery);
+
+                PropertyInfo propertyInfo;
+                //Fields Props
+                string fieldName = String.Empty;
+                string fieldType = String.Empty;
+                string fieldTypeDB = String.Empty;
+                Object fieldValue;
+                int fieldIndex;
+
+                int i = 0;
+                foreach (SelectStatementResultRow rowData in xPSelectData.Data)
                 {
-                    fieldName = rowMeta.Values[0].ToString();
-                    fieldTypeDB = rowMeta.Values[1].ToString(); ;
-                    fieldType = rowMeta.Values[2].ToString(); ;
-                    fieldIndex = xPSelectData.GetFieldIndex(fieldName);
+                    i++;
+                    //If sqlLimit Defined and is Greater Break Loop
+                    if (sqlLimit > 0 && i > sqlLimit) break;
 
-                    //Convert DB Types, Else working on Diferent DBs occur Conversion Exceptions
-                    switch (fieldType)
+                    //Create a new Fresh T Object to Insert into Collection
+                    //Cannot create an instance of the variable type 'T' because it does not have the new() constraint
+                    //Require Constrain new()
+                    genericTypeObject = new T();
+                    foreach (SelectStatementResultRow rowMeta in xPSelectData.Meta)
                     {
-                        case "Int64":
-                            fieldValue = Convert.ToInt32(rowData.Values[fieldIndex]);
-                            break;
-                        case "UInt64":
-                            fieldValue = Convert.ToBoolean(rowData.Values[fieldIndex]);
-                            break;
-                        case "Boolean":
-                            fieldValue = Convert.ToBoolean(rowData.Values[fieldIndex]);
-                            break;
-                        case "Guid":
-                            fieldValue = Convert.ToString(rowData.Values[fieldIndex]);
-                            break;
-                        case "Decimal"://Added to fix MsSql Errors
-                        case "Double":
-                            fieldValue = Convert.ToDecimal(rowData.Values[fieldIndex]);
-                            break;
-                        default:
-                            fieldValue = rowData.Values[fieldIndex];
-                            break;
-                    }
+                        fieldName = rowMeta.Values[0].ToString();
+                        fieldTypeDB = rowMeta.Values[1].ToString(); ;
+                        fieldType = rowMeta.Values[2].ToString(); ;
+                        fieldIndex = xPSelectData.GetFieldIndex(fieldName);
 
-                    //If Property Exist in genericTypeObject Assign it from Data
-                    propertyInfo = typeof(T).GetProperty(fieldName);
+                        //Convert DB Types, Else working on Diferent DBs occur Conversion Exceptions
+                        switch (fieldType)
+                        {
+                            case "Int64":
+                            case "UInt32":
+                                //case "UInt64":
+                                fieldValue = Convert.ToInt32(rowData.Values[fieldIndex]);
+                                break;
+                            case "UInt64":
+                                fieldValue = Convert.ToBoolean(rowData.Values[fieldIndex]);
+                                break;
+                            case "Boolean":
+                                fieldValue = Convert.ToBoolean(rowData.Values[fieldIndex]);
+                                break;
+                            case "Guid":
+                                fieldValue = Convert.ToString(rowData.Values[fieldIndex]);
+                                break;
+                            case "Decimal"://Added to fix MsSql Errors
+                            case "Double":
+                                fieldValue = Convert.ToDecimal(rowData.Values[fieldIndex]);
+                                break;
+                            default:
+                                fieldValue = rowData.Values[fieldIndex];
+                                break;
+                        }
 
-                    //Fix for MSSqlServer that detects UInt32 has Decimal, this way we convert it into UInt32 before above SetValue
-                    if (propertyInfo.PropertyType == typeof(UInt32))
-                    {
-                        fieldValue = Convert.ToUInt32(rowData.Values[fieldIndex]);
-                    }
+                        try
+                        {
+                            //If Property Exist in genericTypeObject Assign it from Data
+                            propertyInfo = typeof(T).GetProperty(fieldName);
 
-                    try
-                    {
-                        if (propertyInfo != null) propertyInfo.SetValue(genericTypeObject, fieldValue);
+                            //if (fieldName.Equals("SourceOrderMain") && string.IsNullOrEmpty(fieldValue.ToString()))
+                            //{
+                            //    _log.Debug(String.Format("fieldName: [{0}], fieldValue: [{1}]", fieldName, fieldValue));
+                            //}
+
+                            //Fix for MSSqlServer that detects UInt32 has Decimal, this way we convert it into UInt32 before above SetValue
+                            if (propertyInfo.PropertyType == typeof(UInt32))
+                            {
+                                fieldValue = Convert.ToUInt32(rowData.Values[fieldIndex]);
+                            }
+                            //Fix for SQLite that detects UInt64 has Decimal, this way we convert it into Decimal before above SetValue
+                            else if (propertyInfo.PropertyType == typeof(decimal))
+                            {
+                                fieldValue = Convert.ToDecimal(rowData.Values[fieldIndex]);
+                            }
+                            // Fix FRBO Object Field od type Guid
+                            else if (propertyInfo.PropertyType == typeof(Guid))
+                            {
+                                fieldValue = new Guid(rowData.Values[fieldIndex].ToString());
+                            }
+                            // Check id is a Subclass of XPGuidObject and Get its value
+                            else if (propertyInfo.PropertyType.IsSubclassOf(typeof(XPGuidObject)))
+                            {
+                                // Protection to prevent assign string value to Guid/unique identifier
+                                if (fieldValue != null && string.IsNullOrEmpty(fieldValue.ToString()))
+                                {
+                                    fieldValue = null;
+                                }
+                                else
+                                {
+                                    fieldValue = FrameworkUtils.GetXPGuidObjectFromCriteria(propertyInfo.PropertyType, string.Format("Oid = '{0}'", fieldValue));
+                                }
+                                // Debug purpose helper
+                                //if(propertyInfo.PropertyType == typeof(SYS_UserDetail) || propertyInfo.PropertyType == typeof(POS_ConfigurationPlaceTerminal))
+                                //{
+                                //    _log.Debug(String.Format("fieldName: [{0}], fieldValue: [{1}]", fieldName, fieldValue));
+                                //}
+                            }
+
+                            // Try to Setvalue    
+                            if (propertyInfo != null) propertyInfo.SetValue(genericTypeObject, fieldValue);
+                        }
+                        catch (Exception ex)
+                        {
+                            _log.Error(string.Format("fieldName: [{0}], fieldType: [{1}], fieldTypeDB: [{2}], fieldValue: [{3}]", fieldName, fieldType, fieldTypeDB, fieldValue));
+                            _log.Error(ex.Message, ex);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        _log.Error(string.Format("fieldName: [{0}], fieldType: [{1}], fieldTypeDB: [{2}], fieldValue: [{3}]", fieldName, fieldType, fieldTypeDB, fieldValue));
-                        _log.Error(ex.Message, ex);
-                    }
+                    //Add genericTypeObject to Collection :)
+                    Add(genericTypeObject);
                 }
-                //Add genericTypeObject to Collection :)
-                Add(genericTypeObject);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                _log.Error(string.Format("Error sqlQuery: [{0}]", sqlQuery));
             }
         }
 
@@ -228,21 +277,28 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         /// <param name="Filter"></param>
         /// <param name="Order"></param>
         /// <returns>Database Query</returns>
-        public string GenQueryFromFRBOObject(string pFilter = "", string pOrder = "")
+        public string GenQueryFromFRBOObject(string pFilter = "", string pGroup = "", string pOrder = "", string pQueryFields = "")
         {
             //SqlEntity: Get Entity Name from FRBO EntityAttribute or From ClassName Without FRBO
             string sqlEntity = (_objectHaveAttributes && (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Entity != null)
               ? (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Entity
               : typeof(T).Name.ToString().Replace("FRBO", String.Empty);
+
+            // Used to SQLServer Groups to pass Fields, with this we ignore generated reflectes GenQueryFieldsFromFRBOObject 
+            string queryFields = string.IsNullOrEmpty(pQueryFields)
+                ? GenQueryFieldsFromFRBOObject()
+                : pQueryFields;
+
             //Fields: Get Fields from FRBO FieldsAttribute or Generate it With GenQueryFieldsFromFRBOObject
             string sqlFields = (_objectHaveAttributes && (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Fields != null)
               ? (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Fields
-              : GenQueryFieldsFromFRBOObject();
+              : queryFields;
 
             //Filter
             string sqlFilter = String.Empty;
+
             //Get Filter From Parameters
-            if (pFilter != String.Empty)
+            if (pFilter != null && pFilter != String.Empty)
             {
                 sqlFilter = string.Format(" WHERE ({0})", pFilter);
             }
@@ -250,6 +306,19 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             else if (_objectHaveAttributes && (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Filter != null)
             {
                 sqlFilter = string.Format(" WHERE ({0})", (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Filter);
+            }
+
+            //Group
+            string sqlGroup = String.Empty;
+            //Get Group From Parameters
+            if (pGroup != String.Empty)
+            {
+                sqlGroup = string.Format(" GROUP BY {0}", pGroup);
+            }
+            //Group: Get Group From GroupAttribute else Bypass it With Empty String
+            else if (_objectHaveAttributes && (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Group != null)
+            {
+                sqlGroup = string.Format(" GROUP BY {0}", (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Group);
             }
 
             //Order
@@ -266,7 +335,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             }
 
             //Finally Generate SqlQuery        
-            string sqlQuery = string.Format("SELECT {0} FROM {1}{2}{3};", sqlFields, sqlEntity, sqlFilter, sqlOrder);
+            string sqlQuery = string.Format("SELECT {0} FROM {1}{2}{3}{4};", sqlFields, sqlEntity, sqlFilter, sqlGroup, sqlOrder);
             if (_debug) _log.Debug(string.Format("sqlQuery: [{0}]", sqlQuery));
 
             return sqlQuery;

@@ -1,21 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CustomReport ScriptLanguage="CSharp" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="01/12/2015 12:16:19" ReportInfo.CreatorVersion="2014.1.14.0">
+<CustomReport ScriptLanguage="CSharp" ReportInfo.Author="Acme acmepos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="02/07/2018 17:49:37" ReportInfo.CreatorVersion="2014.1.8.0" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe" PrintSettings.Copies="2" PrintSettings.CopyNames="Original&#13;&#10;Duplicado&#13;&#10;Triplicado&#13;&#10;Quadriplicado">
+  <Styles>
+    <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="DataLevel1Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 12pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 9.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFont" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 8pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFontBold" Font="Arial, 8pt, style=Bold" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="BackgroundColor1" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BackgroundColor2" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+  </Styles>
   <Dictionary/>
   <ReportPage Name="Page1">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8" Fill.Color="Gainsboro">
-      <TextObject Name="Text1" Top="9.45" Width="170.1" Height="18.9" Text="ReportTitle" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text6" Left="236.25" Top="9.45" Width="94.5" Height="18.9" Text="TEXT6"/>
-      <TextObject Name="Text7" Left="368.55" Top="9.45" Width="94.5" Height="18.9" Text="TEXT7"/>
-      <TextObject Name="Text8" Left="481.95" Top="9.45" Width="94.5" Height="18.9" Text="TEXT8"/>
-    </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="41.8" Width="718.2" Height="28.35">
-      <TextObject Name="Text5" Width="94.5" Height="18.9" Text="PageHeader"/>
+    <PageHeaderBand Name="PageHeader1" Width="718.2" Height="58.05" AfterPrintEvent="PageHeader1_AfterPrint">
+      <PictureObject Name="PictureCompanyLogo" Width="192.45" Height="58.05" SizeMode="Normal" ImageLocation="Assets\Images\Reports\UserReports\company_logo.png"/>
+      <TextObject Name="TextReportTitle" Left="198.45" Width="519.75" Height="18.9" Text="[Res(&quot;GLOBAL_FAMILIES&quot;)]" HorzAlign="Right" WordWrap="false" Font="Arial, 12pt, style=Bold" Wysiwyg="true"/>
     </PageHeaderBand>
-    <DataBand Name="Data1" Top="74.15" Width="718.2" Height="75.6"/>
-    <PageFooterBand Name="PageFooter1" Top="153.75" Width="718.2" Height="18.9" Fill.Color="Gainsboro">
-      <TextObject Name="Text2" Width="170.1" Height="18.9" Text="ReportFooter"/>
-      <TextObject Name="Text3" Left="198.45" Width="274.05" Height="18.9" BeforePrintEvent="Text3_BeforePrint" Text="[PageN]/[TotalPages]" HorzAlign="Center"/>
-      <TextObject Name="Text4" Left="481.95" Width="236.25" Height="18.9" Text="Acme" HorzAlign="Right"/>
+    <PageFooterBand Name="PageFooter1" Top="84.95" Width="718.2" Height="75.6" Border.Lines="Top">
+      <TextObject Name="TextFooter1" Top="18.9" Width="718.2" Height="18.9" Text="[GetParam(&quot;COMPANY_NAME&quot;)] - [GetParam(&quot;COMPANY_ADDRESS&quot;)] - [GetParam(&quot;COMPANY_POSTALCODE&quot;)] [GetParam(&quot;COMPANY_CITY&quot;)] - [Res(&quot;GLOBAL_FISCAL_NUMBER&quot;)] : [GetParam(&quot;COMPANY_FISCALNUMBER&quot;)]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="TextFooter2" Top="37.8" Width="718.2" Height="18.9" Text="[Res(&quot;GLOBAL_PHONE&quot;)] : [GetParam(&quot;COMPANY_TELEPHONE&quot;)] - [Res(&quot;GLOBAL_FAX&quot;)] : [GetParam(&quot;COMPANY_FAX&quot;)] - [GetParam(&quot;COMPANY_WEBSITE&quot;)] - [GetParam(&quot;COMPANY_EMAIL&quot;)] " HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text1" Top="56.7" Width="718.2" Height="18.9" Text="[Res(&quot;GLOBAL_PRINTED_ON_DATE&quot;)] : [Date] - [Res(&quot;GLOBAL_REPORT_PAGE&quot;)] [PageN]/[TotalPages#]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
     </PageFooterBand>
   </ReportPage>
 </CustomReport>

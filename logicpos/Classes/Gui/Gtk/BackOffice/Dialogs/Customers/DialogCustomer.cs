@@ -1,16 +1,15 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.financial;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Finance;
 using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
 using System;
-using logicpos.shared;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

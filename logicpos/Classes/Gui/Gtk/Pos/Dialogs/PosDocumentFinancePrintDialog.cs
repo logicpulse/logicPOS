@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -43,8 +45,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_requestMotive) windowSize.Height += 42 + 76;//Secondcopy + Motive UI Components
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();

@@ -1,11 +1,9 @@
-﻿using System;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.Classes.Reports.BOs;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 
-namespace logicpos.financial.library.Classes.Reports.BOs
+namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 {
     [FRBO(Entity = "view_documentfinancemastertotal")]
-    public class FRBODocumentFinanceMasterTotal : FRBOBaseObject
+    public class FRBODocumentFinanceMasterTotalView : FRBOBaseObject
     {
         [FRBO(Field = "fmtOid", Hide = true)]
         override public string Oid { get; set; }                //fmtOid AS Oid,  

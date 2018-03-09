@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 /* USED QUERY 
 SELECT 
@@ -34,10 +33,10 @@ WHERE
 ;
 */
 
-namespace logicpos.financial.library.Classes.Reports.BOs
+namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 {
     [FRBO(Entity = "view_documentfinancepayment", Limit = 1)]
-    public class FRBODocumentFinancePayment : FRBOBaseObject
+    public class FRBODocumentFinancePaymentView : FRBOBaseObject
     {
         [FRBO(Field = "fpaOid")]
         override public string Oid { get; set; }                                        //fpaOid AS Oid,  
@@ -112,6 +111,6 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         public string Notes { get; set; }                                               //fpaNotes AS Notes
 
         //Chield FRBOs Objects
-        public List<FRBODocumentFinancePaymentDocument> DocumentFinancePaymentDocument { get; set; }
+        public List<FRBODocumentFinancePaymentDocumentView> DocumentFinancePaymentDocument { get; set; }
     }
 }

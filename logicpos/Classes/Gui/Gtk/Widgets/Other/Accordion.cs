@@ -8,12 +8,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     public class AccordionNode
     {
-        public String Label { get; set; }
+        public string Label { get; set; }
         public Dictionary<string, AccordionNode> Childs { get; set; }
         public Widget NodeButton { get; set; }
         public Widget Content { get; set; }
         public Image GroupIcon { get; set; }
-        public String ExternalAppFileName { get; set; }
+        public string ExternalAppFileName { get; set; }
+
         //EventHandlers
         public EventHandler Clicked { get; set; }
 
@@ -65,9 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     {
         //Log4Net
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        //Config
-        String _privilegesBackOfficeMenuOperation = string.Format("{0}_{1}", SettingsApp.PrivilegesBackOfficeCRUDOperation, "MENU");
+        private string _nodePrivilegesTokenFormat;
 
         //Declare public Event, to link to accordionChildButton_Clicked
         public event EventHandler Clicked;
@@ -102,12 +101,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         public Accordion() { }
-        public Accordion(Dictionary<string, AccordionNode> pAccordionDefinition)
+        public Accordion(Dictionary<string, AccordionNode> pAccordionDefinition, string pNodePrivilegesTokenFormat)
         {
-            InitObject(pAccordionDefinition);
+            _nodePrivilegesTokenFormat = pNodePrivilegesTokenFormat;
+            InitObject(pAccordionDefinition, pNodePrivilegesTokenFormat);
         }
 
-        protected void InitObject(Dictionary<string, AccordionNode> pAccordionDefinition)
+        protected void InitObject(Dictionary<string, AccordionNode> pAccordionDefinition, string pNodePrivilegesTokenFormat)
         {
             String fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
             String fontPosBackOfficeChild = GlobalFramework.Settings["fontPosBackOfficeChild"];
@@ -128,18 +128,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     if (parentLevel.Value.GroupIcon != null)
                     {
-                        HBox tmp = new HBox(false, 0);
-                        tmp.PackStart(parentLevel.Value.GroupIcon, false, false, 3);
-                        Label tmpLabel = new Label(parentLevel.Value.Label);
+                        HBox hboxParent = new HBox(false, 0);
+                        hboxParent.PackStart(parentLevel.Value.GroupIcon, false, false, 3);
+                        Label label = new Label(parentLevel.Value.Label);
 
                         //Pango.FontDescription tmpFont = new Pango.FontDescription();
                         Pango.FontDescription fontDescriptionParent = Pango.FontDescription.FromString(fontPosBackOfficeParent);
                         //tmpFont.Weight = Pango.Weight.Bold;
                         //tmpFont.Size = 2;
-                        tmpLabel.ModifyFont(fontDescriptionParent);
-                        tmpLabel.SetAlignment(0.0f, 0.5f);
-                        tmp.PackStart(tmpLabel, true, true, 0);
-                        accordionParentButton = new AccordionParentButton(tmp) { Name = parentLevel.Key };
+                        label.ModifyFont(fontDescriptionParent);
+                        label.SetAlignment(0.0f, 0.5f);
+                        hboxParent.PackStart(label, true, true, 0);
+                        accordionParentButton = new AccordionParentButton(hboxParent) { Name = parentLevel.Key };
                     }
                     else
                     {
@@ -174,7 +174,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             childLevel.Value.NodeButton = accordionChildButton;
 
                             //Privileges
-                            currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, childLevel.Key.ToUpper());
+                            currentNodePrivilegesToken = string.Format(pNodePrivilegesTokenFormat, childLevel.Key.ToUpper());
                             //_log.Debug(string.Format("currentNodePrivilegesToken: [{0}]", currentNodePrivilegesToken));
 
                             //First Child Node is Assigned has currentChildButton
@@ -227,7 +227,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     {
                         foreach (var childLevel in parentLevel.Value.Childs)
                         {
-                            currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, childLevel.Key.ToUpper());
+                            currentNodePrivilegesToken = string.Format(_nodePrivilegesTokenFormat, childLevel.Key.ToUpper());
                             //_log.Debug(string.Format("[{0}]=[{1}] [{2}]=[{3}]", childLevel.Value.NodeButton.Sensitive, childLevel.Value.NodeButton.Name, currentNodePrivilegesToken, FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken)));
                             //If have (Content | Events | ExternalApp) & Privileges or the Button is Enabled, Else is Disabled
                             if (FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null))

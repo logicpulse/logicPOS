@@ -10,6 +10,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
     {
         //Log4Net
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private bool _isNewRecord = false;
 
         public XPGuidObject() : base() { }
         public XPGuidObject(Session pSession) : base(pSession) { }
@@ -97,7 +98,6 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("DeletedWhere", ref fDeletedWhere, value); }
         }
 
-        private bool _isNewRecord = false;
         protected bool IsNewRecord
         {
             get { return (_isNewRecord); }

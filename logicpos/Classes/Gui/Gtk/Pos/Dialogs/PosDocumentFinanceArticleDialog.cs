@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -113,8 +115,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();

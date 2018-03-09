@@ -191,7 +191,7 @@
 				<EventboxToolbar>
 					<Position>4,546</Position>
 					<Size>527,48</Size>
-					<ButtonSize>75,49</ButtonSize>
+					<ButtonSize>66,49</ButtonSize>
 					<IconSize>18,18</IconSize>
 					<Font>7</Font>
 					<FontColor>Cfg[colorPosToolbarDefaultButtonFont]</FontColor>
@@ -217,8 +217,7 @@
 							<Name>touchButtonPosToolbarReports_DarkGrey</Name>
 							<Text>Resx[global_reports]</Text>
 							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_reports.png</ImageFileName>
-							<!-- Hidden--> 	
-							<Visible>false</Visible>
+							<Visible>true</Visible>
 						</ButtonReports>
 
 						<ButtonShowSystemDialog>

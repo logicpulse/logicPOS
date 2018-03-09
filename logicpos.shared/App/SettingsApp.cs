@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace logicpos.shared.App
 {
@@ -235,6 +236,9 @@ namespace logicpos.shared.App
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Developer Config
+
+        // Undefined Record
+        public static Guid XpoOidUndefinedRecord = new Guid("00000000-0000-0000-0000-000000000001");
 
         //ArticleClass
         public static Guid XpoOidArticleClassCustomerCard = new Guid("49ea35ba-35f3-440f-946e-ab32578ed741");

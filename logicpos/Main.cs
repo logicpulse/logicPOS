@@ -1,5 +1,6 @@
 using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
@@ -24,7 +25,7 @@ namespace logicpos
             try
             {
                 // Show current Configuration File
-                _log.Info(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));   
+                _log.Info(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 
                 // Init Settings Main Config Settings
                 GlobalFramework.Settings = ConfigurationManager.AppSettings;
@@ -34,27 +35,31 @@ namespace logicpos
 
                 // Init PluginContainer
                 GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
-                
+
                 // PluginSoftwareVendor
                 GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
-                    _log.Info(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));   
+                    _log.Info(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
                     // Init Plugin
                     SettingsApp.InitSoftwareVendorPluginSettings();
-                } else
+                    // Check if all Resources are Embbeded
+                    GlobalFramework.PluginSoftwareVendor.ValidateEmbbededResources();
+                }
+                else
                 {
                     // Show Loaded Plugin
-                    _log.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));   
+                    _log.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
                 }
 
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
-                if (! Debugger.IsAttached)
+                if (!Debugger.IsAttached)
                 {
                     GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
                     // Show Loaded Plugin
-                    if (GlobalFramework.PluginLicenceManager != null) {
+                    if (GlobalFramework.PluginLicenceManager != null)
+                    {
                         _log.Info(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
                     }
                 }
@@ -66,7 +71,7 @@ namespace logicpos
                 Theme.ParseTheme(true, false);
 
                 // Initialize LicenseRouter if IntellilockPlugin plugin is Registered in PluginContainer
-                if (GlobalFramework.PluginLicenceManager != null && ! Debugger.IsAttached)
+                if (GlobalFramework.PluginLicenceManager != null && !Debugger.IsAttached)
                 {
                     // Boot LogicPos after LicenceManager.IntellilockPlugin
                     LicenseRouter licenseRouter = new LicenseRouter();

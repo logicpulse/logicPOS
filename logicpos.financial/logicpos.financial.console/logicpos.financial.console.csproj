@@ -32,7 +32,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\logicpos\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,7 +41,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\logicpos\bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -123,6 +123,7 @@
     <None Include="Web References\qws\WSInterface.wsdl" />
   </ItemGroup>
   <ItemGroup>
+    <!--
     <ProjectReference Include="..\..\..\logicpos_pos_internal\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
       <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
       <Name>logicpos.financial.library</Name>
@@ -130,6 +131,11 @@
     <ProjectReference Include="..\..\..\logicpos_pos_internal\logicpos.financial\logicpos.financial.service\logicpos.financial.service.csproj">
       <Project>{72f34abb-d3cf-4430-85f0-fd5bd3ee3aa7}</Project>
       <Name>logicpos.financial.service</Name>
+    </ProjectReference>
+	-->
+    <ProjectReference Include="..\..\..\logicpos_pos_internal\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
+      <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
+      <Name>logicpos.financial.library</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>

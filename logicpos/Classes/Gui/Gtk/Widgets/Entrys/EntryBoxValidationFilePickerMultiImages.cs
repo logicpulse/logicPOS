@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using logicpos.shared;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {

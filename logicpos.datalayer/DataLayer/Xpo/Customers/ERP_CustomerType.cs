@@ -31,19 +31,19 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        //CustomerType One <> Many Customer
-        [Association(@"CustomerTypeReferencesCustomer", typeof(ERP_Customer))]
-        public XPCollection<ERP_Customer> Customer
-        {
-            get { return GetCollection<ERP_Customer>("Customer"); }
-        }
-
         string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
             get { return fDesignation; }
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
+        }
+
+        //CustomerType One <> Many Customer
+        [Association(@"CustomerTypeReferencesCustomer", typeof(ERP_Customer))]
+        public XPCollection<ERP_Customer> Customer
+        {
+            get { return GetCollection<ERP_Customer>("Customer"); }
         }
     }
 }

@@ -1,15 +1,11 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.Hardware;
 using System;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Logic.Hardware
 {
-    public enum InputReaderDevice
-    {
-        None, BarCodeReader, CardReader
-    }
-
     public class InputReader
     {
         //Log4Net
@@ -106,7 +102,7 @@ namespace logicpos.Classes.Logic.Hardware
             _timerEnabled = false;
 
             //Reset to Default
-            _inputReaderDevice = Hardware.InputReaderDevice.None;
+            _inputReaderDevice = InputReaderDevice.None;
 
             //Search For Valid InputReaderDevice
             foreach (var item in _readers)
@@ -119,7 +115,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
 
             //Trigger Event
-            if (_inputReaderDevice != Hardware.InputReaderDevice.None)
+            if (_inputReaderDevice != InputReaderDevice.None)
             {
                 OnCapture();
             }

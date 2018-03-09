@@ -56,7 +56,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _customVars = GlobalFramework.FastReportCustomVars;
                 //_systemVars = GlobalFramework.FastReportSystemVars;
                 //Test FastReport Helpers with
-                //_customVars["Company_Name"])) | _systemVars["App_Name"])) | CustomFunctions.Res("global_printed_on_date")
+                //_customVars["COMPANY_NAME"])) | _systemVars["APP_NAME"])) | CustomFunctions.Res("global_printed_on_date")
             }
             catch (Exception ex)
             {
@@ -104,8 +104,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
                 else
                 {
-                    _thermalPrinterGeneric.WriteLine(_customVars["Company_Name"], WriteLineTextMode.Big);
-                    _thermalPrinterGeneric.WriteLine(_customVars["Company_Business_Name"]);
+                    _thermalPrinterGeneric.WriteLine(_customVars["APP_NAME"], WriteLineTextMode.Big);
+                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_BUSINESS_NAME"]);
                 }
 
                 //Reset to Left
@@ -116,6 +116,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
+                _log.Error(ex.Message, ex);
                 throw ex;
             }
         }
@@ -186,9 +187,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     , Environment.NewLine
                     , CustomFunctions.Res("global_printed_on_date")
                     , FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateTimeFormat)
-                    , _customVars["App_Company"]
-                    , _customVars["App_Name"]
-                    , _customVars["App_Version"]
+                    , _customVars["APP_COMPANY"]
+                    , _customVars["APP_NAME"]
+                    , _customVars["APP_VERSION"]
                     )
                 );
 

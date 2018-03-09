@@ -11,6 +11,8 @@ using System;
 using System.Drawing;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -78,8 +80,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_pay_invoice.png");
 
             //ActionArea Buttons
-            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 			_buttonOk.Sensitive = false;
 
             //ActionArea

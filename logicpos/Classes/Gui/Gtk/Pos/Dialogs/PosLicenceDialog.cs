@@ -7,6 +7,8 @@ using logicpos.Classes.Logic.License;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -83,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //ActionArea Buttons
             _buttonRegister = new TouchButtonIconWithText("touchButtonRegister_DialogActionArea", System.Drawing.Color.Transparent, Resx.pos_button_label_licence_register, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionRegister, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
             _buttonContinue = new TouchButtonIconWithText("touchButtonContinue_DialogActionArea", System.Drawing.Color.Transparent, Resx.pos_button_label_licence_continue, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionContinue, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
-            _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Close);
+            _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
