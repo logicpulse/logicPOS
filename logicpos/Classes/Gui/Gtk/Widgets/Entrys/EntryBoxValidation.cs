@@ -1,5 +1,6 @@
 ﻿using System;
 using Gtk;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {

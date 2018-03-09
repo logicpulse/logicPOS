@@ -1,10 +1,11 @@
 ﻿using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
-using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

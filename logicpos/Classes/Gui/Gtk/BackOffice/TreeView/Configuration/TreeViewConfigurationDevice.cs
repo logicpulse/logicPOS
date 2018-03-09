@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
+using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -30,7 +31,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation_Drawer });
             columnProperties.Add(new GenericTreeViewColumnProperty("Type") { Title = Resx.global_ConfigurationDevice_Type });
             columnProperties.Add(new GenericTreeViewColumnProperty("PlaceTerminal") { Title = Resx.global_ConfigurationDevice_PlaceTerminal });

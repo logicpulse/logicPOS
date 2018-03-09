@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Windows.Forms;
-using System.Configuration;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using System.Threading;
-using System.Globalization;
-using logicpos.financial;
-using logicpos.financial.Classes.Reports;
+using logicpos.datalayer.Enums;
+using logicpos.financial.library.App;
+using logicpos.financial.library.Classes.Reports;
 using logicpos.reports.Resources.Localization;
+using System;
+using System.Collections;
+using System.Configuration;
+using System.Globalization;
+using System.Threading;
+using System.Windows.Forms;
 
 //Log4Net
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]

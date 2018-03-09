@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.resources.Resources.Localization;
 using System;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -169,8 +170,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //PackIt VBox
                 vboxPrices.PackStart(hboxPrices, false, false, 0);
 
-                //Get PriceType Collection
-                XPCollection xpcConfigurationPriceType = new XPCollection(DataSourceRow.Session, typeof(FIN_ConfigurationPriceType));
+                //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SettingsApp.XpoOidUndefinedRecord));
+                XPCollection xpcConfigurationPriceType = new XPCollection(DataSourceRow.Session, typeof(FIN_ConfigurationPriceType), criteriaOperator);
+
                 xpcConfigurationPriceType.Sorting = FrameworkUtils.GetXPCollectionDefaultSortingCollection();
                 //Define Max 5 Rows : 5 Prices
                 int priceTypeCount = (xpcConfigurationPriceType.Count > 5) ? 5 : xpcConfigurationPriceType.Count;

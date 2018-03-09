@@ -12,6 +12,7 @@ using logicpos.resources.Resources.Localization;
 using logicpos.datalayer.Enums;
 using logicpos.shared.Classes.Finance;
 using System;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {

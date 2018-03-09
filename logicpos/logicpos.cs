@@ -18,11 +18,10 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using logicpos.Classes.Enums.App;
 
 namespace logicpos
 {
-    enum AppMode { Backoffice, FrontOffice }
-
     class LogicPos
     {
         //Log4Net
@@ -245,9 +244,10 @@ namespace logicpos
                 if (databaseCreated) FrameworkUtils.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
-                if (GlobalFramework.PluginSoftwareVendor == null)
+                if (GlobalFramework.PluginSoftwareVendor == null || ! GlobalFramework.PluginSoftwareVendor.IsValidSecretKey(SettingsApp.SecretKey))
                 {
                     Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_error_plugin_softwarevendor_not_registered);
+                    _log.Debug(String.Format("Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
                 }
 
                 //Create SystemNotification

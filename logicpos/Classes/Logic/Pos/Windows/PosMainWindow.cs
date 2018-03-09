@@ -11,6 +11,10 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Orders;
 using System;
+using logicpos.financial.library.Classes.Reports;
+using System.Collections.Generic;
+using logicpos.financial.library.Classes.Finance;
+using logicpos.Classes.Enums.Hardware;
 
 namespace logicpos
 {
@@ -76,9 +80,24 @@ namespace logicpos
             //Old GTK Report Window, Not Used Anymore
             //Utils.ShowReports(this);
 
+            //PosSystemDialog dialog = new PosSystemDialog(this, Gtk.DialogFlags.DestroyWithParent);
+            //int response = dialog.Run();
+            //dialog.Destroy();
+
+            try
+            {
+                PosReportsDialog dialog = new PosReportsDialog(this, Gtk.DialogFlags.DestroyWithParent);
+                int response = dialog.Run();
+                dialog.Destroy();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
             //Test Report With DocumentFinanceMaster Documents
-            //Guid documentFinanceMasterOid = new Guid("1d062c73-ca1d-434d-a95c-60d09bece5cd");
-            //CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Design, 4, documentFinanceMasterOid, "aQpO");
+            //Guid documentFinanceMasterOid = new Guid("'73ca9f06-dda9-44a6-a4d9-e7d9d21b042e'");
+            //CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Design, "aQpO", 4, documentFinanceMasterOid);
 
             //Test Report With DocumentFinancePayment Documents
             //Guid documentFinancePaymentOid = new Guid("88f082ce-da52-48b5-a31d-32bfa87f119d");
@@ -305,12 +324,12 @@ namespace logicpos
 
             switch (GlobalApp.HWBarCodeReader.Device)
             {
-                case logicpos.Classes.Logic.Hardware.InputReaderDevice.None:
+                case InputReaderDevice.None:
                     break;
-                case logicpos.Classes.Logic.Hardware.InputReaderDevice.BarCodeReader:
+                case InputReaderDevice.BarCodeReader:
                     TicketList.InsertOrUpdate(GlobalApp.HWBarCodeReader.Buffer);
                     break;
-                case logicpos.Classes.Logic.Hardware.InputReaderDevice.CardReader:
+                case InputReaderDevice.CardReader:
                     break;
                 default:
                     break;

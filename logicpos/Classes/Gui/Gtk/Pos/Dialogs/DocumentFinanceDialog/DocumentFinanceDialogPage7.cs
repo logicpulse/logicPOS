@@ -1,14 +1,12 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
-using logicpos.financial.library.Classes.Finance;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.shared;
-using logicpos.shared.Enums;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.financial.library.Classes.Finance;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
+using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
 

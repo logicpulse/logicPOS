@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="03/09/2018 16:05:07" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+  <Dictionary>
+    <BusinessObjectDataSource Name="DocumentFinanceDetail" ReferenceName="DocumentFinanceDetail" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterDetailView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="ArticleFamily" DataType="System.String"/>
+      <Column Name="ArticleFamilyCode" DataType="System.UInt32"/>
+      <Column Name="ArticleFamilyDesignation" DataType="System.String"/>
+      <Column Name="ArticleSubFamily" DataType="System.String"/>
+      <Column Name="ArticleSubFamilyCode" DataType="System.UInt32"/>
+      <Column Name="Article" DataType="System.String"/>
+      <Column Name="ArticleCode" DataType="System.String"/>
+      <Column Name="ArticleDesignation" DataType="System.String"/>
+      <Column Name="ArticleQuantity" DataType="System.Decimal"/>
+      <Column Name="ArticleUnitMeasure" DataType="System.String"/>
+      <Column Name="ArticlePrice" DataType="System.Decimal"/>
+      <Column Name="ArticlePriceWithDiscount" DataType="System.Decimal"/>
+      <Column Name="ArticleVat" DataType="System.Decimal"/>
+      <Column Name="ArticleDiscount" DataType="System.Decimal"/>
+      <Column Name="ArticleTotalNet" DataType="System.Decimal"/>
+      <Column Name="ArticleTotalGross" DataType="System.Decimal"/>
+      <Column Name="ArticleTotalDiscount" DataType="System.Decimal"/>
+      <Column Name="ArticleTotalTax" DataType="System.Decimal"/>
+      <Column Name="ArticleTotalFinal" DataType="System.Decimal"/>
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="ArticleSubFamilyDesignation" DataType="System.String"/>
+      <Column Name="ArticlePriceWithVat" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="ArticleVatExemptionReason" DataType="System.String"/>
+      <Column Name="ArticleVatExemptionReasonDesignation" DataType="System.String"/>
+      <Column Name="DocumentNumber" DataType="System.String"/>
+      <Column Name="Date" DataType="System.DateTime"/>
+      <Column Name="DocumentDate" DataType="System.String"/>
+      <Column Name="SystemEntryDate" DataType="System.String"/>
+      <Column Name="DocumentCreatorUser" DataType="System.String"/>
+      <Column Name="TotalNet" DataType="System.Decimal"/>
+      <Column Name="TotalGross" DataType="System.Decimal"/>
+      <Column Name="TotalDiscount" DataType="System.Decimal"/>
+      <Column Name="TotalTax" DataType="System.Decimal"/>
+      <Column Name="TotalFinal" DataType="System.Decimal"/>
+      <Column Name="TotalFinalRound" DataType="System.Decimal"/>
+      <Column Name="TotalDelivery" DataType="System.Decimal"/>
+      <Column Name="TotalChange" DataType="System.Decimal"/>
+      <Column Name="Discount" DataType="System.Decimal"/>
+      <Column Name="DiscountFinancial" DataType="System.Decimal"/>
+      <Column Name="ExchangeRate" DataType="System.Decimal"/>
+      <Column Name="EntityOid" DataType="System.String"/>
+      <Column Name="EntityCode" DataType="System.UInt32"/>
+      <Column Name="EntityHidden" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="EntityInternalCode" DataType="System.String"/>
+      <Column Name="EntityName" DataType="System.String"/>
+      <Column Name="EntityAddress" DataType="System.String"/>
+      <Column Name="EntityZipCode" DataType="System.String"/>
+      <Column Name="EntityCity" DataType="System.String"/>
+      <Column Name="EntityCountry" DataType="System.String"/>
+      <Column Name="EntityFiscalNumber" DataType="System.String"/>
+      <Column Name="DocumentStatusStatus" DataType="System.String"/>
+      <Column Name="TransactionID" DataType="System.String"/>
+      <Column Name="ShipToDeliveryID" DataType="System.String"/>
+      <Column Name="ShipToDeliveryDate" DataType="System.DateTime"/>
+      <Column Name="ShipToWarehouseID" DataType="System.String"/>
+      <Column Name="ShipToLocationID" DataType="System.String"/>
+      <Column Name="ShipToAddressDetail" DataType="System.String"/>
+      <Column Name="ShipToCity" DataType="System.String"/>
+      <Column Name="ShipToPostalCode" DataType="System.String"/>
+      <Column Name="ShipToRegion" DataType="System.String"/>
+      <Column Name="ShipToCountry" DataType="System.String"/>
+      <Column Name="ShipFromDeliveryID" DataType="System.String"/>
+      <Column Name="ShipFromDeliveryDate" DataType="System.DateTime"/>
+      <Column Name="ShipFromWarehouseID" DataType="System.String"/>
+      <Column Name="ShipFromLocationID" DataType="System.String"/>
+      <Column Name="ShipFromAddressDetail" DataType="System.String"/>
+      <Column Name="ShipFromCity" DataType="System.String"/>
+      <Column Name="ShipFromPostalCode" DataType="System.String"/>
+      <Column Name="ShipFromRegion" DataType="System.String"/>
+      <Column Name="ShipFromCountry" DataType="System.String"/>
+      <Column Name="MovementStartTime" DataType="System.DateTime"/>
+      <Column Name="MovementEndTime" DataType="System.DateTime"/>
+      <Column Name="ATDocCodeID" DataType="System.String"/>
+      <Column Name="Payed" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="PayedDate" DataType="System.DateTime"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="DocumentType" DataType="System.String"/>
+      <Column Name="DocumentTypeCode" DataType="System.UInt32"/>
+      <Column Name="DocumentTypeDesignation" DataType="System.String"/>
+      <Column Name="DocumentTypeResourceString" DataType="System.String"/>
+      <Column Name="DocumentTypeResourceStringReport" DataType="System.String"/>
+      <Column Name="DocumentTypeWayBill" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="PaymentMethodCode" DataType="System.UInt32"/>
+      <Column Name="PaymentMethodDesignation" DataType="System.String"/>
+      <Column Name="PaymentMethodToken" DataType="System.String"/>
+      <Column Name="PaymentConditionCode" DataType="System.UInt32"/>
+      <Column Name="PaymentConditionDesignation" DataType="System.String"/>
+      <Column Name="PaymentConditionAcronym" DataType="System.String"/>
+      <Column Name="CurrencyCode" DataType="System.UInt32"/>
+      <Column Name="CurrencyDesignation" DataType="System.String"/>
+      <Column Name="CurrencyAcronym" DataType="System.String"/>
+      <BusinessObjectDataSource Name="BusinessObjectDataSource1" Alias="DocumentFinanceDetail" Enabled="false" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceDetail, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" PropName="DocumentFinanceDetail"/>
+      <BusinessObjectDataSource Name="BusinessObjectDataSource2" Alias="DocumentFinanceMasterTotal" Enabled="false" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterTotalView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" PropName="DocumentFinanceMasterTotal"/>
+      <Column Name="DocumentTypeOrd" DataType="System.UInt32"/>
+      <Column Name="DocumentTypeAcronym" DataType="System.String"/>
+      <Column Name="PaymentMethod" DataType="System.String"/>
+      <Column Name="PaymentMethodOrd" DataType="System.UInt32"/>
+      <Column Name="PaymentCondition" DataType="System.String"/>
+      <Column Name="PaymentConditionOrd" DataType="System.UInt32"/>
+      <Column Name="Currency" DataType="System.String"/>
+      <Column Name="CurrencyOrd" DataType="System.UInt32"/>
+      <Column Name="ArticleFamilyOrd" DataType="System.UInt32"/>
+      <Column Name="ArticleSubFamilyOrd" DataType="System.UInt32"/>
+      <Column Name="UserDetail" DataType="System.String"/>
+      <Column Name="UserDetailOrd" DataType="System.UInt32"/>
+      <Column Name="UserDetailCode" DataType="System.UInt32"/>
+      <Column Name="UserDetailName" DataType="System.String"/>
+      <Column Name="Terminal" DataType="System.String"/>
+      <Column Name="TerminalOrd" DataType="System.UInt32"/>
+      <Column Name="TerminalCode" DataType="System.UInt32"/>
+      <Column Name="TerminalDesignation" DataType="System.String"/>
+      <Column Name="Place" DataType="System.String"/>
+      <Column Name="PlaceOrd" DataType="System.UInt32"/>
+      <Column Name="PlaceCode" DataType="System.UInt32"/>
+      <Column Name="PlaceDesignation" DataType="System.String"/>
+      <Column Name="PlaceTable" DataType="System.String"/>
+      <Column Name="PlaceTableOrd" DataType="System.UInt32"/>
+      <Column Name="PlaceTableCode" DataType="System.UInt32"/>
+      <Column Name="PlaceTableDesignation" DataType="System.String"/>
+      <Column Name="ArticleOrd" DataType="System.UInt32"/>
+      <Column Name="EntityCountryCode2" DataType="System.String"/>
+      <Column Name="Country" DataType="System.String"/>
+      <Column Name="CountryOrd" DataType="System.UInt32"/>
+      <Column Name="CountryCode" DataType="System.UInt32"/>
+      <Column Name="CountryDesignation" DataType="System.String"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report Filter" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Total Name="SumData" TotalType="Count" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="TotalFinalRound" Expression="[DocumentFinanceDetail.ArticleTotalFinal]" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="TotalArticleQuantity" Expression="[DocumentFinanceDetail.ArticleQuantity]" Evaluator="Data3"/>
+    <Total Name="TotalArticleTotalNet" Expression="[DocumentFinanceDetail.ArticleTotalNet]" Evaluator="Data3"/>
+    <Total Name="TotalArticleTotalTax" Expression="[DocumentFinanceDetail.ArticleTotalTax]" Evaluator="Data3"/>
+    <Total Name="TotalDiscount" Expression="[DocumentFinanceDetail.ArticleTotalDiscount]" Evaluator="Data3"/>
+    <Total Name="AvgArticlePriceWithDiscount" TotalType="Avg" Expression="[DocumentFinanceDetail.ArticlePriceWithDiscount]" Evaluator="Data3"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Height="48.6" Border.Lines="Bottom">
+      <inherited Name="PictureCompanyLogo" Width="189" Height="47.25"/>
+      <inherited Name="TextReportTitle" Height="28.35" Text="[Report Title]" VertAlign="Center" Font="Arial, 12pt"/>
+      <TextObject Name="TextReportFilter" ZOrder="2" Left="198.45" Top="28.35" Width="519.75" Height="18.9" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt, style=Bold"/>
+    </inherited>
+    <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" KeepWithData="true" Condition="[DocumentFinanceDetail.DocumentDate]">
+      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" Text="[DocumentFinanceDetail.DocumentDate]" VertAlign="Center" Font="Arial, 15.75pt" Style="DataLevel1Font"/>
+      <DataBand Name="Data3" Top="126.75" Width="718.2" Height="18.9" EvenStyle="EvenRow" DataSource="DocumentFinanceDetail">
+        <TextObject Name="TextColumnDateData" Width="122.85" Height="18.9" Text="[DocumentFinanceDetail.Date]" Format="Custom" Format.Format="yyyy/MM/dd hh:mm:ss" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+        <TextObject Name="TextColumnDesignationData" Left="179.55" Width="264.6" Height="18.9" CanBreak="false" Text="[DocumentFinanceDetail.ArticleDesignation]" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text31" Left="642.6" Width="75.6" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalFinal],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+        <TextObject Name="Text32" Left="444.15" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleQuantity],2)][DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt" Style="DataFont">
+          <Formats>
+            <NumberFormat/>
+            <GeneralFormat/>
+          </Formats>
+        </TextObject>
+        <TextObject Name="TextColumnCodeData" Left="122.85" Width="56.7" Height="18.9" Text="[DocumentFinanceDetail.ArticleCode]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt" Style="DataFont"/>
+        <TextObject Name="Text41" Left="510.3" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt" Style="DataFont"/>
+        <TextObject Name="Text42" Left="576.45" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt" Style="DataFont"/>
+        <DataHeaderBand Name="DataHeader1" Top="94.4" Width="718.2" Height="28.35" Border.Lines="Top" KeepWithData="true">
+          <TextObject Name="TextColumnDateHeader" Top="9.45" Width="122.85" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="TextColumnDesignationHeader" Left="179.55" Top="9.45" Width="264.6" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="Text34" Left="642.6" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_totalfinal_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="TextColumnCodeHeader" Left="122.85" Top="9.45" Width="56.7" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="Text44" Left="444.15" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="Text46" Left="510.3" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_totalnet_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="Text47" Left="576.45" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_total_tax_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+        </DataHeaderBand>
+        <Sort>
+          <Sort Expression="[DocumentFinanceDetail.Date]"/>
+          <Sort Expression="[DocumentFinanceDetail.ArticleCode]"/>
+        </Sort>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="149.65" Width="718.2" Height="18.9">
+        <TextObject Name="Text33" Left="642.6" Width="75.6" Height="18.9" Text="[FormatNumber([TotalFinalRound],2)]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+        <TextObject Name="Text48" Left="576.45" Width="66.15" Height="18.9" Text="[FormatNumber([TotalArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+        <TextObject Name="Text49" Left="510.3" Width="66.15" Height="18.9" Text="[FormatNumber([TotalArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+        <TextObject Name="Text51" Left="444.15" Width="66.15" Height="18.9" Text="[FormatNumber([TotalArticleQuantity],2)][DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <inherited Name="PageFooter1" Top="172.55">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="TextFooter2"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>

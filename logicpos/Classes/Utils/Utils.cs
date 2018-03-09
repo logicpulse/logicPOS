@@ -33,6 +33,8 @@ using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos
 {
@@ -1773,8 +1775,23 @@ namespace logicpos
           where T : IGenericTreeView, new()
         {
             T genericTreeView = default(T);
+
             try
             {
+                // Add default Criteria to Hide Undefined Records
+                string undefinedFilter = string.Format("Oid <> '{0}'", SettingsApp.XpoOidUndefinedRecord);
+
+#pragma warning disable CS0618 // Type or member is obsolete
+                if (pCriteria == null)
+#pragma warning restore CS0618 // Type or member is obsolete
+                {
+                    pCriteria = CriteriaOperator.Parse(undefinedFilter);
+                }
+                else
+                {
+                    pCriteria = CriteriaOperator.Parse(string.Format("{0} AND ({1})", pCriteria, undefinedFilter));
+                }
+
                 object[] constructor = new object[]
                 {
                       pSourceWindow,
@@ -2056,11 +2073,6 @@ namespace logicpos
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Protection
-
-        public enum SaveSystemProtectionMode
-        {
-            Save, Valid
-        }
 
         //UNDER CONSTRUCTION
         //Required to add other Parameters to be Full Protected, Initialized Date etc

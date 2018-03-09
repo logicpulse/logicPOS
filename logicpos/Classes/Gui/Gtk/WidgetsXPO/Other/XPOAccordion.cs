@@ -13,10 +13,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         //Log4Net
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public XPOAccordion(string pTableParent, string pTableChild, string pTableChildWhereField)
+        public XPOAccordion(string pTableParent, string pTableChild, string pTableChildWhereField, string pNodePrivilegesTokenFormat)
         {
             InitDefinition(pTableParent, pTableChild, pTableChildWhereField);
-            InitObject(_accordionDefinition);
+            InitObject(_accordionDefinition, pNodePrivilegesTokenFormat);
         }
 
         private void InitDefinition(string pTableParent, string pTableChild, string pTableChildWhereField)

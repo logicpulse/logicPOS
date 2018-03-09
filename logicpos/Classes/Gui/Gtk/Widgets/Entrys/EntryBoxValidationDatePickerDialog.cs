@@ -4,6 +4,7 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.resources.Resources.Localization;
 using System;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {

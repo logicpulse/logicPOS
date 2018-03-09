@@ -1,20 +1,17 @@
-﻿using logicpos.financial;
+﻿using logicpos.reports.App;
 using logicpos.reports.Resources.Localization;
 using logicpos.reports.Utils;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace logicpos.reports.Forms
 {
     public partial class FormSelectTerminal : Form
     {
+        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         DataTable _dataTerminal = new DataTable();
         string startDate;
         string endDate;
@@ -148,8 +145,10 @@ namespace logicpos.reports.Forms
                     this.Close();
                 }
             }
-            catch (Exception exx)
-            { }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
 
         }
 

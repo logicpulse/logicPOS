@@ -69,7 +69,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
                     //Find First Value
                     foreach (SelectStatementResultRow rowData in _data)
                     {
-                        if (pSearchValue.ToUpper() == rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())].ToString().ToUpper())
+                        // Get Field, require to check if Null
+                        var field = rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())];
+
+                        if (field != null && pSearchValue.ToUpper() == field.ToString().ToUpper())
                         {
                             if (debug) _log.Debug(string.Format("GetValueFromField(): FindValue : [{0}]==[{1}]", pSearchValue.ToUpper(), rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())].ToString().ToUpper()));
                             return rowData.Values[GetFieldIndex(pReturnField)];
@@ -77,6 +80,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                     }
                 }
             }
+
             return null;
         }
 

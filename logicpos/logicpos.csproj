@@ -45,7 +45,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -87,6 +87,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cairo, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL" />
+    <Reference Include="Mono.Data.Sqlite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Mono.Data.Sqlite.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
@@ -140,6 +144,30 @@
   <ItemGroup>
     <Compile Include="App\FrameworkUtils.cs" />
     <Compile Include="App\GlobalFramework.cs" />
+    <Compile Include="Classes\Enums\App\AppMode.cs" />
+    <Compile Include="Classes\Enums\DataBaseRestoreFrom.cs" />
+    <Compile Include="Classes\Enums\Dialogs\DialogMode.cs" />
+    <Compile Include="Classes\Enums\Dialogs\DocumentFinanceDialogPreviewMode.cs" />
+    <Compile Include="Classes\Enums\Dialogs\LicenseUIResponse.cs" />
+    <Compile Include="Classes\Enums\Finance\ExportSaftPtMode.cs" />
+    <Compile Include="Classes\Enums\GenericTreeView\GenericTreeViewColumnPropertyType.cs" />
+    <Compile Include="Classes\Enums\GenericTreeView\GenericTreeViewMode.cs" />
+    <Compile Include="Classes\Enums\GenericTreeView\GenericTreeViewNavigatorMode.cs" />
+    <Compile Include="Classes\Enums\GenericTreeView\NullBoolean.cs" />
+    <Compile Include="Classes\Enums\Hardware\InputReaderDevice.cs" />
+    <Compile Include="Classes\Enums\Keyboard\KeyboardMode.cs" />
+    <Compile Include="Classes\Enums\Keyboard\ModifierKeys.cs" />
+    <Compile Include="Classes\Enums\Dialogs\PosBaseDialogButtonType.cs" />
+    <Compile Include="Classes\Enums\Reports\ReportsQueryDialogMode.cs" />
+    <Compile Include="Classes\Enums\Reports\ReportsTypeToken.cs" />
+    <Compile Include="Classes\Enums\SaveSystemProtectionMode.cs" />
+    <Compile Include="Classes\Enums\Tickets\TicketType.cs" />
+    <Compile Include="Classes\Enums\Widgets\MoneyPadMode.cs" />
+    <Compile Include="Classes\Enums\Widgets\NumberPadPinMode.cs" />
+    <Compile Include="Classes\Enums\Xml\ReplaceType.cs" />
+    <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\System\TreeViewSystemAuditType.cs" />
+    <Compile Include="Classes\Gui\Gtk\Pos\Dialogs\PosReportsQueryDialog.cs" />
+    <Compile Include="Classes\Logic\Pos\Dialogs\PosReportsQueryDialog.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="App\GlobalApp.cs">
@@ -395,55 +423,10 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <None Include="Resources\Reports\UserReports\ReportArticle.frx">
-      <Link>Resources\Reports\UserReports\ReportArticle.frx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportArticle.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportDocumentFinance.frx">
-      <Link>Resources\Reports\UserReports\ReportDocumentFinance.frx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportDocumentFinance.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
-      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment.frx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
-      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportTest.frx">
-      <Link>Resources\Reports\UserReports\ReportTest.frx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\ReportTest.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\TemplateBase.frx">
-      <Link>Resources\Reports\UserReports\TemplateBase.frx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\TemplateBase.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Reports\UserReports\TemplateBaseSimple.frx">
-      <Link>Resources\Reports\UserReports\TemplateBaseSimple.frx</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="logicpos.exe.files">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Database\NOTES.md" />
     <None Include="Resources\Reports\Scripts\ReportDocumentFinance.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -460,6 +443,10 @@
     <Folder Include="Resources\Database\SQLite\other\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\libs\sqlite3.dll">
+      <Link>sqlite3.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="application.ico" />
     <Content Include="Assets\Images\Icons\Accordion\poson_backoffice_default.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1879,9 +1866,43 @@
     <Content Include="Assets\Themes\theme_default_retail_800x600.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\Reports\UserReports\TemplateBaseSimple.frx">
+    <None Include="Resources\Reports\UserReports\ReportArticleList.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Resources\Reports\UserReports\ReportArticleStockMovementList.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\ReportCustomerList.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\ReportDocumentFinance.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceDetailGroupList.frx" />
+    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceDetailList.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceMasterList.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reports\UserReports\ReportSystemAuditList.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reports\UserReports\ReportTest.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reports\UserReports\TemplateBase.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Reports\UserReports\TemplateBaseSimple.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="Service References\ServiceReference\logicpos.ServiceReference.CompositeType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
@@ -2376,17 +2397,19 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <!--
     <ProjectReference Include="..\..\logicpos_pos_internal\logicpos.financial\logicpos.financial.service\logicpos.financial.service.csproj">
       <Project>{72f34abb-d3cf-4430-85f0-fd5bd3ee3aa7}</Project>
       <Name>logicpos.financial.service</Name>
     </ProjectReference>
+	-->
+    <ProjectReference Include="..\..\logicpos_pos_internal\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
+      <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
+      <Name>logicpos.financial.library</Name>
+    </ProjectReference>
     <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
-      <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
-      <Name>logicpos.financial.library</Name>
     </ProjectReference>
     <ProjectReference Include="..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>

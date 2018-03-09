@@ -1,12 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBase.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="RC RC5TEHDX4012016S001/3" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="05/30/2016 10:34:11" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.CopyNames="Original&#13;&#10;Duplicado">
-  <Styles>
-    <Style Name="BackgroundColor1" Fill.Color="WhiteSmoke" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
-    <Style Name="BackgroundColor2" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
-    <Style Name="BoxBorder" Border.Lines="All" Fill="Glass" Fill.Color="LightGray" Fill.Blend="0.2" Fill.Hatch="true" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
-  </Styles>
+<inherited BaseReport="TemplateBase.frx" ScriptLanguage="CSharp" ReportInfo.Name="RC RC5TEHDX4012016S001/3" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="05/30/2016 10:34:11" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.CopyNames="Original&#13;&#10;Duplicado">
   <Dictionary>
-    <BusinessObjectDataSource Name="DocumentFinancePayment" ReferenceName="DocumentFinancePayment" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.FRBODocumentFinancePayment, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+    <BusinessObjectDataSource Name="DocumentFinancePayment" ReferenceName="DocumentFinancePayment" DataType="logicpos.financial.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinancePayment, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Oid" DataType="System.String"/>
       <Column Name="DocumentTypeDesignation" DataType="System.String"/>
       <Column Name="DocumentTypeResourceString" DataType="System.String"/>
@@ -31,7 +26,7 @@
       <Column Name="CurrencySymbol" DataType="System.String"/>
       <Column Name="ExchangeRate" DataType="System.Decimal"/>
       <Column Name="Notes" DataType="System.String"/>
-      <BusinessObjectDataSource Name="DocumentFinancePaymentDocument" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.FRBODocumentFinancePaymentDocument, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+      <BusinessObjectDataSource Name="DocumentFinancePaymentDocument" DataType="System.Collections.Generic.List`1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinancePaymentDocument, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
         <Column Name="Oid" DataType="System.String"/>
         <Column Name="DocumentTypeDesignation" DataType="System.String"/>
         <Column Name="DocumentNumber" DataType="System.String"/>
@@ -89,7 +84,7 @@
       <TextObject Name="Text26" Top="1" Width="132.3" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_document_date&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="Text27" Left="133.3" Top="1" Width="255.15" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_document_number&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="Text28" Left="494.4" Top="1" Width="99.3" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_document_total&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
-      <TextObject Name="Text29" Left="596.35" Top="1" Width="99.3" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_total_payed_acronym&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="Text29" Left="596.35" Top="1" Width="99.3" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_total_payed&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="Text30" Left="392.45" Top="1" Width="99.3" Height="17.9" Visible="false" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_total_debt&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" TextFill.Color="Gray" Wysiwyg="true"/>
     </ColumnHeaderBand>
     <inherited Name="Data1" Top="291.03" Height="20.03" Border.Lines="All" Border.Color="Silver" EvenStyle="BackgroundColor1" AfterPrintEvent="Data1_AfterPrint" DataSource="DocumentFinancePaymentDocument">

@@ -9,6 +9,7 @@ using logicpos.shared.Classes.Orders;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {

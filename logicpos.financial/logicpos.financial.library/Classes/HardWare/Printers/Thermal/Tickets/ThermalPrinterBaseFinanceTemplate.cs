@@ -92,14 +92,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             //Extended Header
-            _thermalPrinterGeneric.WriteLine(string.Format("{0}", _customVars["Company_Address"]));
-            _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} - {2}", _customVars["Company_Postalcode"], _customVars["Company_City"], _customVars["Company_Country"]));
-            _thermalPrinterGeneric.WriteLine(Resx.global_phone, _customVars["Company_Telephone"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_mobile_phone, _customVars["Company_Mobilephone"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_fax, _customVars["Company_Fax"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_email, _customVars["Company_Email"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_website, _customVars["Company_Website"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_fiscal_number_acronym, _customVars["Company_Fiscalnumber"]);
+            _thermalPrinterGeneric.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
+            _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
+            _thermalPrinterGeneric.WriteLine(Resx.global_phone, _customVars["COMPANY_TELEPHONE"]);
+            _thermalPrinterGeneric.WriteLine(Resx.global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
+            _thermalPrinterGeneric.WriteLine(Resx.global_fax, _customVars["COMPANY_FAX"]);
+            _thermalPrinterGeneric.WriteLine(Resx.global_email, _customVars["COMPANY_EMAIL"]);
+            _thermalPrinterGeneric.WriteLine(Resx.global_website, _customVars["COMPANY_WEBSITE"]);
+            _thermalPrinterGeneric.WriteLine(Resx.global_fiscal_number_acronym, _customVars["COMPANY_FISCALNUMBER"]);
             _thermalPrinterGeneric.LineFeed();
 
             //Reset to Left
@@ -139,13 +139,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
         public void PrintFooterExtended()
         {
-            if (_customVars["Ticket_Footer_Line1"] != string.Empty || _customVars["Ticket_Footer_Line1"] != string.Empty)
+            if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty || _customVars["TICKET_FOOTER_LINE1"] != string.Empty)
             {
                 //Align Center
                 _thermalPrinterGeneric.SetAlignCenter();
 
-                if (_customVars["Ticket_Footer_Line1"] != string.Empty) _thermalPrinterGeneric.WriteLine(_customVars["Ticket_Footer_Line1"]);
-                if (_customVars["Ticket_Footer_Line2"] != string.Empty) _thermalPrinterGeneric.WriteLine(_customVars["Ticket_Footer_Line2"]);
+                if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty) _thermalPrinterGeneric.WriteLine(_customVars["TICKET_FOOTER_LINE1"]);
+                if (_customVars["TICKET_FOOTER_LINE2"] != string.Empty) _thermalPrinterGeneric.WriteLine(_customVars["TICKET_FOOTER_LINE2"]);
 
                 //Line Feed
                 _thermalPrinterGeneric.LineFeed();

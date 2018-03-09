@@ -21,10 +21,12 @@ namespace logicpos.financial.library.Classes.Finance
         public static FIN_DocumentFinanceMaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
         {
             Guid userDetailGuid = (GlobalFramework.LoggedUser != null) ? GlobalFramework.LoggedUser.Oid : Guid.Empty;
-            return (PersistFinanceDocument(pParameters, userDetailGuid, pIgnoreWarning));
+            Guid terminalGuid = (GlobalFramework.LoggedTerminal != null) ? GlobalFramework.LoggedTerminal.Oid : Guid.Empty;
+
+            return (PersistFinanceDocument(pParameters, userDetailGuid, terminalGuid, pIgnoreWarning));
         }
 
-        public static FIN_DocumentFinanceMaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, Guid pLoggedUser, bool pIgnoreWarning = false)
+        public static FIN_DocumentFinanceMaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, Guid pLoggedUser, Guid pTerminal, bool pIgnoreWarning = false)
         {
             FIN_DocumentFinanceMaster result = null;
 
@@ -62,6 +64,7 @@ namespace logicpos.financial.library.Classes.Finance
                     //Get Objects, To Prevent XPO Stress of Deleted Objects inside UOW
                     //WorkSessionPeriod workSessionPeriod = (WorkSessionPeriod)FrameworkUtils.GetXPGuidObjectFromSession(uowSession, typeof(WorkSessionPeriod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
                     SYS_UserDetail userDetail = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(uowSession, typeof(SYS_UserDetail), pLoggedUser);
+                    POS_ConfigurationPlaceTerminal terminal = (POS_ConfigurationPlaceTerminal)FrameworkUtils.GetXPGuidObject(uowSession, typeof(POS_ConfigurationPlaceTerminal), pTerminal);
 
                     //Prepare Modes
                     FIN_DocumentOrderMain documentOrderMain = null;
@@ -184,7 +187,7 @@ namespace logicpos.financial.library.Classes.Finance
                             ||
                             //Or If not in Portugal AND (! FinalConsumer (in Invoices for ex))
                             (
-                                SettingsApp.XpoOidConfigurationCountryPortugal != SettingsApp.  ConfigurationSystemCountry.Oid &&
+                                SettingsApp.XpoOidConfigurationCountryPortugal != SettingsApp.ConfigurationSystemCountry.Oid &&
                                 customer.Oid != FrameworkUtils.GetFinalConsumerEntity().Oid
                             )
                             //Required Oids for Equallity Check
@@ -240,6 +243,18 @@ namespace logicpos.financial.library.Classes.Finance
                     if (paymentCondition != null)
                     {
                         documentFinanceMaster.PaymentCondition = paymentCondition;
+                    }
+                    
+                    // UserDetail
+                    if (userDetail != null && userDetail.Oid != new Guid())
+                    {
+                        documentFinanceMaster.CreatedBy = userDetail;
+                    }
+                    
+                    // Terminal
+                    if (terminal != null && terminal.Oid != new Guid())
+                    {
+                        documentFinanceMaster.CreatedWhere = terminal;
                     }
 
                     //Assign Document Status for FT | FS | FR | DC | NC | CC | WorkingDocuments, else Ignore DocumentStatusStatus
@@ -351,7 +366,9 @@ namespace logicpos.financial.library.Classes.Finance
                                 DocumentMaster = documentFinanceMaster,
                                 Article = article,
                                 PriceFinal = item.Value.PriceFinal,
-                                PriceType = item.Value.PriceType
+                                PriceType = item.Value.PriceType,
+                                CreatedBy = (userDetail != null && userDetail.Oid != Guid.Empty) ? userDetail : null,
+                                CreatedWhere = (terminal != null && terminal.Oid != Guid.Empty) ? terminal : null
                             };
 
                             if (vatRate != null) documentFinanceDetail.VatRate = vatRate;

@@ -77,18 +77,20 @@ namespace logicpos.plugin.contracts
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Protected Methods, Proptected by SecretKey
 
+        bool IsValidSecretKey(string secretKey);
+
         string SignDataToSHA1Base64(string secretKey, string encryptData, bool debug = false);
 
         //Override ZipPack
         //public static bool ZipPack(string[] pFiles, string pFileDestination, string pPassword)
         bool BackupDatabase(string secretKey, string[] files, string fileDestination);
-        
+
         //Override ZipUnPack
         //public static bool ZipUnPack(string pFileName, string pDestinationPath, string pPassword, bool pFlattenFoldersOnExtract = false)
         bool RestoreBackup(string secretKey, string fileName, string destinationPath, bool flattenFoldersOnExtract = false);
 
-        List<string> GetReportFileName(string secretKey, string filePath);
+        List<string> GetReportFileName(string secretKey, string filePath, string templateBase);
 
-        bool IsValidSecretKey(string secretKey);
+        void ValidateEmbbededResources();
     }
 }

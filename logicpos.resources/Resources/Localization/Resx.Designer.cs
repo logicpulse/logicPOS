@@ -964,11 +964,11 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing required plugin type SoftwareVendor detected!
+        ///   Looks up a localized string similar to Required plugin type SoftwareVendor is missing or have a wrong secretkey!
         ///
         ///This plugin is required, some features are disable without it!
         ///
-        ///Please install a valid SoftwareVendor Plugin!.
+        ///Please install a valid SoftwareVendor Plugin that work with registered LogicposFinantialLibrary!.
         /// </summary>
         public static string dialog_message_error_plugin_softwarevendor_not_registered {
             get {
@@ -1171,6 +1171,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string dialog_message_operation_successfully {
             get {
                 return ResourceManager.GetString("dialog_message_operation_successfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current filter has no records, please reformulate criteria and try again!.
+        /// </summary>
+        public static string dialog_message_report_filter_no_records_with_criteria {
+            get {
+                return ResourceManager.GetString("dialog_message_report_filter_no_records_with_criteria", resourceCulture);
             }
         }
         
@@ -1809,6 +1818,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_audit {
             get {
                 return ResourceManager.GetString("global_audit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audit Type.
+        /// </summary>
+        public static string global_audit_type {
+            get {
+                return ResourceManager.GetString("global_audit_type", resourceCulture);
             }
         }
         
@@ -3442,6 +3460,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string global_filter {
+            get {
+                return ResourceManager.GetString("global_filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Finance document.
         /// </summary>
         public static string global_finance_document {
@@ -4279,6 +4306,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total Record[s].
+        /// </summary>
+        public static string global_record_count {
+            get {
+                return ResourceManager.GetString("global_record_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Created.
         /// </summary>
         public static string global_record_date_created {
@@ -4977,6 +5013,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_total_table_tickets {
             get {
                 return ResourceManager.GetString("global_total_table_tickets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to T.Tax.
+        /// </summary>
+        public static string global_total_tax_acronym {
+            get {
+                return ResourceManager.GetString("global_total_tax_acronym", resourceCulture);
             }
         }
         
@@ -6433,225 +6478,432 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Account balance.
         /// </summary>
-        public static string report_label_account_balance {
+        public static string report_account_balance {
             get {
-                return ResourceManager.GetString("report_label_account_balance", resourceCulture);
+                return ResourceManager.GetString("report_account_balance", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Balance sheet.
         /// </summary>
-        public static string report_label_balance_sheet {
+        public static string report_balance_sheet {
             get {
-                return ResourceManager.GetString("report_label_balance_sheet", resourceCulture);
+                return ResourceManager.GetString("report_balance_sheet", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Canceled articles per employee.
         /// </summary>
-        public static string report_label_canceled_articles_per_employee {
+        public static string report_canceled_articles_per_employee {
             get {
-                return ResourceManager.GetString("report_label_canceled_articles_per_employee", resourceCulture);
+                return ResourceManager.GetString("report_canceled_articles_per_employee", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Cash total.
         /// </summary>
-        public static string report_label_cash_total {
+        public static string report_cash_total {
             get {
-                return ResourceManager.GetString("report_label_cash_total", resourceCulture);
+                return ResourceManager.GetString("report_cash_total", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Close peak hour.
         /// </summary>
-        public static string report_label_close_peak_hour {
+        public static string report_close_peak_hour {
             get {
-                return ResourceManager.GetString("report_label_close_peak_hour", resourceCulture);
+                return ResourceManager.GetString("report_close_peak_hour", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Consumption per user.
+        ///   Looks up a localized string similar to Close WorkSessions.
         /// </summary>
-        public static string report_label_consumption_per_user {
+        public static string report_close_worksession {
             get {
-                return ResourceManager.GetString("report_label_consumption_per_user", resourceCulture);
+                return ResourceManager.GetString("report_close_worksession", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Courier deliver.
         /// </summary>
-        public static string report_label_courier_deliver {
+        public static string report_courier_deliver {
             get {
-                return ResourceManager.GetString("report_label_courier_deliver", resourceCulture);
+                return ResourceManager.GetString("report_courier_deliver", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Discounts per user.
         /// </summary>
-        public static string report_label_discounts_per_user {
+        public static string report_discounts_per_user {
             get {
-                return ResourceManager.GetString("report_label_discounts_per_user", resourceCulture);
+                return ResourceManager.GetString("report_discounts_per_user", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Employee movements.
         /// </summary>
-        public static string report_label_employee_movements {
+        public static string report_employee_movements {
             get {
-                return ResourceManager.GetString("report_label_employee_movements", resourceCulture);
+                return ResourceManager.GetString("report_employee_movements", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Inventory.
         /// </summary>
-        public static string report_label_inventory {
+        public static string report_inventory {
             get {
-                return ResourceManager.GetString("report_label_inventory", resourceCulture);
+                return ResourceManager.GetString("report_inventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audit Table.
+        /// </summary>
+        public static string report_list_audit_table {
+            get {
+                return ResourceManager.GetString("report_list_audit_table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List of closed WorkSessions.
+        /// </summary>
+        public static string report_list_close_worksession {
+            get {
+                return ResourceManager.GetString("report_list_close_worksession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consumption per user.
+        /// </summary>
+        public static string report_list_consumption_per_user {
+            get {
+                return ResourceManager.GetString("report_list_consumption_per_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customers.
+        /// </summary>
+        public static string report_list_customers {
+            get {
+                return ResourceManager.GetString("report_list_customers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Families, SubFamilies and Articles.
+        /// </summary>
+        public static string report_list_family_subfamily_articles {
+            get {
+                return ResourceManager.GetString("report_list_family_subfamily_articles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stock Movements.
+        /// </summary>
+        public static string report_list_stock_movements {
+            get {
+                return ResourceManager.GetString("report_list_stock_movements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WorkSession List.
+        /// </summary>
+        public static string report_list_worksession {
+            get {
+                return ResourceManager.GetString("report_list_worksession", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Occupation average.
         /// </summary>
-        public static string report_label_occupation_average {
+        public static string report_occupation_average {
             get {
-                return ResourceManager.GetString("report_label_occupation_average", resourceCulture);
+                return ResourceManager.GetString("report_occupation_average", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Record peak hour.
         /// </summary>
-        public static string report_label_record_peak_hour {
+        public static string report_record_peak_hour {
             get {
-                return ResourceManager.GetString("report_label_record_peak_hour", resourceCulture);
+                return ResourceManager.GetString("report_record_peak_hour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Detail/Group).
+        /// </summary>
+        public static string report_sales_detail_group_postfix {
+            get {
+                return ResourceManager.GetString("report_sales_detail_group_postfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales detail per family/subfamily.
+        /// </summary>
+        public static string report_sales_detail_per_family_and_subfamily {
+            get {
+                return ResourceManager.GetString("report_sales_detail_per_family_and_subfamily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales detail per zone/table.
+        /// </summary>
+        public static string report_sales_detail_per_place_table {
+            get {
+                return ResourceManager.GetString("report_sales_detail_per_place_table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Detail).
+        /// </summary>
+        public static string report_sales_detail_postfix {
+            get {
+                return ResourceManager.GetString("report_sales_detail_postfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales per country.
+        /// </summary>
+        public static string report_sales_per_country {
+            get {
+                return ResourceManager.GetString("report_sales_per_country", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales per currency.
+        /// </summary>
+        public static string report_sales_per_currency {
+            get {
+                return ResourceManager.GetString("report_sales_per_currency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales per customer.
+        /// </summary>
+        public static string report_sales_per_customer {
+            get {
+                return ResourceManager.GetString("report_sales_per_customer", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sales per date.
         /// </summary>
-        public static string report_label_sales_per_date {
+        public static string report_sales_per_date {
             get {
-                return ResourceManager.GetString("report_label_sales_per_date", resourceCulture);
+                return ResourceManager.GetString("report_sales_per_date", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sales per employee.
+        ///   Looks up a localized string similar to Seles per family.
         /// </summary>
-        public static string report_label_sales_per_employee {
+        public static string report_sales_per_family {
             get {
-                return ResourceManager.GetString("report_label_sales_per_employee", resourceCulture);
+                return ResourceManager.GetString("report_sales_per_family", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sales per family.
+        ///   Looks up a localized string similar to Sales per family/subfamily.
         /// </summary>
-        public static string report_label_sales_per_family {
+        public static string report_sales_per_family_and_subfamily {
             get {
-                return ResourceManager.GetString("report_label_sales_per_family", resourceCulture);
+                return ResourceManager.GetString("report_sales_per_family_and_subfamily", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sales per finance document.
         /// </summary>
-        public static string report_label_sales_per_finance_document {
+        public static string report_sales_per_finance_document {
             get {
-                return ResourceManager.GetString("report_label_sales_per_finance_document", resourceCulture);
+                return ResourceManager.GetString("report_sales_per_finance_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales per payment condition.
+        /// </summary>
+        public static string report_sales_per_payment_condition {
+            get {
+                return ResourceManager.GetString("report_sales_per_payment_condition", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sales per payment method.
         /// </summary>
-        public static string report_label_sales_per_payment_method {
+        public static string report_sales_per_payment_method {
             get {
-                return ResourceManager.GetString("report_label_sales_per_payment_method", resourceCulture);
+                return ResourceManager.GetString("report_sales_per_payment_method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales per zone.
+        /// </summary>
+        public static string report_sales_per_place {
+            get {
+                return ResourceManager.GetString("report_sales_per_place", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Sales per zone/table.
         /// </summary>
-        public static string report_label_sales_per_zone_table {
+        public static string report_sales_per_place_table {
             get {
-                return ResourceManager.GetString("report_label_sales_per_zone_table", resourceCulture);
+                return ResourceManager.GetString("report_sales_per_place_table", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales per terminal.
+        /// </summary>
+        public static string report_sales_per_terminal {
+            get {
+                return ResourceManager.GetString("report_sales_per_terminal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales per employee.
+        /// </summary>
+        public static string report_sales_per_user {
+            get {
+                return ResourceManager.GetString("report_sales_per_user", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Service hours.
         /// </summary>
-        public static string report_label_service_hours {
+        public static string report_service_hours {
             get {
-                return ResourceManager.GetString("report_label_service_hours", resourceCulture);
+                return ResourceManager.GetString("report_service_hours", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Top close employees.
         /// </summary>
-        public static string report_label_top_close_employees {
+        public static string report_top_close_employees {
             get {
-                return ResourceManager.GetString("report_label_top_close_employees", resourceCulture);
+                return ResourceManager.GetString("report_top_close_employees", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Top employee records.
         /// </summary>
-        public static string report_label_top_employee_records {
+        public static string report_top_employee_records {
             get {
-                return ResourceManager.GetString("report_label_top_employee_records", resourceCulture);
+                return ResourceManager.GetString("report_top_employee_records", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Top offers.
         /// </summary>
-        public static string report_label_top_offers {
+        public static string report_top_offers {
             get {
-                return ResourceManager.GetString("report_label_top_offers", resourceCulture);
+                return ResourceManager.GetString("report_top_offers", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Total per terminal.
         /// </summary>
-        public static string report_label_total_per_terminal {
+        public static string report_total_per_terminal {
             get {
-                return ResourceManager.GetString("report_label_total_per_terminal", resourceCulture);
+                return ResourceManager.GetString("report_total_per_terminal", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Withholding tax.
         /// </summary>
-        public static string report_label_withholding_tax {
+        public static string report_withholding_tax {
             get {
-                return ResourceManager.GetString("report_label_withholding_tax", resourceCulture);
+                return ResourceManager.GetString("report_withholding_tax", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Zone total.
         /// </summary>
-        public static string report_label_zone_total {
+        public static string report_zone_total {
             get {
-                return ResourceManager.GetString("report_label_zone_total", resourceCulture);
+                return ResourceManager.GetString("report_zone_total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Financial Reports (Summary).
+        /// </summary>
+        public static string reporttype_label_type1 {
+            get {
+                return ResourceManager.GetString("reporttype_label_type1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Financial Reports (Detailed).
+        /// </summary>
+        public static string reporttype_label_type2 {
+            get {
+                return ResourceManager.GetString("reporttype_label_type2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Financial Reports (Detailed/Grouped).
+        /// </summary>
+        public static string reporttype_label_type3 {
+            get {
+                return ResourceManager.GetString("reporttype_label_type3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auxiliary Tables.
+        /// </summary>
+        public static string reporttype_label_type4 {
+            get {
+                return ResourceManager.GetString("reporttype_label_type4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Others Reports.
+        /// </summary>
+        public static string reporttype_label_type5 {
+            get {
+                return ResourceManager.GetString("reporttype_label_type5", resourceCulture);
             }
         }
         
@@ -7247,6 +7499,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string window_title_dialog_readcard {
             get {
                 return ResourceManager.GetString("window_title_dialog_readcard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Filter.
+        /// </summary>
+        public static string window_title_dialog_report_filter {
+            get {
+                return ResourceManager.GetString("window_title_dialog_report_filter", resourceCulture);
             }
         }
         

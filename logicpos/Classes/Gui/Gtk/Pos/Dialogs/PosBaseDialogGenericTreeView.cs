@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {

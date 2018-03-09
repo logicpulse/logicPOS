@@ -13,6 +13,8 @@ using logicpos.shared.Classes.Finance;
 using System;
 using System.Data;
 using System.Drawing;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -255,7 +257,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Customer Name
                 CriteriaOperator criteriaOperatorCustomerName = null;
-                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer>(_sourceWindow, Resx.global_customer, "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, SettingsApp.RegexAlfa, false);
+                _entryBoxSelectCustomerName = new XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer>(_sourceWindow, Resx.global_customer, "Name", "Name", null, criteriaOperatorCustomerName, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumeric, false);
                 _entryBoxSelectCustomerName.ClosePopup += delegate
                 {
                     GetCustomerDetails("Oid", _entryBoxSelectCustomerName.Value.Oid.ToString());
@@ -365,8 +367,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //ActionArea Buttons
-                _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-                _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+                _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+                _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
                 _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", Resx.global_button_label_payment_dialog_clear_client, fileIconClearCustomer);
                 _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", Resx.global_button_label_payment_dialog_full_payment, fileIconFullPayment);
                 _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", Resx.global_button_label_payment_dialog_partial_payment, fileIconPartialPayment);

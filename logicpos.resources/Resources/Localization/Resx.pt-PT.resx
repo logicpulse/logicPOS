@@ -749,79 +749,79 @@ Deseja finalizar este ticket e prosseguir?</value>
   <data name="pos_button_label_table_reservation" xml:space="preserve">
     <value>Reservar</value>
   </data>
-  <data name="report_label_sales_per_family" xml:space="preserve">
-    <value>Vendas por familia</value>
+  <data name="report_sales_detail_per_family_and_subfamily" xml:space="preserve">
+    <value>Vendas por familia/subfamilia</value>
   </data>
-  <data name="report_label_total_per_terminal" xml:space="preserve">
+  <data name="report_total_per_terminal" xml:space="preserve">
     <value>Total por terminal</value>
   </data>
-  <data name="report_label_sales_per_date" xml:space="preserve">
+  <data name="report_sales_per_date" xml:space="preserve">
     <value>Vendas por dia</value>
   </data>
-  <data name="report_label_sales_per_employee" xml:space="preserve">
+  <data name="report_sales_per_user" xml:space="preserve">
     <value>Vendas por funcionário</value>
   </data>
-  <data name="report_label_sales_per_finance_document" xml:space="preserve">
+  <data name="report_sales_per_finance_document" xml:space="preserve">
     <value>Vendas por tipo de documento fiscal</value>
   </data>
-  <data name="report_label_sales_per_payment_method" xml:space="preserve">
-    <value>Vendas por tipos de pagamento</value>
+  <data name="report_sales_per_payment_method" xml:space="preserve">
+    <value>Vendas por métodos de pagamento</value>
   </data>
-  <data name="report_label_sales_per_zone_table" xml:space="preserve">
-    <value>Vendas por zona/mesa</value>
+  <data name="report_sales_detail_per_place_table" xml:space="preserve">
+    <value>Vendas detalhadas por zona/mesa</value>
   </data>
-  <data name="report_label_top_close_employees" xml:space="preserve">
+  <data name="report_top_close_employees" xml:space="preserve">
     <value>Top fecho empregados</value>
   </data>
-  <data name="report_label_occupation_average" xml:space="preserve">
+  <data name="report_occupation_average" xml:space="preserve">
     <value>Média de ocupação</value>
   </data>
-  <data name="report_label_zone_total" xml:space="preserve">
+  <data name="report_zone_total" xml:space="preserve">
     <value>Total por zona</value>
   </data>
-  <data name="report_label_record_peak_hour" xml:space="preserve">
+  <data name="report_record_peak_hour" xml:space="preserve">
     <value>Top horários pico de registo</value>
   </data>
-  <data name="report_label_close_peak_hour" xml:space="preserve">
+  <data name="report_close_peak_hour" xml:space="preserve">
     <value>Top hora de pico</value>
   </data>
-  <data name="report_label_top_employee_records" xml:space="preserve">
+  <data name="report_top_employee_records" xml:space="preserve">
     <value>Top registos empregados</value>
   </data>
-  <data name="report_label_top_offers" xml:space="preserve">
+  <data name="report_top_offers" xml:space="preserve">
     <value>Total de ofertas</value>
   </data>
-  <data name="report_label_employee_movements" xml:space="preserve">
+  <data name="report_employee_movements" xml:space="preserve">
     <value>Movimentos por empregado</value>
   </data>
-  <data name="report_label_account_balance" xml:space="preserve">
+  <data name="report_account_balance" xml:space="preserve">
     <value>Saldo da conta</value>
   </data>
-  <data name="report_label_service_hours" xml:space="preserve">
+  <data name="report_service_hours" xml:space="preserve">
     <value>Horas em serviço</value>
   </data>
-  <data name="report_label_withholding_tax" xml:space="preserve">
+  <data name="report_withholding_tax" xml:space="preserve">
     <value>Imposto retido na fonte</value>
   </data>
-  <data name="report_label_balance_sheet" xml:space="preserve">
+  <data name="report_balance_sheet" xml:space="preserve">
     <value>Balanço</value>
   </data>
-  <data name="report_label_courier_deliver" xml:space="preserve">
+  <data name="report_courier_deliver" xml:space="preserve">
     <value>Entregas por estafeta</value>
   </data>
-  <data name="report_label_canceled_articles_per_employee" xml:space="preserve">
+  <data name="report_canceled_articles_per_employee" xml:space="preserve">
     <value>Artigos cancelados por empregado</value>
   </data>
-  <data name="report_label_discounts_per_user" xml:space="preserve">
+  <data name="report_discounts_per_user" xml:space="preserve">
     <value>Descontos por utilizador</value>
   </data>
-  <data name="report_label_cash_total" xml:space="preserve">
+  <data name="report_cash_total" xml:space="preserve">
     <value>Total de caixa</value>
   </data>
-  <data name="report_label_inventory" xml:space="preserve">
+  <data name="report_inventory" xml:space="preserve">
     <value>Inventário</value>
   </data>
-  <data name="report_label_consumption_per_user" xml:space="preserve">
+  <data name="report_list_consumption_per_user" xml:space="preserve">
     <value>Consumos por empregado</value>
   </data>
   <data name="dialog_edit_configurationvatrate_tab1_label" xml:space="preserve">
@@ -2797,10 +2797,100 @@ Este erro ocorre devido a não ter um plugin do tipo SoftwareVendor registado/in
 Instale um SoftwareVendor Plugin, caso contrário os documentos não são Assinados digitalmente!</value>
   </data>
   <data name="dialog_message_error_plugin_softwarevendor_not_registered" xml:space="preserve">
-    <value>Detectado a falta de um plugin obrigatório do tipo SoftwareVendor!
+    <value>Detectado a falta de um plugin obrigatório do tipo SoftwareVendor ou a chave privada de ligação entre as librarias é inválida
 
-Este plugin é necessário, algumas funcionalidades ficaram desabilitadas!
+Este plugin é necessário, sem ele algumas funcionalidades ficaram desabilitadas!
 
 Instale um plugin SoftwareVendor válido!</value>
+  </data>
+  <data name="global_record_count" xml:space="preserve">
+    <value>Numero de Registos</value>
+  </data>
+  <data name="report_close_worksession" xml:space="preserve">
+    <value>Fecho de Dia/Caixa</value>
+  </data>
+  <data name="report_list_audit_table" xml:space="preserve">
+    <value>Tabelas de Auditoria</value>
+  </data>
+  <data name="report_list_customers" xml:space="preserve">
+    <value>Clientes</value>
+  </data>
+  <data name="report_list_family_subfamily_articles" xml:space="preserve">
+    <value>Familias, SubFamilias e Artigos</value>
+  </data>
+  <data name="report_list_stock_movements" xml:space="preserve">
+    <value>Movimentos de Mercadoria</value>
+  </data>
+  <data name="report_list_worksession" xml:space="preserve">
+    <value>Listagem de Sessões de Trabalho</value>
+  </data>
+  <data name="report_sales_per_terminal" xml:space="preserve">
+    <value>Vendas por terminal</value>
+  </data>
+  <data name="report_sales_per_country" xml:space="preserve">
+    <value>Vendas por país</value>
+  </data>
+  <data name="report_sales_per_currency" xml:space="preserve">
+    <value>Vendas por moeda</value>
+  </data>
+  <data name="report_sales_per_customer" xml:space="preserve">
+    <value>Vendas por cliente</value>
+  </data>
+  <data name="report_sales_per_payment_condition" xml:space="preserve">
+    <value>Vendas por condições de pagamento</value>
+  </data>
+  <data name="global_total_discount_acronym" xml:space="preserve">
+    <value>T.Dsc</value>
+  </data>
+  <data name="global_total_tax_acronym" xml:space="preserve">
+    <value>T.Imp.</value>
+  </data>
+  <data name="dialog_message_report_filter_no_records_with_criteria" xml:space="preserve">
+    <value>Os filtros atuais não encontram registos com essas condições, reformule os fitros e tente novamente com outra condições!</value>
+  </data>
+  <data name="global_filter" xml:space="preserve">
+    <value>Filtro</value>
+  </data>
+  <data name="report_sales_detail_group_postfix" xml:space="preserve">
+    <value>(Detalhado/Agrupado)</value>
+  </data>
+  <data name="report_sales_detail_postfix" xml:space="preserve">
+    <value>(Detalhado)</value>
+  </data>
+  <data name="report_sales_per_family" xml:space="preserve">
+    <value>Vendas por familia</value>
+  </data>
+  <data name="report_sales_per_family_and_subfamily" xml:space="preserve">
+    <value>Vendas por familia/subfamilia</value>
+  </data>
+  <data name="report_sales_per_place" xml:space="preserve">
+    <value>Vendas por zona</value>
+  </data>
+  <data name="report_sales_per_place_table" xml:space="preserve">
+    <value>Vendas por zona/mesa</value>
+  </data>
+  <data name="window_title_dialog_report_filter" xml:space="preserve">
+    <value>Filtrar Relatório</value>
+  </data>
+  <data name="reporttype_label_type1" xml:space="preserve">
+    <value>Relatórios Financeiros (Sumário)</value>
+  </data>
+  <data name="reporttype_label_type2" xml:space="preserve">
+    <value>Relatórios Financeiros (Detalhado)</value>
+  </data>
+  <data name="reporttype_label_type3" xml:space="preserve">
+    <value>Relatórios Financeiros (Detalhado/Agrupado)</value>
+  </data>
+  <data name="reporttype_label_type4" xml:space="preserve">
+    <value>Tabelas Auxiliares</value>
+  </data>
+  <data name="reporttype_label_type5" xml:space="preserve">
+    <value>Outros Relatórios</value>
+  </data>
+  <data name="report_list_close_worksession" xml:space="preserve">
+    <value>Listagem de Fecho de Sessões de Trabalho</value>
+  </data>
+  <data name="global_audit_type" xml:space="preserve">
+    <value>Tipo de Auditoria</value>
   </data>
 </root>

@@ -1,21 +1,15 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.financial;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    enum GenericTreeViewNavigatorMode
-    {
-        Default,     //Show Search and Show CRUD ToolBar
-        HideToolBar  //Show Search and Hide CRUD ToolBar //Old HiddenSearch
-    }
-
     class GenericTreeViewNavigator<T1, T2> : Box
     {
         //Log4Net

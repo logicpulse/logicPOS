@@ -3,25 +3,29 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports.BOs;
+using logicpos.financial.library.Classes.Reports.BOs.Articles;
+using logicpos.financial.library.Classes.Reports.BOs.Customers;
+using logicpos.financial.library.Classes.Reports.BOs.Documents;
+using logicpos.financial.library.Classes.Reports.BOs.System;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
+using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
 namespace logicpos.financial.library.Classes.Reports
 {
-    public enum CustomReportDisplayMode
-    {
-        Preview, Print, Design, ExportPDF, ExportPDFSilent
-    }
-
     public class CustomReport : Report
     {
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private const string FILENAME_TEMPLATE_BASE = "TemplateBase.frx";
+        private const string FILENAME_TEMPLATE_BASE_SIMPLE = "TemplateBaseSimple.frx";
         private bool _debug = false;
+        // Use this to force ReleaseMode and force use Embbeded Reports Resources
+        private bool _forceReleaseMode = false;
 
         //Constructor Parameters
         string _reportFileName = String.Empty;
@@ -39,19 +43,25 @@ namespace logicpos.financial.library.Classes.Reports
 
         //FastReports Required Parameterless Constructor Else NULL Exception Occurs
         public CustomReport() { }
-        public CustomReport(string pReportFileName, int pPrintCopies) : this(pReportFileName, null, pPrintCopies) { }
-        public CustomReport(string pReportFileName, List<int> pCopyNames) : this(pReportFileName, pCopyNames, 1) { }
-        public CustomReport(string pReportFileName, List<int> pCopyNames, int pPrintCopies)
+        public CustomReport(string pReportFileName, string pTemplateBase, int pPrintCopies) : this(pReportFileName, pTemplateBase, null, pPrintCopies) { }
+        public CustomReport(string pReportFileName, string pTemplateBase, List<int> pCopyNames) : this(pReportFileName, pTemplateBase, pCopyNames, 1) { }
+        public CustomReport(string pReportFileName, string pTemplateBase, List<int> pCopyNames, int pPrintCopies)
         {
             //Assign Parameters
             _reportFileName = pReportFileName;
 
             if (_debug) _log.Debug("CustomReports: begin:" + _reportFileName);
 
-            // Get Protected temporary Reports
-            List<string> reports = GlobalFramework.PluginSoftwareVendor.GetReportFileName(SettingsApp.SecretKey, _reportFileName);
-            // Override Reports FileName
-            _reportFileName = reports[0];
+            // If not in Debug mode use Stream reports from PluginSoftwareVendor else use local file location, usefulll to Develop Reports
+            // This Workis without deleting temporary files equired for prevuiew and design loop
+            List<string> tempReports = new List<string>();
+            if (!Debugger.IsAttached || _forceReleaseMode)
+            {
+                // Get Protected temporary Reports
+                tempReports = GlobalFramework.PluginSoftwareVendor.GetReportFileName(SettingsApp.SecretKey, _reportFileName, pTemplateBase);
+                // Override Default Reports FileName
+                _reportFileName = tempReports[0];
+            }
 
             //First Load File report
             if (File.Exists(_reportFileName))
@@ -61,12 +71,12 @@ namespace logicpos.financial.library.Classes.Reports
                 // Load Report File
                 this.Load(_reportFileName);
 
-                // Delete temporary reports after Load it
-                for (int i = 0; i < reports.Count; i++)
+                // Delete temporary reports after Load
+                for (int i = 0; i < tempReports.Count; i++)
                 {
-                    if (File.Exists(reports[i]))
+                    if (File.Exists(tempReports[i]))
                     {
-                        File.Delete(reports[i]);
+                        File.Delete(tempReports[i]);
                     }
                 }
             }
@@ -109,7 +119,7 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     _log.Debug("CustomReports: Load:" + referencedAssemblies[i]);
                 }
-                if (_debug) _log.Debug("CustomReports: Environment.CurrentDirectory:" + Environment.CurrentDirectory);
+                _log.Debug("CustomReports: Environment.CurrentDirectory:" + Environment.CurrentDirectory);
             }
 
             //ReportInfo Author
@@ -271,15 +281,20 @@ namespace logicpos.financial.library.Classes.Reports
             ;
 
             //Processed|Emitted with certified Software Nº {0}/AT - Copyright {1} - Licenced to a {2} - Used only if System Country is Portugal
-            if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal)
+            if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal &&
+                (
+                    _reportFileName.Contains("ReportDocumentFinance.frx") ||
+                    _reportFileName.Contains("ReportDocumentFinancePayment.frx") ||
+                    _reportFileName.Contains("ReportDocumentFinanceWayBill.frx")
+                )
+            )
             {
                 textObjectOverlaySoftwareCertification.Text = string.Format(
                     Resx.global_report_overlay_software_certification,
                     prefix,
                     SettingsApp.SaftSoftwareCertificateNumber,
                     SettingsApp.SaftProductID,
-                    GlobalFramework.LicenceCompany)
-                ;
+                    GlobalFramework.LicenceCompany);
 
                 //Add Hash Validation if Defined (In DocumentFinance Only)
                 if (_hash4Chars != String.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", _hash4Chars, textObjectOverlaySoftwareCertification.Text);
@@ -321,7 +336,7 @@ namespace logicpos.financial.library.Classes.Reports
                 string fileName = (documentMaster.DocumentType.WayBill) ? "ReportDocumentFinanceWayBill.frx" : "ReportDocumentFinance.frx";
                 string fileUserReportDocumentFinance = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", fileName));
 
-                CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, pCopyNames);
+                CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, pCopyNames);
                 customReport.DoublePass = (documentMaster.DocumentDetail.Count > SettingsApp.CustomReportReportDocumentFinanceMaxDetail);
                 customReport.Hash4Chars = pHash4Chars;
                 //Report Parameters
@@ -330,7 +345,7 @@ namespace logicpos.financial.library.Classes.Reports
                 //Get Result Objects from FRBOHelper
                 ResultFRBODocumentFinanceMaster fRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(pDocumentFinanceMasterOid);
                 //Get Generic Collections From FRBOHelper Results
-                FRBOGenericCollection<FRBODocumentFinanceMaster> gcDocumentFinanceMaster = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster;
+                FRBOGenericCollection<FRBODocumentFinanceMasterView> gcDocumentFinanceMaster = fRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster;
 
                 //Prepare and Enable DataSources
                 customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
@@ -384,12 +399,12 @@ namespace logicpos.financial.library.Classes.Reports
             try
             {
                 string fileUserReportDocumentFinancePayment = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", "ReportDocumentFinancePayment.frx"));
-                CustomReport customReport = new CustomReport(fileUserReportDocumentFinancePayment, pCopyNames);
+                CustomReport customReport = new CustomReport(fileUserReportDocumentFinancePayment, FILENAME_TEMPLATE_BASE, pCopyNames);
 
                 //Get Result Objects from FRBOHelper
                 ResultFRBODocumentFinancePayment fRBOHelperResponseProcessReportFinancePayment = FRBOHelper.GetFRBOFinancePayment(pDocumentFinancePaymentOid);
                 //Get Generic Collections From FRBOHelper Results
-                FRBOGenericCollection<FRBODocumentFinancePayment> gcDocumentFinancePayment = fRBOHelperResponseProcessReportFinancePayment.DocumentFinancePayment;
+                FRBOGenericCollection<FRBODocumentFinancePaymentView> gcDocumentFinancePayment = fRBOHelperResponseProcessReportFinancePayment.DocumentFinancePayment;
 
                 //Prepare and Enable DataSources
                 customReport.RegisterData(gcDocumentFinancePayment, "DocumentFinancePayment");
@@ -413,18 +428,17 @@ namespace logicpos.financial.library.Classes.Reports
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Static
 
+        // report_label_list_family_subfamily_articles : Relatório - Familias, SubFamilias e Artigos
         public static void ProcessReportArticle(CustomReportDisplayMode pViewMode)
         {
             try
             {
                 //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
 
-                //TemplateBase.frx
-                //ReportDocumentFinance.frx
-                string fileUserReportDocumentFinance = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", "ReportArticle.frx"));
-                CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, 2);
-
+                string reportFile = GetReportFilePath("ReportArticleList.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
+                customReport.SetParameterValue("Report Title", Resx.report_list_family_subfamily_articles);
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -453,6 +467,226 @@ namespace logicpos.financial.library.Classes.Reports
                 if (customReport.GetDataSource("ArticleFamily") != null) customReport.GetDataSource("ArticleFamily").Enabled = true;
                 if (customReport.GetDataSource("ArticleFamily.ArticleSubFamily") != null) customReport.GetDataSource("ArticleFamily.ArticleSubFamily").Enabled = true;
                 if (customReport.GetDataSource("ArticleFamily.ArticleSubFamily.Article") != null) customReport.GetDataSource("ArticleFamily.ArticleSubFamily.Article").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        // report_label_list_customers : Relatório - Clientes
+        public static void ProcessReportCustomer(CustomReportDisplayMode pViewMode)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportCustomerList.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", Resx.report_list_customers);
+                //customReport.SetParameterValue("Factura No", 280);
+
+                //Prepare and Declare FRBOGenericCollections
+                //"Oid,Designation,ButtonLabel"
+                FRBOGenericCollection<FRBOCustomerType> gcCustomerType = new FRBOGenericCollection<FRBOCustomerType>();
+                FRBOGenericCollection<FRBOCustomer> gcCustomer;
+
+                //Render Child Bussiness Objects
+                foreach (FRBOCustomerType customerType in gcCustomerType)
+                {
+                    //Get SubFamily
+                    gcCustomer = new FRBOGenericCollection<FRBOCustomer>(string.Format("CustomerType = '{0}'", customerType.Oid), "Ord");
+                    customerType.Customer = gcCustomer.List;
+                }
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcCustomerType, "CustomerType");
+                if (customReport.GetDataSource("CustomerType") != null) customReport.GetDataSource("CustomerType").Enabled = true;
+                if (customReport.GetDataSource("CustomerType.Customer") != null) customReport.GetDataSource("CustomerType.Customer").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        public static void ProcessReportArticleStockMovement(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportArticleStockMovementList.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", Resx.report_list_stock_movements);
+                //customReport.SetParameterValue("Factura No", 280);
+
+                //Prepare and Declare FRBOGenericCollections
+                FRBOGenericCollection<FRBOArticleStockMovementView> gcArticleStockMovement = new FRBOGenericCollection<FRBOArticleStockMovementView>(filter);
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcArticleStockMovement, "ArticleStockMovement");
+                if (customReport.GetDataSource("ArticleStockMovement") != null) customReport.GetDataSource("ArticleStockMovement").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        public static void ProcessReportSystemAudit(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportSystemAuditList.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", Resx.report_list_audit_table);
+                //customReport.SetParameterValue("Factura No", 280);
+
+                //Prepare and Declare FRBOGenericCollections
+                FRBOGenericCollection<FRBOSystemAuditView> gcSystemAudit = new FRBOGenericCollection<FRBOSystemAuditView>(filter);
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcSystemAudit, "SystemAudit");
+                if (customReport.GetDataSource("SystemAudit") != null) customReport.GetDataSource("SystemAudit").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        public static void ProcessReportDocumentMasterList(CustomReportDisplayMode pViewMode, string resourceString, string groupCondition, string groupTitle)
+        {
+            ProcessReportDocumentMasterList(pViewMode, resourceString, groupCondition, groupTitle, null, null);
+        }
+
+        public static void ProcessReportDocumentMasterList(CustomReportDisplayMode pViewMode, string reportTitle, string groupCondition, string groupTitle, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportDocumentFinanceMasterList.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", reportTitle);
+                if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
+
+                // Get Objects
+                GroupHeaderBand groupHeaderBand = (GroupHeaderBand)customReport.FindObject("GroupHeader1");
+                TextObject groupHeaderBandText = (TextObject)customReport.FindObject("TextGroupHeader1");
+                if (groupHeaderBand != null && groupHeaderBandText != null)
+                {
+                    groupHeaderBand.Condition = groupCondition;
+                    groupHeaderBandText.Text = groupTitle;
+                }
+                else
+                {
+                    _log.Error("Error cant find Report Objects");
+                }
+
+                //Prepare and Declare FRBOGenericCollections
+                FRBOGenericCollection<FRBODocumentFinanceMaster> gcDocumentFinanceMaster = new FRBOGenericCollection<FRBODocumentFinanceMaster>(filter);
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
+                if (customReport.GetDataSource("DocumentFinanceMaster") != null) customReport.GetDataSource("DocumentFinanceMaster").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        // Used in Detail
+        public static void ProcessReportDocumentDetail(CustomReportDisplayMode pViewMode, string resourceString, string groupCondition, string groupTitle, string filter, string filterHumanReadable)
+        {
+            ProcessReportDocumentDetail(pViewMode, resourceString, null, null, groupCondition, groupTitle, filter, filterHumanReadable, false);
+        }
+
+        // Used in Detail/Group
+        public static void ProcessReportDocumentDetail(CustomReportDisplayMode pViewMode, string resourceString, string groupField, string groupSelectFields, string groupCondition, string groupTitle, string filter, string filterHumanReadable, bool grouped)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = (grouped)
+                    ? GetReportFilePath("ReportDocumentFinanceDetailGroupList.frx")
+                    : GetReportFilePath("ReportDocumentFinanceDetailList.frx")
+                ;
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+
+                // Add PostFix to Report Title 
+                Tuple<string, string> tuppleResourceString = GetResourceString(resourceString);
+                string reportTitleString = tuppleResourceString.Item1;
+                string reportTitleStringPostfix = tuppleResourceString.Item2;
+
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", String.Format("{0}{1}", reportTitleString, reportTitleStringPostfix));
+                if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
+
+                // Get Objects
+                GroupHeaderBand groupHeaderBand = (GroupHeaderBand)customReport.FindObject("GroupHeader1");
+                TextObject groupHeaderBandText = (TextObject)customReport.FindObject("TextGroupHeader1");
+                if (groupHeaderBand != null && groupHeaderBandText != null)
+                {
+                    groupHeaderBand.Condition = groupCondition;
+                    groupHeaderBandText.Text = groupTitle;
+                }
+                else
+                {
+                    _log.Error("Error cant find Report Objects");
+                }
+
+                //Prepare and Declare FRBOGenericCollections for non grouped and gouped reports
+                if (!grouped)
+                {
+                    // Using view_documentfinance
+                    FRBOGenericCollection<FRBODocumentFinanceMasterDetailView> gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailView>(filter);
+                    //Prepare and Enable DataSources
+                    customReport.RegisterData(gcDocumentFinanceMasterDetail, "DocumentFinanceDetail");
+                }
+                else
+                {
+                    // Add Common GroupFields (Required for SQLServer Grouping)
+                    string queryGroupFields = string.Format("fdArticle, fdCode, fdDesignation,fdUnitMeasure, {0}", groupField);
+                    // Add Common Select Fields (Required for SQLServer Grouping) : Must use same FieldNames has Detail
+                    string queryFields = string.Format("{0}, fdArticle AS ArticleOid, fdCode AS ArticleCode, fdDesignation AS ArticleDesignation, AVG((fdPrice - ((fdPrice * fdDiscount) / 100))) AS ArticlePriceWithDiscount, SUM(fdQuantity) AS ArticleQuantity, fdUnitMeasure AS ArticleUnitMeasure, SUM(fdTotalDiscount) AS ArticleTotalDiscount, SUM(fdTotalNet) AS ArticleTotalNet, SUM(fdTotalTax) AS ArticleTotalTax, SUM(fdTotalFinal) AS ArticleTotalFinal,COUNT(*) AS GroupCount", groupSelectFields);
+
+                    // Using view_documentfinancesellgroup
+                    FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView> gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView>(filter, queryGroupFields, string.Empty, queryFields);
+                    //Prepare and Enable DataSources
+                    customReport.RegisterData(gcDocumentFinanceMasterDetail, "DocumentFinanceDetail");
+                }
+
+                if (customReport.GetDataSource("DocumentFinanceDetail") != null) customReport.GetDataSource("DocumentFinanceDetail").Enabled = true;
 
                 //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
                 customReport.Process(pViewMode);
@@ -570,6 +804,73 @@ namespace logicpos.financial.library.Classes.Reports
             }
 
             return result;
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+        private static string GetReportFilePath(string fileName)
+        {
+            string result = string.Empty;
+
+            result = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", fileName));
+            if (!File.Exists(result))
+            {
+                // Force Exception, Report must Exist else its hard to find errors, dont catch exception
+                throw new Exception(string.Format("Error required File Not Found: [{0}]", fileName));
+            }
+
+            return result;
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // Shared method to get Common ResourceString for all 3 types of Financial Reports
+
+        public static Tuple<string, string> GetResourceString(string reportResourceString)
+        {
+            string resourceString = string.Empty;
+            string resourceStringPostfix = string.Empty;
+
+            try
+            {
+                // Reuse Same resource String for 3 Sales Reports Default(Resx) report-sales-*, report-sales-detail-*, report-sales-detail-group-
+                // Detail/Group
+                if (reportResourceString.StartsWith("report_sales_detail_group_"))
+                {//be first
+                 // Remove extra chars from token to re use default resx
+                    resourceString = reportResourceString.Replace("report_sales_detail_group_", "report_sales_");
+                    resourceStringPostfix = string.Format(" {0}", Resx.report_sales_detail_group_postfix);
+                }
+                // Detail
+                else if (reportResourceString.StartsWith("report_sales_detail_"))
+                {
+                    // Remove extra chars from token to re use default resx
+                    resourceString = reportResourceString.Replace("report_sales_detail_", "report_sales_");
+                    resourceStringPostfix = string.Format(" {0}", Resx.report_sales_detail_postfix);
+                }
+                // Default
+                else
+                {
+                    resourceString = reportResourceString;
+                    resourceStringPostfix = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            // Get Resource Content for all modes
+            if ((!string.IsNullOrEmpty(Resx.ResourceManager.GetString(resourceString))))
+            {
+                resourceString = Resx.ResourceManager.GetString(resourceString);
+            }
+            else
+            {
+                resourceString = string.Format("Error: Can't find resourceString:[{0}]", resourceString);
+                _log.Error(resourceString);
+            }
+
+            return new Tuple<string, string>(resourceString, resourceStringPostfix);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

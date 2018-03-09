@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using DevExpress.Xpo.DB;
 
-namespace logicpos.financial.library.Classes.Reports.BOs
+namespace logicpos.financial.library.Classes.Reports.BOs.Articles
 {
+    [FRBO(Entity = "fin_articlefamily")]
     public class FRBOArticleFamily : FRBOBaseObject
     {
-        public int Code { get; set; }
+        public UInt32 Ord{ get; set; }
+        public UInt32 Code { get; set; }
         public string Designation { get; set; }
+        public string ButtonLabel{ get; set; }
+        public bool ButtonLabelHide{ get; set; }
+        public string ButtonImage{ get; set; }
+        public string ButtonIcon{ get; set; }
+        // Related Objects
         public List<FRBOArticleSubFamily> ArticleSubFamily { get; set; }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

@@ -52,6 +52,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ResourceString", ref fResourceString, value); }
         }
 
+        string fToken;
+        [Indexed(Unique = true)]
+        public string Token
+        {
+            get { return fToken; }
+            set { SetPropertyValue<string>("Token", ref fToken, value); }
+        }
+
         string fFileName;
         public string FileName
         {

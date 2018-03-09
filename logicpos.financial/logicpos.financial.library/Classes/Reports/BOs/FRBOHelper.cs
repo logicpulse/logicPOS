@@ -1,7 +1,9 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
+using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.resources.Resources.Localization;
 using System;
+using System.Reflection;
 
 namespace logicpos.financial.library.Classes.Reports.BOs
 {
@@ -10,8 +12,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
     public class ResultFRBODocumentFinanceMaster
     {
-        private FRBOGenericCollection<FRBODocumentFinanceMaster> _documentFinanceMaster;
-        public FRBOGenericCollection<FRBODocumentFinanceMaster> DocumentFinanceMaster
+        private FRBOGenericCollection<FRBODocumentFinanceMasterView> _documentFinanceMaster;
+        public FRBOGenericCollection<FRBODocumentFinanceMasterView> DocumentFinanceMaster
         {
             get { return _documentFinanceMaster; }
             set { _documentFinanceMaster = value; }
@@ -21,7 +23,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         {
         }
 
-        public ResultFRBODocumentFinanceMaster(FRBOGenericCollection<FRBODocumentFinanceMaster> pFRBODocumentFinanceMaster)
+        public ResultFRBODocumentFinanceMaster(FRBOGenericCollection<FRBODocumentFinanceMasterView> pFRBODocumentFinanceMaster)
         {
             _documentFinanceMaster = pFRBODocumentFinanceMaster;
         }
@@ -32,8 +34,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
     public class ResultFRBODocumentFinancePayment
     {
-        private FRBOGenericCollection<FRBODocumentFinancePayment> _documentFinancePayment;
-        public FRBOGenericCollection<FRBODocumentFinancePayment> DocumentFinancePayment
+        private FRBOGenericCollection<FRBODocumentFinancePaymentView> _documentFinancePayment;
+        public FRBOGenericCollection<FRBODocumentFinancePaymentView> DocumentFinancePayment
         {
             get { return _documentFinancePayment; }
             set { _documentFinancePayment = value; }
@@ -43,7 +45,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         {
         }
 
-        public ResultFRBODocumentFinancePayment(FRBOGenericCollection<FRBODocumentFinancePayment> pFRBODocumentFinancePayment)
+        public ResultFRBODocumentFinancePayment(FRBOGenericCollection<FRBODocumentFinancePaymentView> pFRBODocumentFinancePayment)
         {
             _documentFinancePayment = pFRBODocumentFinancePayment;
         }
@@ -54,7 +56,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
     public class FRBOHelper
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static log4net.ILog _log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Generate Fast Report Business Objects for ProcessReportFinanceDocument
@@ -73,10 +75,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
                 string sqlFilter = string.Format("fmOid = '{0}'", documentFinanceMaster.Oid.ToString());
 
-                //Prepare and Declare FRBOGenericCollections
-                FRBOGenericCollection<FRBODocumentFinanceMaster> gcDocumentFinanceMaster = new FRBOGenericCollection<FRBODocumentFinanceMaster>(sqlFilter);
+                //Prepare and Declare FRBOGenericCollections : Limit 1, One Record (Document Master), else we get All Details to (View)
+                FRBOGenericCollection<FRBODocumentFinanceMasterView> gcDocumentFinanceMaster = new FRBOGenericCollection<FRBODocumentFinanceMasterView>(sqlFilter, 1);
                 FRBOGenericCollection<FRBODocumentFinanceDetail> gcDocumentFinanceDetail;
-                FRBOGenericCollection<FRBODocumentFinanceMasterTotal> gcDocumentFinanceMasterTotal;
+                FRBOGenericCollection<FRBODocumentFinanceMasterTotalView> gcDocumentFinanceMasterTotal;
 
                 //Override Default Values
 
@@ -127,14 +129,14 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 }
 
                 //Render Child Bussiness Objects
-                foreach (FRBODocumentFinanceMaster documentMaster in gcDocumentFinanceMaster)
+                foreach (FRBODocumentFinanceMasterView documentMaster in gcDocumentFinanceMaster)
                 {
                     //Get FinanceDetail 
                     gcDocumentFinanceDetail = new FRBOGenericCollection<FRBODocumentFinanceDetail>(string.Format("DocumentMaster = '{0}'", documentMaster.Oid), "Ord");
                     documentMaster.DocumentFinanceDetail = gcDocumentFinanceDetail.List;
 
                     //Get FinanceMasterTotals
-                    gcDocumentFinanceMasterTotal = new FRBOGenericCollection<FRBODocumentFinanceMasterTotal>(string.Format("fmtDocumentMaster = '{0}'", documentMaster.Oid), "Value");
+                    gcDocumentFinanceMasterTotal = new FRBOGenericCollection<FRBODocumentFinanceMasterTotalView>(string.Format("fmtDocumentMaster = '{0}'", documentMaster.Oid), "Value");
                     documentMaster.DocumentFinanceMasterTotal = gcDocumentFinanceMasterTotal.List;
                 }
 
@@ -164,8 +166,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 string sqlFilter = string.Format("fpaOid = '{0}'", pDocumentFinancePaymentOid.ToString());
 
                 //Prepare and Declare FRBOGenericCollections
-                FRBOGenericCollection<FRBODocumentFinancePayment> gcDocumentFinancePayment = new FRBOGenericCollection<FRBODocumentFinancePayment>(sqlFilter);
-                FRBOGenericCollection<FRBODocumentFinancePaymentDocument> gcDocumentFinancePaymentDocument;
+                FRBOGenericCollection<FRBODocumentFinancePaymentView> gcDocumentFinancePayment = new FRBOGenericCollection<FRBODocumentFinancePaymentView>(sqlFilter);
+                FRBOGenericCollection<FRBODocumentFinancePaymentDocumentView> gcDocumentFinancePaymentDocument;
 
                 //If FinalConsumer - Clean Output Data
                 if (gcDocumentFinancePayment.List[0].EntityFiscalNumber == SettingsApp.FinanceFinalConsumerFiscalNumber)
@@ -179,10 +181,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 }
 
                 //Render Child Bussiness Objects
-                foreach (FRBODocumentFinancePayment documentFinanceMasterPayment in gcDocumentFinancePayment)
+                foreach (FRBODocumentFinancePaymentView documentFinanceMasterPayment in gcDocumentFinancePayment)
                 {
                     //Get FinanceDetail 
-                    gcDocumentFinancePaymentDocument = new FRBOGenericCollection<FRBODocumentFinancePaymentDocument>(string.Format("fpaOid = '{0}'", documentFinanceMasterPayment.Oid), "ftpCode, fmaDocumentNumber");
+                    gcDocumentFinancePaymentDocument = new FRBOGenericCollection<FRBODocumentFinancePaymentDocumentView>(string.Format("fpaOid = '{0}'", documentFinanceMasterPayment.Oid), "ftpCode, fmaDocumentNumber");
                     documentFinanceMasterPayment.DocumentFinancePaymentDocument = gcDocumentFinancePaymentDocument.List;
                 }
 

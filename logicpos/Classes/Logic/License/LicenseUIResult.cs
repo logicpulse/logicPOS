@@ -1,10 +1,7 @@
-﻿namespace logicpos.Classes.Logic.License
-{
-    public enum LicenseUIResponse
-    {
-        None, Register, Continue, Close
-    }
+﻿using logicpos.Classes.Enums.Dialogs;
 
+namespace logicpos.Classes.Logic.License
+{
     public class LicenseUIResult
     {
         private LicenseUIResponse _response;

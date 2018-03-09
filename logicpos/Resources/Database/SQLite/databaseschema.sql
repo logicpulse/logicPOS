@@ -510,10 +510,11 @@ CREATE INDEX [iDeletedBy_POS_WorkSessionPeriodTotal] on [POS_WorkSessionPeriodTo
 CREATE INDEX [iDeletedWhere_POS_WorkSessionPeriodTotal] on [POS_WorkSessionPeriodTotal]([DeletedWhere]);
 CREATE INDEX [iPaymentMethod_POS_WorkSessionPeriodTotal] on [POS_WorkSessionPeriodTotal]([PaymentMethod]);
 CREATE INDEX [iPeriod_POS_WorkSessionPeriodTotal] on [POS_WorkSessionPeriodTotal]([Period]);
-CREATE TABLE [RPT_Report] ([Oid] char(36) NOT NULL, [Disabled] bit, [Notes] text NULL, [CreatedAt] datetime NULL, [CreatedBy] char(36) NULL, [CreatedWhere] char(36) NULL, [UpdatedAt] datetime NULL, [UpdatedBy] char(36) NULL, [UpdatedWhere] char(36) NULL, [DeletedAt] datetime NULL, [DeletedBy] char(36) NULL, [DeletedWhere] char(36) NULL, [Ord] numeric(10,0) NULL, [Code] numeric(10,0) NULL, [Designation] nvarchar(100) NULL, [ResourceString] nvarchar(100) NULL, [FileName] nvarchar(100) NULL, [ParameterFields] nvarchar(100) NULL, [AuthorType] int NULL, [ReportType] char(36) NULL, [OptimisticLockField] int NULL, primary key ([Oid]));
+CREATE TABLE [RPT_Report] ([Oid] char(36) NOT NULL, [Disabled] bit, [Notes] text NULL, [CreatedAt] datetime NULL, [CreatedBy] char(36) NULL, [CreatedWhere] char(36) NULL, [UpdatedAt] datetime NULL, [UpdatedBy] char(36) NULL, [UpdatedWhere] char(36) NULL, [DeletedAt] datetime NULL, [DeletedBy] char(36) NULL, [DeletedWhere] char(36) NULL, [Ord] numeric(10,0) NULL, [Code] numeric(10,0) NULL, [Designation] nvarchar(100) NULL, [ResourceString] nvarchar(100) NULL, [Token] nvarchar(100) NULL, [FileName] nvarchar(100) NULL, [ParameterFields] nvarchar(100) NULL, [AuthorType] int NULL, [ReportType] char(36) NULL, [OptimisticLockField] int NULL, primary key ([Oid]));
 CREATE UNIQUE INDEX [iCode_RPT_Report] on [RPT_Report]([Code]);
 CREATE UNIQUE INDEX [iDesignation_RPT_Report] on [RPT_Report]([Designation]);
 CREATE UNIQUE INDEX [iResourceString_RPT_Report] on [RPT_Report]([ResourceString]);
+CREATE UNIQUE INDEX [iToken_RPT_Report] on [RPT_Report]([Token]);
 CREATE INDEX [iCreatedBy_RPT_Report] on [RPT_Report]([CreatedBy]);
 CREATE INDEX [iCreatedWhere_RPT_Report] on [RPT_Report]([CreatedWhere]);
 CREATE INDEX [iUpdatedBy_RPT_Report] on [RPT_Report]([UpdatedBy]);

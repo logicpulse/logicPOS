@@ -7,6 +7,8 @@ using logicpos.shared;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {

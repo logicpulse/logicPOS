@@ -1,11 +1,11 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.App;
-using logicpos.financial;
 using logicpos.Classes.DataLayer;
+using logicpos.Classes.Enums;
+using logicpos.Classes.Enums.Finance;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +21,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
     public class BackOfficeMainWindow : BackOfficeBaseWindow
     {
         //Config
-        String _privilegesBackOfficeMenuOperation = string.Format("{0}_{1}", SettingsApp.PrivilegesBackOfficeCRUDOperation, "MENU");
+        string _privilegesBackOfficeMenuOperation = string.Format("{0}_{1}", SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, "MENU");
 
         public BackOfficeMainWindow()
         {
@@ -53,20 +53,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Accordion.UpdateMenuPrivileges();
 
                 //Hide/Show Current Active Content based on user privileges
-                String currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, Accordion.CurrentChildButtonContent.Name.ToUpper());
+                string currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, Accordion.CurrentChildButtonContent.Name.ToUpper());
                 _nodeContent.Sensitive = FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken);
             }
         }
 
         private void PosMainWindow_WindowStateEvent(object o, WindowStateEventArgs args)
         {
-            //FrameworkUtils.HideWaitingCursor();
-            //ApplyGUIPermissions();
         }
 
         private void InitUI()
         {
-            Accordion = new Accordion(GetAccordionDefinition()) { WidthRequest = _widthAccordion };
+            Accordion = new Accordion(GetAccordionDefinition(), SettingsApp.PrivilegesBackOfficeMenuOperationFormat) { WidthRequest = _widthAccordion };
             _fixAccordion.Add(Accordion);
             Accordion.Clicked += accordion_Clicked;
         }
@@ -85,7 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Widget startContent = Utils.GetGenericTreeViewXPO<TreeViewArticle>(this);
 
                 //Hide/Show Current Active Content based on user privileges
-                String currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, "Article".ToUpper());
+                string currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, "Article".ToUpper());
                 startContent.Sensitive = FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken);
 
                 _labelActiveContent.Text = Resx.global_articles;
@@ -105,7 +103,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _accordionChildArticles.Add("ArticleType", new AccordionNode(Resx.global_article_types) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleType>(this) });
                 _accordionChildArticles.Add("ArticleClass", new AccordionNode(Resx.global_article_class) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleClass>(this) });
                 _accordionChildArticles.Add("ConfigurationPriceType", new AccordionNode(Resx.global_price_type) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPriceType>(this) });
-                _accordionChildArticles.Add("ArticleStock", new AccordionNode(Resx.global_stock_movements) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this) });
+                // Disable to Speed uo Opening BO, noew we have Stock Reports
+                //_accordionChildArticles.Add("ArticleStock", new AccordionNode(Resx.global_stock_movements) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this) });
 
                 //Customers
                 Dictionary<string, AccordionNode> _accordionChildCustomers = new Dictionary<string, AccordionNode>();
@@ -164,9 +163,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Export
                 if (GlobalFramework.PluginSoftwareVendor != null && SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal)
                 {
-                    _accordionChildExport.Add("System_ExportSaftPT_SaftPt", new AccordionNode(Resx.global_export_saftpt_whole_year) { Clicked = delegate { FrameworkCalls.ExportSaftPt(this, FrameworkCalls.ExportSaftPtMode.WholeYear); } });
-                    _accordionChildExport.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(Resx.global_export_saftpt_last_month) { Clicked = delegate { FrameworkCalls.ExportSaftPt(this, FrameworkCalls.ExportSaftPtMode.LastMonth); } });
-                    _accordionChildExport.Add("System_ExportSaftPT_Custom", new AccordionNode(Resx.global_export_saftpt_custom) { Clicked = delegate { FrameworkCalls.ExportSaftPt(this, FrameworkCalls.ExportSaftPtMode.Custom); } });
+                    _accordionChildExport.Add("System_ExportSaftPT_SaftPt", new AccordionNode(Resx.global_export_saftpt_whole_year) { Clicked = delegate { FrameworkCalls.ExportSaftPt(this, ExportSaftPtMode.WholeYear); } });
+                    _accordionChildExport.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(Resx.global_export_saftpt_last_month) { Clicked = delegate { FrameworkCalls.ExportSaftPt(this, ExportSaftPtMode.LastMonth); } });
+                    _accordionChildExport.Add("System_ExportSaftPT_Custom", new AccordionNode(Resx.global_export_saftpt_custom) { Clicked = delegate { FrameworkCalls.ExportSaftPt(this, ExportSaftPtMode.Custom); } });
                 }
 
                 //System
@@ -199,7 +198,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("GetAccordionDefinition: " + ex, ex);
+                _log.Error(ex.Message, ex);
             }
 
             return accordionDefinition;

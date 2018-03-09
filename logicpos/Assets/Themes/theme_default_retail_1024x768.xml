@@ -217,8 +217,7 @@
 							<Name>touchButtonPosToolbarReports_DarkGrey</Name>
 							<Text>Resx[global_reports]</Text>
 							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_reports.png</ImageFileName>
-							<!-- Hidden--> 	
-							<Visible>false</Visible>
+							<Visible>true</Visible>
 						</ButtonReports>
 
 						<ButtonShowSystemDialog>

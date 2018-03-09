@@ -405,7 +405,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                     var report1 = new RPT_Report(_session) { Ord = 10, Code = 10, Designation = "Relatório de Vendas por Familia", ReportType = reportType1, ResourceString = "report_label_sales_per_family" }; report1.Save();
                     var report2 = new RPT_Report(_session) { Ord = 20, Code = 20, Designation = "Relatório de Total por Terminal", ReportType = reportType1, ResourceString = "report_label_total_per_terminal" }; report2.Save();
                     var report3 = new RPT_Report(_session) { Ord = 30, Code = 30, Designation = "Relatório de Vendas por Dia", ReportType = reportType1, ResourceString = "report_label_sales_per_date" }; report3.Save();
-                    var report4 = new RPT_Report(_session) { Ord = 40, Code = 40, Designation = "Relatório de Vendas por Funcionário", ReportType = reportType1, ResourceString = "report_label_sales_per_employee" }; report4.Save();
+                    var report4 = new RPT_Report(_session) { Ord = 40, Code = 40, Designation = "Relatório de Vendas por Funcionário", ReportType = reportType1, ResourceString = "report_label_sales_per_user" }; report4.Save();
                     var report5 = new RPT_Report(_session) { Ord = 50, Code = 50, Designation = "Relatório de Vendas por Tipo de Documento Fiscal", ReportType = reportType1, ResourceString = "report_label_sales_per_finance_document" }; report5.Save();
 
                     var report6 = new RPT_Report(_session) { Ord = 60, Code = 60, Designation = "Relatório de Vendas por Tipos de Pagamento", ReportType = reportType2, ResourceString = "report_label_sales_per_payment_method" }; report6.Save();

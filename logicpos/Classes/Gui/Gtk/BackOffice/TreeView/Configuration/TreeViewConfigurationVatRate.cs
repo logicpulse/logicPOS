@@ -8,6 +8,7 @@ using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
 using System.Collections.Generic;
+using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -31,7 +32,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation });
             columnProperties.Add(new GenericTreeViewColumnProperty("Value") { Title = Resx.global_vat_rate });
             //columnProperties.Add(new GenericTreeViewColumnProperty("ReasonCode") { Title = Resx.global_vat_rate_reasoncode });

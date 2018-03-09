@@ -8,6 +8,7 @@ using logicpos.App;
 using logicpos.resources.Resources.Localization;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.shared;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -48,8 +49,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitTablePadUsers();
 
             //ActionArea Buttons
-            //_buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok) { Sensitive = false };
-            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+            //_buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok) { Sensitive = false };
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();

@@ -1,4 +1,5 @@
 ﻿using logicpos.App;
+using logicpos.Classes.Enums.Xml;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,6 @@ namespace logicpos
 {
     public class XmlToObjectParser
     {
-        private enum ReplaceType
-        {
-            Config, Resource
-        }
-
         public static dynamic ParseFromFile(string filename)
         {
             return ParseFromXml(File.ReadAllText(filename));

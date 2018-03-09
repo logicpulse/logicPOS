@@ -78,6 +78,7 @@
     <Compile Include="Classes\Orders\OrderTicket.cs" />
     <Compile Include="Classes\Others\ValidateMaxLenghtMaxWordsResult.cs" />
     <Compile Include="Classes\Utils\Utils.cs" />
+    <Compile Include="Enums\CustomReportDisplayMode.cs" />
     <Compile Include="Enums\DocumentType.cs" />
     <Compile Include="Enums\PersistFinanceDocumentSourceMode.cs" />
     <Compile Include="Enums\PricePropertiesSourceMode.cs" />

@@ -3,12 +3,13 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Gui.Gtk.BackOffice;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.resources.Resources.Localization;
 using MySql.Data.MySqlClient;
 using System;
@@ -18,11 +19,6 @@ using System.Threading;
 
 namespace logicpos.Classes.DataLayer
 {
-    enum DataBaseRestoreFrom
-    {
-        SystemBackup, ChooseFromFilePickerDialog
-    }
-
     class DataBaseBackupFileInfo
     {
         private string _fileName = string.Empty;

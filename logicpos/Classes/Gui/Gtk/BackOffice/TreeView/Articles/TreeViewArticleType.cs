@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
+using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -30,14 +31,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation });
             columnProperties.Add(new GenericTreeViewColumnProperty("HavePrice") { Title = Resx.global_article_haveprice });
             //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = null;
+            CriteriaOperator criteria = pXpoCriteria;
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             //Call Base Initializer
@@ -50,6 +51,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
               xpoCollection,                  //Created Here
               typeDialogClass                 //Created Here
             );
+            PGenericTreeViewMode = pGenericTreeViewMode;
         }
+
+        public GenericTreeViewMode PGenericTreeViewMode { get; }
     }
 }

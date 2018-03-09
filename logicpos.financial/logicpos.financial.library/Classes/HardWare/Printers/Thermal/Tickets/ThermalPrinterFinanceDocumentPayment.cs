@@ -3,6 +3,7 @@ using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports.BOs;
+using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         //Parameters Properties
         private FIN_DocumentFinancePayment _documentFinancePayment = null;
         //Business Objects
-        private List<FRBODocumentFinancePayment> _documentFinancePaymentList;
-        private List<FRBODocumentFinancePaymentDocument> _documentFinancePaymentDocumentList;
+        private List<FRBODocumentFinancePaymentView> _documentFinancePaymentList;
+        private List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
 
         public ThermalPrinterFinanceDocumentPayment(SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinancePayment pDocumentFinancePayment, List<int> pCopyNames, bool pSecondCopy)
             : base(pPrinter, pDocumentFinancePayment.DocumentType, pCopyNames, pSecondCopy)
@@ -95,7 +96,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Print Table Headers
                 ticketTable.Print(_thermalPrinterGeneric, paddingLeftFormat);
 
-                foreach (FRBODocumentFinancePaymentDocument item in _documentFinancePaymentDocumentList)
+                foreach (FRBODocumentFinancePaymentDocumentView item in _documentFinancePaymentDocumentList)
                 {
                     //Recreate/Reset Table for Item Details Loop
                     ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
@@ -112,7 +113,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         }
 
         //Detail Row Block
-        public void PrintDocumentDetail(TicketTable pTicketTable, FRBODocumentFinancePaymentDocument pFinancePaymentDocument, string pPaddingLeftFormat)
+        public void PrintDocumentDetail(TicketTable pTicketTable, FRBODocumentFinancePaymentDocumentView pFinancePaymentDocument, string pPaddingLeftFormat)
         {
             try
             {

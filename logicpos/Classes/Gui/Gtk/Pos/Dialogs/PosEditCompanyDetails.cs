@@ -3,15 +3,14 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
-using logicpos.financial.library.Classes.Finance;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -67,6 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Get Values from Config
             Guid systemCountry;
             Guid systemCurrency;
+            bool useDatabaseDataDemo = Convert.ToBoolean(GlobalFramework.Settings["useDatabaseDataDemo"]);
 
             if (GlobalFramework.Settings["xpoOidConfigurationCountrySystemCountry"] != string.Empty)
             {
@@ -179,7 +179,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         ) { Name = item.Token };
 
                         //Only Assign Value if Debugger Attached : Now the value for normal user is cleaned in Init Database, we keep this code here, may be usefull
-                        if (Debugger.IsAttached == true) { entryBoxValidation.EntryValidation.Text = item.Value; }
+                        if (Debugger.IsAttached == true || useDatabaseDataDemo) { entryBoxValidation.EntryValidation.Text = item.Value; }
+                        _log.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true,useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
 
                         //Assign shared Event
                         entryBoxValidation.EntryValidation.Changed += EntryValidation_Changed;

@@ -6,6 +6,7 @@ using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
 using System.IO;
+using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -121,8 +122,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (pActionAreaButtons == null)
             {
                 //ActionArea Buttons
-                TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Ok);
-                TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(ActionAreaButton.PosBaseDialogButtonType.Cancel);
+                TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
+                TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
                 //Add to ActionArea
                 actionAreaButtons = new ActionAreaButtons();
                 actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));

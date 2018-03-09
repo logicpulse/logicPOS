@@ -1,7 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CustomReport ScriptLanguage="CSharp" ReportInfo.Author="Acme acmepos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="02/12/2016 12:57:24" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.Copies="2" PrintSettings.CopyNames="Original&#13;&#10;Duplicado&#13;&#10;Triplicado&#13;&#10;Quadriplicado">
+<CustomReport ScriptLanguage="CSharp" ReportInfo.Author="LogicPulse logicpos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="02/12/2016 12:57:24" ReportInfo.CreatorVersion="2014.1.14.0" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe" PrintSettings.Copies="2" PrintSettings.CopyNames="Original&#13;&#10;Duplicado&#13;&#10;Triplicado&#13;&#10;Quadriplicado">
   <Styles>
-    <Style Name="EvenRow" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="DataLevel1Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 12pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 9.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFont" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 9pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFontBold" Font="Arial, 9pt, style=Bold" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="BackgroundColor1" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BackgroundColor2" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
   </Styles>
   <Dictionary/>
   <ReportPage Name="Page1">

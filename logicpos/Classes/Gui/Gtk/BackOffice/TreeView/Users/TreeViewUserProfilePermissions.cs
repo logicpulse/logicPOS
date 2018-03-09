@@ -10,6 +10,7 @@ using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
 using System.Collections.Generic;
+using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -61,7 +62,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             SortProperty sortPropertyPermissionItem = new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending);
 
-            _xpCollectionUserPermissionItem = new XPCollection(GlobalFramework.SessionXpo, _xpObjectTypeUserPermissionItem, null, sortPropertyPermissionItem);
+            CriteriaOperator criteriaOperatorPermissionItem = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
+            _xpCollectionUserPermissionItem = new XPCollection(GlobalFramework.SessionXpo, _xpObjectTypeUserPermissionItem, criteriaOperatorPermissionItem, sortPropertyPermissionItem);
             _xpCollectionUserPermissionProfile = new XPCollection(GlobalFramework.SessionXpo, _xpObjectTypeUserPermissionProfile, null);
 
             //Parameters
@@ -119,7 +121,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Navigator
             Navigator = new GenericTreeViewNavigator<XPCollection, XPGuidObject>(_sourceWindow, this, _navigatorMode);
 
-
             //TODO:THEME
             if (GlobalApp.ScreenSize.Width >= 800)
             {
@@ -130,6 +131,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Event
                 buttonApplyPrivileges.Clicked += delegate { 
                     GlobalApp.WindowBackOffice.Accordion.UpdateMenuPrivileges(); 
+                    //Force Update MainWindow Pos Privilegs ex TollBar Buttons etc
+                    GlobalApp.WindowPos.TicketList.UpdateTicketListButtons();
                 };
                 //Add to Extra Slot
                 Navigator.ExtraSlot.PackStart(buttonApplyPrivileges, false, false, 0);

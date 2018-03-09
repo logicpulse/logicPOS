@@ -1,6 +1,6 @@
-﻿using logicpos.financial.library.Classes.Reports;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.console.App;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Reports;
 using System;
 
 namespace logicpos.financial.console.Test.Classes.Reports

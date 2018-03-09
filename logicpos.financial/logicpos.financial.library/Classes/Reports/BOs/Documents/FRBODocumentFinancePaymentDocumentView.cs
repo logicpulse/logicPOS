@@ -20,10 +20,10 @@ ORDER BY
 ;
 */
 
-namespace logicpos.financial.library.Classes.Reports.BOs
+namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 {
     [FRBO(Entity = "view_documentfinancepayment")]
-    public class FRBODocumentFinancePaymentDocument : FRBOBaseObject
+    public class FRBODocumentFinancePaymentDocumentView : FRBOBaseObject
     {
         [FRBO(Field = "fpaOid", Hide = true)]
         override public string Oid { get; set; }                                        //fpaOid AS Oid,  

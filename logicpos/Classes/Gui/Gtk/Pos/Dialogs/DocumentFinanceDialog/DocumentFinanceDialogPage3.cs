@@ -1,13 +1,11 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
 using logicpos.Classes.Enums;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.shared;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using System;

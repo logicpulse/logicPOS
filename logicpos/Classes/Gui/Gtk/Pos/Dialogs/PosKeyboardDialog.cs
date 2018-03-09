@@ -1,9 +1,8 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.financial;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Drawing;
 
@@ -80,6 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             PosKeyboardDialog dialog = new PosKeyboardDialog(pSourceWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, defaultValue, regexDecimalGreaterThanZero);
             int response = dialog.Run();
+
             if (response == (int)ResponseType.Ok)
             {
                 result = decimal.Parse(dialog.Text, GlobalFramework.CurrentCultureNumberFormat);
@@ -89,6 +89,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 result = response;
             }
             dialog.Destroy();
+
             return result;
         }
     }

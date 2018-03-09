@@ -12,8 +12,6 @@ namespace logicpos.reports
 {
     public class LocalizationReports
     {
-        private static string FReportsFolder;
-
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //public static void Localization_Reports()
