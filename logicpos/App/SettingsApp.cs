@@ -12,7 +12,7 @@ namespace logicpos.App
         //Used to Force/Override Intellilock assigned GlobalFramework.LicenceRegistered in BootStrap
         public static bool LicenceRegistered = true;
         //Valid databaseType Values: SQLite, MySql, MSSqlServer (DBName Must be lowercase)
-        public static string DatabaseName = "logicpos_demotec_new_version";//logicpos_demotec_new_version
+        public static string DatabaseName = "logicpos";//logicpos_demotec_new_version
         //Used to Force create DatabaseScema and Fixtures with XPO (Non Script Mode): Requirements for Work: Empty or Non Exist Database
         //Notes: OnError "An exception of type 'DevExpress.Xpo.DB.Exceptions.SchemaCorrectionNeededException'", UnCheck [X] Break when this exception is user-unhandled and continue, watch log and wait until sucefull message appear
         public static bool XPOCreateDatabaseAndSchema = false;
@@ -85,7 +85,8 @@ namespace logicpos.App
         public static string FileFormatDataBaseBackup = "{0}_{1}_{2}_{3}.{4}";
 
         //Theme File Format : ex.: {theme}_{default}_{default}_{1024}x{768}.xml (LOWERCASE) - {0}: appTheme, {1}: appOperationModeToken, {2}: Width, {3}: Height
-        private static string FileFormatThemeFile = "theme_{0}_{1}_{2}x{3}.xml";
+        //private static string FileFormatThemeFile = "theme_{0}_{1}_{2}x{3}.xml";//Deprecated
+        private static string FileFormatThemeFile = "theme_{0}_{1}.xml";
         public static string FileTheme { get { return GetFileTheme(); } }
 
         //Database Script Files
@@ -194,18 +195,37 @@ namespace logicpos.App
             return result;
         }
 
+        // This method is Changed for dynamic Themes, now it has only one theme for all resolutions
         private static string GetFileTheme()
         {
-            return string.Format(
+            string result = string.Empty;
+            
+            // DEPRECATED
+            //int width = 0;
+            //int height = 0;
+
+            // DEPRECATED
+            // Get static size if not working with dynamic sizes
+            //if (!GlobalFramework.Settings["appScreenSize"].Replace(" ", string.Empty).Equals("0,0"))
+            //{
+            //    // Override Zero / Dynamic
+            //    width = GlobalApp.ScreenSize.Width;
+            //    height = GlobalApp.ScreenSize.Height;
+            //}
+
+            result = string.Format(
                 "{0}{1}",
                 GlobalFramework.Path["themes"],
                 string.Format(
-                    FileFormatThemeFile,
-                    GlobalFramework.Settings["appTheme"].ToLower(),
-                    GlobalFramework.Settings["appOperationModeToken"].ToLower(),
-                    GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height
+                    FileFormatThemeFile
+                    , GlobalFramework.Settings["appTheme"].ToLower()
+                    , GlobalFramework.Settings["appOperationModeToken"].ToLower()
+                    //, width // DEPRECATED
+                    //, height// DEPRECATED
                 )
             );
+
+            return result;
         }
     }
 }

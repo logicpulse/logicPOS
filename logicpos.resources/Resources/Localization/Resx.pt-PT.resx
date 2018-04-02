@@ -282,7 +282,7 @@ Esta aplicação apenas corre em monitores com resolução de {0} x {1} ou super
   </data>
   <data name="dialog_message_field_validation_error_keyboardpad" xml:space="preserve">
     <value>Erro! Entrada Inválida
-Por favor corrija a entrada e tente novamente!</value>
+Por favor volte a inserir novamente os dados correctos!</value>
   </data>
   <data name="global_articles" xml:space="preserve">
     <value>Artigos</value>

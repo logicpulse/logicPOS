@@ -12,6 +12,7 @@ namespace logicpos.plugin.contracts
         string GetAppCompanyPhone();
         string GetAppCompanyEmail();
         string GetAppCompanyWeb();
+        string GetAppSoftwareVersionFormat();
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Files/File Formats

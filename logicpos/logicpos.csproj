@@ -145,6 +145,7 @@
     <Compile Include="App\FrameworkUtils.cs" />
     <Compile Include="App\GlobalFramework.cs" />
     <Compile Include="Classes\Enums\App\AppMode.cs" />
+    <Compile Include="Classes\Enums\App\ScreenSize.cs" />
     <Compile Include="Classes\Enums\DataBaseRestoreFrom.cs" />
     <Compile Include="Classes\Enums\Dialogs\DialogMode.cs" />
     <Compile Include="Classes\Enums\Dialogs\DocumentFinanceDialogPreviewMode.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\System\TreeViewSystemAuditType.cs" />
     <Compile Include="Classes\Gui\Gtk\Pos\Dialogs\PosReportsQueryDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosReportsQueryDialog.cs" />
+    <Compile Include="Classes\Utils\ExpressionEvaluatorExtended.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="App\GlobalApp.cs">
@@ -1838,10 +1840,40 @@
     <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_pos_1024x768.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_pos_1280x1024.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_pos_1280x768.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_pos_1366x768.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_pos_1680x1050.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_pos_1920x1080.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_pos_800x600.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1024x768.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1280x1024.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1280x768.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1366x768.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1680x1050.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1920x1080.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_800x600.jpg">
@@ -1853,17 +1885,7 @@
     <Content Include="Assets\Themes\Default\Images\logo_pos.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Themes\theme_default_default_1024x768.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Themes\theme_default_default_800x600.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Themes\theme_default_retail_1024x768.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Assets\Themes\theme_default_retail_800x600.xml">
+    <Content Include="Assets\Themes\theme_default_default.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\Reports\UserReports\ReportArticleList.frx">
@@ -1948,6 +1970,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Themes\Default\Backgrounds\Dialogs\dialog_tables.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\theme_default_retail.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Database\databasedatademo.sql">

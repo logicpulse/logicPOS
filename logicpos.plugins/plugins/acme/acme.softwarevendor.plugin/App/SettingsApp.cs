@@ -18,6 +18,8 @@
         public static string AppCompanyPhone = "+351 000 000 000";
         public static string AppCompanyEmail = "sales@acme.com";
         public static string AppCompanyWeb = "http://www.acme.com";
+        public static string AppSoftwareVersion = string.Format("Powered by {0}© Vers. {{{0}}}", AppCompanyName);
+        public static string AppSoftwareVersionFormat = string.Format("Powered by {0}© Vers. {{0}}", AppCompanyName);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Files/File Formats

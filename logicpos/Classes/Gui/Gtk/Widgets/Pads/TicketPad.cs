@@ -232,27 +232,28 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _buttonSplitAccount.Sensitive = false;
 
             //Put Buttons/Theme
-            Fixed fix = new Fixed();
-            Position offset = new Position(1, 1);
+            Fixed fix = new Fixed() { BorderWidth = 10 };
             
-            if (buttonSelectTableVisible) fix.Put(_buttonSelectTable, buttonSelectTablePosition.X - pPosition.X - offset.X, buttonSelectTablePosition.Y - pPosition.Y - offset.Y);
-            if (buttonPrevVisible) fix.Put(_buttonPrev, buttonPrevPosition.X - pPosition.X - offset.X, buttonPrevPosition.Y - pPosition.Y - offset.Y);
-            if (buttonNextVisible) fix.Put(_buttonNext, buttonNextPosition.X - pPosition.X - offset.X, buttonNextPosition.Y - pPosition.Y - offset.Y);
-            if (buttonDecreaseVisible) fix.Put(_buttonDecrease, buttonDecreasePosition.X - pPosition.X - offset.X, buttonDecreasePosition.Y - pPosition.Y - offset.Y);
-            if (buttonIncreaseVisible) fix.Put(_buttonIncrease, buttonIncreasePosition.X - pPosition.X - offset.X, buttonIncreasePosition.Y - pPosition.Y - offset.Y);
-            if (buttonDeleteVisible) fix.Put(_buttonDelete, buttonDeletePosition.X - pPosition.X - offset.X, buttonDeletePosition.Y - pPosition.Y - offset.Y);
-            if (buttonChangeQuantityVisible) fix.Put(_buttonChangeQuantity, buttonChangeQuantityPosition.X - pPosition.X - offset.X, buttonChangeQuantityPosition.Y - pPosition.Y - offset.Y);
-            if (buttonChangePriceVisible) fix.Put(_buttonChangePrice, buttonChangePricePosition.X - pPosition.X - offset.X, buttonChangePricePosition.Y - pPosition.Y - offset.Y);
-            if (buttonListModeVisible) fix.Put(_buttonListMode, buttonListModePosition.X - pPosition.X - offset.X, buttonListModePosition.Y - pPosition.Y - offset.Y);
-            if (buttonListOrderVisible) fix.Put(_buttonListOrder, buttonListOrderPosition.X - pPosition.X - offset.X, buttonListOrderPosition.Y - pPosition.Y - offset.Y);
-            if (buttonWeightVisible) fix.Put(_buttonWeight, buttonWeightPosition.X - pPosition.X - offset.X, buttonWeightPosition.Y - pPosition.Y - offset.Y);
-            if (buttonGiftsVisible) fix.Put(_buttonGifts, buttonGiftsPosition.X - pPosition.X - offset.X, buttonGiftsPosition.Y - pPosition.Y - offset.Y);
-            if (buttonChangeTableVisible) fix.Put(_buttonChangeTable, buttonChangeTablePosition.X - pPosition.X - offset.X, buttonChangeTablePosition.Y - pPosition.Y - offset.Y);
-            if (buttonFinishOrderVisible) fix.Put(_buttonFinishOrder, buttonFinishOrderPosition.X - pPosition.X - offset.X, buttonFinishOrderPosition.Y - pPosition.Y - offset.Y);
-            if (buttonPaymentsVisible) fix.Put(_buttonPayments, buttonPaymentsPosition.X - pPosition.X - offset.X, buttonPaymentsPosition.Y - pPosition.Y - offset.Y);
-            if (buttonBarCodeVisible) fix.Put(_buttonBarCode, buttonBarCodePosition.X - pPosition.X - offset.X, buttonBarCodePosition.Y - pPosition.Y - offset.Y);
-            if (buttonSplitAccountVisible) fix.Put(_buttonSplitAccount, buttonSplitAccountPosition.X - pPosition.X - offset.X, buttonSplitAccountPosition.Y - pPosition.Y - offset.Y);
-            if (buttonMessagesVisible) fix.Put(_buttonMessages, buttonMessagesPosition.X - pPosition.X - offset.X, buttonMessagesPosition.Y - pPosition.Y - offset.Y);
+            if (buttonSelectTableVisible) fix.Put(_buttonSelectTable, buttonSelectTablePosition.X, buttonSelectTablePosition.Y);
+            if (buttonPrevVisible) fix.Put(_buttonPrev, buttonPrevPosition.X, buttonPrevPosition.Y);
+            if (buttonNextVisible) fix.Put(_buttonNext, buttonNextPosition.X, buttonNextPosition.Y);
+            if (buttonDecreaseVisible) fix.Put(_buttonDecrease, buttonDecreasePosition.X, buttonDecreasePosition.Y);
+            if (buttonIncreaseVisible) fix.Put(_buttonIncrease, buttonIncreasePosition.X, buttonIncreasePosition.Y);
+            if (buttonDeleteVisible) fix.Put(_buttonDelete, buttonDeletePosition.X, buttonDeletePosition.Y);
+            if (buttonChangeQuantityVisible) fix.Put(_buttonChangeQuantity, buttonChangeQuantityPosition.X, buttonChangeQuantityPosition.Y);
+            if (buttonChangePriceVisible) fix.Put(_buttonChangePrice, buttonChangePricePosition.X, buttonChangePricePosition.Y);
+            if (buttonListModeVisible) fix.Put(_buttonListMode, buttonListModePosition.X, buttonListModePosition.Y);
+            if (buttonListOrderVisible) fix.Put(_buttonListOrder, buttonListOrderPosition.X, buttonListOrderPosition.Y);
+            if (buttonWeightVisible) fix.Put(_buttonWeight, buttonWeightPosition.X, buttonWeightPosition.Y);
+            if (buttonGiftsVisible) fix.Put(_buttonGifts, buttonGiftsPosition.X, buttonGiftsPosition.Y);
+            if (buttonChangeTableVisible) fix.Put(_buttonChangeTable, buttonChangeTablePosition.X, buttonChangeTablePosition.Y);
+            if (buttonFinishOrderVisible) fix.Put(_buttonFinishOrder, buttonFinishOrderPosition.X, buttonFinishOrderPosition.Y);
+            if (buttonPaymentsVisible) fix.Put(_buttonPayments, buttonPaymentsPosition.X, buttonPaymentsPosition.Y);
+            if (buttonBarCodeVisible) fix.Put(_buttonBarCode, buttonBarCodePosition.X, buttonBarCodePosition.Y);
+            if (buttonSplitAccountVisible) fix.Put(_buttonSplitAccount, buttonSplitAccountPosition.X, buttonSplitAccountPosition.Y);
+            if (buttonMessagesVisible) fix.Put(_buttonMessages, buttonMessagesPosition.X, buttonMessagesPosition.Y);
+
+            // Add Fix
             Add(fix);
 
             //Events

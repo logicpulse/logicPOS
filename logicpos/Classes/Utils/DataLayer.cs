@@ -2,10 +2,8 @@
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.financial;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using logicpos.datalayer.Enums;
+using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections;
 using System.Collections.Generic;

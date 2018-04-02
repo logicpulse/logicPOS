@@ -2,14 +2,15 @@
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
+using logicpos.Classes.DataLayer;
+using logicpos.Classes.Enums.App;
+using logicpos.Classes.Gui.Gtk.BackOffice;
+using logicpos.Classes.Logic.Hardware;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Utils;
 using logicpos.financial.library.Classes.WorkSession;
-using logicpos.Classes.DataLayer;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Logic.Hardware;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
@@ -18,7 +19,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using logicpos.Classes.Enums.App;
 
 namespace logicpos
 {
@@ -199,12 +199,40 @@ namespace logicpos
                 GlobalFramework.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
                 GlobalFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
-                //Theme
-                GlobalApp.ScreenSize = Utils.StringToSize(GlobalFramework.Settings["appScreenSize"]);
+                //Use Detected ScreenSize
+                if (GlobalFramework.Settings["appScreenSize"].Replace(" ", string.Empty).Equals("0,0"))
+                {
+                    GlobalApp.ScreenSize = Utils.GetThemeScreenSize();
+                }
+                //Use config ScreenSize
+                else
+                {
+                    Size configAppScreenSize = Utils.StringToSize(GlobalFramework.Settings["appScreenSize"]);
+                    GlobalApp.ScreenSize = Utils.GetThemeScreenSize(configAppScreenSize);
+                }
+
+                // Init ExpressionEvaluator
+                GlobalApp.ExpressionEvaluator.EvaluateFunction += ExpressionEvaluatorExtended.ExpressionEvaluator_EvaluateFunction;
+                // Init Variables
+                ExpressionEvaluatorExtended.InitVariablesStartupWindow();
+                ExpressionEvaluatorExtended.InitVariablesPosMainWindow();
+
+                // Define Max Dialog Window Size
                 GlobalApp.MaxWindowSize = new Size(GlobalApp.ScreenSize.Width - 20, GlobalApp.ScreenSize.Height - 20);
+                // Add Variables to ExpressionEvaluator.Variables Singleton
+                GlobalApp.ExpressionEvaluator.Variables.Add("globalScreenSize", GlobalApp.ScreenSize);
+
+                //Parse and store Theme in Singleton
                 try
                 {
                     GlobalApp.Theme = XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme);
+                    // Use with dynamic Theme properties like: 
+                    // GlobalApp.Theme.Theme.Frontoffice.Window[0].Globals.Name = PosBaseWindow
+                    // GlobalApp.Theme.Theme.Frontoffice.Window[1].Objects.TablePadUser.Position = 50,50
+                    // or use predicate with from object id ex 
+                    //var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
+                    //var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+                    //_log.Debug(string.Format("Message: [{0}]", themeWindow.Globals.Title));
                 }
                 catch (Exception ex)
                 {
@@ -244,7 +272,7 @@ namespace logicpos
                 if (databaseCreated) FrameworkUtils.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
-                if (GlobalFramework.PluginSoftwareVendor == null || ! GlobalFramework.PluginSoftwareVendor.IsValidSecretKey(SettingsApp.SecretKey))
+                if (GlobalFramework.PluginSoftwareVendor == null || !GlobalFramework.PluginSoftwareVendor.IsValidSecretKey(SettingsApp.SecretKey))
                 {
                     Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_error_plugin_softwarevendor_not_registered);
                     _log.Debug(String.Format("Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
@@ -365,6 +393,10 @@ namespace logicpos
                 _log.Debug("Init Theme Object ");
                 var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
                 var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+
+                //// Inject themeWindow into 
+                //GlobalApp.ExpressionEvaluator.Variables.Add("themeWindow", themeWindow);
+
                 try
                 {
                     _log.Debug("Init windowImageFileName ");
@@ -463,7 +495,7 @@ namespace logicpos
                 if (debug) _log.Debug(string.Format("Outside of TimeRange: [{0}] > [{1}] && [{2}] < [{3}]", currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeStart, currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeEnd));
             }
 
-            // returning true means that the timeout routine should be invoked
+            // Returning true means that the timeout routine should be invoked
             // again after the timeout period expires. Returning false would
             // terminate the timeout.
             return true;

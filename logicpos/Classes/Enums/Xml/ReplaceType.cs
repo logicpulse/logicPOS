@@ -2,6 +2,6 @@
 {
     public enum ReplaceType
     {
-        Config, Resource
+        Config, Resource, Evaluation, EvaluationDebug
     }
 }

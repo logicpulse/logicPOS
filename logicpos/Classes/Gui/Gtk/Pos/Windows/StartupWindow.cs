@@ -94,7 +94,7 @@ namespace logicpos
                 try
                 {
                     //Globals
-                    Title = Convert.ToString(themeWindow.Globals.Title);
+                    Title = Convert.ToString(themeWindow.Globals.Name);
                     //Objects:LabelVersion
                     Position labelVersionPosition = Utils.StringToPosition(themeWindow.Objects.LabelVersion.Position);
                     string labelVersionFont = themeWindow.Objects.LabelVersion.Font;
@@ -109,11 +109,16 @@ namespace logicpos
                     //Objects:NumberPadPin:LabelStatus
                     string numberPadPinLabelStatusFont = themeWindow.Objects.NumberPadPin.LabelStatus.Font;
                     System.Drawing.Color numberPadPinLabelStatusFontColor = FrameworkUtils.StringToColor(themeWindow.Objects.NumberPadPin.LabelStatus.FontColor);
+                    //Objects:NumberPadPin:Size (EventBox)
+                    bool NumberPadPinVisibleWindow = Convert.ToBoolean(themeWindow.Objects.NumberPadPin.VisibleWindow);
+                    System.Drawing.Size numberPadPinSize = Utils.StringToSize(themeWindow.Objects.NumberPadPin.Size);
+
                     //Objects:NumberPadPin:ButtonPasswordReset
                     //Position numberPadPinButtonPasswordResetPosition = Utils.StringToPosition(themeWindow.Objects.NumberPadPin.ButtonPasswordReset.Position);
                     //System.Drawing.Size numberPadPinButtonPasswordResetSize = Utils.StringToSize(themeWindow.Objects.NumberPadPin.ButtonPasswordReset.Size);
                     //System.Drawing.Size numberPadPinButtonPasswordResetIconSize = new System.Drawing.Size(numberPadPinButtonPasswordResetSize.Width - 10, numberPadPinButtonPasswordResetSize.Height - 10);
                     //string numberPadPinButtonPasswordResetImageFileName = themeWindow.Objects.NumberPadPin.ButtonPasswordReset.ImageFileName;
+
                     //Objects:TablePadUserButtonPrev
                     Position tablePadUserButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadUser.TablePadUserButtonPrev.Position);
                     System.Drawing.Size tablePadUserButtonPrevSize = Utils.StringToSize(themeWindow.Objects.TablePadUser.TablePadUserButtonPrev.Size);
@@ -132,10 +137,17 @@ namespace logicpos
                     Fixed fix = new Fixed();
 
                     //NumberPadPin
-                    _numberPadPin = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height), true, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
+                    _numberPadPin = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height), true, NumberPadPinVisibleWindow, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
                     //Create and Assign local touchButtonKeyPasswordReset Reference to numberPadPin.ButtonKeyResetPassword
                     //TouchButtonIcon touchButtonKeyPasswordReset = new TouchButtonIcon("touchButtonKeyPasswordReset_Green", System.Drawing.Color.Transparent, numberPadPinButtonPasswordResetImageFileName, numberPadPinButtonPasswordResetIconSize, numberPadPinButtonPasswordResetSize.Width, numberPadPinButtonPasswordResetSize.Height) { Sensitive = false };
                     //_numberPadPin.ButtonKeyResetPassword = touchButtonKeyPasswordReset;
+                    // Apply Size to Inner EventBox
+                    if (numberPadPinSize.Width > 0 || numberPadPinSize.Height > 0)
+                    {
+                        _numberPadPin.Eventbox.WidthRequest = numberPadPinSize.Width;
+                        _numberPadPin.Eventbox.HeightRequest = numberPadPinSize.Height;
+                    }
+
                     //Put in Fix
                     fix.Put(_numberPadPin, numberPadPinPosition.X, numberPadPinPosition.Y);
                     //Over NumberPadPin
@@ -194,10 +206,15 @@ namespace logicpos
                     }
 
                     //Label Version
-                    Label labelVersion = new Label(FrameworkUtils.ProductVersion.ToString());
+                    string appVersion = string.Format(logicpos.App.SettingsApp.AppSoftwareVersionFormat, FrameworkUtils.ProductVersion);
+                    Label labelVersion = new Label(appVersion);
                     Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
                     labelVersion.ModifyFg(StateType.Normal, labelVersionFontColor);
                     labelVersion.ModifyFont(fontDescLabelVersion);
+                    labelVersion.WidthRequest = 307;
+                    labelVersion.HeightRequest = 50;
+                    labelVersion.SetAlignment(0.5F, 0.5F);
+
                     //Put in Fix
                     fix.Put(labelVersion, labelVersionPosition.X, labelVersionPosition.Y);
 
@@ -714,6 +731,7 @@ namespace logicpos
 
             PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal);
             ResponseType response = (ResponseType)dialog.Run();
-            dialog.Destroy();        }
+            dialog.Destroy();
+        }
     }
 }

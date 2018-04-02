@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Theme>
+	<Frontoffice>
+		<!-- PosBaseWindow -->
+		<Window ID="PosBaseWindow">
+			<!-- Globals -->
+			<Globals>
+				<Name>PosBaseWindow</Name>
+				<ScreenWidth>Eval[globalScreenSize.Width]</ScreenWidth>
+				<ScreenHeight>Eval[globalScreenSize.Height]</ScreenHeight>
+				<ScreenBackgroundColor>Cfg[colorFullScreenUsefullAreaBackground]</ScreenBackgroundColor>
+				<ScreenBackgroundColorOuter>Cfg[colorFullScreenBackground]</ScreenBackgroundColorOuter>
+			</Globals>
+		</Window>
+		<!-- StartupWindow -->
+		<Window ID="StartupWindow">
+			<!-- Globals -->
+			<Globals>
+				<Name>StartupWindow</Name>
+				<ImageFileName>Cfg[fileImageBackgroundWindowStartup]</ImageFileName>
+			</Globals>
+			<!-- Objects -->
+			<Objects>
+				<!-- TablePadUser -->
+				<TablePadUser>
+					<Position>Eval[Size(startupWindowObjectsTablePadUserMarginLeftTopSize.Width, startupWindowObjectsTablePadUserMarginLeftTopSize.Height + startupWindowObjectsTablePadUserTablePadUserButtonPrevSize.Height)]</Position>
+					<ButtonSize>Eval[Size(startupWindowObjectsTablePadUserButtonSize.Width, startupWindowObjectsTablePadUserButtonSize.Height)]</ButtonSize>
+					<TableConfig>Eval[Size(startupWindowObjectsTablePadUserTableConfigRows, 1)]</TableConfig>
+					<Visible>true</Visible>
+					<!-- TablePadUserButtonPrev -->
+					<TablePadUserButtonPrev>
+						<Position>Eval[Size(startupWindowObjectsTablePadUserMarginLeftTopSize.Width, startupWindowObjectsTablePadUserMarginLeftTopSize.Height)]</Position>
+						<Size>Eval[Size(startupWindowObjectsTablePadUserTablePadUserButtonPrevSize.Width, startupWindowObjectsTablePadUserTablePadUserButtonPrevSize.Height)]</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_family_scroll_up.png</ImageFileName>
+					</TablePadUserButtonPrev>
+					<!-- TablePadUserButtonNext -->
+					<TablePadUserButtonNext>
+						<Position>Eval[Size(startupWindowObjectsTablePadUserMarginLeftTopSize.Height, startupWindowObjectsTablePadUserMarginLeftTopSize.Height + startupWindowObjectsTablePadUserTablePadUserButtonPrevSize.Height + (startupWindowObjectsTablePadUserButtonSize.Height * startupWindowObjectsTablePadUserTableConfigRows))]</Position>
+						<Size>Eval[Size(startupWindowObjectsTablePadUserTablePadUserButtonPrevSize.Width, startupWindowObjectsTablePadUserTablePadUserButtonPrevSize.Height)]</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_family_scroll_down.png</ImageFileName>
+					</TablePadUserButtonNext>
+				</TablePadUser>
+				<!-- NumberPadPin -->
+				<NumberPadPin>
+					<Position>Eval[Size(globalScreenSize.Width - startupWindowObjectsNumberPadPinRight - startupWindowObjectsNumberPadPinSize.Width, int.Parse((globalScreenSize.Height - startupWindowObjectsNumberPadPinSize.Height) / 2))]</Position>
+					<Size>Eval[Size(startupWindowObjectsNumberPadPinSize.Width, startupWindowObjectsNumberPadPinSize.Height)]</Size>
+					<ButtonSize>Eval[Size(startupWindowObjectsNumberPadPinButtonSize.Width, startupWindowObjectsNumberPadPinButtonSize.Height)]</ButtonSize>
+					<Font>Cfg[fontNumberPadPinButtonKeysTextAndLabel]</Font>
+					<FontColor>255,255,255</FontColor>
+					<RowSpacingLabelStatus>22</RowSpacingLabelStatus>
+					<RowSpacingSystemButtons>16</RowSpacingSystemButtons>
+					<VisibleWindow>false</VisibleWindow>
+					<!-- LabelStatus -->
+					<LabelStatus>
+						<Font>bold 12</Font>
+						<FontColor>200,200,200</FontColor>
+					</LabelStatus>
+				</NumberPadPin>
+				<!-- LabelVersion -->
+				<LabelVersion>
+					<Size>Eval[Size(startupWindowObjectsLabelVersionSize.Width, startupWindowObjectsLabelVersionSize.Height)]</Size>
+					<Position>Eval[Size(globalScreenSize.Width - startupWindowObjectsLabelVersionSizeMarginRightBottomSize.Width - startupWindowObjectsLabelVersionSize.Width, globalScreenSize.Height - startupWindowObjectsLabelVersionSizeMarginRightBottomSize.Height - startupWindowObjectsLabelVersionSize.Height)]</Position>
+					<Font>Cfg[fontStartupWindowVersion]</Font>
+					<FontColor>255,255,255</FontColor>
+				</LabelVersion>
+			</Objects>
+		</Window>
+		<!-- PosMainWindow -->
+		<Window ID="PosMainWindow">
+			<!-- Globals -->
+			<Globals>
+				<Name>PosMainWindow</Name>
+				<ImageFileName>Cfg[fileImageBackgroundWindowPos]</ImageFileName>
+			</Globals>
+			<!-- Objects -->
+			<Objects>
+				<!-- EventBoxImageLogo -->
+				<EventBoxImageLogo>
+					<Position>Eval[Size(globalScreenSize.Width - posMainWindowEventBoxPosTicketListColumnWidth - (posMainWindowComponentsMargin * 2), 0)]</Position>
+					<Size>Eval[Size(posMainWindowEventBoxPosTicketListColumnWidth + (posMainWindowComponentsMargin * 2), posMainWindowEventBoxStatusBar1And2Height * 2)]</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>Cfg[colorPosHelperBoxsBackground]</BackgroundColor>
+				</EventBoxImageLogo>
+				<!-- EventBoxStatusBar1 -->
+				<EventBoxStatusBar1>
+					<Position>Eval[Size(posMainWindowComponentsMargin * 1, 0)]</Position>
+					<Size>Eval[Size(globalScreenSize.Width - posMainWindowEventBoxPosTicketListColumnWidth - (posMainWindowComponentsMargin * 2) - posMainWindowComponentsMargin, posMainWindowEventBoxStatusBar1And2Height)]</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>Cfg[colorPosStatusBar1Background]</BackgroundColor>
+					<!-- LabelTerminalInfo -->
+					<LabelTerminalInfo>
+						<Font>Cfg[fontPosStatusBar]</Font>
+						<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+						<AlignmentX>0,0</AlignmentX>
+					</LabelTerminalInfo>
+					<!-- LabelClock -->
+					<LabelClock>
+						<Font>Cfg[fontPosStatusBar]</Font>
+						<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+						<AlignmentX>1,0</AlignmentX>
+					</LabelClock>
+				</EventBoxStatusBar1>
+				<!-- EventBoxStatusBar2 -->
+				<EventBoxStatusBar2>
+					<Position>Eval[Size(posMainWindowBaseButtonSize.Width + posMainWindowComponentsMargin, posMainWindowEventBoxStatusBar1And2Height + posMainWindowComponentsMargin)]</Position>
+					<Size>Eval[Size((posMainWindowTablePadArticleTableConfig.Rows - 1) * posMainWindowBaseButtonSize.Width, posMainWindowEventBoxStatusBar1And2Height)]</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>Cfg[colorPosStatusBar2Background]</BackgroundColor>
+					<!-- LabelCurrentTableLabel -->
+					<LabelCurrentTableLabel>
+						<Font>Cfg[fontPosStatusBarSmall]</Font>
+						<FontColor>Cfg[colorPosStatusBarFontSmall]</FontColor>
+						<AlignmentX>0,0</AlignmentX>
+					</LabelCurrentTableLabel>
+					<!-- LabelCurrentTable -->
+					<LabelCurrentTable>
+						<Font>Cfg[fontPosStatusBar]</Font>
+						<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+						<AlignmentX>0,0</AlignmentX>
+					</LabelCurrentTable>
+					<!-- LabelTotalTableLabel -->
+					<LabelTotalTableLabel>
+						<Font>Cfg[fontPosStatusBarSmall]</Font>
+						<FontColor>Cfg[colorPosStatusBarFontSmall]</FontColor>
+						<AlignmentX>1,0</AlignmentX>
+					</LabelTotalTableLabel>
+					<!-- LabelTotalTable -->
+					<LabelTotalTable>
+						<Font>Cfg[fontPosStatusBar]</Font>
+						<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+						<AlignmentX>1,0</AlignmentX>
+					</LabelTotalTable>
+				</EventBoxStatusBar2>
+				<!-- ButtonFavorites -->
+				<ButtonFavorites>
+					<Position>Eval[Size(posMainWindowButtonFavoritesPosition.X, posMainWindowButtonFavoritesPosition.Y)]</Position>
+					<ButtonSize>Eval[Size(posMainWindowBaseButtonSize.Width, posMainWindowBaseButtonSize.Height)]</ButtonSize>
+					<ImageFileName></ImageFileName>
+					<Text>Resx[global_favorites]</Text>
+					<!--<Text>Eval[]</Text>-->
+					<FontSize>Cfg[fontPosBaseButtonSize]</FontSize>
+					<UseImageOverlay>Cfg[useImageOverlay]</UseImageOverlay>
+					<Visible>true</Visible>
+				</ButtonFavorites>
+				<!-- TablePadFamily -->
+				<TablePadFamily>
+					<Position>Eval[Size(posMainWindowTablePadFamilyPosition.X, posMainWindowTablePadFamilyPosition.Y)]</Position>
+					<ButtonSize>Eval[Size(posMainWindowBaseButtonSize.Width, posMainWindowBaseButtonSize.Height)]</ButtonSize>
+					<TableConfig>Eval[Size(posMainWindowTablePadFamilyTableConfig.Columns, posMainWindowTablePadFamilyTableConfig.Rows)]</TableConfig>
+					<Visible>true</Visible>
+					<!-- TablePadFamilyButtonPrev -->
+					<TablePadFamilyButtonPrev>
+						<Position>Eval[Size(posMainWindowTablePadFamilyButtonPrevPosition.X, posMainWindowTablePadFamilyButtonPrevPosition.Y)]</Position>
+						<Size>Eval[Size(posMainWindowBaseButtonSize.Width, posMainWindowEventBoxStatusBar1And2Height)]</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_family_scroll_up.png</ImageFileName>
+					</TablePadFamilyButtonPrev>
+					<!-- TablePadFamilyButtonNext -->
+					<TablePadFamilyButtonNext>
+						<Position>Eval[Size(posMainWindowTablePadFamilyButtonNextPosition.X, posMainWindowTablePadFamilyButtonNextPosition.Y)]</Position>
+						<Size>Eval[Size(posMainWindowBaseButtonSize.Width, posMainWindowEventBoxStatusBar1And2Height)]</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_family_scroll_down.png</ImageFileName>
+					</TablePadFamilyButtonNext>
+				</TablePadFamily>
+				<!-- TablePadSubFamily -->
+				<TablePadSubFamily>
+					<Position>Eval[Size(posMainWindowTablePadSubFamilyPosition.X, posMainWindowTablePadSubFamilyPosition.Y)]</Position>
+					<ButtonSize>Eval[Size(posMainWindowBaseButtonSize.Width, posMainWindowBaseButtonSize.Height)]</ButtonSize>
+					<TableConfig>Eval[Size(posMainWindowTablePadSubFamilyTableConfig.Columns, posMainWindowTablePadSubFamilyTableConfig.Rows)]</TableConfig>
+					<Visible>true</Visible>
+					<!-- TablePadSubFamilyButtonPrev -->
+					<TablePadSubFamilyButtonPrev>
+						<Position>Eval[Size(posMainWindowTablePadSubFamilyButtonPrevPosition.X, posMainWindowTablePadSubFamilyButtonPrevPosition.Y)]</Position>
+						<Size>Eval[Size(posMainWindowSmallButtonScrollerSize.Width, posMainWindowSmallButtonScrollerSize.Height)]</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_subfamily_article_scroll_left.png</ImageFileName>
+					</TablePadSubFamilyButtonPrev>
+					<!-- TablePadSubFamilyButtonNext -->
+					<TablePadSubFamilyButtonNext>
+						<Position>Eval[Size(posMainWindowTablePadSubFamilyButtonNextPosition.X, posMainWindowTablePadSubFamilyButtonNextPosition.Y)]</Position>
+						<Size>Eval[Size(posMainWindowSmallButtonScrollerSize.Width, posMainWindowSmallButtonScrollerSize.Height)]</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_subfamily_article_scroll_right.png</ImageFileName>
+					</TablePadSubFamilyButtonNext>
+				</TablePadSubFamily>
+				<!-- TablePadArticle -->
+				<TablePadArticle>
+					<Position>Eval[Size(posMainWindowTablePadArticlePosition.X, posMainWindowTablePadArticlePosition.Y)]</Position>
+					<ButtonSize>Eval[Size(posMainWindowBaseButtonSize.Width, posMainWindowBaseButtonSize.Height)]</ButtonSize>
+					<TableConfig>Eval[Size(posMainWindowTablePadArticleTableConfig.Columns, posMainWindowTablePadArticleTableConfig.Rows)]</TableConfig>
+					<Visible>true</Visible>
+					<!-- TablePadArticleButtonPrev -->
+					<TablePadArticleButtonPrev>
+						<Position>Eval[Size(posMainWindowTablePadArticleButtonPrevPosition.X, posMainWindowTablePadArticleButtonPrevPosition.Y)]</Position>
+						<Size>Eval[Size(posMainWindowSmallButtonScrollerSize.Width, posMainWindowSmallButtonScrollerSize.Height)]</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_subfamily_article_scroll_left.png</ImageFileName>
+					</TablePadArticleButtonPrev>
+					<!-- TablePadArticleButtonNext -->
+					<TablePadArticleButtonNext>
+						<Position>Eval[Size(posMainWindowTablePadArticleButtonNextPosition.X, posMainWindowTablePadArticleButtonNextPosition.Y)]</Position>
+						<Size>Eval[Size(posMainWindowSmallButtonScrollerSize.Width, posMainWindowSmallButtonScrollerSize.Height)]</Size>
+						<ImageFileName>Assets/Images/Buttons/Pos/button_subfamily_article_scroll_right.png</ImageFileName>
+					</TablePadArticleButtonNext>
+				</TablePadArticle>
+				<!-- EventboxToolbar -->
+				<EventboxToolbar>
+					<Position>Eval[Size(0, globalScreenSize.Height - posMainWindowToolbarButtonSize.Height - (posMainWindowComponentsMargin * 2))]</Position>
+					<Size>Eval[Size(globalScreenSize.Width - posMainWindowEventBoxPosTicketListColumnWidth - (posMainWindowComponentsMargin * 2), posMainWindowToolbarButtonSize.Height + (posMainWindowComponentsMargin * 2))]</Size>
+					<ButtonSize>Eval[Size(posMainWindowToolbarButtonSize.Width, posMainWindowToolbarButtonSize.Height)]</ButtonSize>
+					<IconSize>Eval[Size(posMainWindowEventboxToolbarIconSize.Width, posMainWindowEventboxToolbarIconSize.Height)]</IconSize>
+					<Font>Cfg[fontPosToolbarButton]</Font>
+					<FontColor>Cfg[colorPosToolbarDefaultButtonFont]</FontColor>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>0, 0, 255</BackgroundColor>
+					<!-- Buttons -->
+					<Buttons>
+						<!-- ButtonApplicationClose -->
+						<ButtonApplicationClose>
+							<Name>touchButtonPosToolbarApplicationClose_Red</Name>
+							<Text>Resx[global_application_close]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_application_close.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonApplicationClose>
+						<!-- ButtonBackOffice -->
+						<ButtonBackOffice>
+							<Name>touchButtonPosToolbarBackOffice_DarkGrey</Name>
+							<Text>Resx[global_backoffice]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_back_office.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonBackOffice>
+						<!-- ButtonReports -->
+						<ButtonReports>
+							<Name>touchButtonPosToolbarReports_DarkGrey</Name>
+							<Text>Resx[global_reports]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_reports.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonReports>
+						<!-- ButtonShowSystemDialog -->
+						<ButtonShowSystemDialog>
+							<Name>touchButtonPosToolbarShowSystemDialog_DarkGrey</Name>
+							<Text>Resx[global_reports]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_system.png</ImageFileName>
+							<!-- Hidden -->
+							<Visible>false</Visible>
+						</ButtonShowSystemDialog>
+						<!-- ButtonLogoutUser -->
+						<ButtonLogoutUser>
+							<Name>touchButtonPosToolbarLogoutUser_DarkGrey</Name>
+							<Text>Resx[global_application_logout_user]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_logout_user.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonLogoutUser>
+						<!-- ButtonShowChangeUserDialog -->
+						<ButtonShowChangeUserDialog>
+							<Name>touchButtonPosToolbarShowChangeUserDialog_DarkGrey</Name>
+							<Text>Resx[global_change_user]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_show_change_user_dialog.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonShowChangeUserDialog>
+						<!-- ButtonCashDrawer -->
+						<ButtonCashDrawer>
+							<Name>touchButtonPosToolbarCashDrawer_DarkGrey</Name>
+							<Text>Resx[pos_button_label_cashdrawer]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_cashdrawer.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonCashDrawer>
+						<!-- ButtonFinanceDocuments -->
+						<ButtonFinanceDocuments>
+							<Name>touchButtonPosToolbarFinanceDocuments_DarkGrey</Name>
+							<Text>Resx[dialog_button_label_select_record_finance_documents]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_finance_document.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonFinanceDocuments>
+						<!-- ButtonNewFinanceDocument -->
+						<ButtonNewFinanceDocument>
+							<Name>touchButtonPosToolbarNewFinanceDocument_DarkGrey</Name>
+							<Text>Resx[dialog_button_label_new_finance_documents]</Text>
+							<ImageFileName>Assets/Images/Icons/icon_pos_toolbar_finance_new_document.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonNewFinanceDocument>
+					</Buttons>
+				</EventboxToolbar>
+				<!-- EventBoxPosTicketList -->
+				<EventBoxPosTicketList>
+					<Position>Eval[Size(globalScreenSize.Width - posMainWindowEventBoxPosTicketListColumnWidth - (posMainWindowComponentsMargin * 2), posMainWindowEventBoxStatusBar1And2Height * 2)]</Position>
+					<Size>Eval[Size(posMainWindowEventBoxPosTicketListColumnWidth + (posMainWindowComponentsMargin * 2), globalScreenSize.Height - ((posMainWindowTicketPadButtonSize.Height * posMainWindowTicketPadRows) + (posMainWindowComponentsMargin * 1)) - posMainWindowEventBoxStatusBar1And2Height * 2)]</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>0, 0, 255</BackgroundColor>
+					<!-- Columns -->
+					<Columns>
+						<FontTitle>Eval[posMainWindowEventBoxPosTicketListTicketListColumnTitleFont]</FontTitle>
+						<FontData>Eval[posMainWindowEventBoxPosTicketListTicketListColumnFont]</FontData>
+						<DesignationWidth>Eval[posMainWindowEventBoxPosTicketListColumnsDesignationWidth]</DesignationWidth>
+					</Columns>
+					<!-- EventBoxTotal -->
+					<EventBoxTotal>
+						<BackgroundColor>Cfg[colorFullScreenUsefullAreaBackground]</BackgroundColor>
+						<!-- LabelLabelTotal -->
+						<LabelLabelTotal>
+							<Font>Cfg[fontTicketListLabelLabelTotal]</Font>
+							<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+							<AlignmentX>0,0</AlignmentX>
+						</LabelLabelTotal>
+						<!-- LabelTotal -->
+						<LabelTotal>
+							<Font>Cfg[fontTicketListLabelTotal]</Font>
+							<FontColor>Cfg[colorPosStatusBarFont]</FontColor>
+							<AlignmentX>1,0</AlignmentX>
+						</LabelTotal>
+					</EventBoxTotal>
+				</EventBoxPosTicketList>
+				<!-- EventBoxPosTicketPad -->
+				<EventBoxPosTicketPad>
+					<Position>Eval[Size(globalScreenSize.Width - posMainWindowEventBoxPosTicketListColumnWidth - (posMainWindowComponentsMargin * 2), globalScreenSize.Height - (posMainWindowTicketPadButtonSize.Height * posMainWindowTicketPadRows) - (posMainWindowComponentsMargin * 2))]</Position>
+					<Size>Eval[Size((posMainWindowTicketPadButtonSize.Width * posMainWindowTicketPadColumns) + (posMainWindowComponentsMargin * 2), (posMainWindowTicketPadButtonSize.Height * posMainWindowTicketPadRows) + (posMainWindowComponentsMargin * 2))]</Size>
+					<Visible>true</Visible>
+					<VisibleWindow>false</VisibleWindow>
+					<BackgroundColor>255,0,0</BackgroundColor>
+					<!-- Buttons -->
+					<Buttons>
+						<IconSize>Eval[Size(posMainWindowEventBoxPosTicketPadButtonsIconSize.Width, posMainWindowEventBoxPosTicketPadButtonsIconSize.Height)]</IconSize>
+						<Font>Cfg[fontTicketPadPadButtonKeys]</Font>
+						<FontColor>Cfg[colorTicketPadButtonFont]</FontColor>
+						<!-- Column1 : ButtonPrev -->
+						<ButtonPrev>
+							<Name>touchButtonPosTicketPadPrev</Name>
+							<Text>Resx[pos_button_label_prev]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 0, posMainWindowTicketPadButtonSize.Height * 0)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_prev.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonPrev>
+						<!-- ButtonNext -->
+						<ButtonNext>
+							<Name>touchButtonPosTicketPadNext</Name>
+							<Text>Resx[pos_button_label_next]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 0, posMainWindowTicketPadButtonSize.Height * 1)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_next.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonNext>
+						<!-- ButtonDelete -->
+						<ButtonDelete>
+							<Name>touchButtonPosTicketPadDelete</Name>
+							<Text>Resx[pos_button_label_delete]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 0, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_delete.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonDelete>
+						<!-- ButtonChangeQuantity -->
+						<ButtonChangeQuantity>
+							<Name>touchButtonPosTicketPadChangeQuantity</Name>
+							<Text>Resx[pos_button_label_change_quantity]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 0, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_change_quantity.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonChangeQuantity>
+						<!-- ButtonBarCode -->
+						<ButtonBarCode>
+							<Name>touchButtonPosTicketPadBarCode</Name>
+							<Text>Resx[global_barcode_small]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 0, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_barcode.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonBarCode>
+						<!-- Column2 : ButtonIncrease -->
+						<ButtonIncrease>
+							<Name>touchButtonPosTicketPadIncrease</Name>
+							<Text>Resx[pos_button_label_increase]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 0)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_increase.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonIncrease>
+						<!-- ButtonDecrease -->
+						<ButtonDecrease>
+							<Name>touchButtonPosTicketPadDecrease</Name>
+							<Text>Resx[pos_button_label_decrease]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 1)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_decrease.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonDecrease>
+						<!-- ButtonListMode -->
+						<ButtonListMode>
+							<Name>touchButtonPosTicketPadListMode</Name>
+							<Text>Resx[pos_button_label_list_mode]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_list_mode.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonListMode>
+						<!-- ButtonChangePrice -->
+						<ButtonChangePrice>
+							<Name>touchButtonPosTicketPadChangePrice</Name>
+							<Text>Resx[pos_button_label_change_price]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_change_price.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonChangePrice>
+						<!-- ButtonWeight -->
+						<ButtonWeight>
+							<Name>touchButtonPosTicketPadWeight</Name>
+							<Text>Resx[global_weight]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_weight.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonWeight>
+						<!-- Column3 : ButtonSelectTable -->
+						<ButtonSelectTable>
+							<Name>touchButtonPosTicketPadSelectTable_Green</Name>
+							<Text>Resx[pos_button_label_tables_appmode_default]</Text>
+							<!--<Text>Resx[pos_button_label_tables_appmode_retail]</Text>-->
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 0)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonDoubleWidthSize.Width, posMainWindowTicketPadButtonDoubleWidthSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_tables.png</ImageFileName>
+							<!--<ImageFileName>Assets/Images/Icons/icon_pos_retail_view_orders.png</ImageFileName>-->
+							<Visible>true</Visible>
+						</ButtonSelectTable>
+						<!-- ButtonFinishOrder -->
+						<ButtonFinishOrder>
+							<Name>touchButtonPosTicketPadFinishOrder_Green</Name>
+							<Text>Resx[pos_button_label_finish_order]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 1)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonDoubleWidthSize.Width, posMainWindowTicketPadButtonDoubleWidthSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_order.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonFinishOrder>
+						<!-- ButtonPayments -->
+						<ButtonPayments>
+							<Name>touchButtonPosTicketPadPayments_Green</Name>
+							<Text>Resx[pos_button_label_payments]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonDoubleWidthSize.Width, posMainWindowTicketPadButtonDoubleWidthSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_payments.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonPayments>
+						<!-- ButtonListOrder -->
+						<ButtonListOrder>
+							<Name>touchButtonPosTicketPadListOrder</Name>
+							<Text>Resx[pos_button_label_orders]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_orderlist.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonListOrder>
+						<!-- ButtonGifts -->
+						<ButtonGifts>
+							<Name>touchButtonPosTicketPadGifts</Name>
+							<Text>Resx[global_gifts]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_gifts.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonGifts>
+						<!-- Column4 : ButtonChangeTable -->
+						<ButtonChangeTable>
+							<Name>touchButtonPosTicketPadChangeTable</Name>
+							<Text>Resx[pos_button_label_change_table]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_changetable.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonChangeTable>
+						<!-- ButtonMessages -->
+						<ButtonMessages>
+							<Name>touchButtonPosTicketPadMessages</Name>
+							<Text>Resx[global_messages]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_messages.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonMessages>
+						<!-- ButtonSplitAccount : Disabled -->
+						<ButtonSplitAccount>
+							<Name>touchButtonPosTicketPadSplitAccount</Name>
+							<Text>Resx[global_split_account]</Text>
+							<Position>0,0</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_splitaccount.png</ImageFileName>
+							<Visible>false</Visible>
+						</ButtonSplitAccount>
+					</Buttons>
+				</EventBoxPosTicketPad>
+			</Objects>
+		</Window>
+	</Frontoffice>
+</Theme>
