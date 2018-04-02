@@ -36,6 +36,8 @@ namespace logicpos.shared.App
         public static string AppCompanyEmail;
         //Overrided by SoftwareVendor Plugin - ex: "http://www.logicpulse.com"
         public static string AppCompanyWeb;
+        //Overrided by SoftwareVendor Plugin - ex: "string.Format("Powered by {0}© Vers. {{0}}", AppCompanyName)"
+        public static string AppSoftwareVersionFormat;
 
         public static string AppSessionFile = "appsession_{0}.json";
         public static bool AppSessionFileJsonIndented = true;
@@ -367,6 +369,7 @@ namespace logicpos.shared.App
             AppCompanyPhone = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyPhone), debug);
             AppCompanyEmail = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyEmail), debug);
             AppCompanyWeb = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyWeb), debug);
+            AppSoftwareVersionFormat = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppSoftwareVersionFormat), debug);
 
             FileFormatDateTime = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FileFormatDateTime), debug);
             FileFormatSaftPT = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT), debug);

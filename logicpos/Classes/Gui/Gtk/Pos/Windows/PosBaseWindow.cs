@@ -1,8 +1,6 @@
 using Gtk;
 using logicpos.App;
-using logicpos.financial;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Drawing;
 using System.IO;

@@ -71,6 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Static Methods
+
         public static decimal RequestDecimalValue(Window pSourceWindow, decimal pDefaultValue, bool pUseDefaultValue = true)
         {
             decimal result;
@@ -87,6 +88,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else
             {
                 result = response;
+            }
+            dialog.Destroy();
+
+            return result;
+        }
+
+        public static string RequestAlfaNumericValue(Window pSourceWindow, string pDefaultValue, bool pUseDefaultValue = true)
+        {
+            string result;
+            String regexAlfaNumeric = SettingsApp.RegexAlfaNumeric;
+            String defaultValue = (pUseDefaultValue) ? pDefaultValue : string.Empty;
+
+            PosKeyboardDialog dialog = new PosKeyboardDialog(pSourceWindow, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, defaultValue, regexAlfaNumeric);
+            int response = dialog.Run();
+
+            if (response == (int)ResponseType.Ok)
+            {
+                result = dialog.Text;
+            }
+            else
+            {
+                result = string.Empty;
             }
             dialog.Destroy();
 

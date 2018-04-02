@@ -4,17 +4,19 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
-using logicpos.financial.library.Classes.Finance;
 using logicpos.Classes.Enums;
+using logicpos.Classes.Enums.App;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Enums;
+using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -33,8 +35,6 @@ using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
-using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos
 {
@@ -1148,6 +1148,94 @@ namespace logicpos
             return string.Format("{0} : {1}", SettingsApp.AppName, pTitle);
         }
 
+        public static Size GetScreenSize()
+        {
+            Size result = new Size();
+
+            try
+            {
+                // Moke Window only to extract its Resolution
+                Window window = new Window("");
+                Gdk.Screen screen = window.Screen;
+                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(0);
+                result = new Size(monitorGeometry.Width, monitorGeometry.Height);
+                // CleanUp
+                window.Dispose();
+                screen.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            return result;
+        }
+
+        // Used to get the final Resolution for Render template, it uses some stuff from config and detected ScreenSize to get guest best resolution for themes
+
+        public static Size GetThemeScreenSize()
+        {
+            return GetThemeScreenSize(Utils.GetScreenSize());
+        }
+
+        public static Size GetThemeScreenSize(Size screenSize)
+        {
+            string enumScreenSize = string.Format("res{0}x{1}", screenSize.Width, screenSize.Height);
+            ScreenSize screenSizeEnum = (ScreenSize)Enum.Parse(typeof(ScreenSize), enumScreenSize, true);
+            Size result = screenSize;
+
+            //800,600 | 1024,768 | 1280,768 | 1366,768 | 1280,1024 | 1680,1050 | 1920,1080
+
+            switch (screenSizeEnum)
+            {
+                // Implemented
+                case ScreenSize.res800x600:
+                case ScreenSize.res1024x768:
+                case ScreenSize.res1280x768:
+                case ScreenSize.res1280x1024:
+                case ScreenSize.res1366x768:
+                case ScreenSize.res1680x1050:
+                case ScreenSize.res1920x1080:
+                    // Use Detected Value
+                    break;
+                case ScreenSize.res1024x600:
+                    // Override Default
+                    result = new Size(800, 600);
+                    break;
+                case ScreenSize.res1152x864:
+                    // Override Default
+                    result = new Size(1280,1024);
+                    break;
+                case ScreenSize.res1280x720:
+                case ScreenSize.res1280x800:
+                    // Override Default
+                    result = new Size(1280,768);
+                    break;
+                case ScreenSize.res1360x768:
+                    // Override Default
+                    result = new Size(1366,768);
+                    break;
+                case ScreenSize.res1440x900:
+                case ScreenSize.res1536x864:
+                case ScreenSize.res1600x900:
+                    // Override Default
+                    result = new Size(1680,1050);
+                    break;
+                case ScreenSize.res1920x1200:
+                case ScreenSize.res2560x1080:
+                case ScreenSize.res2560x1440:
+                case ScreenSize.res3440x1440:
+                case ScreenSize.res3840x2160:
+                    // Override Default
+                    result = new Size(1920,1080);
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
+        }
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Loading Dialog / HourGlass GTK
 
@@ -1480,7 +1568,8 @@ namespace logicpos
                     dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
                     try
                     {
-                        string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
+                        string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+                        string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, appOperationModeToken, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                         GlobalApp.WindowPos = new PosMainWindow(windowImageFileName);
                     }
                     catch (Exception ex)

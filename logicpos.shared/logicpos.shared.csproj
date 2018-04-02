@@ -93,6 +93,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TableFilterMode.cs" />
     <Compile Include="ThirdPartyLibs\BinarySerialization.cs" />
+    <Compile Include="ThirdPartyLibs\ExpressionEvaluator.cs" />
     <Compile Include="ThirdPartyLibs\JsonSerialization.cs" />
     <Compile Include="ThirdPartyLibs\XmlSerialization.cs" />
   </ItemGroup>

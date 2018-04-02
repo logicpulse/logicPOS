@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Security.Cryptography;
-using System.Configuration;
+using System.Text;
 
 //ThirdParty Lib - Adapted to LogicPos
 

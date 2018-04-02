@@ -52,6 +52,11 @@ namespace acme.softwarevendor.plugin
             return SettingsApp.AppCompanyWeb;
         }
 
+        public string GetAppSoftwareVersionFormat()
+        {
+            return SettingsApp.AppSoftwareVersionFormat;
+        }
+
         public string GetFileFormatDateTime()
         {
             return SettingsApp.FileFormatDateTime;

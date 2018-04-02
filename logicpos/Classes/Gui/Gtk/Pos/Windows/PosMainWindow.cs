@@ -1,12 +1,10 @@
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Drawing;
 using System.Threading;
@@ -359,7 +357,7 @@ namespace logicpos
 
             //Objects:ButtonFavorites
             Position buttonFavoritesPosition = Utils.StringToPosition(themeWindow.Objects.ButtonFavorites.Position);
-            Size buttonFavoritesSize = Utils.StringToSize(themeWindow.Objects.ButtonFavorites.Size);
+            Size buttonFavoritesButtonSize = Utils.StringToSize(themeWindow.Objects.ButtonFavorites.ButtonSize);
             string buttonFavoritesImageFileName = themeWindow.Objects.ButtonFavorites.ImageFileName;
             string buttonFavoritesText = themeWindow.Objects.ButtonFavorites.Text;
             int buttonFavoritesFontSize = Convert.ToInt16(themeWindow.Objects.ButtonFavorites.FontSize);
@@ -369,7 +367,7 @@ namespace logicpos
             //UI
 
             string buttonFavoritesImageOverlay = (buttonFavoritesUseImageOverlay) ? _fileBaseButtonOverlay : string.Empty;
-            TouchButtonImage buttonFavorites = new TouchButtonImage("buttonFavorites", Color.Transparent, buttonFavoritesText, buttonFavoritesFontSize, buttonFavoritesImageFileName, buttonFavoritesImageOverlay, buttonFavoritesSize.Width, buttonFavoritesSize.Height);
+            TouchButtonImage buttonFavorites = new TouchButtonImage("buttonFavorites", Color.Transparent, buttonFavoritesText, buttonFavoritesFontSize, buttonFavoritesImageFileName, buttonFavoritesImageOverlay, buttonFavoritesButtonSize.Width, buttonFavoritesButtonSize.Height);
             buttonFavorites.Clicked += buttonFavorites_Clicked;
 
             if (buttonFavoritesVisible) _fixedWindow.Put(buttonFavorites, buttonFavoritesPosition.X, buttonFavoritesPosition.Y);
@@ -671,7 +669,7 @@ namespace logicpos
             _touchButtonPosToolbarNewFinanceDocument.Sensitive = (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
             //Pack Buttons
             HBox hboxToolbar = new HBox(false, 0);
-            hboxToolbar.BorderWidth = 2;
+            hboxToolbar.BorderWidth = 10;
             
             if (buttonApplicationCloseVisible) hboxToolbar.PackStart(_touchButtonPosToolbarApplicationClose, false, false, 0);
             if (buttonBackOfficeVisible) hboxToolbar.PackStart(_touchButtonPosToolbarBackOffice, false, false, 0);
@@ -752,7 +750,7 @@ namespace logicpos
 
             //UI
 
-            EventBox eventBoxPosTicketList = new EventBox() { VisibleWindow = false, BorderWidth = 0 };
+            EventBox eventBoxPosTicketList = new EventBox() { VisibleWindow = eventBoxPosTicketListVisibleWindow, BorderWidth = 0 };
             eventBoxPosTicketList.WidthRequest = eventBoxPosTicketListSize.Width;
             eventBoxPosTicketList.HeightRequest = eventBoxPosTicketListSize.Height;
             if (eventBoxPosTicketListVisibleWindow) eventBoxPosTicketList.ModifyBg(StateType.Normal, eventBoxPosTicketListBackgroundColor);

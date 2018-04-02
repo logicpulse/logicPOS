@@ -1,13 +1,11 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
@@ -220,6 +218,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
+                this.BorderWidth = 10;
+
                 //Objects:EventBoxPosTicketList:EventBoxTotal
                 Gdk.Color eventBoxTotalBackgroundColor = Utils.StringToGdkColor(pThemeObject.EventBoxTotal.BackgroundColor);
                 //Objects:Columns
@@ -234,6 +234,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 Pango.FontDescription labelTotalFont = Pango.FontDescription.FromString(pThemeObject.EventBoxTotal.LabelTotal.Font);
                 Gdk.Color labelTotalFontColor = Utils.StringToGdkColor(pThemeObject.EventBoxTotal.LabelTotal.FontColor);
                 float labelTotalAlignmentX = Convert.ToSingle(pThemeObject.EventBoxTotal.LabelTotal.AlignmentX);
+
+                //Objects:EventBoxPosTicketList:Columns:DesignationWidth
+                int columnDesignationWidth = Convert.ToInt16(pThemeObject.Columns.DesignationWidth);
 
                 //scrolledWindow
                 ScrolledWindow scrolledWindow = new ScrolledWindow();
@@ -268,7 +271,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _listStoreModel = new ListStore(typeof(Guid), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(string), typeof(ArticleBagKey));
                 //Assign TreeView Model Reference to TreeView Model
                 _treeView = new TreeView(_listStoreModel) { RulesHint = false, CanFocus = false };
-                InitColumns(_treeView, columnsFontTitle, columnsFontData);
+                InitColumns(_treeView, columnsFontTitle, columnsFontData, columnDesignationWidth);
                 //Events, before working on Model
                 _treeView.CursorChanged += _treeView_CursorChanged;
                 _listStoreModel.RowInserted += _listStoreModel_RowInserted;
@@ -294,13 +297,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
         }
 
-        private void InitColumns(TreeView pTreeView, Pango.FontDescription pColumnTitleFontDesc, Pango.FontDescription pColumnDataFontDesc)
+        private void InitColumns(TreeView pTreeView, Pango.FontDescription pColumnTitleFontDesc, Pango.FontDescription pColumnDataFontDesc, int pWidthDesignation)
         {
             CellRendererText rendererText;
             TreeViewColumn column;
             int sharedWidth = 65;
 
-            int widthDesignation = (FrameworkUtils.OSVersion() != "unix") ? 106 : 116;
+            //int widthDesignation = (FrameworkUtils.OSVersion() != "unix") ? 106 : 116;
+            int widthDesignation = (FrameworkUtils.OSVersion() != "unix") ? pWidthDesignation - 10 : pWidthDesignation;
 
             Pango.FontDescription fontDescTitle = pColumnTitleFontDesc;
             Pango.FontDescription fontDesc = pColumnDataFontDesc;
@@ -328,10 +332,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //TicketListColumns.Designation
             rendererText = new CellRendererText() { FontDesc = fontDesc };
-            column = new TreeViewColumn(null, rendererText, "text", TicketListColumns.Designation)
+             column = new TreeViewColumn(null, rendererText, "text", TicketListColumns.Designation)
             {
-                Widget = labelDesignation,
-                MinWidth = widthDesignation,
+                Widget = labelDesignation, 
+                MinWidth = widthDesignation, 
                 MaxWidth = widthDesignation
             };
             pTreeView.AppendColumn(column);

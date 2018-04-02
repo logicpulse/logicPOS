@@ -34,6 +34,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 UpdateStatusLabels(); 
             }
         }
+
+        private EventBox _eventbox;
+        public EventBox Eventbox
+        {
+            get { return _eventbox; }
+            set { _eventbox = value; }
+        }
+
         private EntryValidation _entryPin;
         public EntryValidation EntryPin
         {
@@ -71,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             set { _buttonKeyQuit = value; }
         }
 
-        public NumberPadPin(Window pSourceWindow, string pName, Color pButtonColor, string pFont, string pFontLabelStatus, Color pFontColor, Color pFontColorLabelStatus, byte pButtonWidth, byte pButtonHeight, bool pShowSystemButtons = false, uint pRowSpacingLabelStatus = 20, uint pRowSpacingSystemButtons = 40, byte pPadding = 3)
+        public NumberPadPin(Window pSourceWindow, string pName, Color pButtonColor, string pFont, string pFontLabelStatus, Color pFontColor, Color pFontColorLabelStatus, byte pButtonWidth, byte pButtonHeight, bool pShowSystemButtons = false, bool pVisibleWindow = false, uint pRowSpacingLabelStatus = 20, uint pRowSpacingSystemButtons = 40, byte pPadding = 3)
         {
             _sourceWindow = pSourceWindow;
             this.Name = pName;
@@ -79,7 +87,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Show or Hide System Buttons (Startup Visible, Pos Change User Invisible)
             uint tableRows = (pShowSystemButtons) ? (uint)5 : (uint)3;
 
-            EventBox eventbox = new EventBox() { VisibleWindow = false };
+            _eventbox = new EventBox() { VisibleWindow = pVisibleWindow };
+
             _table = new Table(tableRows, 3, true);
             _table.Homogeneous = false;
 
@@ -186,8 +195,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _table.SetRowSpacing(5, pRowSpacingSystemButtons);
             }
 
-            eventbox.Add(_table);
-            this.Add(eventbox);
+            _eventbox.Add(_table);
+            this.Add(_eventbox);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using logicpos.financial.library.Classes.Utils;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Hardware;
+using logicpos.financial.library.Classes.Utils;
 using System;
 using System.Collections.Generic;
 
@@ -30,6 +30,7 @@ namespace logicpos.App
         public static Boolean UseVirtualKeyBoard;
         //Theme
         public static dynamic Theme;
+        public static ExpressionEvaluator ExpressionEvaluator = new ExpressionEvaluator();
         public static System.Drawing.Size ScreenSize;
         public static System.Drawing.Size MaxWindowSize;
         //System
@@ -37,8 +38,7 @@ namespace logicpos.App
         //Hardware
         public static UsbDisplayDevice HWUsbDisplay;
         public static InputReader HWBarCodeReader;
-
-//Removed Protected Files
-public static ProtectedFiles ProtectedFiles;
+        //Protected Files
+        public static ProtectedFiles ProtectedFiles;
     }
 }

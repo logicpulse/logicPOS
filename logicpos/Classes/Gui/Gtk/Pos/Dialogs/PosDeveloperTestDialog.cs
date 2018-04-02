@@ -155,8 +155,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //EntryMultiline entryTouchMultiline = new EntryMultiline(this, KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, true, 100, 10);
             //vbox.PackStart(entryTouchMultiline, true, true, padding);
-
             EntryBoxValidationMultiLine entryBoxMultiLine = new EntryBoxValidationMultiLine(this, "EntryBoxMultiLine", KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, true, 18, 6) { HeightRequest = 200 };
+
             //Start Disabled
             entryBoxMultiLine.EntryMultiline.Sensitive = false;
             entryBoxMultiLine.ButtonKeyBoard.Sensitive = false;

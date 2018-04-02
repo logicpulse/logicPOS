@@ -18,20 +18,41 @@ namespace logicpos
 {
     public class XmlToObjectParser
     {
+        public static dynamic _expressionEvaluatorReference;
+
         public static dynamic ParseFromFile(string filename)
         {
-            return ParseFromXml(File.ReadAllText(filename));
+            //Log4Net
+            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+            if (File.Exists(filename))
+            {
+                return ParseFromXml(File.ReadAllText(filename));
+            }
+            else
+            {
+                throw new Exception("Error! Missing ThemeFile: [{filename}]");
+            }
         }
 
         public static dynamic ParseFromXml(string xml)
         {
             IDictionary<string, object> parsedObject = new ExpandoObject();
+            
+            // ExpressionEvaluator, add reference to dynamic Object
+            _expressionEvaluatorReference = parsedObject;
+            GlobalApp.ExpressionEvaluator.Variables.Add("themeRoot", (_expressionEvaluatorReference as dynamic));
 
-            var rootElement = XElement.Parse(xml);
+            XElement rootElement = rootElement = XElement.Parse(xml);
 
-            var root = CreateChildElement(rootElement);
+            ExpandoObject root = CreateChildElement(rootElement);
 
             parsedObject.Add(rootElement.Name.LocalName, root);
+
+            //GlobalApp.ExpressionEvaluator.Variables["themeRoot"] =  _expressionEvaluatorReference;
+            
+            //_log.Debug(string.Format("Message: [{0}]", _expressionEvaluatorReference.Theme.Frontoffice.Window[0].Globals.Name));
+            //(GlobalApp.ExpressionEvaluator.Variables["themeRoot"] as dynamic).Theme.Frontoffice.Window[0].Globals.Name
 
             return parsedObject;
         }
@@ -116,6 +137,9 @@ namespace logicpos
         /// </summary>
         private static string ReplaceRegEx(string pInput, ReplaceType pReplaceType)
         {
+            //Log4Net
+            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
             string patternBase = @"(?<={0}\[)(.*?)(?=\])";
             string patternPrefix = string.Empty;
             string pattern = string.Empty;
@@ -127,11 +151,19 @@ namespace logicpos
             {
                 case ReplaceType.Config:
                     patternPrefix = "Cfg";
-                    funcGetValue = (x) => GlobalFramework.Settings[x];
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => GlobalFramework.Settings[x];
                     break;
                 case ReplaceType.Resource:
                     patternPrefix = "Resx";
-                    funcGetValue = (x) => Resx.ResourceManager.GetString(x);
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => Resx.ResourceManager.GetString(x);
+                    break;
+                case ReplaceType.Evaluation:
+                    patternPrefix = "Eval";
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => GetEvaluationResult(x);
+                    break;
+                case ReplaceType.EvaluationDebug:
+                    patternPrefix = "EvalDebug";
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => GetEvaluationResult(x, true);
                     break;
                 default:
                     break;
@@ -142,9 +174,48 @@ namespace logicpos
 
             foreach (Match match in matchCollection)
             {
-                nodeValue = funcGetValue(match.Value);
-                if (nodeValue != string.Empty) result = result.Replace(string.Format("{0}[{1}]", patternPrefix, match), nodeValue);
-                //if (_debug) _log.Debug(string.Format("item[{0}]: [{1}]=[{2}] result={3}", Enum.GetName(typeof(ReplaceType), pReplaceType), match, nodeValue, result));
+                try
+                {
+                    nodeValue = funcGetValue(match.Value);
+                    if (nodeValue != string.Empty) result = result.Replace(string.Format("{0}[{1}]", patternPrefix, match), nodeValue);
+                    //if (_debug) _log.Debug(string.Format("item[{0}]: [{1}]=[{2}] result={3}", Enum.GetName(typeof(ReplaceType), pReplaceType), match, nodeValue, result));
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex.Message, ex);
+                }
+            }
+
+            return result;
+        }
+
+        private static string GetEvaluationResult(string expression)
+        {
+            return GetEvaluationResult(expression, false);
+        }
+
+        private static string GetEvaluationResult(string expression, bool debug)
+        {
+            //Log4Net
+            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+            string result = expression;
+
+            try
+            {
+                result = GlobalApp.ExpressionEvaluator.Evaluate(expression).ToString();
+                
+                // Trigger Debugger with a BreakPoint, this is usefull to Eval Expressions
+                if (debug)
+                {
+                    string hardCodeExpression = "globalScreenSizeHeight - ((posMainWindowTicketPadButtonSize.Height * 5) + (posMainWindowComponentsMargin * 2)) - posMainWindowEventBoxStatusBar1And2Height * 2";
+                    string hardCodeResult = GlobalApp.ExpressionEvaluator.Evaluate(hardCodeExpression).ToString();
+                    //log.Debug(string.Format("result: [{0}]", GlobalApp.ExpressionEvaluator.Evaluate(hardCodeExpression).ToString()));
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message, ex);
             }
 
             return result;
