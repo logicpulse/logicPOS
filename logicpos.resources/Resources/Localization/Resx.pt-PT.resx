@@ -2893,4 +2893,9 @@ Instale um plugin SoftwareVendor válido!</value>
   <data name="global_audit_type" xml:space="preserve">
     <value>Tipo de Auditoria</value>
   </data>
+  <data name="app_error_unsupported_resolution_detected" xml:space="preserve">
+    <value>Resolução não Suportada {0}x{1}!
+
+Defina manualmente a resolução do ecrã no ficheiro de configuração, parametro [appScreenSize] e tente novamente!</value>
+  </data>
 </root>

@@ -94,6 +94,17 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unsupported Screen Resolution {0}x{1}!
+        ///
+        ///Define manually the screen resolution in config file settings parameter [appScreenSize] and try again!.
+        /// </summary>
+        public static string app_error_unsupported_resolution_detected {
+            get {
+                return ResourceManager.GetString("app_error_unsupported_resolution_detected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The follow documents are not cancelled, because they are previously cancelled, are realated with other documents, date day is in the past, or user press cancel in reason dialog.
         ///{0}.
         /// </summary>

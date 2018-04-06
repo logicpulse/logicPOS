@@ -1,6 +1,8 @@
-﻿using logicpos.App;
+﻿using Gtk;
+using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Others;
+using logicpos.resources.Resources.Localization;
 using System;
 using System.Drawing;
 
@@ -103,8 +105,9 @@ namespace logicpos
             // ConfigValues to ExpressionVars
             try
             {
-                // EventBoxPosTicketPadColumns/Rows
+                // Config
                 string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+
                 int intEventBoxPosTicketPadColumns = appOperationModeToken.ToUpper().Equals("DEFAULT") ? 4 : 4;
                 int intEventBoxPosTicketPadRows = appOperationModeToken.ToUpper().Equals("DEFAULT") ? 5 : 3;
 
@@ -120,81 +123,89 @@ namespace logicpos
                 string fontTicketListColumnTitle = string.Empty;
                 string fontTicketListColumn = string.Empty;
 
-                //string appScreenSizeString = string.Format("{0},{1}", GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                 string enumScreenSize = string.Format("res{0}x{1}", GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
-                ScreenSize screenSizeEnum = (ScreenSize)Enum.Parse(typeof(ScreenSize), enumScreenSize, true);
 
-                if (appThemeCalcDynamicSize)
+                try
                 {
-                    switch (screenSizeEnum)
+                    ScreenSize screenSizeEnum = (ScreenSize)Enum.Parse(typeof(ScreenSize), enumScreenSize, true);
+
+                    if (appThemeCalcDynamicSize)
                     {
-                        case ScreenSize.res800x600:
-                            sizePosBaseButtonSize = new Size(100, 75);
-                            sizePosToolbarButtonSize = new Size(64, 48);
-                            sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
-                            sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
-                            sizePosToolbarButtonIconSize = new Size(22, 22);
-                            sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
-                            fontTicketListColumnTitle = "Bold 8";
-                            fontTicketListColumn = "8";
-                            break;
-                        case ScreenSize.res1024x600:
-                        case ScreenSize.res1024x768:
-                            sizePosBaseButtonSize = new Size(120, 90);
-                            sizePosToolbarButtonSize = new Size(80, 60);
-                            sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
-                            sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
-                            sizePosToolbarButtonIconSize = new Size(34, 34);
-                            sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
-                            fontTicketListColumnTitle = "Bold 9";
-                            fontTicketListColumn = "9";
-                            break;
-                        case ScreenSize.res1152x864:
-                        case ScreenSize.res1280x720:
-                        case ScreenSize.res1280x768:
-                        case ScreenSize.res1280x800:
-                        case ScreenSize.res1280x1024:
-                        case ScreenSize.res1360x768:
-                        case ScreenSize.res1366x768:
-                        case ScreenSize.res1440x900:
-                        case ScreenSize.res1536x864:
-                        case ScreenSize.res1600x900:
-                            fontTicketListColumnTitle = "Bold 10";
-                            fontTicketListColumn = "10";
-                            sizePosBaseButtonSize = new Size(140, 105);
-                            sizePosToolbarButtonSize = new Size(100, 75);
-                            sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
-                            sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
-                            sizePosToolbarButtonIconSize = new Size(42, 42);
-                            sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
-                            break;
-                        case ScreenSize.res1680x1050:
-                        case ScreenSize.res1920x1080:
-                        case ScreenSize.res1920x1200:
-                        case ScreenSize.res2560x1080:
-                        case ScreenSize.res2560x1440:
-                        case ScreenSize.res3440x1440:
-                        case ScreenSize.res3840x2160:
-                            sizePosBaseButtonSize = new Size(160, 120);
-                            sizePosToolbarButtonSize = new Size(120, 90);
-                            sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
-                            sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
-                            sizePosToolbarButtonIconSize = new Size(50, 50);
-                            sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
-                            fontTicketListColumnTitle = "Bold 10";
-                            fontTicketListColumn = "10";
-                            break;
+                        switch (screenSizeEnum)
+                        {
+                            case ScreenSize.res800x600:
+                                sizePosBaseButtonSize = new Size(100, 75);
+                                sizePosToolbarButtonSize = new Size(64, 48);
+                                sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
+                                sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
+                                sizePosToolbarButtonIconSize = new Size(22, 22);
+                                sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
+                                fontTicketListColumnTitle = "Bold 8";
+                                fontTicketListColumn = "8";
+                                break;
+                            case ScreenSize.res1024x600:
+                            case ScreenSize.res1024x768:
+                                sizePosBaseButtonSize = new Size(120, 90);
+                                sizePosToolbarButtonSize = new Size(80, 60);
+                                sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
+                                sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
+                                sizePosToolbarButtonIconSize = new Size(34, 34);
+                                sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
+                                fontTicketListColumnTitle = "Bold 9";
+                                fontTicketListColumn = "9";
+                                break;
+                            case ScreenSize.res1152x864:
+                            case ScreenSize.res1280x720:
+                            case ScreenSize.res1280x768:
+                            case ScreenSize.res1280x800:
+                            case ScreenSize.res1280x1024:
+                            case ScreenSize.res1360x768:
+                            case ScreenSize.res1366x768:
+                            case ScreenSize.res1440x900:
+                            case ScreenSize.res1536x864:
+                            case ScreenSize.res1600x900:
+                                fontTicketListColumnTitle = "Bold 10";
+                                fontTicketListColumn = "10";
+                                sizePosBaseButtonSize = new Size(140, 105);
+                                sizePosToolbarButtonSize = new Size(100, 75);
+                                sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
+                                sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
+                                sizePosToolbarButtonIconSize = new Size(42, 42);
+                                sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
+                                break;
+                            case ScreenSize.res1680x1050:
+                            case ScreenSize.res1920x1080:
+                            case ScreenSize.res1920x1200:
+                            case ScreenSize.res2560x1080:
+                            case ScreenSize.res2560x1440:
+                            case ScreenSize.res3440x1440:
+                            case ScreenSize.res3840x2160:
+                                sizePosBaseButtonSize = new Size(160, 120);
+                                sizePosToolbarButtonSize = new Size(120, 90);
+                                sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
+                                sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
+                                sizePosToolbarButtonIconSize = new Size(50, 50);
+                                sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
+                                fontTicketListColumnTitle = "Bold 10";
+                                fontTicketListColumn = "10";
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        // Use Defaults from Config
+                        sizePosBaseButtonSize = Utils.StringToSize(GlobalFramework.Settings["sizePosBaseButton"]);
+                        sizePosToolbarButtonSize = Utils.StringToSize(GlobalFramework.Settings["sizePosToolbarButton"]);
+                        sizePosTicketPadButtonSize = Utils.StringToSize(GlobalFramework.Settings["sizePosTicketPadButton"]);
+                        sizePosTicketPadButtonDoubleWidth = Utils.StringToSize(GlobalFramework.Settings["sizePosTicketPadButtonDoubleWidth"]);
+                        sizePosToolbarButtonIconSize = Utils.StringToSize(GlobalFramework.Settings["sizePosToolbarButtonIcon"]);
+                        sizePosTicketPadButtonIconSize = Utils.StringToSize(GlobalFramework.Settings["sizePosTicketPadButtonIcon"]);
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // Use Defaults from Config
-                    sizePosBaseButtonSize = Utils.StringToSize(GlobalFramework.Settings["sizePosBaseButton"]);
-                    sizePosToolbarButtonSize = Utils.StringToSize(GlobalFramework.Settings["sizePosToolbarButton"]);
-                    sizePosTicketPadButtonSize = Utils.StringToSize(GlobalFramework.Settings["sizePosTicketPadButton"]);
-                    sizePosTicketPadButtonDoubleWidth = Utils.StringToSize(GlobalFramework.Settings["sizePosTicketPadButtonDoubleWidth"]);
-                    sizePosToolbarButtonIconSize = Utils.StringToSize(GlobalFramework.Settings["sizePosToolbarButtonIcon"]);
-                    sizePosTicketPadButtonIconSize = Utils.StringToSize(GlobalFramework.Settings["sizePosTicketPadButtonIcon"]);
+                    log.Error(ex.Message, ex);
+                    Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(GlobalApp.WindowStartup, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                 }
 
                 int posMainWindowComponentsMargin = Convert.ToInt16(GlobalFramework.Settings["intPosMainWindowComponentsMargin"]);

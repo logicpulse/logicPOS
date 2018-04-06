@@ -2900,4 +2900,9 @@ Installez un plugin SoftwareVendor valide!</value>
   <data name="global_audit_type" xml:space="preserve">
     <value>Type d'Audit</value>
   </data>
+  <data name="app_error_unsupported_resolution_detected" xml:space="preserve">
+    <value>Résolution d'écran non prise en charge {0} x {1}!
+
+Définissez manuellement la résolution de l'écran dans le paramètre paramètres du fichier de configuration [appScreenSize] et réessayez!</value>
+  </data>
 </root>

@@ -200,8 +200,10 @@ namespace logicpos
                 GlobalFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Use Detected ScreenSize
-                if (GlobalFramework.Settings["appScreenSize"].Replace(" ", string.Empty).Equals("0,0"))
+                if (GlobalFramework.Settings["appScreenSize"].Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(GlobalFramework.Settings["appScreenSize"]))
                 {
+                    // Force Unknown Screen Size
+                    //GlobalApp.ScreenSize = new Size(2000, 1800);
                     GlobalApp.ScreenSize = Utils.GetThemeScreenSize();
                 }
                 //Use config ScreenSize

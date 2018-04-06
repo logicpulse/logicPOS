@@ -4,6 +4,7 @@ using acme.softwarevendor.plugin.App;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using logicpos;
 
 namespace acme.softwarevendor.plugin
 {
@@ -329,6 +330,38 @@ namespace acme.softwarevendor.plugin
             {
                 throw new Exception(string.Format("Error! Detected files not Embbeded in Resources! [{0}]", String.Join(", ", emmbededFilesMissing)));
             }
+        }
+
+        public string Encrypt(string toEncrypt, bool useHashing)
+        {
+            string result = toEncrypt;
+
+            try
+            {
+                result = CryptorEngine.Encrypt(toEncrypt, useHashing, SettingsApp.SecretKey);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            return result;
+        }
+
+        public string Decrypt(string cipherString, bool useHashing)
+        {
+            string result = cipherString;
+
+            try
+            {
+                result = CryptorEngine.Decrypt(cipherString, useHashing, SettingsApp.SecretKey);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            return result;
         }
     }
 }

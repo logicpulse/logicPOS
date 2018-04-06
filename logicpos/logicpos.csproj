@@ -1879,6 +1879,27 @@
     <Content Include="Assets\Themes\Default\Backgrounds\Windows\Retail\window_pos_800x600.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1024x768.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1280x1024.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1280x768.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1366x768.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1680x1050.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_1920x1080.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Themes\Default\Backgrounds\Windows\window_startup_800x600.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Themes\Default\Images\logo_backoffice.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -2,8 +2,6 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace logicpos.shared.Classes.Utils
 {

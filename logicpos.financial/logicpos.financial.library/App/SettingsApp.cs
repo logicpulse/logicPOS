@@ -1,7 +1,8 @@
 ﻿namespace logicpos.financial.library.App
 {
     /// <summary>
-    /// Stub to house project specific custom property settings
+    /// Warning this is a Private Key Must be Private for "acme.softwarevendor.plugin"
+    /// this SecretKey are paired with VenderPlugin SecretKey
     /// </summary>
     public class SettingsApp : logicpos.shared.App.SettingsApp
     {

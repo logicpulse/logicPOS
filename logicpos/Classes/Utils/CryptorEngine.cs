@@ -14,27 +14,27 @@ namespace logicpos
         /// <summary>
         /// Encrypt a string using dual encryption method. Return a encrypted cipher Text
         /// </summary>
-        /// <param name="pToEncrypt">string to be encrypted</param>
-        /// <param name="pUseHashing">use hashing? send to for extra secirity</param>
-        /// <returns></returns>
-        public static string Encrypt(string pToEncrypt, bool pUseHashing)
+        /// <param name="toEncrypt">string to be encrypted</param>
+        /// <param name="useHashing">use hashing? send to for extra security</param>
+        /// <returns>Encrypted String</returns>
+        public static string Encrypt(string toEncrypt, bool useHashing)
         {
-            return Encrypt(pToEncrypt, pUseHashing, _key);
+            return Encrypt(toEncrypt, useHashing, _key);
         }
 
-        public static string Encrypt(string pToEncrypt, bool pUseHashing, string pKey)
+        public static string Encrypt(string toEncrypt, bool useHashing, string key)
         {
             byte[] keyArray;
-            byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(pToEncrypt);
+            byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
 
-            if (pUseHashing)
+            if (useHashing)
             {
                 MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
-                keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(pKey));
+                keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
                 hashmd5.Clear();
             }
             else
-                keyArray = UTF8Encoding.UTF8.GetBytes(pKey);
+                keyArray = UTF8Encoding.UTF8.GetBytes(key);
 
             TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
             tdes.Key = keyArray;
@@ -51,21 +51,21 @@ namespace logicpos
         /// <summary>
         /// DeCrypt a string using dual encryption method. Return a DeCrypted clear string
         /// </summary>
-        /// <param name="pCipherString">encrypted string</param>
-        /// <param name="pUseHashing">Did you use hashing to encrypt this data? pass true is yes</param>
-        /// <returns></returns>
+        /// <param name="cipherString">encrypted string</param>
+        /// <param name="useHashing">Did you use hashing to encrypt this data? pass true is yes</param>
+        /// <returns>Decrypted String</returns>
         /// 
-        public static string Decrypt(string pCipherString, bool pUseHashing)
+        public static string Decrypt(string cipherString, bool useHashing)
         {
-            return Decrypt(pCipherString, pUseHashing, _key);
+            return Decrypt(cipherString, useHashing, _key);
         }
 
-        public static string Decrypt(string pCipherString, bool pUseHashing, string pKey)
+        public static string Decrypt(string cipherString, bool useHashing, string pKey)
         {
             byte[] keyArray;
-            byte[] toEncryptArray = Convert.FromBase64String(pCipherString);
+            byte[] toEncryptArray = Convert.FromBase64String(cipherString);
             
-            if (pUseHashing)
+            if (useHashing)
             {
                 MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
                 keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(pKey));

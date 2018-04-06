@@ -558,6 +558,13 @@ namespace logicpos
             ;
         }
 
+        public static void ShowMessageTouchUnsupportedResolutionDetectedAndExit(Window pSourceWindow, int width, int height)
+        {
+            string message = string.Format(Resx.app_error_unsupported_resolution_detected, width, height);
+            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, Resx.global_error, message);
+            Environment.Exit(Environment.ExitCode);
+        }
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Request Text Dialog
 
@@ -1181,56 +1188,66 @@ namespace logicpos
         public static Size GetThemeScreenSize(Size screenSize)
         {
             string enumScreenSize = string.Format("res{0}x{1}", screenSize.Width, screenSize.Height);
-            ScreenSize screenSizeEnum = (ScreenSize)Enum.Parse(typeof(ScreenSize), enumScreenSize, true);
             Size result = screenSize;
 
-            //800,600 | 1024,768 | 1280,768 | 1366,768 | 1280,1024 | 1680,1050 | 1920,1080
-
-            switch (screenSizeEnum)
+            try
             {
-                // Implemented
-                case ScreenSize.res800x600:
-                case ScreenSize.res1024x768:
-                case ScreenSize.res1280x768:
-                case ScreenSize.res1280x1024:
-                case ScreenSize.res1366x768:
-                case ScreenSize.res1680x1050:
-                case ScreenSize.res1920x1080:
-                    // Use Detected Value
-                    break;
-                case ScreenSize.res1024x600:
-                    // Override Default
-                    result = new Size(800, 600);
-                    break;
-                case ScreenSize.res1152x864:
-                    // Override Default
-                    result = new Size(1280,1024);
-                    break;
-                case ScreenSize.res1280x720:
-                case ScreenSize.res1280x800:
-                    // Override Default
-                    result = new Size(1280,768);
-                    break;
-                case ScreenSize.res1360x768:
-                    // Override Default
-                    result = new Size(1366,768);
-                    break;
-                case ScreenSize.res1440x900:
-                case ScreenSize.res1536x864:
-                case ScreenSize.res1600x900:
-                    // Override Default
-                    result = new Size(1680,1050);
-                    break;
-                case ScreenSize.res1920x1200:
-                case ScreenSize.res2560x1080:
-                case ScreenSize.res2560x1440:
-                case ScreenSize.res3440x1440:
-                case ScreenSize.res3840x2160:
-                    // Override Default
-                    result = new Size(1920,1080);
-                    break;
-                default:
-                    break;
+                // Try to get Supported Resolution
+                ScreenSize screenSizeEnum = (ScreenSize)Enum.Parse(typeof(ScreenSize), enumScreenSize, true);
+
+                //800,600 | 1024,768 | 1280,768 | 1366,768 | 1280,1024 | 1680,1050 | 1920,1080
+
+                switch (screenSizeEnum)
+                {
+                    // Implemented
+                    case ScreenSize.res800x600:
+                    case ScreenSize.res1024x768:
+                    case ScreenSize.res1280x768:
+                    case ScreenSize.res1280x1024:
+                    case ScreenSize.res1366x768:
+                    case ScreenSize.res1680x1050:
+                    case ScreenSize.res1920x1080:
+                        // Use Detected Value
+                        break;
+                    case ScreenSize.res1024x600:
+                        // Override Default
+                        result = new Size(800, 600);
+                        break;
+                    case ScreenSize.res1152x864:
+                        // Override Default
+                        result = new Size(1280, 1024);
+                        break;
+                    case ScreenSize.res1280x720:
+                    case ScreenSize.res1280x800:
+                        // Override Default
+                        result = new Size(1280, 768);
+                        break;
+                    case ScreenSize.res1360x768:
+                        // Override Default
+                        result = new Size(1366, 768);
+                        break;
+                    case ScreenSize.res1440x900:
+                    case ScreenSize.res1536x864:
+                    case ScreenSize.res1600x900:
+                        // Override Default
+                        result = new Size(1680, 1050);
+                        break;
+                    case ScreenSize.res1920x1200:
+                    case ScreenSize.res2560x1080:
+                    case ScreenSize.res2560x1440:
+                    case ScreenSize.res3440x1440:
+                    case ScreenSize.res3840x2160:
+                        // Override Default
+                        result = new Size(1920, 1080);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(GlobalApp.WindowStartup, screenSize.Width, screenSize.Height);
             }
 
             return result;

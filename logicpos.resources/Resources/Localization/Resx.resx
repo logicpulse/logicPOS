@@ -2894,4 +2894,9 @@ Please install a valid SoftwareVendor Plugin that work with registered LogicposF
   <data name="global_audit_type" xml:space="preserve">
     <value>Audit Type</value>
   </data>
+  <data name="app_error_unsupported_resolution_detected" xml:space="preserve">
+    <value>Unsupported Screen Resolution {0}x{1}!
+
+Define manually the screen resolution in config file settings parameter [appScreenSize] and try again!</value>
+  </data>
 </root>

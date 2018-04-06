@@ -76,7 +76,7 @@ namespace logicpos.plugin.contracts
         string GetDocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat();
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // Protected Methods, Proptected by SecretKey
+        // Protected Methods, Protected by SecretKey
 
         bool IsValidSecretKey(string secretKey);
 
@@ -93,5 +93,9 @@ namespace logicpos.plugin.contracts
         List<string> GetReportFileName(string secretKey, string filePath, string templateBase);
 
         void ValidateEmbbededResources();
+
+        // Methods to Encrypt and Decrypt
+        string Encrypt(string toEncrypt, bool useHashing);
+        string Decrypt(string cipherString, bool useHashing);
     }
 }
