@@ -145,7 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Local Vars
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
-            Size usefullAreaSize = new Size(windowSize.Width - 14, windowSize.Height - 120);
+            Size usefullAreaSize = new Size(windowSize.Width - 14, windowSize.Height - 124);
 
             //Modify default genericTreeView properties
             _genericTreeView.SetSizeRequest(usefullAreaSize.Width, usefullAreaSize.Height);

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using logicpos;
+using System.Security.Cryptography.X509Certificates;
 
 namespace acme.softwarevendor.plugin
 {
@@ -56,6 +57,11 @@ namespace acme.softwarevendor.plugin
         public string GetAppSoftwareVersionFormat()
         {
             return SettingsApp.AppSoftwareVersionFormat;
+        }
+
+        public string GetAppSoftwareATWSProdModeCertificatePassword()
+        {
+            return SettingsApp.AppSoftwareATWSProdModeCertificatePassword;
         }
 
         public string GetFileFormatDateTime()
@@ -332,13 +338,13 @@ namespace acme.softwarevendor.plugin
             }
         }
 
-        public string Encrypt(string toEncrypt, bool useHashing)
+        public string Encrypt(string toEncrypt)
         {
             string result = toEncrypt;
 
             try
             {
-                result = CryptorEngine.Encrypt(toEncrypt, useHashing, SettingsApp.SecretKey);
+                result = CryptorEngine.Encrypt(toEncrypt, true, SettingsApp.SecretKey);
             }
             catch (Exception ex)
             {
@@ -348,13 +354,13 @@ namespace acme.softwarevendor.plugin
             return result;
         }
 
-        public string Decrypt(string cipherString, bool useHashing)
+        public string Decrypt(string cipherString)
         {
             string result = cipherString;
 
             try
             {
-                result = CryptorEngine.Decrypt(cipherString, useHashing, SettingsApp.SecretKey);
+                result = CryptorEngine.Decrypt(cipherString, true, SettingsApp.SecretKey);
             }
             catch (Exception ex)
             {
@@ -362,6 +368,27 @@ namespace acme.softwarevendor.plugin
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Import certificate Inside Plugin and Return X509Certificate2 to be used Outside, 
+        /// this is a requirenmente to protect the ATWSProdModeCertificatePassword
+        /// </summary>
+        /// <param name="pathCertificate"></param>
+        /// <returns></returns>
+        public X509Certificate2 ImportCertificate(bool testModeEnabled, string pathCertificate)
+        {
+            X509Certificate2 cert = new X509Certificate2();
+            //From user installed Certificates
+            //cert.Import(_pathCertificate, _passwordCertificate, X509KeyStorageFlags.DefaultKeySet);
+            //From FileSystem "Resources\Certificates"
+            string password = (testModeEnabled) 
+                ? SettingsApp.AppSoftwareATWSProdModeCertificatePassword
+                : SettingsApp.AppSoftwareATWSTestModeCertificatePassword;
+            //Import Certificate
+            cert.Import(pathCertificate, password, X509KeyStorageFlags.Exportable);
+            
+            return cert;
         }
     }
 }

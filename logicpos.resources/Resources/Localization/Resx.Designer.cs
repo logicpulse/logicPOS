@@ -1498,7 +1498,8 @@ namespace logicpos.resources.Resources.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Warning! You have {0} Open Terminal(s)!
-        ///Before proceed please close open Terminal(s) : {1}.
+        ///
+        ///To continue press Yes to close all terminals, or press No and close all terminals manually and try again: {1}.
         /// </summary>
         public static string dialog_message_worksession_period_warning_open_terminals {
             get {
@@ -2301,6 +2302,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input Reader.
+        /// </summary>
+        public static string global_ConfigurationInputReader {
+            get {
+                return ResourceManager.GetString("global_ConfigurationInputReader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string global_ConfigurationKeyboard_Language {
@@ -2427,6 +2437,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pole Display.
+        /// </summary>
+        public static string global_ConfigurationPoleDisplay {
+            get {
+                return ResourceManager.GetString("global_ConfigurationPoleDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Order.
         /// </summary>
         public static string global_ConfigurationPriceType_IndexPos {
@@ -2504,6 +2523,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_ConfigurationUnitMeasure_Acronym {
             get {
                 return ResourceManager.GetString("global_ConfigurationUnitMeasure_Acronym", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weighing Machine.
+        /// </summary>
+        public static string global_ConfigurationWeighingMachine {
+            get {
+                return ResourceManager.GetString("global_ConfigurationWeighingMachine", resourceCulture);
             }
         }
         
@@ -3597,6 +3625,42 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Barcode Reader.
+        /// </summary>
+        public static string global_input_barcode_reader {
+            get {
+                return ResourceManager.GetString("global_input_barcode_reader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Card Reader.
+        /// </summary>
+        public static string global_input_reader_card_reader {
+            get {
+                return ResourceManager.GetString("global_input_reader_card_reader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid Reader Input Sizes.
+        /// </summary>
+        public static string global_input_reader_card_reader_sizes {
+            get {
+                return ResourceManager.GetString("global_input_reader_card_reader_sizes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timer Interval (ms).
+        /// </summary>
+        public static string global_input_reader_timer_interval {
+            get {
+                return ResourceManager.GetString("global_input_reader_timer_interval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal document - Solely for the purpose of establishing.
         /// </summary>
         public static string global_internal_document_footer1 {
@@ -3822,6 +3886,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Other Tables.
+        /// </summary>
+        public static string global_other_tables {
+            get {
+                return ResourceManager.GetString("global_other_tables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Others.
         /// </summary>
         public static string global_others {
@@ -4011,6 +4084,69 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CodeTable.
+        /// </summary>
+        public static string global_pole_display_codetable {
+            get {
+                return ResourceManager.GetString("global_pole_display_codetable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EndPoint.
+        /// </summary>
+        public static string global_pole_display_endpoint {
+            get {
+                return ResourceManager.GetString("global_pole_display_endpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StandBy in Seconds.
+        /// </summary>
+        public static string global_pole_display_goto_stand_by_in_seconds {
+            get {
+                return ResourceManager.GetString("global_pole_display_goto_stand_by_in_seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of Chars per Line.
+        /// </summary>
+        public static string global_pole_display_number_of_characters_per_line {
+            get {
+                return ResourceManager.GetString("global_pole_display_number_of_characters_per_line", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Product Id (Pid).
+        /// </summary>
+        public static string global_pole_display_pid {
+            get {
+                return ResourceManager.GetString("global_pole_display_pid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StandBy Line #{0}.
+        /// </summary>
+        public static string global_pole_display_stand_by_line_no {
+            get {
+                return ResourceManager.GetString("global_pole_display_stand_by_line_no", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vendor Id (Vid).
+        /// </summary>
+        public static string global_pole_display_vid {
+            get {
+                return ResourceManager.GetString("global_pole_display_vid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to POS.
         /// </summary>
         public static string global_pos {
@@ -4029,11 +4165,29 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to System parameters.
+        ///   Looks up a localized string similar to Company Configuration.
         /// </summary>
-        public static string global_preferenceparameter {
+        public static string global_preferenceparameter_company {
             get {
-                return ResourceManager.GetString("global_preferenceparameter", resourceCulture);
+                return ResourceManager.GetString("global_preferenceparameter_company", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System Configuration.
+        /// </summary>
+        public static string global_preferenceparameter_system {
+            get {
+                return ResourceManager.GetString("global_preferenceparameter_system", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Example of valid values: [{0}].
+        /// </summary>
+        public static string global_prefparam_value_tip_format {
+            get {
+                return ResourceManager.GetString("global_prefparam_value_tip_format", resourceCulture);
             }
         }
         
@@ -4178,6 +4332,105 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_printed_on_date {
             get {
                 return ResourceManager.GetString("global_printed_on_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commando de Corte.
+        /// </summary>
+        public static string global_printer_thermal_cut_command {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_cut_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Encoding.
+        /// </summary>
+        public static string global_printer_thermal_encoding {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_encoding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File of Company Logo.
+        /// </summary>
+        public static string global_printer_thermal_image_company_logo {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_image_company_logo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Chars per Line Normal Font.
+        /// </summary>
+        public static string global_printer_thermal_max_chars_per_line_normal {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_max_chars_per_line_normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Chars per Line Normal Bold Font.
+        /// </summary>
+        public static string global_printer_thermal_max_chars_per_line_normal_bold {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_max_chars_per_line_normal_bold", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Chars per Line Small Font.
+        /// </summary>
+        public static string global_printer_thermal_max_chars_per_line_small {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_max_chars_per_line_small", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Drawer Comm. M.
+        /// </summary>
+        public static string global_printer_thermal_open_drawer_value_m {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_open_drawer_value_m", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Drawer Comm. T1.
+        /// </summary>
+        public static string global_printer_thermal_open_drawer_value_t1 {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_open_drawer_value_t1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Drawer Comm. T2.
+        /// </summary>
+        public static string global_printer_thermal_open_drawer_value_t2 {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_open_drawer_value_t2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Print Company Logo.
+        /// </summary>
+        public static string global_printer_thermal_print_logo {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_print_logo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thermal Printer.
+        /// </summary>
+        public static string global_printer_thermal_printer {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_printer", resourceCulture);
             }
         }
         
@@ -4367,6 +4620,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_record_main_detail {
             get {
                 return ResourceManager.GetString("global_record_main_detail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string global_record_main_properties {
+            get {
+                return ResourceManager.GetString("global_record_main_properties", resourceCulture);
             }
         }
         
@@ -5181,7 +5443,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply Privileges.
+        ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string global_user_apply_privileges {
             get {
@@ -5667,7 +5929,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Series.
+        ///   Looks up a localized string similar to Series.
         /// </summary>
         public static string pos_button_create_series {
             get {
@@ -6253,6 +6515,24 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Applicação : Resolução do Ecrã.
+        /// </summary>
+        public static string prefparam_app_screen_size {
+            get {
+                return ResourceManager.GetString("prefparam_app_screen_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Applicação : Tema.
+        /// </summary>
+        public static string prefparam_app_theme {
+            get {
+                return ResourceManager.GetString("prefparam_app_theme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Address.
         /// </summary>
         public static string prefparam_company_address {
@@ -6397,7 +6677,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tax Entity.
+        ///   Looks up a localized string similar to Establishment Identification.
         /// </summary>
         public static string prefparam_company_tax_entity {
             get {
@@ -6424,11 +6704,173 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application : Country Culture.
+        /// </summary>
+        public static string prefparam_culture {
+            get {
+                return ResourceManager.GetString("prefparam_culture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database : Backup Time Span Range End.
+        /// </summary>
+        public static string prefparam_database_backup_time_span_range_end {
+            get {
+                return ResourceManager.GetString("prefparam_database_backup_time_span_range_end", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database : Backup Time Span Range Start.
+        /// </summary>
+        public static string prefparam_database_backup_time_span_range_start {
+            get {
+                return ResourceManager.GetString("prefparam_database_backup_time_span_range_start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database : Backup Timespan.
+        /// </summary>
+        public static string prefparam_database_backup_timespan {
+            get {
+                return ResourceManager.GetString("prefparam_database_backup_timespan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay : Number of Characters per Line.
+        /// </summary>
+        public static string prefparam_hardware_display_characters_per_line {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_characters_per_line", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay : CodeTable.
+        /// </summary>
+        public static string prefparam_hardware_display_codetable {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_codetable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay : Enabled.
+        /// </summary>
+        public static string prefparam_hardware_display_enabled {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay : EndPoint.
+        /// </summary>
+        public static string prefparam_hardware_display_endpoint {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_endpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay : Goto Stand by in Seconds.
+        /// </summary>
+        public static string prefparam_hardware_display_goto_stand_by_in_seconds {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_goto_stand_by_in_seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay  : PID (ProductID).
+        /// </summary>
+        public static string prefparam_hardware_display_pid {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_pid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay : Stand By Line 1.
+        /// </summary>
+        public static string prefparam_hardware_display_stand_by_line_1 {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_stand_by_line_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay : Stand By Line 2.
+        /// </summary>
+        public static string prefparam_hardware_display_stand_by_line_2 {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_stand_by_line_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : PoleDisplay : VID (VendorID).
+        /// </summary>
+        public static string prefparam_hardware_display_vid {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_display_vid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : Input Reader : CardReader : Valid Reader Sizes.
+        /// </summary>
+        public static string prefparam_hardware_input_reader_card_reader_sizes {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_input_reader_card_reader_sizes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware : Input Reader : CardReader : Reader Timr Interval.
+        /// </summary>
+        public static string prefparam_hardware_input_reader_timer_interval {
+            get {
+                return ResourceManager.GetString("prefparam_hardware_input_reader_timer_interval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path : Backups.
+        /// </summary>
+        public static string prefparam_path_backups {
+            get {
+                return ResourceManager.GetString("prefparam_path_backups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path : Saft-PT Export.
+        /// </summary>
+        public static string prefparam_path_saftpt {
+            get {
+                return ResourceManager.GetString("prefparam_path_saftpt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Report Logo FileName.
         /// </summary>
         public static string prefparam_report_filename_logo {
             get {
                 return ResourceManager.GetString("prefparam_report_filename_logo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Logo FileName Small.
+        /// </summary>
+        public static string prefparam_report_filename_logo_small {
+            get {
+                return ResourceManager.GetString("prefparam_report_filename_logo_small", resourceCulture);
             }
         }
         
@@ -6447,6 +6889,78 @@ namespace logicpos.resources.Resources.Localization {
         public static string prefparam_report_footer_line2 {
             get {
                 return ResourceManager.GetString("prefparam_report_footer_line2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Footer Line 3.
+        /// </summary>
+        public static string prefparam_report_footer_line3 {
+            get {
+                return ResourceManager.GetString("prefparam_report_footer_line3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Footer Line 4.
+        /// </summary>
+        public static string prefparam_report_footer_line4 {
+            get {
+                return ResourceManager.GetString("prefparam_report_footer_line4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Footer Line 5.
+        /// </summary>
+        public static string prefparam_report_footer_line5 {
+            get {
+                return ResourceManager.GetString("prefparam_report_footer_line5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Footer Line 6.
+        /// </summary>
+        public static string prefparam_report_footer_line6 {
+            get {
+                return ResourceManager.GetString("prefparam_report_footer_line6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autoridade Tributária Service : Account Fiscal Number.
+        /// </summary>
+        public static string prefparam_service_at_production_account_fiscal_number {
+            get {
+                return ResourceManager.GetString("prefparam_service_at_production_account_fiscal_number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autoridade Tributária Service : Account Password.
+        /// </summary>
+        public static string prefparam_service_at_production_account_password {
+            get {
+                return ResourceManager.GetString("prefparam_service_at_production_account_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autoridade Tributária Service : Sent Financial Documents.
+        /// </summary>
+        public static string prefparam_service_at_send_documents {
+            get {
+                return ResourceManager.GetString("prefparam_service_at_send_documents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autoridade Tributária Service : Sent Financial WayBills.
+        /// </summary>
+        public static string prefparam_service_at_send_documents_waybill {
+            get {
+                return ResourceManager.GetString("prefparam_service_at_send_documents_waybill", resourceCulture);
             }
         }
         
@@ -6487,6 +7001,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Application : Use Cached Images.
+        /// </summary>
+        public static string prefparam_use_cached_images {
+            get {
+                return ResourceManager.GetString("prefparam_use_cached_images", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account balance.
         /// </summary>
         public static string report_account_balance {
@@ -6514,7 +7037,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cash total.
+        ///   Looks up a localized string similar to Cash Total.
         /// </summary>
         public static string report_cash_total {
             get {
@@ -6523,7 +7046,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close peak hour.
+        ///   Looks up a localized string similar to Close Peak Hour.
         /// </summary>
         public static string report_close_peak_hour {
             get {
@@ -6541,7 +7064,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Courier deliver.
+        ///   Looks up a localized string similar to Courier Deliver.
         /// </summary>
         public static string report_courier_deliver {
             get {
@@ -6550,7 +7073,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Discounts per user.
+        ///   Looks up a localized string similar to Discounts per User.
         /// </summary>
         public static string report_discounts_per_user {
             get {
@@ -6559,7 +7082,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Employee movements.
+        ///   Looks up a localized string similar to Employee Movements.
         /// </summary>
         public static string report_employee_movements {
             get {
@@ -7694,6 +8217,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Input Reader.
+        /// </summary>
+        public static string window_title_edit_configurationinputreader {
+            get {
+                return ResourceManager.GetString("window_title_edit_configurationinputreader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit keyboard.
         /// </summary>
         public static string window_title_edit_configurationkeyboard {
@@ -7757,6 +8289,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pole Display.
+        /// </summary>
+        public static string window_title_edit_configurationpoledisplay {
+            get {
+                return ResourceManager.GetString("window_title_edit_configurationpoledisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit system parameters.
         /// </summary>
         public static string window_title_edit_configurationpreferenceparameter {
@@ -7798,6 +8339,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string window_title_edit_configurationvatrate {
             get {
                 return ResourceManager.GetString("window_title_edit_configurationvatrate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weighing Machine.
+        /// </summary>
+        public static string window_title_edit_configurationweighingmachine {
+            get {
+                return ResourceManager.GetString("window_title_edit_configurationweighingmachine", resourceCulture);
             }
         }
         

@@ -66,6 +66,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             columnProperties.Add(new GenericTreeViewColumnProperty("Token1") { Type = typeof(string), Visible = false });  //ClassifiedID
             /*14*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Token2") { Type = typeof(string), Visible = false });  //FriendlyID
+            /*15*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false });
 
             //init DataTable
             DataTable dataTable = GetDataTable(columnProperties);
@@ -131,6 +133,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         dataRow[12] = item.Value.PriceType;
                         dataRow[13] = item.Value.Token1;
                         dataRow[14] = item.Value.Token2;
+                        dataRow[15] = string.Empty;
 
                         //Add Row
                         resultDataTable.Rows.Add(dataRow);

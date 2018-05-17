@@ -105,22 +105,35 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     openTerminals += string.Format("{0}{1} - {2}", Environment.NewLine, currentOpenSessionTerminal.Designation, row.Values[xPSelectDataTerminals.GetFieldIndex("Designation")].ToString());
                 }
 
-                //Check if Has Opened Terminal Connections before Close Day
-                PosMessageDialog messageDialog = new PosMessageDialog(
-                  this,
-                  DialogFlags.DestroyWithParent,
-                  new Size(600, 300),
-                  string.Format(Resx.dialog_message_worksession_period_warning_open_terminals, noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals)),
-                  MessageType.Warning,
-                  ResponseType.Ok,
-                  Resx.global_button_label_ok
+////Check if Has Opened Terminal Connections before Close Day
+//PosMessageDialog messageDialog = new PosMessageDialog(
+//    this,
+//    DialogFlags.DestroyWithParent,
+//    new Size(600, 300),
+//    string.Format(Resx.dialog_message_worksession_period_warning_open_terminals, noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals)),
+//    MessageType.Warning,
+//    ResponseType.Ok,
+//    Resx.global_button_label_ok
+//);
+
+//int messageDialogResponse = messageDialog.Run();
+//messageDialog.Destroy();
+
+                ResponseType responseType = Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 400), MessageType.Question, ButtonsType.YesNo, Resx.global_information,
+                    string.Format(Resx.dialog_message_worksession_period_warning_open_terminals, noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals))
                 );
 
-                int messageDialogResponse = messageDialog.Run();
-                messageDialog.Destroy();
+                if (responseType == ResponseType.Yes) {
+                    return Utils.CloseAllOpenTerminals(this, GlobalFramework.SessionXpo);
 
-                //Exit Event Button Without Close Period Day Session
-                return false;
+                } 
+                else
+                {
+                    //Exit Event Button Without Close Period Day Session
+                    return false;
+                }
+
+
             }
             return true;
         }

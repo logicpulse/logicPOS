@@ -255,7 +255,11 @@ namespace logicpos.financial.library.Classes.Finance
                             //Ignored DocumentTypes (DocumentFinanceTypeInvoiceWayBill, this DocumentType use DocumentFinanceTypeInvoice Serie)
                             if (documentFinanceType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill)
                             {
-                                acronym = string.Format("{0}{1}{2}{3}", documentFinanceType.Acronym, acronymPrefix, terminalInc.ToString("00"), pAcronym);
+                                //2018-05-08 : Old Format : [FT005012018S1] : Search GenDocumentNumber in ProcessFinanceDocument
+                                //acronym = string.Format("{0}{1}{2}{3}", documentFinanceType.Acronym, acronymPrefix, terminalInc.ToString("00"), pAcronym);
+                                //2018-05-08 : New Format
+                                //acronym = string.Format("{0} {1}{2}{3}", documentFinanceType.Acronym, pAcronym, acronymPrefix, terminalInc);
+                                acronym = string.Format("{0} {1}{2}", documentFinanceType.Acronym, pAcronym, acronymPrefix);
                                 designation = string.Format("{0} {1}", documentFinanceType.Designation, acronym);
                                 if (!pPreviewMode)
                                 {

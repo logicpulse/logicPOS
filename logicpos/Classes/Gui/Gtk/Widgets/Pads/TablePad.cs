@@ -1,13 +1,13 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -124,7 +124,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Create List
             _listButtons = new List<TouchButtonBase>();
 
-            //signals/events
+            //Signals/events
             _buttonScrollPrev.Clicked += _buttonScrollPrev_Clicked;
             _buttonScrollNext.Clicked += _buttonScrollNext_Clicked;
 
@@ -161,9 +161,22 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 //Debug
                 SelectedData xpoSelectedData = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(executeSql);
+
                 SelectStatementResultRow[] selectStatementResultMeta = xpoSelectedData.ResultSet[0].Rows;
                 SelectStatementResultRow[] selectStatementResultData = xpoSelectedData.ResultSet[1].Rows;
-                //foreach (SelectStatementResultRow row in selectStatementResultMeta) _log.Debug(string.Format("UpdateSql(): {0}\t{1}\t{2}", row.Values[0], row.Values[1], row.Values[2]));
+                //    foreach (SelectStatementResultRow row in selectStatementResultMeta)
+                //    {
+                //        _log.Debug(string.Format("UpdateSql(): {0}\t{1}\t{2}", row.Values[0], row.Values[1], row.Values[2]));
+                //    }
+
+                // Detect Encrypted Model
+                if (GlobalFramework.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(SYS_UserDetail).ToLower()))
+                {
+                    // Inject nonPropertyFields that are outside of attributes Scope and are required to exists to be decrypted
+                    string[] nonPropertyFields = { "label" };
+                    // Unencrypt selectStatementResultData encrypted properties
+                    selectStatementResultData = XPGuidObject.DecryptSelectStatementResults(typeof(SYS_UserDetail), selectStatementResultMeta, selectStatementResultData, nonPropertyFields);
+                }
 
                 //Create a FieldIndex to Get Values From FieldNames
                 int i = 0;
@@ -373,7 +386,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Change New Selected Button Reference
             _selectedButton = button;
             if (_toggleMode) _selectedButton.Sensitive = false;
-            
+
             if (Clicked != null) Clicked(sender, e);
         }
 

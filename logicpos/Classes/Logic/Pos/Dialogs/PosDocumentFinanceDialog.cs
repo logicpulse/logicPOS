@@ -141,6 +141,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   article.UnitMeasure.Acronym
                 );
 
+                // Notes
+                if (!string.IsNullOrEmpty(item["Notes"].ToString()))
+                {
+                    articleBagProps.Notes = item["Notes"].ToString();
+                }
+
                 //Assign DocumentMaster Reference and Reason to ArticleBag item
                 if (sourceFinanceMaster != null)
                 {
@@ -150,6 +156,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 articleBag.Add(articleBagKey, articleBagProps);
             }
+
             return articleBag;
         }
 

@@ -14,8 +14,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("POS_ConfigurationPlaceMovementType", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("POS_ConfigurationPlaceMovementType", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceMovementType), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceMovementType), "Code");
             //In Retail Mode VatDirectSelling is always true;
             if (SettingsApp.AppMode == AppOperationMode.Retail)
             {

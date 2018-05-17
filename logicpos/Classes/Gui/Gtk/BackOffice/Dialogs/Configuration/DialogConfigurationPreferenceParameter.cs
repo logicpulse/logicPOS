@@ -14,7 +14,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = Utils.GetWindowTitle(Resx.window_title_edit_configurationpreferenceparameter);
-            SetSizeRequest(500, 331);
+            CFG_ConfigurationPreferenceParameter dataSourceRow = (CFG_ConfigurationPreferenceParameter)_dataSourceRow;
+            int windowHeight = (dataSourceRow.RegEx.Equals("RegexBoolean")) ? 331 - 20 : 331;
+            SetSizeRequest(500, windowHeight);
             InitUI();
             InitNotes();
             ShowAll();
@@ -24,23 +26,24 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             try
             {
-                CFG_ConfigurationPreferenceParameter dataSourceRow = (CFG_ConfigurationPreferenceParameter) _dataSourceRow;
+                CFG_ConfigurationPreferenceParameter dataSourceRow = (CFG_ConfigurationPreferenceParameter)_dataSourceRow;
 
                 //Define Label for Value
-                string valueLabel = (Resx.ResourceManager.GetString(dataSourceRow.ResourceString) != null) 
+                string valueLabel = (Resx.ResourceManager.GetString(dataSourceRow.ResourceString) != null)
                     ? Resx.ResourceManager.GetString(dataSourceRow.ResourceString)
                     : "LABEL NOT DEFINED IN Field  [ResourceString]";
 
                 //Define RegEx for Value
                 string valueRegEx = "REGULAR EXPRESSION NOT DEFINED IN Field [RegEx]";
-                if (dataSourceRow.RegEx != null) {
+                if (dataSourceRow.RegEx != null)
+                {
                     //Try to get Value
                     object objectValueRegEx = FrameworkUtils.GetFieldValueFromType(typeof(SettingsApp), dataSourceRow.RegEx);
                     if (objectValueRegEx != null) valueRegEx = objectValueRegEx.ToString();
                 }
 
                 //Define Label for Value
-                bool valueRequired = (dataSourceRow.Required) 
+                bool valueRequired = (dataSourceRow.Required)
                     ? dataSourceRow.Required
                     : false;
 
@@ -69,11 +72,25 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxTab1.PackStart(boxToken, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxToken, _dataSourceRow, "Token", SettingsApp.RegexAlfaNumericExtended, true));
 
-                //Value
                 Entry entryValue = new Entry();
-                BOWidgetBox boxValue = new BOWidgetBox(valueLabel, entryValue);
-                vboxTab1.PackStart(boxValue, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", valueRegEx, valueRequired));
+                //Value
+                if (dataSourceRow.RegEx.Equals("RegexBoolean"))
+                {
+                    CheckButton checkButtonValue = new CheckButton(valueLabel);
+                    vboxTab1.PackStart(checkButtonValue, false, false, 0);
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonValue, _dataSourceRow, "Value"));
+                }
+                else
+                {
+                    BOWidgetBox boxValue = new BOWidgetBox(valueLabel, entryValue);
+                    vboxTab1.PackStart(boxValue, false, false, 0);
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", valueRegEx, valueRequired));
+                    // ValueTip
+                    if (!string.IsNullOrEmpty(dataSourceRow.ValueTip))
+                    {
+                        entryValue.TooltipText = string.Format(Resx.global_prefparam_value_tip_format, dataSourceRow.ValueTip);
+                    }
+                }
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(Resx.global_record_main_detail));
@@ -82,19 +99,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Disable Components
                 entryToken.Sensitive = false;
-            
-                //Disable if is COMPANY_FISCALNUMBER
+
+                //Disable if is COMPANY_FISCALNUMBER or Other Sensitive Data
                 CFG_ConfigurationPreferenceParameter parameter = (_dataSourceRow as CFG_ConfigurationPreferenceParameter);
                 entryValue.Sensitive = (
                     parameter.Token != "COMPANY_NAME"
-                    && parameter.Token != "COMPANY_BUSINESS_NAME" 
-                    && parameter.Token != "COMPANY_COUNTRY" 
-                    && parameter.Token != "COMPANY_COUNTRY" 
-                    && parameter.Token != "COMPANY_COUNTRY_CODE2" 
-                    && parameter.Token != "COMPANY_FISCALNUMBER" 
-                    && parameter.Token != "SYSTEM_CURRENCY" 
-                    //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION" 
-                    //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION_ID"
+                    && parameter.Token != "COMPANY_BUSINESS_NAME"
+                    && parameter.Token != "COMPANY_COUNTRY"
+                    && parameter.Token != "COMPANY_COUNTRY"
+                    && parameter.Token != "COMPANY_COUNTRY_CODE2"
+                    && parameter.Token != "COMPANY_FISCALNUMBER"
+                    && parameter.Token != "SYSTEM_CURRENCY"
+                //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION" 
+                //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION_ID"
                 );
             }
             catch (System.Exception ex)

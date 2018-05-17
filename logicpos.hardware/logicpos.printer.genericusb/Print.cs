@@ -21,8 +21,9 @@ namespace logicpos.printer.genericusb
             //int vid = Convert.ToInt32(ConfigurationManager.AppSettings["printerVID"], 16);
             //int pid = Convert.ToInt32(ConfigurationManager.AppSettings["printerPID"], 16);
             //WriteEndpointID endpoint = GetEnumFromString(ConfigurationManager.AppSettings["printerEndPoint"]);
-            string printerPort = ConfigurationManager.AppSettings["printerPort"];
-            string[] printerParam = printerPort.Split('|');
+            //string printerPort = ConfigurationManager.AppSettings["printerPort"];
+            //string[] printerParam = printerPort.Split('|');
+            string[] printerParam = printerName.Split('|');
             int vid = Convert.ToInt32(printerParam[0], 16);
             int pid = Convert.ToInt32(printerParam[1], 16);
             WriteEndpointID endpointWrite = GetWriteEndpointFromString(printerParam[2]);

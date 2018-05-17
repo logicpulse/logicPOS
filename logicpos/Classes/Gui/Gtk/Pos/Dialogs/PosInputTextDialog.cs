@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System;
 using System.Drawing;
+using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -35,23 +36,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             set { _value = value; }
         }
 
-        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
-            : this(pSourceWindow, pDialogFlags, new Size(600, 200), pWindowTitle, pEntryLabel, pDefaultValue, pRule, pRequired)
+        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
+            : this(pSourceWindow, pDialogFlags, new Size(600, 200), pWindowTitle, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired)
         {
         }
 
-        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pEntryLabel, string pInitialValue, string pRule, bool pRequired)
-            :this (pSourceWindow, pDialogFlags, pSize, pWindowTitle, pEntryLabel, pInitialValue, KeyboardMode.AlfaNumeric, pRule, pRequired)
+        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pInitialValue, string pRule, bool pRequired)
+            :this (pSourceWindow, pDialogFlags, pSize, pWindowTitle, pWindowIcon, pEntryLabel, pInitialValue, KeyboardMode.AlfaNumeric, pRule, pRequired)
         {
         }
 
-        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pEntryLabel, string pInitialValue, KeyboardMode pKeyboardMode, string pRule, bool pRequired)
+        public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pInitialValue, KeyboardMode pKeyboardMode, string pRule, bool pRequired)
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
             String windowTitle = pWindowTitle;
             Size windowSize = pSize;
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+
+            if (!File.Exists(pWindowIcon))
+            {
+                pWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+            }
 
             //Always assign  pInitialValue to Dialog.Value
             _value = pInitialValue;
@@ -88,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
+            this.InitObject(this, pDialogFlags, pWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
         }
     }
 }

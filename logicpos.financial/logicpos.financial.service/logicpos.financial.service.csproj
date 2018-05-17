@@ -31,6 +31,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>application.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Data.v14.1">
       <HintPath>..\..\libs\xpo_14_1_5\DevExpress.Data.v14.1.dll</HintPath>
@@ -80,11 +83,23 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\Certificates\ChavePublicaAT.cer">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Resources\Certificates\ChaveCifraPublicaAT2020.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Certificates\ChaveCifraPublicaAT2020.cer">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Certificates\ChaveCifraPublicaAT2020.info">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Certificates\TesteWebService.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Certificates\TesteWebService.info">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Certificates\TesteWebService.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Utils\service_install.bat" />
     <None Include="Utils\service_start.bat" />
@@ -93,8 +108,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Objects\Service\Service1.svc" />
+    <Content Include="Resources\Certificates\TesteWebService.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
+      <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
+      <Name>logicpos.plugin.contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\logicpos.financial.library\logicpos.financial.library.csproj">
       <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
       <Name>logicpos.financial.library</Name>

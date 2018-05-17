@@ -393,6 +393,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\sales.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\relationshipTables.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

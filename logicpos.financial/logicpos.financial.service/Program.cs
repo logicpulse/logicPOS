@@ -7,6 +7,8 @@ using logicpos.financial.service.Objects;
 using logicpos.financial.service.Objects.Service;
 using logicpos.financial.service.Test.Modules.AT;
 using logicpos.financial.servicewcf;
+using logicpos.plugin.contracts;
+using logicpos.plugin.library;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,7 +43,7 @@ namespace logicpos.financial.service
             get { return Program._servicePort; }
         }
         //Timer
-        //private static System.Timers.Timer _timer;
+        private static System.Timers.Timer _timer;
         private static bool _timerRunningTasks = false;
 
         static void Main(string[] args)
@@ -109,26 +111,23 @@ namespace logicpos.financial.service
                 GlobalFramework.Path = new Hashtable();
                 GlobalFramework.Path.Add("temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]));
                 GlobalFramework.Path.Add("certificates", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]));
+                GlobalFramework.Path.Add("plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]));
                 //Create Directories
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["certificates"])));
 
+                // VendorPlugin
+                InitPlugins();
+
                 //Prepare AutoCreateOption
                 AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
-
-                //CultureInfo/Localization
-                if (GlobalFramework.Settings["culture"] != null)
-                {
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(GlobalFramework.Settings["culture"]);
-                }
-                GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
-
-                //Always use en-US NumberFormat because of MySql Requirements
-                GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
 
                 //Get DataBase Details
                 GlobalFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), GlobalFramework.Settings["databaseType"]);
                 GlobalFramework.DatabaseName = SettingsApp.DatabaseName;
+                //Override default Database name with parameter from config
+                string configDatabaseName = GlobalFramework.Settings["databaseName"];
+                GlobalFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? SettingsApp.DatabaseName : configDatabaseName;
                 //Xpo Connection String
                 string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
 
@@ -155,20 +154,71 @@ namespace logicpos.financial.service
                 //PreferenceParameters
                 GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
 
+                //CultureInfo/Localization
+                string culture = GlobalFramework.PreferenceParameters["CULTURE"];
+                if (!string.IsNullOrEmpty(culture))
+                {
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+                }
+                GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
+                //Always use en-US NumberFormat because of MySql Requirements
+                GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
+
                 //SettingsApp
-                SettingsApp.ConfigurationSystemCountry = (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCountry), new Guid(GlobalFramework.Settings["xpoOidConfigurationCountrySystemCountry"]));
-                SettingsApp.ConfigurationSystemCurrency = (CFG_ConfigurationCurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCurrency), new Guid(GlobalFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]));
+                string companyCountryOid = GlobalFramework.PreferenceParameters["COMPANY_COUNTRY_OID"];
+                string systemCurrencyOid = GlobalFramework.PreferenceParameters["SYSTEM_CURRENCY_OID"];
+                SettingsApp.ConfigurationSystemCountry = (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCountry), new Guid(companyCountryOid));
+                SettingsApp.ConfigurationSystemCurrency = (CFG_ConfigurationCurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCurrency), new Guid(systemCurrencyOid));
 
                 //After Construct Settings (ex Required path["certificates"])
                 Utils.Log(string.Format("BootStrap {0}....", SettingsApp.AppName));
 
-                // Show WS Mode
-                Utils.Log(string.Format("ServicesATEnableTestMode: [{0}]", SettingsApp.ServicesATEnableTestMode));
+                //Show WS Mode
+                Utils.Log(string.Format("ServiceATEnableTestMode: [{0}]", SettingsApp.ServiceATEnableTestMode));
+
+                // Protection to Check if all Required values are met
+                if (!HasAllRequiredValues())
+                {
+                    throw new Exception($"Error! Invalid Parameters Met! Required parameters missing! Check parameters: AccountFiscalNumber: [{SettingsApp.ServicesATAccountFiscalNumber}], ATAccountPassword: [{SettingsApp.ServicesATAccountPassword}], TaxRegistrationNumber: [{SettingsApp.ServicesATTaxRegistrationNumber}]");
+                }
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
             }
+        }
+
+        private static void InitPlugins()
+        {
+            // Init PluginContainer
+            GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
+
+            // PluginSoftwareVendor
+            GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
+            if (GlobalFramework.PluginSoftwareVendor != null)
+            {
+                // Show Loaded Plugin
+                _log.Info(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                // Init Plugin
+                SettingsApp.InitSoftwareVendorPluginSettings();
+            }
+            else
+            {
+                // Error Loading Required Plugin
+                string errorMessage = string.Format("Error! missing required plugin: [{0}]. Install required plugin and try again!", typeof(ISoftwareVendor));
+                _log.Error(errorMessage);
+                Console.WriteLine(errorMessage);
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
+        }
+
+        private static bool HasAllRequiredValues()
+        {
+            return (string.IsNullOrEmpty(SettingsApp.ServicesATAccountFiscalNumber)
+                || string.IsNullOrEmpty(SettingsApp.ServicesATAccountPassword)
+                || string.IsNullOrEmpty(SettingsApp.ServicesATTaxRegistrationNumber)
+            );
         }
 
         private static void InitTestActions()
@@ -292,7 +342,7 @@ namespace logicpos.financial.service
             _serviceHost.Open();
 
             //StartTimer
-            //StartTimer(_timer);
+            StartTimer(_timer);
         }
 
         public static void Stop()
@@ -302,8 +352,8 @@ namespace logicpos.financial.service
             // Close the ServiceHost.
             _serviceHost.Close();
 
-            //StartTimer
-            //StopTimer(_timer);
+            //StopTimer
+            StopTimer(_timer);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -313,7 +363,7 @@ namespace logicpos.financial.service
         {
             if (SettingsApp.ServiceTimerEnabled)
             {
-                //_log.Debug("Service StartTimer");
+                _log.Debug("Service StartTimer");
                 pTimer = new System.Timers.Timer(SettingsApp.ServiceTimerInterval);
                 pTimer.AutoReset = true;
                 pTimer.Elapsed += new System.Timers.ElapsedEventHandler(TimerElapsedEvent);

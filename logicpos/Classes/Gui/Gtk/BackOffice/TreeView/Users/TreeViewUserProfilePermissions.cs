@@ -122,21 +122,22 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Navigator = new GenericTreeViewNavigator<XPCollection, XPGuidObject>(_sourceWindow, this, _navigatorMode);
 
             //TODO:THEME
-            if (GlobalApp.ScreenSize.Width >= 800)
+            //if (GlobalApp.ScreenSize.Width >= 800)
+            //{
+            TouchButtonIconWithText buttonApplyPrivileges = Navigator.GetNewButton("touchButtonApplyPrivileges_DialogActionArea", Resx.global_user_apply_privileges, @"Icons/icon_pos_nav_refresh.png");
+            //buttonApplyPrivileges.WidthRequest = 110;
+            //Apply Permissions
+            buttonApplyPrivileges.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
+            //Event
+            buttonApplyPrivileges.Clicked += delegate
             {
-                TouchButtonIconWithText buttonApplyPrivileges = Navigator.GetNewButton("touchButtonApplyPrivileges_DialogActionArea", Resx.global_user_apply_privileges, @"Icons/icon_pos_nav_refresh.png");
-                buttonApplyPrivileges.WidthRequest = 110;
-                //Apply Permissions
-                buttonApplyPrivileges.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
-                //Event
-                buttonApplyPrivileges.Clicked += delegate { 
-                    GlobalApp.WindowBackOffice.Accordion.UpdateMenuPrivileges(); 
-                    //Force Update MainWindow Pos Privilegs ex TollBar Buttons etc
-                    GlobalApp.WindowPos.TicketList.UpdateTicketListButtons();
-                };
-                //Add to Extra Slot
-                Navigator.ExtraSlot.PackStart(buttonApplyPrivileges, false, false, 0);
-            }
+                GlobalApp.WindowBackOffice.Accordion.UpdateMenuPrivileges();
+                //Force Update MainWindow Pos Privilegs ex TollBar Buttons etc
+                GlobalApp.WindowPos.TicketList.UpdateTicketListButtons();
+            };
+            //Add to Extra Slot
+            Navigator.ExtraSlot.PackStart(buttonApplyPrivileges, false, false, 0);
+            //}
 
             //Pack components
             scrolledWindowProfile.Add(treeViewProfile);

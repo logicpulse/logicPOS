@@ -146,7 +146,7 @@ namespace FastReport
   </Dictionary>
   <inherited Name="Page1">
     <inherited Name="PageHeader1" Height="264.6" BeforePrintEvent="PageHeader1_BeforePrint">
-      <inherited Name="PictureCompanyLogo" Left="1" Width="126.3"/>
+      <inherited Name="PictureCompanyLogo"/>
       <inherited Name="TextLicenceName"/>
       <inherited Name="TextCompanyAddress"/>
       <inherited Name="TextCompanyPostalcode"/>

@@ -124,6 +124,20 @@ namespace logicpos.shared.Classes.Utils
             {
                 chars[i] = stringchars[rand.Next(stringchars.Length)];
             }
+            
+            return new string(chars);
+        }
+
+        public static string GenerateRandomStringAlphaUpper(int size)
+        {
+            Random rand = new Random();
+            string stringchars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            char[] chars = new char[size];
+            for (int i = 0; i < size; i++)
+            {
+                chars[i] = stringchars[rand.Next(stringchars.Length)];
+            }
+
             return new string(chars);
         }
     }

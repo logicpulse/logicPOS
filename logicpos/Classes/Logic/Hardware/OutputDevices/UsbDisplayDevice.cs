@@ -156,7 +156,7 @@ namespace logicpos.Classes.Logic.Hardware
                     {
                         Close();
                         // Write that output to the console.
-                        _log.Error(UsbDevice.LastErrorString);
+                        _log.Error((string.IsNullOrEmpty(UsbDevice.LastErrorString)) ? _usbErrorCode.ToString() : UsbDevice.LastErrorString);
                         //throw new Exception(UsbDevice.LastErrorString);
                     }
                 }
@@ -464,35 +464,32 @@ namespace logicpos.Classes.Logic.Hardware
         /// Returns a valid Display Object from Pos Settings or Null
         /// </summary>
         /// <returns></returns>
-        public static object InitDisplay()
+        public static UsbDisplayDevice InitDisplay()
         {
-            object result = null;
+            //Log4Net
+            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-            bool hardwareDisplayEnabled = Convert.ToBoolean(GlobalFramework.Settings["hardwareDisplayEnabled"]);
-            if (hardwareDisplayEnabled)
+            UsbDisplayDevice result = null;
+
+            try
             {
-                string hardwareDisplayVID = GlobalFramework.Settings["hardwareDisplayVID"];
-                string hardwareDisplayPID = GlobalFramework.Settings["hardwareDisplayPID"];
-                string hardwareDisplayEndPoint = GlobalFramework.Settings["hardwareDisplayEndPoint"];
-                string hardwareDisplayCodeTable = GlobalFramework.Settings["hardwareDisplayCodeTable"];
-                int hardwareDisplayCharactersPerLine = Convert.ToUInt16(GlobalFramework.Settings["hardwareDisplayCharactersPerLine"]);
-                uint hardwareDisplayGoToStandByInSeconds = Convert.ToUInt16(GlobalFramework.Settings["hardwareDisplayGoToStandByInSeconds"]);
-                string hardwareDisplayStandByLine1 = GlobalFramework.Settings["hardwareDisplayStandByLine1"];
-                string hardwareDisplayStandByLine2 = GlobalFramework.Settings["hardwareDisplayStandByLine2"];
-
                 //Init
                 UsbDisplayDevice displayDevice = new UsbDisplayDevice(
-                    hardwareDisplayVID,
-                    hardwareDisplayPID,
-                    hardwareDisplayEndPoint
+                    GlobalFramework.LoggedTerminal.PoleDisplay.VID,
+                    GlobalFramework.LoggedTerminal.PoleDisplay.PID,
+                    GlobalFramework.LoggedTerminal.PoleDisplay.EndPoint
                 );
                 //Initializers
-                displayDevice._charactersPerLine = hardwareDisplayCharactersPerLine;
-                displayDevice._standByInSeconds = hardwareDisplayGoToStandByInSeconds;
-                displayDevice._standByLine1 = hardwareDisplayStandByLine1;
-                displayDevice._standByLine2 = hardwareDisplayStandByLine2;
+                displayDevice._charactersPerLine = Convert.ToInt16(GlobalFramework.LoggedTerminal.PoleDisplay.DisplayCharactersPerLine);
+                displayDevice._standByInSeconds = GlobalFramework.LoggedTerminal.PoleDisplay.GoToStandByInSeconds;
+                displayDevice._standByLine1 = GlobalFramework.LoggedTerminal.PoleDisplay.StandByLine1;
+                displayDevice._standByLine2 = GlobalFramework.LoggedTerminal.PoleDisplay.StandByLine2;
 
                 result = displayDevice;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message, ex);
             }
 
             return result;

@@ -1,5 +1,8 @@
-﻿using logicpos.App;
+﻿using Gtk;
+using logicpos.App;
 using logicpos.Classes.Enums.App;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.resources.Resources.Localization;
 using System;
 using System.IO;
 
@@ -10,7 +13,7 @@ namespace logicpos.Classes.Logic.License
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static bool showDebug = false;
+        public static bool showDebug = true;
         string hardwareID = string.Empty;
 
         private bool _loadApp = false;
@@ -30,7 +33,6 @@ namespace logicpos.Classes.Logic.License
             _loadApp = true;
 
 #if (DEBUG)
-//#if (!DEBUG)
             GlobalFramework.LicenceDate = DateTime.Now.ToString("dd/MM/yyyy");
             GlobalFramework.LicenceVersion = "POS_CORPORATE";
             GlobalFramework.LicenceName = "DEBUG";
@@ -46,23 +48,23 @@ namespace logicpos.Classes.Logic.License
 #endif
 
 #if (!DEBUG)
-//#if (DEBUG)
             if (showDebug) _log.Debug("Before GetLicenceInfo");
 
             GetLicenceInfo();
 
             try
             {
-                // If Plugin Registered in Container                
-                if (GlobalApp.IntelliLockWS == null)
+                // If Plugin is Not Registered in Container                
+                if (GlobalFramework.PluginLicenceManager == null)
                 {
                     if (showDebug) _log.Debug("Skip License Manager, Plugin is Not Registered!");
                 }
+                // If Plugin Registered in Container                
                 else
                 {
                     byte[] registredLicence = new byte[0];
 
-                    hardwareID = GlobalApp.IntelliLockWS.GetHardwareID();
+                    hardwareID = GlobalFramework.PluginLicenceManager.GetHardwareID();
                     GlobalFramework.LicenceHardwareId = hardwareID;
                     _log.Info("Detected hardwareID: " + GlobalFramework.LicenceHardwareId);
                     string version = "logicpos";
@@ -70,20 +72,20 @@ namespace logicpos.Classes.Logic.License
                     //Try Update Licence    
                     try
                     {
-                        if (GlobalApp.IntelliLockWS.GetLicenseInformation().Count > 0)
+                        if (GlobalFramework.PluginLicenceManager.GetLicenseInformation().Count > 0)
                         {
-                            version = GlobalApp.IntelliLockWS.GetLicenseInformation()["version"].ToString();
+                            version = GlobalFramework.PluginLicenceManager.GetLicenseInformation()["version"].ToString();
                         }
 
                         //Compare WS License with Local License (GlobalFramework.LicenceVersion)
-                        registredLicence = GlobalApp.IntelliLockWS.GetLicence(hardwareID, version);
+                        registredLicence = GlobalFramework.PluginLicenceManager.GetLicence(hardwareID, version);
 
                         //If Diferent Licenses return 1 byte and update local license file, else if equal return byte 0, skipping if
                         if (showDebug) _log.Info("registredLicence.Length: " + registredLicence.Length);
 
                         if (registredLicence.Length > 0)
                         {
-                            string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(), GlobalApp.IntelliLockWS.GetLicenseFilename());
+                            string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(), GlobalFramework.PluginLicenceManager.GetLicenseFilename());
                             completeFilePath = completeFilePath.Replace("\\", "/");
                             //Used to generate diferent license file names per HardwareId : to Enable find "completeFilePath"
                             //string completeFilePath = GetCurrentDirectory() + string.Format("logicpos_{0}.license", textBoxHardwareID.Text);
@@ -94,18 +96,17 @@ namespace logicpos.Classes.Logic.License
 
                             return;
                         }
-
-                        //Detected Blocked Version
-                        if (version == "LOGICPOS_BLOCK")
-                        {
-                            Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, Resx.global_error, Resx.dialog_message_license_blocked);
-
-                            return;
-                        }
                     }
                     catch (Exception ex)
                     {
                         _log.Error(ex.Message);
+                    }
+                    //Detected Blocked Version : Code must be here to works with Online and Offline Mode
+                    if (version == "LOGICPOS_BLOCK")
+                    {
+                        Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, Resx.global_error, Resx.dialog_message_license_blocked);
+
+                        return;
                     }
                 }
 
@@ -143,7 +144,7 @@ namespace logicpos.Classes.Logic.License
 
             if (showDebug) _log.Debug("end");
         }
-
+        
         public static void GetLicenceInfo()
         {
             GlobalFramework.LicenceDate = DateTime.Now.ToString("dd/MM/yyyy");
@@ -204,7 +205,7 @@ namespace logicpos.Classes.Logic.License
 
         public static bool NeedToRegister()
         {
-            if (GlobalFramework.PluginLicenceManager.IsLicensed())
+            if (! GlobalFramework.PluginLicenceManager.IsLicensed())
             {
                 if (showDebug) _log.Debug("NeedToRegister = true");
                 return true;

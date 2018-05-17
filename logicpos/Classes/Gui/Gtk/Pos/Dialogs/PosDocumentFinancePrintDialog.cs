@@ -109,8 +109,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         void checkButtonBox1_Clicked(object sender, EventArgs e)
         {
-            //Force CheckBox1 to be always Active
-            (sender as CheckButtonExtended).Active = true;
+            //Force CheckBox1 to be always Active if is not in SecondCopy Mode
+            if (!_checkButtonBoxSecondCopy.Active)
+            {
+                (sender as CheckButtonExtended).Active = true;
+            }
         }
 
         void checkButtonBoxSecondCopy_Clicked(object sender, EventArgs e)
@@ -145,10 +148,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 else if (i > 0)
                 {
+                    // Mode#1
+                    // Above Code is Deprecated of 2018.05.04, now Second Copy checkboxs works same as Orginal, Uncomment Block and Comment Above block to Restore to old Method
+                    ////Active CheckBox if is in PrintCopies Range
+                    //activeCheckButton = (i < _printCopies && !_secondCopy);
+                    ////Disable If is in SecondCopy
+                    //sensitiveCheckButton = (!_secondCopy);
+                    // Mode#2
                     //Active CheckBox if is in PrintCopies Range
-                    activeCheckButton = (i < _printCopies && !_secondCopy);
-                    //Disable If is in SecondCopy
-                    sensitiveCheckButton = (!_secondCopy);
+                    activeCheckButton = (i < _printCopies);
                 };
 
                 //Update Active and Sensitive

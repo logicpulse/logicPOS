@@ -7,13 +7,23 @@ namespace logicpos.datalayer.DataLayer.Xpo
     [DeferredDeletion(false)]
     public class ERP_Customer : XPGuidObject
     {
+        //Log4Net
+        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         public ERP_Customer() : base() { }
-        public ERP_Customer(Session session) : base(session) { }
+        public ERP_Customer(Session session) : base(session)
+        {
+            // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist
+            InitEncryptedAttributes<ERP_Customer>();
+        }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("ERP_Customer", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("ERP_Customer", "Code");
+            // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
+            InitEncryptedAttributes<ERP_Customer>();
+
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(ERP_Customer), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(ERP_Customer), "Code");
             Country = this.Session.GetObjectByKey<CFG_ConfigurationCountry>(SettingsApp.ConfigurationSystemCountry.Oid);
         }
 
@@ -35,7 +45,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public UInt32 Code
         {
             get { return fCode; }
-            set { SetPropertyValue<UInt32 >("Code", ref fCode, value); }
+            set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
         string fCodeInternal;
@@ -47,6 +57,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fName;
+[Size(512)]
+        [XPGuidObject(Encrypted = true)]
         public string Name
         {
             get { return fName; }
@@ -54,6 +66,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fAddress;
+[Size(512)]
+        [XPGuidObject(Encrypted = true)]
         public string Address
         {
             get { return fAddress; }
@@ -61,6 +75,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fLocality;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string Locality
         {
             get { return fLocality; }
@@ -68,6 +84,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fZipCode;
+        [XPGuidObject(Encrypted = true)]
         public string ZipCode
         {
             get { return fZipCode; }
@@ -75,6 +92,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fCity;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string City
         {
             get { return fCity; }
@@ -82,6 +101,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fDateOfBirth;
+        [XPGuidObject(Encrypted = true)]
         public string DateOfBirth
         {
             get { return fDateOfBirth; }
@@ -89,6 +109,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fPhone;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string Phone
         {
             get { return fPhone; }
@@ -96,6 +118,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fFax;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string Fax
         {
             get { return fFax; }
@@ -103,6 +127,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fMobilePhone;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string MobilePhone
         {
             get { return fMobilePhone; }
@@ -110,6 +136,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEmail;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string Email
         {
             get { return fEmail; }
@@ -117,6 +145,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fWebSite;
+        [XPGuidObject(Encrypted = true)]
         [Size(255)]
         public string WebSite
         {
@@ -125,6 +154,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fFiscalNumber;
+        [XPGuidObject(Encrypted = true)]
         //Removed, now we can have diferent customers with blacnk or null FisaclNumber
         //[Indexed(Unique = true)]
         public string FiscalNumber
@@ -134,6 +164,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fCardNumber;
+        [XPGuidObject(Encrypted = true)]
         [Indexed(Unique = true)] //Give Problems in MsSqlServer, Must have a Card for Every Customer, Dont permit NULL 
         public string CardNumber
         {
@@ -202,7 +233,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return fSupplier; }
             set { SetPropertyValue<Boolean>("Supplier", ref fSupplier, value); }
-        }        
+        }
 
         //Assign True to Temporary Customers, Customers that was created in Finance Documents without FiscalNumber
         Boolean fHidden;

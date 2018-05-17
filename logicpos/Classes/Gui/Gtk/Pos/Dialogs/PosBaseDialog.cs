@@ -97,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _windowTitleCloseButton = pWindowTitleCloseButton;
 
             //Init Window Black Mask
-            if (_useBaseDialogWindowMask && ! Debugger.IsAttached)
+            if (_useBaseDialogWindowMask /*&& ! Debugger.IsAttached*/)
             {
                 //Window Mask Background Hack
                 _windowMaskBackground = new Window("");

@@ -78,16 +78,6 @@ namespace logicpos
                     Utils.AssignLicence(SettingsApp.LicenceFileName, true);
                 }
 
-                //CultureInfo/Localization
-                if (GlobalFramework.Settings["culture"] != null)
-                {
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(GlobalFramework.Settings["culture"]);
-                }
-                GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
-
-                //Always use en-US NumberFormat because of mySql Requirements
-                GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
-
                 //Other Global App Settings
                 GlobalApp.MultiUserEnvironment = Convert.ToBoolean(GlobalFramework.Settings["appMultiUserEnvironment"]);
                 GlobalApp.UseVirtualKeyBoard = Convert.ToBoolean(GlobalFramework.Settings["useVirtualKeyBoard"]);
@@ -99,18 +89,11 @@ namespace logicpos
                 //System
                 GlobalApp.FilePickerStartPath = System.IO.Directory.GetCurrentDirectory();
 
-                bool validDirectoryBackup = FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
-                //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
-                if (!validDirectoryBackup)
-                {
-                    ResponseType response = Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, Resx.global_error, string.Format(Resx.dialog_message_error_create_directory_backups, Convert.ToString(GlobalFramework.Path["backups"])));
-                    //Enable Quit After BootStrap, Preventing Application.Run()
-                    if (response == ResponseType.No) _quitAfterBootStrap = true;
-                }
-
                 //Get DataBase Details
                 GlobalFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), GlobalFramework.Settings["databaseType"]);
-                GlobalFramework.DatabaseName = SettingsApp.DatabaseName;
+                //Override default Database name with parameter from config
+                string configDatabaseName = GlobalFramework.Settings["databaseName"];
+                GlobalFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? SettingsApp.DatabaseName : configDatabaseName;
                 //Xpo Connection String
                 string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
                 Utils.AssignConnectionStringToSettings(xpoConnectionString);
@@ -164,6 +147,10 @@ namespace logicpos
                     }
                 }
 
+                // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
+                // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
+                if (GlobalFramework.PluginSoftwareVendor != null) logicpos.datalayer.App.SettingsApp.PluginSoftwareVendor = GlobalFramework.PluginSoftwareVendor;
+
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
                 {
@@ -187,8 +174,29 @@ namespace logicpos
                     Environment.Exit(0);
                 }
 
-                //PreferenceParameters
+                //Init PreferenceParameters
                 GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
+                //Init Preferences Path
+               MainApp.InitPathsPrefs();
+
+                bool validDirectoryBackup = FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
+                //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
+                if (!validDirectoryBackup)
+                {
+                    ResponseType response = Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, Resx.global_error, string.Format(Resx.dialog_message_error_create_directory_backups, Convert.ToString(GlobalFramework.Path["backups"])));
+                    //Enable Quit After BootStrap, Preventing Application.Run()
+                    if (response == ResponseType.No) _quitAfterBootStrap = true;
+                }
+
+                //CultureInfo/Localization
+                string culture = GlobalFramework.PreferenceParameters["CULTURE"];
+                if (!string.IsNullOrEmpty(culture))
+                {
+                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+                }
+                GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
+                //Always use en-US NumberFormat because of mySql Requirements
+                GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
 
                 //Init AppSession
                 string appSessionFile = Utils.GetSessionFileName();
@@ -200,7 +208,8 @@ namespace logicpos
                 GlobalFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Use Detected ScreenSize
-                if (GlobalFramework.Settings["appScreenSize"].Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(GlobalFramework.Settings["appScreenSize"]))
+                string appScreenSize = GlobalFramework.PreferenceParameters["APP_SCREEN_SIZE"];
+                if (appScreenSize.Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(appScreenSize))
                 {
                     // Force Unknown Screen Size
                     //GlobalApp.ScreenSize = new Size(2000, 1800);
@@ -209,7 +218,7 @@ namespace logicpos
                 //Use config ScreenSize
                 else
                 {
-                    Size configAppScreenSize = Utils.StringToSize(GlobalFramework.Settings["appScreenSize"]);
+                    Size configAppScreenSize = Utils.StringToSize(GlobalFramework.PreferenceParameters["APP_SCREEN_SIZE"]);
                     GlobalApp.ScreenSize = Utils.GetThemeScreenSize(configAppScreenSize);
                 }
 
@@ -220,7 +229,7 @@ namespace logicpos
                 ExpressionEvaluatorExtended.InitVariablesPosMainWindow();
 
                 // Define Max Dialog Window Size
-                GlobalApp.MaxWindowSize = new Size(GlobalApp.ScreenSize.Width - 20, GlobalApp.ScreenSize.Height - 20);
+                GlobalApp.MaxWindowSize = new Size(GlobalApp.ScreenSize.Width - 40, GlobalApp.ScreenSize.Height - 40);
                 // Add Variables to ExpressionEvaluator.Variables Singleton
                 GlobalApp.ExpressionEvaluator.Variables.Add("globalScreenSize", GlobalApp.ScreenSize);
 
@@ -245,8 +254,7 @@ namespace logicpos
                 CustomFunctions.Register(SettingsApp.AppName);
 
                 //Init Display
-                bool hardwareDisplayEnabled = Convert.ToBoolean(GlobalFramework.Settings["hardwareDisplayEnabled"]);
-                if (hardwareDisplayEnabled)
+                if (GlobalFramework.LoggedTerminal.PoleDisplay != null)
                 {
                     GlobalApp.HWUsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
                     GlobalApp.HWUsbDisplay.WriteCentered(string.Format("{0} {1}", SettingsApp.AppName, FrameworkUtils.ProductVersion), 1);
@@ -255,14 +263,17 @@ namespace logicpos
                 }
 
                 //Init BarCodeReader 
-                GlobalApp.HWBarCodeReader = new InputReader();
+                if (GlobalFramework.LoggedTerminal.PoleDisplay != null)
+                {
+                    GlobalApp.HWBarCodeReader = new InputReader();
+                }
 
                 //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
                 if (GlobalFramework.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
                 {
-                    _backupDatabaseTimeSpan = TimeSpan.Parse(GlobalFramework.Settings["databaseBackupTimeSpan"]);
-                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(GlobalFramework.Settings["databaseBackupTimeSpanRangeStart"]);
-                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(GlobalFramework.Settings["databaseBackupTimeSpanRangeEnd"]);
+                    _backupDatabaseTimeSpan = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
+                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
+                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
                     StartBackupTimer();
                 }
 
@@ -403,7 +414,7 @@ namespace logicpos
                 {
                     _log.Debug("Init windowImageFileName ");
                     string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
-                    _log.Debug("new StartupWindow " + windowImageFileName);
+                    _log.Debug("StartupWindow " + windowImageFileName);
                     GlobalApp.WindowStartup = new StartupWindow(windowImageFileName);
                 }
                 catch (Exception ex)

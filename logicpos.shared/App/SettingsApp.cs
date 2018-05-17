@@ -193,7 +193,9 @@ namespace logicpos.shared.App
         //This will match valid dates in the format DD/MM/YYYY. It takes leap years into account when matching feb 29th and covers from 01/01/0000 to 31/12/9999
         //public static string RegexDate = @"^(((0[1-9]|[12][0-9]|3[01])[- /\\.](0[13578]|1[02])|(0[1-9]|[12][0-9]|30)[- /\\.](0[469]|11)|(0[1-9]|1\d|2[0-8])[- /\\.]02)[- /\\.]\d{4}|29[- /\\.]02[- /\\.](\d{2}(0[48]|[2468][048]|[13579][26])|([02468][048]|[1359][26])00))$";
         //Custom YYYY/MM/DD Leap Years
-        public static string RegexDate = @"^((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]((0[13578])|(1[02]))[-\/\\.]((0[1-9])|([12][0-9])|(3[01])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))-((0[469])|11)-((0[1-9])|([12][0-9])|(30)))|(((000[48])|([0-9]0-9)|([0-9][1-9][02468][048])|([1-9][0-9][02468][048])|([0-9]0-9)|([0-9][1-9][13579][26])|([1-9][0-9][13579][26]))-02-((0[1-9])|([12][0-9])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))-02-((0[1-9])|([1][0-9])|([2][0-8])))$";
+        //public static string RegexDate = @"^((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]((0[13578])|(1[02]))[-\/\\.]((0[1-9])|([12][0-9])|(3[01])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))-((0[469])|11)-((0[1-9])|([12][0-9])|(30)))|(((000[48])|([0-9]0-9)|([0-9][1-9][02468][048])|([1-9][0-9][02468][048])|([0-9]0-9)|([0-9][1-9][13579][26])|([1-9][0-9][13579][26]))-02-((0[1-9])|([12][0-9])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))-02-((0[1-9])|([1][0-9])|([2][0-8])))$";
+        //Fixed some typos Regex in dates like 2017/11/11 that wont work
+        public static string RegexDate = @"^((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]((0[13578])|(1[02]))[-\/\\.]((0[1-9])|([12][0-9])|(3[01])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]((0[469])|11)[-\/\\.]((0[1-9])|([12][0-9])|(30)))|(((000[48])|([0-9]0-9)|([0-9][1-9][02468][048])|([1-9][0-9][02468][048])|([0-9]0-9)|([0-9][1-9][13579][26])|([1-9][0-9][13579][26]))[-\/\\.]02[-\/\\.]((0[1-9])|([12][0-9])))|((([0-9][0-9][0-9][1-9])|([1-9][0-9][0-9][0-9])|([0-9][1-9][0-9][0-9])|([0-9][0-9][1-9][0-9]))[-\/\\.]02[-\/\\.]((0[1-9])|([1][0-9])|([2][0-8])))$";
         public static string RegexTime = @"^(0[0-9]|1[0-9]|2[0-3])(:[0-5]\d)(:[0-5]\d)$";
         //public static string RegexDateTime = @"^(((\d\d)(([02468][048])|([13579][26]))-02-29)|(((\d\d)(\d\d)))-((((0\d)|(1[0-2]))-((0\d)|(1\d)|(2[0-8])))|((((0[13578])|(1[02]))-31)|(((0[1,3-9])|(1[0-2]))-(29|30)))))\s(([01]\d|2[0-3]):([0-5]\d):([0-5]\d))$";
         //Custom YYYY/MM/DD 23:11:28 With Leap Years
@@ -213,7 +215,9 @@ namespace logicpos.shared.App
         //public static string RegexLoginPassword = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^ ]{8,}$";
         //^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&'])[^ ]{8,}$
         //Document Series Acronym
-        public static string RegexDocumentSeriesAcronym = @"^[0-9A-Za-z]{4,8}$";
+
+        public static string RegexDocumentSeriesAcronym = @"^[0-9A-Za-z]{4,12}$";
+        public static string RegexDocumentSeriesYearAcronym = @"^[0-9A-Za-z]{4,12}$";
         public static string RegexIPv4 = @"^(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]){3}$";
         //BackOffice Specific Fields
         public static string RegexAlfaNumericArticleCode = @"^[0-9A-Za-z€$&@#%()\[\]+\-_ \.\\\/]{2,25}$";
@@ -227,6 +231,21 @@ namespace logicpos.shared.App
         public static string RegexAcronym2Chars = @"^[0-9A-Za-z]{2}$";
         public static string RegexAcronym3Chars = @"^[0-9A-Za-z]{3}$";
         public static string RegexAcronym2Or3Chars = @"^[0-9A-Za-z]{2,3}$";
+        // Printer Network Name or Usb Config ex "\\LP-MARIO-PC\GenericPrinter" or "0x0471|0x0055|Ep02"
+        public static string RegexHardwarePrinterNetworkNameAndUsbEndpoint = @"^[0-9A-Za-z\\|-]*$";
+        //Other
+        public static string RegexIntegerSplittedByComma = @"^(\d+(,\d+)*)?$";
+        // Hardware PoleDisplay : Ex 0x0F12
+        public static string RegexHardwareVidAndPid = @"^0x[0-9A-Fa-f]{4}$";
+        // Hardware PoleDisplay : Ex Ep01....Ep99
+        public static string RegexHardwareEndpoint = @"^Ep[0-9]{1,2}$";
+        // Hardware PoleDisplay : Ex 0x10
+        public static string RegexHardwareCodeTable = @"^0x[0-9]{1,2}$";
+        //Prefs
+        public static string RegexSize = @"^([0-9]{0,9}),([0-9]{0,9})$";
+        public static string RegexTheme = @"^Default|Retail$";
+        public static string RegexOperationMode = @"^Default|Retail$";
+        public static string RegexCulture = @"^([a-z]{2})-([A-Z]{2})$";
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Override From Config : Replaced by Country RegexFiscalNumber & RegexZipCode
@@ -338,12 +357,17 @@ namespace logicpos.shared.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Thermal Printer Ticket
 
-        public static string PrinterThermalEncoding = GlobalFramework.Settings["PrinterThermalEncoding"];
-        public static bool PrinterThermalPrintLogo = Convert.ToBoolean(GlobalFramework.Settings["PrinterThermalPrintLogo"]);
-        public static string PrinterThermalImageCompanyLogo = GlobalFramework.Settings["PrinterThermalImageCompanyLogo"];
-        public static int PrinterThermalMaxCharsPerLineNormal = Convert.ToInt16(GlobalFramework.Settings["PrinterThermalMaxCharsPerLineNormal"]);
-        public static int PrinterThermalMaxCharsPerLineNormalBold = Convert.ToInt16(GlobalFramework.Settings["PrinterThermalMaxCharsPerLineNormalBold"]);
-        public static int PrinterThermalMaxCharsPerLineSmall = Convert.ToInt16(GlobalFramework.Settings["PrinterThermalMaxCharsPerLineSmall"]);
+        // Defaults for New PrinterThermal
+        public static string PrinterThermalEncoding = "PC860";
+        public static bool PrinterThermalPrintLogo = false;
+        public static string PrinterThermalImageCompanyLogo = "Images/Tickets/company_logo_thermal.bmp";
+        public static int PrinterThermalMaxCharsPerLineNormal = 48;
+        public static int PrinterThermalMaxCharsPerLineNormalBold = 44;
+        public static int PrinterThermalMaxCharsPerLineSmall = 64;
+        public static string PrinterThermalCutCommand = "0x42,0x00";
+        public static int PrinterThermalOpenDrawerValueM = 0;
+        public static int PrinterThermalOpenDrawerValueT1 = 3;
+        public static int PrinterThermalOpenDrawerValueT2 = 49;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Reports

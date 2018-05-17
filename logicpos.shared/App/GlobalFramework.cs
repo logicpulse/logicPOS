@@ -44,7 +44,6 @@ namespace logicpos.shared.App
         // Plugins
         public static ISoftwareVendor PluginSoftwareVendor;
         public static ILicenceManager PluginLicenceManager;
-
         //User/Terminal/Permissions
         public static Dictionary<string, bool> LoggedUserPermissions;
         //PreferenceParameters

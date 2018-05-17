@@ -6,3 +6,6 @@ Always remove
 	3) Styles
 	
 	from inherited reports 
+	
+PDF	Render Problems
+	Use Wysiwyg

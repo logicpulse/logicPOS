@@ -13,8 +13,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("FIN_DocumentFinanceType", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("FIN_DocumentFinanceType", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceType), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceType), "Code");
         }
 
         UInt32 fOrd;

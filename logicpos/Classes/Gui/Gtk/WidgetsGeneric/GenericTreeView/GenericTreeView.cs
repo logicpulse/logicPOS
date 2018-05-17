@@ -4,9 +4,11 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
@@ -659,7 +661,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (
                 (pDialogMode == DialogMode.Update && _allowRecordUpdate && !_skipRecordUpdate) ||
-                (pDialogMode == DialogMode.Insert && _allowRecordInsert && ! _skipRecordInsert) ||
+                (pDialogMode == DialogMode.Insert && _allowRecordInsert && !_skipRecordInsert) ||
                 (pDialogMode == DialogMode.View && _allowRecordView)
                 )
             {
@@ -788,6 +790,23 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     _dialog.Destroy();
                     if (response == ResponseType.Ok)
                     {
+                        // OnSave/Update column, must Update ResourceString Columns[?].ResourceString, else we see the resourceString Token and not the Value From Resources
+                        // ex prefparam_report_footer_line1 and we need the "Value Report Footer Line 1", this is REQUIRED, else we need to refresh to update Column Tree Value
+                        foreach (var column in _columnProperties)
+                        {
+                            if (column.ResourceString)
+                            {
+                                // Reflection : Get Property from Column.Name and Update its Value with reflection propertyInfo
+                                // This is the Trick to update Column display ResourceString after we Change/Update records
+                                string columnValue = pDataObject.GetType().GetProperty(column.Name).GetValue(pDataObject).ToString();
+                                pDataObject.GetType().GetProperty(column.Name).SetValue(pDataObject, Resx.ResourceManager.GetString(columnValue).ToString());
+                                if (Debugger.IsAttached)
+                                {
+                                    _log.Debug($"GenericTreeView: Replaced ResourceString column name [{column.Name}] with value [{columnValue}] after Update Record...");
+                                }
+                            }
+                        }
+
                         return true;
                     }
                     else
@@ -1226,7 +1245,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         {
             if (RecordAfterView != null) { RecordAfterView(this, EventArgs.Empty); }
         }
-        
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Public Methods to Check if Event has a Listener from Outside
 

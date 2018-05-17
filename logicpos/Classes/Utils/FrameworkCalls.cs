@@ -105,7 +105,7 @@ namespace logicpos
             return result;
         }
 
-        //ATWS: Check if Document is a Valid Document to sed to ATWebServices
+        //ATWS: Check if Document is a Valid Document to send to ATWebServices
         public static bool SendDocumentToATWSEnabled(FIN_DocumentFinanceMaster documentFinanceMaster)
         {
             bool result = false;

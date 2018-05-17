@@ -23,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             String windowTitle = Resx.global_reports;
             System.Drawing.Size windowSize = new System.Drawing.Size(500, 509);//454
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_reports.png");
 
             System.Drawing.Size sizeIcon = new System.Drawing.Size(50, 50);
 
@@ -56,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         /// <summary>
-        /// Get Accordion Definition and Generate Privileges (Outout to Console)
+        /// Get Accordion Definition and Generate Privileges (Output to Console)
         /// </summary>
         /// <returns></returns>
         private Dictionary<string, AccordionNode> GetAccordionDefinition()
@@ -155,7 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         new AccordionNode(buttonLabelReportTypeString)
                         {
                             Childs = accordionChilds,
-                            GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_artigos.png")
+                            GroupIcon = new Image($"Assets/Images/Icons/Reports/{reportType.MenuIcon}")
                         });
                 }
 

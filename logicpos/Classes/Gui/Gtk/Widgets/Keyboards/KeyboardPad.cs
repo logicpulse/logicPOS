@@ -361,6 +361,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 case "enter":
                     if (_textEntry.Validated)
                     {
+                        // This Will Crash only in Debug, if Run Outside it Wont Crash (Simply disappear without log error)
                         try
                         {
                             ParentDialog.Respond(ResponseType.Ok);

@@ -51,8 +51,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             buttonTableConsult.Clicked += buttonTableConsult_Clicked;
             //buttonListFinanceDocuments.Clicked += buttonListFinanceDocuments_Clicked;
 
-            // Enable/Disable PtintTicket based on Printer Type, Currently PrintTicket is only Implemented in Thermal Printers
-            buttonPrintOrder.Sensitive = GlobalFramework.LoggedTerminal.Printer.PrinterType.Token.StartsWith("THERMAL_PRINTER_");
+            // Enable/Disable PrintTicket based on Printer Type, Currently PrintTicket is only Implemented in Thermal Printers
+            bool printerMissing = (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.PrinterType.Token.StartsWith("THERMAL_PRINTER_"));
+            buttonPrintOrder.Sensitive = printerMissing;
+            buttonTableConsult.Sensitive = printerMissing;
         }
     }
 }

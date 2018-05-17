@@ -732,6 +732,50 @@ namespace logicpos
             PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal);
             ResponseType response = (ResponseType)dialog.Run();
             dialog.Destroy();
+
+            //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+            //Test Encrypted Creating Objects outside of BO
+
+            //try
+            //{
+            //    int size = 10;
+
+            //    ERP_Customer customer = new ERP_Customer(GlobalFramework.SessionXpo)
+            //    {
+            //        Name = Utils.GenerateRandomStringAlphaUpper(size),
+            //        Address = Utils.GenerateRandomStringAlphaUpper(size),
+            //        Locality = Utils.GenerateRandomStringAlphaUpper(size),
+            //        ZipCode = Utils.GenerateRandomStringAlphaUpper(size),
+            //        City = Utils.GenerateRandomStringAlphaUpper(size),
+            //        DateOfBirth = Utils.GenerateRandomStringAlphaUpper(size),
+            //        Phone = Utils.GenerateRandomStringAlphaUpper(size),
+            //        Fax = Utils.GenerateRandomStringAlphaUpper(size),
+            //        MobilePhone = Utils.GenerateRandomStringAlphaUpper(size),
+            //        Email = Utils.GenerateRandomStringAlphaUpper(size),
+            //        WebSite = Utils.GenerateRandomStringAlphaUpper(size),
+            //        FiscalNumber = Utils.GenerateRandomStringAlphaUpper(size),
+            //        CardNumber = Utils.GenerateRandomStringAlphaUpper(size)
+            //    };
+
+            //    // Required to Encrypt Properties Before Save DEPRECTATED now we have all inside XPGuidObject
+            //    //customer.EncryptProperties();
+            //    customer.Save();
+            //}
+            //catch (Exception ex)
+            //{
+            //    _log.Error(ex.Message, ex);
+            //}
+
+            //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+            // Test XPGuidObjectAttribute[]
+
+            //XPGuidObjectAttribute[] attr = Utils.GetXPGuidObjectAttributes(typeof(ERP_Customer));
+
+            //Dictionary<string, PropertyInfo> attributes = XPGuidObject.GetXPGuidObjectAttributes(typeof(ERP_Customer), false);
+            //foreach (var item in attributes)
+            //{
+            //    _log.Debug($"[{item.Key}]=[{item.Value}]");
+            //}
         }
     }
 }

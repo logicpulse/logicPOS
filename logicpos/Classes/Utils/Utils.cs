@@ -14,6 +14,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
+using logicpos.datalayer.DataLayer;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
@@ -582,18 +583,18 @@ namespace logicpos
             }
         }
 
-        public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
+        public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
         {
-            return GetInputText(pSourceWindow, pDialogFlags, Resx.window_title_default_input_text_dialog, pEntryLabel, pDefaultValue, pRule, pRequired);
+            return GetInputText(pSourceWindow, pDialogFlags, Resx.window_title_default_input_text_dialog, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
         }
 
-        public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
+        public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
         {
             ResponseText result = new ResponseText();
             result.ResponseType = ResponseType.Cancel;
 
             //Prepare Dialog
-            PosInputTextDialog dialog = new PosInputTextDialog(pSourceWindow, pDialogFlags, pWindowTitle, pEntryLabel, pDefaultValue, pRule, pRequired);
+            PosInputTextDialog dialog = new PosInputTextDialog(pSourceWindow, pDialogFlags, pWindowTitle, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
 
             //Call Dialog
             try
@@ -1570,6 +1571,38 @@ namespace logicpos
 
             return configurationPlaceTerminal;
         }
+
+        public static bool CloseAllOpenTerminals(Window pSourceWindow, Session pSession)
+        {
+            bool result = false;
+
+            try
+            {
+                // SELECT Oid, PeriodType, SessionStatus, Designation FROM pos_worksessionperiod WHERE PeriodType = 1 AND SessionStatus = 0;
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse("PeriodType = 1 AND SessionStatus = 0");
+                SortProperty[] sortProperty = new SortProperty[2];
+                sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Ascending);
+                XPCollection xpcWorkingSessionPeriod = new XPCollection(pSession, typeof(POS_WorkSessionPeriod), criteriaOperator, sortProperty);
+
+                if (xpcWorkingSessionPeriod.Count > 0)
+                {
+                    foreach (POS_WorkSessionPeriod item in xpcWorkingSessionPeriod)
+                    {
+                        item.SessionStatus = WorkSessionPeriodStatus.Close;
+                        item.Save();
+                    }
+                }
+
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+           return result;
+        }
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Windows
 
@@ -1586,6 +1619,8 @@ namespace logicpos
                     try
                     {
                         string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+
+                        //_log.Debug(string.Format("fileImageBackgroundWindowPos: [{0}]", GlobalFramework.Settings["fileImageBackgroundWindowPos"]));
                         string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, appOperationModeToken, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                         GlobalApp.WindowPos = new PosMainWindow(windowImageFileName);
                     }
@@ -1662,18 +1697,18 @@ namespace logicpos
 
         public static string GetThemeFileLocation(string pFile)
         {
-            return GetThemeFileLocation(GlobalFramework.Settings["appTheme"], pFile);
+            return GetThemeFileLocation(GlobalFramework.PreferenceParameters["APP_THEME"], pFile);
+        }
+
+        public static Gtk.Style GetThemeStyleBackground(string pFile)
+        {
+            return GetThemeStyleBackground(GlobalFramework.PreferenceParameters["APP_THEME"], pFile);
         }
 
         public static string GetThemeFileLocation(string pTheme, string pFile)
         {
             string pathThemes = GlobalFramework.Path["themes"].ToString();
             return FrameworkUtils.OSSlash(string.Format(@"{0}{1}\{2}", pathThemes, pTheme, pFile));
-        }
-
-        public static Gtk.Style GetThemeStyleBackground(string pFile)
-        {
-            return GetThemeStyleBackground(GlobalFramework.Settings["appTheme"], pFile);
         }
 
         public static Gtk.Style GetThemeStyleBackground(string pTheme, string pFile)
@@ -1843,7 +1878,14 @@ namespace logicpos
         {
             bool result = false;
 
-            result = Convert.ToBoolean(GlobalFramework.Settings["useCachedImages"]);
+            try
+            {
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_CACHED_IMAGES"]);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
 
             return (result);
         }
@@ -2075,7 +2117,7 @@ namespace logicpos
             }
         }
 
-        //Method to Check Equallity from Db Fields to Input Fields, Rqeuired to compare null with "" etc
+        //Method to Check Equallity from Db Fields to Input Fields, Required to compare null with "" etc
         public static bool CheckIfFieldChanged(object pFieldDb, object pFieldInput)
         {
             bool result = false;

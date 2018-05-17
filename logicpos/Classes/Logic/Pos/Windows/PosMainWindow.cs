@@ -49,7 +49,7 @@ namespace logicpos
         void PosMainWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             //Redirect Event to BarCodeReader.KeyReleaseEvent
-            GlobalApp.HWBarCodeReader.KeyReleaseEvent(this, o, args);
+            if (GlobalApp.HWBarCodeReader != null) GlobalApp.HWBarCodeReader.KeyReleaseEvent(this, o, args);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

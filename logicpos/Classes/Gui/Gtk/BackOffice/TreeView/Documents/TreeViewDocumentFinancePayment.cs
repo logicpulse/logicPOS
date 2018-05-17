@@ -41,10 +41,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             columnProperties.Add(new GenericTreeViewColumnProperty("EntityName") { 
                 Title = Resx.global_entity, MinWidth = 260, MaxWidth = 260,
                 Query = string.Format(query, "cusName", "{0}"),
+                DecryptValue = true
             });
             columnProperties.Add(new GenericTreeViewColumnProperty("EntityFiscalNumber") { 
                 Title = Resx.global_fiscal_number, MinWidth = 70, MaxWidth = 120 ,
                 Query = string.Format(query, "cusFiscalNumber", "{0}"),
+                DecryptValue = true
             });
             columnProperties.Add(new GenericTreeViewColumnProperty("PaymentAmount")
             {

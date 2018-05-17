@@ -68,7 +68,7 @@ namespace logicpos.financial.service.Objects
             {
                 //Includes FR SAF-T v1.03
                 where += @"(
-                    (ft.Acronym = 'FT' OR ft.Acronym = 'FS' OR ft.Acronym = 'NC' OR ft.Acronym = 'ND' OR ft.Acronym = 'FR') 
+                    ((ft.Acronym = 'FT' AND ft.WayBill <> 1) OR ft.Acronym = 'FS' OR ft.Acronym = 'NC' OR ft.Acronym = 'ND' OR ft.Acronym = 'FR') 
                     AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'A')
                 )";
             }
@@ -453,6 +453,7 @@ namespace logicpos.financial.service.Objects
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
+                Console.Write($"Error: [{ex.Message}]");
             }
 
             return result;
@@ -471,22 +472,20 @@ namespace logicpos.financial.service.Objects
             ServicesATSoapResult soapResult = sendDocument.SoapResult;
 
             //Show Result
-            /*
-            Log(string.Format("SendDocument DocumentMaster: [{0}]", documentMaster.DocumentNumber));
-            Log(string.Format("SendDocument ResultRaw: [{0}]", resultSend));
-            if (sendDocument.SoapResult != null) {
-                Log(string.Format(@"{0}ResultCode: [{1}]{0}ResultMessage: [{2}]"
-                    , Environment.NewLine
-                    , sendDocument.SoapResult.ReturnCode
-                    , sendDocument.SoapResult.ReturnMessage
-                ));
-                //WB
-                if (!string.IsNullOrEmpty(sendDocument.SoapResult.ATDocCodeID))
-                {
-                    Log(string.Format(@"ATDocCodeID: [{0}]", sendDocument.SoapResult.ATDocCodeID));
-                }
-            }
-            */
+            //Log(string.Format("SendDocument DocumentMaster: [{0}]", documentMaster.DocumentNumber));
+            //Log(string.Format("SendDocument ResultRaw: [{0}]", resultSend));
+            //if (sendDocument.SoapResult != null) {
+            //    Log(string.Format(@"{0}ResultCode: [{1}]{0}ResultMessage: [{2}]"
+            //        , Environment.NewLine
+            //        , sendDocument.SoapResult.ReturnCode
+            //        , sendDocument.SoapResult.ReturnMessage
+            //    ));
+            //    //WB
+            //    if (!string.IsNullOrEmpty(sendDocument.SoapResult.ATDocCodeID))
+            //    {
+            //        Log(string.Format(@"ATDocCodeID: [{0}]", sendDocument.SoapResult.ATDocCodeID));
+            //    }
+            //}
 
             return soapResult;
         }

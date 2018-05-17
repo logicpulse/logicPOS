@@ -170,8 +170,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                         }
                         catch (Exception ex)
                         {
-                            _log.Error(string.Format("fieldName: [{0}], fieldType: [{1}], fieldTypeDB: [{2}], fieldValue: [{3}]", fieldName, fieldType, fieldTypeDB, fieldValue));
-                            _log.Error(ex.Message, ex);
+                            // Intentionnaly Commented ex
+                            // Prevent Showing Conversion Error, Only Occur in Sales Per Day(Detailled/Group) Report, Minot problem, it Show Good Value
+                            //_log.Error(string.Format("fieldName: [{0}], fieldType: [{1}], fieldTypeDB: [{2}], fieldValue: [{3}]", fieldName, fieldType, fieldTypeDB, fieldValue));
+                            //_log.Error(ex.Message, ex);
                         }
                     }
                     //Add genericTypeObject to Collection :)

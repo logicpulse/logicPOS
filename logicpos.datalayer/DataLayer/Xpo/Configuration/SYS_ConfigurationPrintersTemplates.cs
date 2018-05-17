@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("SYS_ConfigurationPrintersTemplates", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("SYS_ConfigurationPrintersTemplates", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrintersTemplates), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrintersTemplates), "Code");
         }
 
         UInt32 fOrd;

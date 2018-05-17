@@ -277,7 +277,7 @@ namespace logicpos.financial.library.Classes.Finance
                     documentFinanceMaster.DocumentStatusDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
 
                     //Notes
-                    if (documentFinanceMaster.Notes != null && pParameters.Notes != String.Empty)
+                    if (pParameters.Notes != String.Empty)
                     {
                         documentFinanceMaster.Notes = pParameters.Notes;
                     }
@@ -382,6 +382,12 @@ namespace logicpos.financial.library.Classes.Finance
                                 documentFinanceDetail.VatExemptionReasonDesignation = vatExemptionReason.Designation;
                             }
 
+                            //Notes
+                            if (item.Value.Notes != null)
+                            {
+                                documentFinanceDetail.Notes = item.Value.Notes;
+                            }
+
                             //Order References
                             //(4.1|2|3.3.20.2 Referência ao documento de origem)
                             if (pParameters.OrderReferences != null && pParameters.OrderReferences.Count > 0)
@@ -470,7 +476,11 @@ namespace logicpos.financial.library.Classes.Finance
                     //Store CodeInternals to use in SAF-T
                     documentFinanceMaster.DocumentStatusUser = userDetail.CodeInternal;
                     documentFinanceMaster.DocumentCreatorUser = userDetail.CodeInternal;
-                    documentFinanceMaster.EACCode = GlobalFramework.PreferenceParameters["COMPANY_CAE"];
+                    //CAE is Deprecated, this will prevent triggering Errors
+                    if (GlobalFramework.PreferenceParameters.ContainsKey("COMPANY_CAE") && ! string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["COMPANY_CAE"].ToString()))
+                    {
+                        documentFinanceMaster.EACCode = GlobalFramework.PreferenceParameters["COMPANY_CAE"];
+                    }
 
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                     //Customer Card
@@ -623,6 +633,7 @@ namespace logicpos.financial.library.Classes.Finance
             var olastDocumentHash = pSession.ExecuteScalar(sql);
             string lastDocumentHash = (olastDocumentHash != null) ? olastDocumentHash.ToString() : "";
             string signTargetString = string.Format("{0};{1};{2};{3};{4}", doc.DocumentDate, doc.SystemEntryDate, doc.DocumentNumber, TotalFinalRound, lastDocumentHash);
+            
             // Old Method without Plugin
             //resultSignedHash = FrameworkUtils.SignDataToSHA1Base64(signTargetString, debug);
             // Sign Document if has a valid PluginSoftwareVendor 
@@ -660,9 +671,13 @@ namespace logicpos.financial.library.Classes.Finance
                 string serieID = pDocType.Acronym; ;
                 string seqNumber = "" + pDocType.NextDocumentNumber;
 
-                string tmpInvoiceFormat = "{0} {1}/{2}";
 
-                documentNumber = string.Format(tmpInvoiceFormat, publicDocID, serieID, seqNumber);
+                //2018-05-08 : Old Format : [FT005012018S1] : Search GenDocumentNumber in ProcessFinanceDocument
+                //string tmpInvoiceFormat = "{0} {1}/{2}";
+                //documentNumber = string.Format(tmpInvoiceFormat, publicDocID, serieID, seqNumber);
+                //2018-05-08 : New Format : [   05012018S1]
+                string tmpInvoiceFormat = "{0}/{1}";
+                documentNumber = string.Format(tmpInvoiceFormat, serieID, seqNumber);
 
                 return documentNumber;
             }

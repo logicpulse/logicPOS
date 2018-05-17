@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("POS_ConfigurationKeyboard", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("POS_ConfigurationKeyboard", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationKeyboard), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationKeyboard), "Code");
         }
 
         UInt32 fOrd;

@@ -51,7 +51,7 @@ namespace logicpos.plugin.library
             
             foreach (var item in this)
             {
-                Console.WriteLine(item);
+                //_log.Debug(String.Format("GetFirstPluginOfType: {0}", item));
 
                 if (item.Value is T) {
                     // Add To founded plugins

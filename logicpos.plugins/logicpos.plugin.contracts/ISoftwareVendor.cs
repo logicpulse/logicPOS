@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace logicpos.plugin.contracts
 {
@@ -13,7 +14,8 @@ namespace logicpos.plugin.contracts
         string GetAppCompanyEmail();
         string GetAppCompanyWeb();
         string GetAppSoftwareVersionFormat();
-
+        string GetAppSoftwareATWSProdModeCertificatePassword();
+        
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Files/File Formats
 
@@ -95,7 +97,10 @@ namespace logicpos.plugin.contracts
         void ValidateEmbbededResources();
 
         // Methods to Encrypt and Decrypt
-        string Encrypt(string toEncrypt, bool useHashing);
-        string Decrypt(string cipherString, bool useHashing);
+        string Encrypt(string toEncrypt);
+        string Decrypt(string cipherString);
+
+        // AT WebService
+        X509Certificate2 ImportCertificate(bool testModeEnabled, string pathCertificate);
     }
 }

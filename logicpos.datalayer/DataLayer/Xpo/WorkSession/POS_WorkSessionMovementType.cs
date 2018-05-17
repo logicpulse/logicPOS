@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("POS_WorkSessionMovementType", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("POS_WorkSessionMovementType", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_WorkSessionMovementType), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_WorkSessionMovementType), "Code");
         }
 
         UInt32 fOrd;

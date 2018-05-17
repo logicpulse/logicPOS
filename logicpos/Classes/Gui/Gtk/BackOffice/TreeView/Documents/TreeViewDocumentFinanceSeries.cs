@@ -55,7 +55,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
 
             //Configure Criteria/XPCollection/Model : Use Default Filter
-            CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null)) ? CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)") : pXpoCriteria;
+            CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null))
+                // Generate Default Criteria
+                ? CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)")
+                // Add to Parameter Criteria
+                : CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND ({0})", pXpoCriteria.ToString()))
+            ;
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             //Call Base Initializer
@@ -69,20 +74,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
               typeDialogClass                 //Created Here
             );
 
-            if (GlobalApp.ScreenSize.Width > 800)
-            {
-                //Add Extra Button to Navigator
-                _buttonCreateDocumentFinanceSeries = Navigator.GetNewButton("touchButtonCreateDocumentFinanceSeries_DialogActionArea", Resx.pos_button_create_series, @"Icons/icon_pos_nav_new.png");
-                _buttonCreateDocumentFinanceSeries.WidthRequest = 110;
-                //Check if Has an Active Year Open before apply Permissions
-                FIN_DocumentFinanceYears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
-                //Apply Permissions 
-                _buttonCreateDocumentFinanceSeries.Sensitive = (currentDocumentFinanceYear != null && FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES"));
-                //Event
-                _buttonCreateDocumentFinanceSeries.Clicked += buttonCreateDocumentFinanceSeries_Clicked;
-                //Add to Extra Slot
-                Navigator.ExtraSlot.PackStart(_buttonCreateDocumentFinanceSeries, false, false, 0);
-            }
+            //Add Extra Button to Navigator
+            _buttonCreateDocumentFinanceSeries = Navigator.GetNewButton("touchButtonCreateDocumentFinanceSeries_DialogActionArea", Resx.pos_button_create_series, @"Icons/icon_pos_nav_new.png");
+            //_buttonCreateDocumentFinanceSeries.WidthRequest = 110;
+            //Check if Has an Active Year Open before apply Permissions
+            FIN_DocumentFinanceYears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
+            //Apply Permissions 
+            _buttonCreateDocumentFinanceSeries.Sensitive = (currentDocumentFinanceYear != null && FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES"));
+            //Event
+            _buttonCreateDocumentFinanceSeries.Clicked += buttonCreateDocumentFinanceSeries_Clicked;
+            //Add to Extra Slot
+            Navigator.ExtraSlot.PackStart(_buttonCreateDocumentFinanceSeries, false, false, 0);
         }
 
         private void buttonCreateDocumentFinanceSeries_Clicked(object sender, EventArgs e)
@@ -94,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 xpcDocumentFinanceYears.Reload();
 
                 //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
-                TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal = 
+                TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal =
                     ((_sourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs.ContainsKey("DocumentFinanceYearSerieTerminal"))
                     ? ((_sourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
                     : null;
@@ -158,18 +160,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Refresh Terminal XPO Object
                 XPCollection xpcConfigurationPlaceTerminal = new XPCollection(GlobalFramework.SessionXpo, typeof(POS_ConfigurationPlaceTerminal));
                 xpcConfigurationPlaceTerminal.Reload();
-                
+
                 //Get Terminals
                 DataTable dataTableSelectedTerminals = PosSelectRecordDialog<DataTable, DataRow, TreeViewTerminalSeries>.GetSelected(pSourceWindow);
 
                 //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
-                TreeViewDocumentFinanceSeries treeViewDocumentFinanceSeries = 
+                TreeViewDocumentFinanceSeries treeViewDocumentFinanceSeries =
                     ((pSourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs.ContainsKey("DocumentFinanceSeries"))
                     ? ((pSourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs["DocumentFinanceSeries"].Content as TreeViewDocumentFinanceSeries)
                     : null;
 
                 //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
-                TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal = 
+                TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal =
                     ((pSourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs.ContainsKey("DocumentFinanceYearSerieTerminal"))
                     ? ((pSourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
                     : null;
@@ -177,70 +179,78 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (dataTableSelectedTerminals != null && dataTableSelectedTerminals.Rows.Count > 0)
                 {
                     //Request Acronym
-                    string initialValue = string.Format("{0}{1}", pDocumentFinanceYear.Acronym, "01");
+                    //string initialValue = string.Format("{0}{1}", pDocumentFinanceYear.Acronym, "01");
+                    string initialValue = pDocumentFinanceYear.Acronym;
                     logicpos.Utils.ResponseText resultAcronym = TreeViewDocumentFinanceSeries.PosConfirmAcronymSeriesDialog(pSourceWindow, pDocumentFinanceYear, dataTableSelectedTerminals, initialValue);
 
-                    int sqlCheckExistingSeriesResultInt = 0;
-                    string sqlCheckExistingSeries = "SELECT COUNT(*) AS Count FROM fin_documentfinanceseries WHERE (Disabled = 0 OR Disabled IS NULL);";
-                    object sqlCheckExistingSeriesResult = GlobalFramework.SessionXpo.ExecuteScalar(sqlCheckExistingSeries);
-                    if (sqlCheckExistingSeriesResult != null) sqlCheckExistingSeriesResultInt = Convert.ToInt16(sqlCheckExistingSeriesResult);
+                    // Protect to Skip Cancel
+                    if (resultAcronym.ResponseType == ResponseType.Ok)
+                    {
+                        int sqlCheckExistingSeriesResultInt = 0;
+                        string sqlCheckExistingSeries = "SELECT COUNT(*) AS Count FROM fin_documentfinanceseries WHERE (Disabled = 0 OR Disabled IS NULL);";
+                        object sqlCheckExistingSeriesResult = GlobalFramework.SessionXpo.ExecuteScalar(sqlCheckExistingSeries);
+                        if (sqlCheckExistingSeriesResult != null) sqlCheckExistingSeriesResultInt = Convert.ToInt16(sqlCheckExistingSeriesResult);
 
-                    //Request User Confirmation if already has working Series
-                    ResponseType responseType = ResponseType.No;
-                    if (resultAcronym.ResponseType == ResponseType.Ok && sqlCheckExistingSeriesResultInt > 0)
-                    {
-                        responseType = Utils.ShowMessageTouch(
-                            GlobalApp.WindowStartup,
-                            DialogFlags.Modal,
-                            MessageType.Question,
-                            ButtonsType.YesNo,
-                            Resx.window_title_series_create_series,
-                            Resx.dialog_message_series_create_confirmation_text
-                        );
-                    }
-                    else
-                    {
-                        //Auto Yes, if dont have series 
-                        responseType = ResponseType.Yes;
-                    }
-
-                    if (responseType == ResponseType.Yes)
-                    {
-                        //Get Result
-                        FrameworkCallsResult frameworkCallsResult = ProcessFinanceDocumentSeries.CreateDocumentFinanceYearSeriesTerminal(pDocumentFinanceYear, dataTableSelectedTerminals, resultAcronym.Text, false);
-                        //Prepare Result
-                        result = frameworkCallsResult.Result;
-                        //Refresh Child Trees DocumentFinanceYearSerieTerminal
-                        if (result)
+                        //Request User Confirmation if already has working Series
+                        ResponseType responseType = ResponseType.No;
+                        if (resultAcronym.ResponseType == ResponseType.Ok && sqlCheckExistingSeriesResultInt > 0)
                         {
-                            //Refresh TreeViewDocumentFinanceSeries (If Visible/Enabled)
-                            if (treeViewDocumentFinanceSeries != null) treeViewDocumentFinanceSeries.Refresh();
-                            //Refresh TreeViewDocumentFinanceYearSerieTerminal (If Visible/Enabled)
-                            if (treeViewDocumentFinanceYearSerieTerminal != null) treeViewDocumentFinanceYearSerieTerminal.Refresh();
+                            responseType = Utils.ShowMessageTouch(
+                                GlobalApp.WindowStartup,
+                                DialogFlags.Modal,
+                                MessageType.Question,
+                                ButtonsType.YesNo,
+                                Resx.window_title_series_create_series,
+                                Resx.dialog_message_series_create_confirmation_text
+                            );
                         }
-                        //Show Error to User, Outside of Framework (Non UI)
                         else
                         {
-                            Utils.ShowMessageTouch(
-                                pSourceWindow,
-                                DialogFlags.Modal,
-                                MessageType.Error,
-                                ButtonsType.Ok,
-                                Resx.global_error,
-                                string.Format("{0}{1}{1}{2}",
-                                    string.Format(Resx.dialog_message_series_create_error, resultAcronym.Text),
-                                    Environment.NewLine,
-                                    frameworkCallsResult.Exception.InnerException.Message
-                                )
-                             );
+                            //Auto Yes, if dont have series, assumes Yes 
+                            responseType = ResponseType.Yes;
                         }
+
+                        if (responseType == ResponseType.Yes)
+                        {
+                            //Get Result
+                            FrameworkCallsResult frameworkCallsResult = ProcessFinanceDocumentSeries.CreateDocumentFinanceYearSeriesTerminal(pDocumentFinanceYear, dataTableSelectedTerminals, resultAcronym.Text, false);
+                            //Prepare Result
+                            result = frameworkCallsResult.Result;
+                            //Refresh Child Trees DocumentFinanceYearSerieTerminal
+                            if (result)
+                            {
+                                //Refresh TreeViewDocumentFinanceSeries (If Visible/Enabled)
+                                if (treeViewDocumentFinanceSeries != null) treeViewDocumentFinanceSeries.Refresh();
+                                //Refresh TreeViewDocumentFinanceYearSerieTerminal (If Visible/Enabled)
+                                if (treeViewDocumentFinanceYearSerieTerminal != null) treeViewDocumentFinanceYearSerieTerminal.Refresh();
+                            }
+                            //Show Error to User, Outside of Framework (Non UI)
+                            else
+                            {
+                                Utils.ShowMessageTouch(
+                                    pSourceWindow,
+                                    DialogFlags.Modal,
+                                    MessageType.Error,
+                                    ButtonsType.Ok,
+                                    Resx.global_error,
+                                    string.Format("{0}{1}{1}{2}",
+                                        string.Format(Resx.dialog_message_series_create_error, resultAcronym.Text),
+                                        Environment.NewLine,
+                                        frameworkCallsResult.Exception.InnerException.Message
+                                    )
+                                 );
+                            }
+                        }
+
                     }
+
                 }
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
-            } 
+            }
+
             return result;
         }
 
@@ -256,7 +266,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             try
             {
-                PosInputTextDialog dialog = new PosInputTextDialog(pSourceWindow, DialogFlags.Modal, new System.Drawing.Size(800, 600), Resx.window_title_series_create_series, Resx.global_acronym, pInitialValue, SettingsApp.RegexDocumentSeriesAcronym, true);
+                string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
+
+                PosInputTextDialog dialog = new PosInputTextDialog(
+                    pSourceWindow,
+                    DialogFlags.Modal,
+                    new System.Drawing.Size(800, 600),
+                    Resx.window_title_series_create_series,
+                    fileWindowIcon,
+                    Resx.global_acronym,
+                    pInitialValue,
+                    SettingsApp.RegexDocumentSeriesAcronym,
+                    true
+                    );
 
                 //Initialize EntryBoxValidationMultiLine
                 EntryBoxValidationMultiLine entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(pSourceWindow, Resx.global_preview);
@@ -281,6 +303,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 };
                 ResponseType responseType = (ResponseType)dialog.Run();
                 result.ResponseType = responseType;
+
                 if (responseType == ResponseType.Ok)
                 {
                     result.Text = dialog.Value;

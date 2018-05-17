@@ -41,6 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private EntryBoxValidation _entryBoxValidationTotalFinal;
         private EntryBoxValidation _entryBoxValidationToken1;
         private EntryBoxValidation _entryBoxValidationToken2;
+        private EntryBoxValidation _entryBoxValidationNotes;
         private XPOEntryBoxSelectRecord<FIN_ConfigurationVatRate, TreeViewConfigurationVatRate> _entryBoxSelectVatRate;
         private XPOEntryBoxSelectRecord<FIN_ConfigurationVatExemptionReason, TreeViewConfigurationVatExceptionReason> _entryBoxSelectVatExemptionReason;
         //CRUDWidgetList
@@ -99,8 +100,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vatRateConsignationInvoiceExemptionReason = (FIN_ConfigurationVatExemptionReason)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_ConfigurationVatExemptionReason), SettingsApp.XpoOidConfigurationVatExemptionReasonM99);
 
             //TODO:THEME
-            //_windowSize = new Size(810, 340);
-            _windowSize = new Size(760, 320);
+            _windowSize = new Size(760, 360);
 
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_finance_article.png");
 
@@ -155,6 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string initialValueDiscount = FrameworkUtils.DecimalToString(0);
             string initialValueTotalNet = FrameworkUtils.DecimalToString(0);
             string initialValueTotalFinal = FrameworkUtils.DecimalToString(0);
+            string initialValueNotes = string.Empty;
             FIN_ConfigurationVatRate initialValueSelectConfigurationVatRate = (FIN_ConfigurationVatRate)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_ConfigurationVatRate), SettingsApp.XpoOidArticleDefaultVatDirectSelling);
             FIN_ConfigurationVatExemptionReason initialValueSelectConfigurationVatExemptionReason = null;
 
@@ -170,6 +171,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 initialValueTotalFinal = FrameworkUtils.StringToDecimalAndToStringAgain(_dataSourceRow["TotalFinal"].ToString());
                 initialValueSelectConfigurationVatRate = (_dataSourceRow["ConfigurationVatRate.Value"] as FIN_ConfigurationVatRate);
                 initialValueSelectConfigurationVatExemptionReason = (_dataSourceRow["VatExemptionReason.Acronym"] as FIN_ConfigurationVatExemptionReason);
+                initialValueNotes = _dataSourceRow["Notes"].ToString();
                 //Required, Else Wrong Calulation in UPDATES, when Price is not Defined : 
                 //Reverse Price if not in default System Currency, else use value from Input
                 _articlePrice = (_currencyDefaultSystem == _currencyDisplay)
@@ -314,6 +316,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Used only to Update DataRow Column from Widget
             _crudWidgetList.Add(new GenericCRUDWidgetDataTable(_entryBoxValidationToken2, new Label(), _dataSourceRow, "Token2"));
 
+            //Notes
+            _entryBoxValidationNotes = new EntryBoxValidation(this, "Notes", KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxValidationNotes.EntryValidation.Text = initialValueNotes;
+            _crudWidgetList.Add(new GenericCRUDWidgetDataTable(_entryBoxValidationNotes, new Label(), _dataSourceRow, "Notes"));
+
             //Uncomment to Show Invisible Widgets
             //HBox Token1AndToken2
             //HBox hboxToken1AndToken2 = new HBox(false, 0);
@@ -327,6 +334,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vboxEntrys.PackStart(hboxVatRateAndVatExemptionReason);
             //Uncomment to Show Invisible Widgets
             //_vboxEntrys.PackStart(hboxToken1AndToken2);
+            _vboxEntrys.PackStart(_entryBoxValidationNotes);
             _vboxEntrys.WidthRequest = _windowSize.Width - 13;
         }
 

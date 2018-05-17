@@ -6,6 +6,9 @@ namespace logicpos.financial.library.Classes.Finance
 {
     public class ExtendValue
     {
+        //Log4Net
+        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Função para escrever por extenso os valores em Real (em C# - suporta até R$ 9.999.999.999,99)     
         /// Rotina Criada para ler um número e transformá-lo em extenso                                       
@@ -44,10 +47,13 @@ namespace logicpos.financial.library.Classes.Finance
             bool bln_Unidade = false;
 
             //Verificar se foi informado um dado indevido 
-            if (pValue == 0 || pValue <= 0)
+            //Fix
+            //if (pValue == 0 || pValue <= 0)
+            if (pValue == 0 || pValue <= 0.001M)
             {
                 //throw new Exception("Valor não suportado pela Função. Verificar se há valor negativo ou nada foi informado");
-                return "Zero Euros";
+                //return "Zero Euros";
+                return String.Format("Zero {0}", moedaPlural);
             }
             if (pValue > (decimal)9999999999.99)
             {
@@ -57,7 +63,17 @@ namespace logicpos.financial.library.Classes.Finance
             {
                 //Gerar Extenso Centavos 
                 pValue = (Decimal.Round(pValue, 2));
-                dblCentavos = pValue - (Int64)pValue;
+
+                try
+                {
+                    // Fix Force .00 2 zeros else errors arrise
+                    pValue = Decimal.Parse(pValue.ToString("F"));
+                    dblCentavos = pValue - (Int64)pValue;
+                }
+                catch (Exception ex)
+                {
+                    _log.Error(ex.Message, ex);
+                }
 
                 //Gerar Extenso parte Inteira
                 dblValorInteiro = (Int64)pValue;
@@ -203,7 +219,7 @@ namespace logicpos.financial.library.Classes.Finance
                                     break;
                                 }
                         }
-                    }//
+                    }
                 }
                 if (dblCentavos > 0)
                 {
@@ -257,7 +273,10 @@ namespace logicpos.financial.library.Classes.Finance
                         strValorExtenso = strValorExtenso + " " + moedaDecimalPlural + " ";
                     }
                 }
-                if (dblValorInteiro < 1) strValorExtenso = Mid(strValorExtenso.Trim(), 2, strValorExtenso.Trim().Length - 2);
+                //Fix
+                //if (dblValorInteiro < 1) strValorExtenso = Mid(strValorExtenso.Trim(), 2, strValorExtenso.Trim().Length - 2);
+                if (dblValorInteiro < 1) strValorExtenso = strValorExtenso.Trim();
+                if (strValorExtenso.StartsWith("e ")) strValorExtenso = strValorExtenso.Substring(2, strValorExtenso.Length - 2);
             }
 
             //Fix to Replace extra space (more than one) in one space only

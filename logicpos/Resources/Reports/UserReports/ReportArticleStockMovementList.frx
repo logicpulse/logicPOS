@@ -30,7 +30,7 @@
   </Dictionary>
   <inherited Name="Page1">
     <inherited Name="PageHeader1" Height="48.6" Border.Lines="Bottom">
-      <inherited Name="PictureCompanyLogo" Width="189" Height="47.25"/>
+      <inherited Name="PictureCompanyLogo"/>
       <inherited Name="TextReportTitle" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
     </inherited>
     <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" Condition="[ArticleStockMovement.ArticleStockDateDay]">
@@ -53,7 +53,7 @@
         </Sort>
       </DataBand>
       <GroupFooterBand Name="GroupFooter1" Top="149.65" Width="718.2" Height="18.9">
-        <TextObject Name="Text29" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [DataSum]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+        <TextObject Name="Text29" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [DataSum]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold" Wysiwyg="true"/>
       </GroupFooterBand>
     </GroupHeaderBand>
     <inherited Name="PageFooter1" Top="172.55">

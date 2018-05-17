@@ -20,6 +20,8 @@
         public static string AppCompanyWeb = "http://www.acme.com";
         public static string AppSoftwareVersion = string.Format("Powered by {0}© Vers. {{{0}}}", AppCompanyName);
         public static string AppSoftwareVersionFormat = string.Format("Powered by {0}© Vers. {{0}}", AppCompanyName);
+        public static string AppSoftwareATWSTestModeCertificatePassword = "TESTEwebservice";
+        public static string AppSoftwareATWSProdModeCertificatePassword = "YOUR_PASSWORD_HERE";
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Files/File Formats

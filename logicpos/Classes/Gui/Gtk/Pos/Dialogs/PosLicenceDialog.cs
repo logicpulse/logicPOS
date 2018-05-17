@@ -1,14 +1,12 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.financial;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.License;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -71,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //If detected empty Hardware Id from Parameters, get it from IntelliLock
             if (string.IsNullOrEmpty(pHardwareId))
             {
-                _hardwareId = GlobalFramework.PluginLicenceManager.GetHardwareID(); ;
+                _hardwareId = GlobalFramework.PluginLicenceManager.GetHardwareID();
             }
             else
             {
@@ -229,10 +227,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameValue, false, false, 0);
 
             //Phone
+            string[] primaryPhones = SettingsApp.AppCompanyPhone.Split(new string[] { " / " }, StringSplitOptions.None);
             Label labelWithoutInternetContactCompanyPhoneLabel = new Label(Resx.global_phone);
             labelWithoutInternetContactCompanyPhoneLabel.SetAlignment(0.0F, 0.0F);
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyPhoneValue = new Label(SettingsApp.AppCompanyPhone);
+            Label labelWithoutInternetContactCompanyPhoneValue = new Label(primaryPhones[0]);
             labelWithoutInternetContactCompanyPhoneValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyPhoneValue.ModifyFont(fontBig);
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneValue, false, false, 0);

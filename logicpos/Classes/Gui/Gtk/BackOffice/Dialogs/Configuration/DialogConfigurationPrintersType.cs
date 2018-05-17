@@ -13,8 +13,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationPrintersType(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
+            _dialogMode = pDialogMode;
             this.Title = Utils.GetWindowTitle(Resx.window_title_edit_dialogconfigurationprinterstype);
-            SetSizeRequest(500, 353);
+            SetSizeRequest(500, 383);
             InitUI();
             InitNotes();
             ShowAll();
@@ -43,13 +44,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfa, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
 
                 //Token
                 Entry entryToken = new Entry();
                 BOWidgetBox boxToken = new BOWidgetBox(Resx.global_DialogConfigurationPrintersTypetoken, entryToken);
                 vboxTab1.PackStart(boxToken, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxToken, _dataSourceRow, "Token", SettingsApp.RegexAlfaNumeric, false));
+
+                //ThermalPrinter
+                CheckButton checkButtonThermalPrinter = new CheckButton(Resx.global_printer_thermal_printer);
+                vboxTab1.PackStart(checkButtonThermalPrinter, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonThermalPrinter, _dataSourceRow, "ThermalPrinter"));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(Resx.global_record_disabled);
@@ -63,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Disable Components
-                entryToken.Sensitive = false;
+                entryToken.Sensitive = (_dialogMode == DialogMode.Update) ? false : true;
             }
             catch (System.Exception ex)
             {

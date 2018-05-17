@@ -59,7 +59,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-
         // Prevent Dialog Destroy, Validate Count Records, we must override OnResponse to prevent Close Dialog
         protected override void OnResponse(ResponseType pResponse)
         {

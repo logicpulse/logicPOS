@@ -204,8 +204,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //BarCode
         void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
-            logicpos.Utils.ResponseText dialogResponse;
-            dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, Resx.global_barcode, string.Empty, SettingsApp.RegexInteger, true);
+            string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
+            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, Resx.global_barcode, string.Empty, SettingsApp.RegexInteger, true);
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
                 InsertOrUpdate(dialogResponse.Text);
@@ -215,10 +215,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //ListOrder
         void _buttonKeyListOrder_Clicked(object sender, EventArgs e)
         {
-            OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-            PosOrdersDialog dialog = new PosOrdersDialog(this.SourceWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
-            ResponseType response = (ResponseType)dialog.Run();
-            dialog.Destroy();
+            try
+            {
+                OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                PosOrdersDialog dialog = new PosOrdersDialog(this.SourceWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
+                ResponseType response = (ResponseType)dialog.Run();
+                dialog.Destroy();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
         }
 
         //ChangeTable - Change Order From Table to Table

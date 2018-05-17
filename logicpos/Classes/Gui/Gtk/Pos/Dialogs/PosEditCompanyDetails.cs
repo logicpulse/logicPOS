@@ -143,7 +143,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 vbox.PackStart(_entryBoxSelectSystemCurrency, true, true, 0);
 
                 //Start Render Dynamic Inputs
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse("(Disabled = 0 OR Disabled is NULL) AND (FormPageNo = 1)");
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse("(Disabled = 0 OR Disabled is NULL) AND (FormType = 1 AND FormPageNo = 1)");
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("Ord", SortingDirection.Ascending);
                 XPCollection xpCollection = new XPCollection(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationPreferenceParameter), criteriaOperator, sortProperty);
@@ -180,7 +180,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         //Only Assign Value if Debugger Attached : Now the value for normal user is cleaned in Init Database, we keep this code here, may be usefull
                         if (Debugger.IsAttached == true || useDatabaseDataDemo) { entryBoxValidation.EntryValidation.Text = item.Value; }
-                        _log.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true,useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
+                        if (Debugger.IsAttached == true)
+                        {
+                            _log.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true,useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
+                        }
 
                         //Assign shared Event
                         entryBoxValidation.EntryValidation.Changed += EntryValidation_Changed;
@@ -198,6 +201,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             _entryBoxFiscalNumber.EntryValidation.Rule = _entryBoxSelectSystemCountry.Value.RegExFiscalNumber;
                         }
                         
+                        if (item.Token == "COMPANY_TAX_ENTITY") entryBoxValidation.EntryValidation.Text = "Global";
+
                         //Call Validate
                         entryBoxValidation.EntryValidation.Validate();
                         //Pack and Add to ObjectBag

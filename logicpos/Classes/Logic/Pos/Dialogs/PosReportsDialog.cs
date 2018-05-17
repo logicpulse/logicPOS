@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ? CustomReportDisplayMode.Design
                 : CustomReportDisplayMode.ExportPDF;
             // Override Default Development Mode
-            displayMode = CustomReportDisplayMode.ExportPDF;
+            displayMode = CustomReportDisplayMode.Design;
 
             // Local Variables
             string reportFilter = string.Empty;
@@ -377,6 +377,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
                             , reportFilter
                             , reportFilterHumanReadable
+                            , true
                             , true
                         );
                         break;

@@ -8,11 +8,13 @@ namespace logicpos.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Developer
 
+        // To Override Database add <add key="databaseName" value="logicposdbtest" /> to .config
+
 #if (DEBUG)
         //Used to Force/Override Intellilock assigned GlobalFramework.LicenceRegistered in BootStrap
         public static bool LicenceRegistered = true;
         //Valid databaseType Values: SQLite, MySql, MSSqlServer (DBName Must be lowercase)
-        public static string DatabaseName = "logicpos";//logicpos_demotec_new_version
+        public static string DatabaseName = "logicposdb";//logicpos_demotec_new_version
         //Used to Force create DatabaseScema and Fixtures with XPO (Non Script Mode): Requirements for Work: Empty or Non Exist Database
         //Notes: OnError "An exception of type 'DevExpress.Xpo.DB.Exceptions.SchemaCorrectionNeededException'", UnCheck [X] Break when this exception is user-unhandled and continue, watch log and wait until sucefull message appear
         public static bool XPOCreateDatabaseAndSchema = false;
@@ -31,6 +33,7 @@ namespace logicpos.App
         public static string DatabaseName = "logicposdb";
         public static bool ProtectedFilesIgnoreProtection = true;
         public static bool XPOCreateDatabaseAndSchema = false;
+        public static bool ProtectedFilesUse = false;
         public static bool ProtectedFilesRecreateCSV = false;
         public static string AppHardwareId = string.Empty;
 #endif
@@ -122,8 +125,8 @@ namespace logicpos.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //AT Web Services
 
-        public static bool ServiceATSendDocuments = Convert.ToBoolean(GlobalFramework.Settings["serviceATSendDocuments"]);
-        public static bool ServiceATSendDocumentsWayBill = Convert.ToBoolean(GlobalFramework.Settings["serviceATSendDocumentsWayBill"]);
+        public static bool ServiceATSendDocuments { get { return GetServiceATSendDocuments(); } }
+        public static bool ServiceATSendDocumentsWayBill { get { return GetServiceATSendDocumentsWayBill(); } }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //BackOffice
@@ -199,33 +202,28 @@ namespace logicpos.App
         private static string GetFileTheme()
         {
             string result = string.Empty;
-            
-            // DEPRECATED
-            //int width = 0;
-            //int height = 0;
-
-            // DEPRECATED
-            // Get static size if not working with dynamic sizes
-            //if (!GlobalFramework.Settings["appScreenSize"].Replace(" ", string.Empty).Equals("0,0"))
-            //{
-            //    // Override Zero / Dynamic
-            //    width = GlobalApp.ScreenSize.Width;
-            //    height = GlobalApp.ScreenSize.Height;
-            //}
 
             result = string.Format(
                 "{0}{1}",
                 GlobalFramework.Path["themes"],
                 string.Format(
                     FileFormatThemeFile
-                    , GlobalFramework.Settings["appTheme"].ToLower()
+                    , GlobalFramework.PreferenceParameters["APP_THEME"].ToLower()
                     , GlobalFramework.Settings["appOperationModeToken"].ToLower()
-                    //, width // DEPRECATED
-                    //, height// DEPRECATED
                 )
             );
 
             return result;
+        }
+
+        private static bool GetServiceATSendDocuments()
+        {
+            return Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
+        }
+
+        private static bool GetServiceATSendDocumentsWayBill()
+        {
+            return Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
         }
     }
 }

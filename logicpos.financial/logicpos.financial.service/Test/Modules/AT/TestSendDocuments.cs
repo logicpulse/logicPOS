@@ -14,7 +14,7 @@ namespace logicpos.financial.service.Test.Modules.AT
         public static void SendDocumentNonWayBill()
         {
             //Guid forceDocument = Guid.Empty;
-            Guid forceDocument = new Guid("5f722291-23e9-481a-af4d-795325db1f35");
+            Guid forceDocument = new Guid("99f614c9-93fc-4480-ba98-0f61b42516b5");
             string sql = Utils.GetDocumentsQuery(false, forceDocument);
             object lastDocumentMaster = GlobalFramework.SessionXpo.ExecuteScalar(sql);
             FIN_DocumentFinanceMaster documentMaster = null;
@@ -37,7 +37,7 @@ namespace logicpos.financial.service.Test.Modules.AT
         public static void SendDocumentWayBill()
         {
             //Guid forceDocument = Guid.Empty;
-            Guid forceDocument = new Guid("db71b270-1d29-4802-a7d5-c21b07f9f71d");
+            Guid forceDocument = new Guid("afbcf434-672c-4b63-817f-021484f834bd");
             string sql = Utils.GetDocumentsQuery(true, forceDocument);
             object lastDocumentMaster = GlobalFramework.SessionXpo.ExecuteScalar(sql);
             FIN_DocumentFinanceMaster documentMaster = null;

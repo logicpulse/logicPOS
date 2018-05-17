@@ -422,18 +422,21 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         //Impressora SINOCAN em ambiente WindowsLinux/USB
                         case "THERMAL_PRINTER_USB":
                             PrintObject printObjectSINOCAN = new PrintObject(0);
-
-                            int m = Convert.ToInt32(GlobalFramework.Settings["DoorValueM"]);
-                            int t1 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT1"]);
-                            int t2 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT2"]);
-
+                            // Deprecated
+                            //int m = Convert.ToInt32(GlobalFramework.Settings["DoorValueM"]);
+                            //int t1 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT1"]);
+                            //int t2 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT2"]);
+                            // Open Drawer
+                            int m = GlobalFramework.LoggedTerminal.Printer.ThermalOpenDrawerValueM;
+                            int t1 = GlobalFramework.LoggedTerminal.Printer.ThermalOpenDrawerValueT1;
+                            int t2 = GlobalFramework.LoggedTerminal.Printer.ThermalOpenDrawerValueT2;
                             printObjectSINOCAN.OpenDoor(pPrinter.PrinterType.Token, pPrinter.NetworkName, m, t1, t2);
-
                             //Audit
                             FrameworkUtils.Audit("CASHDRAWER_OPEN", Resx.audit_message_cashdrawer_open);
 
                             break;
                     }
+
                     result = true;
                 }
                 catch (Exception ex)

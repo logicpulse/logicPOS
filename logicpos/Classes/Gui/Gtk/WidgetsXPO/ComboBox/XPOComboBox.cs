@@ -52,7 +52,16 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _xpoSession = pXpoSession;
             _xpoObjectType = pXPGuidObjectType;
             _fieldLabel = pFieldLabel;
-            
+
+            // Override Criteria with hide Undefined Records Criteria
+            // Tip : Leave == null here and ignore suggestions, else it wont work as expected
+            if (pCriteria == null)
+            {
+                //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here
+                //pCriteria = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SettingsApp.XpoOidUndefinedRecord));
+                pCriteria = CriteriaOperator.Parse(string.Format("(Oid <> '{0}')", SettingsApp.XpoOidUndefinedRecord));
+            }
+
             //Init Collection  based on xpoObjectType
             _XpCollection = new XPCollection(_xpoSession, _xpoObjectType, pCriteria, pSortProperty);
 

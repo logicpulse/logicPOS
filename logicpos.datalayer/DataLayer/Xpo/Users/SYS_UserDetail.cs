@@ -1,7 +1,5 @@
 using DevExpress.Xpo;
-using logicpos.datalayer;
 using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -10,12 +8,19 @@ namespace logicpos.datalayer.DataLayer.Xpo
     public class SYS_UserDetail : XPGuidObject
     {
         public SYS_UserDetail() : base() { }
-        public SYS_UserDetail(Session session) : base(session) { }
+        public SYS_UserDetail(Session session) : base(session)
+        {
+            // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist
+            InitEncryptedAttributes<SYS_UserDetail>();
+        }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("SYS_UserDetail", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("SYS_UserDetail", "Code");
+            // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
+            InitEncryptedAttributes<SYS_UserDetail>();
+
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserDetail), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserDetail), "Code");
             //Required for New Users
             AccessPin = CryptographyUtils.SaltedString.GenerateSaltedString(SettingsApp.DefaultValueUserDetailAccessPin);
             PasswordReset = true;
@@ -52,6 +57,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fName;
+[Size(512)]
+        [XPGuidObject(Encrypted = true)]
         public string Name
         {
             get { return fName; }
@@ -59,6 +66,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fResidence;
+[Size(512)]
+        [XPGuidObject(Encrypted = true)]
         public string Residence
         {
             get { return fResidence; }
@@ -66,6 +75,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fLocality;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string Locality
         {
             get { return fLocality; }
@@ -73,6 +84,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fZipCode;
+        [XPGuidObject(Encrypted = true)]
         public string ZipCode
         {
             get { return fZipCode; }
@@ -80,6 +92,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fCity;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string City
         {
             get { return fCity; }
@@ -87,6 +101,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fDateOfContract;
+        [XPGuidObject(Encrypted = true)]
         public string DateOfContract
         {
             get { return fDateOfContract; }
@@ -94,6 +109,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fPhone;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string Phone
         {
             get { return fPhone; }
@@ -101,6 +118,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fMobilePhone;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string MobilePhone
         {
             get { return fMobilePhone; }
@@ -108,6 +127,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEmail;
+[Size(255)]
+        [XPGuidObject(Encrypted = true)]
         public string Email
         {
             get { return fEmail; }
@@ -116,6 +137,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         string fFiscalNumber;
         //[Indexed(Unique = true)]
+        [XPGuidObject(Encrypted = true)]
         public string FiscalNumber
         {
             get { return fFiscalNumber; }

@@ -35,7 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
             columnProperties.Add(new GenericTreeViewColumnProperty("FiscalYear") { Title = Resx.global_fiscal_year });
             columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
 
             //Configure Criteria/XPCollection/Model : Use Default Filter
             CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null)) ? CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)") : pXpoCriteria;
@@ -77,7 +77,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         string.Format(Resx.dialog_message_series_fiscal_year_close_current, currentDocumentFinanceYear.Designation)
                     );
 
-                    //Override Insert CRUD ShowDialog using SkipRecordInsert
+                    //Override Insert CRUD ShowDialog using SkipRecordInsert, this prevent create Record
                     _skipRecordInsert = (responseType == ResponseType.No);
 
                     if (responseType == ResponseType.Yes)
@@ -107,11 +107,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Get References to TreeViewDocumentFinanceSeries and TreeViewDocumentFinanceYearSerieTerminal
                 TreeViewDocumentFinanceSeries treeViewDocumentFinanceSeries = ((_sourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs["DocumentFinanceSeries"].Content as TreeViewDocumentFinanceSeries);
                 //Store Reference to BackOffice TreeViewDocumentFinanceYearSerieTerminal
-                TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal = 
+                TreeViewDocumentFinanceYearSerieTerminal treeViewDocumentFinanceYearSerieTerminal =
                     ((_sourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs.ContainsKey("DocumentFinanceYearSerieTerminal"))
                     ? ((_sourceWindow as BackOfficeMainWindow).Accordion.Nodes["TopMenuDocuments"].Childs["DocumentFinanceYearSerieTerminal"].Content as TreeViewDocumentFinanceYearSerieTerminal)
                     : null;
-                //Refresh TreeViews after Insert Record
+                //Refresh TreeViews after Insert Record, and Hide old Series
                 Refresh();
                 treeViewDocumentFinanceSeries.Refresh();
                 if (treeViewDocumentFinanceYearSerieTerminal != null) treeViewDocumentFinanceYearSerieTerminal.Refresh();

@@ -107,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string initialPaymentDate = FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateTimeFormat);
 
             //ConfigurationPaymentMethod
-            string filterValidPaymentMethod = "(Token = 'CREDIT_CARD' OR Token = 'BANK_CHECK' OR Token = 'MONEY' OR Token = 'BANK_TRANSFER' OR Token = 'CASH_MACHINE' OR Token = 'VISA')";
+            string filterValidPaymentMethod = "(Token = 'CREDIT_CARD' OR Token = 'BANK_CHECK' OR Token = 'MONEY' OR Token = 'BANK_TRANSFER' OR Token = 'CASH_MACHINE' OR Token = 'VISA' OR Token = 'OTHER')";
             CriteriaOperator criteriaOperatorConfigurationPaymentMethod = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)  AND Oid <> '{0}' AND {1}", SettingsApp.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(), filterValidPaymentMethod));
             _entryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<FIN_ConfigurationPaymentMethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, Resx.global_payment_method, "Designation", "Oid", initialValueConfigurationPaymentMethod, criteriaOperatorConfigurationPaymentMethod, SettingsApp.RegexGuid, true);
             _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Changed += delegate { Validate(); };

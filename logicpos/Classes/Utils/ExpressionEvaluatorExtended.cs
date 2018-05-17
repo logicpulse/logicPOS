@@ -22,10 +22,10 @@ namespace logicpos
                 string widthExpression = e.EvaluateArg(0).ToString();
                 string heightExpression = e.EvaluateArg(1).ToString();
 
-                if (heightExpression.Contains("startupWindowObjectsTablePadMarginLeftTop.Height + "))
-                {
-                    log.Debug("BREAK");
-                }
+                //if (heightExpression.Contains("startupWindowObjectsTablePadMarginLeftTop.Height + "))
+                //{
+                //    log.Debug("BREAK");
+                //}
 
                 // Get Results
                 object widthResult = GlobalApp.ExpressionEvaluator.Evaluate(widthExpression);

@@ -13,12 +13,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("FIN_DocumentFinanceYears", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("FIN_DocumentFinanceYears", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceYears), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceYears), "Code");
             int currentYear = FrameworkUtils.CurrentDateTimeAtomic().Year;
             FiscalYear = currentYear;
-            Acronym = string.Format("{0}{1}", FiscalYear, "S");
-            Designation = string.Format("{0} {1}", Resx.global_fiscal_year, FiscalYear);
+            Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code/10);
+            Designation = string.Format("{0} {1} {2}{3}", Resx.global_fiscal_year, FiscalYear, "A", Code/10);
         }
 
         UInt32 fOrd;
@@ -45,7 +45,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         int fFiscalYear;
-        [Indexed(Unique = true)]
+        //False to Recreate new FiscalYears
+        [Indexed(Unique = false)]
         public int FiscalYear
         {
             get { return fFiscalYear; }

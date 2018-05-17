@@ -344,7 +344,19 @@ namespace logicpos.shared.App
         {
             decimal priceSource = 0.0m;
             decimal priceDefault = 0.0m;
-            decimal priceTax = (pTaxSellType == TaxSellType.Normal) ? pArticle.VatOnTable.Value : pArticle.VatDirectSelling.Value;
+            decimal priceTax = 0.0m;
+
+            // Get priceTax Based on AppOperationMode : in retail mode VatOnTable is always null
+            if (SettingsApp.AppMode == AppOperationMode.Default)
+            {
+                // Default : Restaurants with dual Tax ex Normal, TakeAway
+                priceTax = (pTaxSellType == TaxSellType.Normal) ? pArticle.VatOnTable.Value : pArticle.VatDirectSelling.Value;
+            }
+            else if (SettingsApp.AppMode == AppOperationMode.Retail)
+            {
+                // Mono priceTax 
+                priceTax = pArticle.VatDirectSelling.Value;
+            }
 
             //Default Price, used when others are less or equal to zero
             if (pArticle.Price1UsePromotionPrice && pArticle.Price1Promotion > 0)
@@ -791,6 +803,7 @@ namespace logicpos.shared.App
                     return (Guid)resultField;
                 }
             }
+
             return Guid.Empty;
         }
 
@@ -968,6 +981,7 @@ namespace logicpos.shared.App
                         AuditType = xpoAuditType
                     };
                     systemAudit.Save();
+
                     _log.Info(string.Format("Audit(): {0} > {1}", pAuditTypeToken, description));
 
                     result = true;
@@ -1391,6 +1405,28 @@ namespace logicpos.shared.App
             }
         }
 
+        /// <summary>
+        /// Get value from dictionary with LINQ
+        /// Deprecated: better to get it with key ex GlobalFramework.PreferenceParameters[token]
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        //public static string GetPreferencesValue(string token)
+        //{
+        //    string result = string.Empty;
+
+        //    try
+        //    {
+        //        result = GlobalFramework.PreferenceParameters.FirstOrDefault(k => k.Key.Contains(token)).Value;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _log.Debug(ex.Message, ex);
+        //    }
+
+        //    return result;
+        //}
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //File
 
@@ -1429,6 +1465,11 @@ namespace logicpos.shared.App
                 listResult.Add(arrayString[i]);
             }
             return listResult;
+        }
+
+        public static List<int> CommaDelimitedStringToIntList(string pInput)
+        {
+            return CommaDelimitedStringToIntList(pInput, ',');
         }
 
         public static List<int> CommaDelimitedStringToIntList(string pInput, char pSeparator)
@@ -2189,6 +2230,9 @@ namespace logicpos.shared.App
 
             return result;
         }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // SoftwareVendor
 
         public static string GetSoftwareVendorValueAsString(string property, bool debug = false)
         {

@@ -169,6 +169,13 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 FRBOGenericCollection<FRBODocumentFinancePaymentView> gcDocumentFinancePayment = new FRBOGenericCollection<FRBODocumentFinancePaymentView>(sqlFilter);
                 FRBOGenericCollection<FRBODocumentFinancePaymentDocumentView> gcDocumentFinancePaymentDocument;
 
+                //Decrypt Values
+                gcDocumentFinancePayment.List[0].EntityName = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityName).ToString();
+                gcDocumentFinancePayment.List[0].EntityAddress = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityAddress).ToString();
+                gcDocumentFinancePayment.List[0].EntityZipCode = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityZipCode).ToString();
+                gcDocumentFinancePayment.List[0].EntityCity = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityCity).ToString();
+                gcDocumentFinancePayment.List[0].EntityFiscalNumber = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityFiscalNumber).ToString();
+
                 //If FinalConsumer - Clean Output Data
                 if (gcDocumentFinancePayment.List[0].EntityFiscalNumber == SettingsApp.FinanceFinalConsumerFiscalNumber)
                 {
@@ -176,7 +183,6 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     gcDocumentFinancePayment.List[0].EntityAddress = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityZipCode = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityCity = string.Empty;
-                    gcDocumentFinancePayment.List[0].EntityCountry = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
                 }
 

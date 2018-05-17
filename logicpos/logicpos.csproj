@@ -14,6 +14,8 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,15 +30,13 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -51,8 +51,8 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <PlatformTarget>x86</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DefineConstants>TRACE</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup>
@@ -166,6 +166,12 @@
     <Compile Include="Classes\Enums\Widgets\MoneyPadMode.cs" />
     <Compile Include="Classes\Enums\Widgets\NumberPadPinMode.cs" />
     <Compile Include="Classes\Enums\Xml\ReplaceType.cs" />
+    <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Configuration\DialogConfigurationInputReader.cs" />
+    <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Configuration\DialogConfigurationPoleDisplay.cs" />
+    <Compile Include="Classes\Gui\Gtk\BackOffice\Dialogs\Configuration\DialogConfigurationWeighingMachine .cs" />
+    <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\Configuration\TreeViewConfigurationWeighingMachine.cs" />
+    <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\Configuration\TreeViewConfigurationPoleDisplay.cs" />
+    <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\Configuration\TreeViewConfigurationInputReader.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\System\TreeViewSystemAuditType.cs" />
     <Compile Include="Classes\Gui\Gtk\Pos\Dialogs\PosReportsQueryDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosReportsQueryDialog.cs" />
@@ -425,6 +431,22 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <None Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install.bat">
+      <Link>Scripts\Win\AtWs\service_install.bat</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\logicpos.financial\logicpos.financial.service\Utils\service_start.bat">
+      <Link>Scripts\Win\AtWs\service_start.bat</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\logicpos.financial\logicpos.financial.service\Utils\service_stop.bat">
+      <Link>Scripts\Win\AtWs\service_stop.bat</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\logicpos.financial\logicpos.financial.service\Utils\service_uninstall.bat">
+      <Link>Scripts\Win\AtWs\service_uninstall.bat</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="logicpos.exe.files">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -449,11 +471,30 @@
       <Link>sqlite3.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install.txt">
+      <Link>Scripts\Win\AtWs\service_install.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install_1.png">
+      <Link>Scripts\Win\AtWs\service_install_1.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install_2.png">
+      <Link>Scripts\Win\AtWs\service_install_2.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\logicpos.financial\logicpos.financial.service\Utils\service_install_3.png">
+      <Link>Scripts\Win\AtWs\service_install_3.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="application.ico" />
     <Content Include="Assets\Images\Icons\Accordion\poson_backoffice_default.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Accordion\poson_backoffice_export.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Accordion\poson_backoffice_outras_tabelas.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\DialogsIcons\icon_pos_dialog_error.png">
@@ -654,6 +695,21 @@
     <Content Include="Assets\Images\Icons\Places\icon_pos_zona_defeito.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Images\Icons\Reports\report_auxiliary_tables.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Reports\report_financial.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Reports\report_financial_detailed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Reports\report_financial_detailed_grouped.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Reports\report_other_reports.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Images\Icons\SubFamilies\bebidas\icon_pos_subfamily_aguas.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -828,10 +884,22 @@
     <Content Include="Assets\Images\Icons\Windows\icon_window_delete_record.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Images\Icons\Windows\icon_window_documents.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_document_new.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_finance_article.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Windows\icon_window_input_text_barcode.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Windows\icon_window_input_text_default.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Windows\icon_window_input_text_request_motive_to_cancel_finance_document.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_license.png">
@@ -852,10 +920,15 @@
     <Content Include="Assets\Images\Icons\Windows\icon_window_read_card.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Images\Icons\Windows\icon_window_reports.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_select_record.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Images\Icons\Windows\icon_window_send_message.png" />
+    <Content Include="Assets\Images\Icons\Windows\icon_window_send_message.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_stocks.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -863,6 +936,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_window_close.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Windows\icon_window_worksessions.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Licence\licence.png">
@@ -1834,6 +1910,9 @@
     <Content Include="Assets\Images\Reports\UserReports\company_logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Images\Reports\UserReports\company_logo_small.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Images\Tickets\company_logo_thermal.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1945,6 +2024,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Reports\UserReports\TemplateBaseSimple.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Service References\ServiceReference\logicpos.ServiceReference.CompositeType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>

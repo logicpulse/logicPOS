@@ -3,6 +3,7 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
 using System;
@@ -106,6 +107,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             string tokenAllowUpdate = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "EDIT").ToUpper();
             string tokenAllowView = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "VIEW").ToUpper();
 
+            // Help to Debug some Kind of Types Privileges
+            if (this.GetType().Equals(typeof(TreeViewConfigurationInputReader)))
+            {
+                _log.Debug($"BREAK {typeof(TreeViewConfigurationInputReader)}");
+            }
+
             //Assign CRUD permissions to private members, Overriding Defaults
             if (GlobalFramework.LoggedUserPermissions != null)
             {
@@ -189,6 +196,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         else if (_columnProperties[i].Query != null && _columnProperties[i].Query != string.Empty)
                         {
                             columnValues[i] = ColumnPropertyGetQuery(_columnProperties[i].Query, dataRow.GetMemberValue("Oid"));
+                            // Decrypt Before use Format
+                            if (_columnProperties[i].DecryptValue) {
+                                columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]);
+                            }
                             //Format String using Column FormatProvider              
                             if (_columnProperties[i].FormatProvider != null && Convert.ToString(columnValues[i]) != string.Empty)
                             {
@@ -240,6 +251,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 columnValues[i] = string.Empty;
                             }
+                        }
+
+                        // ResourceString : Extract ResourceManager from Final Value
+                        if (_columnProperties[i].ResourceString == true && columnValues[i] != null)
+                        {
+                            columnValues[i] =  Resx.ResourceManager.GetString(columnValues[i].ToString());
                         }
                     }
                     catch (Exception ex)
@@ -336,6 +353,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     }
                 }
             }
+            
             return newXPGuidObject;
         }
 

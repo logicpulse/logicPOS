@@ -3,11 +3,27 @@ using DevExpress.Xpo;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
+    //Todo : Change File to Work with Encrypted Attributed
+    // 1. change string fEntityCountry; > to [Size(50)] / `EntityCountry` varchar(50) DEFAULT NULL (All Dbs)
+    // 2. uncomment InitEncryptedAttributes<FIN_DocumentFinanceMaster>(); in Constructor and OnAfterConstruction
+    // 3. uncomment //[XPGuidObject(Encrypted = true)]
+    // 4. saft and print documents are with encrypted values from db, require extra work
+
     [DeferredDeletion(false)]
     public class FIN_DocumentFinanceMaster : XPGuidObject
     {
         public FIN_DocumentFinanceMaster() : base() { }
-        public FIN_DocumentFinanceMaster(Session session) : base(session) { }
+        public FIN_DocumentFinanceMaster(Session session) : base(session)
+        {
+            // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist
+            InitEncryptedAttributes<FIN_DocumentFinanceMaster>();
+        }
+
+        protected override void OnAfterConstruction()
+        {
+            // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
+            InitEncryptedAttributes<FIN_DocumentFinanceMaster>();
+        }
 
         DateTime fDate;
         public DateTime Date
@@ -450,6 +466,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEntityName;
+        //[XPGuidObject(Encrypted = true)]
         public string EntityName
         {
             get { return fEntityName; }
@@ -457,6 +474,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEntityAddress;
+        //[XPGuidObject(Encrypted = true)]
         public string EntityAddress
         {
             get { return fEntityAddress; }
@@ -464,6 +482,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEntityLocality;
+        //[XPGuidObject(Encrypted = true)]
         public string EntityLocality
         {
             get { return fEntityLocality; }
@@ -472,6 +491,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         string fEntityZipCode;
         [Size(10)]
+        //[XPGuidObject(Encrypted = true)]
         public string EntityZipCode
         {
             get { return fEntityZipCode; }
@@ -479,6 +499,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEntityCity;
+        //[XPGuidObject(Encrypted = true)]
         public string EntityCity
         {
             get { return fEntityCity; }
@@ -487,6 +508,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         string fEntityCountry;
         [Size(5)]
+        //[XPGuidObject(Encrypted = true)]
         public string EntityCountry
         {
             get { return fEntityCountry; }
@@ -501,6 +523,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEntityFiscalNumber;
+        //[XPGuidObject(Encrypted = true)]
         public string EntityFiscalNumber
         {
             get { return fEntityFiscalNumber; }

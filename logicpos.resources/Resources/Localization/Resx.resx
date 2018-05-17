@@ -597,7 +597,8 @@ Movement Amount: {1}</value>
   </data>
   <data name="dialog_message_worksession_period_warning_open_terminals" xml:space="preserve">
     <value>Warning! You have {0} Open Terminal(s)!
-Before proceed please close open Terminal(s) : {1}</value>
+
+To continue press Yes to close all terminals, or press No and close all terminals manually and try again: {1}</value>
   </data>
   <data name="dialog_message_worksession_terminal_close_successfully" xml:space="preserve">
     <value>CashDrawer session successfully closed!
@@ -1398,8 +1399,8 @@ Before proceed please close open Terminal(s) : {1}</value>
   <data name="global_postal_code" xml:space="preserve">
     <value>Postal code</value>
   </data>
-  <data name="global_preferenceparameter" xml:space="preserve">
-    <value>System parameters</value>
+  <data name="global_preferenceparameter_company" xml:space="preserve">
+    <value>Company Configuration</value>
   </data>
   <data name="global_preview" xml:space="preserve">
     <value>Preview</value>
@@ -1775,7 +1776,7 @@ Before proceed please close open Terminal(s) : {1}</value>
     <value>Card</value>
   </data>
   <data name="global_user_apply_privileges" xml:space="preserve">
-    <value>Apply Privileges</value>
+    <value>Apply</value>
   </data>
   <data name="global_user_assigned_seating" xml:space="preserve">
     <value>Assigned tables</value>
@@ -1919,7 +1920,7 @@ Before proceed please close open Terminal(s) : {1}</value>
     <value>Zip Code</value>
   </data>
   <data name="pos_button_create_series" xml:space="preserve">
-    <value>Create Series</value>
+    <value>Series</value>
   </data>
   <data name="pos_button_label_cashdrawer" xml:space="preserve">
     <value>Session</value>
@@ -2157,7 +2158,7 @@ To proceed you must change the old password!</value>
     <value>Share Capital</value>
   </data>
   <data name="prefparam_company_tax_entity" xml:space="preserve">
-    <value>Tax Entity</value>
+    <value>Establishment Identification</value>
   </data>
   <data name="prefparam_company_telephone" xml:space="preserve">
     <value>Telephone</value>
@@ -2175,22 +2176,22 @@ To proceed you must change the old password!</value>
     <value>Canceled articles per employee</value>
   </data>
   <data name="report_cash_total" xml:space="preserve">
-    <value>Cash total</value>
+    <value>Cash Total</value>
   </data>
   <data name="report_close_peak_hour" xml:space="preserve">
-    <value>Close peak hour</value>
+    <value>Close Peak Hour</value>
   </data>
   <data name="report_list_consumption_per_user" xml:space="preserve">
     <value>Consumption per user</value>
   </data>
   <data name="report_courier_deliver" xml:space="preserve">
-    <value>Courier deliver</value>
+    <value>Courier Deliver</value>
   </data>
   <data name="report_discounts_per_user" xml:space="preserve">
-    <value>Discounts per user</value>
+    <value>Discounts per User</value>
   </data>
   <data name="report_employee_movements" xml:space="preserve">
-    <value>Employee movements</value>
+    <value>Employee Movements</value>
   </data>
   <data name="report_inventory" xml:space="preserve">
     <value>Inventory</value>
@@ -2898,5 +2899,188 @@ Please install a valid SoftwareVendor Plugin that work with registered LogicposF
     <value>Unsupported Screen Resolution {0}x{1}!
 
 Define manually the screen resolution in config file settings parameter [appScreenSize] and try again!</value>
+  </data>
+  <data name="global_other_tables" xml:space="preserve">
+    <value>Other Tables</value>
+  </data>
+  <data name="global_preferenceparameter_system" xml:space="preserve">
+    <value>System Configuration</value>
+  </data>
+  <data name="global_prefparam_value_tip_format" xml:space="preserve">
+    <value>Example of valid values: [{0}]</value>
+  </data>
+  <data name="global_record_main_properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="prefparam_app_screen_size" xml:space="preserve">
+    <value>Applicação : Resolução do Ecrã</value>
+  </data>
+  <data name="prefparam_app_theme" xml:space="preserve">
+    <value>Applicação : Tema</value>
+  </data>
+  <data name="prefparam_culture" xml:space="preserve">
+    <value>Application : Country Culture</value>
+  </data>
+  <data name="prefparam_database_backup_timespan" xml:space="preserve">
+    <value>Database : Backup Timespan</value>
+  </data>
+  <data name="prefparam_database_backup_time_span_range_end" xml:space="preserve">
+    <value>Database : Backup Time Span Range End</value>
+  </data>
+  <data name="prefparam_database_backup_time_span_range_start" xml:space="preserve">
+    <value>Database : Backup Time Span Range Start</value>
+  </data>
+  <data name="prefparam_hardware_display_characters_per_line" xml:space="preserve">
+    <value>Hardware : PoleDisplay : Number of Characters per Line</value>
+  </data>
+  <data name="prefparam_hardware_display_codetable" xml:space="preserve">
+    <value>Hardware : PoleDisplay : CodeTable</value>
+  </data>
+  <data name="prefparam_hardware_display_enabled" xml:space="preserve">
+    <value>Hardware : PoleDisplay : Enabled</value>
+  </data>
+  <data name="prefparam_hardware_display_endpoint" xml:space="preserve">
+    <value>Hardware : PoleDisplay : EndPoint</value>
+  </data>
+  <data name="prefparam_hardware_display_goto_stand_by_in_seconds" xml:space="preserve">
+    <value>Hardware : PoleDisplay : Goto Stand by in Seconds</value>
+  </data>
+  <data name="prefparam_hardware_display_pid" xml:space="preserve">
+    <value>Hardware : PoleDisplay  : PID (ProductID)</value>
+  </data>
+  <data name="prefparam_hardware_display_stand_by_line_1" xml:space="preserve">
+    <value>Hardware : PoleDisplay : Stand By Line 1</value>
+  </data>
+  <data name="prefparam_hardware_display_stand_by_line_2" xml:space="preserve">
+    <value>Hardware : PoleDisplay : Stand By Line 2</value>
+  </data>
+  <data name="prefparam_hardware_display_vid" xml:space="preserve">
+    <value>Hardware : PoleDisplay : VID (VendorID)</value>
+  </data>
+  <data name="prefparam_hardware_input_reader_card_reader_sizes" xml:space="preserve">
+    <value>Hardware : Input Reader : CardReader : Valid Reader Sizes</value>
+  </data>
+  <data name="prefparam_hardware_input_reader_timer_interval" xml:space="preserve">
+    <value>Hardware : Input Reader : CardReader : Reader Timr Interval</value>
+  </data>
+  <data name="prefparam_path_backups" xml:space="preserve">
+    <value>Path : Backups</value>
+  </data>
+  <data name="prefparam_path_saftpt" xml:space="preserve">
+    <value>Path : Saft-PT Export</value>
+  </data>
+  <data name="prefparam_service_at_send_documents" xml:space="preserve">
+    <value>Autoridade Tributária Service : Sent Financial Documents</value>
+  </data>
+  <data name="prefparam_service_at_send_documents_waybill" xml:space="preserve">
+    <value>Autoridade Tributária Service : Sent Financial WayBills</value>
+  </data>
+  <data name="prefparam_use_cached_images" xml:space="preserve">
+    <value>Application : Use Cached Images</value>
+  </data>
+  <data name="prefparam_report_filename_logo_small" xml:space="preserve">
+    <value>Report Logo FileName Small</value>
+  </data>
+  <data name="window_title_edit_configurationinputreader" xml:space="preserve">
+    <value>Input Reader</value>
+  </data>
+  <data name="window_title_edit_configurationpoledisplay" xml:space="preserve">
+    <value>Pole Display</value>
+  </data>
+  <data name="window_title_edit_configurationweighingmachine" xml:space="preserve">
+    <value>Weighing Machine</value>
+  </data>
+  <data name="prefparam_report_footer_line3" xml:space="preserve">
+    <value>Report Footer Line 3</value>
+  </data>
+  <data name="prefparam_report_footer_line4" xml:space="preserve">
+    <value>Report Footer Line 4</value>
+  </data>
+  <data name="prefparam_report_footer_line5" xml:space="preserve">
+    <value>Report Footer Line 5</value>
+  </data>
+  <data name="prefparam_report_footer_line6" xml:space="preserve">
+    <value>Report Footer Line 6</value>
+  </data>
+  <data name="global_ConfigurationInputReader" xml:space="preserve">
+    <value>Input Reader</value>
+  </data>
+  <data name="global_ConfigurationPoleDisplay" xml:space="preserve">
+    <value>Pole Display</value>
+  </data>
+  <data name="global_ConfigurationWeighingMachine" xml:space="preserve">
+    <value>Weighing Machine</value>
+  </data>
+  <data name="global_input_barcode_reader" xml:space="preserve">
+    <value>Barcode Reader</value>
+  </data>
+  <data name="global_input_reader_card_reader" xml:space="preserve">
+    <value>Card Reader</value>
+  </data>
+  <data name="global_input_reader_card_reader_sizes" xml:space="preserve">
+    <value>Valid Reader Input Sizes</value>
+  </data>
+  <data name="global_input_reader_timer_interval" xml:space="preserve">
+    <value>Timer Interval (ms)</value>
+  </data>
+  <data name="global_pole_display_codetable" xml:space="preserve">
+    <value>CodeTable</value>
+  </data>
+  <data name="global_pole_display_endpoint" xml:space="preserve">
+    <value>EndPoint</value>
+  </data>
+  <data name="global_pole_display_goto_stand_by_in_seconds" xml:space="preserve">
+    <value>StandBy in Seconds</value>
+  </data>
+  <data name="global_pole_display_number_of_characters_per_line" xml:space="preserve">
+    <value>Number of Chars per Line</value>
+  </data>
+  <data name="global_pole_display_pid" xml:space="preserve">
+    <value>Product Id (Pid)</value>
+  </data>
+  <data name="global_pole_display_stand_by_line_no" xml:space="preserve">
+    <value>StandBy Line #{0}</value>
+  </data>
+  <data name="global_pole_display_vid" xml:space="preserve">
+    <value>Vendor Id (Vid)</value>
+  </data>
+  <data name="global_printer_thermal_cut_command" xml:space="preserve">
+    <value>Commando de Corte</value>
+  </data>
+  <data name="global_printer_thermal_encoding" xml:space="preserve">
+    <value>Encoding</value>
+  </data>
+  <data name="global_printer_thermal_image_company_logo" xml:space="preserve">
+    <value>File of Company Logo</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_normal" xml:space="preserve">
+    <value>Max Chars per Line Normal Font</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_normal_bold" xml:space="preserve">
+    <value>Max Chars per Line Normal Bold Font</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_small" xml:space="preserve">
+    <value>Max Chars per Line Small Font</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_m" xml:space="preserve">
+    <value>Open Drawer Comm. M</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_t1" xml:space="preserve">
+    <value>Open Drawer Comm. T1</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_t2" xml:space="preserve">
+    <value>Open Drawer Comm. T2</value>
+  </data>
+  <data name="global_printer_thermal_printer" xml:space="preserve">
+    <value>Thermal Printer</value>
+  </data>
+  <data name="global_printer_thermal_print_logo" xml:space="preserve">
+    <value>Print Company Logo</value>
+  </data>
+  <data name="prefparam_service_at_production_account_fiscal_number" xml:space="preserve">
+    <value>Autoridade Tributária Service : Account Fiscal Number</value>
+  </data>
+  <data name="prefparam_service_at_production_account_password" xml:space="preserve">
+    <value>Autoridade Tributária Service : Account Password</value>
   </data>
 </root>

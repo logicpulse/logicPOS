@@ -15,7 +15,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = Utils.GetWindowTitle(Resx.window_title_edit_documentfinanceseries);
-            SetSizeRequest(500, 286);
+            SetSizeRequest(500, 288);
             InitUI();
             //InitNotes();
             ShowAll();
@@ -28,6 +28,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Tab1
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
+                //Acronym
+                Entry entryAcronym = new Entry();
+                BOWidgetBox boxAcronym = new BOWidgetBox(Resx.global_acronym, entryAcronym);
+                vboxTab1.PackStart(boxAcronym, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAcronym, _dataSourceRow, "Acronym", SettingsApp.RegexDocumentSeriesYearAcronym, true));
+
                 //Designation
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
@@ -39,12 +45,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 BOWidgetBox boxFiscalYear = new BOWidgetBox(Resx.global_fiscal_year, entryFiscalYear);
                 vboxTab1.PackStart(boxFiscalYear, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFiscalYear, _dataSourceRow, "FiscalYear", SettingsApp.RegexDecimalGreaterThanZero, true));
-
-                //Acronym
-                Entry entryAcronym = new Entry();
-                BOWidgetBox boxAcronym = new BOWidgetBox(Resx.global_acronym, entryAcronym);
-                vboxTab1.PackStart(boxAcronym, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAcronym, _dataSourceRow, "Acronym", SettingsApp.RegexAlfaNumeric, true));
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(Resx.global_record_main_detail));

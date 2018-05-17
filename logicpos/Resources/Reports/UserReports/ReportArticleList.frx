@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="02/27/2018 10:08:21" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="04/19/2018 16:38:39" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.Copies="1" PrintSettings.CopyNames="Original">
   <Dictionary>
-    <BusinessObjectDataSource Name="ArticleFamily" ReferenceName="ArticleFamily" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.FRBOArticleFamily, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+    <BusinessObjectDataSource Name="ArticleFamily" ReferenceName="ArticleFamily" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Articles.FRBOArticleFamily, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Code" DataType="System.UInt32"/>
       <Column Name="Designation" DataType="System.String"/>
-      <BusinessObjectDataSource Name="BusinessObjectDataSource2" Alias="ArticleSubFamily" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.FRBOArticleSubFamily, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" PropName="ArticleSubFamily" Enabled="true">
+      <BusinessObjectDataSource Name="BusinessObjectDataSource2" Alias="ArticleSubFamily" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Articles.FRBOArticleSubFamily, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" PropName="ArticleSubFamily" Enabled="true">
         <Column Name="Code" DataType="System.UInt32"/>
         <Column Name="Designation" DataType="System.String"/>
-        <BusinessObjectDataSource Name="Article" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.FRBOArticle, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+        <BusinessObjectDataSource Name="Article" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Articles.FRBOArticle, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
           <Column Name="Code" DataType="System.String"/>
           <Column Name="Designation" DataType="System.String"/>
           <Column Name="Price1" DataType="System.Decimal"/>
@@ -66,7 +66,7 @@
   </Dictionary>
   <inherited Name="Page1">
     <inherited Name="PageHeader1" Height="48.6" Border.Lines="Bottom">
-      <inherited Name="PictureCompanyLogo" Width="189" Height="47.25"/>
+      <inherited Name="PictureCompanyLogo"/>
       <inherited Name="TextReportTitle" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
     </inherited>
     <DataBand Name="Data1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" Border.Lines="Top" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" DataSource="ArticleFamily">
@@ -85,15 +85,13 @@
             <TextObject Name="Text27" Left="614.25" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;article_price1&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
           </DataHeaderBand>
           <DataFooterBand Name="Data3Footer" Top="191.45" Width="718.2" Height="28.35">
-            <TextObject Name="Text29" Left="614.25" Width="103.95" Height="18.9" Text="[FormatNumber([ArticleSum],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
-            <TextObject Name="Text30" Width="614.25" Height="18.9" Text="[Res(&quot;global_record_count&quot;)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 10pt, style=Bold"/>
+            <TextObject Name="Text30" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [FormatNumber([ArticleSum],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 8pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
           </DataFooterBand>
         </DataBand>
       </DataBand>
     </DataBand>
     <inherited Name="PageFooter1" Top="223.8">
       <inherited Name="TextFooter1"/>
-      <inherited Name="TextFooter2"/>
       <inherited Name="Text1"/>
     </inherited>
   </inherited>

@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("SYS_ConfigurationPrinters", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("SYS_ConfigurationPrinters", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrinters), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrinters), "Code");
             ShowInDialog = true;
         }
 
@@ -44,6 +44,76 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return fNetworkName; }
             set { SetPropertyValue<string>("NetworkName", ref fNetworkName, value); }
+        }
+
+        string fThermalEncoding;
+        public string ThermalEncoding
+        {
+            get { return fThermalEncoding; }
+            set { SetPropertyValue<string>("ThermalEncoding", ref fThermalEncoding, value); }
+        }
+
+        Boolean fThermalPrintLogo;
+        public Boolean ThermalPrintLogo
+        {
+            get { return fThermalPrintLogo; }
+            set { SetPropertyValue<Boolean>("ThermalPrintLogo", ref fThermalPrintLogo, value); }
+        }
+
+        string fThermalImageCompanyLogo;
+        public string ThermalImageCompanyLogo
+        {
+            get { return fThermalImageCompanyLogo; }
+            set { SetPropertyValue<string>("ThermalImageCompanyLogo", ref fThermalImageCompanyLogo, value); }
+        }
+
+        int fThermalMaxCharsPerLineNormal;
+        public int ThermalMaxCharsPerLineNormal
+        {
+            get { return fThermalMaxCharsPerLineNormal; }
+            set { SetPropertyValue<int>("ThermalMaxCharsPerLineNormal", ref fThermalMaxCharsPerLineNormal, value); }
+        }
+
+        int fThermalMaxCharsPerLineNormalBold;
+        public int ThermalMaxCharsPerLineNormalBold
+        {
+            get { return fThermalMaxCharsPerLineNormalBold; }
+            set { SetPropertyValue<int>("ThermalMaxCharsPerLineNormalBold", ref fThermalMaxCharsPerLineNormalBold, value); }
+        }
+
+        int fThermalMaxCharsPerLineSmall;
+        public int ThermalMaxCharsPerLineSmall
+        {
+            get { return fThermalMaxCharsPerLineSmall; }
+            set { SetPropertyValue<int>("ThermalMaxCharsPerLineSmall", ref fThermalMaxCharsPerLineSmall, value); }
+        }
+
+        string fThermalCutCommand;
+        public string ThermalCutCommand
+        {
+            get { return fThermalCutCommand; }
+            set { SetPropertyValue<string>("ThermalCutCommand", ref fThermalCutCommand, value); }
+        }
+
+        int fThermalOpenDrawerValueM;
+        public int ThermalOpenDrawerValueM
+        {
+            get { return fThermalOpenDrawerValueM; }
+            set { SetPropertyValue<int>("ThermalOpenDrawerValueM", ref fThermalOpenDrawerValueM, value); }
+        }
+
+        int fThermalOpenDrawerValueT1;
+        public int ThermalOpenDrawerValueT1
+        {
+            get { return fThermalOpenDrawerValueT1; }
+            set { SetPropertyValue<int>("ThermalOpenDrawerValueT1", ref fThermalOpenDrawerValueT1, value); }
+        }
+
+        int fThermalOpenDrawerValueT2;
+        public int ThermalOpenDrawerValueT2
+        {
+            get { return fThermalOpenDrawerValueT2; }
+            set { SetPropertyValue<int>("ThermalOpenDrawerValueT2", ref fThermalOpenDrawerValueT2, value); }
         }
 
         Boolean fShowInDialog;

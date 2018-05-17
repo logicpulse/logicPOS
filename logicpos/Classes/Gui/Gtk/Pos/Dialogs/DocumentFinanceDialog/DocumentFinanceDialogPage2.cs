@@ -150,7 +150,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _entryBoxCustomerAddress.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer Locality
-            _entryBoxCustomerLocality = new EntryBoxValidation(_sourceWindow, Resx.global_locality, KeyboardMode.Alfa, SettingsApp.RegexAlfa, false);
+            _entryBoxCustomerLocality = new EntryBoxValidation(_sourceWindow, Resx.global_locality, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
             _entryBoxCustomerLocality.EntryValidation.Changed += delegate { Validate(); };
 
             //Customer ZipCode
@@ -345,6 +345,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             {
                 //Disable calls to this function when we trigger .Changed events, creating recursive calls to this function
                 _enableGetCustomerDetails = false;
+
+                 // Encrypt pFieldValue to use in Sql Filter
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    // Only Encrypt Encrypted Fields
+                    if (pFieldName == nameof(ERP_Customer.FiscalNumber) || pFieldName == nameof(ERP_Customer.CardNumber)) {
+                        pFieldValue = GlobalFramework.PluginSoftwareVendor.Encrypt(pFieldValue);
+                    }
+                }
 
                 Guid customerGuid = new Guid();
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE {0} = '{1}' AND (Hidden IS NULL OR Hidden = 0);", pFieldName, pFieldValue);

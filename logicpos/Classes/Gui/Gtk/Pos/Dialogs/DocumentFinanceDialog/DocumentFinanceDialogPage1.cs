@@ -168,11 +168,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Customer Notes
             _entryBoxDocumentMasterNotes = new EntryBoxValidation(_sourceWindow, Resx.global_notes, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
-            _entryBoxDocumentMasterNotes.EntryValidation.Changed += delegate { Validate(); };
 
             //Reason
             _entryBoxReason = new EntryBoxValidation(_sourceWindow, Resx.global_reason, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
             _entryBoxReason.EntryValidation.Changed += delegate { Validate(); };
+
+            // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes : After all Components ex entryBoxReason, else we trigger a NPE
+            UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes();
+            // Only call Notes Validation after call above Method that will Trigger Validate()
+            _entryBoxDocumentMasterNotes.EntryValidation.Changed += delegate { Validate(); };
 
             //Pack VBOX
             _vbox = new VBox(false, 2);
@@ -234,6 +238,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 if (_entryBoxSelectSourceDocumentFinance.Value != null) { _entryBoxSelectSourceDocumentFinance.Value = null; _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty; };
                 if (_entryBoxDocumentMasterNotes.EntryValidation.Text != string.Empty) { _entryBoxDocumentMasterNotes.EntryValidation.Text = string.Empty; };
                 if (_entryBoxReason.EntryValidation.Text != string.Empty) { _entryBoxReason.EntryValidation.Text = string.Empty; };
+
+                // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes
+                UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes();
 
                 //Update Criteria for Customers
                 string filterBaseCustomer = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
@@ -692,6 +699,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     dataRow["PriceType"] = item.PriceType;
                     dataRow["Token1"] = item.Token1;
                     dataRow["Token2"] = item.Token2;
+                    dataRow["Notes"] = item.Notes;
                     //Insert DataRow into DataTable
                     _treeViewArticles.DataSourceRowInsert<DataRow>(dataRow);
                     //Insert DataRow into Model
@@ -754,6 +762,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 _pagePad3.TreeViewArticles.AllowRecordUpdate = false;
                 _pagePad3.TreeViewArticles.AllowRecordInsert = false;
             }
+        }
+
+        /// <summary>
+        /// This is a shared method to assign Notes from DocumentFinanceType
+        /// </summary>
+        private void UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes()
+        {
+            // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes
+            _entryBoxDocumentMasterNotes.EntryValidation.Text = (_entryBoxSelectDocumentFinanceType.Value != null && _entryBoxSelectDocumentFinanceType.Value.Notes != null) 
+                ? _entryBoxSelectDocumentFinanceType.Value.Notes
+                : null;
         }
     }
 }

@@ -50,6 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\SettingsApp.cs" />
+    <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationInputReader.cs" />
+    <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationPoleDisplay.cs" />
+    <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationWeighingMachine.cs" />
+    <Compile Include="DataLayer\Xpo\XPGuidObjectAttribute.cs" />
     <Compile Include="Enums\AppOperationMode.cs" />
     <Compile Include="Enums\DatabaseType.cs" />
     <Compile Include="Enums\OrderStatus.cs" />
@@ -134,6 +138,10 @@
     <Compile Include="ThirdPartyLibs\SaltedString.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
+      <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
+      <Name>logicpos.plugin.contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\logicpos.resources\logicpos.resources.csproj">
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>logicpos.resources</Name>

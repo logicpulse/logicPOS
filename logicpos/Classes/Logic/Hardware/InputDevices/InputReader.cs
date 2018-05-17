@@ -44,7 +44,7 @@ namespace logicpos.Classes.Logic.Hardware
         public InputReader()
         {
             //Init Time Interval
-            _timerInterval = Convert.ToUInt16(GlobalFramework.Settings["hardwareInputReaderTimerInterval"]);
+            _timerInterval = GlobalFramework.LoggedTerminal.InputReaderTimerInterval;
             //Init Readers
             _readers = InitReaders();
         }
@@ -55,8 +55,8 @@ namespace logicpos.Classes.Logic.Hardware
 
             try
             {
-                _barCodeReaderList = FrameworkUtils.CommaDelimitedStringToIntList(GlobalFramework.Settings["hardwareInputReaderBarCodeReaderSizes"], ',');
-                _cardReaderList = FrameworkUtils.CommaDelimitedStringToIntList(GlobalFramework.Settings["hardwareInputReaderCardReaderSizes"], ',');
+                _barCodeReaderList = FrameworkUtils.CommaDelimitedStringToIntList(GlobalFramework.LoggedTerminal.BarcodeReader.ReaderSizes);
+                _cardReaderList = FrameworkUtils.CommaDelimitedStringToIntList(GlobalFramework.LoggedTerminal.CardReader.ReaderSizes);
 
                 for (int i = 0; i < _barCodeReaderList.Count; i++)
                 {

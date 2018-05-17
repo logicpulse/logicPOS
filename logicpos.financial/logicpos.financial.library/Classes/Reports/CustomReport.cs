@@ -494,14 +494,38 @@ namespace logicpos.financial.library.Classes.Reports
                 //Prepare and Declare FRBOGenericCollections
                 //"Oid,Designation,ButtonLabel"
                 FRBOGenericCollection<FRBOCustomerType> gcCustomerType = new FRBOGenericCollection<FRBOCustomerType>();
-                FRBOGenericCollection<FRBOCustomer> gcCustomer;
+                FRBOGenericCollection<FRBOCustomer> gcCustomers;
 
                 //Render Child Bussiness Objects
                 foreach (FRBOCustomerType customerType in gcCustomerType)
                 {
-                    //Get SubFamily
-                    gcCustomer = new FRBOGenericCollection<FRBOCustomer>(string.Format("CustomerType = '{0}'", customerType.Oid), "Ord");
-                    customerType.Customer = gcCustomer.List;
+                    //Get Customer
+                    gcCustomers = new FRBOGenericCollection<FRBOCustomer>(string.Format("CustomerType = '{0}'", customerType.Oid), "Ord");
+                    customerType.Customer = gcCustomers.List;
+
+                    if (gcCustomers != null && gcCustomers.List.Count > 0)
+                    {
+                        // Decrypt Phase
+                        if (GlobalFramework.PluginSoftwareVendor != null)
+                        {
+                            foreach (var item in gcCustomers.List)
+                            {
+                                item.Name = GlobalFramework.PluginSoftwareVendor.Decrypt(item.Name);
+                                item.Address = GlobalFramework.PluginSoftwareVendor.Decrypt(item.Address);
+                                item.Locality = GlobalFramework.PluginSoftwareVendor.Decrypt(item.Locality);
+                                item.ZipCode = GlobalFramework.PluginSoftwareVendor.Decrypt(item.ZipCode);
+                                item.City = GlobalFramework.PluginSoftwareVendor.Decrypt(item.City);
+                                item.DateOfBirth = GlobalFramework.PluginSoftwareVendor.Decrypt(item.DateOfBirth);
+                                item.Phone = GlobalFramework.PluginSoftwareVendor.Decrypt(item.Phone);
+                                item.Fax = GlobalFramework.PluginSoftwareVendor.Decrypt(item.Fax);
+                                item.MobilePhone = GlobalFramework.PluginSoftwareVendor.Decrypt(item.MobilePhone);
+                                item.Email = GlobalFramework.PluginSoftwareVendor.Decrypt(item.Email);
+                                item.WebSite = GlobalFramework.PluginSoftwareVendor.Decrypt(item.WebSite);
+                                item.FiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.FiscalNumber);
+                                item.CardNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.CardNumber);
+                            }
+                        }
+                    }
                 }
 
                 //Prepare and Enable DataSources
@@ -562,6 +586,18 @@ namespace logicpos.financial.library.Classes.Reports
 
                 //Prepare and Declare FRBOGenericCollections
                 FRBOGenericCollection<FRBOSystemAuditView> gcSystemAudit = new FRBOGenericCollection<FRBOSystemAuditView>(filter);
+
+                // Decrypt Phase
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    foreach (var item in gcSystemAudit)
+                    {
+                        if (item.UserDetailName != null)
+                        {
+                            item.UserDetailName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.UserDetailName);
+                        }
+                    }
+                }
 
                 //Prepare and Enable DataSources
                 customReport.RegisterData(gcSystemAudit, "SystemAudit");
@@ -631,7 +667,7 @@ namespace logicpos.financial.library.Classes.Reports
         }
 
         // Used in Detail/Group
-        public static void ProcessReportDocumentDetail(CustomReportDisplayMode pViewMode, string resourceString, string groupField, string groupSelectFields, string groupCondition, string groupTitle, string filter, string filterHumanReadable, bool grouped)
+        public static void ProcessReportDocumentDetail(CustomReportDisplayMode pViewMode, string resourceString, string groupField, string groupSelectFields, string groupCondition, string groupTitle, string filter, string filterHumanReadable, bool grouped, bool decryptGroupField = false)
         {
             try
             {
@@ -670,6 +706,14 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     // Using view_documentfinance
                     FRBOGenericCollection<FRBODocumentFinanceMasterDetailView> gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailView>(filter);
+                    // Decrypt Phase
+                    if (GlobalFramework.PluginSoftwareVendor != null)
+                    {
+                        foreach (var item in gcDocumentFinanceMasterDetail)
+                        {
+                            item.UserDetailName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.UserDetailName);
+                        }
+                    }
                     //Prepare and Enable DataSources
                     customReport.RegisterData(gcDocumentFinanceMasterDetail, "DocumentFinanceDetail");
                 }
@@ -682,6 +726,15 @@ namespace logicpos.financial.library.Classes.Reports
 
                     // Using view_documentfinancesellgroup
                     FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView> gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView>(filter, queryGroupFields, string.Empty, queryFields);
+                    // Decrypt Phase
+                    if (GlobalFramework.PluginSoftwareVendor != null && decryptGroupField)
+                    {
+                        //gcDocumentFinanceMasterDetail.Get(0).GroupDesignation                    
+                        foreach (var item in gcDocumentFinanceMasterDetail)
+                        {
+                            item.GroupDesignation = GlobalFramework.PluginSoftwareVendor.Decrypt(item.GroupDesignation);
+                        }
+                    }
                     //Prepare and Enable DataSources
                     customReport.RegisterData(gcDocumentFinanceMasterDetail, "DocumentFinanceDetail");
                 }

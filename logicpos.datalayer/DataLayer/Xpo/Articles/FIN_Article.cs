@@ -12,7 +12,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("FIN_Article", "Ord");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_Article), "Ord");
             //Disable now using AlfaNumeric Code, not Integer
             //Code = FrameworkUtils.GetNextTableFieldID("FIN_Article", "Code").ToString();
             Type = this.Session.GetObjectByKey<FIN_ArticleType>(SettingsApp.XpoOidArticleDefaultType);

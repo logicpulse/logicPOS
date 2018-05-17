@@ -2,13 +2,16 @@
 ### WCF Service Application > logicpos.financial.servicewcf
 
 1) Add WCF Service Application to Solution > "logicpos.financial.servicewcf"
+
 2) Run it and get PORT ex 50391
+
 3) Add "logicpos.financial.service" project reference to it
 
 ---
 ### Windows Service and Main Project > logicpos.financial.service
 
 4) Add References 
+
 	System.ServiceModel, 
 	System.ServiceProcess, 
 	System.ServiceModel.Web,

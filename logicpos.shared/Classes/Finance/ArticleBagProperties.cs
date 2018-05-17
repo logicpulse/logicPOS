@@ -138,6 +138,14 @@ namespace logicpos.shared.Classes.Finance
             set { fToken2 = value; }
         }
 
+        string fNotes;
+        [Size(255)]
+        public string Notes
+        {
+            get { return fNotes; }
+            set { fNotes = value; }
+        }
+
         //this TreeIter as object Type, to Remove Gtk from Framework, need to be cast as (TreeIter as TreeIter) when used
         private object _treeIter;
         public object TreeIter

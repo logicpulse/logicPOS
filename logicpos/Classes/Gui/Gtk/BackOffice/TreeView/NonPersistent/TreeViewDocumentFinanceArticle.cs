@@ -98,6 +98,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             columnProperties.Add(new GenericTreeViewColumnProperty("Token1") { Type = typeof(string), Visible = false });  //MediaNova:ClassifiedID
             /*14*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Token2") { Type = typeof(string), Visible = false });  //MediaNova:FriendlyID
+            /*15*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false });
 
             //init DataTable
             DataTable dataTable = GetDataTable(columnProperties, false);
@@ -159,14 +161,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         //To Store VatExemptionReason : Get Value From ArticleBag, When Used in Tickets
                         dataRow[7] = null;                      // VatExemptionReason.Designation
                         dataRow[8] = item.Key.Discount;
-//dataRow[9] = item.Value.TotalGross;
-dataRow[9] = item.Value.TotalNet;
+                        //dataRow[9] = item.Value.TotalGross;
+                        dataRow[9] = item.Value.TotalNet;
                         dataRow[10] = item.Value.TotalFinal;
                         //Invisible Fields
                         dataRow[11] = item.Value.PriceFinal;
                         dataRow[12] = item.Value.PriceType;
                         dataRow[13] = string.Empty;             //Token1
                         dataRow[14] = string.Empty;             //Token2
+                        dataRow[15] = string.Empty;             //Notes
                         //Add Row
                         resultDataTable.Rows.Add(dataRow);
                     }

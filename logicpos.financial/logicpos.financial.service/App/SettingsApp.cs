@@ -39,43 +39,96 @@ namespace logicpos.financial.service.App
 
         public static bool ServiceTimerEnabled = Convert.ToBoolean(GlobalFramework.Settings["serviceTimerEnabled"]);
         public static double ServiceTimerInterval = Convert.ToDouble(GlobalFramework.Settings["serviceTimerInterval"]);
-        public static bool ServiceATSendDocuments = Convert.ToBoolean(GlobalFramework.Settings["serviceATSendDocuments"]);
-        public static bool ServiceATSendDocumentsWayBill = Convert.ToBoolean(GlobalFramework.Settings["serviceATSendDocumentsWayBill"]);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // AT Web Services
 
+        //Todo: CleanUp
+
         // Enable/Disable TestMode
-        public static bool ServicesATEnableTestMode = Convert.ToBoolean(GlobalFramework.Settings["servicesATEnableTestMode"]);
-        public static bool ServicesATWBAgriculturalMode = Convert.ToBoolean(GlobalFramework.Settings["servicesATWBAgriculturalMode"]);
+        public static bool ServiceATEnableTestMode { get { return GetServiceATEnableTestMode(); } }//Convert.ToBoolean(GlobalFramework.Settings["serviceATEnableTestMode"]);
+        public static bool ServiceATSendDocuments { get { return GetServiceATSendDocuments(); } }//Convert.ToBoolean(GlobalFramework.Settings["serviceATSendDocuments"]);
+        public static bool ServiceATSendDocumentsWayBill { get { return GetServiceATSendDocumentsWayBill(); } }//Convert.ToBoolean(GlobalFramework.Settings["serviceATSendDocumentsWayBill"]);
+        public static bool ServiceATWBAgriculturalMode { get { return GetServiceATWBAgriculturalMode(); } }//Convert.ToBoolean(GlobalFramework.Settings["serviceATWBAgriculturalMode"]);
 
         //Uris
-        public static Uri ServicesATUriDocuments { get { return GetServicesATDCUri(ServicesATEnableTestMode); } }
+        public static Uri ServicesATUriDocuments { get { return GetServicesATDCUri(ServiceATEnableTestMode); } }
         public static Uri ServicesATUriDocumentsSOAPAction = new Uri("http://servicos.portaldasfinancas.gov.pt/faturas/RegisterInvoice");
 
         //From Shared Parameters
-        public static string ServicesATFilePublicKey { get { return GetServicesATFilePublicKey(ServicesATEnableTestMode); } }
-        public static string ServicesATFileCertificate { get { return GetServicesATFileCertificate(ServicesATEnableTestMode); } }
-        public static string ServicesATCertificatePassword { get { return GetServicesATCertificatePassword(ServicesATEnableTestMode); } }
-        public static string ServicesATTaxRegistrationNumber { get { return GetServicesATTaxRegistrationNumber(ServicesATEnableTestMode); } }
+        public static string ServicesATFilePublicKey { get { return GetServicesATFilePublicKey(ServiceATEnableTestMode); } }
+        public static string ServicesATFileCertificate { get { return GetServicesATFileCertificate(ServiceATEnableTestMode); } }
+        public static string ServicesATCertificatePassword { get { return GetServicesATCertificatePassword(ServiceATEnableTestMode); } }
+        public static string ServicesATTaxRegistrationNumber { get { return GetServicesATTaxRegistrationNumber(ServiceATEnableTestMode); } }
         //User of "portal das finanças"
-        public static string ServicesATAccountFiscalNumber { get { return GetServicesATAccountFiscalNumber(ServicesATEnableTestMode); } }
-        public static string ServicesATAccountPassword { get { return GetServicesATAccountPassword(ServicesATEnableTestMode); } }
+        public static string ServicesATAccountFiscalNumber { get { return GetServicesATAccountFiscalNumber(ServiceATEnableTestMode); } }
+        public static string ServicesATAccountPassword { get { return GetServicesATAccountPassword(ServiceATEnableTestMode); } }
 
         //DocumentsWayBill(Agricultural)
-        public static Uri ServicesATUriDocumentsWayBill { get { return GetServicesATWBUri(ServicesATEnableTestMode, ServicesATWBAgriculturalMode); } }
+        public static Uri ServicesATUriDocumentsWayBill { get { return GetServicesATWBUri(ServiceATEnableTestMode, ServiceATWBAgriculturalMode); } }
         public static Uri ServicesATUriDocumentsWayBillSOAPAction = new Uri("https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/");
 
         //From Shared Parameters
         public static int ServicesATRequestTimeout = Convert.ToInt16(GlobalFramework.Settings["servicesATRequestTimeout"]);
-        public static string ServicesATWBFilePublicKey { get { return GetServicesATFilePublicKey(ServicesATEnableTestMode); } }
-        public static string ServicesATWBFileCertificate { get { return GetServicesATFileCertificate(ServicesATEnableTestMode); } }
-        public static string ServicesATWBCertificatePassword { get { return GetServicesATCertificatePassword(ServicesATEnableTestMode); } }
-        public static string ServicesATWBTaxRegistrationNumber { get { return GetServicesATTaxRegistrationNumber(ServicesATEnableTestMode); } }
+        public static string ServicesATWBFilePublicKey { get { return GetServicesATFilePublicKey(ServiceATEnableTestMode); } }
+        public static string ServicesATWBFileCertificate { get { return GetServicesATFileCertificate(ServiceATEnableTestMode); } }
+        public static string ServicesATWBCertificatePassword { get { return GetServicesATCertificatePassword(ServiceATEnableTestMode); } }
+        public static string ServicesATWBTaxRegistrationNumber { get { return GetServicesATTaxRegistrationNumber(ServiceATEnableTestMode); } }
         //User of "portal das finanças"
-        public static string ServicesATWBAccountFiscalNumber { get { return GetServicesATAccountFiscalNumber(ServicesATEnableTestMode); } }
+        public static string ServicesATWBAccountFiscalNumber { get { return GetServicesATAccountFiscalNumber(ServiceATEnableTestMode); } }
         //Pass of "portal das finanças"
-        public static string ServicesATWBAccountPassword { get { return GetServicesATAccountPassword(ServicesATEnableTestMode); } }
+        public static string ServicesATWBAccountPassword { get { return GetServicesATAccountPassword(ServiceATEnableTestMode); } }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // AT Web Services : SendDocuments and SendDocumentsWayBill
+
+        private static bool GetServiceATEnableTestMode()
+        {
+            bool result = false;
+
+            if (!string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]))
+            {
+                result = !Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]);
+            }
+
+            return result;
+        }
+
+        private static bool GetServiceATSendDocuments()
+        {
+            bool result = false;
+
+            if (!string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]))
+            {
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
+            }
+
+            return result;
+        }
+
+        private static bool GetServiceATSendDocumentsWayBill()
+        {
+            bool result = false;
+
+            if (!string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]))
+            {
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
+            }
+
+            return result;
+        }
+
+        private static bool GetServiceATWBAgriculturalMode()
+        {
+            bool result = false;
+
+            if (!string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]))
+            {
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]);
+            }
+
+            return result;
+        }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // AT Web Services : Shared for Documents|WayBill(Agricultural)
@@ -98,30 +151,33 @@ namespace logicpos.financial.service.App
 
         private static string GetServicesATTaxRegistrationNumber(bool pTestMode)
         {
-            string companyFiscalNumber = GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
-
-            return (pTestMode) ? "599999993" : companyFiscalNumber;//"508278155"
+            return (pTestMode)
+                ? "599999993"
+                : GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
         }
 
         private static string GetServicesATAccountFiscalNumber(bool pTestMode)
         {
+            //GlobalFramework.Settings["servicesATProdModeAccountFiscalNumber"];
             return (pTestMode)
                 ? "599999993/0037"
-                : GlobalFramework.Settings["servicesATProdModeAccountFiscalNumber"];//" "508278155/2";
+                : GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
         }
 
         private static string GetServicesATAccountPassword(bool pTestMode)
         {
+            //GlobalFramework.Settings["servicesATProdModeAccountPassword"];
             return (pTestMode)
                 ? "testes1234"
-                : GlobalFramework.Settings["servicesATProdModeAccountPassword"];//"logicpulse#2015X";
+                : GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
         }
 
         private static string GetServicesATCertificatePassword(bool pTestMode)
         {
+            //GlobalFramework.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
-                : GlobalFramework.Settings["servicesATProdModeCertificatePassword"];//" "logicpulse#2015X";
+                : GlobalFramework.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

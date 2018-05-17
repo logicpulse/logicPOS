@@ -1,6 +1,5 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
-using logicpos.datalayer.DataLayer;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -13,10 +12,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("POS_ConfigurationPlaceTerminal", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("POS_ConfigurationPlaceTerminal", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceTerminal), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceTerminal), "Code");
             TemplateTicket = this.Session.GetObjectByKey<SYS_ConfigurationPrintersTemplates>(SettingsApp.XpoOidConfigurationPrintersTemplateTicket);
             TemplateTablesConsult = this.Session.GetObjectByKey<SYS_ConfigurationPrintersTemplates>(SettingsApp.XpoOidConfigurationPrintersTemplateTableConsult);
+            InputReaderTimerInterval = 200;
         }
 
         UInt32 fOrd;
@@ -50,6 +50,13 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("HardwareId", ref fHardwareId, value); }
         }
 
+        UInt32 fInputReaderTimerInterval;
+        public UInt32 InputReaderTimerInterval
+        {
+            get { return fInputReaderTimerInterval; }
+            set { SetPropertyValue<UInt32>("InputReaderTimerInterval", ref fInputReaderTimerInterval, value); }
+        }
+
         //ConfigurationPlace One <> Many ConfigurationPlaceTerminal
         POS_ConfigurationPlace fPlace;
         [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTerminal")]
@@ -66,6 +73,42 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return fPrinter; }
             set { SetPropertyValue<SYS_ConfigurationPrinters>("Printer", ref fPrinter, value); }
+        }
+
+//BarcodeReader One <> Many ConfigurationPlaceTerminal
+SYS_ConfigurationInputReader fBarcodeReader;
+[Association(@"ConfigurationHardwareInputReader1ReferencesConfigurationPlaceTerminal")]
+public SYS_ConfigurationInputReader BarcodeReader
+{
+    get { return fBarcodeReader; }
+    set { SetPropertyValue<SYS_ConfigurationInputReader>("BarcodeReader", ref fBarcodeReader, value); }
+}
+
+//ConfigurationInputReader One <> Many ConfigurationPlaceTerminal
+SYS_ConfigurationInputReader fCardReader;
+[Association(@"ConfigurationHardwareInputReader2ReferencesConfigurationPlaceTerminal")]
+public SYS_ConfigurationInputReader CardReader
+{
+    get { return fCardReader; }
+    set { SetPropertyValue<SYS_ConfigurationInputReader>("CardReader", ref fCardReader, value); }
+}
+
+        //ConfigurationPoleDisplay One <> Many ConfigurationPlaceTerminal
+        SYS_ConfigurationPoleDisplay fPoleDisplay;
+        [Association(@"ConfigurationHardwarePoleDisplayReferencesConfigurationPlaceTerminal")]
+        public SYS_ConfigurationPoleDisplay PoleDisplay
+        {
+            get { return fPoleDisplay; }
+            set { SetPropertyValue<SYS_ConfigurationPoleDisplay>("PoleDisplay", ref fPoleDisplay, value); }
+        }
+
+        //ConfigurationWeighingMachine One <> Many ConfigurationPlaceTerminal
+        SYS_ConfigurationWeighingMachine fWeighingMachine;
+        [Association(@"ConfigurationHardwareWeighingMachineReferencesConfigurationPlaceTerminal")]
+        public SYS_ConfigurationWeighingMachine WeighingMachine
+        {
+            get { return fWeighingMachine; }
+            set { SetPropertyValue<SYS_ConfigurationWeighingMachine>("WeighingMachine", ref fWeighingMachine, value); }
         }
 
         //ConfigurationPlaceTerminal One <> Many DocumentFinanceYearSerieTerminal

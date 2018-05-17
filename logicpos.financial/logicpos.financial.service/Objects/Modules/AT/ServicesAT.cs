@@ -32,18 +32,8 @@ namespace logicpos.financial.service.Objects.Modules.AT
         private string _appPath = string.Empty;
         private string _postData;
         private string _pathSaveSoap;
-        private string _pathSaveSoapResult;
-        public string PathSaveSoapResult
-        {
-            get { return _pathSaveSoapResult; }
-            set { _pathSaveSoapResult = value; }
-        }
-        private string _pathSaveSoapResultError;
-        public string PathSaveSoapResultError
-        {
-            get { return _pathSaveSoapResultError; }
-            set { _pathSaveSoapResultError = value; }
-        }
+private string _pathSaveSoapResult;
+private string _pathSaveSoapResultError;
         private string _pathPublicKey;
         private string _pathCertificate;
         private string _atPasswordCertificate;
@@ -88,6 +78,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             _documentMaster = pFinanceMaster;
             //Prepare Local Vars : Must be WayBill and Not a InvoiceWayBill, InvoiceWayBill always are processed like normal Documents
             //Se a fatura for utilizada como documento de transporte e acompanhar os bens, terei que efetuar a comunicação à AT?  
+            //https://www.portugal-a-programar.pt/forums/topic/57734-utilizar-webservices-da-at/?do=findComment&comment=598210
             //https://info.portaldasfinancas.gov.pt/infofaqs/listafaqs.aspx?subarea=263
             //Caso a fatura seja emitida por via eletrónica, (...) e contenha os elementos referidos no art 36º do CIVA, assim como todos os elementos que devam constar do documento de transporte, fica o remetente (proprietário dos bens) dispensado de comunicação à AT.
             _wayBillMode = (_documentMaster.DocumentType.WayBill && _documentMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill);
@@ -103,6 +94,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             // Get TestMode/Production Configuration
             _atAccountFiscalNumber = SettingsApp.ServicesATAccountFiscalNumber;
             _atAccountPassword = SettingsApp.ServicesATAccountPassword;
+            // Values from PrefsDB and VendorPlugin
             _atTaxRegistrationNumber = SettingsApp.ServicesATTaxRegistrationNumber;
             _atPasswordCertificate = SettingsApp.ServicesATCertificatePassword;
 
@@ -119,7 +111,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 Utils.Log(string.Format("Using pathPublicKey: [{0}]", _pathPublicKey));
                 Utils.Log(string.Format("Using pathCertificate: [{0}]", _pathCertificate));
                 // Log Parameters
-                Utils.Log(string.Format("TaxRegistrationNumber :[{0}], AccountFiscalNumber: [{1}], AccountPassword: [{2}], PasswordCertificate: [{3}]", _atTaxRegistrationNumber, _atAccountFiscalNumber, _atAccountPassword, _atPasswordCertificate));
+                Utils.Log(string.Format("TaxRegistrationNumber :[{0}], AccountFiscalNumber: [{1}], AccountPassword: [{2}]", _atTaxRegistrationNumber, _atAccountFiscalNumber, _atAccountPassword));
             }
 
             if (File.Exists(_pathPublicKey) && File.Exists(_pathCertificate))
@@ -520,8 +512,8 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
         public string Send()
         {
-            //Utils.Log(string.Format("urlWebService: {0}", _urlWebService));
-            //Utils.Log(string.Format("urlSoapAction: {0}", _urlSoapAction));
+            Utils.Log(string.Format("urlWebService: {0}", _urlWebService));
+            Utils.Log(string.Format("urlSoapAction: {0}", _urlSoapAction));
             Utils.Log(string.Format("Send Document DocumentNumber: [{0}]/WayBillMode: [{1}]", _documentMaster.DocumentNumber, _wayBillMode));
 
             //Check Certificates
@@ -546,11 +538,15 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 request.Headers.Add("SOAPAction", _urlSoapAction.ToString());
                 if (SettingsApp.ServicesATRequestTimeout > 0) request.Timeout = SettingsApp.ServicesATRequestTimeout;
 
-                X509Certificate2 cert = new X509Certificate2();
+                // Old Method : without Using VendorPlugin
+                //X509Certificate2 cert = new X509Certificate2();
                 //From user installed Certificates
                 //cert.Import(_pathCertificate, _passwordCertificate, X509KeyStorageFlags.DefaultKeySet);
                 //From FileSystem "Resources\Certificates"
-                cert.Import(_pathCertificate, _atPasswordCertificate, X509KeyStorageFlags.Exportable);
+                //cert.Import(_pathCertificate, _atPasswordCertificate, X509KeyStorageFlags.Exportable);
+
+                // New Method : Import Certificate From VendorPlugin
+                X509Certificate2 cert = GlobalFramework.PluginSoftwareVendor.ImportCertificate(SettingsApp.ServiceATEnableTestMode, _pathCertificate);
 
                 // Output Certificate 
                 Utils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));

@@ -43,7 +43,7 @@
   </Dictionary>
   <inherited Name="Page1">
     <inherited Name="PageHeader1" Height="264.6">
-      <inherited Name="PictureCompanyLogo" Left="1" Width="126.3"/>
+      <inherited Name="PictureCompanyLogo"/>
       <inherited Name="TextLicenceName"/>
       <inherited Name="TextCompanyAddress"/>
       <inherited Name="TextCompanyPostalcode"/>
@@ -84,7 +84,7 @@
       <TextObject Name="Text26" Top="1" Width="132.3" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_document_date&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="Text27" Left="133.3" Top="1" Width="255.15" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_document_number&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="Text28" Left="494.4" Top="1" Width="99.3" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_document_total&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
-      <TextObject Name="Text29" Left="596.35" Top="1" Width="99.3" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_total_payed&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="Text29" Left="596.35" Top="1" Width="99.3" Height="17.9" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_total_payed_acronym&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="Text30" Left="392.45" Top="1" Width="99.3" Height="17.9" Visible="false" Border.Lines="Right" Border.Color="Gainsboro" Text="[Res(&quot;global_total_debt&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" TextFill.Color="Gray" Wysiwyg="true"/>
     </ColumnHeaderBand>
     <inherited Name="Data1" Top="291.03" Height="20.03" Border.Lines="All" Border.Color="Silver" EvenStyle="BackgroundColor1" AfterPrintEvent="Data1_AfterPrint" DataSource="DocumentFinancePaymentDocument">

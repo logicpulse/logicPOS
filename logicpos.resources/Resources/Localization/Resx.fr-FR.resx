@@ -613,9 +613,9 @@ Mouvement: {1}</value>
 Avant de continuer devra fermer ces orden (s) dans (s) table (s): {1}</value>
   </data>
   <data name="dialog_message_worksession_period_warning_open_terminals" xml:space="preserve">
-    <value>Attention! A cette époque ont {0} terminal (es) ouvert!
+    <value>Attention! Vous avez {0} Open Terminal (s)!
 
-Avant de continuer devra fermer le terminal suivant (s): {1}</value>
+Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur Non et fermez manuellement tous les terminaux, puis réessayez: {1}</value>
   </data>
   <data name="dialog_message_worksession_terminal_close_successfully" xml:space="preserve">
     <value>Boîte succès Fermé!
@@ -1408,9 +1408,6 @@ Avant de continuer devra fermer le terminal suivant (s): {1}</value>
   <data name="global_postal_code" xml:space="preserve">
     <value>Code Postal</value>
   </data>
-  <data name="global_preferenceparameter" xml:space="preserve">
-    <value>Les paramètres du système</value>
-  </data>
   <data name="global_preview" xml:space="preserve">
     <value>Aperçu</value>
   </data>
@@ -1772,7 +1769,7 @@ Avant de continuer devra fermer le terminal suivant (s): {1}</value>
     <value>Carte</value>
   </data>
   <data name="global_user_apply_privileges" xml:space="preserve">
-    <value>Apliquer privilèges</value>
+    <value>Apliquer</value>
   </data>
   <data name="global_user_assigned_seating" xml:space="preserve">
     <value>Tables assignées</value>
@@ -2107,7 +2104,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
     <value>Impôt</value>
   </data>
   <data name="prefparam_company_address" xml:space="preserve">
-    <value>Adresse de la société</value>
+    <value>Adresse de la Société</value>
   </data>
   <data name="prefparam_company_business_name" xml:space="preserve">
     <value>Nom de l'entreprise (Slogan)</value>
@@ -2152,7 +2149,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
     <value>Partage le capital</value>
   </data>
   <data name="prefparam_company_tax_entity" xml:space="preserve">
-    <value>Tax Entité</value>
+    <value>Identification de l'établissement</value>
   </data>
   <data name="prefparam_company_telephone" xml:space="preserve">
     <value>Téléphone</value>
@@ -2904,5 +2901,119 @@ Installez un plugin SoftwareVendor valide!</value>
     <value>Résolution d'écran non prise en charge {0} x {1}!
 
 Définissez manuellement la résolution de l'écran dans le paramètre paramètres du fichier de configuration [appScreenSize] et réessayez!</value>
+  </data>
+  <data name="global_other_tables" xml:space="preserve">
+    <value>Autres Tables</value>
+  </data>
+  <data name="global_preferenceparameter_company" xml:space="preserve">
+    <value>Configuration de l'Entreprise</value>
+  </data>
+  <data name="global_preferenceparameter_system" xml:space="preserve">
+    <value>Configuration du Système</value>
+  </data>
+  <data name="global_prefparam_value_tip_format" xml:space="preserve">
+    <value>Exemple de valeurs valides: [{0}]</value>
+  </data>
+  <data name="global_printer_thermal_cut_command" xml:space="preserve">
+    <value>Commande de coupure thermique de l'imprimante</value>
+  </data>
+  <data name="global_printer_thermal_encoding" xml:space="preserve">
+    <value>Encodage thermique de l'imprimante</value>
+  </data>
+  <data name="global_printer_thermal_image_company_logo" xml:space="preserve">
+    <value>Imprimante Image Thermique Logo de l'entreprise</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_normal" xml:space="preserve">
+    <value>Imprimante Max thermique Chars par ligne Normal</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_normal_bold" xml:space="preserve">
+    <value>Imprimante thermique Max Chars par ligne Normal Bold</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_small" xml:space="preserve">
+    <value>Imprimante Max thermique Chars par ligne Small</value>
+  </data>
+  <data name="global_printer_thermal_printer" xml:space="preserve">
+    <value>Imprimante Thermique</value>
+  </data>
+  <data name="global_printer_thermal_print_logo" xml:space="preserve">
+    <value>Logo d'impression thermique de l'imprimante</value>
+  </data>
+  <data name="global_record_main_properties" xml:space="preserve">
+    <value>Propriétés</value>
+  </data>
+  <data name="prefparam_report_filename_logo_small" xml:space="preserve">
+    <value>Report - Logo Petit</value>
+  </data>
+  <data name="window_title_edit_configurationinputreader" xml:space="preserve">
+    <value>Lecteur d'Entrée</value>
+  </data>
+  <data name="window_title_edit_configurationpoledisplay" xml:space="preserve">
+    <value>Affichage de Poteau</value>
+  </data>
+  <data name="window_title_edit_configurationweighingmachine" xml:space="preserve">
+    <value>Balance</value>
+  </data>
+  <data name="prefparam_report_footer_line3" xml:space="preserve">
+    <value>Report - Texte Ligne 3</value>
+  </data>
+  <data name="prefparam_report_footer_line4" xml:space="preserve">
+    <value>Report - Texte Ligne 4</value>
+  </data>
+  <data name="prefparam_report_footer_line5" xml:space="preserve">
+    <value>Report - Texte Ligne 5</value>
+  </data>
+  <data name="prefparam_report_footer_line6" xml:space="preserve">
+    <value>Report - Texte Ligne 6</value>
+  </data>
+  <data name="global_ConfigurationInputReader" xml:space="preserve">
+    <value>Lecteur d'Entrée</value>
+  </data>
+  <data name="global_ConfigurationPoleDisplay" xml:space="preserve">
+    <value>Affichage de Poteau</value>
+  </data>
+  <data name="global_ConfigurationWeighingMachine" xml:space="preserve">
+    <value>Balance</value>
+  </data>
+  <data name="global_input_barcode_reader" xml:space="preserve">
+    <value>Lecteur de Code-Barres</value>
+  </data>
+  <data name="global_input_reader_card_reader" xml:space="preserve">
+    <value>Lecteur de Cartes</value>
+  </data>
+  <data name="global_input_reader_card_reader_sizes" xml:space="preserve">
+    <value>Tailles d'Entrée de Lecteur Valides</value>
+  </data>
+  <data name="global_input_reader_timer_interval" xml:space="preserve">
+    <value>Intervalle de Minuterie (ms)</value>
+  </data>
+  <data name="global_pole_display_codetable" xml:space="preserve">
+    <value>CodeTable</value>
+  </data>
+  <data name="global_pole_display_endpoint" xml:space="preserve">
+    <value>EndPoint</value>
+  </data>
+  <data name="global_pole_display_goto_stand_by_in_seconds" xml:space="preserve">
+    <value>Aller à StandBy en Secondes</value>
+  </data>
+  <data name="global_pole_display_number_of_characters_per_line" xml:space="preserve">
+    <value>Nombre de Caractères par Ligne</value>
+  </data>
+  <data name="global_pole_display_pid" xml:space="preserve">
+    <value>Product Id (Pid)</value>
+  </data>
+  <data name="global_pole_display_stand_by_line_no" xml:space="preserve">
+    <value>StandBy Ligne #{0}</value>
+  </data>
+  <data name="global_pole_display_vid" xml:space="preserve">
+    <value>Vendor Id (Vid)</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_m" xml:space="preserve">
+    <value>Tiroir Ouvert Comm. M</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_t1" xml:space="preserve">
+    <value>Tiroir Ouvert Comm. T1</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_t2" xml:space="preserve">
+    <value>Tiroir Ouvert Comm. T2</value>
   </data>
 </root>

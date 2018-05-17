@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("RPT_ReportType", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("RPT_ReportType", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(RPT_ReportType), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(RPT_ReportType), "Code");
         }
 
         UInt32 fOrd;
@@ -44,6 +44,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return fResourceString; }
             set { SetPropertyValue<string>("ResourceString", ref fResourceString, value); }
+        }
+
+        string fMenuIcon;
+        [Size(255)]
+        public string MenuIcon
+        {
+            get { return fMenuIcon; }
+            set { SetPropertyValue<string>("MenuIcon", ref fMenuIcon, value); }
         }
 
         //ReportType One <> Many Report

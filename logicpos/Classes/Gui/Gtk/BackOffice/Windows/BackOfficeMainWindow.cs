@@ -93,11 +93,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Define used CriteriaOperators/Override Defaults from TreeViews
                 CriteriaOperator criteriaOperatorCustomer = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)");
-                //CriteriaOperator criteriaConfigurationPreferenceParameter = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (Token <> 'COMPANY_FISCALNUMBER')");
+                CriteriaOperator criteriaConfigurationPreferenceParameterCompany = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (Token <> 'COMPANY_COUNTRY_OID' AND Token <> 'SYSTEM_CURRENCY_OID' AND FormType = 1)");
+                CriteriaOperator criteriaConfigurationPreferenceParameterSystem = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (FormType = 2)");
 
                 //Articles
                 Dictionary<string, AccordionNode> _accordionChildArticles = new Dictionary<string, AccordionNode>();
-                _accordionChildArticles.Add("ArticleFamily", new AccordionNode(Resx.global_families) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this), Clicked = testClickedEventHandlerFromOutside });
+                //, Clicked = testClickedEventHandlerFromOutside }
+                _accordionChildArticles.Add("ArticleFamily", new AccordionNode(Resx.global_families) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this) });
                 _accordionChildArticles.Add("ArticleSubFamily", new AccordionNode(Resx.global_subfamilies) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleSubFamily>(this) });
                 _accordionChildArticles.Add("Article", new AccordionNode(Resx.global_articles) { Content = startContent });
                 _accordionChildArticles.Add("ArticleType", new AccordionNode(Resx.global_article_types) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleType>(this) });
@@ -123,7 +125,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Moved to Custom Toolbar
                 //_accordionChildUsers.Add("System_ApplyPrivileges", new AccordionNode(Resx.global_user_apply_privileges) { Clicked = delegate { Accordion.UpdateMenuPrivileges(); } });
 
-                //Tables
+                //Documents
                 Dictionary<string, AccordionNode> _accordionDocuments = new Dictionary<string, AccordionNode>();
                 _accordionDocuments.Add("DocumentFinanceYears", new AccordionNode(Resx.global_documentfinance_years) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(this) });
                 _accordionDocuments.Add("DocumentFinanceSeries", new AccordionNode(Resx.global_documentfinance_series) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceSeries>(this) });
@@ -134,29 +136,37 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _accordionDocuments.Add("ConfigurationPaymentCondition", new AccordionNode(Resx.global_payment_conditions) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentCondition>(this) });
                 _accordionDocuments.Add("ConfigurationPaymentMethod", new AccordionNode(Resx.global_payment_methods) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentMethod>(this) });
 
-                //Printers
-                Dictionary<string, AccordionNode> _accordionPrinters = new Dictionary<string, AccordionNode>();
-                _accordionPrinters.Add("ConfigurationPrinters", new AccordionNode(Resx.global_ConfigurationPrinters) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) });
-                _accordionPrinters.Add("ConfigurationPrintersType", new AccordionNode(Resx.global_ConfigurationPrintersType) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) });
+                //AuxiliarTables
+                Dictionary<string, AccordionNode> _accordionChildAuxiliarTables = new Dictionary<string, AccordionNode>();
+                //_accordionChildAuxiliarTables.Add("ConfigurationCashRegister", new AccordionNode(Resx.global_cash_registers) { Content = Utils.GetGenericTreeView<TreeViewConfigurationCashRegister>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationCountry", new AccordionNode(Resx.global_country) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationCountry>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationCurrency", new AccordionNode(Resx.global_ConfigurationCurrency) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationCurrency>(this) });
+                //_accordionChildAuxiliarTables.Add("ConfigurationDevice", new AccordionNode(Resx.global_devices) { Content = Utils.GetGenericTreeView<TreeViewConfigurationDevice>(this) });
+                //_accordionChildAuxiliarTables.Add("ConfigurationKeyboard", new AccordionNode(Resx.global_keyboards) { Content = Utils.GetGenericTreeView<TreeViewConfigurationKeyboard>(this) });
+                //_accordionChildAuxiliarTables.Add("ConfigurationMaintenance", new AccordionNode(Resx.global_maintenance) { Content = Utils.GetGenericTreeView<TreeViewConfigurationMaintenance>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationPlace", new AccordionNode(Resx.global_places) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationPlaceTable", new AccordionNode(Resx.global_place_tables) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationPlaceMovementType", new AccordionNode(Resx.global_places_movement_type) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceMovementType>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(Resx.global_units_measure) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitMeasure>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(Resx.global_units_size) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitSize>(this) });
+                _accordionChildAuxiliarTables.Add("ConfigurationHolidays", new AccordionNode(Resx.global_holidays) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationHolidays>(this) });
+
+                //Devices
+                Dictionary<string, AccordionNode> _accordionDevices = new Dictionary<string, AccordionNode>();
+                _accordionDevices.Add("ConfigurationPrintersType", new AccordionNode(Resx.global_ConfigurationPrintersType) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) });
+                _accordionDevices.Add("ConfigurationPrinters", new AccordionNode(Resx.global_ConfigurationPrinters) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) });
+_accordionDevices.Add("ConfigurationInputReader", new AccordionNode(Resx.global_ConfigurationInputReader) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationInputReader>(this) });
+_accordionDevices.Add("ConfigurationPoleDisplay", new AccordionNode(Resx.global_ConfigurationPoleDisplay) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPoleDisplay>(this) });
+_accordionDevices.Add("ConfigurationWeighingMachine", new AccordionNode(Resx.global_ConfigurationWeighingMachine) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationWeighingMachine>(this) });
+                // Deprecated
                 //_accordionPrinters.Add("ConfigurationPrintersTemplates", new AccordionNode(Resx.global_ConfigurationPrintersTemplates) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersTemplates>(this) });
                 //_accordionPrinters.Add("ExternalApp_Composer", new AccordionNode(Resx.global_callposcomposer) { Content = null, ExternalAppFileName = SettingsApp.ExecutableComposer });
 
                 //Configuration
                 Dictionary<string, AccordionNode> _accordionChildConfiguration = new Dictionary<string, AccordionNode>();
-                //_accordionChildConfiguration.Add("ConfigurationCashRegister", new AccordionNode(Resx.global_cash_registers) { Content = Utils.GetGenericTreeView<TreeViewConfigurationCashRegister>(this) });
-                _accordionChildConfiguration.Add("ConfigurationCountry", new AccordionNode(Resx.global_country) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationCountry>(this) });
-                _accordionChildConfiguration.Add("ConfigurationCurrency", new AccordionNode(Resx.global_ConfigurationCurrency) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationCurrency>(this) });
-                //_accordionChildConfiguration.Add("ConfigurationDevice", new AccordionNode(Resx.global_devices) { Content = Utils.GetGenericTreeView<TreeViewConfigurationDevice>(this) });
-                //_accordionChildConfiguration.Add("ConfigurationKeyboard", new AccordionNode(Resx.global_keyboards) { Content = Utils.GetGenericTreeView<TreeViewConfigurationKeyboard>(this) });
-                //_accordionChildConfiguration.Add("ConfigurationMaintenance", new AccordionNode(Resx.global_maintenance) { Content = Utils.GetGenericTreeView<TreeViewConfigurationMaintenance>(this) });
-                _accordionChildConfiguration.Add("ConfigurationPlace", new AccordionNode(Resx.global_places) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) });
-                _accordionChildConfiguration.Add("ConfigurationPlaceTable", new AccordionNode(Resx.global_place_tables) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(this) });
-                _accordionChildConfiguration.Add("ConfigurationPlaceMovementType", new AccordionNode(Resx.global_places_movement_type) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceMovementType>(this) });
+                _accordionChildConfiguration.Add("ConfigurationPreferenceParameterCompany", new AccordionNode(Resx.global_preferenceparameter_company) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterCompany) });
+                _accordionChildConfiguration.Add("ConfigurationPreferenceParameterSystem", new AccordionNode(Resx.global_preferenceparameter_system) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterSystem) });
                 _accordionChildConfiguration.Add("ConfigurationPlaceTerminal", new AccordionNode(Resx.global_places_terminals) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(this) });
-                _accordionChildConfiguration.Add("ConfigurationUnitMeasure", new AccordionNode(Resx.global_units_measure) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitMeasure>(this) });
-                _accordionChildConfiguration.Add("ConfigurationUnitSize", new AccordionNode(Resx.global_units_size) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitSize>(this) });
-                _accordionChildConfiguration.Add("ConfigurationHolidays", new AccordionNode(Resx.global_holidays) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationHolidays>(this) });
-                _accordionChildConfiguration.Add("ConfigurationPreferenceParameter", new AccordionNode(Resx.global_preferenceparameter) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this/*, criteriaConfigurationPreferenceParameter*/) });
 
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
                 Dictionary<string, AccordionNode> _accordionChildExport = new Dictionary<string, AccordionNode>();
@@ -183,10 +193,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Compose Main Accordion Parent Buttons
                 accordionDefinition.Add("TopMenuArticles", new AccordionNode(Resx.global_articles) { Childs = _accordionChildArticles, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_artigos.png") });
-                accordionDefinition.Add("TopMenuCustomers", new AccordionNode(Resx.global_customers) { Childs = _accordionChildCustomers, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_clientes.png") });
                 accordionDefinition.Add("TopMenuDocuments", new AccordionNode(Resx.global_documents) { Childs = _accordionDocuments, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_informacao_fiscal.png") });
-                accordionDefinition.Add("TopMenuPrinters", new AccordionNode(Resx.global_printers) { Childs = _accordionPrinters, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_impressoras.png") });
+                accordionDefinition.Add("TopMenuCustomers", new AccordionNode(Resx.global_customers) { Childs = _accordionChildCustomers, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_clientes.png") });
                 accordionDefinition.Add("TopMenuUsers", new AccordionNode(Resx.global_users) { Childs = _accordionChildUsers, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_utilizadores.png") });
+                accordionDefinition.Add("TopMenuDevices", new AccordionNode(Resx.global_devices) { Childs = _accordionDevices, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_impressoras.png") });
+                accordionDefinition.Add("TopMenuOtherTables", new AccordionNode(Resx.global_other_tables) { Childs = _accordionChildAuxiliarTables, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_outras_tabelas.png") });
                 accordionDefinition.Add("TopMenuConfiguration", new AccordionNode(Resx.global_configuration) { Childs = _accordionChildConfiguration, GroupIcon = new Image("Assets/Images/Icons/Accordion/poson_backoffice_configuracao.png") });
                 if (_accordionChildExport.Count > 0)
                 {

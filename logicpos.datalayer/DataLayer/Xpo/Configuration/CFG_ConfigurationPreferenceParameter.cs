@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("CFG_ConfigurationPreferenceParameter", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("CFG_ConfigurationPreferenceParameter", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationPreferenceParameter), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationPreferenceParameter), "Code");
         }
 
         UInt32 fOrd;
@@ -48,19 +48,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<String>("Value", ref fValue, value); }
         }
 
-        string fResourceString;
-        [Indexed(Unique = true)]
-        public string ResourceString
+        string fValueTip;
+        public string ValueTip
         {
-            get { return fResourceString; }
-            set { SetPropertyValue<string>("ResourceString", ref fResourceString, value); }
+            get { return fValueTip; }
+            set { SetPropertyValue<string>("ValueTip", ref fValueTip, value); }
         }
 
-        int fFormPageNo;
-        public int FormPageNo
+        Boolean fRequired;
+        public Boolean Required
         {
-            get { return fFormPageNo; }
-            set { SetPropertyValue<int>("FormPageNo", ref fFormPageNo, value); }
+            get { return fRequired; }
+            set { SetPropertyValue<Boolean>("Required", ref fRequired, value); }
         }
 
         string fRegEx;
@@ -71,19 +70,33 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("RegEx", ref fRegEx, value); }
         }
 
-        Boolean fRequired;
-        public Boolean Required
+        string fResourceString;
+        [Indexed(Unique = true)]
+        public string ResourceString
         {
-            get { return fRequired; }
-            set { SetPropertyValue<Boolean>("Required", ref fRequired, value); }
+            get { return fResourceString; }
+            set { SetPropertyValue<string>("ResourceString", ref fResourceString, value); }
         }
 
-        string fInfo;
+        string fResourceStringInfo;
         [Size(255)]
-        public String Info
+        public String ResourceStringInfo
         {
-            get { return fInfo; }
-            set { SetPropertyValue<String>("Info", ref fInfo, value); }
+            get { return fResourceStringInfo; }
+            set { SetPropertyValue<String>("ResourceStringInfo", ref fResourceStringInfo, value); }
+        }
+        int fFormType;
+        public int FormType
+        {
+            get { return fFormType; }
+            set { SetPropertyValue<int>("FormType", ref fFormType, value); }
+        }
+
+        int fFormPageNo;
+        public int FormPageNo
+        {
+            get { return fFormPageNo; }
+            set { SetPropertyValue<int>("FormPageNo", ref fFormPageNo, value); }
         }
     }
 }

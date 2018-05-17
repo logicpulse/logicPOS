@@ -1014,7 +1014,7 @@ Deseja finalizar este ticket e prosseguir?</value>
     <value>Língua</value>
   </data>
   <data name="global_ConfigurationKeyboard_VirtualKeyboard" xml:space="preserve">
-    <value>Teclado Virtual</value>
+    <value>Teclado</value>
   </data>
   <data name="window_title_edit_configurationkeyboard" xml:space="preserve">
     <value>Editar teclados</value>
@@ -1151,9 +1151,6 @@ Deseja finalizar este ticket e prosseguir?</value>
   <data name="global_seriesforeachterminal" xml:space="preserve">
     <value>Series independente por cada terminal</value>
   </data>
-  <data name="global_preferenceparameter" xml:space="preserve">
-    <value>Parâmetros de sistema</value>
-  </data>
   <data name="window_title_edit_configurationpreferenceparameter" xml:space="preserve">
     <value>Editar parâmetros de sistema</value>
   </data>
@@ -1182,7 +1179,7 @@ Deseja finalizar este ticket e prosseguir?</value>
     <value>Ativo</value>
   </data>
   <data name="global_application_logout_user" xml:space="preserve">
-    <value>LogOut</value>
+    <value>Sair da Sessão</value>
   </data>
   <data name="pos_button_label_cashdrawer" xml:space="preserve">
     <value>Sessão</value>
@@ -1380,11 +1377,12 @@ Deseja finalizar este ticket e prosseguir?</value>
     <value>Erro na Aplicação! Por favor contacte o suporte técnico.</value>
   </data>
   <data name="dialog_message_worksession_period_warning_open_orders_tables" xml:space="preserve">
-    <value>Aviso! Tem neste momento {0} orden(s) aberta(s)! Antes de continuar terá de fechar estas orden(s) na(s) mesa(s): {1}</value>
+    <value>Aviso! Tem neste momento {0} ordem(s) aberta(s)! Antes de continuar terá de fechar estas ordem(s) na(s) mesa(s): {1}</value>
   </data>
   <data name="dialog_message_worksession_period_warning_open_terminals" xml:space="preserve">
     <value>Aviso! Neste momento tem {0} terminal(ais) abertos!
-Antes de continuar terá de fechar os seguintes Terminal(ais): {1}</value>
+
+Para continuar pode primir sim para fechar os terminais, ou primir não e fechar os terminal(ais) manualmente e voltar a tentar: {1}</value>
   </data>
   <data name="global_finance_document" xml:space="preserve">
     <value>Documento fiscal</value>
@@ -1513,7 +1511,7 @@ Diferença: {2}</value>
     <value>Pag.Parcial</value>
   </data>
   <data name="global_user_apply_privileges" xml:space="preserve">
-    <value>Aplicar Privilégios</value>
+    <value>Aplicar</value>
   </data>
   <data name="global_privilege_active" xml:space="preserve">
     <value>Activo</value>
@@ -2160,7 +2158,7 @@ Por motivos de segurança para prosseguir tem que alterar a palavra-chave!</valu
     <value>Introduza a palavra-chave</value>
   </data>
   <data name="prefparam_company_business_name" xml:space="preserve">
-    <value>Nome da Empresa (Slogan)</value>
+    <value>Designação Comercial</value>
   </data>
   <data name="prefparam_company_cae" xml:space="preserve">
     <value>Numero de CAE</value>
@@ -2175,7 +2173,7 @@ Por motivos de segurança para prosseguir tem que alterar a palavra-chave!</valu
     <value>Telemóvel</value>
   </data>
   <data name="prefparam_company_tax_entity" xml:space="preserve">
-    <value>Entidade Taxa</value>
+    <value>Identificação do Estabelecimento</value>
   </data>
   <data name="prefparam_company_website" xml:space="preserve">
     <value>Página de Internet</value>
@@ -2226,7 +2224,7 @@ Tem a certeza que deseja continuar e fechar ano fiscal activo e criar um novo?</
 Deseja continuar e desativar as series atuais e criar novas?</value>
   </data>
   <data name="pos_button_create_series" xml:space="preserve">
-    <value>Criar Series</value>
+    <value>Series</value>
   </data>
   <data name="dialog_message_error_create_directory" xml:space="preserve">
     <value>Erro ao criar a directoria
@@ -2897,5 +2895,158 @@ Instale um plugin SoftwareVendor válido!</value>
     <value>Resolução não Suportada {0}x{1}!
 
 Defina manualmente a resolução do ecrã no ficheiro de configuração, parametro [appScreenSize] e tente novamente!</value>
+  </data>
+  <data name="global_other_tables" xml:space="preserve">
+    <value>Outras Tabelas</value>
+  </data>
+  <data name="global_preferenceparameter_company" xml:space="preserve">
+    <value>Parâmetros da Empresa</value>
+  </data>
+  <data name="global_preferenceparameter_system" xml:space="preserve">
+    <value>Parâmetros de Sistema</value>
+  </data>
+  <data name="global_prefparam_value_tip_format" xml:space="preserve">
+    <value>Examplo de valores válidos: [{0}]</value>
+  </data>
+  <data name="global_printer_thermal_cut_command" xml:space="preserve">
+    <value>Commando de Corte</value>
+  </data>
+  <data name="global_printer_thermal_encoding" xml:space="preserve">
+    <value>Encoding</value>
+  </data>
+  <data name="global_printer_thermal_image_company_logo" xml:space="preserve">
+    <value>Ficheiro de Imagem de Logotipo</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_normal" xml:space="preserve">
+    <value>Máximo de Caracteres por Linha Letra Normal</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_normal_bold" xml:space="preserve">
+    <value>Máximo de Caracteres por Linha Letra Negrito</value>
+  </data>
+  <data name="global_printer_thermal_max_chars_per_line_small" xml:space="preserve">
+    <value>Máximo de Caracteres por Linha Letra Pequena</value>
+  </data>
+  <data name="global_printer_thermal_printer" xml:space="preserve">
+    <value>Impressora Térmica</value>
+  </data>
+  <data name="global_printer_thermal_print_logo" xml:space="preserve">
+    <value>Imprimir Imagem de Logotipo</value>
+  </data>
+  <data name="global_record_main_properties" xml:space="preserve">
+    <value>Propriedades</value>
+  </data>
+  <data name="prefparam_app_screen_size" xml:space="preserve">
+    <value>Applicação : Resolução do Ecrã</value>
+  </data>
+  <data name="prefparam_app_theme" xml:space="preserve">
+    <value>Applicação : Tema</value>
+  </data>
+  <data name="prefparam_culture" xml:space="preserve">
+    <value>Application : Cultura do País</value>
+  </data>
+  <data name="prefparam_database_backup_timespan" xml:space="preserve">
+    <value>Database : Intervalo das Cópias de Segurança</value>
+  </data>
+  <data name="prefparam_database_backup_time_span_range_end" xml:space="preserve">
+    <value>Database : Fim do Periodo de Cópias de Segurança</value>
+  </data>
+  <data name="prefparam_database_backup_time_span_range_start" xml:space="preserve">
+    <value>Database : Inicio do Periodo de Cópias de Segurança</value>
+  </data>
+  <data name="prefparam_path_backups" xml:space="preserve">
+    <value>Pasta : Cópias de Segurança</value>
+  </data>
+  <data name="prefparam_path_saftpt" xml:space="preserve">
+    <value>Pasta : Exportação do Saft-PT</value>
+  </data>
+  <data name="prefparam_service_at_send_documents" xml:space="preserve">
+    <value>Serviço da Autoridade Tributária : Enviar Documentos Fiscais</value>
+  </data>
+  <data name="prefparam_service_at_send_documents_waybill" xml:space="preserve">
+    <value>Serviço da Autoridade Tributária : Enviar Guias de Remessa/Transporte</value>
+  </data>
+  <data name="prefparam_use_cached_images" xml:space="preserve">
+    <value>Application : Usar imagens Temporarias</value>
+  </data>
+  <data name="prefparam_report_filename_logo_small" xml:space="preserve">
+    <value>Relatório - Ficheiro do Logo Pequeno</value>
+  </data>
+  <data name="window_title_edit_configurationinputreader" xml:space="preserve">
+    <value>Entrada de Dados</value>
+  </data>
+  <data name="window_title_edit_configurationpoledisplay" xml:space="preserve">
+    <value>Display Cliente</value>
+  </data>
+  <data name="window_title_edit_configurationweighingmachine" xml:space="preserve">
+    <value>Balança</value>
+  </data>
+  <data name="prefparam_report_footer_line3" xml:space="preserve">
+    <value>Relatório - Texto Linha 3</value>
+  </data>
+  <data name="prefparam_report_footer_line4" xml:space="preserve">
+    <value>Relatório - Texto Linha 4</value>
+  </data>
+  <data name="prefparam_report_footer_line5" xml:space="preserve">
+    <value>Relatório - Texto Linha 5</value>
+  </data>
+  <data name="prefparam_report_footer_line6" xml:space="preserve">
+    <value>Relatório - Texto Linha 6</value>
+  </data>
+  <data name="global_ConfigurationInputReader" xml:space="preserve">
+    <value>Dispositivos de Entrada</value>
+  </data>
+  <data name="global_ConfigurationPoleDisplay" xml:space="preserve">
+    <value>Display de Cliente</value>
+  </data>
+  <data name="global_ConfigurationWeighingMachine" xml:space="preserve">
+    <value>Balanças</value>
+  </data>
+  <data name="global_input_barcode_reader" xml:space="preserve">
+    <value>Leitor de Código de Barras</value>
+  </data>
+  <data name="global_input_reader_card_reader" xml:space="preserve">
+    <value>Leitor de Cartões</value>
+  </data>
+  <data name="global_input_reader_card_reader_sizes" xml:space="preserve">
+    <value>Tamanhos Válidos do Leitor</value>
+  </data>
+  <data name="global_input_reader_timer_interval" xml:space="preserve">
+    <value>Intervalo do Leitor (ms)</value>
+  </data>
+  <data name="global_pole_display_codetable" xml:space="preserve">
+    <value>CodeTable</value>
+  </data>
+  <data name="global_pole_display_endpoint" xml:space="preserve">
+    <value>EndPoint</value>
+  </data>
+  <data name="global_pole_display_goto_stand_by_in_seconds" xml:space="preserve">
+    <value>Entra em Suspensão (Seg.)</value>
+  </data>
+  <data name="global_pole_display_number_of_characters_per_line" xml:space="preserve">
+    <value>Num.Caracteres Linha</value>
+  </data>
+  <data name="global_pole_display_pid" xml:space="preserve">
+    <value>Código do Produto (Pid)</value>
+  </data>
+  <data name="global_pole_display_stand_by_line_no" xml:space="preserve">
+    <value>StandBy Linha #{0}</value>
+  </data>
+  <data name="global_pole_display_vid" xml:space="preserve">
+    <value>Código do Vendedor (Vid)</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_m" xml:space="preserve">
+    <value>Abertura Gaveta Comm. M</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_t1" xml:space="preserve">
+    <value>Abertura Gaveta Comm. T1</value>
+  </data>
+  <data name="global_printer_thermal_open_drawer_value_t2" xml:space="preserve">
+    <value>Abertura Gaveta Comm. T2</value>
+  </data>
+  <data name="prefparam_service_at_production_account_fiscal_number" xml:space="preserve">
+    <value>Serviço da Autoridade Tributária : Account Fiscal Number</value>
+  </data>
+  <data name="prefparam_service_at_production_account_password" xml:space="preserve">
+    <value>Serviço da Autoridade Tributária : Account Password</value>
   </data>
 </root>

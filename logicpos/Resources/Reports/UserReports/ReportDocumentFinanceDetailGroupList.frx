@@ -33,9 +33,9 @@
   </Dictionary>
   <inherited Name="Page1">
     <inherited Name="PageHeader1" Height="48.6" Border.Lines="Bottom">
-      <inherited Name="PictureCompanyLogo" Width="189" Height="47.25"/>
+      <inherited Name="PictureCompanyLogo"/>
       <inherited Name="TextReportTitle" Height="28.35" Text="[Report Title]" VertAlign="Center" Font="Arial, 12pt"/>
-      <TextObject Name="TextReportFilter" ZOrder="2" Left="198.45" Top="28.35" Width="519.75" Height="18.9" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt, style=Bold"/>
+      <TextObject Name="TextReportFilter" ZOrder="2" Left="198.45" Top="28.35" Width="519.75" Height="18.9" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt, style=Bold" Wysiwyg="true"/>
     </inherited>
     <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" KeepWithData="true" Condition="[DocumentFinanceDetail.GroupOid]">
       <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" Text="[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])" VertAlign="Center" Font="Arial, 15.75pt" Style="DataLevel1Font"/>

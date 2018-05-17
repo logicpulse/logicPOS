@@ -22,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             String windowTitle = Resx.window_title_dialog_cash;
             Size windowSize = new Size(428, 205);
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_worksessions.png");
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;

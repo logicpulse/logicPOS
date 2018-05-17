@@ -28,9 +28,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
           set { _valueTerminal = value; }
         }
 
-        public PosSendMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags)
+        public PosSendMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon)
         //public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)            
-            : base(pSourceWindow, pDialogFlags, Resx.window_title_dialog_send_message, "Label", "Default", SettingsApp.RegexAlfaNumericExtended, true)
+            : base(pSourceWindow, pDialogFlags, Resx.window_title_dialog_send_message, pWindowIcon, "Label", "Default", SettingsApp.RegexAlfaNumericExtended, true)
         {
             this.HeightRequest = 320;
 

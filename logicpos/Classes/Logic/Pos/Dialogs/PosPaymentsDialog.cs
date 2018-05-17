@@ -492,6 +492,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 Guid customerGuid = new Guid();
 
+                // Encrypt pFieldValue to use in Sql Filter
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    // Only Encrypt Encrypted Fields
+                    if (pFieldName == nameof(ERP_Customer.FiscalNumber) || pFieldName == nameof(ERP_Customer.CardNumber)) {
+                        pFieldValue = GlobalFramework.PluginSoftwareVendor.Encrypt(pFieldValue);
+                    }
+                }
+
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE {0} = '{1}' AND (Hidden IS NULL OR Hidden = 0);", pFieldName, pFieldValue);
 
                 if (pFieldValue != string.Empty)
@@ -640,8 +649,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 decimal totalDocument = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
                 bool isFinalConsumerEntity = (_selectedCustomer != null && _selectedCustomer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity) ? true : false;
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
-                //Used To Disable FiscalNumber Edits
-                string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                 // Encrypt pFieldValue to use in Sql Filter
+                string fiscalNumberFilterValue = string.Empty;
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    fiscalNumberFilterValue =  GlobalFramework.PluginSoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                }
+                //Used To Disable FiscalNumber Edits and to Get Customer
+                string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
                 Guid customerGuid = FrameworkUtils.GetGuidFromQuery(sql);
                 ERP_Customer customer = (customerGuid != Guid.Empty) ? (ERP_Customer)FrameworkUtils.GetXPGuidObject(typeof(ERP_Customer), customerGuid) : null;
 

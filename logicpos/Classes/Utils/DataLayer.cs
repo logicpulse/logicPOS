@@ -45,7 +45,6 @@ namespace logicpos
             string sqlDatabaseSchema = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchema, databaseTypeString));
             string sqlDatabaseOtherDatabaseType = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString));
             string sqlDatabaseOtherCommon = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommon);
-            //string FileDatabaseOtherCommonCountry = FrameworkUtils.OSSlash(string.Format(@"{0}/{1}", SettingsApp.FileDatabaseOtherCommonCountry, SettingsApp.ConfigurationSystemCountryCode2));
             string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), GlobalFramework.Settings["appOperationModeToken"].ToLower());
             string sqlDatabaseData = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseData);
             string sqlDatabaseDataDemo = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseDataDemo);
@@ -272,9 +271,9 @@ namespace logicpos
                         //Required to Replace with CHAR(13) else nothing seems to work
                         result.Add("\\n", "' + CHAR(13) + '");
                         // view_articlestockmovement
-                        result.Add("DATE_FORMAT(stk.Date, '%Y-%m-%d') AS stkDateDay,", "FORMAT(stk.Date, 'yyyy-MM-dd', 'en-us') AS stkDateDay");
+                        result.Add("DATE_FORMAT(stk.Date, '%Y-%m-%d') AS stkDateDay,", "FORMAT(stk.Date, 'yyyy-MM-dd', 'en-us') AS stkDateDay,");
                         // view_systemaudit
-                        result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "FORMAT(sau.Date, 'yyyy-MM-dd', 'en-us') AS sauDateDay");
+                        result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "FORMAT(sau.Date, 'yyyy-MM-dd', 'en-us') AS sauDateDay,");
                         //ByPass Default commandSeparator ;
                         commandSeparator = "GO";
                         break;
@@ -336,11 +335,11 @@ namespace logicpos
                     //TODO: Muga melhorar isto : Move it to Replacable in DataBase Type in a Dynamic Value Action
                     executeCommand = executeCommand.Replace("</NEWGUI>", Guid.NewGuid().ToString());
 
-// use pReplaceables
-if (executeCommand.Contains("DATE_FORMAT"))
-{
-    log.Debug("DEBUG");
-}
+                    // Helper to debug pReplaceables
+                    //if (executeCommand.Contains("DATE_FORMAT"))
+                    //{
+                    //    log.Debug("DEBUG");
+                    //}
 
                     if (executeCommand != string.Empty && executeCommand != "\r\n" && !executeCommand.StartsWith("--"))
                     {

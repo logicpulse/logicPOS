@@ -124,10 +124,12 @@ namespace logicpos.financial.library.Classes.Finance
                 //<Header>
                 _xmlWriter.WriteStartElement("Header");
                 WriteElement("AuditFileVersion", SettingsApp.SaftVersion);
-                string companyID = string.Format("{0} {1}"
-                    , GlobalFramework.PreferenceParameters["COMPANY_CIVIL_REGISTRATION"].Replace(' ', '_')
-                    , GlobalFramework.PreferenceParameters["COMPANY_CIVIL_REGISTRATION_ID"].Replace(' ', '_')
-                );
+                //Deprecated now We use NIF
+                //string companyID = string.Format("{0} {1}"
+                //    , GlobalFramework.PreferenceParameters["COMPANY_CIVIL_REGISTRATION"].Replace(' ', '_')
+                //    , GlobalFramework.PreferenceParameters["COMPANY_CIVIL_REGISTRATION_ID"].Replace(' ', '_')
+                //);
+                string companyID = GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
                 WriteElement("CompanyID", companyID);
                 WriteElement("TaxRegistrationNumber", GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"]);
                 WriteElement("TaxAccountingBasis", SettingsApp.TaxAccountingBasis);
@@ -361,20 +363,20 @@ namespace logicpos.financial.library.Classes.Finance
                         WriteElement("CustomerID", _defaultCustomer.CodeInternal);
                     }
                     WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], Resx.saft_value_unknown);
-                    WriteElement("CustomerTaxID", row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")], Resx.saft_value_unknown);
-                    WriteElement("CompanyName", row.Values[xPSelectData.GetFieldIndex("CompanyName")], Resx.saft_value_unknown);
+                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), Resx.saft_value_unknown);
+                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), Resx.saft_value_unknown);
                     //<BillingAddress>
                     _xmlWriter.WriteStartElement("BillingAddress");
-                    WriteElement("AddressDetail", row.Values[xPSelectData.GetFieldIndex("AddressDetail")], Resx.saft_value_unknown);
-                    WriteElement("City", row.Values[xPSelectData.GetFieldIndex("City")], Resx.saft_value_unknown);
-                    WriteElement("PostalCode", row.Values[xPSelectData.GetFieldIndex("PostalCode")], Resx.saft_value_unknown);
+                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), Resx.saft_value_unknown);
+                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), Resx.saft_value_unknown);
+                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), Resx.saft_value_unknown);
                     WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], Resx.saft_value_unknown);
                     _xmlWriter.WriteEndElement();
                     //</BillingAddress>
-                    WriteElement("Telephone", row.Values[xPSelectData.GetFieldIndex("Telephone")]);
-                    WriteElement("Fax", row.Values[xPSelectData.GetFieldIndex("Fax")]);
-                    WriteElement("Email", row.Values[xPSelectData.GetFieldIndex("Email")]);
-                    WriteElement("Website", row.Values[xPSelectData.GetFieldIndex("Website")]);
+                    WriteElement("Telephone", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Telephone")]));
+                    WriteElement("Fax", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Fax")]));
+                    WriteElement("Email", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Email")]));
+                    WriteElement("Website", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Website")]));
                     WriteElement("SelfBillingIndicator", 0);
                     //</Customer>
                     _xmlWriter.WriteEndElement();
@@ -464,7 +466,7 @@ namespace logicpos.financial.library.Classes.Finance
 	                    ac.Acronym, ar.Oid, ar.Code, af.Designation, ar.Designation, ar.BarCode
                     ORDER BY
 	                    af.Designation, ar.Designation
-                    "
+                    ;"
                     , _documentDateStart.ToString(SettingsApp.DateTimeFormat)
                     , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
                 );
@@ -513,7 +515,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //<TaxTable>
                 _xmlWriter.WriteStartElement("TaxTable");
 
-                string sql = @"
+                string sql = string.Format(@"
                     SELECT 
                         TaxType,
                         TaxCode,
@@ -522,9 +524,13 @@ namespace logicpos.financial.library.Classes.Finance
                         Value AS TaxPercentage
                     FROM 
                         fin_configurationvatrate 
+                    WHERE 
+                        Oid <> '{0}'
                     ORDER BY 
-                        Ord;
-                ";
+                        Ord
+                ;"
+                , SettingsApp.XpoOidUndefinedRecord
+                );
                 //_log.Debug(string.Format("sql: [{0}]", sql));
 
                 XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sql);
@@ -966,7 +972,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 {
                                     WriteElement("CustomerID", _defaultCustomer.CodeInternal);
                                 }
-                                
+
                                 //Check if is WayBill Document and Call ShipDetails Helper to Output ShipTo|ShipFrom Details
                                 if (wayBill) SourceDocuments_DocumentType_Childs_ShipDetails(xPSelectData, row);
                             }

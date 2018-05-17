@@ -402,35 +402,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
                 XPCollection xpcReport = new XPCollection(_session, typeof(RPT_Report));
                 if (xpcReport.Count == 0)
                 {
-                    var report1 = new RPT_Report(_session) { Ord = 10, Code = 10, Designation = "Relatório de Vendas por Familia", ReportType = reportType1, ResourceString = "report_label_sales_per_family" }; report1.Save();
-                    var report2 = new RPT_Report(_session) { Ord = 20, Code = 20, Designation = "Relatório de Total por Terminal", ReportType = reportType1, ResourceString = "report_label_total_per_terminal" }; report2.Save();
-                    var report3 = new RPT_Report(_session) { Ord = 30, Code = 30, Designation = "Relatório de Vendas por Dia", ReportType = reportType1, ResourceString = "report_label_sales_per_date" }; report3.Save();
-                    var report4 = new RPT_Report(_session) { Ord = 40, Code = 40, Designation = "Relatório de Vendas por Funcionário", ReportType = reportType1, ResourceString = "report_label_sales_per_user" }; report4.Save();
-                    var report5 = new RPT_Report(_session) { Ord = 50, Code = 50, Designation = "Relatório de Vendas por Tipo de Documento Fiscal", ReportType = reportType1, ResourceString = "report_label_sales_per_finance_document" }; report5.Save();
-
-                    var report6 = new RPT_Report(_session) { Ord = 60, Code = 60, Designation = "Relatório de Vendas por Tipos de Pagamento", ReportType = reportType2, ResourceString = "report_label_sales_per_payment_method" }; report6.Save();
-                    var report7 = new RPT_Report(_session) { Ord = 70, Code = 70, Designation = "Relatório de Vendas por Zona/Mesa", ReportType = reportType2, ResourceString = "report_label_sales_per_zone_table" }; report7.Save();
-                    var report8 = new RPT_Report(_session) { Ord = 80, Code = 80, Designation = "Relatório de Top Fecho Empregados", ReportType = reportType2, ResourceString = "report_label_top_close_employees" }; report8.Save();
-                    var report9 = new RPT_Report(_session) { Ord = 90, Code = 90, Designation = "Relatório de Média de Ocupação", ReportType = reportType2, ResourceString = "report_label_occupation_average" }; report9.Save();
-                    var report10 = new RPT_Report(_session) { Ord = 100, Code = 100, Designation = "Relatório de Total por Zona", ReportType = reportType2, ResourceString = "report_label_zone_total" }; report10.Save();
-
-                    var report11 = new RPT_Report(_session) { Ord = 110, Code = 110, Designation = "Relatório de Top Horários Pico de Registo", ReportType = reportType3, ResourceString = "report_label_record_peak_hour" }; report11.Save();
-                    var report12 = new RPT_Report(_session) { Ord = 120, Code = 120, Designation = "Relatório de Top Horários Pico de Fecho", ReportType = reportType3, ResourceString = "report_label_close_peak_hour" }; report12.Save();
-                    var report13 = new RPT_Report(_session) { Ord = 130, Code = 130, Designation = "Relatório de Top Registos Empregados", ReportType = reportType3, ResourceString = "report_label_top_employee_records" }; report13.Save();
-                    var report14 = new RPT_Report(_session) { Ord = 140, Code = 140, Designation = "Relatório de Total de Ofertas", ReportType = reportType3, ResourceString = "report_label_top_offers" }; report14.Save();
-                    var report15 = new RPT_Report(_session) { Ord = 150, Code = 150, Designation = "Relatório de Movimentos por Empregado", ReportType = reportType3, ResourceString = "report_label_employee_movements" }; report15.Save();
-
-                    var report16 = new RPT_Report(_session) { Ord = 160, Code = 160, Designation = "Relatório de Saldo de Cliente", ReportType = reportType4, ResourceString = "report_label_account_balance" }; report16.Save();
-                    var report17 = new RPT_Report(_session) { Ord = 170, Code = 170, Designation = "Relatório de Horas em Serviço", ReportType = reportType4, ResourceString = "report_label_service_hours" }; report17.Save();
-                    var report18 = new RPT_Report(_session) { Ord = 180, Code = 180, Designation = "Relatório de Retenção na Fonte", ReportType = reportType4, ResourceString = "report_label_withholding_tax" }; report18.Save();
-                    var report19 = new RPT_Report(_session) { Ord = 190, Code = 190, Designation = "Relatório de Balancete", ReportType = reportType4, ResourceString = "report_label_balance_sheet" }; report19.Save();
-                    var report20 = new RPT_Report(_session) { Ord = 200, Code = 200, Designation = "Relatório de Entregas por Estafeta", ReportType = reportType4, ResourceString = "report_label_courier_deliver" }; report20.Save();
-
-                    var report21 = new RPT_Report(_session) { Ord = 210, Code = 210, Designation = "Relatório de Artigos Cancelados por Empregado", ReportType = reportType5, ResourceString = "report_label_canceled_articles_per_employee" }; report21.Save();
-                    var report22 = new RPT_Report(_session) { Ord = 220, Code = 220, Designation = "Relatório de Descontos por Utilizador", ReportType = reportType5, ResourceString = "report_label_discounts_per_user" }; report22.Save();
-                    var report23 = new RPT_Report(_session) { Ord = 230, Code = 230, Designation = "Relatório de Total de Caixa", ReportType = reportType5, ResourceString = "report_label_cash_total" }; report23.Save();
-                    var report24 = new RPT_Report(_session) { Ord = 240, Code = 240, Designation = "Relatório de Inventário", ReportType = reportType5, ResourceString = "report_label_inventory" }; report24.Save();
-                    var report25 = new RPT_Report(_session) { Ord = 250, Code = 250, Designation = "Relatório de Consumos por Empregado", ReportType = reportType5, ResourceString = "report_label_consumption_per_user" }; report25.Save();
+                    var report1 = new RPT_Report(_session) { Ord = 10, Code = 10, Designation = "Relatório de Vendas por Familia", ReportType = reportType1, ResourceString = "report_label_sales_per_family", Token = "REPORT1" }; report1.Save();
+                    var report2 = new RPT_Report(_session) { Ord = 20, Code = 20, Designation = "Relatório de Total por Terminal", ReportType = reportType1, ResourceString = "report_label_total_per_terminal", Token = "REPORT2" }; report2.Save();
+                    var report3 = new RPT_Report(_session) { Ord = 30, Code = 30, Designation = "Relatório de Vendas por Dia", ReportType = reportType1, ResourceString = "report_label_sales_per_date", Token = "REPORT3" }; report3.Save();
+                    var report4 = new RPT_Report(_session) { Ord = 40, Code = 40, Designation = "Relatório de Vendas por Funcionário", ReportType = reportType1, ResourceString = "report_label_sales_per_user", Token = "REPORT4" }; report4.Save();
+                    var report5 = new RPT_Report(_session) { Ord = 50, Code = 50, Designation = "Relatório de Vendas por Tipo de Documento Fiscal", ReportType = reportType1, ResourceString = "report_label_sales_per_finance_document", Token = "REPORT5" }; report5.Save();
                 };
             };
 
@@ -468,6 +444,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             //ConfigurationDevice
             POS_ConfigurationDevice configurationDevice1 = new POS_ConfigurationDevice(_session) { Ord = 10, Code = 10, Designation = "Table 3.1" }; configurationDevice1.Save();
+
+//SYS_ConfigurationInputReader
+SYS_ConfigurationInputReader configurationInputReader = new SYS_ConfigurationInputReader(_session) { Ord = 10, Code = 10, Designation = "InputReader1" }; configurationInputReader.Save();
+
+//SYS_ConfigurationPoleDisplay
+SYS_ConfigurationPoleDisplay configurationPoleDisplay = new SYS_ConfigurationPoleDisplay(_session) { Ord = 10, Code = 10, Designation = "PoleDisplay1" }; configurationPoleDisplay.Save();
+
+//SYS_ConfigurationWeighingMachine
+SYS_ConfigurationWeighingMachine configurationWeighingMachine = new SYS_ConfigurationWeighingMachine(_session) { Ord = 10, Code = 10, Designation = "WeighingMachine1" }; configurationWeighingMachine.Save();
 
             //ConfigurationHolidays
             CFG_ConfigurationHolidays configurationHolidays1 = new CFG_ConfigurationHolidays(_session) { Ord = 10, Code = 10, Designation = "Feriado", Day = 1, Month = 1, Year = 1, Fixed = true }; configurationHolidays1.Save();

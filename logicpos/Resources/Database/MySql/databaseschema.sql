@@ -1,9 +1,3 @@
--- MySQL dump 10.13  Distrib 5.7.12, for Win64 (x86_64)
---
--- Host: 127.0.0.1    Database: logicposdb_20160919_scripts
--- ------------------------------------------------------
--- Server version	5.7.15-log
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -187,11 +181,13 @@ CREATE TABLE `cfg_configurationpreferenceparameter` (
   `Code` int(10) unsigned DEFAULT NULL,
   `Token` varchar(100) DEFAULT NULL,
   `Value` varchar(255) DEFAULT NULL,
-  `ResourceString` varchar(100) DEFAULT NULL,
-  `FormPageNo` int(11) DEFAULT NULL,
-  `RegEx` varchar(255) DEFAULT NULL,
+  `ValueTip` varchar(100) DEFAULT NULL,
   `Required` bit(1) DEFAULT NULL,
-  `Info` varchar(255) DEFAULT NULL,
+  `RegEx` varchar(255) DEFAULT NULL,
+  `ResourceString` varchar(100) DEFAULT NULL,
+  `ResourceStringInfo` varchar(255) DEFAULT NULL,
+  `FormType` int(11) DEFAULT NULL,
+  `FormPageNo` int(11) DEFAULT NULL,
   `OptimisticLockField` int(11) DEFAULT NULL,
   PRIMARY KEY (`Oid`),
   UNIQUE KEY `iOid_CFG_ConfigurationPreferenceParameter` (`Oid`),
@@ -324,16 +320,16 @@ CREATE TABLE `erp_customer` (
   `Ord` int(10) unsigned DEFAULT NULL,
   `Code` int(10) unsigned DEFAULT NULL,
   `CodeInternal` varchar(30) DEFAULT NULL,
-  `Name` varchar(100) DEFAULT NULL,
-  `Address` varchar(100) DEFAULT NULL,
-  `Locality` varchar(100) DEFAULT NULL,
+`Name` varchar(512) DEFAULT NULL,
+`Address` varchar(512) DEFAULT NULL,
+`Locality` varchar(255) DEFAULT NULL,
   `ZipCode` varchar(100) DEFAULT NULL,
-  `City` varchar(100) DEFAULT NULL,
+`City` varchar(255) DEFAULT NULL,
   `DateOfBirth` varchar(100) DEFAULT NULL,
-  `Phone` varchar(100) DEFAULT NULL,
-  `Fax` varchar(100) DEFAULT NULL,
-  `MobilePhone` varchar(100) DEFAULT NULL,
-  `Email` varchar(100) DEFAULT NULL,
+`Phone` varchar(255) DEFAULT NULL,
+`Fax` varchar(255) DEFAULT NULL,
+`MobilePhone` varchar(255) DEFAULT NULL,
+`Email` varchar(255) DEFAULT NULL,
   `WebSite` varchar(255) DEFAULT NULL,
   `FiscalNumber` varchar(100) DEFAULT NULL,
   `CardNumber` varchar(100) DEFAULT NULL,
@@ -1121,14 +1117,18 @@ CREATE TABLE `fin_documentfinancecommission` (
   KEY `iUpdatedWhere_FIN_DocumentFinanceCommission` (`UpdatedWhere`),
   KEY `iDeletedBy_FIN_DocumentFinanceCommission` (`DeletedBy`),
   KEY `iDeletedWhere_FIN_DocumentFinanceCommission` (`DeletedWhere`),
+  KEY `iCommissionGroup_FIN_DocumentFinanceCommission` (`CommissionGroup`),
+  KEY `iFinanceMaster_FIN_DocumentFinanceCommission` (`FinanceMaster`),
+  KEY `iFinanceDetail_FIN_DocumentFinanceCommission` (`FinanceDetail`),
   KEY `iUserDetail_FIN_DocumentFinanceCommission` (`UserDetail`),
   KEY `iTerminal_FIN_DocumentFinanceCommission` (`Terminal`),
-  KEY `iDocumentFinanceDetail_FIN_DocumentFinanceCommission` (`FinanceDetail`),
+  CONSTRAINT `FK_FIN_DocumentFinanceCommission_CommissionGroup` FOREIGN KEY (`CommissionGroup`) REFERENCES `pos_usercommissiongroup` (`Oid`),
   CONSTRAINT `FK_FIN_DocumentFinanceCommission_CreatedBy` FOREIGN KEY (`CreatedBy`) REFERENCES `sys_userdetail` (`Oid`),
   CONSTRAINT `FK_FIN_DocumentFinanceCommission_CreatedWhere` FOREIGN KEY (`CreatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
   CONSTRAINT `FK_FIN_DocumentFinanceCommission_DeletedBy` FOREIGN KEY (`DeletedBy`) REFERENCES `sys_userdetail` (`Oid`),
   CONSTRAINT `FK_FIN_DocumentFinanceCommission_DeletedWhere` FOREIGN KEY (`DeletedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
-  CONSTRAINT `FK_FIN_DocumentFinanceCommission_DocumentFinanceDetail` FOREIGN KEY (`FinanceDetail`) REFERENCES `fin_documentfinancedetail` (`Oid`),
+  CONSTRAINT `FK_FIN_DocumentFinanceCommission_FinanceDetail` FOREIGN KEY (`FinanceDetail`) REFERENCES `fin_documentfinancedetail` (`Oid`),
+  CONSTRAINT `FK_FIN_DocumentFinanceCommission_FinanceMaster` FOREIGN KEY (`FinanceMaster`) REFERENCES `fin_documentfinancemaster` (`Oid`),
   CONSTRAINT `FK_FIN_DocumentFinanceCommission_Terminal` FOREIGN KEY (`Terminal`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
   CONSTRAINT `FK_FIN_DocumentFinanceCommission_UpdatedBy` FOREIGN KEY (`UpdatedBy`) REFERENCES `sys_userdetail` (`Oid`),
   CONSTRAINT `FK_FIN_DocumentFinanceCommission_UpdatedWhere` FOREIGN KEY (`UpdatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
@@ -1332,7 +1332,7 @@ CREATE TABLE `fin_documentfinancemaster` (
   `CashVatSchemeIndicator` int(11) DEFAULT NULL,
   `ThirdPartiesBillingIndicator` int(11) DEFAULT NULL,
   `DocumentCreatorUser` varchar(30) DEFAULT NULL,
-  `EACCode` varchar(100) DEFAULT NULL,
+  `EACCode` varchar(5) DEFAULT NULL,
   `SystemEntryDate` varchar(50) DEFAULT NULL,
   `TransactionID` varchar(70) DEFAULT NULL,
   `ShipToDeliveryID` varchar(255) DEFAULT NULL,
@@ -1751,8 +1751,8 @@ CREATE TABLE `fin_documentfinanceyears` (
   UNIQUE KEY `iOid_FIN_DocumentFinanceYears` (`Oid`),
   UNIQUE KEY `iCode_FIN_DocumentFinanceYears` (`Code`),
   UNIQUE KEY `iDesignation_FIN_DocumentFinanceYears` (`Designation`),
-  UNIQUE KEY `iFiscalYear_FIN_DocumentFinanceYears` (`FiscalYear`),
   UNIQUE KEY `iAcronym_FIN_DocumentFinanceYears` (`Acronym`),
+  KEY `iFiscalYear_FIN_DocumentFinanceYears` (`FiscalYear`),
   KEY `iCreatedBy_FIN_DocumentFinanceYears` (`CreatedBy`),
   KEY `iCreatedWhere_FIN_DocumentFinanceYears` (`CreatedWhere`),
   KEY `iUpdatedBy_FIN_DocumentFinanceYears` (`UpdatedBy`),
@@ -2339,8 +2339,13 @@ CREATE TABLE `pos_configurationplaceterminal` (
   `Code` int(10) unsigned DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
   `HardwareId` varchar(30) DEFAULT NULL,
+  `InputReaderTimerInterval` int(10) unsigned DEFAULT NULL,
   `Place` char(38) DEFAULT NULL,
   `Printer` char(38) DEFAULT NULL,
+  `BarcodeReader` char(38) DEFAULT NULL,
+  `CardReader` char(38) DEFAULT NULL,
+  `PoleDisplay` char(38) DEFAULT NULL,
+  `WeighingMachine` char(38) DEFAULT NULL,
   `TemplateTicket` char(38) DEFAULT NULL,
   `TemplateTablesConsult` char(38) DEFAULT NULL,
   `OptimisticLockField` int(11) DEFAULT NULL,
@@ -2357,18 +2362,26 @@ CREATE TABLE `pos_configurationplaceterminal` (
   KEY `iDeletedWhere_POS_ConfigurationPlaceTerminal` (`DeletedWhere`),
   KEY `iPlace_POS_ConfigurationPlaceTerminal` (`Place`),
   KEY `iPrinter_POS_ConfigurationPlaceTerminal` (`Printer`),
+  KEY `iBarcodeReader_POS_ConfigurationPlaceTerminal` (`BarcodeReader`),
+  KEY `iCardReader_POS_ConfigurationPlaceTerminal` (`CardReader`),
+  KEY `iPoleDisplay_POS_ConfigurationPlaceTerminal` (`PoleDisplay`),
+  KEY `iWeighingMachine_POS_ConfigurationPlaceTerminal` (`WeighingMachine`),
   KEY `iTemplateTicket_POS_ConfigurationPlaceTerminal` (`TemplateTicket`),
   KEY `iTemplateTablesConsult_POS_ConfigurationPlaceTerminal` (`TemplateTablesConsult`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_CreatedBy` FOREIGN KEY (`CreatedBy`) REFERENCES `sys_userdetail` (`Oid`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_CreatedWhere` FOREIGN KEY (`CreatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_DeletedBy` FOREIGN KEY (`DeletedBy`) REFERENCES `sys_userdetail` (`Oid`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_DeletedWhere` FOREIGN KEY (`DeletedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
+  CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_BarcodeReader` FOREIGN KEY (`BarcodeReader`) REFERENCES `sys_configurationinputreader` (`Oid`),
+  CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_CardReader` FOREIGN KEY (`CardReader`) REFERENCES `sys_configurationinputreader` (`Oid`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_Place` FOREIGN KEY (`Place`) REFERENCES `pos_configurationplace` (`Oid`),
+  CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_PoleDisplay` FOREIGN KEY (`PoleDisplay`) REFERENCES `sys_configurationpoledisplay` (`Oid`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_Printer` FOREIGN KEY (`Printer`) REFERENCES `sys_configurationprinters` (`Oid`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_TemplateTablesConsult` FOREIGN KEY (`TemplateTablesConsult`) REFERENCES `sys_configurationprinterstemplates` (`Oid`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_TemplateTicket` FOREIGN KEY (`TemplateTicket`) REFERENCES `sys_configurationprinterstemplates` (`Oid`),
   CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_UpdatedBy` FOREIGN KEY (`UpdatedBy`) REFERENCES `sys_userdetail` (`Oid`),
-  CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_UpdatedWhere` FOREIGN KEY (`UpdatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`)
+  CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_UpdatedWhere` FOREIGN KEY (`UpdatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
+  CONSTRAINT `FK_POS_ConfigurationPlaceTerminal_WeighingMachine` FOREIGN KEY (`WeighingMachine`) REFERENCES `sys_configurationweighingmachine` (`Oid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2662,6 +2675,7 @@ CREATE TABLE `rpt_report` (
   UNIQUE KEY `iCode_RPT_Report` (`Code`),
   UNIQUE KEY `iDesignation_RPT_Report` (`Designation`),
   UNIQUE KEY `iResourceString_RPT_Report` (`ResourceString`),
+  UNIQUE KEY `iToken_RPT_Report` (`Token`),
   KEY `iCreatedBy_RPT_Report` (`CreatedBy`),
   KEY `iCreatedWhere_RPT_Report` (`CreatedWhere`),
   KEY `iUpdatedBy_RPT_Report` (`UpdatedBy`),
@@ -2703,6 +2717,7 @@ CREATE TABLE `rpt_reporttype` (
   `Code` int(10) unsigned DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
   `ResourceString` varchar(100) DEFAULT NULL,
+  `MenuIcon` varchar(255) DEFAULT NULL,
   `OptimisticLockField` int(11) DEFAULT NULL,
   PRIMARY KEY (`Oid`),
   UNIQUE KEY `iOid_RPT_ReportType` (`Oid`),
@@ -2720,6 +2735,141 @@ CREATE TABLE `rpt_reporttype` (
   CONSTRAINT `FK_RPT_ReportType_DeletedWhere` FOREIGN KEY (`DeletedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
   CONSTRAINT `FK_RPT_ReportType_UpdatedBy` FOREIGN KEY (`UpdatedBy`) REFERENCES `sys_userdetail` (`Oid`),
   CONSTRAINT `FK_RPT_ReportType_UpdatedWhere` FOREIGN KEY (`UpdatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `sys_configurationinputreader`
+--
+
+DROP TABLE IF EXISTS `sys_configurationinputreader`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_configurationinputreader` (
+  `Oid` char(38) NOT NULL,
+  `Disabled` bit(1) DEFAULT NULL,
+  `Notes` longtext,
+  `CreatedAt` datetime DEFAULT NULL,
+  `CreatedBy` char(38) DEFAULT NULL,
+  `CreatedWhere` char(38) DEFAULT NULL,
+  `UpdatedAt` datetime DEFAULT NULL,
+  `UpdatedBy` char(38) DEFAULT NULL,
+  `UpdatedWhere` char(38) DEFAULT NULL,
+  `DeletedAt` datetime DEFAULT NULL,
+  `DeletedBy` char(38) DEFAULT NULL,
+  `DeletedWhere` char(38) DEFAULT NULL,
+  `Ord` int(10) unsigned DEFAULT NULL,
+  `Code` int(10) unsigned DEFAULT NULL,
+  `Designation` varchar(100) DEFAULT NULL,
+  `ReaderSizes` varchar(100) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Oid`),
+  UNIQUE KEY `iOid_SYS_ConfigurationInputReader` (`Oid`),
+  UNIQUE KEY `iCode_SYS_ConfigurationInputReader` (`Code`),
+  KEY `iCreatedBy_SYS_ConfigurationInputReader` (`CreatedBy`),
+  KEY `iCreatedWhere_SYS_ConfigurationInputReader` (`CreatedWhere`),
+  KEY `iUpdatedBy_SYS_ConfigurationInputReader` (`UpdatedBy`),
+  KEY `iUpdatedWhere_SYS_ConfigurationInputReader` (`UpdatedWhere`),
+  KEY `iDeletedBy_SYS_ConfigurationInputReader` (`DeletedBy`),
+  KEY `iDeletedWhere_SYS_ConfigurationInputReader` (`DeletedWhere`),
+  CONSTRAINT `FK_SYS_ConfigurationInputReader_CreatedBy` FOREIGN KEY (`CreatedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationInputReader_CreatedWhere` FOREIGN KEY (`CreatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationInputReader_DeletedBy` FOREIGN KEY (`DeletedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationInputReader_DeletedWhere` FOREIGN KEY (`DeletedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationInputReader_UpdatedBy` FOREIGN KEY (`UpdatedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationInputReader_UpdatedWhere` FOREIGN KEY (`UpdatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `sys_configurationpoledisplay`
+--
+
+DROP TABLE IF EXISTS `sys_configurationpoledisplay`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_configurationpoledisplay` (
+  `Oid` char(38) NOT NULL,
+  `Disabled` bit(1) DEFAULT NULL,
+  `Notes` longtext,
+  `CreatedAt` datetime DEFAULT NULL,
+  `CreatedBy` char(38) DEFAULT NULL,
+  `CreatedWhere` char(38) DEFAULT NULL,
+  `UpdatedAt` datetime DEFAULT NULL,
+  `UpdatedBy` char(38) DEFAULT NULL,
+  `UpdatedWhere` char(38) DEFAULT NULL,
+  `DeletedAt` datetime DEFAULT NULL,
+  `DeletedBy` char(38) DEFAULT NULL,
+  `DeletedWhere` char(38) DEFAULT NULL,
+  `Ord` int(10) unsigned DEFAULT NULL,
+  `Code` int(10) unsigned DEFAULT NULL,
+  `Designation` varchar(100) DEFAULT NULL,
+  `VID` varchar(100) DEFAULT NULL,
+  `PID` varchar(100) DEFAULT NULL,
+  `EndPoint` varchar(100) DEFAULT NULL,
+  `CodeTable` varchar(100) DEFAULT NULL,
+  `DisplayCharactersPerLine` int(10) unsigned DEFAULT NULL,
+  `GoToStandByInSeconds` int(10) unsigned DEFAULT NULL,
+  `StandByLine1` varchar(100) DEFAULT NULL,
+  `StandByLine2` varchar(100) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Oid`),
+  UNIQUE KEY `iOid_SYS_ConfigurationPoleDisplay` (`Oid`),
+  UNIQUE KEY `iCode_SYS_ConfigurationPoleDisplay` (`Code`),
+  KEY `iCreatedBy_SYS_ConfigurationPoleDisplay` (`CreatedBy`),
+  KEY `iCreatedWhere_SYS_ConfigurationPoleDisplay` (`CreatedWhere`),
+  KEY `iUpdatedBy_SYS_ConfigurationPoleDisplay` (`UpdatedBy`),
+  KEY `iUpdatedWhere_SYS_ConfigurationPoleDisplay` (`UpdatedWhere`),
+  KEY `iDeletedBy_SYS_ConfigurationPoleDisplay` (`DeletedBy`),
+  KEY `iDeletedWhere_SYS_ConfigurationPoleDisplay` (`DeletedWhere`),
+  CONSTRAINT `FK_SYS_ConfigurationPoleDisplay_CreatedBy` FOREIGN KEY (`CreatedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationPoleDisplay_CreatedWhere` FOREIGN KEY (`CreatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationPoleDisplay_DeletedBy` FOREIGN KEY (`DeletedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationPoleDisplay_DeletedWhere` FOREIGN KEY (`DeletedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationPoleDisplay_UpdatedBy` FOREIGN KEY (`UpdatedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationPoleDisplay_UpdatedWhere` FOREIGN KEY (`UpdatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `sys_configurationweighingmachine`
+--
+
+DROP TABLE IF EXISTS `sys_configurationweighingmachine`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_configurationweighingmachine` (
+  `Oid` char(38) NOT NULL,
+  `Disabled` bit(1) DEFAULT NULL,
+  `Notes` longtext,
+  `CreatedAt` datetime DEFAULT NULL,
+  `CreatedBy` char(38) DEFAULT NULL,
+  `CreatedWhere` char(38) DEFAULT NULL,
+  `UpdatedAt` datetime DEFAULT NULL,
+  `UpdatedBy` char(38) DEFAULT NULL,
+  `UpdatedWhere` char(38) DEFAULT NULL,
+  `DeletedAt` datetime DEFAULT NULL,
+  `DeletedBy` char(38) DEFAULT NULL,
+  `DeletedWhere` char(38) DEFAULT NULL,
+  `Ord` int(10) unsigned DEFAULT NULL,
+  `Code` int(10) unsigned DEFAULT NULL,
+  `Designation` varchar(100) DEFAULT NULL,
+  `OptimisticLockField` int(11) DEFAULT NULL,
+  PRIMARY KEY (`Oid`),
+  UNIQUE KEY `iOid_SYS_ConfigurationWeighingMachine` (`Oid`),
+  UNIQUE KEY `iCode_SYS_ConfigurationWeighingMachine` (`Code`),
+  KEY `iCreatedBy_SYS_ConfigurationWeighingMachine` (`CreatedBy`),
+  KEY `iCreatedWhere_SYS_ConfigurationWeighingMachine` (`CreatedWhere`),
+  KEY `iUpdatedBy_SYS_ConfigurationWeighingMachine` (`UpdatedBy`),
+  KEY `iUpdatedWhere_SYS_ConfigurationWeighingMachine` (`UpdatedWhere`),
+  KEY `iDeletedBy_SYS_ConfigurationWeighingMachine` (`DeletedBy`),
+  KEY `iDeletedWhere_SYS_ConfigurationWeighingMachine` (`DeletedWhere`),
+  CONSTRAINT `FK_SYS_ConfigurationWeighingMachine_CreatedBy` FOREIGN KEY (`CreatedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationWeighingMachine_CreatedWhere` FOREIGN KEY (`CreatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationWeighingMachine_DeletedBy` FOREIGN KEY (`DeletedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationWeighingMachine_DeletedWhere` FOREIGN KEY (`DeletedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationWeighingMachine_UpdatedBy` FOREIGN KEY (`UpdatedBy`) REFERENCES `sys_userdetail` (`Oid`),
+  CONSTRAINT `FK_SYS_ConfigurationWeighingMachine_UpdatedWhere` FOREIGN KEY (`UpdatedWhere`) REFERENCES `pos_configurationplaceterminal` (`Oid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2747,6 +2897,16 @@ CREATE TABLE `sys_configurationprinters` (
   `Code` int(10) unsigned DEFAULT NULL,
   `Designation` varchar(100) DEFAULT NULL,
   `NetworkName` varchar(100) DEFAULT NULL,
+  `ThermalEncoding` varchar(100) DEFAULT NULL,
+  `ThermalPrintLogo` bit(1) DEFAULT NULL,
+  `ThermalImageCompanyLogo` varchar(100) DEFAULT NULL,
+  `ThermalMaxCharsPerLineNormal` int(11) DEFAULT NULL,
+  `ThermalMaxCharsPerLineNormalBold` int(11) DEFAULT NULL,
+  `ThermalMaxCharsPerLineSmall` int(11) DEFAULT NULL,
+  `ThermalCutCommand` varchar(100) DEFAULT NULL,
+  `ThermalOpenDrawerValueM` int(11) DEFAULT NULL,
+  `ThermalOpenDrawerValueT1` int(11) DEFAULT NULL,
+  `ThermalOpenDrawerValueT2` int(11) DEFAULT NULL,
   `ShowInDialog` bit(1) DEFAULT NULL,
   `PrinterType` char(38) DEFAULT NULL,
   `OptimisticLockField` int(11) DEFAULT NULL,
@@ -3245,15 +3405,15 @@ CREATE TABLE `sys_userdetail` (
   `Ord` int(10) unsigned DEFAULT NULL,
   `Code` int(10) unsigned DEFAULT NULL,
   `CodeInternal` varchar(30) DEFAULT NULL,
-  `Name` varchar(100) DEFAULT NULL,
-  `Residence` varchar(100) DEFAULT NULL,
-  `Locality` varchar(100) DEFAULT NULL,
+  `Name` varchar(512) DEFAULT NULL,
+  `Residence` varchar(512) DEFAULT NULL,
+  `Locality` varchar(255) DEFAULT NULL,
   `ZipCode` varchar(100) DEFAULT NULL,
-  `City` varchar(100) DEFAULT NULL,
+  `City` varchar(255) DEFAULT NULL,
   `DateOfContract` varchar(100) DEFAULT NULL,
-  `Phone` varchar(100) DEFAULT NULL,
-  `MobilePhone` varchar(100) DEFAULT NULL,
-  `Email` varchar(100) DEFAULT NULL,
+  `Phone` varchar(255) DEFAULT NULL,
+  `MobilePhone` varchar(255) DEFAULT NULL,
+  `Email` varchar(255) DEFAULT NULL,
   `FiscalNumber` varchar(100) DEFAULT NULL,
   `Language` varchar(100) DEFAULT NULL,
   `AssignedSeating` varchar(100) DEFAULT NULL,
@@ -3479,8 +3639,7 @@ CREATE TABLE `sys_userprofile` (
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2016-10-04 17:06:14

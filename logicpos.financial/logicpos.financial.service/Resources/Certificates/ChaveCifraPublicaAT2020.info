@@ -12,8 +12,8 @@ Issuer:
   Name Hash(sha1): 345e2b5b139b53dee15b8f6c936d4ba073fdb58c
   Name Hash(md5): 953ce6cb785d80c72d8ddafe94dc75a5
 
- NotBefore: 24/07/2017 13:51
- NotAfter: 23/07/2020 13:51
+ NotBefore: 24/07/2017 14:51
+ NotAfter: 23/07/2020 14:51
 
 Subject:
     CN=Chave Cifra Publica AT
@@ -74,11 +74,11 @@ Certificate Extensions: 9
 
     2.5.29.14: Flags = 0, Length = 16
     Identificador da chave de assunto
-        62 6f 26 a9 c6 2f 41 36 65 29 3c 53 42 7a ed 6a 99 f8 6c f5
+        626f26a9c62f413665293c53427aed6a99f86cf5
 
     2.5.29.35: Flags = 0, Length = 18
     Identificador da chave de autoridade
-        ID da chave=c4 4b 73 8d d5 60 96 7b be a2 7b 7d 25 f0 b7 e2 35 6f fc 1e
+        ID da chave=c44b738dd560967bbea27b7d25f0b7e2356ffc1e
 
     2.5.29.31: Flags = 0, Length = cc
     Pontos de distribuição da CRL
@@ -127,6 +127,8 @@ Signature: UnusedBits=0
 Non-root Certificate
 Key Id Hash(rfc-sha1): 626f26a9c62f413665293c53427aed6a99f86cf5
 Key Id Hash(sha1): 787a254fb18ff950dbacd3a0b921d63af89c6548
+Key Id Hash(bcrypt-sha1): 9c1b5972ba83d1b93c90f954990acae98519529c
+Key Id Hash(bcrypt-sha256): bc05c4fd79c153ad8d64d64b3168053102257d0ed0229fc53494ab836c8d3222
 Key Id Hash(md5): 73779963be850b8c01cc90d2915baceb
 Key Id Hash(sha256): 795b09e48e718171406b81d05f55e6947e343a9abe5ebf4c498363a3400ec3b1
 Key Id Hash(pin-sha256): HJOwp1MdsVU2vu0GC4ZPRqA9auy82HRLGQs9KlGUyFg=

@@ -18,6 +18,8 @@ namespace logicpos
     {
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        // Use this to force Plugin with Debug Attach
+        private static bool forceShowPluginLicenceWithDebugger = false;
 
         [STAThread]
         public static void Main(string[] args)
@@ -54,7 +56,7 @@ namespace logicpos
                 }
 
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
-                if (!Debugger.IsAttached)
+                if (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger)
                 {
                     GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
                     // Show Loaded Plugin
@@ -71,7 +73,7 @@ namespace logicpos
                 Theme.ParseTheme(true, false);
 
                 // Initialize LicenseRouter if IntellilockPlugin plugin is Registered in PluginContainer
-                if (GlobalFramework.PluginLicenceManager != null && !Debugger.IsAttached)
+                if (GlobalFramework.PluginLicenceManager != null && (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger))
                 {
                     // Boot LogicPos after LicenceManager.IntellilockPlugin
                     LicenseRouter licenseRouter = new LicenseRouter();
@@ -102,17 +104,24 @@ namespace logicpos
             GlobalFramework.Path.Add("reports", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathReports"]));
             GlobalFramework.Path.Add("temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]));
             GlobalFramework.Path.Add("cache", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCache"]));
-            GlobalFramework.Path.Add("backups", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathBackups"]));
             GlobalFramework.Path.Add("plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]));
-            GlobalFramework.Path.Add("saftpt", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathSaftPt"]));
             //Create Directories
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"])));
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["saftpt"])));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\Other", Convert.ToString(GlobalFramework.Path["resources"]))));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GlobalFramework.Path["resources"]), GlobalFramework.Settings["databaseType"], @"Database\MSSqlServer")));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GlobalFramework.Path["resources"]), GlobalFramework.Settings["databaseType"], @"Database\SQLite")));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GlobalFramework.Path["resources"]), GlobalFramework.Settings["databaseType"], @"Database\MySql")));
+        }
+
+        public static void InitPathsPrefs()
+        {
+            // PreferencesValues
+            GlobalFramework.Path.Add("backups", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_BACKUPS"]));
+            GlobalFramework.Path.Add("saftpt", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_SAFTPT"]));
+            //Create Directories
+            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
+            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["saftpt"])));
         }
     }
 }

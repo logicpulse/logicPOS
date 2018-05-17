@@ -14,6 +14,7 @@
         public decimal TotalNet { get; set; }
         public decimal TotalGross { get; set; }
         public decimal TotalFinal { get; set; }
+        public string Notes { get; set; }
         public string VatExemptionReasonDesignation { get; set; }
         //// Enums
         //public PriceType PriceType { get; set; }

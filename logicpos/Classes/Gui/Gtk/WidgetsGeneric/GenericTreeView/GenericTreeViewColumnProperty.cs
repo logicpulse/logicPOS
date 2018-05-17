@@ -53,7 +53,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public object InitialValue { get; set; }
         //Query: Implemented Here : GenericTreeeView.ColumnPropertyGetQuery
         public string Query { get; set; }
-
+        //Decrypt Value
+        public bool DecryptValue { get; set; }
+        //ResourceString
+        public bool ResourceString { get; set; }
+        
         /// <summary>Constructor</summary>
         public GenericTreeViewColumnProperty(String pFieldName, GenericTreeViewColumnProperty pDefaultColumnProperty = null)
         {

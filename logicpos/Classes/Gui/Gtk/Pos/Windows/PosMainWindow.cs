@@ -139,7 +139,10 @@ namespace logicpos
                 this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
 
                 //Hardware Events
-                GlobalApp.HWBarCodeReader.Captured += HWBarCodeReader_Captured;
+                if (GlobalFramework.LoggedTerminal.BarcodeReader != null || GlobalFramework.LoggedTerminal.CardReader != null)
+                {
+                    GlobalApp.HWBarCodeReader.Captured += HWBarCodeReader_Captured;
+                }
             }
             catch (Exception ex)
             {
@@ -674,10 +677,10 @@ namespace logicpos
             if (buttonApplicationCloseVisible) hboxToolbar.PackStart(_touchButtonPosToolbarApplicationClose, false, false, 0);
             if (buttonBackOfficeVisible) hboxToolbar.PackStart(_touchButtonPosToolbarBackOffice, false, false, 0);
             if (buttonShowSystemDialogVisible) hboxToolbar.PackStart(_touchButtonPosToolbarShowSystemDialog, false, false, 0);
-            if (buttonReportsVisible) hboxToolbar.PackStart(_touchButtonPosToolbarReports, false, false, 0);
             if (buttonLogoutUserVisible) hboxToolbar.PackStart(_touchButtonPosToolbarLogoutUser, false, false, 0);
             if (buttonShowChangeUserDialogVisible) hboxToolbar.PackStart(_touchButtonPosToolbarShowChangeUserDialog, false, false, 0);
             if (buttonCashDrawerVisible) hboxToolbar.PackStart(_touchButtonPosToolbarCashDrawer, false, false, 0);
+            if (buttonReportsVisible) hboxToolbar.PackStart(_touchButtonPosToolbarReports, false, false, 0);
             if (buttonFinanceDocumentsVisible) hboxToolbar.PackStart(_touchButtonPosToolbarFinanceDocuments, false, false, 0);
             if (buttonNewFinanceDocumentVisible) hboxToolbar.PackStart(_touchButtonPosToolbarNewFinanceDocument, false, false, 0);
 

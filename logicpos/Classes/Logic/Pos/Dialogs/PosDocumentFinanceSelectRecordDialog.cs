@@ -662,8 +662,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Check if Can Cancell Document
                     if (CanCancelFinanceMasterDocument(documentMaster))
                     {
+                        string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_request_motive_to_cancel_finance_document.png");
+                        
                         //Call Request Motive Dialog
-                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, string.Format(Resx.global_cancel_document_input_text_label, documentMaster.DocumentNumber), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
+                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(Resx.global_cancel_document_input_text_label, documentMaster.DocumentNumber), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
 
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
@@ -1177,7 +1179,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     if (CanCancelFinancePaymentDocument(document))
                     {
-                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, string.Format(Resx.global_cancel_document_input_text_label, document.PaymentRefNo), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
+                        string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_request_motive_to_cancel_finance_document.png");
+
+                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(Resx.global_cancel_document_input_text_label, document.PaymentRefNo), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_log.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
