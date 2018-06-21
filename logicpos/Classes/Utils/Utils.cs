@@ -562,8 +562,14 @@ namespace logicpos
         public static void ShowMessageTouchUnsupportedResolutionDetectedAndExit(Window pSourceWindow, int width, int height)
         {
             string message = string.Format(Resx.app_error_unsupported_resolution_detected, width, height);
-            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, Resx.global_error, message);
+            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, Resx.global_error, message);
             Environment.Exit(Environment.ExitCode);
+        }
+
+        public static void ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(Window pSourceWindow, decimal currentQuantity, decimal maxPossibleQuantity)
+        {
+            string message = string.Format(Resx.dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities, currentQuantity, maxPossibleQuantity);
+            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 400), MessageType.Info, ButtonsType.Ok, Resx.global_information, message);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1234,6 +1240,7 @@ namespace logicpos
                         result = new Size(1680, 1050);
                         break;
                     case ScreenSize.res1920x1200:
+                    case ScreenSize.res2160x1440:
                     case ScreenSize.res2560x1080:
                     case ScreenSize.res2560x1440:
                     case ScreenSize.res3440x1440:
@@ -1600,7 +1607,7 @@ namespace logicpos
                 _log.Error(ex.Message, ex);
             }
 
-           return result;
+            return result;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

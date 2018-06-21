@@ -46,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Type = typeof(FIN_Article),
                 Title = Resx.global_record_code,
                 ChildName = "Code",
-                MinWidth = 100,
+                MinWidth = 60,
                 MaxWidth = 150,
                 Alignment = 1.0F,
                 CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, ForegroundGdk = new Gdk.Color(255, 0, 0) }

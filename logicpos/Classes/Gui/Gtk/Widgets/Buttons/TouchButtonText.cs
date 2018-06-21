@@ -8,7 +8,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
     {
         protected Widget _widget;
         protected Label _label;
-        private string _labelText;
+        protected string _labelText;
         public string LabelText
         {
             get { return _labelText; }

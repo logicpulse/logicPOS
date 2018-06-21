@@ -485,7 +485,7 @@
 							<Text>Resx[global_split_account]</Text>
 							<Position>0,0</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
-							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_splitaccount.png</ImageFileName>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_split_payments.png</ImageFileName>
 							<Visible>false</Visible>
 						</ButtonSplitAccount>
 						<!-- BOF : Not Used Button in Retail Mode-->

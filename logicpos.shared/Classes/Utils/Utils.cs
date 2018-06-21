@@ -16,15 +16,15 @@ namespace logicpos.shared.Classes.Utils
         public static bool ZipPack(string[] pFiles, string pFileDestination)
         {
             string password = null;
-            return ZipPack(pFiles, pFileDestination, password, EncryptionAlgorithm.WinZipAes256, CompressionMethod.BZip2, CompressionLevel.Optimal);
+            return ZipPack(pFiles, pFileDestination, password, EncryptionAlgorithm.WinZipAes256, CompressionMethod.BZip2, Ionic.Zlib.CompressionLevel.BestCompression);
         }
 
         public static bool ZipPack(string[] pFiles, string pFileDestination, string pPassword)
         {
-            return ZipPack(pFiles, pFileDestination, pPassword, EncryptionAlgorithm.WinZipAes256, CompressionMethod.BZip2, CompressionLevel.Optimal);
+            return ZipPack(pFiles, pFileDestination, pPassword, EncryptionAlgorithm.WinZipAes256, CompressionMethod.BZip2, Ionic.Zlib.CompressionLevel.BestCompression);
         }
 
-        public static bool ZipPack(string[] pFiles, string pDestinationFileName, string pPassword, EncryptionAlgorithm pEncryptionAlgorithm, CompressionMethod pCompressionMethod, CompressionLevel pCompressionLevel)
+        public static bool ZipPack(string[] pFiles, string pDestinationFileName, string pPassword, EncryptionAlgorithm pEncryptionAlgorithm, CompressionMethod pCompressionMethod, Ionic.Zlib.CompressionLevel pCompressionLevel)
         {
             bool debug = false;
             bool result = false;
@@ -55,8 +55,8 @@ namespace logicpos.shared.Classes.Utils
                     }
 
                     //Set compression just before Save()
-                    zip.CompressionMethod = CompressionMethod.BZip2;
-                    zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+                    zip.CompressionMethod = pCompressionMethod;
+                    zip.CompressionLevel = pCompressionLevel;
                     zip.Save(pDestinationFileName);
 
                     result = true;

@@ -55,20 +55,27 @@ namespace logicpos.Classes.Logic.Hardware
 
             try
             {
-                _barCodeReaderList = FrameworkUtils.CommaDelimitedStringToIntList(GlobalFramework.LoggedTerminal.BarcodeReader.ReaderSizes);
-                _cardReaderList = FrameworkUtils.CommaDelimitedStringToIntList(GlobalFramework.LoggedTerminal.CardReader.ReaderSizes);
-
-                for (int i = 0; i < _barCodeReaderList.Count; i++)
+                if (GlobalFramework.LoggedTerminal.BarcodeReader != null)
                 {
-                    result.Add(Convert.ToInt16(_barCodeReaderList[i]), InputReaderDevice.BarCodeReader);
+                    _barCodeReaderList = FrameworkUtils.CommaDelimitedStringToIntList(GlobalFramework.LoggedTerminal.BarcodeReader.ReaderSizes);
+                    
+                    for (int i = 0; i < _barCodeReaderList.Count; i++)
+                    {
+                        result.Add(Convert.ToInt16(_barCodeReaderList[i]), InputReaderDevice.BarCodeReader);
+                    }
                 }
 
-                for (int i = 0; i < _cardReaderList.Count; i++)
+                if (GlobalFramework.LoggedTerminal.CardReader != null)
                 {
-                    //Check if BarCodeReader is Using same Value Size, if So Skip
-                    if (!result.ContainsKey(Convert.ToInt16(_cardReaderList[i])))
+                    _cardReaderList = FrameworkUtils.CommaDelimitedStringToIntList(GlobalFramework.LoggedTerminal.CardReader.ReaderSizes);
+                    
+                    for (int i = 0; i < _cardReaderList.Count; i++)
                     {
-                        result.Add(Convert.ToInt16(_cardReaderList[i]), InputReaderDevice.CardReader);
+                        //Check if BarCodeReader is Using same Value Size, if So Skip
+                        if (!result.ContainsKey(Convert.ToInt16(_cardReaderList[i])))
+                        {
+                            result.Add(Convert.ToInt16(_cardReaderList[i]), InputReaderDevice.CardReader);
+                        }
                     }
                 }
             }

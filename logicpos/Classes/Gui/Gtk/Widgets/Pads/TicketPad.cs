@@ -228,8 +228,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _buttonPayments = getButton(buttonPaymentsName, buttonPaymentsText, buttonPaymentsSize, buttonPaymentsImageFileName);
             _buttonBarCode = getButton(buttonBarCodeName, buttonBarCodeText, buttonBarCodeSize, buttonBarCodeImageFileName);
             //Always Disabled Buttons until Implementation
+            _buttonGifts.Sensitive = false;
             _buttonMessages.Sensitive = false;
-            _buttonSplitAccount.Sensitive = false;
+            //_buttonSplitAccount.Sensitive = false;
 
             //Put Buttons/Theme
             Fixed fix = new Fixed() { BorderWidth = 10 };
@@ -268,6 +269,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _ticketList.ButtonKeyChangePrice = _buttonChangePrice;
             _ticketList.ButtonKeyListMode = _buttonListMode;
             _ticketList.ButtonKeyListOrder = _buttonListOrder;
+            _ticketList.ButtonKeySplitAccount = _buttonSplitAccount;
             _ticketList.ButtonKeyWeight = _buttonWeight;
             _ticketList.ButtonKeyGifts = _buttonGifts;
             _ticketList.ButtonKeyChangeTable = _buttonChangeTable;

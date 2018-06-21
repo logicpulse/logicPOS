@@ -1135,11 +1135,11 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         hasArticlesWithInvalidDesignation = true;
                     }
-                    //Validate ValidationField: Price
-                    if (!FrameworkUtils.Validate(validationFieldPrice.Value.ToString(), validationFieldPrice.Rule, validationFieldPrice.Required))
-                    {
-                        hasArticlesWithInvalidPrice = true;
-                    }
+                    //Validate ValidationField: Price : Ignore Validation in ArticleSettlement Articles (Can have negative Values)
+                    //if (!item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleSettlement) && !FrameworkUtils.Validate(validationFieldPrice.Value.ToString(), validationFieldPrice.Rule, validationFieldPrice.Required))
+                    //{
+                    //    hasArticlesWithInvalidPrice = true;
+                    //}
                     //Validate ValidationField: Quantity
                     if (!FrameworkUtils.Validate(validationFieldQuantity.Value.ToString(), validationFieldQuantity.Rule, validationFieldQuantity.Required))
                     {

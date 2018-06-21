@@ -14,7 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = Utils.GetWindowTitle(Resx.window_title_edit_configurationweighingmachine);
-            SetSizeRequest(500, 310);
+            SetSizeRequest(500, 534);
             InitUI();
             InitNotes();
             ShowAll();
@@ -43,7 +43,37 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfa, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
+
+                //PortName
+                Entry entryPortName = new Entry();
+                BOWidgetBox boxPortName = new BOWidgetBox(Resx.global_hardware_com_portname, entryPortName);
+                vboxTab1.PackStart(boxPortName, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPortName, _dataSourceRow, "PortName", SettingsApp.RegexHardwarePortName, true));
+
+                //BaudRate
+                Entry entryBaudRate = new Entry();
+                BOWidgetBox boxBaudRate = new BOWidgetBox(Resx.global_hardware_com_baudrate, entryBaudRate);
+                vboxTab1.PackStart(boxBaudRate, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxBaudRate, _dataSourceRow, "BaudRate", SettingsApp.RegexHardwareBaudRate, true));
+
+                //Parity
+                Entry entryParity = new Entry();
+                BOWidgetBox boxParity = new BOWidgetBox(Resx.global_hardware_com_parity, entryParity);
+                vboxTab1.PackStart(boxParity, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxParity, _dataSourceRow, "Parity", SettingsApp.RegexHardwareParity, true));
+
+                //StopBits
+                Entry entryStopBits = new Entry();
+                BOWidgetBox boxStopBits = new BOWidgetBox(Resx.global_hardware_com_stopbits, entryStopBits);
+                vboxTab1.PackStart(boxStopBits, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxStopBits, _dataSourceRow, "StopBits", SettingsApp.RegexHardwareStopBits, true));
+
+                //DataBits
+                Entry entryDataBits = new Entry();
+                BOWidgetBox boxDataBits = new BOWidgetBox(Resx.global_hardware_com_databits, entryDataBits);
+                vboxTab1.PackStart(boxDataBits, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDataBits, _dataSourceRow, "DataBits", SettingsApp.RegexHardwareDataBits, true));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(Resx.global_record_disabled);

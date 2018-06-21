@@ -442,51 +442,51 @@
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_payments.png</ImageFileName>
 							<Visible>true</Visible>
 						</ButtonPayments>
-						<!-- ButtonListOrder -->
-						<ButtonListOrder>
-							<Name>touchButtonPosTicketPadListOrder</Name>
-							<Text>Resx[pos_button_label_orders]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
-							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
-							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_orderlist.png</ImageFileName>
-							<Visible>true</Visible>
-						</ButtonListOrder>
-						<!-- ButtonGifts -->
-						<ButtonGifts>
-							<Name>touchButtonPosTicketPadGifts</Name>
-							<Text>Resx[global_gifts]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
-							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
-							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_gifts.png</ImageFileName>
-							<Visible>true</Visible>
-						</ButtonGifts>
-						<!-- Column4 : ButtonChangeTable -->
-						<ButtonChangeTable>
-							<Name>touchButtonPosTicketPadChangeTable</Name>
-							<Text>Resx[pos_button_label_change_table]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
-							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
-							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_changetable.png</ImageFileName>
-							<Visible>true</Visible>
-						</ButtonChangeTable>
-						<!-- ButtonMessages -->
-						<ButtonMessages>
-							<Name>touchButtonPosTicketPadMessages</Name>
-							<Text>Resx[global_messages]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
-							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
-							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_messages.png</ImageFileName>
-							<Visible>true</Visible>
-						</ButtonMessages>
-						<!-- ButtonSplitAccount : Disabled -->
-						<ButtonSplitAccount>
-							<Name>touchButtonPosTicketPadSplitAccount</Name>
-							<Text>Resx[global_split_account]</Text>
-							<Position>0,0</Position>
-							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
-							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_splitaccount.png</ImageFileName>
-							<Visible>false</Visible>
-						</ButtonSplitAccount>
+<!-- ButtonSplitAccount : Disabled -->
+<ButtonSplitAccount>
+	<Name>touchButtonPosTicketPadSplitAccount_Green</Name>
+	<Text>Resx[global_split_account]</Text>
+	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
+	<Size>Eval[Size(posMainWindowTicketPadButtonDoubleWidthSize.Width, posMainWindowTicketPadButtonDoubleWidthSize.Height)]</Size>
+	<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_split_payments.png</ImageFileName>
+	<Visible>true</Visible>
+</ButtonSplitAccount>
+<!-- ButtonListOrder -->
+<ButtonListOrder>
+	<Name>touchButtonPosTicketPadListOrder</Name>
+	<Text>Resx[pos_button_label_orders]</Text>
+	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+	<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+	<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_orderlist.png</ImageFileName>
+	<Visible>true</Visible>
+</ButtonListOrder>
+<!-- ButtonGifts -->
+<ButtonGifts>
+	<Name>touchButtonPosTicketPadGifts</Name>
+	<Text>Resx[global_gifts]</Text>
+	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+	<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+	<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_gifts.png</ImageFileName>
+	<Visible>false</Visible>
+</ButtonGifts>
+<!-- Column4 : ButtonChangeTable -->
+<ButtonChangeTable>
+	<Name>touchButtonPosTicketPadChangeTable</Name>
+	<Text>Resx[pos_button_label_change_table]</Text>
+	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+	<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+	<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_changetable.png</ImageFileName>
+	<Visible>true</Visible>
+</ButtonChangeTable>
+<!-- ButtonMessages -->
+<ButtonMessages>
+	<Name>touchButtonPosTicketPadMessages</Name>
+	<Text>Resx[global_messages]</Text>
+	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+	<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+	<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_messages.png</ImageFileName>
+	<Visible>false</Visible>
+</ButtonMessages>
 					</Buttons>
 				</EventBoxPosTicketPad>
 			</Objects>

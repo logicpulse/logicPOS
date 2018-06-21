@@ -190,6 +190,17 @@ namespace logicpos.financial.service
 
         private static void InitPlugins()
         {
+            // Check Path before launch error found Plugin
+            string pathPlugins = GlobalFramework.Path["plugins"].ToString();
+            if (string.IsNullOrEmpty(pathPlugins))
+            {
+                // Error Missing pluginPath
+                string errorMessage = "Error! missing plugin path in config! Please fix config and try again!";
+                _log.Error(errorMessage);
+                Console.WriteLine(errorMessage);
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
             // Init PluginContainer
             GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
 
@@ -215,7 +226,7 @@ namespace logicpos.financial.service
 
         private static bool HasAllRequiredValues()
         {
-            return (string.IsNullOrEmpty(SettingsApp.ServicesATAccountFiscalNumber)
+            return !(string.IsNullOrEmpty(SettingsApp.ServicesATAccountFiscalNumber)
                 || string.IsNullOrEmpty(SettingsApp.ServicesATAccountPassword)
                 || string.IsNullOrEmpty(SettingsApp.ServicesATTaxRegistrationNumber)
             );

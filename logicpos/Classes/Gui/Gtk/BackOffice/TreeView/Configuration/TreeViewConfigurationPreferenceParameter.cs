@@ -56,12 +56,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             // Get ConfigurationPreferenceParameter Reference
             CFG_ConfigurationPreferenceParameter configurationPreferenceParameter = (_dataSourceRow as CFG_ConfigurationPreferenceParameter);
+
             // We Must Modify GlobalFramework.PreferenceParameters after user Change Value, if Value is Changed
             if (!GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value))
             {
-                _log.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                if (_debug) _log.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
                 GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
-                _log.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                if (_debug) _log.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
             }
         }
     }

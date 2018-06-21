@@ -2,6 +2,7 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Reports;
+using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
@@ -29,6 +30,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Validate();
         }
 
+        private void _entryBoxSelectShared_ClosePopup(object sender, EventArgs e)
+        {
+            bool debug = false;
+            Widget widget = (sender as Widget);
+
+            // Helper to debug Senders
+            //XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceType, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = (sender as XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceType, TreeViewDocumentFinanceType>);
+
+            if (_selectionBoxs.ContainsKey(widget.Name))
+            {
+                dynamic dynamicSelectedObject = _selectionBoxs[widget.Name];
+                XPGuidObject dynamicSelectedXPOObject = dynamicSelectedObject.Value;
+                if (debug) _log.Debug(string.Format("Selected Type Key: [{0}] Value: [{1}]", widget.Name, dynamicSelectedXPOObject.Oid));
+            }
+        }
+
         private void _buttonOk_Clicked(object sender, EventArgs e)
         {
             // Call Validate
@@ -43,19 +60,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else
             {
                 throw new Exception("Error! Cant get filter Values from GetComposedFilter");
-            }
-        }
-
-        private void _entryBoxSelectDocumentFinanceType_ClosePopup(object sender, EventArgs e)
-        {
-            bool debug = false;
-            Widget widget = (sender as Widget);
-
-            if (_selectionBoxs.ContainsKey(widget.Name))
-            {
-                dynamic dynamicSelectedObject = _selectionBoxs[widget.Name];
-                XPGuidObject dynamicSelectedXPOObject = dynamicSelectedObject.Value;
-                if (debug) _log.Debug(string.Format("Selected Type Key: [{0}] Value: [{1}]", widget.Name, dynamicSelectedXPOObject.Oid));
             }
         }
 
@@ -194,18 +198,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         // Generic Method to Generate XPOEntryBoxSelectRecordValidation
-        private XPOEntryBoxSelectRecordValidation<T1, T2> SelectionBoxFactory<T1, T2>(string labelText, string fieldDisplayValue = "Designation")
+        private XPOEntryBoxSelectRecordValidation<T1, T2> SelectionBoxFactory<T1, T2>(string labelText, string fieldDisplayValue = "Designation", string extraFilter = "")
             where T1 : XPGuidObject, new()
             where T2 : GenericTreeViewXPO, new()
         {
             XPOEntryBoxSelectRecordValidation<T1, T2> resultObject;
 
+            // Helper to debug extraFilter
+            //if (!string.IsNullOrEmpty(extraFilter))
+            //{
+            //    _log.Debug("BREAK");
+            //}
+
             T1 defaultValue = (T1)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(T1), SettingsApp.XpoOidUndefinedRecord);
-            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}')", SettingsApp.XpoOidUndefinedRecord));
+            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}')){1}", SettingsApp.XpoOidUndefinedRecord, extraFilter));
             resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, SettingsApp.RegexGuid, true);
             resultObject.Name = typeof(T1).Name;
             resultObject.EntryValidation.IsEditable = false;
-            resultObject.ClosePopup += _entryBoxSelectDocumentFinanceType_ClosePopup;
+            resultObject.ClosePopup += _entryBoxSelectShared_ClosePopup;
 
             return resultObject;
         }

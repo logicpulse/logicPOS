@@ -1,5 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="04/19/2018 16:43:45" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.Copies="1" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="06/20/2018 17:25:29" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+  <Styles>
+    <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="DataLevel1Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 12pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 9.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFont" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 8pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFontBold" Font="Arial, 8pt, style=Bold" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="BackgroundColor1" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BackgroundColor2" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+  </Styles>
   <Dictionary>
     <BusinessObjectDataSource Name="DocumentFinanceMaster" ReferenceName="DocumentFinanceMaster" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMaster, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Date" DataType="System.DateTime"/>
@@ -262,6 +273,11 @@
         <BusinessObjectDataSource Name="BusinessObjectDataSource80" Alias="YearSerieTerminal" Enabled="false" DataType="DevExpress.Xpo.XPCollection`1[[logicpos.datalayer.DataLayer.Xpo.FIN_DocumentFinanceYearSerieTerminal, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="YearSerieTerminal"/>
         <BusinessObjectDataSource Name="BusinessObjectDataSource81" Alias="TemplateTicket" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="TemplateTicket"/>
         <BusinessObjectDataSource Name="BusinessObjectDataSource82" Alias="TemplateTablesConsult" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="TemplateTablesConsult"/>
+        <Column Name="InputReaderTimerInterval" DataType="System.UInt32"/>
+        <BusinessObjectDataSource Name="BusinessObjectDataSource83" Alias="BarcodeReader" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="BarcodeReader"/>
+        <BusinessObjectDataSource Name="BusinessObjectDataSource84" Alias="CardReader" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="CardReader"/>
+        <BusinessObjectDataSource Name="BusinessObjectDataSource85" Alias="PoleDisplay" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="PoleDisplay"/>
+        <BusinessObjectDataSource Name="BusinessObjectDataSource86" Alias="WeighingMachine" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="WeighingMachine"/>
       </Column>
       <Column Name="Oid" DataType="System.String"/>
     </BusinessObjectDataSource>
@@ -270,10 +286,21 @@
     <Parameter Name="Report SubTitle" DataType="System.String"/>
     <Parameter Name="Report Master OID" DataType="System.Guid"/>
     <Total Name="SumData" TotalType="Count" Evaluator="Data3" PrintOn="GroupFooter1"/>
-    <Total Name="TotalTotalFinalRound" Expression="[DocumentFinanceMaster.TotalFinalRound]" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="GroupTotalTotalFinalRound" Expression="[DocumentFinanceMaster.TotalFinalRound]" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="GroupTotalTotalDiscount" Expression="[DocumentFinanceMaster.TotalDiscount]" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="GroupTotalTotalNet" Expression="[DocumentFinanceMaster.TotalNet]" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="GroupTotalTotalTax" Expression="[DocumentFinanceMaster.TotalTax]" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="GroupTotalDiscountFinancial" Expression="[DocumentFinanceMaster.DiscountFinancial]" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="GroupTotalTotalGross" Expression="[DocumentFinanceMaster.TotalGross]" Evaluator="Data3" PrintOn="GroupFooter1"/>
+    <Total Name="ReportTotalTotalFinalRound" Expression="[DocumentFinanceMaster.TotalFinalRound]" Evaluator="Data3" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="ReportTotalTotalDiscount" Expression="[DocumentFinanceMaster.TotalDiscount]" Evaluator="Data3" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="ReportTotalTotalNet" Expression="[DocumentFinanceMaster.TotalNet]" Evaluator="Data3" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="ReportTotalTotalTax" Expression="[DocumentFinanceMaster.TotalTax]" Evaluator="Data3" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="ReportTotalDiscountFinancial" Expression="[DocumentFinanceMaster.DiscountFinancial]" Evaluator="Data3" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
+    <Total Name="ReportTotalTotalGross" Expression="[DocumentFinanceMaster.TotalGross]" Evaluator="Data3" PrintOn="ReportSummary1" ResetAfterPrint="false"/>
   </Dictionary>
   <inherited Name="Page1">
-    <inherited Name="PageHeader1" Height="48.6" Border.Lines="Bottom">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
       <inherited Name="PictureCompanyLogo"/>
       <inherited Name="TextReportTitle" Height="28.35" Text="[Report Title]" VertAlign="Center" Font="Arial, 12pt"/>
       <TextObject Name="TextReportFilter" ZOrder="2" Left="198.45" Top="28.35" Width="519.75" Height="18.9" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt, style=Bold" Wysiwyg="true"/>
@@ -297,11 +324,28 @@
           <Sort Expression="[DocumentFinanceMaster.Date]"/>
         </Sort>
       </DataBand>
-      <GroupFooterBand Name="GroupFooter1" Top="149.65" Width="718.2" Height="18.9">
-        <TextObject Name="Text38" Width="718.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_total&quot;)] : [FormatNumber([TotalTotalFinalRound],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <GroupFooterBand Name="GroupFooter1" Top="149.65" Width="718.2" Height="75.6" Border.Lines="Bottom">
+        <TextObject Name="TextSubTotalGross" Left="633.15" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([GroupTotalTotalGross],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalDiscount" Left="633.15" Top="18.9" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([GroupTotalTotalDiscount],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalTax" Left="633.15" Top="37.8" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([GroupTotalTotalTax],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalTotal" Left="633.15" Top="56.7" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([GroupTotalTotalFinalRound],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalGrossLabel" Left="292.95" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totalgross&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalDiscountLabel" Left="292.95" Top="18.9" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_discount_customer&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalTaxLabel" Left="292.95" Top="37.8" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalTotalLabel" Left="292.95" Top="56.7" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
       </GroupFooterBand>
     </GroupHeaderBand>
-    <inherited Name="PageFooter1" Top="172.55">
+    <ReportSummaryBand Name="ReportSummary1" ZOrder="-1" Top="229.25" Width="718.2" Height="75.6">
+      <TextObject Name="Text38" Left="633.15" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([ReportTotalTotalGross],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text39" Left="633.15" Top="18.9" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([ReportTotalTotalDiscount],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text40" Left="633.15" Top="37.8" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([ReportTotalTotalTax],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text41" Left="633.15" Top="56.7" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([ReportTotalTotalFinalRound],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text42" Left="292.95" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totalgross&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text43" Left="292.95" Top="18.9" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_discount_customer&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text44" Left="292.95" Top="37.8" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text45" Left="292.95" Top="56.7" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+    </ReportSummaryBand>
+    <inherited Name="PageFooter1" Top="308.85" Height="56.7">
       <inherited Name="TextFooter1"/>
       <inherited Name="Text1"/>
     </inherited>

@@ -57,7 +57,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fName;
-[Size(512)]
+        [Size(512)]
         [XPGuidObject(Encrypted = true)]
         public string Name
         {
@@ -66,7 +66,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fAddress;
-[Size(512)]
+        [Size(512)]
         [XPGuidObject(Encrypted = true)]
         public string Address
         {
@@ -75,7 +75,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fLocality;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Locality
         {
@@ -92,7 +92,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fCity;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string City
         {
@@ -109,7 +109,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fPhone;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Phone
         {
@@ -118,7 +118,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fFax;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Fax
         {
@@ -127,7 +127,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fMobilePhone;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string MobilePhone
         {
@@ -136,7 +136,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEmail;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Email
         {

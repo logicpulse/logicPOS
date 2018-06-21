@@ -1,20 +1,17 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
-using logicpos.financial.library.Classes.Hardware.Printers;
-using logicpos.financial.library.Classes.WorkSession;
+using logicpos.Classes.Enums.Hardware;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Enums;
+using logicpos.financial.library.Classes.Hardware.Printers;
+using logicpos.financial.library.Classes.WorkSession;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Orders;
 using System;
-using logicpos.financial.library.Classes.Reports;
-using System.Collections.Generic;
-using logicpos.financial.library.Classes.Finance;
-using logicpos.Classes.Enums.Hardware;
 
 namespace logicpos
 {
@@ -49,7 +46,10 @@ namespace logicpos
         void PosMainWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             //Redirect Event to BarCodeReader.KeyReleaseEvent
-            if (GlobalApp.HWBarCodeReader != null) GlobalApp.HWBarCodeReader.KeyReleaseEvent(this, o, args);
+            if (GlobalApp.BarCodeReader != null)
+            {
+                GlobalApp.BarCodeReader.KeyReleaseEvent(this, o, args);
+            }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -322,12 +322,12 @@ namespace logicpos
         {
             //_log.Debug(String.Format("Window: [{0}] Device: [{1}] Captured: [{2}] Length: [{3}]", GlobalApp.HWBarCodeReader.Window, GlobalApp.HWBarCodeReader.Device, GlobalApp.HWBarCodeReader.Buffer, GlobalApp.HWBarCodeReader.Buffer.Length));
 
-            switch (GlobalApp.HWBarCodeReader.Device)
+            switch (GlobalApp.BarCodeReader.Device)
             {
                 case InputReaderDevice.None:
                     break;
                 case InputReaderDevice.BarCodeReader:
-                    TicketList.InsertOrUpdate(GlobalApp.HWBarCodeReader.Buffer);
+                    TicketList.InsertOrUpdate(GlobalApp.BarCodeReader.Buffer);
                     break;
                 case InputReaderDevice.CardReader:
                     break;

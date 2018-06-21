@@ -25,6 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceType, TreeViewDocumentFinanceType> _entryBoxSelectDocumentFinanceType;
         private XPOEntryBoxSelectRecordValidation<POS_ConfigurationPlaceTerminal, TreeViewConfigurationPlaceTerminal> _entryBoxSelectConfigurationPlaceTerminal;
         private XPOEntryBoxSelectRecordValidation<SYS_UserDetail, TreeViewUser> _entryBoxSelectUserDetail;
+        private XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer> _entryBoxSelectCustomer;
         private XPOEntryBoxSelectRecordValidation<FIN_ConfigurationPaymentMethod, TreeViewConfigurationPaymentMethod> _entryBoxSelectConfigurationPaymentMethod;
         private XPOEntryBoxSelectRecordValidation<FIN_ConfigurationPaymentCondition, TreeViewConfigurationPaymentCondition> _entryBoxSelectConfigurationPaymentCondition;
         private XPOEntryBoxSelectRecordValidation<CFG_ConfigurationCurrency, TreeViewConfigurationCurrency> _entryBoxSelectConfigurationCurrency;
@@ -154,6 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL].Add(typeof(FIN_DocumentFinanceType).Name, "DocumentType");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL].Add(typeof(POS_ConfigurationPlaceTerminal).Name, "CreatedWhere");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL].Add(typeof(SYS_UserDetail).Name, "CreatedBy");
+                _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL].Add(typeof(ERP_Customer).Name, "EntityOid");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL].Add(typeof(FIN_ConfigurationPaymentMethod).Name, "PaymentMethod");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL].Add(typeof(FIN_ConfigurationPaymentCondition).Name, "PaymentCondition");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL].Add(typeof(CFG_ConfigurationCurrency).Name, "Currency");
@@ -165,6 +167,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL_DETAIL].Add(typeof(FIN_DocumentFinanceType).Name, "ftOid");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL_DETAIL].Add(typeof(POS_ConfigurationPlaceTerminal).Name, "trTerminal");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL_DETAIL].Add(typeof(SYS_UserDetail).Name, "udUserDetail");
+                _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL_DETAIL].Add(typeof(ERP_Customer).Name, "fmEntity");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL_DETAIL].Add(typeof(FIN_ConfigurationPaymentMethod).Name, "fmPaymentMethod");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL_DETAIL].Add(typeof(FIN_ConfigurationPaymentCondition).Name, "fmPaymentCondition");
                 _fieldsModeComponents[ReportsQueryDialogMode.FINANCIAL_DETAIL].Add(typeof(CFG_ConfigurationCurrency).Name, "fmCurrency");
@@ -194,10 +197,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _fieldsModeComponents[ReportsQueryDialogMode.SYSTEM_AUDIT].Add(typeof(SYS_UserDetail).Name, "usdOid");
                 _fieldsModeComponents[ReportsQueryDialogMode.SYSTEM_AUDIT].Add(typeof(POS_ConfigurationPlaceTerminal).Name, "cptOid");
 
-                // Create SelectionBox References / Fill Selection Boxs Dictionary to bes used in Dynamic Dialog
+                // Create SelectionBox References / Fill Selection Boxs Dictionary to be used in Dynamic Dialog
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(FIN_DocumentFinanceType)))
                 {
-                    _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<FIN_DocumentFinanceType, TreeViewDocumentFinanceType>(Resx.global_documentfinanceseries_documenttype);
+                    string extraFilter = $@" AND (
+Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR 
+Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
+Oid = '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
+Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+Oid = '{SettingsApp.XpoOidDocumentFinanceTypeDebitNote}'
+)".Replace(Environment.NewLine, string.Empty);
+                    _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<FIN_DocumentFinanceType, TreeViewDocumentFinanceType>(Resx.global_documentfinanceseries_documenttype, "Designation", extraFilter);
                     _selectionBoxs.Add(typeof(FIN_DocumentFinanceType).Name, _entryBoxSelectDocumentFinanceType);
                 }
 
@@ -211,6 +221,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     _entryBoxSelectUserDetail = SelectionBoxFactory<SYS_UserDetail, TreeViewUser>(Resx.global_user, "Name");
                     _selectionBoxs.Add(typeof(SYS_UserDetail).Name, _entryBoxSelectUserDetail);
+                }
+
+                if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(ERP_Customer)))
+                {
+                    _entryBoxSelectCustomer = SelectionBoxFactory<ERP_Customer, TreeViewCustomer>(Resx.global_customer, "Name");
+                    _selectionBoxs.Add(typeof(ERP_Customer).Name, _entryBoxSelectCustomer);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(FIN_ConfigurationPaymentMethod)))

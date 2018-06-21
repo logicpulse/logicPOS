@@ -50,7 +50,6 @@ namespace logicpos.financial.library.Classes.Stocks
                 POS_ConfigurationPlaceTerminal terminal = (POS_ConfigurationPlaceTerminal)pSession.GetObjectByKey(typeof(POS_ConfigurationPlaceTerminal), GlobalFramework.LoggedTerminal.Oid);
                 SYS_UserDetail userDetail = (SYS_UserDetail)pSession.GetObjectByKey(typeof(SYS_UserDetail), GlobalFramework.LoggedUser.Oid);
 
-
                 FIN_ArticleStock articleStock = new FIN_ArticleStock(pSession)
                 {
                     Customer = customer,
@@ -76,10 +75,10 @@ namespace logicpos.financial.library.Classes.Stocks
                 switch (pMode)
                 {
                     case ProcessArticleStockMode.Out:
-                        FrameworkUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(Resx.audit_message_stock_movement_out, article.Designation, quantity));
+                        FrameworkUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(Resx.audit_message_stock_movement_out, article.Designation, FrameworkUtils.DecimalToString(quantity, SettingsApp.DecimalFormatStockQuantity)));
                         break;
                     case ProcessArticleStockMode.In:
-                        FrameworkUtils.Audit("STOCK_MOVEMENT_IN", string.Format(Resx.audit_message_stock_movement_in, article.Designation, quantity));
+                        FrameworkUtils.Audit("STOCK_MOVEMENT_IN", string.Format(Resx.audit_message_stock_movement_in, article.Designation, FrameworkUtils.DecimalToString(quantity, SettingsApp.DecimalFormatStockQuantity)));
                         break;
                 }
 

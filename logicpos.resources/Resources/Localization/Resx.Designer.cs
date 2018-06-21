@@ -975,6 +975,18 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error initializing Weighing Balance
+        ///{0}!
+        ///
+        ///{1}.
+        /// </summary>
+        public static string dialog_message_error_initializing_weighing_balance {
+            get {
+                return ResourceManager.GetString("dialog_message_error_initializing_weighing_balance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Required plugin type SoftwareVendor is missing or have a wrong secretkey!
         ///
         ///This plugin is required, some features are disable without it!
@@ -1034,6 +1046,20 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error! You are trying to credit an article(s) that exceeds the amount issued in the original document,
+        ///or the sum of all credited items in related credit notes exceeds the amount of the original document!
+        ///
+        ///Quantity: {0}
+        ///Valid Quantity: {1}.
+        /// </summary>
+        public static string dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities {
+            get {
+                return ResourceManager.GetString("dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article" +
+                        "_quantities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validation Error/Missing Required Field!
         ///Please correct/fill your entry(s) and try again.
         ///
@@ -1074,8 +1100,8 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can´t issue a credito note in this Document!
-        ///All lines from this document was already credited in above credit notes:
+        ///   Looks up a localized string similar to You can´t issue a credit note in this Document!
+        ///All articles from this document was already credited in above credit notes:
         ///{0}.
         /// </summary>
         public static string dialog_message_info_all_lines_from_this_document_was_already_credited {
@@ -1636,6 +1662,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string global_add {
+            get {
+                return ResourceManager.GetString("global_add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Address.
         /// </summary>
         public static string global_address {
@@ -2019,6 +2054,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_button_label_payment_dialog_partial_payment {
             get {
                 return ResourceManager.GetString("global_button_label_payment_dialog_partial_payment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split.
+        /// </summary>
+        public static string global_button_label_payment_dialog_split_payment {
+            get {
+                return ResourceManager.GetString("global_button_label_payment_dialog_split_payment", resourceCulture);
             }
         }
         
@@ -2554,6 +2598,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy Document.
+        /// </summary>
+        public static string global_copy_finance_document {
+            get {
+                return ResourceManager.GetString("global_copy_finance_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Country.
         /// </summary>
         public static string global_country {
@@ -2928,6 +2981,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_document_total {
             get {
                 return ResourceManager.GetString("global_document_total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Canceled.
+        /// </summary>
+        public static string global_documentfinance_canceled_document {
+            get {
+                return ResourceManager.GetString("global_documentfinance_canceled_document", resourceCulture);
             }
         }
         
@@ -3580,6 +3642,51 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Baud Rate.
+        /// </summary>
+        public static string global_hardware_com_baudrate {
+            get {
+                return ResourceManager.GetString("global_hardware_com_baudrate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Bits.
+        /// </summary>
+        public static string global_hardware_com_databits {
+            get {
+                return ResourceManager.GetString("global_hardware_com_databits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parity.
+        /// </summary>
+        public static string global_hardware_com_parity {
+            get {
+                return ResourceManager.GetString("global_hardware_com_parity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port.
+        /// </summary>
+        public static string global_hardware_com_portname {
+            get {
+                return ResourceManager.GetString("global_hardware_com_portname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Bits.
+        /// </summary>
+        public static string global_hardware_com_stopbits {
+            get {
+                return ResourceManager.GetString("global_hardware_com_stopbits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hardware ID.
         /// </summary>
         public static string global_hardware_id {
@@ -3841,7 +3948,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network name.
+        ///   Looks up a localized string similar to Network Share or Usb port Parameters.
         /// </summary>
         public static string global_networkname {
             get {
@@ -4714,6 +4821,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string global_remove {
+            get {
+                return ResourceManager.GetString("global_remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Report.
         /// </summary>
         public static string global_report {
@@ -5421,6 +5537,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_units_size {
             get {
                 return ResourceManager.GetString("global_units_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Weighing Balance.
+        /// </summary>
+        public static string global_use_weighing_balance {
+            get {
+                return ResourceManager.GetString("global_use_weighing_balance", resourceCulture);
             }
         }
         
@@ -6947,6 +7072,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autoridade Tributária Service : Production Mode Enabled.
+        /// </summary>
+        public static string prefparam_service_at_production_mode_enabled {
+            get {
+                return ResourceManager.GetString("prefparam_service_at_production_mode_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autoridade Tributária Service : Sent Financial Documents.
         /// </summary>
         public static string prefparam_service_at_send_documents {
@@ -6961,6 +7095,42 @@ namespace logicpos.resources.Resources.Localization {
         public static string prefparam_service_at_send_documents_waybill {
             get {
                 return ResourceManager.GetString("prefparam_service_at_send_documents_waybill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autoridade Tributária Service : Financial WayBills in Agricultural mode Enabled.
+        /// </summary>
+        public static string prefparam_service_at_waybill_agricultural_mode_enabled {
+            get {
+                return ResourceManager.GetString("prefparam_service_at_waybill_agricultural_mode_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split Account : Maximum number Split Clients.
+        /// </summary>
+        public static string prefparam_split_payment_max_clients {
+            get {
+                return ResourceManager.GetString("prefparam_split_payment_max_clients", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split Account : Minimum number Split Clients.
+        /// </summary>
+        public static string prefparam_split_payment_min_clients {
+            get {
+                return ResourceManager.GetString("prefparam_split_payment_min_clients", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split Account : Start num of Split Clients.
+        /// </summary>
+        public static string prefparam_split_payment_start_clients {
+            get {
+                return ResourceManager.GetString("prefparam_split_payment_start_clients", resourceCulture);
             }
         }
         
@@ -8069,6 +8239,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string window_title_dialog_send_message {
             get {
                 return ResourceManager.GetString("window_title_dialog_send_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split Payment : Amount per Customer: [{0} x {1}].
+        /// </summary>
+        public static string window_title_dialog_split_payment {
+            get {
+                return ResourceManager.GetString("window_title_dialog_split_payment", resourceCulture);
             }
         }
         

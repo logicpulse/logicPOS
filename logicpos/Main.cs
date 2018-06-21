@@ -116,12 +116,19 @@ namespace logicpos
 
         public static void InitPathsPrefs()
         {
-            // PreferencesValues
-            GlobalFramework.Path.Add("backups", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_BACKUPS"]));
-            GlobalFramework.Path.Add("saftpt", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_SAFTPT"]));
-            //Create Directories
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["saftpt"])));
+            try
+            {
+                // PreferencesValues
+                GlobalFramework.Path.Add("backups", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_BACKUPS"]));
+                GlobalFramework.Path.Add("saftpt", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_SAFTPT"]));
+                //Create Directories
+                FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
+                FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["saftpt"])));
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
         }
     }
 }

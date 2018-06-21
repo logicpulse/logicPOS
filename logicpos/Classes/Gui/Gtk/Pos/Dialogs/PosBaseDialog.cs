@@ -30,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private uint _borderWidth = 5;
         //private Gtk.Style _styleBackground;
         //Assets
-        private String _fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
+        protected String _fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
         private String _fileDefaultWindowIconClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png");
         //Colors
         private System.Drawing.Color _colorBaseDialogTitleBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogTitleBackground"]);

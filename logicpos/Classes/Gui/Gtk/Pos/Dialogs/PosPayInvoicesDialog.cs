@@ -23,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Total amount to pay for selected documents, never change
         private decimal _paymentAmountTotal;
         private decimal _paymentAmountEntry;
-        //Value in Devault Currency [EUR], used has return valur for dialog in PayInvoices( method
+        //Value in Default Currency [EUR], used has return valur for dialog in PayInvoices( method
         private decimal _payedAmount;
         public decimal PayedAmount { get { return _payedAmount; } }
         private int _noOfInvoices;

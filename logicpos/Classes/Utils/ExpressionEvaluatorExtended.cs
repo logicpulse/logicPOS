@@ -176,6 +176,7 @@ namespace logicpos
                             case ScreenSize.res1680x1050:
                             case ScreenSize.res1920x1080:
                             case ScreenSize.res1920x1200:
+                            case ScreenSize.res2160x1440:
                             case ScreenSize.res2560x1080:
                             case ScreenSize.res2560x1440:
                             case ScreenSize.res3440x1440:

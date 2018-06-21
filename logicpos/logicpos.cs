@@ -41,7 +41,7 @@ namespace logicpos
                 InitAppMode(pMode);
                 // Old Stub used to Init MediaNova Module
                 InitModules();
-                //Check if user cancel App Run on BootStrap and Launch Quit
+                // Check if user cancel App Run on BootStrap and Launch Quit
                 if (!_quitAfterBootStrap) Application.Run();
             }
             catch (Exception ex)
@@ -51,8 +51,18 @@ namespace logicpos
             }
             finally
             {
-                //Always Close Display Device
-                if (GlobalApp.HWUsbDisplay != null) GlobalApp.HWUsbDisplay.Close();
+                // Dispose Devices
+
+                // Always Close Display Device
+                if (GlobalApp.UsbDisplay != null)
+                {
+                    GlobalApp.UsbDisplay.Close();
+                }
+                // Always Close Com Ports
+                if (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen())
+                {
+                    GlobalApp.WeighingBalance.ClosePort();
+                }
             }
         }
 
@@ -177,7 +187,7 @@ namespace logicpos
                 //Init PreferenceParameters
                 GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
                 //Init Preferences Path
-               MainApp.InitPathsPrefs();
+                MainApp.InitPathsPrefs();
 
                 bool validDirectoryBackup = FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
                 //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
@@ -208,7 +218,9 @@ namespace logicpos
                 GlobalFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Use Detected ScreenSize
-                string appScreenSize = GlobalFramework.PreferenceParameters["APP_SCREEN_SIZE"];
+                string appScreenSize = string.IsNullOrEmpty(GlobalFramework.Settings["appScreenSize"]) 
+                    ? GlobalFramework.PreferenceParameters["APP_SCREEN_SIZE"]
+                    : GlobalFramework.Settings["appScreenSize"];
                 if (appScreenSize.Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(appScreenSize))
                 {
                     // Force Unknown Screen Size
@@ -218,7 +230,7 @@ namespace logicpos
                 //Use config ScreenSize
                 else
                 {
-                    Size configAppScreenSize = Utils.StringToSize(GlobalFramework.PreferenceParameters["APP_SCREEN_SIZE"]);
+                    Size configAppScreenSize = Utils.StringToSize(appScreenSize);
                     GlobalApp.ScreenSize = Utils.GetThemeScreenSize(configAppScreenSize);
                 }
 
@@ -256,16 +268,23 @@ namespace logicpos
                 //Init Display
                 if (GlobalFramework.LoggedTerminal.PoleDisplay != null)
                 {
-                    GlobalApp.HWUsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
-                    GlobalApp.HWUsbDisplay.WriteCentered(string.Format("{0} {1}", SettingsApp.AppName, FrameworkUtils.ProductVersion), 1);
-                    GlobalApp.HWUsbDisplay.WriteCentered(SettingsApp.AppUrl, 2);
-                    GlobalApp.HWUsbDisplay.EnableStandBy();
+                    GlobalApp.UsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
+                    GlobalApp.UsbDisplay.WriteCentered(string.Format("{0} {1}", SettingsApp.AppName, FrameworkUtils.ProductVersion), 1);
+                    GlobalApp.UsbDisplay.WriteCentered(SettingsApp.AppUrl, 2);
+                    GlobalApp.UsbDisplay.EnableStandBy();
                 }
 
                 //Init BarCodeReader 
-                if (GlobalFramework.LoggedTerminal.PoleDisplay != null)
+                if (GlobalFramework.LoggedTerminal.BarcodeReader != null)
                 {
-                    GlobalApp.HWBarCodeReader = new InputReader();
+                    GlobalApp.BarCodeReader = new InputReader();
+                }
+
+                //Init WeighingBalance
+                if (GlobalFramework.LoggedTerminal.WeighingMachine != null)
+                {
+                    GlobalApp.WeighingBalance = new WeighingBalance(GlobalFramework.LoggedTerminal.WeighingMachine);
+                    //_log.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen()));
                 }
 
                 //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active

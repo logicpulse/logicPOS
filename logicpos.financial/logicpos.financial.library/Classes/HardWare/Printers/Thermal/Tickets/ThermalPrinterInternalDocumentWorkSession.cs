@@ -7,6 +7,7 @@ using logicpos.financial.library.Classes.WorkSession;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Enums.ThermalPrinter;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -49,7 +50,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     ticketSubTitleExtra = Resx.global_current_acount;
                     break;
             }
-        
+
             //Generate Final TicketSubTitle
             if (_ticketSubTitle != string.Empty && ticketSubTitleExtra != string.Empty)
             {
@@ -242,9 +243,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     //If CurrentAccount Mode decrease 1, it dont have PaymentMethods
                     if (pSplitCurrentAccountMode == SplitCurrentAccountMode.CurrentAcount) groupPositionTitlePayments--;
 
-                    foreach (DataTableGroupProperties item in dictGroupProperties.Values)
+
+                    foreach (KeyValuePair<DataTableGroupPropertiesType, DataTableGroupProperties> item in dictGroupProperties)
+                    //foreach (DataTableGroupProperties item in dictGroupProperties.Values)
                     {
-                        if (item.Enabled)
+                        if (item.Value.Enabled)
                         {
                             //Increment Group Position
                             groupPosition++;
@@ -270,11 +273,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                             summaryTotal = 0.0m;
 
                             //Get Group Data from group Query
-                            xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(item.Sql);
+                            xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(item.Value.Sql);
 
                             //Generate Columns
                             columns = new List<TicketColumn>();
-                            columns.Add(new TicketColumn("GroupTitle", item.Title, 0, TicketColumnsAlign.Left));
+                            columns.Add(new TicketColumn("GroupTitle", item.Value.Title, 0, TicketColumnsAlign.Left));
                             columns.Add(new TicketColumn("Quantity", Resx.global_quantity_acronym, 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                             //columns.Add(new TicketColumn("UnitMeasure", string.Empty, 3));
                             columns.Add(new TicketColumn("Total", Resx.global_totalfinal_acronym, 10, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
@@ -295,6 +298,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                                     quantity = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Quantity")]);
                                     unitMeasure = Convert.ToString(row.Values[xPSelectData.GetFieldIndex("UnitMeasure")]);
                                     total = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("Total")]);
+                                    // Override Encrypted values
+                                    if (GlobalFramework.PluginSoftwareVendor != null && item.Key.Equals(DataTableGroupPropertiesType.DocumentsUser) || item.Key.Equals(DataTableGroupPropertiesType.PaymentsUser))
+                                    {
+                                        designation = GlobalFramework.PluginSoftwareVendor.Decrypt(designation);
+                                    }
                                     //Sum Summary Totals
                                     summaryTotalQuantity += quantity;
                                     summaryTotal += total;
@@ -555,14 +563,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         {
             return GenWorkSessionMovementResumeQuery(pFields, pGroupBy, pOrderBy, pFilter, WorkSessionMovementResumeQueryMode.FinanceDocuments);
         }
-        
+
         private static string GenWorkSessionMovementResumeQuery(string pFields, string pGroupBy, string pOrderBy, string pFilter, WorkSessionMovementResumeQueryMode pQueryModeWhere)
         {
             string filter = string.Empty;
             string queryModeWhere = string.Empty;
 
             if (pFilter != String.Empty) filter = pFilter;
-            
+
             switch (pQueryModeWhere)
             {
                 case WorkSessionMovementResumeQueryMode.FinanceDocuments:

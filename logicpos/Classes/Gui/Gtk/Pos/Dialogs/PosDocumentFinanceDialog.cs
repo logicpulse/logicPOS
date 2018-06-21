@@ -34,6 +34,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Custom Responses Types
         private ResponseType _responseTypePreview = (ResponseType)11;
         private ResponseType _responseTypeClearCustomer = (ResponseType)12;
+        //DocumentFinanceArticle MaxQuantities Validate
+        private Dictionary<Guid,decimal> _validateMaxQuantities;
+        public Dictionary<Guid,decimal> ValidateMaxQuantities
+        {
+            get { return _validateMaxQuantities; }
+            set { _validateMaxQuantities = value; }
+        }
 
         //Public
         private DocumentFinanceDialogPagePad _pagePad;

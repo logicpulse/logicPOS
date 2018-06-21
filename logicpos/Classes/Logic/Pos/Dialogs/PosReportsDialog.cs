@@ -48,11 +48,37 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             PosReportsQueryDialog dialog = new PosReportsQueryDialog(_sourceWindow, DialogFlags.DestroyWithParent, pReportsQueryDialogMode, pDatabaseSourceObject);
             ResponseType response = (ResponseType)dialog.Run();
             List<string> result = new List<string>();
+            // Filter SellDocuments
+            string filterField = string.Empty;
+            bool filterSellDocuments = false;
+            string extraFilter = string.Empty;
 
             if (response == ResponseType.Ok)
             {
+                // Filter SellDocuments
+                if (pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL))
+                {
+                    filterSellDocuments = true;
+                    filterField = "DocumentType";
+                }
+                else if (pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL_DETAIL) || pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL_DETAIL_GROUP))
+                {
+                    filterSellDocuments = true;
+                    filterField = "ftOid";
+                }
+
+                if (filterSellDocuments == true)
+                {
+                    extraFilter = $@" AND (
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeDebitNote}'
+)".Replace(Environment.NewLine, string.Empty);
+                }
+
                 // Assign Dialog FilterValue to Mrthod Result Value
-                result.Add(dialog.FilterValue);
+                result.Add($"{dialog.FilterValue}{extraFilter}");
                 result.Add(dialog.FilterValueHumanReadble);
             }
             else
@@ -72,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ? CustomReportDisplayMode.Design
                 : CustomReportDisplayMode.ExportPDF;
             // Override Default Development Mode
-            displayMode = CustomReportDisplayMode.Design;
+            //displayMode = CustomReportDisplayMode.Design;
 
             // Local Variables
             string reportFilter = string.Empty;
@@ -88,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Prepare ReportsQueryDialogMode
             ReportsQueryDialogMode reportsQueryDialogMode = ReportsQueryDialogMode.UNDEFINED;
             // Catch REPORT_SALES_DETAIL_* and REPORT_SALES_DETAIL_GROUP_* use same View
-            if (token.ToString().StartsWith("REPORT_SALES_DETAIL_"))
+             if (token.ToString().StartsWith("REPORT_SALES_DETAIL_"))
             {
                 reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL;
                 databaseSourceObject = "view_documentfinance";

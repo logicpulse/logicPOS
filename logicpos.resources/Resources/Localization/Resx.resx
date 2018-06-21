@@ -464,8 +464,8 @@ Please correct your input and try again!</value>
     <value>Error! This file already exist!</value>
   </data>
   <data name="dialog_message_info_all_lines_from_this_document_was_already_credited" xml:space="preserve">
-    <value>You can´t issue a credito note in this Document!
-All lines from this document was already credited in above credit notes:
+    <value>You can´t issue a credit note in this Document!
+All articles from this document was already credited in above credit notes:
 {0}</value>
   </data>
   <data name="dialog_message_invalid_customer_card_detected" xml:space="preserve">
@@ -1316,7 +1316,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Name</value>
   </data>
   <data name="global_networkname" xml:space="preserve">
-    <value>Network name</value>
+    <value>Network Share or Usb port Parameters</value>
   </data>
   <data name="global_notes" xml:space="preserve">
     <value>Notes</value>
@@ -3082,5 +3082,69 @@ Define manually the screen resolution in config file settings parameter [appScre
   </data>
   <data name="prefparam_service_at_production_account_password" xml:space="preserve">
     <value>Autoridade Tributária Service : Account Password</value>
+  </data>
+  <data name="dialog_message_error_initializing_weighing_balance" xml:space="preserve">
+    <value>Error initializing Weighing Balance
+{0}!
+
+{1}</value>
+  </data>
+  <data name="dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities" xml:space="preserve">
+    <value>Error! You are trying to credit an article(s) that exceeds the amount issued in the original document,
+or the sum of all credited items in related credit notes exceeds the amount of the original document!
+
+Quantity: {0}
+Valid Quantity: {1}</value>
+  </data>
+  <data name="global_add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="global_button_label_payment_dialog_split_payment" xml:space="preserve">
+    <value>Split</value>
+  </data>
+  <data name="global_copy_finance_document" xml:space="preserve">
+    <value>Copy Document</value>
+  </data>
+  <data name="global_documentfinance_canceled_document" xml:space="preserve">
+    <value>Canceled</value>
+  </data>
+  <data name="global_hardware_com_baudrate" xml:space="preserve">
+    <value>Baud Rate</value>
+  </data>
+  <data name="global_hardware_com_databits" xml:space="preserve">
+    <value>Data Bits</value>
+  </data>
+  <data name="global_hardware_com_parity" xml:space="preserve">
+    <value>Parity</value>
+  </data>
+  <data name="global_hardware_com_portname" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="global_hardware_com_stopbits" xml:space="preserve">
+    <value>Stop Bits</value>
+  </data>
+  <data name="global_remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="global_use_weighing_balance" xml:space="preserve">
+    <value>Use Weighing Balance</value>
+  </data>
+  <data name="prefparam_service_at_production_mode_enabled" xml:space="preserve">
+    <value>Autoridade Tributária Service : Production Mode Enabled</value>
+  </data>
+  <data name="prefparam_service_at_waybill_agricultural_mode_enabled" xml:space="preserve">
+    <value>Autoridade Tributária Service : Financial WayBills in Agricultural mode Enabled</value>
+  </data>
+  <data name="prefparam_split_payment_max_clients" xml:space="preserve">
+    <value>Split Account : Maximum number Split Clients</value>
+  </data>
+  <data name="prefparam_split_payment_min_clients" xml:space="preserve">
+    <value>Split Account : Minimum number Split Clients</value>
+  </data>
+  <data name="prefparam_split_payment_start_clients" xml:space="preserve">
+    <value>Split Account : Start num of Split Clients</value>
+  </data>
+  <data name="window_title_dialog_split_payment" xml:space="preserve">
+    <value>Split Payment : Amount per Customer: [{0} x {1}]</value>
   </data>
 </root>

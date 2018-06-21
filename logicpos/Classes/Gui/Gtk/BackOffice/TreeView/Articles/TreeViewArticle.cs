@@ -55,8 +55,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             });
 
             //Configure Criteria/XPCollection/Model
-            //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = pXpoCriteria;
+            //Default Criteria with XpoOidUndefinedRecord
+            //CriteriaOperator criteria = pXpoCriteria;
+            //Custom Criteria hidding all Hidden Oids
+            CriteriaOperator criteria = CriteriaOperator.Parse($"Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}'");
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             //Call Base Initializer

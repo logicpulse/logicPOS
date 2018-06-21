@@ -1107,8 +1107,6 @@ namespace logicpos.printer.generic
             WriteByte(AsciiControlChars.SetLineSpacing);
             WriteByte((byte)30);
         }
-
- 
 		
 		/// <summary>
 		/// Sets the printing parameters.
@@ -1152,7 +1150,17 @@ namespace logicpos.printer.generic
 		}
 
         //[Obsolete("Cannot find in manual")]
+
         public void Cut(bool full)
+        {
+            //Try to Get CutCommand from Config
+            string printerThermalCutCommand = ConfigurationManager.AppSettings["PrinterThermalCutCommand"];
+
+            // Send Config CutCommand to Cut Overload
+            Cut(full, printerThermalCutCommand);
+        }
+
+        public void Cut(bool full, string configCutCommand)
         {
             WriteByte(AsciiControlChars.GroupSeparator);
             WriteByte(AsciiControlChars.SelectCutModeAndCutPaper);
@@ -1163,23 +1171,22 @@ namespace logicpos.printer.generic
             //Ex.
             //Decimal Value (28) = Hexadecimal Value (1c)
 
-            //Default CutCommand
+            //Default CutCommand, used if dont have values from config or sent via parameter
             byte[] cutCommand = { 66, 0 };
             //string value = ASCIIEncoding.ASCII.GetString(cut);// { 66, 0 } => "B\0"
             //byte[] cutFromString = System.Text.Encoding.ASCII.GetBytes(value);
 
-            //Override default cut Command
-            string printerThermalCutCommand = ConfigurationManager.AppSettings["PrinterThermalCutCommand"];
-            if (printerThermalCutCommand != string.Empty)
+            if (configCutCommand != string.Empty)
             {
-                if(printerThermalCutCommand != null)
+                if(configCutCommand != null)
                 {
+                    // Replace default cutCommand
                     //cutCommand = System.Text.Encoding.ASCII.GetBytes(printerThermalCutCommand);
-                    cutCommand = printerThermalCutCommand.Split(new[] { ',' }).Select(s => Convert.ToByte(s, 16)).ToArray();
+                    cutCommand = configCutCommand.Split(new[] { ',' }).Select(s => Convert.ToByte(s, 16)).ToArray();
                 }
                 else
                 {
-                    _log.Error(String.Format("Error: invalid settings for PrinterThermalCutCommand: [{0}]", printerThermalCutCommand));
+                    _log.Error(String.Format("Error: invalid settings for PrinterThermalCutCommand: [{0}]", configCutCommand));
                 }
             };
 

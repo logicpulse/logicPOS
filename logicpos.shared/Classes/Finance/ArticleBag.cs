@@ -249,7 +249,13 @@ namespace logicpos.shared.Classes.Finance
             //Decrease Quantity
             this[pKey].Quantity -= pRemoveQuantity;
 
-            if (this[pKey].Quantity <= 0)
+            // SplitPayment : Sometimes we get 0.000000000000001, that makes key dont be removed because its not < 0
+            // To prevent this we must round value before compare using DecimalFormatStockQuantity
+            string roundedFormat = $"{{0:{SettingsApp.DecimalFormatStockQuantity}}}";//{0:0.00000000}
+            decimal roundedQuantity = Convert.ToDecimal(string.Format(roundedFormat, this[pKey].Quantity));
+
+            //if (this[pKey].Quantity <= 0)
+            if (roundedQuantity <= 0)
             {
                 this.Remove(pKey);
             }

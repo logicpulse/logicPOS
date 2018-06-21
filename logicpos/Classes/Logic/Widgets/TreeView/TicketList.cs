@@ -2,20 +2,20 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using System;
-using logicpos.Classes.Enums.GenericTreeView;
+using System.Collections.Generic;
+using System.IO.Ports;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -50,7 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Get Article defaultQuantity
             decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
-            decimal oldValueQnt = _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
+            decimal oldValueQnt = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
             ChangeQuantity(oldValueQnt + defaultQuantity);
         }
 
@@ -59,7 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                decimal oldValueQnt = _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
+                decimal oldValueQnt = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
                 decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(_sourceWindow, oldValueQnt);
 
                 if (newValueQnt > 0)
@@ -76,8 +76,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Change Price
         void _buttonKeyChangePrice_Clicked(object sender, EventArgs e)
         {
-            decimal oldValueQuantity = _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
-            decimal oldValuePrice = _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
+            decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
+            decimal oldValuePrice = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
 
             MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, Resx.window_title_dialog_moneypad_product_price, oldValuePrice);
             decimal newValuePrice = result.Value;
@@ -87,20 +87,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Create a Fresh Object to Get Input Price and Calc from TotalFinal with Quantity 1, Without Touch Quantity in current Line
                 PriceProperties priceProperties = PriceProperties.GetPriceProperties(
                   PricePropertiesSourceMode.FromTotalFinal,
-                  _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceWithVat,
+                  CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceWithVat,
                   newValuePrice,
                   1.0m,
-                  _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.DiscountArticle,
-                  _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.DiscountGlobal,
-                  _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Vat
+                  CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.DiscountArticle,
+                  CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.DiscountGlobal,
+                  CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Vat
                 );
 
                 //Update orderDetails 
-                _currentOrderDetails.Update(_listStoreModelSelectedIndex, oldValueQuantity, priceProperties.PriceUser);
+                CurrentOrderDetails.Update(_listStoreModelSelectedIndex, oldValueQuantity, priceProperties.PriceUser);
                 //Update TreeView Model Price
                 _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, FrameworkUtils.DecimalToString(newValuePrice));
                 //Update Total
-                decimal totalLine = _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal;
+                decimal totalLine = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal;
                 _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, FrameworkUtils.DecimalToString(totalLine));
             }
             UpdateTicketListTotal();
@@ -135,9 +135,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
         }
 
-        //Payments
+        //Payments and SplitAccount (Shared for Both Actions)
         void _buttonKeyPayments_Clicked(object sender, EventArgs e)
         {
+            TouchButtonIconWithText button = (sender as TouchButtonIconWithText);
+
             try
             {
                 //Used when we pay without FinishOrder, to Skip print Ticket
@@ -180,20 +182,35 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Initialize ArticleBag to Send to Payment Dialog
                 ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
 
-                PosPaymentsDialog dialog = new PosPaymentsDialog(_sourceWindow, DialogFlags.DestroyWithParent, articleBag);
-                int response = dialog.Run();
+                // Shared Referencesfor Dialog
+                PosBaseDialog dialog = null;
 
-                if (response == (int)ResponseType.Ok)
+                // Get Dialog Reference
+                if (button.Name.Equals("touchButtonPosTicketPadPayments_Green"))
+                {
+                    dialog = new PosPaymentsDialog(_sourceWindow, DialogFlags.DestroyWithParent, articleBag);
+                }
+                else
+                if (button.Name.Equals("touchButtonPosTicketPadSplitAccount_Green"))
+                {
+                    dialog = new PosSplitPaymentsDialog(_sourceWindow, DialogFlags.DestroyWithParent, _articleBag, this);
+                }
+
+                // Shared code to call Both Dialogs
+                ResponseType response = (ResponseType)dialog.Run();
+
+                if (response == ResponseType.Ok)
                 {
                     //Update Cleaned TreeView Model
                     UpdateModel();
                     UpdateOrderStatusBar();
                     UpdateTicketListOrderButtons();
                     //IMPORTANT & REQUIRED: Assign Current Order Details from New CurrentTicketId, ELSE we cant add items to OrderMain
-                    _currentOrderDetails = orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails;
+                    CurrentOrderDetails = orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails;
                     //Valid Result Destroy Dialog
                     dialog.Destroy();
                 };
+
             }
             catch (Exception ex)
             {
@@ -249,7 +266,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
                         Utils.ShowMessageTouch(
-                            GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, Resx.global_error, 
+                            GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, Resx.global_error,
                             Resx.dialog_message_table_is_not_free
                         );
                     }
@@ -301,13 +318,50 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Gifts
         void _buttonKeyGifts_Clicked(object sender, EventArgs e)
         {
-            Utils.ShowMessageTouchUnderConstruction(this.SourceWindow);
+            throw new NotImplementedException();
         }
 
         //Weight
         void _buttonKeyWeight_Clicked(object sender, EventArgs e)
         {
-            Utils.ShowMessageTouchUnderConstruction(this.SourceWindow);
+            try
+            {
+                //_log.Debug(string.Format("PriceUser: [{0}]", _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser));
+                // Round Price before Send to WeighingBalance
+                decimal articlePricePerKg = decimal.Round(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal, 2, MidpointRounding.AwayFromZero);
+                GlobalApp.WeighingBalance.WeighArticle(articlePricePerKg);
+                // Old Deprecated code, Before Method WeighingBalance.WeighArticle
+                //string priceString = articlePricePerKg.ToString().Replace(",", string.Empty).Replace(".", string.Empty);
+                //string textSendFormatted = Convert.ToInt16(priceString).ToString("00000");
+                //string weightHex = GlobalApp.WeighingBalance.ToHexString(textSendFormatted);
+                //GlobalApp.WeighingBalance.WriteData(GlobalApp.WeighingBalance.CalculateHexFromPrice(weightHex));
+                //GlobalApp.WeighingBalance.ClosePort();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //WeighingBalance
+
+        public void WeighingBalanceDataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            //_log.Debug("WeighingBalanceDataReceived");
+            string inData = GlobalApp.WeighingBalance.ComPort().ReadLine() + "\n";
+
+            if (inData.Substring(0, 2) == "99")
+            {
+                List<int> result = GlobalApp.WeighingBalance.CalculateFromHex(inData);
+
+                decimal quantity = Convert.ToDecimal(result[0]) / 1000;
+                // Use ChangeQuantity to Change/Update Quantity in TicketList
+                //_currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = quantity;
+                ChangeQuantity(quantity);
+                //_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity);
+                //_log.Debug(string.Format("Quantity: {0}", _listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)));
+            }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

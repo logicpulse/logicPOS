@@ -136,6 +136,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxTab1.PackStart(checkButtonFavorite, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonFavorite, _dataSourceRow, "Favorite"));
 
+                //UseWeighingBalance
+                CheckButton checkButtonUseWeighingBalance = new CheckButton(Resx.global_use_weighing_balance);
+                vboxTab1.PackStart(checkButtonUseWeighingBalance, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonUseWeighingBalance, _dataSourceRow, "UseWeighingBalance"));
+
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(Resx.global_record_disabled);
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = SettingsApp.BOXPOObjectsStartDisabled;

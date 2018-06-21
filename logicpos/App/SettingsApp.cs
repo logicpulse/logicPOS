@@ -201,17 +201,26 @@ namespace logicpos.App
         // This method is Changed for dynamic Themes, now it has only one theme for all resolutions
         private static string GetFileTheme()
         {
+            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
             string result = string.Empty;
 
-            result = string.Format(
-                "{0}{1}",
-                GlobalFramework.Path["themes"],
-                string.Format(
-                    FileFormatThemeFile
-                    , GlobalFramework.PreferenceParameters["APP_THEME"].ToLower()
-                    , GlobalFramework.Settings["appOperationModeToken"].ToLower()
-                )
-            );
+            try
+            {
+                result = string.Format(
+                    "{0}{1}",
+                    GlobalFramework.Path["themes"],
+                    string.Format(
+                        FileFormatThemeFile
+                        , GlobalFramework.PreferenceParameters["APP_THEME"].ToLower()
+                        , GlobalFramework.Settings["appOperationModeToken"].ToLower()
+                    )
+                );
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.Message, ex);
+            }
 
             return result;
         }

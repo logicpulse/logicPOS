@@ -38,6 +38,44 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
+        string fPortName;
+        [Size(4)]
+        public string PortName
+        {
+            get { return fPortName; }
+            set { SetPropertyValue<string>("PortName", ref fPortName, value); }
+        }
+
+        UInt32 fBaudRate;
+        public UInt32 BaudRate
+        {
+            get { return fBaudRate; }
+            set { SetPropertyValue<UInt32>("BaudRate", ref fBaudRate, value); }
+        }
+
+        string fParity;
+        [Size(5)]
+        public string Parity
+        {
+            get { return fParity; }
+            set { SetPropertyValue<string>("Parity", ref fParity, value); }
+        }
+
+        string fStopBits;
+        [Size(12)]
+        public string StopBits
+        {
+            get { return fStopBits; }
+            set { SetPropertyValue<string>("StopBits", ref fStopBits, value); }
+        }
+
+        UInt32 fDataBits;
+        public UInt32 DataBits
+        {
+            get { return fDataBits; }
+            set { SetPropertyValue<UInt32>("DataBits", ref fDataBits, value); }
+        }
+
         //ConfigurationHardwareWeighingMachine One <> Many CConfigurationPlaceTerminal
         [Association(@"ConfigurationHardwareWeighingMachineReferencesConfigurationPlaceTerminal", typeof(POS_ConfigurationPlaceTerminal))]
         public XPCollection<POS_ConfigurationPlaceTerminal> Terminals

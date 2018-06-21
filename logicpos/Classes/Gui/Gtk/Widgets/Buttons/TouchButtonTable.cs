@@ -56,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             SetFont(string.Format("Bold {0}", pFont));
             //Label for Date
             Label labelDateTableOpenOrClosed = new Label(string.Empty);
-            Pango.FontDescription fontDescDateTableOpenOrClosed = Pango.FontDescription.FromString("6");
+            Pango.FontDescription fontDescDateTableOpenOrClosed = Pango.FontDescription.FromString("7");
             labelDateTableOpenOrClosed.ModifyFont(fontDescDateTableOpenOrClosed);
             //Label for Total or Status 
             _labelTotalOrStatus = new Label(string.Empty);

@@ -141,7 +141,7 @@ namespace logicpos
                 //Hardware Events
                 if (GlobalFramework.LoggedTerminal.BarcodeReader != null || GlobalFramework.LoggedTerminal.CardReader != null)
                 {
-                    GlobalApp.HWBarCodeReader.Captured += HWBarCodeReader_Captured;
+                    GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
                 }
             }
             catch (Exception ex)

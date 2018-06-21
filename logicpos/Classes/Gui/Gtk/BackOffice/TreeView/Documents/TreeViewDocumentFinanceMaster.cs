@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //#if (DEBUG)
             columnProperties.Add(new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = Resx.global_document_status, MinWidth = 50, MaxWidth = 50 });
             //#endif
-            columnProperties.Add(new GenericTreeViewColumnProperty("EntityName") { Title = Resx.global_entity, MinWidth = 160, MaxWidth = 160 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("EntityName") { Title = Resx.global_entity, MinWidth = 160 });
             columnProperties.Add(new GenericTreeViewColumnProperty("EntityFiscalNumber") { Title = Resx.global_fiscal_number, MinWidth = 70, MaxWidth = 120 });
             columnProperties.Add(new GenericTreeViewColumnProperty("TotalFinalRound")
             {

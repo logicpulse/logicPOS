@@ -174,7 +174,12 @@
     <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\Configuration\TreeViewConfigurationInputReader.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\System\TreeViewSystemAuditType.cs" />
     <Compile Include="Classes\Gui\Gtk\Pos\Dialogs\PosReportsQueryDialog.cs" />
+    <Compile Include="Classes\Gui\Gtk\Pos\Dialogs\PosSplitPaymentsDialog.cs" />
+    <Compile Include="Classes\Gui\Gtk\Widgets\Buttons\TouchButtonSplitPayment.cs" />
+    <Compile Include="Classes\Logic\Hardware\WeighingBalance\WeighingBalance.cs" />
+    <Compile Include="Classes\Logic\Others\SplitPaymentArticleComparable.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosReportsQueryDialog.cs" />
+    <Compile Include="Classes\Logic\Pos\Dialogs\PosSplitPaymentsDialog.cs" />
     <Compile Include="Classes\Utils\ExpressionEvaluatorExtended.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
@@ -647,6 +652,9 @@
     <Content Include="Assets\Images\Icons\icon_pos_ticketpad_increase.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Images\Icons\icon_pos_ticketpad_split_payments.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Images\Icons\icon_pos_toolbar_current account_document.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -927,6 +935,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_send_message.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Windows\icon_window_split_payments.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_stocks.png">
@@ -2000,7 +2011,9 @@
     <None Include="Resources\Reports\UserReports\ReportDocumentFinance.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceDetailGroupList.frx" />
+    <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceDetailGroupList.frx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceDetailList.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -2009,9 +2022,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Reports\UserReports\ReportSystemAuditList.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -2075,6 +2090,7 @@
     </Content>
     <Content Include="Assets\Themes\theme_default_retail.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Resources\Database\databasedatademo.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -2340,9 +2356,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\icon_pos_ticketpad_prev.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Images\Icons\icon_pos_ticketpad_splitaccount.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\icon_pos_ticketpad_tables.png">

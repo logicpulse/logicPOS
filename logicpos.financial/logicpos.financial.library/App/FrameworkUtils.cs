@@ -203,6 +203,10 @@ namespace logicpos.financial.library.App
                 {
                     //Reset
                     addToCollection = true;
+
+                    //Force Reload : This Prevent cached Substracts 
+                    itemSource.Reload();
+
                     //Loop SourceDocument Details
                     foreach (FIN_DocumentFinanceDetailReference itemReferences in xpoCollectionReferences)
                     {
@@ -216,24 +220,31 @@ namespace logicpos.financial.library.App
                             itemSource.VatExemptionReason == itemReferences.DocumentDetail.VatExemptionReason
                         )
                         {
-                            //_log.Debug(string.Format("Already Credited in DocumentNumber: [{0}]", itemReferences.DocumentDetail.DocumentMaster.DocumentNumber));
-                            //Add to out pCreditedInDocumentNumber List, to Show Documents to User, if current Documents has been full Credited
-                            if (!listCreditedDocuments.Contains(itemReferences.DocumentDetail.DocumentMaster.DocumentNumber)) listCreditedDocuments.Add(itemReferences.DocumentDetail.DocumentMaster.DocumentNumber);
-                            //Dont add this detail line to Collection, item has been already processed
-                            addToCollection = false;
-                            break;
+                            // Substract Credited Quantity from itemSource
+                            itemSource.Quantity -= itemReferences.DocumentDetail.Quantity;
+
+                            // Debug Helper
+                            //_log.Debug(string.Format("DocumentNumber: [{0}], Designation: [{1}], Quantity: [{2}], itemReferences.Quantity: [{3}]",
+                            //    pSourceDocument.DocumentNumber, itemSource.Designation, itemSource.Quantity, itemReferences.DocumentDetail.Quantity)
+                            //    );
+
+                            // Add Document to listCreditedDocuments, this list will be shown in showMessage when all articles are credited for sourceDocument
+                            if (!listCreditedDocuments.Contains(itemReferences.DocumentDetail.DocumentMaster.DocumentNumber)) {
+                                listCreditedDocuments.Add(itemReferences.DocumentDetail.DocumentMaster.DocumentNumber);
+                            }
                         }
                     }
-                    //Add Line to result Collection
-                    if (addToCollection) result.Add(itemSource);
+                    //Add Line to result Collection if has Quantity Greater than Zero
+                    if (addToCollection && itemSource.Quantity > 0) result.Add(itemSource);
                 }
 
-                //Generate CreditedDocuments outs Result
+                //Generate CreditedDocuments outs Result, this will show NC for Current Source Document, used in ShowMessage
                 listCreditedDocuments.Sort();
                 if (result.Count == 0 && listCreditedDocuments.Count > 0)
                 {
                     for (int i = 0; i < listCreditedDocuments.Count; i++)
                     {
+                        // Out variable, to be used outside of this method
                         pCreditedDocuments += string.Format("{0} - {1}", Environment.NewLine, listCreditedDocuments[i]);
                     }
                 }

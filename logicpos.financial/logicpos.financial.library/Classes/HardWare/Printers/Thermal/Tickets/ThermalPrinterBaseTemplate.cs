@@ -203,7 +203,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _thermalPrinterGeneric.SetAlignLeft();
 
                 //Finish With Cut and Print Buffer
-                _thermalPrinterGeneric.Cut(true);
+                _thermalPrinterGeneric.Cut(true, GlobalFramework.LoggedTerminal.Printer.ThermalCutCommand);
             }
             catch (Exception ex)
             {

@@ -33,7 +33,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private int _listStoreModelTotalItems = 0;
         private int _listStoreModelTotalItemsTicketListMode = 0;
         private OrderDetail _currentOrderDetails;
+        public OrderDetail CurrentOrderDetails { 
+            get { return _currentOrderDetails; }
+            set { _currentOrderDetails = value; }
+        }
         private ArticleBag _articleBag;
+        private FIN_Article _currentDetailArticle;
         //TreeView
         private TreeIter _treeIter;
         private TreePath _treePath;
@@ -114,7 +119,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         TouchButtonIconWithText _buttonKeyPayments;
         public TouchButtonIconWithText ButtonKeyPayments
         {
+            // Shared Event for Payments and SplitAccount
             set { _buttonKeyPayments = value; _buttonKeyPayments.Clicked += _buttonKeyPayments_Clicked; }
+        }
+
+        TouchButtonIconWithText _buttonKeySplitAccount;
+        public TouchButtonIconWithText ButtonKeySplitAccount
+        {
+            // Shared Event for Payments and SplitAccount
+            set { _buttonKeySplitAccount = value; _buttonKeySplitAccount.Clicked += _buttonKeyPayments_Clicked; }
         }
 
         TouchButtonIconWithText _buttonKeyBarCode;
@@ -212,6 +225,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public TicketList(dynamic pThemeObject)
         {
             InitUI(pThemeObject);
+
+            // Override DataReceived
+            if (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen())
+            {
+                // Catch DataReceived here in the right Context of TicketList
+                GlobalApp.WeighingBalance.ComPort().DataReceived += WeighingBalanceDataReceived;
+            }
         }
 
         private void InitUI(dynamic pThemeObject)
@@ -748,6 +768,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Get Article defaultQuantity
             decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
             DeleteItem_ListModeOrderMain(defaultQuantity);
+            //UpdateArticleBag after Delete Article
+            UpdateArticleBag();
         }
 
         public void DeleteItem_ListModeOrderMain(decimal pRemoveQuantity)
@@ -819,12 +841,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (GlobalFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid))
                 _articleBag = ArticleBag.TicketOrderToArticleBag(GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid]);
+            //_log.Debug(string.Format("UpdateArticleBag TotalQuantity: [{0}]", _articleBag.TotalQuantity));
         }
 
         public void UpdateTicketListButtons()
         {
             //Debug
-            //_log.Debug(String.Format("Message: [{0}] [{1}]", Enum.GetName(typeof(TicketListMode), TicketListMode.Ticket), _listStoreModelTotalItems));
+            //_log.Debug(String.Format("TicketListMode: [{0}], listStoreModelTotalItems: [{1}], currentOrderDetails.TotalItems: [{2}]", Enum.GetName(typeof(TicketListMode), _listMode), _listStoreModelTotalItems, _currentOrderDetails.TotalItems));
 
             //No Items, always disable All actions
             if (_listStoreModelTotalItems == 0)
@@ -837,7 +860,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (_buttonKeyChangeQuantity != null && _buttonKeyChangeQuantity.Sensitive) _buttonKeyChangeQuantity.Sensitive = false;
                 if (_buttonKeyChangePrice != null && _buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = false;
                 if (_buttonKeyWeight != null && _buttonKeyWeight.Sensitive) _buttonKeyWeight.Sensitive = false;
-                if (_buttonKeyGifts != null && _buttonKeyGifts.Sensitive) _buttonKeyGifts.Sensitive = false;
+                //if (_buttonKeyGifts != null && _buttonKeyGifts.Sensitive) _buttonKeyGifts.Sensitive = false;
+                if (_buttonKeySplitAccount != null && _buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = false;
             }
             else
             {
@@ -850,8 +874,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (_buttonKeyDelete != null && _listStoreModelSelectedIndex > -1) _buttonKeyDelete.Sensitive = FrameworkUtils.HasPermissionTo("TICKETLIST_DELETE");
                     if (_buttonKeyChangePrice != null && !_buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = FrameworkUtils.HasPermissionTo("TICKETLIST_CHANGE_PRICE");
                     if (_buttonKeyChangeQuantity != null && !_buttonKeyChangeQuantity.Sensitive) _buttonKeyChangeQuantity.Sensitive = true;
-                    //if (_buttonKeyWeight != null && !_buttonKeyWeight.Sensitive) _buttonKeyWeight.Sensitive = true;
-                    //if (_buttonKeyGifts != null && !_buttonKeyGifts.Sensitive) _buttonKeyGifts.Sensitive = true;
+                    if (_buttonKeyWeight != null) _buttonKeyWeight.Sensitive = (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen() && _currentDetailArticle.UseWeighingBalance);
+                    //if (_buttonKeyGifts != null && !_buttonKeyGifts.Sensitive) _buttonKeyGifts.Sensitive = (_articleBag.Count > 1);
+                    if (_buttonKeySplitAccount != null && !_buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = (_articleBag.Count > 1);
                 }
                 else
                 {
@@ -863,8 +888,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (_buttonKeyDelete != null && _listStoreModelSelectedIndex > -1) _buttonKeyDelete.Sensitive = FrameworkUtils.HasPermissionTo("TICKETLIST_DELETE");
                     if (_buttonKeyChangePrice != null && _buttonKeyChangePrice.Sensitive) _buttonKeyChangePrice.Sensitive = false;
                     if (_buttonKeyChangeQuantity != null && _buttonKeyChangeQuantity.Sensitive) _buttonKeyChangeQuantity.Sensitive = false;
-                    //if (_buttonKeyWeight != null && _buttonKeyWeight.Sensitive) _buttonKeyWeight.Sensitive = false;
+                    if (_buttonKeyWeight != null && _buttonKeyWeight.Sensitive) _buttonKeyWeight.Sensitive = false;
                     //if (_buttonKeyGifts != null && _buttonKeyGifts.Sensitive) _buttonKeyGifts.Sensitive = false;
+                    if (_buttonKeySplitAccount != null && _buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = false;
                 }
 
                 //In First Item with One Item
@@ -948,9 +974,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //If has a Working Order
                 if (GlobalFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid))
                 {
+                    // Always Enable Buttons if have Order/Table Open
+                    _buttonKeyBarCode.Sensitive = true;
+
                     if (_listStoreModelTotalItemsTicketListMode > 0)
                     {
                         _buttonKeyPayments.Sensitive = true;
+                        _buttonKeySplitAccount.Sensitive = true;
                         _buttonKeyChangeTable.Sensitive = false;
                         if (GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].OrderStatus == OrderStatus.Open)
                         {
@@ -966,12 +996,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].OrderStatus == OrderStatus.Open)
                         {
                             _buttonKeyPayments.Sensitive = true;
+                            _buttonKeySplitAccount.Sensitive = true;
                             _buttonKeyChangeTable.Sensitive = true;
                             _buttonKeyListOrder.Sensitive = true;
                         }
                         else
                         {
                             _buttonKeyPayments.Sensitive = false;
+                            _buttonKeySplitAccount.Sensitive = false;
                             _buttonKeyChangeTable.Sensitive = false;
                             _buttonKeyListOrder.Sensitive = false;
                         }
@@ -980,8 +1012,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     _buttonKeyPayments.Sensitive = false;
+                    _buttonKeySplitAccount.Sensitive = false;
                     _buttonKeyChangeTable.Sensitive = false;
                     _buttonKeyListOrder.Sensitive = false;
+                    _buttonKeyBarCode.Sensitive = false;
                 }
 
                 //Force Update Article Bag Count in TicketMode, Required to Update ListMode Button, for Sync MultiUser
@@ -1019,7 +1053,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _labelTotal.Text = FrameworkUtils.DecimalToStringCurrency(TotalFinal);
 
             //Update Display
-            if (GlobalApp.HWUsbDisplay != null) GlobalApp.HWUsbDisplay.ShowOrder(_currentOrderDetails, _listStoreModelSelectedIndex);
+            if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowOrder(_currentOrderDetails, _listStoreModelSelectedIndex);
         }
 
         public void UpdateOrderStatusBar()
@@ -1114,7 +1148,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _treePath = model.GetPath(_treeIter);
                 try
                 {
+                    // Get Article Oid from treeIter
                     _currentDetailArticleOid = (Guid)_listStoreModel.GetValue(_treeIter, 0);
+                    // Get Article
+                    _currentDetailArticle = (FIN_Article) GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_Article), _currentDetailArticleOid);
 
                     //Ticket List Mode
                     if (_listMode == TicketListMode.Ticket)
@@ -1132,7 +1169,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                     }
                     //Debug
-                    //_log.Debug(string.Format("_treeView_CursorChanged(): _currentDetailArticleId [{0}], _listStoreModelSelectedIndex [{1}]", _currentDetailArticleOid, _listStoreModelSelectedIndex));
+                    //_log.Debug(string.Format("_treeView_CursorChanged(): _currentDetailArticleId [{0}], _listStoreModelSelectedIndex [{1}], _currentDetailArticle.Designation [{2}]", _currentDetailArticleOid, _listStoreModelSelectedIndex, _currentDetailArticle.Designation));
                 }
                 catch (Exception ex)
                 {

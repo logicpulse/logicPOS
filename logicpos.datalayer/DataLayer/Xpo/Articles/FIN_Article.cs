@@ -268,6 +268,13 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<bool>("Favorite", ref fFavorite, value); }
         }
 
+        bool fUseWeighingBalance;
+        public bool UseWeighingBalance
+        {
+            get { return fUseWeighingBalance; }
+            set { SetPropertyValue<bool>("UseWeighingBalance", ref fUseWeighingBalance, value); }
+        }
+
         string fToken1;
         [Size(255)]
         public string Token1

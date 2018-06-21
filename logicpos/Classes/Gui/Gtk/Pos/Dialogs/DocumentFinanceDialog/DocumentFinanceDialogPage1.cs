@@ -73,6 +73,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             get { return _entryBoxSelectSourceDocumentFinance; }
         }
+        private XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster> _entryBoxSelectCopyDocumentFinance;
+        public XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster> EntryBoxSelectCopyDocumentFinance
+        {
+            get { return _entryBoxSelectCopyDocumentFinance; }
+        }
         private EntryBoxValidation _entryBoxDocumentMasterNotes;
         public EntryBoxValidation EntryBoxDocumentMasterNotes
         {
@@ -162,9 +167,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //DocumentFinanceSource
             CriteriaOperator criteriaOperatorSourceDocumentFinance = GetDocumentFinanceTypeSourceDocumentCriteria();
             _entryBoxSelectSourceDocumentFinance = new XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster>(_sourceWindow, Resx.global_source_finance_document, "DocumentNumber", "Oid", null, criteriaOperatorSourceDocumentFinance, SettingsApp.RegexGuid, false);
+            _entryBoxSelectSourceDocumentFinance.Name = "SourceDocument";
             _entryBoxSelectSourceDocumentFinance.EntryValidation.IsEditable = false;
             //Capture ClosePopup
             _entryBoxSelectSourceDocumentFinance.ClosePopup += _entryBoxSelectSourceDocumentFinance_ClosePopup;
+
+            //DocumentFinanceCopy
+            CriteriaOperator criteriaOperatorCopyDocumentFinance = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
+            _entryBoxSelectCopyDocumentFinance = new XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster>(_sourceWindow, Resx.global_copy_finance_document, "DocumentNumber", "Oid", null, criteriaOperatorCopyDocumentFinance, SettingsApp.RegexGuid, false);
+            _entryBoxSelectCopyDocumentFinance.Name = "CopyDocument";
+            _entryBoxSelectCopyDocumentFinance.EntryValidation.IsEditable = false;
+            //Capture ClosePopup
+            _entryBoxSelectCopyDocumentFinance.ClosePopup += _entryBoxSelectSourceDocumentFinance_ClosePopup;
 
             //Customer Notes
             _entryBoxDocumentMasterNotes = new EntryBoxValidation(_sourceWindow, Resx.global_notes, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
@@ -178,13 +192,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             // Only call Notes Validation after call above Method that will Trigger Validate()
             _entryBoxDocumentMasterNotes.EntryValidation.Changed += delegate { Validate(); };
 
+            //HBox SourceAndCopyDocument
+            HBox hboxSourceAndCopyDocument = new HBox(true, 0);
+            hboxSourceAndCopyDocument.PackStart(_entryBoxSelectSourceDocumentFinance, true, true, 0);
+            hboxSourceAndCopyDocument.PackStart(_entryBoxSelectCopyDocumentFinance, true, true, 0);
+
             //Pack VBOX
             _vbox = new VBox(false, 2);
             _vbox.PackStart(_entryBoxSelectDocumentFinanceType, false, false, 0);
             _vbox.PackStart(_entryBoxSelectConfigurationPaymentCondition, false, false, 0);
             _vbox.PackStart(_entryBoxSelectConfigurationPaymentMethod, false, false, 0);
             _vbox.PackStart(_entryBoxSelectConfigurationCurrency, false, false, 0);
-            _vbox.PackStart(_entryBoxSelectSourceDocumentFinance, false, false, 0);
+            _vbox.PackStart(hboxSourceAndCopyDocument, false, false, 0);
             _vbox.PackStart(_entryBoxDocumentMasterNotes, false, false, 0);
             PackStart(_vbox);
         }
@@ -236,6 +255,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //When Change DocumentFinanceType always Clean EntryBoxSelectSourceDocumentFinance, EntryBoxDocumentMasterNotes and EntryBoxReason
                 if (_entryBoxSelectSourceDocumentFinance.Value != null) { _entryBoxSelectSourceDocumentFinance.Value = null; _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty; };
+                if (_entryBoxSelectCopyDocumentFinance.Value != null) { _entryBoxSelectCopyDocumentFinance.Value = null; _entryBoxSelectCopyDocumentFinance.EntryValidation.Text = string.Empty; };
                 if (_entryBoxDocumentMasterNotes.EntryValidation.Text != string.Empty) { _entryBoxDocumentMasterNotes.EntryValidation.Text = string.Empty; };
                 if (_entryBoxReason.EntryValidation.Text != string.Empty) { _entryBoxReason.EntryValidation.Text = string.Empty; };
 
@@ -449,14 +469,47 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         void _entryBoxSelectSourceDocumentFinance_ClosePopup(object sender, EventArgs e)
         {
+            XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster> selectRecordValidation = (XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster>) sender;
+
             try 
             {
+                FIN_DocumentFinanceMaster sourceDocument;
+
+                // SourceDocument
+                if (selectRecordValidation.Name.Equals("SourceDocument"))
+                {
+                    sourceDocument = _entryBoxSelectSourceDocumentFinance.Value;
+                    // Reset CopyDocument
+                    _entryBoxSelectCopyDocumentFinance.Value = null;
+                    _entryBoxSelectCopyDocumentFinance.EntryValidation.Text = string.Empty;
+                }
+                // CopyDocument
+                else
+                {
+                    sourceDocument = _entryBoxSelectCopyDocumentFinance.Value;
+                    // Reset SourceDocument
+                    _entryBoxSelectSourceDocumentFinance.Value = null;
+                    _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty;
+                }
+
                 //Update Data from Document Source
-                UpdateFromDocumentSource();
+                UpdateFromDocumentSource(sourceDocument);
                 //Call Update Customer Edit Mode
                 _pagePad2.UpdateCustomerEditMode();
                 //Read Only Extra Protection to Protect Changes in Child Documents, ex When SourceDocument is ConsignationInvoice we Cant Change Child Document Properties, ex Articles etc
-                ProtectChildDocumentChanges();
+
+                //Always Call MainDialog Validate when we change DocumentFinance Source : If Caller is SourceDocument
+                
+                // SourceDocument
+                if (selectRecordValidation.Name.Equals("SourceDocument"))
+                {
+                    ProtectChildDocumentChanges();
+                }
+                // CopyDocument
+                else
+                {
+                    UnProtectChildDocumentChanges();
+                }
 
                 //Finally 
                 Validate();
@@ -575,14 +628,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //Update UI from DocumentSource, TreeView, Pages etc
-        private void UpdateFromDocumentSource()
+        private void UpdateFromDocumentSource(FIN_DocumentFinanceMaster sourceDocument)
         {
             try
             {
                 //Disable calls to this function when we trigger ".Changed" events, creating recursive calls to this function
                 _pagePad2.EnableGetCustomerDetails = false;
 
-                FIN_DocumentFinanceMaster sourceDocument = _entryBoxSelectSourceDocumentFinance.Value;
+                // Always Reset ValidateMaxQuantities before Add Quantities from CreditNote source Documents
+                _posDocumentFinanceDialog.ValidateMaxQuantities = null;
+
+                // Deprecated : Now we have 2 Entry Boxs, Source and Copy, we send Reference as Parameter
+                //FIN_DocumentFinanceMaster sourceDocument = _entryBoxSelectSourceDocumentFinance.Value;
 
                 //Initialize DocumentFinanceDetail XPCollection to store items to add to Tree
                 XPCollection<FIN_DocumentFinanceDetail> addToTree = null;
@@ -611,6 +668,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         //Show Message and Return
                         Utils.ShowMessageTouch(this.SourceWindow.TransientFor, DialogFlags.Modal, new System.Drawing.Size(550, 450), MessageType.Info, ButtonsType.Close, Resx.global_information, string.Format(Resx.dialog_message_info_all_lines_from_this_document_was_already_credited, creditedDocuments));
                         return;
+                    }
+                    else
+                    {
+                        // Add ValidateMaxQuantities, used in CreditNotes and Other Child Documents to check if Document dont Exceed Max Quantitie
+                        _posDocumentFinanceDialog.ValidateMaxQuantities = new System.Collections.Generic.Dictionary<Guid, decimal>();
+                        foreach (FIN_DocumentFinanceDetail item in addToTree)
+                        {
+                            _posDocumentFinanceDialog.ValidateMaxQuantities.Add(item.Article.Oid, item.Quantity);
+                        }
                     }
                     //Clear entryBoxReason when change SourceDocument (Disabled)
                     //if (_entryBoxReason.EntryValidation.Text != string.Empty) { _entryBoxReason.EntryValidation.Text = string.Empty; };
@@ -722,10 +788,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
         }
 
-        /// <summary>
-        /// Unprotect Child Document Changes
-        /// Called from entryBoxSelectDocumentFinanceType_ClosePopup
-        /// </summary>
         public void UnProtectChildDocumentChanges()
         {
             _entryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = true;
@@ -759,7 +821,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Sensitive = true;
                 _pagePad3.TreeViewArticles.ReadOnly = false;
                 //Disable Insert and Update
-                _pagePad3.TreeViewArticles.AllowRecordUpdate = false;
+                //_pagePad3.TreeViewArticles.AllowRecordUpdate = false;
+                //Now we can edit/update Article lines for DebitNote and CreditNotes 
+                _pagePad3.TreeViewArticles.AllowRecordUpdate = true;
                 _pagePad3.TreeViewArticles.AllowRecordInsert = false;
             }
         }

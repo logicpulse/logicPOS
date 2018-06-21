@@ -9,6 +9,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
@@ -18,6 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private Session _session;
         private DocumentFinanceDialogPagePad _pagePad;
         private PosDocumentFinanceDialog _posDocumentFinanceDialog;
+
         //Public
         private ArticleBag _articleBag;
         public ArticleBag ArticleBag

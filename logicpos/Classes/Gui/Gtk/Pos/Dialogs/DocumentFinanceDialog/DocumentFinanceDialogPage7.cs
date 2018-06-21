@@ -127,9 +127,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, _articleBag)
-              {
-                  Customer = customerGuid
-              };
+            {
+                Customer = customerGuid
+            };
 
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
             _vboxButtons.Sensitive = false;
@@ -168,12 +168,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, articleBag)
-              {
-                  Customer = customerGuid,
-                  OrderReferences = orderReferences,
-                  SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag,
-                  SourceOrderMain = documentOrderReference.SourceOrderMain
-              };
+            {
+                Customer = customerGuid,
+                OrderReferences = orderReferences,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag,
+                SourceOrderMain = documentOrderReference.SourceOrderMain
+            };
 
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
@@ -196,11 +196,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, articleBag)
-              {
-                  Customer = documentReference.EntityOid,
-                  //References = references,
-                  SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
-              };
+            {
+                Customer = documentReference.EntityOid,
+                //References = references,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
+            };
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
@@ -239,10 +239,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
                 documentTypeGuid, articleBag)
-                {
-                    Customer = customerGuid,
-                    SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
-                };
+            {
+                Customer = customerGuid,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
+            };
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
@@ -270,10 +270,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, articleBag)
-              {
-                  Customer = customerGuid,
-                  SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
-              };
+            {
+                Customer = customerGuid,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
+            };
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
@@ -303,12 +303,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, articleBag)
-              {
-                  Customer = customerGuid,
-                  SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag,
-                  Currency = currencyGuid,
-                  ExchangeRate = currency.ExchangeRate
-              };
+            {
+                Customer = customerGuid,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag,
+                Currency = currencyGuid,
+                ExchangeRate = currency.ExchangeRate
+            };
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
@@ -332,10 +332,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, articleBag)
-              {
-                  Customer = customerGuid,
-                  SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
-              };
+            {
+                Customer = customerGuid,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
+            };
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
@@ -359,10 +359,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, articleBag)
-              {
-                  Customer = customerGuid,
-                  SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
-              };
+            {
+                Customer = customerGuid,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
+            };
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
@@ -386,10 +386,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, articleBag)
-              {
-                  Customer = customerGuid,
-                  SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
-              };
+            {
+                Customer = customerGuid,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag
+            };
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
@@ -413,11 +413,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
               documentTypeGuid, articleBag)
-              {
-                  Customer = customerGuid,
-                  SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag,
-                  ExchangeRate = 0.0m
-              };
+            {
+                Customer = customerGuid,
+                SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag,
+                ExchangeRate = 0.0m
+            };
             FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
     }

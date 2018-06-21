@@ -3,22 +3,20 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB.Exceptions;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
-using logicpos.financial.library.Classes.Finance;
 using logicpos.Classes.Enums;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.financial.library.Classes.Finance;
+using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -177,7 +175,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             else
                             {
                                 //Prepare ProcessFinanceDocumentParameter : Shared for PartialPayment and FullPayment
-                                ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
+                                _processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
                                     _processDocumentType, processArticleBag
                                 )
                                 {
@@ -192,24 +190,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 FIN_DocumentFinanceMaster conferenceDocument = FrameworkUtils.GetOrderMainLastDocumentConference(false);
                                 if (
                                     conferenceDocument != null
-                                    /*&& (conferenceDocument.TotalFinal.Equals(processArticleBag.TotalFinal) && conferenceDocument.DocumentDetail.Count.Equals(processArticleBag.Count))*/
+                                /*&& (conferenceDocument.TotalFinal.Equals(processArticleBag.TotalFinal) && conferenceDocument.DocumentDetail.Count.Equals(processArticleBag.Count))*/
                                 )
                                 {
-                                    processFinanceDocumentParameter.DocumentParent = conferenceDocument.Oid;
-                                    processFinanceDocumentParameter.OrderReferences = new List<FIN_DocumentFinanceMaster>();
-                                    processFinanceDocumentParameter.OrderReferences.Add(conferenceDocument);
+                                    _processFinanceDocumentParameter.DocumentParent = conferenceDocument.Oid;
+                                    _processFinanceDocumentParameter.OrderReferences = new List<FIN_DocumentFinanceMaster>();
+                                    _processFinanceDocumentParameter.OrderReferences.Add(conferenceDocument);
                                 }
 
-                                FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(this, processFinanceDocumentParameter);
-                                //If Errors Occurs, return null Document, Keep Running until user cancel or a Valid Document is Returned
-                                if (resultDocument == null)
+                                // PreventPersistFinanceDocument : Used in SplitPayments, to get ProcessFinanceDocumentParameter and Details without PreventPersistFinanceDocument
+                                if (!_skipPersistFinanceDocument)
                                 {
-                                    this.Run();
-                                }
-                                else
-                                {
-                                    //Update Display
-                                    if (GlobalApp.HWUsbDisplay != null) GlobalApp.HWUsbDisplay.ShowPayment(_selectedPaymentMethod.Designation, _totalDelivery, _totalChange);
+                                    FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(this, _processFinanceDocumentParameter);
+                                    //If Errors Occurs, return null Document, Keep Running until user cancel or a Valid Document is Returned
+                                    if (resultDocument == null)
+                                    {
+                                        this.Run();
+                                    }
+                                    else
+                                    {
+                                        //Update Display
+                                        if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowPayment(_selectedPaymentMethod.Designation, _totalDelivery, _totalChange);
+                                    }
                                 }
                             }
                         }
@@ -317,13 +319,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (articleBag != null)
             {
                 //Required to Update articleBag.
-                _discountGlobal = (_selectedCustomer != null &&_selectedCustomer.Discount > 0) ? _selectedCustomer.Discount : 0;
+                _discountGlobal = (_selectedCustomer != null && _selectedCustomer.Discount > 0) ? _selectedCustomer.Discount : 0;
                 articleBag.DiscountGlobal = _discountGlobal;
                 articleBag.UpdateTotals();
                 //Update UI
                 UpdateUIWhenAlternateFullToPartialPayment(_partialPaymentEnabled, false);
+                //Require to Update _totalDelivery when Discount is Changed, if no Money
+                //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
+                if (_selectedPaymentMethod != null && _selectedPaymentMethod.Token != "MONEY")
+                {
+                    _totalDelivery = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
+                    if (_labelDeliveryValue.Text != FrameworkUtils.DecimalToStringCurrency(_totalDelivery)) _labelDeliveryValue.Text = FrameworkUtils.DecimalToStringCurrency(_totalDelivery);
+                }
+                //Update Change Value
+                UpdateChangeValue();
+                //Required to Change Color Enable/Disable if TotalChange is Negativ
+                Validate();
             }
-            //Validate();
         }
 
         private void _entryBoxSelectCustomerFiscalNumber_Changed(object sender, EventArgs e)
@@ -390,18 +402,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void AssignPaymentMethod(object pSender)
         {
-            //Enable old Selected Button, if is Selected
+            //Disable old selectedPaymentMethodButton, if is Selected
             if (_selectedPaymentMethodButton != null) _selectedPaymentMethodButton.Sensitive = true;
 
+            //Enable Sender
             _selectedPaymentMethodButton = (TouchButtonBase)pSender;
             _selectedPaymentMethod = (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(typeof(FIN_ConfigurationPaymentMethod), _selectedPaymentMethodButton.CurrentButtonOid);
+            //_log.Debug(string.Format("AssignPaymentMethod: ButtonName: [{0}], PaymentMethodToken: [{1}]", _selectedPaymentMethodButton.Name, _selectedPaymentMethod.Token));
 
             if (_selectedPaymentMethod.Token == "MONEY")
             {
                 if (_labelDeliveryValue.Text != FrameworkUtils.DecimalToStringCurrency(_totalDelivery)) _labelDeliveryValue.Text = FrameworkUtils.DecimalToStringCurrency(_totalDelivery);
                 if (_labelChangeValue.Text != FrameworkUtils.DecimalToStringCurrency(_totalChange)) _labelChangeValue.Text = FrameworkUtils.DecimalToStringCurrency(_totalChange);
                 //Only Disable Money Button if Delivery is Greater than Total
-                if (_totalDelivery >= _articleBagFullPayment.TotalFinal) _selectedPaymentMethodButton.Sensitive = false;
+                if (_totalDelivery >= ((_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal)) _selectedPaymentMethodButton.Sensitive = false;
             }
             else
             {
@@ -412,7 +426,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _totalDelivery = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
 
                 _totalChange = 0.0m;
-                _selectedPaymentMethodButton.Sensitive = false;
 
                 if (_selectedPaymentMethod.Token == "CURRENT_ACCOUNT")
                 {
@@ -428,6 +441,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //_buttonPartialPayment.ShowAll();
                 }
             }
+
+            _selectedPaymentMethodButton.Sensitive = false;
 
             //Force Required CustomerCardNumber if Payment is CUSTOMER_CARD
             _entryBoxSelectCustomerCardNumber.EntryValidation.Required = (_selectedPaymentMethod.Token == "CUSTOMER_CARD");
@@ -496,7 +511,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     // Only Encrypt Encrypted Fields
-                    if (pFieldName == nameof(ERP_Customer.FiscalNumber) || pFieldName == nameof(ERP_Customer.CardNumber)) {
+                    if (pFieldName == nameof(ERP_Customer.FiscalNumber) || pFieldName == nameof(ERP_Customer.CardNumber))
+                    {
                         pFieldValue = GlobalFramework.PluginSoftwareVendor.Encrypt(pFieldValue);
                     }
                 }
@@ -565,6 +581,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Require to Update RegEx and Criteria to filter Country Clients Only
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExFiscalNumber;
+                _entryBoxCustomerZipCode.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExZipCode;
 
                 //Apply Criteria Operators
                 ApplyCriteriaToCustomerInputs();
@@ -649,11 +666,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 decimal totalDocument = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
                 bool isFinalConsumerEntity = (_selectedCustomer != null && _selectedCustomer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity) ? true : false;
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
-                 // Encrypt pFieldValue to use in Sql Filter
+                // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
-                    fiscalNumberFilterValue =  GlobalFramework.PluginSoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                    fiscalNumberFilterValue = GlobalFramework.PluginSoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                 }
                 //Used To Disable FiscalNumber Edits and to Get Customer
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
@@ -856,6 +873,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxSelectCustomerCardNumber.CriteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0) AND (Country = '{0}') AND (CardNumber IS NOT NULL AND CardNumber <> '')", _entryBoxSelectCustomerCountry.Value.Oid));
         }
 
+        private void UpdateChangeValue()
+        {
+            if (_selectedPaymentMethod != null && _selectedPaymentMethod.Token == "MONEY")
+            {
+                int decimalRoundTo = SettingsApp.DecimalRoundTo;
+                //If Has a _articleBagPartialPayment Defined use its Total else use _articleBagFullPayment TotalFinal
+                decimal _totalOrder = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
+                _totalChange = Math.Round(_totalDelivery, decimalRoundTo) - Math.Round(_totalOrder, decimalRoundTo);
+                if (_labelChangeValue.Text != FrameworkUtils.DecimalToStringCurrency(_totalChange)) _labelChangeValue.Text = FrameworkUtils.DecimalToStringCurrency(_totalChange);
+            }
+        }
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PartialPayment
 
@@ -925,6 +954,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Call Dialog
             int response = _dialogPartialPayment.Run();
+            //Destroy Dialog
             _dialogPartialPayment.Destroy();
         }
 
@@ -1013,6 +1043,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 _log.Error(ex.Message, ex);
             }
+
             return false;
         }
 
@@ -1030,9 +1061,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //Update private member _partialPaymentEnabled
             _partialPaymentEnabled = pIsPartialPayment;
+            // Commented to Prevend Cleaning _totalDelivery and _totalChange
             //Shared: Update Total Delivery and TotalChange 
-            _totalDelivery = 0;
-            _totalChange = 0;
+            if (pResetPaymentMethodButton) 
+            {
+                _totalDelivery = 0;
+                _totalChange = 0;
+            }
             //Discount
             _discountGlobal = FrameworkUtils.StringToDecimal(_entryBoxCustomerDiscount.EntryValidation.Text);
 

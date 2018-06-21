@@ -91,13 +91,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCurrencyCode, _dataSourceRow, "CurrencyCode", SettingsApp.RegexAcronym3Chars, false));
 
                 //RegExFiscalNumber
-                Entry entryRegExFiscalNumber = new Entry();
+                Entry entryRegExFiscalNumber = new Entry() { Sensitive = false };
                 BOWidgetBox boxRegExFiscalNumber = new BOWidgetBox(Resx.global_regex_fiscal_number, entryRegExFiscalNumber);
                 vboxTab2.PackStart(boxRegExFiscalNumber, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxRegExFiscalNumber, _dataSourceRow, "RegExFiscalNumber"));
 
                 //RegExZipCode
-                Entry entryRegExZipCode = new Entry();
+                Entry entryRegExZipCode = new Entry() { Sensitive = false };
                 BOWidgetBox boxRegExZipCode = new BOWidgetBox(Resx.global_regex_postal_code, entryRegExZipCode);
                 vboxTab2.PackStart(boxRegExZipCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxRegExZipCode, _dataSourceRow, "RegExZipCode"));

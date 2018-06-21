@@ -180,7 +180,7 @@ namespace logicpos
                     }
                     else
                     {
-                        sqlConfigurationPreferenceParameter = string.Format("{0} {1}", sqlConfigurationPreferenceParameter, "OR (FormPageNo = 1 AND Token <> 'COMPANY_TAX_ENTITY')");
+                        sqlConfigurationPreferenceParameter = string.Format("{0} {1}", sqlConfigurationPreferenceParameter, "OR (FormPageNo = 1 AND FormType = 1 AND Token <> 'COMPANY_TAX_ENTITY')");
                         xpoSession.ExecuteScalar(sqlConfigurationPreferenceParameter);
                     }
                 }

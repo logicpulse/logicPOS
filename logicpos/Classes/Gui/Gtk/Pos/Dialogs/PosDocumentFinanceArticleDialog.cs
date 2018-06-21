@@ -197,17 +197,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxSelectArticle.ClosePopup += _entryBoxSelectArticle_ClosePopup;
 
             //Price : Used only in Debug Mode, to Inspect SystemCurrency Values : To View add it to hboxPriceQuantityDiscountAndTotals.PackStart
+            //Note #1
+            //Removed. this will trigger an error when use a zero Price WayBill to issue an Invoice, better use discount 100%
             //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
-            string regExPrice = (!_listSaftDocumentType2.Contains(_documentFinanceType.Oid.ToString())) ? _regexDecimalGreaterThanZero : _regexDecimalGreaterEqualThanZero;
+            //string regExPrice = (!_listSaftDocumentType2.Contains(_documentFinanceType.Oid.ToString())) ? _regexDecimalGreaterThanZero : _regexDecimalGreaterEqualThanZero;
+            // Now all regExPrice must be greater than Zero
+            string regExPrice = _regexDecimalGreaterThanZero;
             _entryBoxValidationPrice = new EntryBoxValidation(this, "Price EUR(*)", KeyboardMode.Numeric, regExPrice, true);
             _entryBoxValidationPrice.EntryValidation.Text = initialValuePrice;
-
             _entryBoxValidationPrice.EntryValidation.Sensitive = false;
             //Add to WidgetList
             _crudWidgetPrice = new GenericCRUDWidgetDataTable(_entryBoxValidationPrice, _entryBoxValidationPrice.Label, _dataSourceRow, "Price", regExPrice, true);
             _crudWidgetList.Add(_crudWidgetPrice);
 
             //PriceDisplay
+            //Note #1
             //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
             _entryBoxValidationPriceDisplay = new EntryBoxValidation(this, Resx.global_price, KeyboardMode.Numeric, regExPrice, true);
             _entryBoxValidationPriceDisplay.EntryValidation.Text = initialValuePriceDisplay;
@@ -336,17 +340,85 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_vboxEntrys.PackStart(hboxToken1AndToken2);
             _vboxEntrys.PackStart(_entryBoxValidationNotes);
             _vboxEntrys.WidthRequest = _windowSize.Width - 13;
+
+            // CreditNote : Protect all components, only Quantity is Editable in CreditMode
+            if (_documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
+            {
+                //Article
+                _entryBoxSelectArticle.Entry.Sensitive = false;
+                _entryBoxSelectArticle.ButtonSelectValue.Sensitive = false;
+                //PriceDisplay
+                _entryBoxValidationPriceDisplay.EntryValidation.Sensitive = false;
+                _entryBoxValidationPriceDisplay.ButtonKeyBoard.Sensitive = false;
+                //Discount
+                _entryBoxValidationDiscount.EntryValidation.Sensitive = false;
+                _entryBoxValidationDiscount.ButtonKeyBoard.Sensitive = false;
+                //VatRate
+                _entryBoxSelectVatRate.Entry.Sensitive = false;
+                _entryBoxSelectVatRate.ButtonSelectValue.Sensitive = false;
+                //VatExemptionReason
+                _entryBoxSelectVatExemptionReason.Entry.Sensitive = false;
+                _entryBoxSelectVatExemptionReason.ButtonSelectValue.Sensitive = false;
+            }
         }
 
         protected override void OnResponse(ResponseType pResponse)
         {
-            _crudWidgetList.ProcessDialogResponse(this, _dialogMode, pResponse);
+            // Call ValidateMaxQuantities before 
+            if (pResponse == ResponseType.Ok && !ValidateMaxArticleQuantity())
+            {
+                this.Run();
+            }
+            else
+            {
+                _crudWidgetList.ProcessDialogResponse(this, _dialogMode, pResponse);
+            }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
         private void _entryBoxSelectVatRate_EntryValidation_Changed(object sender, EventArgs e)
         {
+            ToggleVatExemptionReasonEditMode();
+            //Update Price Properties
+            UpdatePriceProperties();
+        }
+
+        void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
+        {
+            //Prepare Objects
+            FIN_Article article = _entryBoxSelectArticle.Value;
+            FIN_ConfigurationPriceType configurationPriceTypeDefault = (FIN_ConfigurationPriceType)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_ConfigurationPriceType), SettingsApp.XpoOidConfigurationPriceTypeDefault);
+
+            //Get PriceType from Customer.PriceType or from default if a New Customer or a Customer without PriceType Defined in BackOffice, always revert to Price1
+            PriceType priceType = (_customer != null)
+                ? (PriceType)_customer.PriceType.EnumValue
+                : (PriceType)configurationPriceTypeDefault.EnumValue
+            ;
+
+            //Common changes for MediaNova | Non-MediaNova Articles | Here Prices are always in Retail Mode
+            PriceProperties priceProperties = FrameworkUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
+
+            //Price
+            _articlePrice = priceProperties.PriceNet;
+            //Display Price
+            _entryBoxValidationPrice.EntryValidation.Text = FrameworkUtils.DecimalToString(_articlePrice);
+            _entryBoxValidationPriceDisplay.EntryValidation.Text = FrameworkUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
+            _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? FrameworkUtils.DecimalToString(article.DefaultQuantity) : FrameworkUtils.DecimalToString(1.0m);
+            _entryBoxValidationDiscount.EntryValidation.Text = FrameworkUtils.DecimalToString(article.Discount);
+
+            //VatRate
+            _entryBoxSelectVatRate.Value = article.VatDirectSelling;
+            _entryBoxSelectVatRate.Entry.Text = article.VatDirectSelling.Designation;
+
+            //Default Vat Exception Reason
+            if (article.VatExemptionReason != null)
+            {
+                _entryBoxSelectVatExemptionReason.Value = article.VatExemptionReason;
+                _entryBoxSelectVatExemptionReason.Entry.Text = article.VatExemptionReason.Designation;
+            }
+
+            //Toggle ToggleVatExemptionReasonEditMode Validation
             ToggleVatExemptionReasonEditMode();
             //Update Price Properties
             UpdatePriceProperties();
@@ -423,44 +495,39 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
+        private bool ValidateMaxArticleQuantity()
         {
-            //Prepare Objects
-            FIN_Article article = _entryBoxSelectArticle.Value;
-            FIN_ConfigurationPriceType configurationPriceTypeDefault = (FIN_ConfigurationPriceType)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_ConfigurationPriceType), SettingsApp.XpoOidConfigurationPriceTypeDefault);
+            bool result = true;
+            string invalidArticleQuantity = string.Empty;
+            decimal currentQuantity = Convert.ToDecimal(_entryBoxValidationQuantity.EntryValidation.Text);
 
-            //Get PriceType from Customer.PriceType or from default if a New Customer or a Customer without PriceType Defined in BackOffice, always revert to Price1
-            PriceType priceType = (_customer != null)
-                ? (PriceType)_customer.PriceType.EnumValue
-                : (PriceType)configurationPriceTypeDefault.EnumValue
-            ;
-
-            //Common changes for MediaNova | Non-MediaNova Articles | Here Prices are always in Retail Mode
-            PriceProperties priceProperties = FrameworkUtils.GetArticlePrice(article, priceType, TaxSellType.Normal);
-
-            //Price
-            _articlePrice = priceProperties.PriceNet;
-            //Display Price
-            _entryBoxValidationPrice.EntryValidation.Text = FrameworkUtils.DecimalToString(_articlePrice);
-            _entryBoxValidationPriceDisplay.EntryValidation.Text = FrameworkUtils.DecimalToString(_articlePrice * _currencyDisplay.ExchangeRate);
-            _entryBoxValidationQuantity.EntryValidation.Text = (article.DefaultQuantity > 0) ? FrameworkUtils.DecimalToString(article.DefaultQuantity) : FrameworkUtils.DecimalToString(1.0m);
-            _entryBoxValidationDiscount.EntryValidation.Text = FrameworkUtils.DecimalToString(article.Discount);
-
-            //VatRate
-            _entryBoxSelectVatRate.Value = article.VatDirectSelling;
-            _entryBoxSelectVatRate.Entry.Text = article.VatDirectSelling.Designation;
-
-            //Default Vat Exception Reason
-            if (article.VatExemptionReason != null)
+            try
             {
-                _entryBoxSelectVatExemptionReason.Value = article.VatExemptionReason;
-                _entryBoxSelectVatExemptionReason.Entry.Text = article.VatExemptionReason.Designation;
+                // Validate Max Quantities only if ValidateMaxQuantities is defined
+                if (_posDocumentFinanceDialog.ValidateMaxQuantities != null && _posDocumentFinanceDialog.ValidateMaxQuantities.Count > 0)
+                {
+                    decimal maxPossibleQuantity = _posDocumentFinanceDialog.ValidateMaxQuantities[_entryBoxSelectArticle.Value.Oid];
+
+                    if (currentQuantity > maxPossibleQuantity)
+                    {
+                        _log.Debug(string.Format("CurrentQuantity: [{0}] is Greater than MaxPossibleQuantity: [{1}]", currentQuantity, maxPossibleQuantity));
+                        result = false;
+                    }
+
+                    // Check if has Errrors, and Show Error Message
+                    if (!result)
+                    {
+                        // Show Message
+                        Utils.ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(this, currentQuantity, maxPossibleQuantity);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
             }
 
-            //Toggle ToggleVatExemptionReasonEditMode Validation
-            ToggleVatExemptionReasonEditMode();
-            //Update Price Properties
-            UpdatePriceProperties();
+            return result;
         }
     }
 }

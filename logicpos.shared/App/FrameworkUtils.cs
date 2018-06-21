@@ -890,6 +890,11 @@ namespace logicpos.shared.App
             return DecimalToString(pInput, pCulture, SettingsApp.DecimalFormat);
         }
 
+        public static string DecimalToString(decimal pInput, string pDecimalFormat)
+        {
+            return DecimalToString(pInput, GlobalFramework.CurrentCulture, pDecimalFormat);
+        }
+
         public static string DecimalToString(decimal pInput, CultureInfo pCulture, string pDecimalFormat)
         {
             return pInput.ToString(pDecimalFormat, pCulture.NumberFormat);

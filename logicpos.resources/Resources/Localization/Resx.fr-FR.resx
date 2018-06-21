@@ -1325,7 +1325,7 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
     <value>Nom</value>
   </data>
   <data name="global_networkname" xml:space="preserve">
-    <value>Nom du réseau</value>
+    <value>Paramètres de partage réseau ou de port USB</value>
   </data>
   <data name="global_notes" xml:space="preserve">
     <value>Billets</value>
@@ -3015,5 +3015,81 @@ Définissez manuellement la résolution de l'écran dans le paramètre paramètr
   </data>
   <data name="global_printer_thermal_open_drawer_value_t2" xml:space="preserve">
     <value>Tiroir Ouvert Comm. T2</value>
+  </data>
+  <data name="dialog_message_error_initializing_weighing_balance" xml:space="preserve">
+    <value>Erreur lors de l'initialisation de l'équilibre de pesée
+{0}!
+
+{1}</value>
+  </data>
+  <data name="dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities" xml:space="preserve">
+    <value>Erreur! Vous essayez de créditer un ou des articles qui excèdent le montant émis dans le document original,
+ou la somme de tous les articles crédités dans les notes de crédit dépasse celle du document original!
+
+Quantité: {0}
+Quantité valide: {1}</value>
+  </data>
+  <data name="global_add" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="global_button_label_payment_dialog_split_payment" xml:space="preserve">
+    <value>Divisé</value>
+  </data>
+  <data name="global_copy_finance_document" xml:space="preserve">
+    <value>Copie du Document</value>
+  </data>
+  <data name="global_documentfinance_canceled_document" xml:space="preserve">
+    <value>Annulé</value>
+  </data>
+  <data name="global_hardware_com_baudrate" xml:space="preserve">
+    <value>Baud Rate</value>
+  </data>
+  <data name="global_hardware_com_databits" xml:space="preserve">
+    <value>Data Bits</value>
+  </data>
+  <data name="global_hardware_com_parity" xml:space="preserve">
+    <value>Parity</value>
+  </data>
+  <data name="global_hardware_com_portname" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="global_hardware_com_stopbits" xml:space="preserve">
+    <value>Stop Bits</value>
+  </data>
+  <data name="global_remove" xml:space="preserve">
+    <value>Retirer</value>
+  </data>
+  <data name="global_use_weighing_balance" xml:space="preserve">
+    <value>Utiliser l'équilibre de Pesée</value>
+  </data>
+  <data name="prefparam_service_at_production_account_fiscal_number" xml:space="preserve">
+    <value>Autoridade Tributária Service : Numéro fiscal du Compte</value>
+  </data>
+  <data name="prefparam_service_at_production_account_password" xml:space="preserve">
+    <value>Autoridade Tributária Service : Mot de passe du Compte</value>
+  </data>
+  <data name="prefparam_service_at_production_mode_enabled" xml:space="preserve">
+    <value>Autoridade Tributária Service : Mode de production Activé</value>
+  </data>
+  <data name="prefparam_service_at_send_documents" xml:space="preserve">
+    <value>Autoridade Tributária Service : Documents financiers Envoyés</value>
+  </data>
+  <data name="prefparam_service_at_send_documents_waybill" xml:space="preserve">
+    <value>Autoridade Tributária Service : Envoi de bordereaux Financiers</value>
+  </data>
+  <data name="prefparam_service_at_waybill_agricultural_mode_enabled" xml:space="preserve">
+    <value>Autoridade Tributária Service : Guides de Transport en mode Agricole Activé</value>
+  </data>
+  <data name="prefparam_split_payment_max_clients" xml:space="preserve">
+    <value>Compte partagé: Nombre maximum de clients partagés</value>
+  </data>
+  <data name="prefparam_split_payment_min_clients" xml:space="preserve">
+    <value>Compte partagé: nombre minimum de clients partagés</value>
+  </data>
+  <data name="prefparam_split_payment_start_clients" xml:space="preserve">
+    <value>Compte partagé: commence le nombre de clients partagés</value>
+  </data>
+  <data name="window_title_dialog_split_payment" xml:space="preserve">
+    <value>Paiement Fractionné : Montant par Client: [{0} x {1}]</value>
   </data>
 </root>

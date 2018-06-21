@@ -108,10 +108,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             string tokenAllowView = string.Format("{0}_{1}", string.Format(SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "VIEW").ToUpper();
 
             // Help to Debug some Kind of Types Privileges
-            if (this.GetType().Equals(typeof(TreeViewConfigurationInputReader)))
-            {
-                _log.Debug($"BREAK {typeof(TreeViewConfigurationInputReader)}");
-            }
+            //if (this.GetType().Equals(typeof(TreeViewConfigurationInputReader)))
+            //{
+            //    _log.Debug($"BREAK {typeof(TreeViewConfigurationInputReader)}");
+            //}
 
             //Assign CRUD permissions to private members, Overriding Defaults
             if (GlobalFramework.LoggedUserPermissions != null)
@@ -169,6 +169,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 // reset undefinedRecord
                 bool undefinedRecord = false;
 
+                // This will reload current dataRow, without this XPO wil use cached values, and never be in sync when we change data outside
+                dataRow.Reload();
+
                 //Loop Fields : Generate Abstract Values to use in Model
                 for (int i = 0; i < _columnProperties.Count; i++)
                 {
@@ -197,7 +200,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         {
                             columnValues[i] = ColumnPropertyGetQuery(_columnProperties[i].Query, dataRow.GetMemberValue("Oid"));
                             // Decrypt Before use Format
-                            if (_columnProperties[i].DecryptValue) {
+                            if (_columnProperties[i].DecryptValue)
+                            {
                                 columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]);
                             }
                             //Format String using Column FormatProvider              
@@ -256,7 +260,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         // ResourceString : Extract ResourceManager from Final Value
                         if (_columnProperties[i].ResourceString == true && columnValues[i] != null)
                         {
-                            columnValues[i] =  Resx.ResourceManager.GetString(columnValues[i].ToString());
+                            // Try to get ResourceString Value, this is required to replace value, but only if it a valid resourceString (not replaced yet after update)
+                            // After an Update and Refresh it turns into a string(non resource token), this protection prevents the replace double with a null resourceString, 
+                            // leaving tree cell value with an empty value
+                            bool checkIfResourceStringExist = (Resx.ResourceManager.GetString(columnValues[i].ToString()) != null) ? true : false;
+                            // Only Replace resourceString if value is resourceString is not Yet been replaced, ex after an update
+                            //_log.Debug(string.Format("columnValues[i]#1: [{0}]", columnValues[i]));
+                            if (checkIfResourceStringExist)
+                            {
+                                columnValues[i] = Resx.ResourceManager.GetString(columnValues[i].ToString());
+                            }
+                            //_log.Debug(string.Format("columnValues[i]#2: [{0}]", columnValues[i]));
                         }
                     }
                     catch (Exception ex)
@@ -353,7 +367,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     }
                 }
             }
-            
+
             return newXPGuidObject;
         }
 

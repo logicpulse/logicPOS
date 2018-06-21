@@ -1,7 +1,6 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Diagnostics;
-using System.IO;
 
 namespace logicpos.shared.App
 {
@@ -69,6 +68,8 @@ namespace logicpos.shared.App
         //Decimal Format
         public static string DecimalFormat = "0.00";
         public static string DecimalFormatCurrency = "0.00";
+        //This will work to show output, usefull for SplitPayments, and to Round Quantities like 0.000000000000001 in ArticleBag, else we cand Remove its Key
+        public static string DecimalFormatStockQuantity = "0.00000000";
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Files/File Formats
@@ -241,6 +242,12 @@ namespace logicpos.shared.App
         public static string RegexHardwareEndpoint = @"^Ep[0-9]{1,2}$";
         // Hardware PoleDisplay : Ex 0x10
         public static string RegexHardwareCodeTable = @"^0x[0-9]{1,2}$";
+        // Hardware WeighingBalance
+        public static string RegexHardwarePortName = @"^COM1|COM2|COM3|COM4|COM5|COM6|COM7|COM8|COM9|COM10|COM11|COM12|COM13|COM14|COM15$";
+        public static string RegexHardwareBaudRate = @"^300|600|1200|2400|4800|9600|14400|28800|36000|115000$";
+        public static string RegexHardwareParity = @"^None|Odd|Even|Mark|Space$";
+        public static string RegexHardwareStopBits = @"^None|One|Two|OnePointFive$";
+        public static string RegexHardwareDataBits = @"^7|8|9$";
         //Prefs
         public static string RegexSize = @"^([0-9]{0,9}),([0-9]{0,9})$";
         public static string RegexTheme = @"^Default|Retail$";
@@ -260,6 +267,7 @@ namespace logicpos.shared.App
 
         // Undefined Record
         public static Guid XpoOidUndefinedRecord = new Guid("00000000-0000-0000-0000-000000000001");
+        public static String XpoOidHiddenRecordsFilter = "00000000-0000-0000-0000-000000000%";
 
         //ArticleClass
         public static Guid XpoOidArticleClassCustomerCard = new Guid("49ea35ba-35f3-440f-946e-ab32578ed741");

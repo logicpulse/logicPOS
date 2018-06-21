@@ -1,20 +1,19 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using logicpos.shared.Classes.Finance;
 using System;
 using System.Data;
 using System.Drawing;
-using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -22,7 +21,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         //Settings
         private Color _colorEntryValidationValidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
-        private Color _colorEntryValidationInvalidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationInvalidFont"]);
+        private Color _colorEntryValidationInvalidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationInvalidFontLighter"]);
         //Usefull to block .Change events when we change Entry.Text from code, and prevent to recursivly call Change Events
         private bool _enableGetCustomerDetails = true;
         //PartialPayments Stuff
@@ -49,8 +48,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private EntryBoxValidation _entryBoxCustomerZipCode;
         private EntryBoxValidation _entryBoxCustomerCity;
         private EntryBoxValidation _entryBoxCustomerNotes;
-        //Buttons
-        private TouchButtonBase _selectedPaymentMethodButton;
         //ActionArea
         private TouchButtonIconWithText _buttonOk;
         private TouchButtonIconWithText _buttonCancel;
@@ -61,6 +58,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private CFG_ConfigurationCountry _intialValueConfigurationCountry;
         //Store Partial Payment Enabled/Disabled
         private bool _partialPaymentEnabled = false;
+        //Store PrequestProcessFinanceDocumentParameter
+        private bool _skipPersistFinanceDocument;
         //Public Properties
         private decimal _totalDelivery = 0.0m;
         public decimal TotalDelivery
@@ -79,6 +78,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             get { return _discountGlobal; }
             set { _discountGlobal = value; }
+        }
+        private TouchButtonBase _selectedPaymentMethodButton;
+        public TouchButtonBase SelectedPaymentMethodButton 
+        { 
+            get { return _selectedPaymentMethodButton; }
+            set { _selectedPaymentMethodButton = value; }
         }
         private FIN_ConfigurationPaymentMethod _selectedPaymentMethod;
         public FIN_ConfigurationPaymentMethod PaymentMethod
@@ -110,15 +115,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             get { return _articleBagPartialPayment; }
             set { _articleBagPartialPayment = value; }
         }
+        // To be used in SplitPayments on Call this Window
+        private ProcessFinanceDocumentParameter _processFinanceDocumentParameter;
+        public ProcessFinanceDocumentParameter ProcessFinanceDocumentParameter
+        {
+            get { return _processFinanceDocumentParameter; }
+            set { _processFinanceDocumentParameter = value; }
+        }
 
         //Constructors
         public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag)
-            : this(pSourceWindow, pDialogFlags, pArticleBag, true, true) { }
+            : this(pSourceWindow, pDialogFlags, pArticleBag, true) { }
 
         public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag, bool pEnablePartialPaymentButtons)
             : this(pSourceWindow, pDialogFlags, pArticleBag, pEnablePartialPaymentButtons, true) { }
 
         public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag, bool pEnablePartialPaymentButtons, bool pEnableCurrentAccountButton)
+            : this(pSourceWindow, pDialogFlags, pArticleBag, pEnablePartialPaymentButtons, pEnableCurrentAccountButton, false, null, null) { }
+
+        public PosPaymentsDialog(Window pSourceWindow, DialogFlags pDialogFlags, ArticleBag pArticleBag, bool pEnablePartialPaymentButtons, bool pEnableCurrentAccountButton, bool pSkipPersistFinanceDocument, ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter, string pSelectedPaymentMethodButtonName)
             : base(pSourceWindow, pDialogFlags, false)
         {
             try
@@ -132,6 +147,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Parameters
                 _articleBagFullPayment = pArticleBag;
+                _skipPersistFinanceDocument = pSkipPersistFinanceDocument;
+                _processFinanceDocumentParameter = pProcessFinanceDocumentParameter;
                 bool enablePartialPaymentButtons = pEnablePartialPaymentButtons;
                 bool enableCurrentAccountButton = pEnableCurrentAccountButton;
                 if (enablePartialPaymentButtons) enablePartialPaymentButtons = (_articleBagFullPayment.TotalQuantity > 1) ? true : false;
@@ -294,7 +311,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxCustomerCity.EntryValidation.Changed += delegate { Validate(); };
 
                 //Country
-                CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL)");
+                CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL AND RegExZipCode IS NOT NULL)");
                 _entryBoxSelectCustomerCountry = new XPOEntryBoxSelectRecordValidation<CFG_ConfigurationCountry, TreeViewConfigurationCountry>(pSourceWindow, Resx.global_country, "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, SettingsApp.RegexGuid, true);
                 _entryBoxSelectCustomerCountry.WidthRequest = 235;
                 //Extra Protection to prevent Customer without Country
@@ -304,7 +321,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectCustomerCountry.ClosePopup += delegate
                 {
                     _selectedCountry = _entryBoxSelectCustomerCountry.Value;
+                    //Require to Update RegEx and Criteria to filter Country Clients Only
                     _entryBoxSelectCustomerFiscalNumber.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExFiscalNumber;
+                    _entryBoxCustomerZipCode.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExZipCode;
                     //Clear Customer Fields, Except Country
                     ClearCustomer(false);
                     //Apply Criteria Operators
@@ -331,8 +350,64 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxCustomerNotes = new EntryBoxValidation(this, Resx.global_notes, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
                 _entryBoxCustomerNotes.EntryValidation.Changed += delegate { Validate(); };
 
-                //Apply Default Customer Entity
-                GetCustomerDetails("Oid", SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
+                //Fill Dialog Inputs with Defaults FinalConsumerEntity Values
+                if (_processFinanceDocumentParameter == null)
+                {
+                    //If ProcessFinanceDocumentParameter is not null fill Dialog with value from ProcessFinanceDocumentParameter, implemented for SplitPayments
+                    GetCustomerDetails("Oid", SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
+                }
+                //Fill Dialog Inputs with Stored Values, ex when we Work with SplitPayments
+                else
+                {
+                    //Apply Default Customer Entity
+                    GetCustomerDetails("Oid", _processFinanceDocumentParameter.Customer.ToString());
+
+                    //Assign Totasl and Discounts Values
+                    _totalDelivery = _processFinanceDocumentParameter.TotalDelivery;
+                    _totalChange = _processFinanceDocumentParameter.TotalChange;
+                    _discountGlobal = _processFinanceDocumentParameter.ArticleBag.DiscountGlobal;
+                    // Update Visual Components
+                    _labelDeliveryValue.Text = FrameworkUtils.DecimalToStringCurrency(_totalDelivery);
+                    _labelChangeValue.Text = FrameworkUtils.DecimalToStringCurrency(_totalChange);
+                    // Selects
+                    _selectedCustomer = (ERP_Customer)FrameworkUtils.GetXPGuidObject(typeof(ERP_Customer), _processFinanceDocumentParameter.Customer);
+                    _selectedCountry = _selectedCustomer.Country;
+                    // PaymentMethod
+                    _selectedPaymentMethod = (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(typeof(FIN_ConfigurationPaymentMethod), _processFinanceDocumentParameter.PaymentMethod);
+                    // Restore Selected Payment Method, require to associate button reference to selectedPaymentMethodButton
+                    if (!string.IsNullOrEmpty(pSelectedPaymentMethodButtonName)) {
+                        switch (pSelectedPaymentMethodButtonName)
+                        {
+                            case "touchButtonMoney_Green" :
+                                _selectedPaymentMethodButton = buttonMoney;
+                                break;
+                            case "touchButtonCheck_Green" :
+                                _selectedPaymentMethodButton = buttonCheck;
+                                break;
+                            case "touchButtonMB_Green" :
+                                _selectedPaymentMethodButton = buttonMB;
+                                break;
+                            case "touchButtonCreditCard_Green" :
+                                _selectedPaymentMethodButton = buttonCreditCard;
+                                break;
+                            case "touchButtonVisa_Green" :
+                                _selectedPaymentMethodButton = buttonVisa;
+                                break;
+                            case "touchButtonCurrentAccount_Green" :
+                                _selectedPaymentMethodButton = buttonCurrentAccount;
+                                break;
+                            case "touchButtonCustomerCard_Green" :
+                                _selectedPaymentMethodButton = buttonCustomerCard;
+                                break;
+                        }
+
+                        //Assign Payment Method after have Reference
+                        AssignPaymentMethod(_selectedPaymentMethodButton);
+                    }
+
+                    //UpdateChangeValue, if we add/remove Splits we must recalculate ChangeValue
+                    UpdateChangeValue();
+                }
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -372,7 +447,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", Resx.global_button_label_payment_dialog_clear_client, fileIconClearCustomer);
                 _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", Resx.global_button_label_payment_dialog_full_payment, fileIconFullPayment);
                 _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", Resx.global_button_label_payment_dialog_partial_payment, fileIconPartialPayment);
-                _buttonOk.Sensitive = false;
+                // Enable if has selectedPaymentMethod defined, ex when working with SplitPayments
+                _buttonOk.Sensitive = (_selectedPaymentMethod != null);
                 _buttonFullPayment.Sensitive = false;
 
                 //ActionArea
@@ -383,6 +459,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     actionAreaButtons.Add(new ActionAreaButton(_buttonFullPayment, _responseTypeFullPayment));
                     actionAreaButtons.Add(new ActionAreaButton(_buttonPartialPayment, _responseTypePartialPayment));
                 }
+
                 actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
                 actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
 

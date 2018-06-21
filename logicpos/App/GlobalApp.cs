@@ -36,8 +36,9 @@ namespace logicpos.App
         //System
         public static string FilePickerStartPath;
         //Hardware
-        public static UsbDisplayDevice HWUsbDisplay;
-        public static InputReader HWBarCodeReader;
+        public static UsbDisplayDevice UsbDisplay;
+        public static InputReader BarCodeReader;
+        public static WeighingBalance WeighingBalance;
         //Protected Files
         public static ProtectedFiles ProtectedFiles;
     }

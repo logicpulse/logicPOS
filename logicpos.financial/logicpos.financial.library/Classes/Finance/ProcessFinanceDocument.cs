@@ -530,11 +530,14 @@ namespace logicpos.financial.library.Classes.Finance
                             pParameters.ArticleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
                             if (pParameters.ArticleBag.Count <= 0)
                             {
+                                // Warning required to check if (documentOrderMain != null), when we work with SplitPayments and work only one product, 
+                                // the 2,3,4....orders are null, this is because first FinanceDocument Closes Order
+
                                 //Close OrderMain
-                                documentOrderMain.OrderStatus = OrderStatus.Close;
+                                if (documentOrderMain != null) documentOrderMain.OrderStatus = OrderStatus.Close;
 
                                 //Required to Update and Sync Terminals
-                                documentOrderMain.UpdatedAt = documentDateTime;
+                                if (documentOrderMain != null) documentOrderMain.UpdatedAt = documentDateTime;
 
                                 //Change Table Status to Free
                                 POS_ConfigurationPlaceTable placeTable;
@@ -545,8 +548,8 @@ namespace logicpos.financial.library.Classes.Finance
                                 placeTable.TotalOpen = 0;
 
                                 //Required to Reload Objects after has been changed in Another Session(uowSession)
-                                documentOrderMain = (FIN_DocumentOrderMain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_DocumentOrderMain), orderMain.PersistentOid);
-                                documentOrderMain.Reload();
+                                if (documentOrderMain != null) documentOrderMain = (FIN_DocumentOrderMain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_DocumentOrderMain), orderMain.PersistentOid);
+                                if (documentOrderMain != null) documentOrderMain.Reload();
                                 placeTable = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(POS_ConfigurationPlaceTable), orderMain.Table.Oid);
                                 placeTable.Reload();
 
@@ -557,7 +560,7 @@ namespace logicpos.financial.library.Classes.Finance
                             else
                             {
                                 //Required to Update and Sync Terminals
-                                documentOrderMain.UpdatedAt = documentDateTime;
+                                if (documentOrderMain != null) documentOrderMain.UpdatedAt = documentDateTime;
                             }
                         }
                         //Update CurrentAccount Documents
