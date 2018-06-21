@@ -101,6 +101,7 @@ namespace logicpos.App
         public static string FileDatabaseOtherCommon = @"Resources\Database\Other\";
         public static string FileDatabaseOtherCommonCountry = @"Resources\Database\Other\Country";
         public static string FileDatabaseOtherCommonAppMode = @"Resources\Database\Other\AppMode";
+        public static string FileDatabaseOtherCommonPluginsSoftwareVendor = @"Resources\Database\Other\Plugins\SoftwareVendor";
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //User Config Oids - Values in Config, Proxy here to always use SettingsApp.VAR in Code

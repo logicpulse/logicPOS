@@ -1,10 +1,13 @@
 -- NOTE : Comments must be Terminated by SEPARATOR else we have problems loading Scripts SEPARATOR >>>> ;
 
+-- Encrypted : Will be Updated by Vendor Plugin Script;
+INSERT INTO sys_userdetail (Oid, Name, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
+INSERT INTO erp_customer (Oid, Name, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
+-- Non Encrypted
 INSERT INTO cfg_configurationcountry (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO cfg_configurationcurrency (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO cfg_configurationunitmeasure (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO cfg_configurationunitsize (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
-INSERT INTO erp_customer (Oid, Name, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', 'v+FH8bJATpWpAZNqTeFICwFxJk6c1kSa', 1);
 INSERT INTO erp_customerdiscountgroup (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO erp_customertype (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO fin_article (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
@@ -27,16 +30,15 @@ INSERT INTO pos_configurationplaceterminal (Oid, Designation, Disabled) VALUES (
 INSERT INTO pos_usercommissiongroup (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO rpt_report (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO rpt_reporttype (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
-INSERT INTO sys_configurationprinters (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
-INSERT INTO sys_configurationprinterstemplates (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
-INSERT INTO sys_configurationprinterstype (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
---INSERT INTO sys_configurationweighingmachine (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
-INSERT INTO sys_configurationinputreader (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
-INSERT INTO sys_configurationpoledisplay (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO sys_systemaudittype (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO sys_systemnotificationtype (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO sys_systemprint (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
-INSERT INTO sys_userdetail (Oid, Name, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', 'v+FH8bJATpWpAZNqTeFICwFxJk6c1kSa', 1);
+INSERT INTO sys_configurationprinters (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
+INSERT INTO sys_configurationprinterstemplates (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
+INSERT INTO sys_configurationprinterstype (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
+INSERT INTO sys_configurationweighingmachine (Oid,Designation,Disabled,PortName,Parity,BaudRate,StopBits,DataBits) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1, 'COM1','None','9600','One',0);
+INSERT INTO sys_configurationinputreader (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
+INSERT INTO sys_configurationpoledisplay (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 
 -- Data;
 INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('5f0f47a5-5e2a-4d79-ba9f-56966c9f615e',10,10,'Barman');
@@ -46,12 +48,13 @@ INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('bc7b598e-55d3-46
 INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('91ad42be-91fb-4131-bc15-84d68531d487',50,50,'Gerente');
 INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('1626e21f-75e6-429e-b0ac-edb755e733c2',60,60,'Proprietário');
                                                                       
-INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('090c5684-52ba-4d7a-8bc3-a00320ef503d',10,10,'090c5684-52ba-4d7a-8bc3-a00320','z/9tm7ANh5/+6xtK39qgFg==','yJdqGtmx*Fzx5k5ALs8TzHgzegGxGbFYsdWrsAIH2vWcw8TM6FEGLHOeF0xn1gR7BSOf6PWl7X00GLsMfuvtxRBw/Y1yUCg==','1626e21f-75e6-429e-b0ac-edb755e733c2',1);
-INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('9b17aa8f-66bb-4299-ab0a-814f776d7bd2',20,20,'9b17aa8f-66bb-4299-ab0a-814f77','PnBfi8BzwkE=','HkF8cGI+*HFF4d9m8JWafP0yl7U6/e0Z4Bv/FBKbNM2mFto4UcV4UvglUAtYO2rRkKtd8B5ccRMniNothfh1cRLKAzWDKGw==','91ad42be-91fb-4131-bc15-84d68531d487',1);
-INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('577adb3a-3459-45d5-9bc5-7d23f9ed3f99',30,30,'577adb3a-3459-45d5-9bc5-7d23f9','HGDN/M2P54RLJvyOg0PTgQ==','e8+K/gTL*yl41Sm/lEL1NBftvNKvF6MXrUlLkCFkuzXEd6tVFxcO2eZwKIZBUMG6cRS8AycYkqg7xIjhASu4Vf9r9D4xyng==','bc7b598e-55d3-461c-8dd6-92b9b84796d5',1);
-INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('2867875f-6843-431c-839f-9801791c1570',40,40,'2867875f-6843-431c-839f-980179','TdZ1vOwLNTy1R/FiNEcudw==','db+6M9AG*EBnVqCEhQmoTSlgD7BcHeR0RbJ/MKdkQGRQKudHS+9WL7Li57kYpP0qhE32OYH2Ak2UG9YJQ0Jy4LutMIxGRcg==','6abf2f8e-640b-46f2-ba60-6e7615981463',1);
-INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('3a4a5db4-2d23-43e5-9471-49a0cc33d445',50,50,'3a4a5db4-2d23-43e5-9471-49a0cc','sOGKOicc5LiMdF5hSNOwMrf9fv3sKkJt','3W5Ukb2x*Mo8soBZhbLm4GZ9A8YVfRSZIooLiTTqJAvEvRFPXG9lgSjd0V8UwNVI5fmfMJjgZ4BAJsm77QZkE4ncSK2xZEQ==','096c4da6-9b41-4dce-95d9-17575a2c0b0a',1);
-INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('0777be77-bd66-40e2-82a6-c7f42767e026',60,60,'0777be77-bd66-40e2-82a6-c7f427','2DfjYyPBzQQ=','NBRJnZm8*ZfpdXNxUV4APS0URAhYZW5sfmfixOi1M/tOv9k60mWSduB95GAiaSe9xFpKl0kI+jmJPSlscz0eVhLDdbpL4Xg==','5f0f47a5-5e2a-4d79-ba9f-56966c9f615e',1);
+-- Encrypted : Will be Updated by Vendor Plugin Script;
+INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('090c5684-52ba-4d7a-8bc3-a00320ef503d',10,10,'090c5684-52ba-4d7a-8bc3-a00320','Proprietário','yJdqGtmx*Fzx5k5ALs8TzHgzegGxGbFYsdWrsAIH2vWcw8TM6FEGLHOeF0xn1gR7BSOf6PWl7X00GLsMfuvtxRBw/Y1yUCg==','1626e21f-75e6-429e-b0ac-edb755e733c2',1);
+INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('9b17aa8f-66bb-4299-ab0a-814f776d7bd2',20,20,'9b17aa8f-66bb-4299-ab0a-814f77','Gerente','HkF8cGI+*HFF4d9m8JWafP0yl7U6/e0Z4Bv/FBKbNM2mFto4UcV4UvglUAtYO2rRkKtd8B5ccRMniNothfh1cRLKAzWDKGw==','91ad42be-91fb-4131-bc15-84d68531d487',1);
+INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('577adb3a-3459-45d5-9bc5-7d23f9ed3f99',30,30,'577adb3a-3459-45d5-9bc5-7d23f9','Supervisor','e8+K/gTL*yl41Sm/lEL1NBftvNKvF6MXrUlLkCFkuzXEd6tVFxcO2eZwKIZBUMG6cRS8AycYkqg7xIjhASu4Vf9r9D4xyng==','bc7b598e-55d3-461c-8dd6-92b9b84796d5',1);
+INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('2867875f-6843-431c-839f-9801791c1570',40,40,'2867875f-6843-431c-839f-980179','Chefe de Mesa','db+6M9AG*EBnVqCEhQmoTSlgD7BcHeR0RbJ/MKdkQGRQKudHS+9WL7Li57kYpP0qhE32OYH2Ak2UG9YJQ0Jy4LutMIxGRcg==','6abf2f8e-640b-46f2-ba60-6e7615981463',1);
+INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('3a4a5db4-2d23-43e5-9471-49a0cc33d445',50,50,'3a4a5db4-2d23-43e5-9471-49a0cc','Empregado de Mesa','3W5Ukb2x*Mo8soBZhbLm4GZ9A8YVfRSZIooLiTTqJAvEvRFPXG9lgSjd0V8UwNVI5fmfMJjgZ4BAJsm77QZkE4ncSK2xZEQ==','096c4da6-9b41-4dce-95d9-17575a2c0b0a',1);
+INSERT INTO sys_userdetail (Oid,Ord,Code,CodeInternal,Name,AccessPin,Profile,PasswordReset) VALUES ('0777be77-bd66-40e2-82a6-c7f42767e026',60,60,'0777be77-bd66-40e2-82a6-c7f427','Barman','NBRJnZm8*ZfpdXNxUV4APS0URAhYZW5sfmfixOi1M/tOv9k60mWSduB95GAiaSe9xFpKl0kI+jmJPSlscz0eVhLDdbpL4Xg==','5f0f47a5-5e2a-4d79-ba9f-56966c9f615e',1);
 UPDATE sys_userdetail SET ButtonImage='Assets\\Images\\Icons\\Users\\icon_user_default.png',UpdatedBy='0777be77-bd66-40e2-82a6-c7f42767e026',CreatedAt='2014-02-28 14:02:28',UpdatedAt='2014-02-28 14:02:28';
 --After User;
 UPDATE sys_userprofile SET UpdatedBy='0777be77-bd66-40e2-82a6-c7f42767e026', CreatedAt='2014-07-27 14:02:28', UpdatedAt='2014-07-27 14:02:28';
@@ -1028,7 +1031,8 @@ INSERT INTO erp_customertype (Oid,Ord,Code,Designation) VALUES ('ca2e73ba-5cac-4
 INSERT INTO erp_customertype (Oid,Ord,Code,Designation) VALUES ('15120324-9e28-4e74-8ea0-241aa9be7914',60,60,'Fim-de-Semana');
 UPDATE erp_customertype SET UpdatedBy='0777be77-bd66-40e2-82a6-c7f42767e026',CreatedAt='2014-02-28 14:02:28',UpdatedAt='2014-02-28 14:02:28';
 
-INSERT INTO ERP_customer (Oid,Ord,Code,CodeInternal,Name,FiscalNumber,CardNumber,Address,Locality,ZipCode,City,Country,Discount,PriceType,CustomerType) VALUES ('0cf40622-578b-417d-b50f-e945fefb5d68',10,10,'0cf40622-578b-417d-b50f-e945fe','g8CYe8L7+TnQmdAN9pgWzxSwLQIyd9iK','JtqPrvsGu40p9QWDOYXw7Q==',NULL,'oOfFy1LIA8ugrofKLQUgaA==','oOfFy1LIA8ugrofKLQUgaA==','QNOI0TtlkjgUsC0CMnfYig==','erbqH73qokRU8LI+IxkVmQ==','e7e8c325-a0d4-4908-b148-508ed750676a',0,'cf17a218-b687-4b82-a8f4-0905594ac1f5','a4b3811f-9851-430d-810e-f8be7ac3f392');
+-- Encrypted : Will be Updated by Vendor Plugin Script;
+INSERT INTO erp_customer (Oid,Ord,Code,CodeInternal,Name,FiscalNumber,CardNumber,Address,Locality,ZipCode,City,Country,Discount,PriceType,CustomerType) VALUES ('0cf40622-578b-417d-b50f-e945fefb5d68',10,10,'0cf40622-578b-417d-b50f-e945fe','Consumidor Final','999999990',NULL,'Desconhecido','Desconhecido','1000-000','Indefinido','e7e8c325-a0d4-4908-b148-508ed750676a',0,'cf17a218-b687-4b82-a8f4-0905594ac1f5','a4b3811f-9851-430d-810e-f8be7ac3f392');
 UPDATE erp_customer SET UpdatedBy='0777be77-bd66-40e2-82a6-c7f42767e026',CreatedAt='2014-02-28 14:02:28',UpdatedAt='2014-02-28 14:02:28';
 
 INSERT INTO erp_customerdiscountgroup (Oid,Ord,Code,Designation) VALUES ('72dfb8e2-3a48-4d01-8800-8d497e599fbe',10,10,'Mínimo');

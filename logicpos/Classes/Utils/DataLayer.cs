@@ -46,6 +46,7 @@ namespace logicpos
             string sqlDatabaseOtherDatabaseType = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString));
             string sqlDatabaseOtherCommon = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommon);
             string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), GlobalFramework.Settings["appOperationModeToken"].ToLower());
+            string sqlDatabaseOtherCommonPluginsSoftwareVendor = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
             string sqlDatabaseData = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseData);
             string sqlDatabaseDataDemo = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseDataDemo);
             string sqlDatabaseViews = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseViews);
@@ -149,6 +150,11 @@ namespace logicpos
                     {
                         result = ProcessDump(xpoSession, sqlDatabaseDataDemo, ";", replace);
                     }
+                    //Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
+                    if (result)
+                    {
+                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, ";", replace);
+                    }
                     //Views
                     if (result)
                     {
@@ -165,7 +171,11 @@ namespace logicpos
                     {
                         result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommon, commandSeparator, replace);
                     }
-
+////Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
+//if (result)
+//{
+//    result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, commandSeparator, replace);
+//}
                     //Process Other Files: DatabaseOtherCommonAppMode
                     if (result)
                     {
