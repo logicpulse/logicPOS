@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="06/20/2018 17:25:29" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="06/22/2018 15:05:02" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
   <Styles>
     <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
     <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
@@ -79,25 +79,7 @@
       <Column Name="Payed" DataType="System.Boolean" BindableControl="CheckBox"/>
       <Column Name="PayedDate" DataType="System.DateTime"/>
       <Column Name="Printed" DataType="System.Boolean" BindableControl="CheckBox"/>
-      <Column Name="SourceOrderMain" DataType="logicpos.datalayer.DataLayer.Xpo.FIN_DocumentOrderMain, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <Column Name="Oid" DataType="System.Guid"/>
-        <Column Name="Disabled" DataType="System.Boolean" BindableControl="CheckBox"/>
-        <Column Name="Notes" DataType="System.String"/>
-        <Column Name="CreatedAt" DataType="System.DateTime"/>
-        <Column Name="UpdatedAt" DataType="System.DateTime"/>
-        <Column Name="DeletedAt" DataType="System.DateTime"/>
-        <Column Name="DateStart" DataType="System.DateTime"/>
-        <Column Name="OrderStatus" DataType="logicpos.datalayer.Enums.OrderStatus, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
-        <Column Name="IsEncrypted" DataType="System.Boolean" BindableControl="CheckBox"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource29" Alias="CreatedBy" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="CreatedBy"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource30" Alias="CreatedWhere" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="CreatedWhere"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource31" Alias="UpdatedBy" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="UpdatedBy"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource32" Alias="UpdatedWhere" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="UpdatedWhere"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource33" Alias="DeletedBy" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="DeletedBy"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource34" Alias="DeletedWhere" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="DeletedWhere"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource35" Alias="OrderTicket" Enabled="false" DataType="DevExpress.Xpo.XPCollection`1[[logicpos.datalayer.DataLayer.Xpo.FIN_DocumentOrderTicket, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="OrderTicket"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource36" Alias="PlaceTable" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="PlaceTable"/>
-      </Column>
+      <Column Name="SourceOrderMain" DataType="logicpos.datalayer.DataLayer.Xpo.FIN_DocumentOrderMain, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
       <Column Name="DocumentType" DataType="logicpos.datalayer.DataLayer.Xpo.FIN_DocumentFinanceType, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <Column Name="Oid" DataType="System.Guid"/>
         <Column Name="Disabled" Enabled="false" DataType="System.Boolean" BindableControl="CheckBox"/>
@@ -137,32 +119,7 @@
         <BusinessObjectDataSource Name="BusinessObjectDataSource47" Alias="Series" Enabled="false" DataType="DevExpress.Xpo.XPCollection`1[[logicpos.datalayer.DataLayer.Xpo.FIN_DocumentFinanceSeries, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="Series"/>
         <BusinessObjectDataSource Name="BusinessObjectDataSource48" Alias="YearSerieTerminal" Enabled="false" DataType="DevExpress.Xpo.XPCollection`1[[logicpos.datalayer.DataLayer.Xpo.FIN_DocumentFinanceYearSerieTerminal, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="YearSerieTerminal"/>
       </Column>
-      <Column Name="PaymentMethod" DataType="logicpos.datalayer.DataLayer.Xpo.FIN_ConfigurationPaymentMethod, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-        <Column Name="Oid" DataType="System.Guid"/>
-        <Column Name="Disabled" DataType="System.Boolean" BindableControl="CheckBox"/>
-        <Column Name="Notes" DataType="System.String"/>
-        <Column Name="CreatedAt" DataType="System.DateTime"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource21" Alias="CreatedBy" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="CreatedBy"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource22" Alias="CreatedWhere" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="CreatedWhere"/>
-        <Column Name="UpdatedAt" DataType="System.DateTime"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource23" Alias="UpdatedBy" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="UpdatedBy"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource24" Alias="UpdatedWhere" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="UpdatedWhere"/>
-        <Column Name="DeletedAt" DataType="System.DateTime"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource25" Alias="DeletedBy" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="DeletedBy"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource26" Alias="DeletedWhere" Enabled="false" DataType="DevExpress.Xpo.XPCollection, DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="DeletedWhere"/>
-        <Column Name="Ord" DataType="System.UInt32"/>
-        <Column Name="Code" DataType="System.UInt32"/>
-        <Column Name="Token" DataType="System.String"/>
-        <Column Name="Designation" DataType="System.String"/>
-        <Column Name="ResourceString" DataType="System.String"/>
-        <Column Name="ButtonIcon" DataType="System.String"/>
-        <Column Name="Acronym" DataType="System.String"/>
-        <Column Name="AllowPayback" DataType="System.String"/>
-        <Column Name="Symbol" DataType="System.String"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource27" Alias="DocumentMaster" Enabled="false" DataType="DevExpress.Xpo.XPCollection`1[[logicpos.datalayer.DataLayer.Xpo.FIN_DocumentFinanceMaster, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="DocumentMaster"/>
-        <BusinessObjectDataSource Name="BusinessObjectDataSource28" Alias="DocumentPayment" Enabled="false" DataType="DevExpress.Xpo.XPCollection`1[[logicpos.datalayer.DataLayer.Xpo.FIN_DocumentFinancePayment, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=null" PropName="DocumentPayment"/>
-        <Column Name="IsEncrypted" DataType="System.Boolean" BindableControl="CheckBox"/>
-      </Column>
+      <Column Name="PaymentMethod" DataType="logicpos.datalayer.DataLayer.Xpo.FIN_ConfigurationPaymentMethod, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
       <Column Name="PaymentCondition" DataType="logicpos.datalayer.DataLayer.Xpo.FIN_ConfigurationPaymentCondition, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <Column Name="Oid" DataType="System.Guid"/>
         <Column Name="Disabled" Enabled="false" DataType="System.Boolean" BindableControl="CheckBox"/>
@@ -305,20 +262,20 @@
       <inherited Name="TextReportTitle" Height="28.35" Text="[Report Title]" VertAlign="Center" Font="Arial, 12pt"/>
       <TextObject Name="TextReportFilter" ZOrder="2" Left="198.45" Top="28.35" Width="519.75" Height="18.9" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt, style=Bold" Wysiwyg="true"/>
     </inherited>
-    <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" KeepWithData="true" Condition="[DocumentFinanceMaster.DocumentType.Ord]">
-      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" Text="[DocumentFinanceMaster.DocumentType.Designation] ([DocumentFinanceMaster.DocumentType.Code])" VertAlign="Center" Font="Arial, 15.75pt" Style="DataLevel1Font"/>
+    <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" CanGrow="true" CanShrink="true" KeepWithData="true" Condition="[DocumentFinanceMaster.EntityFiscalNumber]">
+      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" CanGrow="true" CanShrink="true" Text="[DocumentFinanceMaster.EntityName] ([DocumentFinanceMaster.EntityFiscalNumber])" VertAlign="Center" Font="Arial, 15.75pt" Style="DataLevel1Font"/>
       <DataBand Name="Data3" Top="126.75" Width="718.2" Height="18.9" EvenStyle="EvenRow" DataSource="DocumentFinanceMaster">
-        <TextObject Name="Text16" Width="160.65" Height="18.9" Text="[DocumentFinanceMaster.DocumentNumber]" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-        <TextObject Name="Text17" Left="292.95" Width="236.25" Height="18.9" Text="[DocumentFinanceMaster.EntityName]" VertAlign="Center" Font="Arial, 9pt" Style="DataFont"/>
+        <TextObject Name="Text16" Width="122.85" Height="18.9" Text="[DocumentFinanceMaster.DocumentNumber]" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+        <TextObject Name="Text17" Left="236.25" Width="292.95" Height="18.9" Text="[DocumentFinanceMaster.EntityName]" VertAlign="Center" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter" Style="DataFont"/>
         <TextObject Name="Text31" Left="633.15" Width="85.05" Height="18.9" Text="[FormatNumber([DocumentFinanceMaster.TotalFinalRound],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
         <TextObject Name="Text32" Left="529.2" Width="103.95" Height="18.9" Text="[DocumentFinanceMaster.EntityFiscalNumber]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt" Style="DataFont"/>
-        <TextObject Name="Text36" Left="160.65" Width="132.3" Height="18.9" Text="[DocumentFinanceMaster.Date]" Format="Custom" Format.Format="yyyy/MM/dd hh:mm:ss" VertAlign="Center" Font="Arial, 9pt" Style="DataFont"/>
+        <TextObject Name="Text36" Left="122.85" Width="103.95" Height="18.9" Text="[DocumentFinanceMaster.Date]" Format="Custom" Format.Format="yyyy/MM/dd hh:mm:ss" VertAlign="Center" WordWrap="false" Font="Arial, 9pt" Style="DataFont"/>
         <DataHeaderBand Name="DataHeader1" Top="94.4" Width="718.2" Height="28.35" Border.Lines="Top" KeepWithData="true">
-          <TextObject Name="Text24" Top="9.45" Width="160.65" Height="18.9" Text="[Res(&quot;global_document_number_acronym&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-          <TextObject Name="Text25" Left="292.95" Top="9.45" Width="236.25" Height="18.9" Text="[Res(&quot;global_name&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="Text24" Top="9.45" Width="122.85" Height="18.9" Text="[Res(&quot;global_document_number_acronym&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="Text25" Left="236.25" Top="9.45" Width="292.95" Height="18.9" Text="[Res(&quot;global_name&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
           <TextObject Name="Text34" Left="633.15" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
           <TextObject Name="Text35" Left="529.2" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;global_fiscal_number_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-          <TextObject Name="Text37" Left="160.65" Top="9.45" Width="132.3" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="Text37" Left="122.85" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
         </DataHeaderBand>
         <Sort>
           <Sort Expression="[DocumentFinanceMaster.Date]"/>
@@ -329,10 +286,10 @@
         <TextObject Name="TextSubTotalDiscount" Left="633.15" Top="18.9" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([GroupTotalTotalDiscount],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
         <TextObject Name="TextSubTotalTax" Left="633.15" Top="37.8" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([GroupTotalTotalTax],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
         <TextObject Name="TextSubTotalTotal" Left="633.15" Top="56.7" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([GroupTotalTotalFinalRound],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
-        <TextObject Name="TextSubTotalGrossLabel" Left="292.95" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totalgross&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
-        <TextObject Name="TextSubTotalDiscountLabel" Left="292.95" Top="18.9" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_discount_customer&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
-        <TextObject Name="TextSubTotalTaxLabel" Left="292.95" Top="37.8" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
-        <TextObject Name="TextSubTotalTotalLabel" Left="292.95" Top="56.7" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalGrossLabel" Left="236.25" Width="396.9" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totalgross&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalDiscountLabel" Left="236.25" Top="18.9" Width="396.9" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_discount_customer&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalTaxLabel" Left="236.25" Top="37.8" Width="396.9" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="TextSubTotalTotalLabel" Left="236.25" Top="56.7" Width="396.9" Height="18.9" CanBreak="false" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
       </GroupFooterBand>
     </GroupHeaderBand>
     <ReportSummaryBand Name="ReportSummary1" ZOrder="-1" Top="229.25" Width="718.2" Height="75.6">
@@ -340,10 +297,10 @@
       <TextObject Name="Text39" Left="633.15" Top="18.9" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([ReportTotalTotalDiscount],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
       <TextObject Name="Text40" Left="633.15" Top="37.8" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([ReportTotalTotalTax],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
       <TextObject Name="Text41" Left="633.15" Top="56.7" Width="85.05" Height="18.9" CanBreak="false" Text="[FormatNumber([ReportTotalTotalFinalRound],2)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
-      <TextObject Name="Text42" Left="292.95" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totalgross&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
-      <TextObject Name="Text43" Left="292.95" Top="18.9" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_discount_customer&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
-      <TextObject Name="Text44" Left="292.95" Top="37.8" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
-      <TextObject Name="Text45" Left="292.95" Top="56.7" Width="340.2" Height="18.9" CanBreak="false" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text42" Left="236.25" Width="396.9" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totalgross&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text43" Left="236.25" Top="18.9" Width="396.9" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_discount_customer&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text44" Left="236.25" Top="37.8" Width="396.9" Height="18.9" CanBreak="false" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject Name="Text45" Left="236.25" Top="56.7" Width="396.9" Height="18.9" CanBreak="false" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true" Style="DataFontBold"/>
     </ReportSummaryBand>
     <inherited Name="PageFooter1" Top="308.85" Height="56.7">
       <inherited Name="TextFooter1"/>

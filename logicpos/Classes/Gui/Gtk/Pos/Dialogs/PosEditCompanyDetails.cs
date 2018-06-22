@@ -66,6 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Get Values from Config
             Guid systemCountry;
             Guid systemCurrency;
+            bool debug = false;
             bool useDatabaseDataDemo = Convert.ToBoolean(GlobalFramework.Settings["useDatabaseDataDemo"]);
 
             if (GlobalFramework.Settings["xpoOidConfigurationCountrySystemCountry"] != string.Empty)
@@ -182,7 +183,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (Debugger.IsAttached == true || useDatabaseDataDemo) { entryBoxValidation.EntryValidation.Text = item.Value; }
                         if (Debugger.IsAttached == true)
                         {
-                            _log.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true,useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
+                            if (debug) _log.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true,useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
                         }
 
                         //Assign shared Event
