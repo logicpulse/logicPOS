@@ -98,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ? CustomReportDisplayMode.Design
                 : CustomReportDisplayMode.ExportPDF;
             // Override Default Development Mode
-            //displayMode = CustomReportDisplayMode.Design;
+            displayMode = CustomReportDisplayMode.ExportPDF;
 
             // Local Variables
             string reportFilter = string.Empty;

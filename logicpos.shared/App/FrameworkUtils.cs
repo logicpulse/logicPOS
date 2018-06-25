@@ -1905,11 +1905,13 @@ namespace logicpos.shared.App
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(filter);
                 SortProperty sortProperty = new SortProperty("CreatedAt", DevExpress.Xpo.DB.SortingDirection.Ascending);
                 XPCollection xpcDocumentFinanceMaster = new XPCollection(pSession, typeof(FIN_DocumentFinanceMaster), criteriaOperator, sortProperty);
+
                 if (xpcDocumentFinanceMaster.Count > 0)
                 {
                     int i = 0;
                     String documentsMessage = String.Empty;
                     int documentBackUtilDays = 0;
+
                     //Generate DocumentNumber List
                     foreach (FIN_DocumentFinanceMaster item in xpcDocumentFinanceMaster)
                     {
@@ -1918,6 +1920,9 @@ namespace logicpos.shared.App
                         documentBackUtilDays = GetUtilDays(item.Date, true).Count;
                         documentsMessage += string.Format("- {0} : {1} ({2})", item.DocumentNumber, item.Date, documentBackUtilDays);
                         if (i < xpcDocumentFinanceMaster.Count) documentsMessage += Environment.NewLine;
+
+// Persist SystemNotification in DocumentFinanceMaster
+//xpcDocumentFinanceMaster.
                     }
 
                     result = new SYS_SystemNotification(pSession)
@@ -1926,7 +1931,6 @@ namespace logicpos.shared.App
                         Message = string.Format(systemNotificationType.Message, xpcDocumentFinanceMaster.Count, pDaysBackToFilter, documentsMessage)
                     };
                 }
-
             }
             catch (Exception ex)
             {

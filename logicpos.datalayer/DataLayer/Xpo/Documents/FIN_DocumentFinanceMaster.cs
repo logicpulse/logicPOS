@@ -572,6 +572,13 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentChild", ref fDocumentChild, value); }
         }
 
+        SYS_SystemNotification fSystemNotification;
+        public SYS_SystemNotification SystemNotification
+        {
+            get { return fSystemNotification; }
+            set { SetPropertyValue<SYS_SystemNotification>("SystemNotification", ref fSystemNotification, value); }
+        }        
+
         //WayBill Code
         string fATDocCodeID;
         [Size(200)]

@@ -949,9 +949,6 @@
     <Content Include="Assets\Images\Icons\Windows\icon_window_window_close.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Images\Icons\Windows\icon_window_worksessions.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\Images\Licence\licence.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
