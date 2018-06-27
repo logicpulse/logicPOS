@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Threading;
@@ -115,6 +116,19 @@ namespace logicpos.financial.service
                 //Create Directories
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["certificates"])));
+
+                // Protection for plugins Path
+                if (GlobalFramework.Path["plugins"] == null || ! Directory.Exists(GlobalFramework.Path["plugins"].ToString()))
+                {
+                    Utils.Log($"Missing pathPlugins: {GlobalFramework.Settings["pathPlugins"]}. Please correct path in config! ex \"c:\\Program Files (x86)\\Logicpulse\"");
+                    //Output only if in Console Mode
+                    if (Environment.UserInteractive)
+                    {
+                        Utils.Log("Press any key...");
+                        Console.ReadKey();
+                    }
+                    Environment.Exit(0);
+                }
 
                 // VendorPlugin
                 InitPlugins();

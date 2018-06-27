@@ -34,6 +34,11 @@
   <PropertyGroup>
     <ApplicationIcon>application.ico</ApplicationIcon>
   </PropertyGroup>
+  <!--
+  <PropertyGroup>
+    <ApplicationIcon>application.ico</ApplicationIcon>
+  </PropertyGroup>
+  -->
   <ItemGroup>
     <Reference Include="DevExpress.Data.v14.1">
       <HintPath>..\..\libs\xpo_14_1_5\DevExpress.Data.v14.1.dll</HintPath>
@@ -107,6 +112,7 @@
     <None Include="Utils\service_uninstall.bat" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="application.ico" />
     <Content Include="Objects\Service\Service1.svc" />
     <Content Include="Resources\Certificates\TesteWebService.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

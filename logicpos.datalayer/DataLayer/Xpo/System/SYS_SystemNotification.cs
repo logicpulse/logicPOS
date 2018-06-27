@@ -66,13 +66,36 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("TerminalLastRead", ref fTerminalLastRead, value); }
         }
 
-        //One SystemNotificationType <> Many SystemNotification
+        //SystemNotificationType One <> Many SystemNotification
         SYS_SystemNotificationType fNotificationType;
         [Association(@"SystemNotificationTypeReferencesSystemNotification")]
         public SYS_SystemNotificationType NotificationType
         {
             get { return fNotificationType; }
             set { SetPropertyValue<SYS_SystemNotificationType>("NotificationType", ref fNotificationType, value); }
+        }
+
+////SystemNotification Many <> Many DocumentFinanceMaster
+//[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(FIN_DocumentFinanceMaster))]
+//public XPCollection<FIN_DocumentFinanceMaster> DocumentMaster
+//{
+//    get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentMaster"); }
+//}
+
+////SystemNotification One <> Many DocumentFinanceMaster
+//SYS_SystemNotification fNotification;
+//[Association(@"SystemNotificationReferencesDocumentFinanceMaster")]
+//public SYS_SystemNotification Notification
+//{
+//    get { return fNotification; }
+//    set { SetPropertyValue<SYS_SystemNotification>("Notification", ref fNotification, value); }
+//}
+
+        //SystemNotification One <> Many DocumentFinanceMaster
+        [Association(@"SystemNotificationReferenceDocumentFinanceMaster", typeof(SYS_SystemNotificationDocumentMaster))]
+        public XPCollection<SYS_SystemNotificationDocumentMaster> Notifications
+        {
+            get { return GetCollection<SYS_SystemNotificationDocumentMaster>("Notifications"); }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace logicpos.App
         //Used to Force/Override Intellilock assigned GlobalFramework.LicenceRegistered in BootStrap
         public static bool LicenceRegistered = true;
         //Valid databaseType Values: SQLite, MySql, MSSqlServer (DBName Must be lowercase)
-        public static string DatabaseName = "logicposdb";//logicpos_demotec_new_version
+        public static string DatabaseName = "logicposdb";
         //Used to Force create DatabaseScema and Fixtures with XPO (Non Script Mode): Requirements for Work: Empty or Non Exist Database
         //Notes: OnError "An exception of type 'DevExpress.Xpo.DB.Exceptions.SchemaCorrectionNeededException'", UnCheck [X] Break when this exception is user-unhandled and continue, watch log and wait until sucefull message appear
         public static bool XPOCreateDatabaseAndSchema = false;

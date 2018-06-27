@@ -2805,6 +2805,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Day(s).
+        /// </summary>
+        public static string global_day_days {
+            get {
+                return ResourceManager.GetString("global_day_days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Debit.
         /// </summary>
         public static string global_debit {
@@ -6960,6 +6969,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string prefparam_hardware_input_reader_timer_interval {
             get {
                 return ResourceManager.GetString("prefparam_hardware_input_reader_timer_interval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications : Documents to Invoice : Ignore notifications after has been notificated a determined number of times.
+        /// </summary>
+        public static string prefparam_notification_documents_to_invoice_ignore_after_show_number_of_times {
+            get {
+                return ResourceManager.GetString("prefparam_notification_documents_to_invoice_ignore_after_show_number_of_times", resourceCulture);
             }
         }
         

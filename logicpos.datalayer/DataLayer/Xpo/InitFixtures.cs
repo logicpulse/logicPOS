@@ -458,7 +458,8 @@ SYS_ConfigurationWeighingMachine configurationWeighingMachine = new SYS_Configur
             CFG_ConfigurationHolidays configurationHolidays1 = new CFG_ConfigurationHolidays(_session) { Ord = 10, Code = 10, Designation = "Feriado", Day = 1, Month = 1, Year = 1, Fixed = true }; configurationHolidays1.Save();
 
             //SystemNotification      
-            SYS_SystemNotification systemNotification1 = new SYS_SystemNotification(GlobalFramework.SessionXpo) { Message = "Welcome Message" }; systemNotification1.Save();
+            SYS_SystemNotification systemNotification1 = new SYS_SystemNotification(GlobalFramework.SessionXpo) { Message = "Welcome Message" }; 
+            systemNotification1.Save();
 
             //SystemBackup
             XPCollection xpcSystemBackup = new XPCollection(_session, typeof(SYS_SystemBackup));

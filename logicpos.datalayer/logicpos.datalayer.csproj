@@ -54,6 +54,7 @@
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationInputReader.cs" />
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationPoleDisplay.cs" />
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationWeighingMachine.cs" />
+    <Compile Include="DataLayer\Xpo\System\SYS_SystemNotificationDocumentMaster.cs" />
     <Compile Include="DataLayer\Xpo\XPGuidObjectAttribute.cs" />
     <Compile Include="Enums\AppOperationMode.cs" />
     <Compile Include="Enums\DatabaseType.cs" />

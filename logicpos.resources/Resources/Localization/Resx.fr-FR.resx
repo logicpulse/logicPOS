@@ -3092,4 +3092,10 @@ Quantité valide: {1}</value>
   <data name="window_title_dialog_split_payment" xml:space="preserve">
     <value>Paiement Fractionné : Montant par Client: [{0} x {1}]</value>
   </data>
+  <data name="global_day_days" xml:space="preserve">
+    <value>Journée(s)</value>
+  </data>
+  <data name="prefparam_notification_documents_to_invoice_ignore_after_show_number_of_times" xml:space="preserve">
+    <value>Notifications: Documents to Invoice: Ignorer les notifications après avoir été notifiées un nombre déterminé de fois</value>
+  </data>
 </root>

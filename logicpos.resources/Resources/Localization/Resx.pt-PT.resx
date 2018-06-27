@@ -2036,7 +2036,7 @@ Erro: {2}</value>
     <value>Data Final</value>
   </data>
   <data name="global_date_start" xml:space="preserve">
-    <value>Data Incial</value>
+    <value>Data Inicial</value>
   </data>
   <data name="window_title_select_worksession_period_day" xml:space="preserve">
     <value>Selecione o Periodo de Trabalho (Dia)</value>
@@ -3108,9 +3108,15 @@ Quantidade válida: {1}</value>
     <value>Divisão de Conta : Numero minimo de divisão de Clientes</value>
   </data>
   <data name="prefparam_split_payment_start_clients" xml:space="preserve">
-    <value>Divisão de Conta : Numero incial de divisão de Clientes</value>
+    <value>Divisão de Conta : Numero inicial de divisão de Clientes</value>
   </data>
   <data name="window_title_dialog_split_payment" xml:space="preserve">
     <value>Divisão de pagamento : Total por Cliente: [{0} x {1}]</value>
+  </data>
+  <data name="global_day_days" xml:space="preserve">
+    <value>Dia(s)</value>
+  </data>
+  <data name="prefparam_notification_documents_to_invoice_ignore_after_show_number_of_times" xml:space="preserve">
+    <value>Notificações : Documentos a Faturar : Ignorar notificações após determinado numero de vezes</value>
   </data>
 </root>

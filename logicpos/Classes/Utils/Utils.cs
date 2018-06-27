@@ -1781,7 +1781,7 @@ namespace logicpos
                     ResponseType response = Utils.ShowMessageTouch(
                       pSourceWindow,
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                      new Size(650, 480),
+                      new Size(700, 480),
                       MessageType.Info,
                       ButtonsType.Ok,
                       Resx.window_title_dialog_notification,

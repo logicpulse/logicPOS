@@ -1885,10 +1885,23 @@ namespace logicpos.shared.App
         //Base Method
         public static SYS_SystemNotification ProcessFinanceDocumentToInvoice(Session pSession, Guid pSystemNotificationTypeGuid, string pFilter, string pExtraFilter, int pDaysBackToFilter)
         {
-
             //Init Local Vars
             SYS_SystemNotificationType systemNotificationType = (SYS_SystemNotificationType)pSession.GetObjectByKey(typeof(SYS_SystemNotificationType), pSystemNotificationTypeGuid);
             SYS_SystemNotification result = null;
+            //Used to Persist SYS_SystemNotification if greater than 0
+            int totalNotificatedDocuments = 0;
+            //Show total Showed Notification in Document
+            int totalNotificationsInDocument = 0;
+            //Ignore Notificate Documents after Documents Have Been Notified a determined Number Of Times
+            int ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = 0;
+            try
+            {
+                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(GlobalFramework.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
+            }
+            catch (Exception)
+            {
+                _log.Error(string.Format("Error using PreferenceParameters: NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES, using default Value of : [{0}]", ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes));
+            }
 
             try
             {
@@ -1906,30 +1919,60 @@ namespace logicpos.shared.App
                 SortProperty sortProperty = new SortProperty("CreatedAt", DevExpress.Xpo.DB.SortingDirection.Ascending);
                 XPCollection xpcDocumentFinanceMaster = new XPCollection(pSession, typeof(FIN_DocumentFinanceMaster), criteriaOperator, sortProperty);
 
+                // Debug Helper
+                //if (pSystemNotificationTypeGuid.Equals(SettingsApp.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods))
+                //{
+                //    _log.Debug("BREAK");
+                //}
+
                 if (xpcDocumentFinanceMaster.Count > 0)
                 {
                     int i = 0;
                     String documentsMessage = String.Empty;
                     int documentBackUtilDays = 0;
 
-                    //Generate DocumentNumber List
+                    //Generate DocumentNumber List documentsMessage
                     foreach (FIN_DocumentFinanceMaster item in xpcDocumentFinanceMaster)
                     {
                         i++;
                         //Get BackDays
                         documentBackUtilDays = GetUtilDays(item.Date, true).Count;
-                        documentsMessage += string.Format("- {0} : {1} ({2})", item.DocumentNumber, item.Date, documentBackUtilDays);
-                        if (i < xpcDocumentFinanceMaster.Count) documentsMessage += Environment.NewLine;
+                        // Get total notification for Current Document
+                        totalNotificationsInDocument = item.Notifications.Count;
 
-// Persist SystemNotification in DocumentFinanceMaster
-//xpcDocumentFinanceMaster.
+                        // If document has less notifications show it again, or if is ignored with ignoreNotificationsAfterBeenNotificatedTimes == 0
+                        if (ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes == 0 || totalNotificationsInDocument < ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes)
+                        {
+                            // Increment notifications counter
+                            totalNotificatedDocuments++;
+                            // Add To Message
+                            documentsMessage += string.Format("- {0} : {1} : {2} {3} : (#{4})", item.DocumentNumber, item.Date, documentBackUtilDays, Resx.global_day_days, item.Notifications.Count + 1);
+                            //Add New Line if not Last Document
+                            if (i < xpcDocumentFinanceMaster.Count) documentsMessage += Environment.NewLine;
+                        }
                     }
 
-                    result = new SYS_SystemNotification(pSession)
+                    // Create Notification Object if has notifications
+                    if (totalNotificatedDocuments > 0)
                     {
-                        NotificationType = systemNotificationType,
-                        Message = string.Format(systemNotificationType.Message, xpcDocumentFinanceMaster.Count, pDaysBackToFilter, documentsMessage)
-                    };
+                        result = new SYS_SystemNotification(pSession)
+                        {
+                            NotificationType = systemNotificationType,
+                            Message = string.Format(systemNotificationType.Message, totalNotificatedDocuments, pDaysBackToFilter, documentsMessage)
+                        };
+                        result.Save();
+
+                        //Persist SYS_SystemNotificationDocumentMaster manyToMany Relantionship
+                        foreach (FIN_DocumentFinanceMaster item in xpcDocumentFinanceMaster)
+                        {
+                            SYS_SystemNotificationDocumentMaster notificationDocumentMasterReference = new SYS_SystemNotificationDocumentMaster(pSession)
+                            {
+                                DocumentMaster = item,
+                                Notification = result
+                            };
+                            notificationDocumentMasterReference.Save();
+                        }
+                    }
                 }
             }
             catch (Exception ex)

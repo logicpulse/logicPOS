@@ -47,11 +47,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
+                
                 //Value
                 Entry entryValue = new Entry();
                 BOWidgetBox boxValue = new BOWidgetBox(Resx.global_vat_rate_value, entryValue);
                 vboxTab1.PackStart(boxValue, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", SettingsApp.RegexIntegerGreaterEqualThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", SettingsApp.RegexDecimalGreaterThanZero, true));
 
                 //TaxType
                 Entry entryTaxType = new Entry();

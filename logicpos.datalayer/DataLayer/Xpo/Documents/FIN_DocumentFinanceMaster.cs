@@ -572,13 +572,6 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentChild", ref fDocumentChild, value); }
         }
 
-        SYS_SystemNotification fSystemNotification;
-        public SYS_SystemNotification SystemNotification
-        {
-            get { return fSystemNotification; }
-            set { SetPropertyValue<SYS_SystemNotification>("SystemNotification", ref fSystemNotification, value); }
-        }        
-
         //WayBill Code
         string fATDocCodeID;
         [Size(200)]
@@ -681,6 +674,36 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public XPCollection<SYS_SystemPrint> SystemPrint
         {
             get { return GetCollection<SYS_SystemPrint>("SystemPrint"); }
+        }
+
+////SystemNotification One <> Many DocumentFinanceMaster
+//SYS_SystemNotification fNotification;
+//[Association(@"SystemNotificationReferencesDocumentFinanceMaster")]
+//public SYS_SystemNotification Notification
+//{
+//    get { return fNotification; }
+//    set { SetPropertyValue<SYS_SystemNotification>("Notification", ref fNotification, value); }
+//}
+
+////SystemNotification One <> Many DocumentFinanceMaster
+//[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(SYS_SystemNotification))]
+//public XPCollection<SYS_SystemNotification> Notification
+//{
+//    get { return GetCollection<SYS_SystemNotification>("Notification"); }
+//}
+
+////DocumentFinanceMaster Many <> Many SystemNotification
+//[Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(SYS_SystemNotification))]
+//public XPCollection<SYS_SystemNotification> Notification
+//{
+//    get { return GetCollection<SYS_SystemNotification>("Notification"); }
+//}
+
+        //SystemNotification One <> Many DocumentFinanceMaster
+        [Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(SYS_SystemNotificationDocumentMaster))]
+        public XPCollection<SYS_SystemNotificationDocumentMaster> Notifications
+        {
+            get { return GetCollection<SYS_SystemNotificationDocumentMaster>("Notifications"); }
         }
     }
 }

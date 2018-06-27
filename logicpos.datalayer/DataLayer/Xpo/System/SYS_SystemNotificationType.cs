@@ -62,7 +62,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("TerminalTarget", ref fTerminalTarget, value); }
         }
 
-        //One SystemNotificationType <> Many SystemNotification
+        //SystemNotificationType One <> Many SystemNotification
         [Association(@"SystemNotificationTypeReferencesSystemNotification", typeof(SYS_SystemNotification))]
         public XPCollection<SYS_SystemNotification> Notification
         {

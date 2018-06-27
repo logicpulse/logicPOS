@@ -638,6 +638,15 @@ CREATE INDEX [iTerminalTarget_SYS_SystemNotification] on [SYS_SystemNotification
 CREATE INDEX [iUserLastRead_SYS_SystemNotification] on [SYS_SystemNotification]([UserLastRead]);
 CREATE INDEX [iTerminalLastRead_SYS_SystemNotification] on [SYS_SystemNotification]([TerminalLastRead]);
 CREATE INDEX [iNotificationType_SYS_SystemNotification] on [SYS_SystemNotification]([NotificationType]);
+CREATE TABLE [SYS_SystemNotificationDocumentMaster] ([Oid] char(36) NOT NULL, [Disabled] bit, [Notes] text NULL, [CreatedAt] datetime NULL, [CreatedBy] char(36) NULL, [CreatedWhere] char(36) NULL, [UpdatedAt] datetime NULL, [UpdatedBy] char(36) NULL, [UpdatedWhere] char(36) NULL, [DeletedAt] datetime NULL, [DeletedBy] char(36) NULL, [DeletedWhere] char(36) NULL, [Notification] char(36) NULL, [DocumentMaster] char(36) NULL, [OptimisticLockField] int NULL, primary key ([Oid]));
+CREATE INDEX [iCreatedBy_SYS_SystemNotificationDocumentMaster] on [SYS_SystemNotificationDocumentMaster]([CreatedBy]);
+CREATE INDEX [iCreatedWhere_SYS_SystemNotificationDocumentMaster] on [SYS_SystemNotificationDocumentMaster]([CreatedWhere]);
+CREATE INDEX [iUpdatedBy_SYS_SystemNotificationDocumentMaster] on [SYS_SystemNotificationDocumentMaster]([UpdatedBy]);
+CREATE INDEX [iUpdatedWhere_SYS_SystemNotificationDocumentMaster] on [SYS_SystemNotificationDocumentMaster]([UpdatedWhere]);
+CREATE INDEX [iDeletedBy_SYS_SystemNotificationDocumentMaster] on [SYS_SystemNotificationDocumentMaster]([DeletedBy]);
+CREATE INDEX [iDeletedWhere_SYS_SystemNotificationDocumentMaster] on [SYS_SystemNotificationDocumentMaster]([DeletedWhere]);
+CREATE INDEX [iNotification_SYS_SystemNotificationDocumentMaster] on [SYS_SystemNotificationDocumentMaster]([Notification]);
+CREATE INDEX [iDocumentMaster_SYS_SystemNotificationDocumentMaster] on [SYS_SystemNotificationDocumentMaster]([DocumentMaster]);
 CREATE TABLE [SYS_SystemNotificationType] ([Oid] char(36) NOT NULL, [Disabled] bit, [Notes] text NULL, [CreatedAt] datetime NULL, [CreatedBy] char(36) NULL, [CreatedWhere] char(36) NULL, [UpdatedAt] datetime NULL, [UpdatedBy] char(36) NULL, [UpdatedWhere] char(36) NULL, [DeletedAt] datetime NULL, [DeletedBy] char(36) NULL, [DeletedWhere] char(36) NULL, [Ord] numeric(10,0) NULL, [Code] numeric(10,0) NULL, [Designation] nvarchar(100) NULL, [Message] nvarchar(255) NULL, [WarnDaysBefore] int NULL, [UserTarget] char(36) NULL, [TerminalTarget] char(36) NULL, [OptimisticLockField] int NULL, primary key ([Oid]));
 CREATE UNIQUE INDEX [iCode_SYS_SystemNotificationType] on [SYS_SystemNotificationType]([Code]);
 CREATE UNIQUE INDEX [iDesignation_SYS_SystemNotificationType] on [SYS_SystemNotificationType]([Designation]);
