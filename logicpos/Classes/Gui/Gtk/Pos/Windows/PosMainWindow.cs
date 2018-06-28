@@ -130,6 +130,17 @@ namespace logicpos
 
                 this.ScreenArea.Add(_fixedWindow);
 
+                //Place Minimize EventBox : After InitUI, to be placed Above all Other
+                bool _showMinimize = (!string.IsNullOrEmpty(GlobalFramework.Settings["appShowMinimize"])) 
+                    ? Convert.ToBoolean(GlobalFramework.Settings["appShowMinimize"])
+                    : false;
+                if (_showMinimize)
+                {
+                    EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
+                    eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
+                    _fixedWindow.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
+                }
+
                 this.ShowAll();
 
                 //Window Events

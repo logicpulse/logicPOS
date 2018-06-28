@@ -1846,7 +1846,6 @@ namespace logicpos.shared.App
                     default:
                         break;
                 }
-
             }
             catch (Exception ex)
             {

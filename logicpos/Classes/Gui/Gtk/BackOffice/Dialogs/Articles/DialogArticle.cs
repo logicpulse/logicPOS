@@ -199,8 +199,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //Entrys
                     Entry entryPriceNormal = new Entry() { WidthRequest = col2width };
                     Entry entryPricePromotion = new Entry() { WidthRequest = col3width };
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryPriceNormal, _dataSourceRow, fieldNamePriceNormal, SettingsApp.RegexDecimal, false));
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryPricePromotion, _dataSourceRow, fieldNamePricePromotion, SettingsApp.RegexDecimal, false));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryPriceNormal, _dataSourceRow, fieldNamePriceNormal, SettingsApp.RegexDecimalGreaterEqualThanZero, true));
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryPricePromotion, _dataSourceRow, fieldNamePricePromotion, SettingsApp.RegexDecimalGreaterEqualThanZero, true));
                     //UsePromotion
                     CheckButton checkButtonUsePromotion = new CheckButton(string.Empty) { WidthRequest = col4width };
                     _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonUsePromotion, _dataSourceRow, fieldNamePriceUsePromotionPrice));

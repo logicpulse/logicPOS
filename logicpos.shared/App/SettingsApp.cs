@@ -365,7 +365,7 @@ namespace logicpos.shared.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Thermal Printer Ticket
 
-        // Defaults for New PrinterThermal
+        // Defaults for New PrinterThermal Dialog
         public static string PrinterThermalEncoding = "PC860";
         public static bool PrinterThermalPrintLogo = false;
         public static string PrinterThermalImageCompanyLogo = "Images/Tickets/company_logo_thermal.bmp";

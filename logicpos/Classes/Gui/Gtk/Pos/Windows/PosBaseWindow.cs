@@ -14,6 +14,8 @@ namespace logicpos
 
         //Protected
         protected string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+        protected EventBox _eventBoxMinimize;
+        protected bool _showMinimize;
 
         //Public Properties
         //SourceWindow

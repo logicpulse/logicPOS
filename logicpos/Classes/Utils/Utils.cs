@@ -14,7 +14,6 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
-using logicpos.datalayer.DataLayer;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
@@ -1256,6 +1255,31 @@ namespace logicpos
             {
                 _log.Error(ex.Message, ex);
                 Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(GlobalApp.WindowStartup, screenSize.Width, screenSize.Height);
+            }
+
+            return result;
+        }
+
+        public static EventBox GetMinimizeEventBox() {
+
+            string _fileDefaultWindowIconMinimize = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
+            EventBox result = null;
+
+            try
+            {
+                Gdk.Pixbuf pixbufIconWindowMinimize = new Gdk.Pixbuf(_fileDefaultWindowIconMinimize);
+                Gtk.Image gtkimageIconWindowMinimize = new Gtk.Image(pixbufIconWindowMinimize);
+                EventBox eventBoxMinimize = new EventBox();
+                eventBoxMinimize.WidthRequest = pixbufIconWindowMinimize.Width;
+                eventBoxMinimize.HeightRequest = pixbufIconWindowMinimize.Height;
+                eventBoxMinimize.Add(gtkimageIconWindowMinimize);
+                //eventBoxMinimize.VisibleWindow = true;
+                //eventBoxMinimize.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(Color.Red));
+                result = eventBoxMinimize;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
             }
 
             return result;

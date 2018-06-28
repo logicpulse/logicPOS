@@ -136,6 +136,17 @@ namespace logicpos
                     //Init UI
                     Fixed fix = new Fixed();
 
+                    //Place Minimize EventBox
+                    bool _showMinimize = (!string.IsNullOrEmpty(GlobalFramework.Settings["appShowMinimize"])) 
+                        ? Convert.ToBoolean(GlobalFramework.Settings["appShowMinimize"])
+                        : false;
+                    if (_showMinimize)
+                    {
+                        EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
+                        eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
+                        fix.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
+                    }
+
                     //NumberPadPin
                     _numberPadPin = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height), true, NumberPadPinVisibleWindow, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
                     //Create and Assign local touchButtonKeyPasswordReset Reference to numberPadPin.ButtonKeyResetPassword
@@ -729,9 +740,9 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test InitPlataformParameters
 
-            PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal);
-            ResponseType response = (ResponseType)dialog.Run();
-            dialog.Destroy();
+            //PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal);
+            //ResponseType response = (ResponseType)dialog.Run();
+            //dialog.Destroy();
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test Encrypted Creating Objects outside of BO

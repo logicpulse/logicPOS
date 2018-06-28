@@ -47,7 +47,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         }
 
         public ThermalPrinterGeneric(SYS_ConfigurationPrinters pPrinter, string pEncoding)
-            : this(pPrinter, pEncoding, SettingsApp.PrinterThermalMaxCharsPerLineNormal, SettingsApp.PrinterThermalMaxCharsPerLineNormalBold, SettingsApp.PrinterThermalMaxCharsPerLineSmall)
+            // Old HardCoded Method Settings
+            //: this(pPrinter, pEncoding, SettingsApp.PrinterThermalMaxCharsPerLineNormal, SettingsApp.PrinterThermalMaxCharsPerLineNormalBold, SettingsApp.PrinterThermalMaxCharsPerLineSmall)
+            : this(pPrinter, pEncoding,
+                  (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineNormal > 0) ? GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineNormal : SettingsApp.PrinterThermalMaxCharsPerLineNormal,
+                  (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineNormalBold > 0) ? GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineNormalBold : SettingsApp.PrinterThermalMaxCharsPerLineNormalBold,
+                  (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineSmall > 0) ? GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineSmall : SettingsApp.PrinterThermalMaxCharsPerLineSmall
+                  )
         {
         }
 
@@ -86,7 +92,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         //Override base method
         public new void WriteLine(string pLine)
         {
-            if (! string.IsNullOrEmpty(pLine))
+            if (!string.IsNullOrEmpty(pLine))
             {
                 base.WriteLine(pLine);
             }
@@ -94,7 +100,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
         public void WriteLine(string pLine, bool pPrintIfValueIsEmpty)
         {
-            if (! string.IsNullOrEmpty(pLine) || (! string.IsNullOrEmpty(pLine) && pPrintIfValueIsEmpty == true))
+            if (!string.IsNullOrEmpty(pLine) || (!string.IsNullOrEmpty(pLine) && pPrintIfValueIsEmpty == true))
             {
                 base.WriteLine(pLine);
             }
@@ -103,7 +109,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         //Used to Send Label + Value (pPrintIfValueIsEmpty if true, prints Label even if Value is Empty ex "Name: ")
         public void WriteLine(string pLabel, string pValue, bool pPrintIfValueIsEmpty = true)
         {
-            if (! string.IsNullOrEmpty(pLabel) && (! string.IsNullOrEmpty(pValue) || pPrintIfValueIsEmpty))
+            if (!string.IsNullOrEmpty(pLabel) && (!string.IsNullOrEmpty(pValue) || pPrintIfValueIsEmpty))
             {
                 base.WriteLine(string.Format("{0} : {1}", pLabel, pValue));
             }
@@ -112,7 +118,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         //Override base method
         public new void WriteLine(string pLine, ThermalPrinter.PrintingStyle pPrintingStyle)
         {
-            if (! string.IsNullOrEmpty(pLine))
+            if (!string.IsNullOrEmpty(pLine))
             {
                 base.WriteLine(pLine, pPrintingStyle);
             }
@@ -120,7 +126,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
         public void WriteLine(string pLine, WriteLineTextMode pTextMode)
         {
-            if (! string.IsNullOrEmpty(pLine))
+            if (!string.IsNullOrEmpty(pLine))
             {
                 switch (pTextMode)
                 {

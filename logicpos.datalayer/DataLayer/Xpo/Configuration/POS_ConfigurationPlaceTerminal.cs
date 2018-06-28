@@ -75,23 +75,23 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<SYS_ConfigurationPrinters>("Printer", ref fPrinter, value); }
         }
 
-//BarcodeReader One <> Many ConfigurationPlaceTerminal
-SYS_ConfigurationInputReader fBarcodeReader;
-[Association(@"ConfigurationHardwareInputReader1ReferencesConfigurationPlaceTerminal")]
-public SYS_ConfigurationInputReader BarcodeReader
-{
-    get { return fBarcodeReader; }
-    set { SetPropertyValue<SYS_ConfigurationInputReader>("BarcodeReader", ref fBarcodeReader, value); }
-}
+        //BarcodeReader One <> Many ConfigurationPlaceTerminal
+        SYS_ConfigurationInputReader fBarcodeReader;
+        [Association(@"ConfigurationHardwareInputReader1ReferencesConfigurationPlaceTerminal")]
+        public SYS_ConfigurationInputReader BarcodeReader
+        {
+            get { return fBarcodeReader; }
+            set { SetPropertyValue<SYS_ConfigurationInputReader>("BarcodeReader", ref fBarcodeReader, value); }
+        }
 
-//ConfigurationInputReader One <> Many ConfigurationPlaceTerminal
-SYS_ConfigurationInputReader fCardReader;
-[Association(@"ConfigurationHardwareInputReader2ReferencesConfigurationPlaceTerminal")]
-public SYS_ConfigurationInputReader CardReader
-{
-    get { return fCardReader; }
-    set { SetPropertyValue<SYS_ConfigurationInputReader>("CardReader", ref fCardReader, value); }
-}
+        //ConfigurationInputReader One <> Many ConfigurationPlaceTerminal
+        SYS_ConfigurationInputReader fCardReader;
+        [Association(@"ConfigurationHardwareInputReader2ReferencesConfigurationPlaceTerminal")]
+        public SYS_ConfigurationInputReader CardReader
+        {
+            get { return fCardReader; }
+            set { SetPropertyValue<SYS_ConfigurationInputReader>("CardReader", ref fCardReader, value); }
+        }
 
         //ConfigurationPoleDisplay One <> Many ConfigurationPlaceTerminal
         SYS_ConfigurationPoleDisplay fPoleDisplay;

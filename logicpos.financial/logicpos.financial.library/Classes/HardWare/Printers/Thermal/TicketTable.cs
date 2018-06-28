@@ -193,7 +193,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                 //Check if final Table Width is bigger than pTableWidth
                 if (checkTableWidth > pTableWidth)
                 {
-                    throw new Exception("Error columns to large to fit");
+                    _log.Error($"ConfigColumns > checkTableWidth: [{checkTableWidth}] > [{pTableWidth}]");
+                    throw new Exception($"Error columns to large to fit{Environment.NewLine}checkTableWidth: [{checkTableWidth}] > [{pTableWidth}]");
                 }
                 else if (dynamicColumn > -1)//0
                 {

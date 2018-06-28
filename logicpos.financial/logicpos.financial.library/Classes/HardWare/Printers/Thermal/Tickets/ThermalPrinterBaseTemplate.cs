@@ -98,13 +98,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 );
 
                 //Print Logo or Name + BusinessName
-                if (File.Exists(logo) && SettingsApp.PrinterThermalPrintLogo)
+                if (File.Exists(logo) && GlobalFramework.LoggedTerminal.Printer.ThermalPrintLogo)
                 {
                     _thermalPrinterGeneric.PrintImage(logo);
                 }
                 else
                 {
-                    _thermalPrinterGeneric.WriteLine(_customVars["APP_NAME"], WriteLineTextMode.Big);
+                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_NAME"], WriteLineTextMode.Big);
                     _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_BUSINESS_NAME"]);
                 }
 
@@ -138,8 +138,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             //Set Align Center
             _thermalPrinterGeneric.SetAlignCenter();
 
-            if (! string.IsNullOrEmpty(pTicketTitle)) _thermalPrinterGeneric.WriteLine(pTicketTitle, WriteLineTextMode.Big);
-            if (! string.IsNullOrEmpty(pTicketSubTitle)) _thermalPrinterGeneric.WriteLine(pTicketSubTitle, WriteLineTextMode.DoubleHeightBold);
+            if (!string.IsNullOrEmpty(pTicketTitle)) _thermalPrinterGeneric.WriteLine(pTicketTitle, WriteLineTextMode.Big);
+            if (!string.IsNullOrEmpty(pTicketSubTitle)) _thermalPrinterGeneric.WriteLine(pTicketSubTitle, WriteLineTextMode.DoubleHeightBold);
             _thermalPrinterGeneric.LineFeed();
 
             //Reset Align 
