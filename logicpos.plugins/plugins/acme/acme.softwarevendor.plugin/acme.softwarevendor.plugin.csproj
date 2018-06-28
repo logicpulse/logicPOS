@@ -144,6 +144,13 @@
     <Content Include="Resources\Database\Other\Plugins\SoftwareVendor\databasedataencrypted.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Database\Other\Plugins\SoftwareVendor\Other\Country\AO\customer.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Database\Other\Plugins\SoftwareVendor\Other\Country\MZ\" />
+    <Folder Include="Resources\Database\Other\Plugins\SoftwareVendor\Other\Country\PT\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

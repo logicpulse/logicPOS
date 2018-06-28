@@ -72,10 +72,12 @@ Open source Point of Sale Solution
 
 	- Open Solution `logicpos.sln` or Folder Source Folder
 
-	- Buid Solution
+	- Rebuild Solution
+
+	- Rebuild Plugins ex `acme.softwarevendor.plugin`
 
 	- Set **logicpos** as Startup Project
 	
 	- Set application settings on App.config
 
-	- Run **logicpos**
+	- Run **logicpos** project

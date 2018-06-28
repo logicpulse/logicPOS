@@ -43,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryDesignation = new Entry();
                 BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfa, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
                 
                 //ReaderSizes
                 Entry entryReaderSizes = new Entry();

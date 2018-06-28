@@ -99,9 +99,13 @@ namespace logicpos.App
         public static string FileDatabaseViews = @"Resources\Database\databaseviews.sql";
         public static string FileDatabaseOtherDatabaseType = @"Resources\Database\{0}\Other\";
         public static string FileDatabaseOtherCommon = @"Resources\Database\Other\";
-        public static string FileDatabaseOtherCommonCountry = @"Resources\Database\Other\Country";
         public static string FileDatabaseOtherCommonAppMode = @"Resources\Database\Other\AppMode";
+        //Encrypted Scripts
         public static string FileDatabaseOtherCommonPluginsSoftwareVendor = @"Resources\Database\Other\Plugins\SoftwareVendor";
+        //Country Scripts
+        public static string FileDatabaseOtherCommonCountry = @"Resources\Database\Other\Country";
+        //Country Encrypted Scripts
+        public static string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = @"Resources\Database\Other\Plugins\SoftwareVendor\Other\Country";
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //User Config Oids - Values in Config, Proxy here to always use SettingsApp.VAR in Code

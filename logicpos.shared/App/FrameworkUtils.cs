@@ -1879,7 +1879,7 @@ namespace logicpos.shared.App
                 filter = string.Format("({0})", filter);
             }
 
-            return ProcessFinanceDocumentToInvoice(pSession, pSystemNotificationTypeGuid, filter, pExtraFilter, pDaysBack); ;
+            return ProcessFinanceDocumentToInvoice(pSession, pSystemNotificationTypeGuid, filter, pExtraFilter, pDaysBack);
         }
 
         //Base Method

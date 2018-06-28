@@ -308,6 +308,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     configurationPreferenceParameterSystemCurrencyOid.Value = _entryBoxSelectSystemCurrency.Value.Oid.ToString();
                     configurationPreferenceParameterSystemCurrencyOid.Save();
 
+                    //Proccess Country Scripts
+                    string commandSeparator = ";";
+                    Dictionary<string, string> replaceables = logicpos.DataLayer.GetReplaceables(GlobalFramework.DatabaseType);
+                    string directoryCountry = FrameworkUtils.OSSlash(string.Format(@"{0}/{1}", SettingsApp.FileDatabaseOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2));
+                    logicpos.DataLayer.ProcessDumpDirectory(GlobalFramework.SessionXpo, directoryCountry, commandSeparator, replaceables);
+                    //Proccess Country Plugin Scripts
+                    directoryCountry = FrameworkUtils.OSSlash(string.Format(@"{0}/{1}", SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2));
+                    logicpos.DataLayer.ProcessDumpDirectory(GlobalFramework.SessionXpo, directoryCountry, commandSeparator, replaceables);
+
                     //Change Configuration : Currently only working outside Debugger, to prevent errors changing config with VS using app.config 
                     //System.ArgumentException: O nome de ficheiro 'c:\svn\logicpos\trunk\src\logicpos\bin\debug\logicpos.exe.config' é inválido porque o mesmo nome de ficheiro já é referido pela hierarquia de configuração aberta
                     Dictionary<string, string> configurationValues = new Dictionary<string, string>();
@@ -323,12 +332,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //UNDER CONSTRUCTION
                     //Call SaveSystemProtection() Here
                     //Utils.SaveSystemProtection();
-
-                    //Proccess Country Scripts
-                    string directoryCountry = FrameworkUtils.OSSlash(string.Format(@"{0}/{1}", SettingsApp.FileDatabaseOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2));
-                    string commandSeparator = ";";
-                    Dictionary<string, string> replaceables = logicpos.DataLayer.GetReplaceables(GlobalFramework.DatabaseType);
-                    logicpos.DataLayer.ProcessDumpDirectory(GlobalFramework.SessionXpo, directoryCountry, commandSeparator, replaceables);
                 }
                 else
                 {
