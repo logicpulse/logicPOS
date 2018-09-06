@@ -70,8 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Keep Running
                         this.Run();
                     }
-                }
-                
+                }                
             }
             else if (pResponse == _responseTypePreview)
             {
@@ -178,6 +177,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _pagePad2.EntryBoxCustomerLocality.EntryValidation.Text,
                 _pagePad2.EntryBoxCustomerZipCode.EntryValidation.Text,
                 _pagePad2.EntryBoxCustomerCity.EntryValidation.Text,
+_pagePad2.EntryBoxCustomerPhone.EntryValidation.Text,
+_pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 _pagePad2.EntryBoxSelectCustomerCountry.Value,
                 _pagePad2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text,
                 _pagePad2.EntryBoxSelectCustomerCardNumber.EntryValidation.Text,

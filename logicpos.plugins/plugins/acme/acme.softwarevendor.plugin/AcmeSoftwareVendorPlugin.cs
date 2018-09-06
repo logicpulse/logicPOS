@@ -299,7 +299,7 @@ namespace acme.softwarevendor.plugin
             return result;
         }
 
-        public void ValidateEmbbededResources()
+        public void ValidateEmbeddedResources()
         {
              bool debug = false;
             string resourcePathLocation = "Resources/Reports/UserReports/";
@@ -334,7 +334,7 @@ namespace acme.softwarevendor.plugin
 
             if (emmbededFilesMissing.Count > 0)
             {
-                throw new Exception(string.Format("Error! Detected files not Embbeded in Resources! [{0}]", String.Join(", ", emmbededFilesMissing)));
+                throw new Exception(string.Format("Error! Detected files not Embedded in Resources! [{0}]", String.Join(", ", emmbededFilesMissing)));
             }
         }
 

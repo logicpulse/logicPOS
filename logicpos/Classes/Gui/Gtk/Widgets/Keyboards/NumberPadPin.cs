@@ -96,6 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _entryPin = new EntryValidation(pSourceWindow, KeyboardMode.None, SettingsApp.RegexLoginPin, true) { InvisibleChar = '*', Visibility = false };
             _entryPin.ModifyFont(Pango.FontDescription.FromString(pFont));
             _entryPin.Alignment = 0.5F;
+
             //ResetPassword
             string numberPadPinButtonPasswordResetImageFileName = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Other\pinpad_password_reset.png");
             _buttonKeyResetPassword = new TouchButtonIcon("touchButtonKeyPasswordReset", System.Drawing.Color.Transparent, numberPadPinButtonPasswordResetImageFileName, new Size(20, 20), 25, 25) { Sensitive = false };
@@ -160,11 +161,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             buttonKey0.Clicked += buttonKey_Clicked;
             buttonKeyCE.Clicked += buttonKeyCE_Clicked;
 
-            //prepare _table
+            //Prepare Table
+
             //row0
             int entryPinTablePos = (pShowSystemButtons) ? 2 : 3;
-            _table.Attach(_entryPin, 0, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            if (pShowSystemButtons) _table.Attach(_buttonKeyResetPassword, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+            //Without ResetPassword Button
+            if (!pShowSystemButtons)
+            {
+                _table.Attach(_entryPin, 0, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+            }
+            //With ResetPassword Button
+            else
+            {
+                _table.Attach(_entryPin, 0, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+                _table.Attach(_buttonKeyResetPassword, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+            }
             //row1
             _table.Attach(buttonKey7, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
             _table.Attach(buttonKey8, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
@@ -427,7 +438,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             ClearEntryPinStatusMessage(true);
         }
 
-        //Start Application or Chenge User
+        //Start Application or Change User
         private void ProcessLogin(SYS_UserDetail pUserDetail)
         {
             GlobalFramework.LoggedUser = pUserDetail;

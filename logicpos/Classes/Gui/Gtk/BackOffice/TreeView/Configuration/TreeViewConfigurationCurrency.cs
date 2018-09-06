@@ -29,19 +29,23 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationCurrency);
 
+            //Config
+            int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
+
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
             columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
             columnProperties.Add(new GenericTreeViewColumnProperty("Acronym") { Title = Resx.global_ConfigurationCurrency_Acronym });
             //columnProperties.Add(new GenericTreeViewColumnProperty("ExchangeRate") { 
             //    Title = Resx.global_exchangerate, 
             //    Type = typeof(Decimal), 
             //    Alignment = 1.0F
             //    //WIP
+            //    //FontDesc = new Pango.FontDescription() { Size = 11 }, // Removed, this will make Trees that use it has diferent row Sizes
             //    //,CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F }
             //});
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

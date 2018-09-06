@@ -153,6 +153,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     null //ActionAreaButtons
                   );
 
+                // Recapture RowActivated : DoubleClick and trigger dialog.Respond
+                dialog.GenericTreeView.TreeView.RowActivated += delegate
+                {
+                    dialog.Respond(ResponseType.Ok);
+                };
+
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
                 {

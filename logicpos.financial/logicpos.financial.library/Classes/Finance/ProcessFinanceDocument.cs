@@ -2,6 +2,7 @@
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.App;
+using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.financial.library.Classes.WorkSession;
 using logicpos.resources.Resources.Localization;
@@ -10,6 +11,7 @@ using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace logicpos.financial.library.Classes.Finance
 {
@@ -595,6 +597,9 @@ namespace logicpos.financial.library.Classes.Finance
 
                         //Assign Document to Result
                         result = documentFinanceMaster;
+
+                        // Call Generate GenerateDocument
+                        GenerateDocumentFinanceMasterPDFIfNotExists(documentFinanceMaster);
                     }
                     catch (Exception ex)
                     {
@@ -975,6 +980,9 @@ namespace logicpos.financial.library.Classes.Finance
 
                     //Commit UOW Changes : Before get current OrderMain
                     uowSession.CommitChanges();
+
+                    // Call Generate GenerateDocument
+                    GenerateDocumentFinancePaymentPDFIfNotExists(documentFinancePayment);
                 }
                 catch (Exception ex)
                 {
@@ -986,6 +994,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                 }
             }
+
             return documentFinancePayment;
         }
 
@@ -1223,6 +1232,108 @@ namespace logicpos.financial.library.Classes.Finance
             {
                 _log.Error(ex.Message, ex);
             }
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //Documents
+
+        public static string GenerateDocumentFinanceMasterPDFIfNotExists(FIN_DocumentFinanceMaster documentFinanceMaster)
+        {
+            string result = string.Empty;
+            
+            try
+            {
+                //Generate Documents Filename
+                if (!string.IsNullOrEmpty(GlobalFramework.Settings["generatePdfDocuments"]))
+                {
+                    bool generatePdfDocuments = false;
+                    try
+                    {
+                        generatePdfDocuments = Convert.ToBoolean(GlobalFramework.Settings["generatePdfDocuments"]);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error(ex.Message, ex);
+                    }
+
+                    if (generatePdfDocuments)
+                    {
+                        string entityName = (!string.IsNullOrEmpty(documentFinanceMaster.EntityName)) ? string.Format("_{0}", documentFinanceMaster.EntityName.ToLower().Replace(' ', '_')) : string.Empty;
+                        string reportFilename = string.Format("{0}/{1}{2}.pdf",
+                            GlobalFramework.Path["documents"],
+                            documentFinanceMaster.DocumentNumber.Replace('/', '-').Replace(' ', '_'),
+                            entityName
+                        );
+                        
+                        if (! File.Exists(reportFilename))
+                        {
+                            result = CustomReport.DocumentMasterCreatePDF(CustomReportDisplayMode.ExportPDFSilent, documentFinanceMaster, reportFilename);
+                        }
+                        else
+                        {
+                            result = reportFilename;
+                        }
+                        
+                        return result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            return result;
+        }
+
+        public static string GenerateDocumentFinancePaymentPDFIfNotExists(FIN_DocumentFinancePayment documentFinancePayment)
+        {
+            string result = string.Empty;
+            
+            try
+            {
+                //Generate Documents Filename
+                if (!string.IsNullOrEmpty(GlobalFramework.Settings["generatePdfDocuments"]))
+                {
+                    bool generatePdfDocuments = false;
+                    try
+                    {
+                        generatePdfDocuments = Convert.ToBoolean(GlobalFramework.Settings["generatePdfDocuments"]);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error(ex.Message, ex);
+                    }
+
+                    if (generatePdfDocuments)
+                    {
+                        ERP_Customer customer = (ERP_Customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(ERP_Customer), documentFinancePayment.EntityOid);
+                        string entityName = (customer != null && !string.IsNullOrEmpty(customer.Name)) ? string.Format("_{0}", customer.Name.ToLower().Replace(' ', '_')) : string.Empty;
+                        string reportFilename = string.Format("{0}/{1}{2}.pdf",
+                            GlobalFramework.Path["documents"],
+                            documentFinancePayment.PaymentRefNo.Replace('/', '-').Replace(' ', '_'),
+                            entityName
+                        );
+                        
+                        if (! File.Exists(reportFilename))
+                        {
+                            result = CustomReport.DocumentPaymentCreatePDF(CustomReportDisplayMode.ExportPDFSilent, documentFinancePayment, reportFilename);
+                        }
+                        else
+                        {
+                            result = reportFilename;
+                        }
+                        
+                        return result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            return result;
         }
     }
 }

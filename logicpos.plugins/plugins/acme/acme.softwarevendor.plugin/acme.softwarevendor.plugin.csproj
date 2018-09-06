@@ -127,6 +127,12 @@
       <Link>Resources\Reports\UserReports\TemplateBaseSimple.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportCurrentAccount.frx">
+      <Link>Resources\Reports\UserReports\ReportCurrentAccount.frx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportUserCommission.frx">
+      <Link>Resources\Reports\UserReports\ReportUserCommission.frx</Link>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
     <None Include="Properties\Settings.settings">

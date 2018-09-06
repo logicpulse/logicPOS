@@ -48,8 +48,11 @@ namespace logicpos.financial.service.Objects
 
         public static string GetDocumentsQuery(bool pWayBillMode, Guid pDocumentMaster)
         {
-            //Common
-            string where = "(ft.WsAtDocument = 1 AND (fm.ATValidAuditResult IS NULL OR fm.ATResendDocument = 1)) AND";
+            //Common : Require to Check if has Records with ReturnCode -3 (Já foi registado um documento idêntico.)
+            string where = @"(
+                ft.WsAtDocument = 1 AND (fm.ATValidAuditResult IS NULL OR fm.ATResendDocument = 1)  
+                AND (SELECT COUNT(*) FROM sys_systemauditat WHERE DocumentMaster = fm.Oid AND ReturnCode = '-3') = 0
+            ) AND";
 
             //Invoices
             //
@@ -127,8 +130,10 @@ namespace logicpos.financial.service.Objects
                 SELECT 
                     fm.Oid AS Oid
                 FROM
-                    (fin_documentfinancemaster fm
-                    left join fin_documentfinancetype ft ON (fm.DocumentType = ft.Oid))
+                    (
+                        fin_documentfinancemaster fm
+                        LEFT JOIN fin_documentfinancetype ft ON (fm.DocumentType = ft.Oid)
+                    )
                 WHERE
                     {0}
                 ORDER BY 
@@ -429,6 +434,15 @@ namespace logicpos.financial.service.Objects
                         documentMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
+                        
+                        //Helper to Detect Documents
+                        //Detect if Document is Already in AT System / -3 = "Já foi registado um documento idêntico."
+                        //200 = Detect The operation has timed out | The remote name could not be resolved: 'servicos.portaldasfinancas.gov.pt'
+                        //if (soapResult.ReturnCode.Equals("-3"))
+                        //{
+                        //    _log.Debug("BREAK");
+                        //}
+
                         result.Add(documentMaster, soapResult);
                     }
                 }

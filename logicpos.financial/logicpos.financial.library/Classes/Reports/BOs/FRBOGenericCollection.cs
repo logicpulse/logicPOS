@@ -168,10 +168,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                             // Try to Setvalue    
                             if (propertyInfo != null) propertyInfo.SetValue(genericTypeObject, fieldValue);
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             // Intentionnaly Commented ex
-                            // Prevent Showing Conversion Error, Only Occur in Sales Per Day(Detailled/Group) Report, Minot problem, it Show Good Value
+                            // Prevent Showing Conversion Error, Only Occur in Sales Per Day(Detailled/Group) Report, Minor problem, it Show Good Values
                             //_log.Error(string.Format("fieldName: [{0}], fieldType: [{1}], fieldTypeDB: [{2}], fieldValue: [{3}]", fieldName, fieldType, fieldTypeDB, fieldValue));
                             //_log.Error(ex.Message, ex);
                         }

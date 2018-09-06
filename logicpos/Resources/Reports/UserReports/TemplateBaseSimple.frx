@@ -13,7 +13,7 @@
   </Styles>
   <Dictionary/>
   <ReportPage Name="Page1">
-    <PageHeaderBand Name="PageHeader1" Width="718.2" Height="48.6" AfterPrintEvent="PageHeader1_AfterPrint">
+    <PageHeaderBand Name="PageHeader1" Width="718.2" Height="49.0" AfterPrintEvent="PageHeader1_AfterPrint">
       <PictureObject Name="PictureCompanyLogo" Width="192.45" Height="48.6" SizeMode="Normal" ImageLocation="Assets\Images\Reports\UserReports\company_logo_small.png"/>
       <TextObject Name="TextReportTitle" Left="198.45" Width="519.75" Height="18.9" Text="[Res(&quot;GLOBAL_FAMILIES&quot;)]" HorzAlign="Right" WordWrap="false" Font="Arial, 12pt, style=Bold" Wysiwyg="true"/>
     </PageHeaderBand>

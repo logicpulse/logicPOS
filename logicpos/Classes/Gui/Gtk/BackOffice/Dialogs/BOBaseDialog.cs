@@ -246,7 +246,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
         }
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        // BO DEPRECATED
+        // BO DEPRECATED : Muga Stuff
         /*
         protected void ResetRowManager()
         {

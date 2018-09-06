@@ -501,7 +501,7 @@ Por favor volte a inserir novamente os dados correctos!</value>
     <value>Detalhes financeiros</value>
   </data>
   <data name="dialog_edit_article_tab3_label" xml:space="preserve">
-    <value>Detalhes físicos</value>
+    <value>Outros detalhes</value>
   </data>
   <data name="dialog_edit_articlesubfamily_tab1_label" xml:space="preserve">
     <value>Detalhes 1</value>
@@ -2598,7 +2598,7 @@ Detectado artigo do tipo recargar cartão de cliente sem um cliente válido, par
     <value>Caixa : Saida de Numerário : {0} - {1}</value>
   </data>
   <data name="dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer" xml:space="preserve">
-    <value>O valor do documento excede o limite máximo definido para as faturas usando o consumidor final ou um consumidor sem os dados devidamente preenchidos.
+    <value>O valor do documento excede o limite máximo definido para as faturas usando o consumidor final ou um entidade sem os dados devidamente preenchidos.
 
 {0}
 {1}
@@ -3118,5 +3118,82 @@ Quantidade válida: {1}</value>
   </data>
   <data name="prefparam_notification_documents_to_invoice_ignore_after_show_number_of_times" xml:space="preserve">
     <value>Notificações : Documentos a Faturar : Ignorar notificações após determinado numero de vezes</value>
+  </data>
+  <data name="global_button_label_clone_document" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="global_button_label_open_document" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="dialog_message_mail_sent_successfully" xml:space="preserve">
+    <value>O seu email foi enviado com sucesso!</value>
+  </data>
+  <data name="global_button_label_send_email_document" xml:space="preserve">
+    <value>Enviar Email</value>
+  </data>
+  <data name="global_email_bcc" xml:space="preserve">
+    <value>Bcc</value>
+  </data>
+  <data name="global_email_body" xml:space="preserve">
+    <value>Corpo</value>
+  </data>
+  <data name="global_email_cc" xml:space="preserve">
+    <value>Cc</value>
+  </data>
+  <data name="global_email_subject" xml:space="preserve">
+    <value>Assunto</value>
+  </data>
+  <data name="global_email_to" xml:space="preserve">
+    <value>Para</value>
+  </data>
+  <data name="global_place" xml:space="preserve">
+    <value>Local</value>
+  </data>
+  <data name="global_question" xml:space="preserve">
+    <value>Confirmação</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_body" xml:space="preserve">
+    <value>Corpo do email</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_html_body" xml:space="preserve">
+    <value>Corpo do email em HTML</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_subject" xml:space="preserve">
+    <value>Assunto</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_enable_ssl" xml:space="preserve">
+    <value>SSL Ligado no SMTP</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_password" xml:space="preserve">
+    <value>Palavra chave do SMTP </value>
+  </data>
+  <data name="prefparam_send_mail_smtp_port" xml:space="preserve">
+    <value>Porta do SMTP</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_server" xml:space="preserve">
+    <value>Endereço do SMTP</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_username" xml:space="preserve">
+    <value>Utilizador do SMTP</value>
+  </data>
+  <data name="window_title_dialog_clone_documents_confirmation" xml:space="preserve">
+    <value>Este processo não pode ser revertido! deseja confirmar e copiar os seguintes documentos?
+
+{0}</value>
+  </data>
+  <data name="window_title_send_email" xml:space="preserve">
+    <value>Enviar Email</value>
+  </data>
+  <data name="report_list_current_account" xml:space="preserve">
+    <value>Contas Corrente</value>
+  </data>
+  <data name="report_list_user_commission" xml:space="preserve">
+    <value>Comissões</value>
+  </data>
+  <data name="global_total_commission_day" xml:space="preserve">
+    <value>Total comissão dia</value>
+  </data>
+  <data name="global_total_commission_user" xml:space="preserve">
+    <value>Total comissão utilizador</value>
   </data>
 </root>

@@ -59,6 +59,7 @@
     <Compile Include="Enums\AppOperationMode.cs" />
     <Compile Include="Enums\DatabaseType.cs" />
     <Compile Include="Enums\OrderStatus.cs" />
+    <Compile Include="Enums\PreferenceParameterInputType.cs" />
     <Compile Include="Enums\PriceType.cs" />
     <Compile Include="Enums\ProcessArticleStockMode.cs" />
     <Compile Include="Enums\SaftDocumentType.cs" />

@@ -7,6 +7,6 @@
     public class SettingsApp : logicpos.shared.App.SettingsApp
     {
         // internal 
-        public static string SecretKey = ")p[r#HW'gOg|KNI1L3k]H&~D!DKy`Y[fx2/t&s7{:!S<xDl,l#5)[YHcVf'3UUc";
+        public static string SecretKey = ")p[r#HW'gOg|KNI1L3k]H&~D!DKyY[fx2/t&s7{:!S<xDl,l#5)[YHcVf'3UUc";
     }
 }

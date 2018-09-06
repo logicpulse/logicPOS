@@ -94,7 +94,7 @@ namespace logicpos.plugin.contracts
 
         List<string> GetReportFileName(string secretKey, string filePath, string templateBase);
 
-        void ValidateEmbbededResources();
+        void ValidateEmbeddedResources();
 
         // Methods to Encrypt and Decrypt
         string Encrypt(string toEncrypt);

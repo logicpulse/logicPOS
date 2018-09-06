@@ -270,7 +270,7 @@ Application not licensed</value>
     <value>Finance details</value>
   </data>
   <data name="dialog_edit_article_tab3_label" xml:space="preserve">
-    <value>Physical details</value>
+    <value>Other details</value>
   </data>
   <data name="dialog_edit_ConfigurationCashRegister_tab1_label" xml:space="preserve">
     <value>Edit cash registers</value>
@@ -3152,5 +3152,82 @@ Valid Quantity: {1}</value>
   </data>
   <data name="prefparam_notification_documents_to_invoice_ignore_after_show_number_of_times" xml:space="preserve">
     <value>Notifications : Documents to Invoice : Ignore notifications after has been notificated a determined number of times</value>
+  </data>
+  <data name="global_button_label_clone_document" xml:space="preserve">
+    <value>Clone</value>
+  </data>
+  <data name="global_button_label_open_document" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="dialog_message_mail_sent_successfully" xml:space="preserve">
+    <value>Your email has been sent successfully!</value>
+  </data>
+  <data name="global_button_label_send_email_document" xml:space="preserve">
+    <value>Send Email</value>
+  </data>
+  <data name="global_email_bcc" xml:space="preserve">
+    <value>Bcc</value>
+  </data>
+  <data name="global_email_body" xml:space="preserve">
+    <value>Body</value>
+  </data>
+  <data name="global_email_cc" xml:space="preserve">
+    <value>Cc</value>
+  </data>
+  <data name="global_email_subject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="global_email_to" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="global_place" xml:space="preserve">
+    <value>Place</value>
+  </data>
+  <data name="global_question" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_body" xml:space="preserve">
+    <value>Body</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_html_body" xml:space="preserve">
+    <value>Html Body</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_subject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_enable_ssl" xml:space="preserve">
+    <value>SMTP SSL Enabled</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_password" xml:space="preserve">
+    <value>SMTP Password</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_port" xml:space="preserve">
+    <value>SMTP Port</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_server" xml:space="preserve">
+    <value>SMTP Server</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_username" xml:space="preserve">
+    <value>SMTP Username</value>
+  </data>
+  <data name="window_title_dialog_clone_documents_confirmation" xml:space="preserve">
+    <value>This process cant be undone! Confirm clone folloing documents?
+
+{0}</value>
+  </data>
+  <data name="window_title_send_email" xml:space="preserve">
+    <value>Send Email</value>
+  </data>
+  <data name="report_list_current_account" xml:space="preserve">
+    <value>Current Account</value>
+  </data>
+  <data name="report_list_user_commission" xml:space="preserve">
+    <value>Commissions</value>
+  </data>
+  <data name="global_total_commission_day" xml:space="preserve">
+    <value>Total commission day</value>
+  </data>
+  <data name="global_total_commission_user" xml:space="preserve">
+    <value>Total commission user</value>
   </data>
 </root>

@@ -82,7 +82,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public bool WindowTitleCloseButton
         {
             get { return _windowTitleCloseButton; }
-            set { 
+            set
+            {
                 _windowTitleCloseButton = value;
                 if (value) { _eventboxCloseWindow.ShowAll(); } else { _eventboxCloseWindow.HideAll(); }
             }
@@ -180,11 +181,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         void PosBaseDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (
-                _confirmDialogOnEnter 
-                && args.Event.Key.ToString().Equals("Return") 
-                && _actionAreaConfirmButton != null 
+                _confirmDialogOnEnter
+                && args.Event.Key.ToString().Equals("Return")
+                && _actionAreaConfirmButton != null
                 && _actionAreaConfirmButton.Sensitive
-            ) 
+            )
                 _actionAreaConfirmButton.Click();
         }
 
@@ -460,6 +461,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileActionPrint = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
             string fileActionPrintAs = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png");
             string fileActionHelp = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png");
+            string fileActionCloneDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ");
+            string fileActionOpenDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png");
+            string fileActionSendEmailDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png");
 
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());
@@ -504,6 +508,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 case PosBaseDialogButtonType.Help:
                     buttonLabel = Resx.global_button_label_help;
                     buttonImage = fileActionHelp;
+                    break;
+                case PosBaseDialogButtonType.CloneDocument:
+                    buttonLabel = Resx.global_button_label_clone_document;
+                    buttonImage = fileActionCloneDocument;
+                    break;
+                case PosBaseDialogButtonType.OpenDocument:
+                    buttonLabel = Resx.global_button_label_open_document;
+                    buttonImage = fileActionOpenDocument;
+                    break;
+                case PosBaseDialogButtonType.SendEmailDocument:
+                    buttonLabel = Resx.global_button_label_send_email_document;
+                    buttonImage = fileActionSendEmailDocument;
                     break;
                 default:
                     break;

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <inherited BaseReport="TemplateBase.frx" ScriptLanguage="CSharp" ReportInfo.Name="RC RC5TEHDX4012016S001/3" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="05/30/2016 10:34:11" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.CopyNames="Original&#13;&#10;Duplicado">
   <Dictionary>
-    <BusinessObjectDataSource Name="DocumentFinancePayment" ReferenceName="DocumentFinancePayment" DataType="logicpos.financial.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinancePayment, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+    <BusinessObjectDataSource Name="DocumentFinancePayment" ReferenceName="DocumentFinancePayment" DataType="logicpos.financial.Classes.Reports.BOs.FRBOGenericCollection1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinancePayment, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Oid" DataType="System.String"/>
       <Column Name="DocumentTypeDesignation" DataType="System.String"/>
       <Column Name="DocumentTypeResourceString" DataType="System.String"/>
@@ -26,7 +26,7 @@
       <Column Name="CurrencySymbol" DataType="System.String"/>
       <Column Name="ExchangeRate" DataType="System.Decimal"/>
       <Column Name="Notes" DataType="System.String"/>
-      <BusinessObjectDataSource Name="DocumentFinancePaymentDocument" DataType="System.Collections.Generic.List`1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinancePaymentDocument, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+      <BusinessObjectDataSource Name="DocumentFinancePaymentDocument" DataType="System.Collections.Generic.List1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinancePaymentDocument, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
         <Column Name="Oid" DataType="System.String"/>
         <Column Name="DocumentTypeDesignation" DataType="System.String"/>
         <Column Name="DocumentNumber" DataType="System.String"/>

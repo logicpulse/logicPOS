@@ -174,6 +174,7 @@
     <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\Configuration\TreeViewConfigurationInputReader.cs" />
     <Compile Include="Classes\Gui\Gtk\BackOffice\TreeView\System\TreeViewSystemAuditType.cs" />
     <Compile Include="Classes\Gui\Gtk\Pos\Dialogs\PosReportsQueryDialog.cs" />
+    <Compile Include="Classes\Gui\Gtk\Pos\Dialogs\PosSendEmailDialog.cs" />
     <Compile Include="Classes\Gui\Gtk\Pos\Dialogs\PosSplitPaymentsDialog.cs" />
     <Compile Include="Classes\Gui\Gtk\Widgets\Buttons\TouchButtonSplitPayment.cs" />
     <Compile Include="Classes\Logic\Hardware\WeighingBalance\WeighingBalance.cs" />
@@ -577,10 +578,16 @@
     <Content Include="Assets\Images\Icons\Dialogs\DocumentFinanceDialog\icon_pos_dialog_toolbar_5_waybill_from.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\Images\Icons\Dialogs\icon_pos_dialog_action_clone_document.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\Images\Icons\Dialogs\icon_pos_dialog_action_close.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Dialogs\icon_pos_dialog_action_no.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Dialogs\icon_pos_dialog_action_open_document.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Dialogs\icon_pos_dialog_action_print_as.png">
@@ -602,6 +609,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Dialogs\icon_pos_dialog_preview.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Dialogs\icon_pos_dialog_send_email.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Families\icon_family_papel_classificados.png">
@@ -907,9 +917,6 @@
     <Content Include="Assets\Images\Icons\Windows\icon_window_input_text_default.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\Images\Icons\Windows\icon_window_input_text_request_motive_to_cancel_finance_document.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_license.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -932,6 +939,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_select_record.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Images\Icons\Windows\icon_window_send_email.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Images\Icons\Windows\icon_window_send_message.png">
@@ -1998,11 +2008,15 @@
     </Content>
     <Content Include="Assets\Themes\theme_default_default.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="Resources\Reports\UserReports\ReportArticleList.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Reports\UserReports\ReportArticleStockMovementList.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Reports\UserReports\ReportCurrentAccount.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Resources\Reports\UserReports\ReportCustomerList.frx">
@@ -2041,6 +2055,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Resources\Reports\UserReports\ReportUserCommission.frx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Service References\ServiceReference\logicpos.ServiceReference.CompositeType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

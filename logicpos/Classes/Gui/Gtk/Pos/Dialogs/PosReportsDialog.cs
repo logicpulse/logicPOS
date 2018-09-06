@@ -15,7 +15,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     partial class PosReportsDialog : PosBaseDialog
     {
         private ScrolledWindow _scrolledWindow;
+        // Enable to show Insert Logs on Console
         private bool _showInsertLog = false;
+        // Start Ord Code Int
+        private int _userpermissionitemOrdAndCode = 1000;
 
         public PosReportsDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
@@ -77,7 +80,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 List<string> userpermissionprofileInsert = new List<string>();
                 string templatePermissionItem = "INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup) VALUES ('{0}',{1},{1},'{2}','{3}','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a');";
                 string userpermissionprofileItem = "INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('{0}',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','{1}');";
-                int userpermissionitemOrdAndCode = 3000;
 
                 // Init Accordion
                 accordionDefinition = new Dictionary<string, AccordionNode>();
@@ -110,6 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Apply Sorting to childs of ReportType
                     reportType.Report.Sorting = sortingCollection;
 
+                    // Loop ReportType Reports
                     foreach (RPT_Report report in reportType.Report)
                     {
                         if (!report.Disabled)
@@ -118,9 +121,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             userpermissionitemToken = report.Token;
                             userpermissionitemGuid = Guid.NewGuid();
                             userpermissionprofileGuid = Guid.NewGuid();
-                            userpermissionitemInsert.Add(string.Format(templatePermissionItem, userpermissionitemGuid, userpermissionitemOrdAndCode, userpermissionitemToken, report.Designation.Replace(" de ", " - ")));
+                            userpermissionitemInsert.Add(string.Format(templatePermissionItem, userpermissionitemGuid, _userpermissionitemOrdAndCode, userpermissionitemToken, report.Designation.Replace(" de ", " - ")));
                             userpermissionprofileInsert.Add(string.Format(userpermissionprofileItem, userpermissionprofileGuid, userpermissionitemGuid));
-                            userpermissionitemOrdAndCode += 10;
+                            _userpermissionitemOrdAndCode += 10;
 
                             // Get common resource for all 3 types of Financial Reports
                             Tuple<string, string> tuppleResourceString = CustomReport.GetResourceString(report.ResourceString);

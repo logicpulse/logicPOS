@@ -70,7 +70,7 @@ namespace logicpos.reports
             //Init XPO Connector DataLayer
             try
             {
-                _log.Info(String.Format("Init(): Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
+                _log.Debug(String.Format("Init(): Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
                 XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                 GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 //GlobalFramework.SessionXpoBO = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };

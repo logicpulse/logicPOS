@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReportInfo.Author="Acme acmepos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="01/08/2015 16:32:28" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.Copies="2" PrintSettings.CopyNames="Original&#13;&#10;Duplicado&#13;&#10;Triplicado&#13;&#10;Quadriplicado">
   <Dictionary>
-    <BusinessObjectDataSource Name="ArticleFamily" ReferenceName="ArticleFamily" DataType="logicpos.Objects.Logic.Reports.BOs.FRBOGenericCollection`1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticleFamily, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+    <BusinessObjectDataSource Name="ArticleFamily" ReferenceName="ArticleFamily" DataType="logicpos.Objects.Logic.Reports.BOs.FRBOGenericCollection1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticleFamily, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Code" DataType="System.Int32"/>
       <Column Name="Designation" DataType="System.String"/>
-      <BusinessObjectDataSource Name="BusinessObjectDataSource2" Alias="ArticleSubFamily" DataType="System.Collections.Generic.List`1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticleSubFamily, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" PropName="ArticleSubFamily" Enabled="true">
+      <BusinessObjectDataSource Name="BusinessObjectDataSource2" Alias="ArticleSubFamily" DataType="System.Collections.Generic.List1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticleSubFamily, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" PropName="ArticleSubFamily" Enabled="true">
         <Column Name="Code" DataType="System.Int32"/>
         <Column Name="Designation" DataType="System.String"/>
-        <BusinessObjectDataSource Name="Article" DataType="System.Collections.Generic.List`1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticle, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+        <BusinessObjectDataSource Name="Article" DataType="System.Collections.Generic.List1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticle, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
           <Column Name="Code" DataType="System.Int32"/>
           <Column Name="Designation" DataType="System.String"/>
           <Column Name="Price1" DataType="System.Decimal"/>

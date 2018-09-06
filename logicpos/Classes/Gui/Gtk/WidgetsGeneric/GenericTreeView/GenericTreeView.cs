@@ -4,7 +4,6 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -74,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             set { _treePathModel = value; }
         }
         protected TreeView _treeView;
-        public TreeView treeViewProfile
+        public TreeView TreeView
         {
             get { return _treeView; }
             set { _treeView = value; }
@@ -328,8 +327,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _treeView.CursorChanged += _treeView_CursorChanged;
             _treeView.RowActivated += delegate
             {
-                //Double click Edit only Works if has Privileges
-                if (_dataSourceRow != null && _allowRecordUpdate) Update();
+                // CheckBox Mode on DoubleClick
+                if (_treeViewMode == GenericTreeViewMode.CheckBox)
+                {
+                    ToggleCheckBox(_treePath);
+                }
+                // Non CheckBox Mode on DoubleClick
+                else
+                {
+                    //DoubleClick Edit only Works if has Privileges
+                    if (_dataSourceRow != null && _allowRecordUpdate) Update();
+                }
             };
             _treeView.Vadjustment.ValueChanged += delegate { UpdatePages(); };
             _treeView.Vadjustment.Changed += delegate { UpdatePages(); };

@@ -96,9 +96,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private CFG_ConfigurationCurrency _defaultValueConfigurationCurrency;
 
         //Constructor
-        public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName) 
+        public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName)
             : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName, Widget pWidget) 
+        public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName, Widget pWidget)
             : this(pSourceWindow, pPageName, "", pWidget, true) { }
         public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName, String pPageIcon, Widget pWidget, bool pEnabled = true)
             : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
@@ -244,12 +244,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
                 //Restore normal Edit/Unprotected Mode
                 UnProtectChildDocumentChanges();
-                
+
                 //Get and Update WayBill Mode
                 bool wayBillMode = GetAndUpdateUIWayBillMode();
 
-                //Always Clear Articles when change DocumentType
+                //Always Clear Articles when change DocumentType, if not in CopyDocument mode
                 _treeViewArticles.DeleteRecords();
+                
                 //Always Clear ArticleBag when change DocumentType
                 (_pagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag = new ArticleBag();
 
@@ -295,83 +296,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //if (_entryBoxDocumentMasterNotes.EntryValidation.Text != string.Empty) { _entryBoxDocumentMasterNotes.EntryValidation.Text = string.Empty; };
                 //if (_entryBoxReason.EntryValidation.Text != string.Empty) { _entryBoxReason.EntryValidation.Text = string.Empty; };
 
-                //ConfigurationPaymentCondition
-                if (
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoice ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeBudget ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput
-                )
-                {
-                    //Enable Widget
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = true;
-                    _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = true;
-
-                    //Set Defaults
-                    if (_entryBoxSelectConfigurationPaymentCondition.Value == null)
-                    {
-                        _entryBoxSelectConfigurationPaymentCondition.Value = _defaultValueConfigurationPaymentCondition;
-                        _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = _defaultValueConfigurationPaymentCondition.Designation;
-                    }
-                    //Set Null
-                    if (_entryBoxSelectConfigurationPaymentMethod.Value != null)
-                    {
-                        _entryBoxSelectConfigurationPaymentMethod.Value = null;
-                        _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = string.Empty;
-                        _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
-                        _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
-                        _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Required = false;
-                        _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Validate();
-                    }
-                }
-                //ConfigurationPaymentMethod
-                else if (
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                    _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment
-                )
-                {
-                    //Enable Widget
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = true;
-                    _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = true;
-
-                    //Set Defaults
-                    if (_entryBoxSelectConfigurationPaymentMethod.Value == null)
-                    {
-                        _entryBoxSelectConfigurationPaymentMethod.Value = _defaultValueConfigurationPaymentMethod;
-                        _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = _defaultValueConfigurationPaymentMethod.Designation;
-                    }
-                    //Set Null
-                    if (_entryBoxSelectConfigurationPaymentCondition.Value != null)
-                    {
-                        _entryBoxSelectConfigurationPaymentCondition.Value = null;
-                        _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = string.Empty;
-                        _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = false;
-                        _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = false;
-                        _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Required = false;
-                        _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Validate();
-                    }
-                }
-                else
-                {
-                    //Set Null:EntryBoxSelectConfigurationPaymentCondition
-                    _entryBoxSelectConfigurationPaymentCondition.Value = null;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = string.Empty;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = false;
-                    _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = false;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Required = false;
-                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Validate();
-                    //Set Null:EntryBoxSelectConfigurationPaymentMethod
-                    _entryBoxSelectConfigurationPaymentMethod.Value = null;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = string.Empty;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
-                    _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Required = false;
-                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Validate();
-                    //Set UnRequired:EntryBoxSelectSourceDocumentFinance
-                    _entryBoxSelectSourceDocumentFinance.EntryValidation.Required = false;
-                    _entryBoxSelectSourceDocumentFinance.EntryValidation.Validate();
-                };
+                // Call Update SelectionBox Shared Method
+                SharedUpdateSelectionBoxsAndPageNavigatorOnChangeDocumentType();
 
                 //Detected SourceDocumentFinance:CreditNote
                 if (
@@ -467,11 +393,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Validate();
         }
 
+        /// <summary>
+        /// Share for Source Doucments and Copy Documents
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void _entryBoxSelectSourceDocumentFinance_ClosePopup(object sender, EventArgs e)
         {
-            XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster> selectRecordValidation = (XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster>) sender;
+            XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster> selectRecordValidation = (XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceMaster, TreeViewDocumentFinanceMaster>)sender;
 
-            try 
+            try
             {
                 FIN_DocumentFinanceMaster sourceDocument;
 
@@ -490,6 +421,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     // Reset SourceDocument
                     _entryBoxSelectSourceDocumentFinance.Value = null;
                     _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty;
+                    // In Copy Document we must Assign DocumentFinanceType to SelectionBox
+                    _entryBoxSelectDocumentFinanceType.Value = sourceDocument.DocumentType;
+                    _entryBoxSelectDocumentFinanceType.EntryValidation.Text = sourceDocument.DocumentType.Designation;
+                    // Call Update SelectionBox Shared Method
+                    SharedUpdateSelectionBoxsAndPageNavigatorOnChangeDocumentType();
                 }
 
                 //Update Data from Document Source
@@ -499,7 +435,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Read Only Extra Protection to Protect Changes in Child Documents, ex When SourceDocument is ConsignationInvoice we Cant Change Child Document Properties, ex Articles etc
 
                 //Always Call MainDialog Validate when we change DocumentFinance Source : If Caller is SourceDocument
-                
+
                 // SourceDocument
                 if (selectRecordValidation.Name.Equals("SourceDocument"))
                 {
@@ -557,7 +493,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             String result = string.Empty;
 
-            Guid[] excludedDocumentTypes = new Guid[] { 
+            Guid[] excludedDocumentTypes = new Guid[] {
                 SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput,
                 //SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment,
                 SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument,
@@ -590,27 +526,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             {
                 string filterDocumentType = string.Empty;
 
-//COMMENTED, now all documents use "AND DocumentChild IS NULL" - Leave this Block Here, May be usefull to Use in Future
-//
-//              //Specific Extra Filter for ConsignationInvoice, When Document Type is Invoice, Must add DocumentChild IS NULL to DocumentType filter
-//              if (listDocumentTypes[i] == _xpoOidDocumentFinanceTypeConsignationInvoice)
-//              {
-//                  //If DocumentFinanceTypeInvoice or WayBill, Show ConsignationInvoices, if not Invoiced Yet
-//                  if (
-//                      _entryBoxSelectDocumentFinanceType.Value.Oid.ToString() == _xpoOidDocumentFinanceTypeInvoice
-//                      //|| (int) _entryBoxSelectDocumentFinanceType.Value.SaftDocumentType == 2
-//                  )
-//                  {
-//                      filterDocumentType = string.Format("(DocumentType = '{0}' AND DocumentChild IS NULL)", listDocumentTypes[i]);
-//                      filterDocs += filterDocumentType;
-//                  }
-//              }
-//              //Default for all listDocumentTypes
-//              else
-//              {
-                    filterDocumentType += string.Format("DocumentType = '{0}'", listDocumentTypes[i]);
-                    filterDocs += filterDocumentType;
-//              }
+                //COMMENTED, now all documents use "AND DocumentChild IS NULL" - Leave this Block Here, May be usefull to Use in Future
+                //
+                //              //Specific Extra Filter for ConsignationInvoice, When Document Type is Invoice, Must add DocumentChild IS NULL to DocumentType filter
+                //              if (listDocumentTypes[i] == _xpoOidDocumentFinanceTypeConsignationInvoice)
+                //              {
+                //                  //If DocumentFinanceTypeInvoice or WayBill, Show ConsignationInvoices, if not Invoiced Yet
+                //                  if (
+                //                      _entryBoxSelectDocumentFinanceType.Value.Oid.ToString() == _xpoOidDocumentFinanceTypeInvoice
+                //                      //|| (int) _entryBoxSelectDocumentFinanceType.Value.SaftDocumentType == 2
+                //                  )
+                //                  {
+                //                      filterDocumentType = string.Format("(DocumentType = '{0}' AND DocumentChild IS NULL)", listDocumentTypes[i]);
+                //                      filterDocs += filterDocumentType;
+                //                  }
+                //              }
+                //              //Default for all listDocumentTypes
+                //              else
+                //              {
+                filterDocumentType += string.Format("DocumentType = '{0}'", listDocumentTypes[i]);
+                filterDocs += filterDocumentType;
+                //              }
 
                 if (filterDocumentType != string.Empty && i < listDocumentTypes.Length - 1) filterDocs += " OR ";
             }
@@ -763,9 +699,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     dataRow["TotalFinal"] = item.TotalFinal * _entryBoxSelectConfigurationCurrency.Value.ExchangeRate;
                     dataRow["PriceFinal"] = item.PriceFinal * _entryBoxSelectConfigurationCurrency.Value.ExchangeRate;
                     dataRow["PriceType"] = item.PriceType;
-                    dataRow["Token1"] = item.Token1;
-                    dataRow["Token2"] = item.Token2;
-                    dataRow["Notes"] = item.Notes;
+                    // Required to add string, if assign null value we have problems with updates and DBNull Type
+                    dataRow["Token1"] = (item.Token1 != null) ? item.Token1 : string.Empty;
+                    dataRow["Token2"] = (item.Token2 != null) ? item.Token2 : string.Empty;
+                    dataRow["Notes"] = (item.Notes != null) ? item.Notes : string.Empty;
                     //Insert DataRow into DataTable
                     _treeViewArticles.DataSourceRowInsert<DataRow>(dataRow);
                     //Insert DataRow into Model
@@ -834,9 +771,100 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private void UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes()
         {
             // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes
-            _entryBoxDocumentMasterNotes.EntryValidation.Text = (_entryBoxSelectDocumentFinanceType.Value != null && _entryBoxSelectDocumentFinanceType.Value.Notes != null) 
+            _entryBoxDocumentMasterNotes.EntryValidation.Text = (_entryBoxSelectDocumentFinanceType.Value != null && _entryBoxSelectDocumentFinanceType.Value.Notes != null)
                 ? _entryBoxSelectDocumentFinanceType.Value.Notes
                 : null;
+        }
+        
+        private void SharedUpdateSelectionBoxsAndPageNavigatorOnChangeDocumentType()
+        {
+            //Get and Update WayBill Mode
+            bool wayBillMode = GetAndUpdateUIWayBillMode();
+            //Show hide PagePage buttons based on DocumentType, ex 3 or 5 buttons
+            int i = 0;
+            foreach (PagePadPage page in _pagePad.Pages)
+            {
+                i++;
+                page.NavigatorButton.Visible = (wayBillMode) || (! wayBillMode && i <= 3);
+            }
+
+            //ConfigurationPaymentCondition
+            if (
+                _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoice ||
+                _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice ||
+                _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeBudget ||
+                _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice ||
+                _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput
+            )
+            {
+                //Enable Widget
+                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = true;
+                _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = true;
+
+                //Set Defaults
+                if (_entryBoxSelectConfigurationPaymentCondition.Value == null)
+                {
+                    _entryBoxSelectConfigurationPaymentCondition.Value = _defaultValueConfigurationPaymentCondition;
+                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = _defaultValueConfigurationPaymentCondition.Designation;
+                }
+                //Set Null
+                if (_entryBoxSelectConfigurationPaymentMethod.Value != null)
+                {
+                    _entryBoxSelectConfigurationPaymentMethod.Value = null;
+                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = string.Empty;
+                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
+                    _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
+                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Required = false;
+                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Validate();
+                }
+            }
+            //ConfigurationPaymentMethod
+            else if (
+                _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment
+            )
+            {
+                //Enable Widget
+                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = true;
+                _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = true;
+
+                //Set Defaults
+                if (_entryBoxSelectConfigurationPaymentMethod.Value == null)
+                {
+                    _entryBoxSelectConfigurationPaymentMethod.Value = _defaultValueConfigurationPaymentMethod;
+                    _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = _defaultValueConfigurationPaymentMethod.Designation;
+                }
+                //Set Null
+                if (_entryBoxSelectConfigurationPaymentCondition.Value != null)
+                {
+                    _entryBoxSelectConfigurationPaymentCondition.Value = null;
+                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = string.Empty;
+                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = false;
+                    _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = false;
+                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Required = false;
+                    _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Validate();
+                }
+            }
+            else
+            {
+                //Set Null:EntryBoxSelectConfigurationPaymentCondition
+                _entryBoxSelectConfigurationPaymentCondition.Value = null;
+                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Text = string.Empty;
+                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Sensitive = false;
+                _entryBoxSelectConfigurationPaymentCondition.ButtonSelectValue.Sensitive = false;
+                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Required = false;
+                _entryBoxSelectConfigurationPaymentCondition.EntryValidation.Validate();
+                //Set Null:EntryBoxSelectConfigurationPaymentMethod
+                _entryBoxSelectConfigurationPaymentMethod.Value = null;
+                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Text = string.Empty;
+                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Sensitive = false;
+                _entryBoxSelectConfigurationPaymentMethod.ButtonSelectValue.Sensitive = false;
+                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Required = false;
+                _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Validate();
+                //Set UnRequired:EntryBoxSelectSourceDocumentFinance
+                _entryBoxSelectSourceDocumentFinance.EntryValidation.Required = false;
+                _entryBoxSelectSourceDocumentFinance.EntryValidation.Validate();
+            };
         }
     }
 }

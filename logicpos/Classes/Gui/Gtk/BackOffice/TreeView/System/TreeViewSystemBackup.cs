@@ -45,6 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             });
             columnProperties.Add(new GenericTreeViewColumnProperty("CreatedAt") { Title = Resx.global_date, MinWidth = 180 });
             columnProperties.Add(new GenericTreeViewColumnProperty("FileNamePacked") { Title = Resx.global_file, MinWidth = 240 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
 
             //Sort Order
             SortProperty[] sortProperty = new SortProperty[2];

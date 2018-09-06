@@ -145,6 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _scrolledWindow, actionAreaButtons);
         }
 
+        // UI Query Input Components
         private void InitFieldsModeComponents()
         {
             try
@@ -197,6 +198,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _fieldsModeComponents[ReportsQueryDialogMode.SYSTEM_AUDIT].Add(typeof(SYS_UserDetail).Name, "usdOid");
                 _fieldsModeComponents[ReportsQueryDialogMode.SYSTEM_AUDIT].Add(typeof(POS_ConfigurationPlaceTerminal).Name, "cptOid");
 
+// CURRENT_ACCOUNT
+_fieldsModeComponents.Add(ReportsQueryDialogMode.CURRENT_ACCOUNT, new Dictionary<string, string>());
+//_fieldsModeComponents[ReportsQueryDialogMode.CURRENT_ACCOUNT].Add(typeof(DateTime).Name, "sauDate");
+
+// USER_COMMISSION
+_fieldsModeComponents.Add(ReportsQueryDialogMode.USER_COMMISSION, new Dictionary<string, string>());
+_fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(DateTime).Name, "DateDay");
+_fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(SYS_UserDetail).Name, "UserOid");
+_fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(FIN_Article).Name, "ArticleOid");
+
                 // Create SelectionBox References / Fill Selection Boxs Dictionary to be used in Dynamic Dialog
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(FIN_DocumentFinanceType)))
                 {
@@ -205,7 +216,8 @@ Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR
 Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
 Oid = '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
 Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeDebitNote}'
+Oid = '{SettingsApp.XpoOidDocumentFinanceTypeDebitNote}' OR 
+Oid = '{SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice}'
 )".Replace(Environment.NewLine, string.Empty);
                     _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<FIN_DocumentFinanceType, TreeViewDocumentFinanceType>(Resx.global_documentfinanceseries_documenttype, "Designation", extraFilter);
                     _selectionBoxs.Add(typeof(FIN_DocumentFinanceType).Name, _entryBoxSelectDocumentFinanceType);

@@ -113,6 +113,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             get { return _entryBoxCustomerDiscount; }
         }
 
+        private EntryBoxValidation _entryBoxCustomerPhone;
+        public EntryBoxValidation EntryBoxCustomerPhone
+        {
+            get { return _entryBoxCustomerPhone; }
+        }
+
+        private EntryBoxValidation _entryBoxCustomerEmail;
+        public EntryBoxValidation EntryBoxCustomerEmail
+        {
+            get { return _entryBoxCustomerEmail; }
+        }
+
         private EntryBoxValidation _entryBoxCustomerNotes;
         public EntryBoxValidation EntryBoxCustomerNotes
         {
@@ -120,9 +132,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //Constructor
-        public DocumentFinanceDialogPage2(Window pSourceWindow, String pPageName) 
+        public DocumentFinanceDialogPage2(Window pSourceWindow, String pPageName)
             : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage2(Window pSourceWindow, String pPageName, Widget pWidget) 
+        public DocumentFinanceDialogPage2(Window pSourceWindow, String pPageName, Widget pWidget)
             : this(pSourceWindow, pPageName, "", pWidget, true) { }
         public DocumentFinanceDialogPage2(Window pSourceWindow, String pPageName, String pPageIcon, Widget pWidget, bool pEnabled = true)
             : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
@@ -207,6 +219,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 _entryBoxCustomerDiscount.EntryValidation.Text = FrameworkUtils.StringToDecimalAndToStringAgain(_entryBoxCustomerDiscount.EntryValidation.Text);
             };
 
+            //Customer Phone
+            _entryBoxCustomerPhone = new EntryBoxValidation(_sourceWindow, Resx.global_phone, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxCustomerPhone.EntryValidation.Changed += delegate { Validate(); };
+
+            //Customer Email
+            _entryBoxCustomerEmail = new EntryBoxValidation(_sourceWindow, Resx.global_email, KeyboardMode.Alfa, SettingsApp.RegexEmail, false);
+            _entryBoxCustomerEmail.EntryValidation.Changed += delegate { Validate(); };
+
             //Customer Notes
             _entryBoxCustomerNotes = new EntryBoxValidation(_sourceWindow, Resx.global_notes, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
             _entryBoxCustomerNotes.EntryValidation.Changed += delegate { Validate(); };
@@ -223,13 +243,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             hboxDiscountAndFiscalNumberAndCardNumber.PackStart(_entryBoxSelectCustomerCardNumber, true, true, 0);
             hboxDiscountAndFiscalNumberAndCardNumber.PackStart(_entryBoxCustomerDiscount, true, true, 0);
 
+            //HBox Address+Locality
+            HBox hboxAddressLocality = new HBox(true, 0);
+            hboxAddressLocality.PackStart(_entryBoxCustomerAddress, true, true, 0);
+            hboxAddressLocality.PackStart(_entryBoxCustomerLocality, true, true, 0);
+
+            //HBox PhoneEmail
+            HBox hboxPhoneEmail = new HBox(true, 0);
+            hboxPhoneEmail.PackStart(_entryBoxCustomerPhone, true, true, 0);
+            hboxPhoneEmail.PackStart(_entryBoxCustomerEmail, true, true, 0);
+
             //Pack VBOX
             VBox vbox = new VBox(false, 2);
             vbox.PackStart(_entryBoxSelectCustomerName, false, false, 0);
-            vbox.PackStart(_entryBoxCustomerAddress, false, false, 0);
-            vbox.PackStart(_entryBoxCustomerLocality, false, false, 0);
-            vbox.PackStart(hboxZipCodeAndCityAndCountry, false, false, 0);
             vbox.PackStart(hboxDiscountAndFiscalNumberAndCardNumber, false, false, 0);
+            vbox.PackStart(hboxAddressLocality, false, false, 0);
+            vbox.PackStart(hboxZipCodeAndCityAndCountry, false, false, 0);
+            vbox.PackStart(hboxPhoneEmail, false, false, 0);
             vbox.PackStart(_entryBoxCustomerNotes, false, false, 0);
             PackStart(vbox);
         }
@@ -304,7 +334,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         public void ApplyCriteriaToCustomerInputs()
         {
             string filterBase = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
-            string filterExtra = 
+            string filterExtra =
                 (
                     _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoice &&
                     _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice
@@ -318,16 +348,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         public override void Validate()
         {
             _validated = (
-              _entryBoxSelectCustomerName.EntryValidation.Validated &&
-              _entryBoxCustomerAddress.EntryValidation.Validated &&
-              _entryBoxCustomerLocality.EntryValidation.Validated &&
-              _entryBoxCustomerZipCode.EntryValidation.Validated &&
-              _entryBoxCustomerCity.EntryValidation.Validated &&
-              _entryBoxSelectCustomerCountry.EntryValidation.Validated &&
-              _entryBoxCustomerDiscount.EntryValidation.Validated &&
-              _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
-              _entryBoxSelectCustomerCardNumber.EntryValidation.Validated &&
-              _entryBoxCustomerNotes.EntryValidation.Validated
+                _entryBoxSelectCustomerName.EntryValidation.Validated &&
+                _entryBoxCustomerAddress.EntryValidation.Validated &&
+                _entryBoxCustomerLocality.EntryValidation.Validated &&
+                _entryBoxCustomerZipCode.EntryValidation.Validated &&
+                _entryBoxCustomerCity.EntryValidation.Validated &&
+                _entryBoxCustomerPhone.EntryValidation.Validated &&
+                _entryBoxCustomerEmail.EntryValidation.Validated &&
+                _entryBoxCustomerDiscount.EntryValidation.Validated &&
+                _entryBoxCustomerNotes.EntryValidation.Validated &&
+                _entryBoxSelectCustomerCountry.EntryValidation.Validated &&
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
+                _entryBoxSelectCustomerCardNumber.EntryValidation.Validated
             );
 
             //Enable Next Button, If not In Last Page
@@ -347,11 +379,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //Disable calls to this function when we trigger .Changed events, creating recursive calls to this function
                 _enableGetCustomerDetails = false;
 
-                 // Encrypt pFieldValue to use in Sql Filter
+                // Encrypt pFieldValue to use in Sql Filter
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     // Only Encrypt Encrypted Fields
-                    if (pFieldName == nameof(ERP_Customer.FiscalNumber) || pFieldName == nameof(ERP_Customer.CardNumber)) {
+                    if (pFieldName == nameof(ERP_Customer.FiscalNumber) || pFieldName == nameof(ERP_Customer.CardNumber))
+                    {
                         pFieldValue = GlobalFramework.PluginSoftwareVendor.Encrypt(pFieldValue);
                     }
                 }
@@ -394,6 +427,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _entryBoxCustomerLocality.EntryValidation.Text = (_pagePad.Customer.Locality == null) ? string.Empty : _pagePad.Customer.Locality;
                     _entryBoxCustomerZipCode.EntryValidation.Text = (_pagePad.Customer.ZipCode == null) ? string.Empty : _pagePad.Customer.ZipCode;
                     _entryBoxCustomerCity.EntryValidation.Text = (_pagePad.Customer.City == null) ? string.Empty : _pagePad.Customer.City;
+                    _entryBoxCustomerPhone.EntryValidation.Text = (_pagePad.Customer.Phone == null) ? string.Empty : _pagePad.Customer.Phone;
+                    _entryBoxCustomerEmail.EntryValidation.Text = (_pagePad.Customer.Email == null) ? string.Empty : _pagePad.Customer.Email;
                     _entryBoxSelectCustomerCountry.Value = _pagePad.Customer.Country;
                     _entryBoxSelectCustomerCountry.EntryValidation.Text = (_pagePad.Customer.Country == null) ? string.Empty : _pagePad.Customer.Country.Designation;
                     _entryBoxSelectCustomerCountry.EntryValidation.Validate(_entryBoxSelectCustomerCountry.Value.Oid.ToString());
@@ -433,6 +468,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
                     _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
                     _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
+                    _entryBoxCustomerPhone.EntryValidation.Text = string.Empty;
+                    _entryBoxCustomerEmail.EntryValidation.Text = string.Empty;
                     //Never Change Country
                     //_entryBoxSelectCustomerCountry.Value = _intialValueConfigurationCountry;
                     //_entryBoxSelectCustomerCountry.EntryValidation.Text = _intialValueConfigurationCountry.Designation;
@@ -457,9 +494,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                             break;
                     }
                     _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
-                    
+
                     //Call pagePad4 ClearShipTo
-                   _pagePad4.ClearShipTo();
+                    _pagePad4.ClearShipTo();
                 }
 
                 //Call
@@ -495,7 +532,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 _enableGetCustomerDetails = false;
 
                 //Restore Default PriceType
-                if (_currentCustomerPriceType != PriceType.Price1) 
+                if (_currentCustomerPriceType != PriceType.Price1)
                 {
                     _currentCustomerPriceType = PriceType.Price1;
                     //if (_pagePad.Customer != null) _log.Debug(String.Format("PriceTypes Restored to Defaults: [{0}], Current:[{1}], Last: [{2}]", _pagePad.Customer.Name, (PriceType)_pagePad.Customer.PriceType.EnumValue, _currentCustomerPriceType));
@@ -511,6 +548,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
                 _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
                 _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
+                _entryBoxCustomerPhone.EntryValidation.Text = string.Empty;
+                _entryBoxCustomerEmail.EntryValidation.Text = string.Empty;
                 if (pClearCountry)
                 {
                     _entryBoxSelectCustomerCountry.Value = _intialValueConfigurationCountry;
@@ -566,7 +605,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 bool isConferenceDocument = false;
                 bool isWayBill = false;
                 //Used To Disable FiscalNumber Edits
-                string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                // Encrypt pFieldValue to use in Sql Filter
+                string fiscalNumberFilterValue = string.Empty;
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    fiscalNumberFilterValue = GlobalFramework.PluginSoftwareVendor.Encrypt(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                }
+                string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
                 Guid customerGuid = FrameworkUtils.GetGuidFromQuery(sql);
                 ERP_Customer customer = (customerGuid != Guid.Empty) ? (ERP_Customer)FrameworkUtils.GetXPGuidObject(typeof(ERP_Customer), customerGuid) : null;
 
@@ -584,21 +629,29 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 //If has SourceDocument and not a ConferenceDocument put all Edits and Validation to ReadOnly, and Put Validation Required Fields to False
                 //if ((_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && !isConferenceDocument) && (! isSingularEntity && isHiddenConsumerEntity) && ! isWayBill)
                 //Used || in TestCollapseRowArgs, Was &&
-                if ((_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && !isConferenceDocument) || (! isSingularEntity && isHiddenConsumerEntity) && ! isWayBill)
+                //if ((_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && !isConferenceDocument) || (!isSingularEntity && isHiddenConsumerEntity) && !isWayBill)
+                if ((_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && !isConferenceDocument) || (!isSingularEntity && isHiddenConsumerEntity) && !isWayBill)
                 {
+                    // Commented now we can Edit some values to prevent source documents like invoice with totals > 1000 and alter missing values like ZipCode
+
                     //EntryBox
-                    _entryBoxCustomerAddress.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerAddress.ButtonKeyBoard.Sensitive = false;
-                    _entryBoxCustomerLocality.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerLocality.ButtonKeyBoard.Sensitive = false;
-                    _entryBoxCustomerZipCode.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerZipCode.ButtonKeyBoard.Sensitive = false;
-                    _entryBoxCustomerCity.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerCity.ButtonKeyBoard.Sensitive = false;
-                    _entryBoxCustomerNotes.EntryValidation.Sensitive = false;
-                    _entryBoxCustomerNotes.ButtonKeyBoard.Sensitive = false;
+                    //_entryBoxCustomerAddress.EntryValidation.Sensitive = false;
+                    //_entryBoxCustomerAddress.ButtonKeyBoard.Sensitive = false;
+                    //_entryBoxCustomerLocality.EntryValidation.Sensitive = false;
+                    //_entryBoxCustomerLocality.ButtonKeyBoard.Sensitive = false;
+                    //_entryBoxCustomerZipCode.EntryValidation.Sensitive = false;
+                    //_entryBoxCustomerZipCode.ButtonKeyBoard.Sensitive = false;
+                    //_entryBoxCustomerCity.EntryValidation.Sensitive = false;
+                    //_entryBoxCustomerCity.ButtonKeyBoard.Sensitive = false;
+                    //_entryBoxCustomerPhone.EntryValidation.Sensitive = false;
+                    //_entryBoxCustomerPhone.ButtonKeyBoard.Sensitive = false;
+                    //_entryBoxCustomerEmail.EntryValidation.Sensitive = false;
+                    //_entryBoxCustomerEmail.ButtonKeyBoard.Sensitive = false;
+                    //_entryBoxCustomerNotes.EntryValidation.Sensitive = false;
+                    //_entryBoxCustomerNotes.ButtonKeyBoard.Sensitive = false;
                     _entryBoxCustomerDiscount.EntryValidation.Sensitive = false;
                     _entryBoxCustomerDiscount.ButtonKeyBoard.Sensitive = false;
+
                     //EntryBoxSelect
                     _entryBoxSelectCustomerName.EntryValidation.Sensitive = false;
                     _entryBoxSelectCustomerName.ButtonKeyBoard.Sensitive = false;
@@ -646,6 +699,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     //City
                     _entryBoxCustomerCity.EntryValidation.Sensitive = enableEditCustomerDetails;
                     _entryBoxCustomerCity.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+                    //Phone
+                    _entryBoxCustomerPhone.EntryValidation.Sensitive = enableEditCustomerDetails;
+                    _entryBoxCustomerPhone.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
+                    //Email
+                    _entryBoxCustomerEmail.EntryValidation.Sensitive = enableEditCustomerDetails;
+                    _entryBoxCustomerEmail.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
                     //Notes
                     _entryBoxCustomerNotes.EntryValidation.Sensitive = enableEditCustomerDetails;
                     _entryBoxCustomerNotes.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
@@ -666,7 +725,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _entryBoxSelectCustomerCardNumber.EntryValidation.Sensitive = enableEditCustomerDetails;
                     _entryBoxSelectCustomerCardNumber.ButtonKeyBoard.Sensitive = enableEditCustomerDetails;
                     _entryBoxSelectCustomerCardNumber.ButtonSelectValue.Sensitive = true;
-
                     //Validation
 
                     //EntryBox
@@ -690,6 +748,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _entryBoxCustomerLocality.EntryValidation.Sensitive = enableEditCustomerDetails;
                     _entryBoxCustomerZipCode.EntryValidation.Sensitive = enableEditCustomerDetails;
                     _entryBoxCustomerCity.EntryValidation.Sensitive = enableEditCustomerDetails;
+                    _entryBoxCustomerPhone.EntryValidation.Sensitive = enableEditCustomerDetails;
+                    _entryBoxCustomerEmail.EntryValidation.Sensitive = enableEditCustomerDetails;
                     _entryBoxCustomerNotes.EntryValidation.Sensitive = enableEditCustomerDetails;
                     //EntryBoxSelect
                     _entryBoxSelectCustomerName.EntryValidation.Sensitive = enableEditCustomerDetails;
@@ -712,13 +772,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _entryBoxCustomerCity.EntryValidation.Required = (!isSingularEntity || requiredCustomerDetails);
                 }
 
+                // Update Rules
+                _entryBoxCustomerZipCode.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExZipCode;
+                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Rule = _entryBoxSelectCustomerCountry.Value.RegExFiscalNumber;
+
                 //Always Validate All Fields
+
                 //EntryBox
                 _entryBoxSelectCustomerName.EntryValidation.Validate();
                 _entryBoxCustomerAddress.EntryValidation.Validate();
                 _entryBoxCustomerLocality.EntryValidation.Validate();
                 _entryBoxCustomerZipCode.EntryValidation.Validate();
                 _entryBoxCustomerCity.EntryValidation.Validate();
+                _entryBoxCustomerPhone.EntryValidation.Validate();
+                _entryBoxCustomerEmail.EntryValidation.Validate();
                 _entryBoxCustomerNotes.EntryValidation.Sensitive = true;
                 //EntryBoxSelect
                 _entryBoxSelectCustomerName.EntryValidation.Validate();
@@ -735,8 +802,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     bool isValidFiscalNumber = FiscalNumber.IsValidFiscalNumber(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2);
                     _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated = isValidFiscalNumber;
                     //Disable FiscalNumber Entry
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = ! isValidFiscalNumber;
-                    _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = ! isValidFiscalNumber;
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = !isValidFiscalNumber;
+                    _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = !isValidFiscalNumber;
                 }
 
                 //Shared
@@ -756,64 +823,85 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
         }
 
-        //Almost Equal to PosPaymentDialog Method
+        //Almost Equal to PosPaymentDialog Method : Both methods have same Name
         //Update Address And FiscalNumber Require Fields
         private void UpdateCustomerAddressAndFiscalNumberRequireFields()
         {
-            bool isFinalConsumerEntity = (_entryBoxSelectCustomerName.Value != null && _entryBoxSelectCustomerName.Value.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity) ? true : false;
-            bool isSingularEntity = (
-                isFinalConsumerEntity ||
-                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
-                FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2)
-            );
-
-            //If is a SingularEntity Disable Address, ZipCode and City
-            //if (isSingularEntity)
-            //InTest : Added WayBill to force Address for At WebServices
-            if (isSingularEntity && ! _pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill)
+            try
             {
-                _entryBoxCustomerAddress.EntryValidation.Required = false;
-                _entryBoxCustomerZipCode.EntryValidation.Required = false;
-                _entryBoxCustomerCity.EntryValidation.Required = false;
-                _entryBoxCustomerAddress.EntryValidation.Validate();
-                _entryBoxCustomerZipCode.EntryValidation.Validate();
-                _entryBoxCustomerCity.EntryValidation.Validate();
-            }
+                bool isRequiredAllCustomerDetails = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue);
+                bool isFinalConsumerEntity = (_entryBoxSelectCustomerName.Value != null && _entryBoxSelectCustomerName.Value.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity) ? true : false;
+                bool isSingularEntity = (
+                    isFinalConsumerEntity ||
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
+                    FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2)
+                );
 
-            //Always Required NIF or Client Name, or Both if none has Filled or ! isSingularEntity
-            if (
-                    (
-                        _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty &&
+                //If is a SingularEntity and Not isRequiredAllCustomerDetails Disable Address, ZipCode and City
+                //InTest : Added WayBill to force Address for At WebServices
+                if (isSingularEntity && !_pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill && !isRequiredAllCustomerDetails)
+                {
+                    _entryBoxCustomerAddress.EntryValidation.Required = false;
+                    _entryBoxCustomerZipCode.EntryValidation.Required = false;
+                    _entryBoxCustomerCity.EntryValidation.Required = false;
+                    _entryBoxCustomerAddress.EntryValidation.Validate();
+                    _entryBoxCustomerZipCode.EntryValidation.Validate();
+                    _entryBoxCustomerCity.EntryValidation.Validate();
+                    //_entryBoxCustomerPhone.EntryValidation.Validate();
+                    //_entryBoxCustomerEmail.EntryValidation.Validate();
+                }
+                //if TotalFinal > SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue Required Address, ZipCode and City
+                else if (isRequiredAllCustomerDetails)
+                {
+                    _entryBoxCustomerAddress.EntryValidation.Required = true;
+                    _entryBoxCustomerZipCode.EntryValidation.Required = true;
+                    _entryBoxCustomerCity.EntryValidation.Required = true;
+                    _entryBoxCustomerAddress.EntryValidation.Validate();
+                    _entryBoxCustomerZipCode.EntryValidation.Validate();
+                    _entryBoxCustomerCity.EntryValidation.Validate();
+                    //_entryBoxCustomerPhone.EntryValidation.Validate();
+                    //_entryBoxCustomerEmail.EntryValidation.Validate();
+                }
+
+                //Always Required NIF or Client Name, or Both if none has Filled or ! isSingularEntity
+                if (
                         (
-                            _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty
-                            || !_entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated
+                            _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty &&
+                            (
+                                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty
+                                || !_entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated
+                            )
+                        )
+                        ||
+                        (
+                            !isSingularEntity
+                            && _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty
+                        )
+                        ||
+                        (
+                            _pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue
                         )
                     )
-                    ||
-                    (
-                        !isSingularEntity
-                        && _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text != string.Empty
-                    )
-                    || 
-                    (
-                        _pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue
-                    )
-                )
-            {
-                _entryBoxSelectCustomerName.EntryValidation.Required = true;
-                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = true;
-                _entryBoxSelectCustomerName.EntryValidation.Validate();
-                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validate();
+                {
+                    _entryBoxSelectCustomerName.EntryValidation.Required = true;
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = true;
+                    _entryBoxSelectCustomerName.EntryValidation.Validate();
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validate();
+                }
+                else if (_entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
+                {
+                    _entryBoxSelectCustomerName.EntryValidation.Required = false;
+                    _entryBoxSelectCustomerName.EntryValidation.Validate();
+                }
+                else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
+                {
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = false;
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validate();
+                }
             }
-            else if (_entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
+            catch (Exception ex)
             {
-                _entryBoxSelectCustomerName.EntryValidation.Required = false;
-                _entryBoxSelectCustomerName.EntryValidation.Validate();
-            }
-            else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
-            {
-                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = false;
-                _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validate();
+                _log.Error(ex.Message, ex);
             }
         }
 
@@ -860,7 +948,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             if (_entryBoxSelectCustomerName.Value != null)
             {
-                _currentCustomerPriceType = (PriceType) _entryBoxSelectCustomerName.Value.PriceType.EnumValue;
+                _currentCustomerPriceType = (PriceType)_entryBoxSelectCustomerName.Value.PriceType.EnumValue;
             }
             else
             {

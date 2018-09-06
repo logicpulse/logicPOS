@@ -32,7 +32,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             /*01*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Type = typeof(UInt32), Title = Resx.global_record_code });
             /*02*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = Resx.global_designation, MinWidth = 200 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = Resx.global_designation, Expand = true });
             /*03*/
             columnProperties.Add(new GenericTreeViewColumnProperty("HardwareId") { Type = typeof(String), Title = Resx.global_hardware_id, MinWidth = 200 });
 

@@ -1,10 +1,8 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Drawing;
 
@@ -22,6 +20,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosDocumentFinanceSelectRecordDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
         {
+            //Parameters
+            _sourceWindow = pSourceWindow;            
+
             //Settings
             string _fileIconListFinanceDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
             string _fileIconListCurrentAccountDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_current account_document.png");

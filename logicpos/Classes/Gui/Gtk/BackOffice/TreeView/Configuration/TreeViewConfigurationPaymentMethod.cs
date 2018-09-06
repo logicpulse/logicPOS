@@ -33,11 +33,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
             columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Token") { Title = Resx.global_ConfigurationPaymentMethod_Token });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("Token") { Title = Resx.global_ConfigurationPaymentMethod_Token, MinWidth = 180 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Acronym") { Title = Resx.global_ConfigurationPaymentMethod_Acronym });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Symbol") { Title = Resx.global_ConfigurationPaymentMethod_Symbol });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("Symbol") { Title = Resx.global_ConfigurationPaymentMethod_Symbol });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

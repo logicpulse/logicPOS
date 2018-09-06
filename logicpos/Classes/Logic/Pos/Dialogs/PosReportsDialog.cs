@@ -50,6 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             List<string> result = new List<string>();
             // Filter SellDocuments
             string filterField = string.Empty;
+            string statusField = string.Empty;
             bool filterSellDocuments = false;
             string extraFilter = string.Empty;
 
@@ -60,24 +61,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     filterSellDocuments = true;
                     filterField = "DocumentType";
+                    statusField = "DocumentStatusStatus";
                 }
                 else if (pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL_DETAIL) || pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL_DETAIL_GROUP))
                 {
                     filterSellDocuments = true;
                     filterField = "ftOid";
+                    statusField = "fmDocumentStatusStatus";
                 }
 
+                // Add extraFilter for SellDocuments
                 if (filterSellDocuments == true)
                 {
-                    extraFilter = $@" AND (
+                    extraFilter = $@" AND ({statusField} <> 'A') AND (
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeDebitNote}'
 )".Replace(Environment.NewLine, string.Empty);
                 }
 
-                // Assign Dialog FilterValue to Mrthod Result Value
+                // Assign Dialog FilterValue to Method Result Value
                 result.Add($"{dialog.FilterValue}{extraFilter}");
                 result.Add(dialog.FilterValueHumanReadble);
             }
@@ -98,7 +103,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ? CustomReportDisplayMode.Design
                 : CustomReportDisplayMode.ExportPDF;
             // Override Default Development Mode
-            displayMode = CustomReportDisplayMode.ExportPDF;
+            displayMode = CustomReportDisplayMode.Design;
 
             // Local Variables
             string reportFilter = string.Empty;
@@ -134,6 +139,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 reportsQueryDialogMode = ReportsQueryDialogMode.SYSTEM_AUDIT;
                 databaseSourceObject = "view_systemaudit";
             }
+else if (token.ToString().Equals("REPORT_LIST_CURRENT_ACCOUNT"))
+{
+    reportsQueryDialogMode = ReportsQueryDialogMode.CURRENT_ACCOUNT;
+    databaseSourceObject = "fin_documentfinancemaster";
+}
+else if (token.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
+{
+    reportsQueryDialogMode = ReportsQueryDialogMode.USER_COMMISSION;
+    databaseSourceObject = "view_usercommission";
+}
 
             // Common GetReportsQueryDialogFilter for All Non Undefined ReportsQueryDialogMode 
             if (reportsQueryDialogMode != ReportsQueryDialogMode.UNDEFINED)
@@ -552,7 +567,31 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     */
 
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                    // Other Non REPORT_SALES_* Reports
 
+                    // Auxiliar Tables
+                    case ReportsTypeToken.REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES:
+                        // Where it is Called?
+                        CustomReport.ProcessReportArticle(displayMode);
+                        break;
+                    case ReportsTypeToken.REPORT_LIST_CUSTOMERS:
+                        CustomReport.ProcessReportCustomer(displayMode);
+                        break;
+
+                    // Other Reports
+                    case ReportsTypeToken.REPORT_LIST_AUDIT_TABLE:
+                        CustomReport.ProcessReportSystemAudit(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    case ReportsTypeToken.REPORT_LIST_STOCK_MOVEMENTS:
+                        CustomReport.ProcessReportArticleStockMovement(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
+    CustomReport.ProcessReportCurrentAccount(displayMode, reportFilter, reportFilterHumanReadable);
+    break;
+case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
+    CustomReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);
+    break;
+                    // ABove are not Implemented Yet
                     case ReportsTypeToken.REPORT_TOTAL_PER_FAMILY:
                         break;
                     case ReportsTypeToken.REPORT_TOP_CLOSE_EMPLOYEES:
@@ -593,20 +632,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         break;
                     case ReportsTypeToken.REPORT_LIST_WORKSESSION:
                         break;
-                    case ReportsTypeToken.REPORT_LIST_CUSTOMERS:
-                        CustomReport.ProcessReportCustomer(displayMode);
-                        break;
                     case ReportsTypeToken.REPORT_LIST_CLOSE_WORKSESSION:
-                        break;
-                    case ReportsTypeToken.REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES:
-                        // Where it is Called?
-                        CustomReport.ProcessReportArticle(displayMode);
-                        break;
-                    case ReportsTypeToken.REPORT_LIST_STOCK_MOVEMENTS:
-                        CustomReport.ProcessReportArticleStockMovement(displayMode, reportFilter, reportFilterHumanReadable);
-                        break;
-                    case ReportsTypeToken.REPORT_LIST_AUDIT_TABLE:
-                        CustomReport.ProcessReportSystemAudit(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     default:
                         _log.Error(String.Format("Undetected Token: [{0}]", token));

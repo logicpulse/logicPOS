@@ -269,7 +269,7 @@ L'application est pas autorisé!</value>
     <value>Les détails financiers</value>
   </data>
   <data name="dialog_edit_article_tab3_label" xml:space="preserve">
-    <value>Caractéristiques physiques</value>
+    <value>Autres détails</value>
   </data>
   <data name="dialog_edit_ConfigurationCashRegister_tab1_label" xml:space="preserve">
     <value>Modifier registres de trésorerie</value>
@@ -342,10 +342,10 @@ il est supérieur à la valeur [{1}]!
 S'il vous plaît entrer une valeur valide de valeur égale ou inférieure à la existante dans la zone.</value>
   </data>
   <data name="dialog_message_cashdrawer_open_close_total_enter_diferent_from_total_in_cashdrawer" xml:space="preserve">
-    <value>Erreur! Vous ne pouvez pas supprimer l`enregistrement parce qu`elle viole l`intégrité référentielle!
+    <value>Erreur! Vous ne pouvez pas supprimer lenregistrement parce quelle viole lintégrité référentielle!
 
 
-Le total inséré ne correspond pas à la session totale. Vérifiez à nouveau le montant existant. Pour procéder peut entrer dans le total indiqué ci-dessus (de la session), mais assurez-vous de faire un flux de trésorerie (entrée / sortie), correspondant à la différence après l`ouverture de la session pour la prochaine fois.
+Le total inséré ne correspond pas à la session totale. Vérifiez à nouveau le montant existant. Pour procéder peut entrer dans le total indiqué ci-dessus (de la session), mais assurez-vous de faire un flux de trésorerie (entrée / sortie), correspondant à la différence après louverture de la session pour la prochaine fois.
 
 
 
@@ -411,7 +411,7 @@ L´application sera fermée, pff commencer l´application manuellement après la
     <value>Voulez-vous supprimer l´enregistrement sélectionné?</value>
   </data>
   <data name="dialog_message_delete_record_constraint_violation_exception" xml:space="preserve">
-    <value>Erreur! Vous ne pouvez pas supprimer l`enregistrement parce qu`elle viole l`intégrité référentielle!</value>
+    <value>Erreur! Vous ne pouvez pas supprimer lenregistrement parce quelle viole lintégrité référentielle!</value>
   </data>
   <data name="dialog_message_delete_record_show_protected_record" xml:space="preserve">
     <value>Vous ne pouvez pas supprimer l'enregistrement sélectionné!
@@ -3097,5 +3097,82 @@ Quantité valide: {1}</value>
   </data>
   <data name="prefparam_notification_documents_to_invoice_ignore_after_show_number_of_times" xml:space="preserve">
     <value>Notifications: Documents to Invoice: Ignorer les notifications après avoir été notifiées un nombre déterminé de fois</value>
+  </data>
+  <data name="global_button_label_clone_document" xml:space="preserve">
+    <value>Copie</value>
+  </data>
+  <data name="global_button_label_open_document" xml:space="preserve">
+    <value>Ouvrir</value>
+  </data>
+  <data name="dialog_message_mail_sent_successfully" xml:space="preserve">
+    <value>Votre e-mail a été envoyé avec succès!</value>
+  </data>
+  <data name="global_button_label_send_email_document" xml:space="preserve">
+    <value>Env. Email</value>
+  </data>
+  <data name="global_email_bcc" xml:space="preserve">
+    <value>Bcc</value>
+  </data>
+  <data name="global_email_body" xml:space="preserve">
+    <value>Corps de Courrier</value>
+  </data>
+  <data name="global_email_cc" xml:space="preserve">
+    <value>Cc</value>
+  </data>
+  <data name="global_email_subject" xml:space="preserve">
+    <value>Sujet</value>
+  </data>
+  <data name="global_email_to" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="global_place" xml:space="preserve">
+    <value>Endroit</value>
+  </data>
+  <data name="global_question" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_body" xml:space="preserve">
+    <value>Corps du message</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_html_body" xml:space="preserve">
+    <value>Corps d'e-mail HTML</value>
+  </data>
+  <data name="prefparam_send_mail_finance_documents_subject" xml:space="preserve">
+    <value>Sujet</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_enable_ssl" xml:space="preserve">
+    <value>SMTP SSL activé</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_password" xml:space="preserve">
+    <value>Mot de passe SMTP</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_port" xml:space="preserve">
+    <value>Port SMTP</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_server" xml:space="preserve">
+    <value>Serveur SMTP</value>
+  </data>
+  <data name="prefparam_send_mail_smtp_username" xml:space="preserve">
+    <value>Nom d'utilisateur SMTP</value>
+  </data>
+  <data name="window_title_dialog_clone_documents_confirmation" xml:space="preserve">
+    <value>Ce processus ne peut pas être inversé! Voulez-vous confirmer et copier les documents suivants?
+
+{0}</value>
+  </data>
+  <data name="window_title_send_email" xml:space="preserve">
+    <value>Envoyer Email</value>
+  </data>
+  <data name="report_list_current_account" xml:space="preserve">
+    <value>Compte Courant</value>
+  </data>
+  <data name="report_list_user_commission" xml:space="preserve">
+    <value>Commissions</value>
+  </data>
+  <data name="global_total_commission_day" xml:space="preserve">
+    <value>Totale de la commission Journée</value>
+  </data>
+  <data name="global_total_commission_user" xml:space="preserve">
+    <value>Totale de la commission Utilisateur</value>
   </data>
 </root>

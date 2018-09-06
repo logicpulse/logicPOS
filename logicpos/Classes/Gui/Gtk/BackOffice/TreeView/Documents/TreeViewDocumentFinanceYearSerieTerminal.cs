@@ -35,9 +35,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             columnProperties.Add(new GenericTreeViewColumnProperty("FiscalYear") { Title = Resx.global_fiscal_year, ChildName = "Designation" });
             //columnProperties.Add(new GenericTreeViewColumnProperty("DocumentType") { Title = Resx.global_documentfinanceseries_documenttype, ChildName = "Designation" });
             //columnProperties.Add(new GenericTreeViewColumnProperty("Serie") { Title = Resx.global_documentfinance_series, ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
             columnProperties.Add(new GenericTreeViewColumnProperty("Terminal") { Title = Resx.global_configurationplaceterminal, ChildName = "Designation" });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model : Use Default Filter
             CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null)) ? CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)") : pXpoCriteria;

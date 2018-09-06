@@ -50,7 +50,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Articles
         public uint ArticleOrd { get; set; }                                //artOrd AS ArticleOrd,
 
         [FRBO(Field = "artCode")]
-        public uint ArticleCode { get; set; }                               //artCode AS ArticleCode,
+        public string ArticleCode { get; set; }                             //artCode AS ArticleCode,
 
         [FRBO(Field = "artCodeDealer")]
         public string ArticleCodeDealer { get; set; }                       //artCodeDealer AS ArticleCodeDealer,

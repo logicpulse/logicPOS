@@ -14,7 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = Utils.GetWindowTitle(Resx.window_title_edit_user_profile);
-            SetSizeRequest(500, 500);
+            SetSizeRequest(500, 335);
             InitUI();
             InitNotes();
             ShowAll();

@@ -53,6 +53,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _entryBoxCustomerLocality.EntryValidation.Text,
                         _entryBoxCustomerZipCode.EntryValidation.Text,
                         _entryBoxCustomerCity.EntryValidation.Text,
+                        null,// Phone : Used only in PosDocumentFinanceDialog
+                        null,// Email : Used only in PosDocumentFinanceDialog 
                         _selectedCountry,
                         _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text,
                         _entryBoxSelectCustomerCardNumber.EntryValidation.Text,
@@ -812,7 +814,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        //Almost Equal to DocumentFinanceDialogPage2 Method
+        //Almost Equal to DocumentFinanceDialogPage2 Method : Both methods have same Name
         //Update Address And FiscalNumber Require Fields
         private void UpdateCustomerAddressAndFiscalNumberRequireFields()
         {

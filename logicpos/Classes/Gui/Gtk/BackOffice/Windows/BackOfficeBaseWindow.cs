@@ -220,7 +220,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private void StartClock()
         {
-            // Every second call `update_status' (1000 milliseconds)
+            // Every second call update_status' (1000 milliseconds)
             GLib.Timeout.Add(1000, new GLib.TimeoutHandler(UpdateClock));
         }
 

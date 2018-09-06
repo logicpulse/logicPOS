@@ -40,8 +40,8 @@
 	Optional: 
 	Required: Always Remove
 	
-	CREATE DATABASE  IF NOT EXISTS `poson` /*!40100 DEFAULT CHARACTER SET utf8 */;
-	USE `poson`;
+	CREATE DATABASE  IF NOT EXISTS poson /*!40100 DEFAULT CHARACTER SET utf8 */;
+	USE poson;
 
 	Search and Remove all
 	AUTO_INCREMENT=xxx

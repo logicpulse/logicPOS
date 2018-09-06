@@ -173,7 +173,7 @@ style 'TouchButton_Red'
 
 style 'TouchButton_Green'
 {
-  color['background'] = '#a3c749'
+  color['background'] = '#8ba844'
 
   bg[NORMAL]          = @background
   bg[PRELIGHT]        = lighter (@background)
@@ -183,7 +183,7 @@ style 'TouchButton_Green'
 
   GtkButton::inner-border           = {0,0,0,0}
   GtkButton::default_spacing        = 0
-  GtkButton::focus-pPadding          = 0
+  GtkButton::focus-pPadding         = 0
 
   engine 'nodoka'
   {

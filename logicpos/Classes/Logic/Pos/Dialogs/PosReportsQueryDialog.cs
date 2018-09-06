@@ -1,8 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.App;
-using logicpos.Classes.Enums.Reports;
-using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;

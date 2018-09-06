@@ -59,6 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public bool ResourceString { get; set; }
         
         /// <summary>Constructor</summary>
+        /// Note: DefaultColumnProperty Never used in Code
         public GenericTreeViewColumnProperty(String pFieldName, GenericTreeViewColumnProperty pDefaultColumnProperty = null)
         {
             //Parameters
@@ -74,16 +75,23 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Default Fonts      
             FontDescTitle = Pango.FontDescription.FromString(_fontGenericTreeViewColumnTitle);
             FontDesc = Pango.FontDescription.FromString(_fontGenericTreeViewColumn);
-            CellRenderer = new CellRendererText() { FontDesc = this.FontDesc };
+            CellRenderer = new CellRendererText();
+            if (this.FontDesc != null) CellRenderer.FontDesc = this.FontDesc;
+            //SetFixedSize, this will force all rows to be same size, even multile longtext Fields :)
+            CellRenderer.SetFixedSize(0, 24);
+            //CellRenderer.SingleParagraphMode = true;
+            //CellRenderer.WrapMode = Pango.WrapMode.Word;
 
             //If have Default Properties parameter, Assign it
-            if (pDefaultColumnProperty != null) InitDefaultProperties(pDefaultColumnProperty);
+            if (pDefaultColumnProperty != null) {
+                InitDefaultColumnProperties(pDefaultColumnProperty);
+            }
 
             //After Defaults, Init Field Properties by Field Name
             InitDefaultPropertiesByFieldName(pFieldName);
         }
 
-        public void InitDefaultProperties(GenericTreeViewColumnProperty pDefaultProperties)
+        public void InitDefaultColumnProperties(GenericTreeViewColumnProperty pDefaultProperties)
         {
             if (pDefaultProperties != null)
             {
@@ -98,8 +106,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 if (pDefaultProperties.Expand == true || pDefaultProperties.Expand == false) Expand = pDefaultProperties.Expand;
                 if (pDefaultProperties.Searchable != NullBoolean.Null) Searchable = pDefaultProperties.Searchable;
                 if (pDefaultProperties.Alignment >= 0) Alignment = pDefaultProperties.Alignment;
-                if (pDefaultProperties.FontDesc != null) FontDesc = pDefaultProperties.FontDesc;
                 if (pDefaultProperties.FontDescTitle != null) FontDescTitle = pDefaultProperties.FontDescTitle;
+                if (pDefaultProperties.FontDesc != null) FontDesc = pDefaultProperties.FontDesc;
                 if (pDefaultProperties.CellRenderer != null) CellRenderer = pDefaultProperties.CellRenderer;
             }
         }
@@ -114,29 +122,33 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     MaxWidth = 100;
                     CellRenderer = new CellRendererText()
                     {
-                        FontDesc = this.FontDesc,
                         Alignment = Pango.Alignment.Right,
                         Xalign = 1.0F,
                         ForegroundGdk = new Gdk.Color(255, 0, 0)
                     };
+                    // Always apply default FontDesc if not defined by User
+                    if (this.FontDesc != null) CellRenderer.FontDesc = this.FontDesc;
                     break;
 
                 case "Designation":
-                    MinWidth = 400;
+                    MinWidth = 250;
                     MaxWidth = 800;
+                    Expand = true;
                     CellRenderer = new CellRendererText()
                     {
-                        FontDesc = this.FontDesc,
-                        Alignment = Pango.Alignment.Left
+                        Alignment = Pango.Alignment.Left,
                     };
+                    // Always apply default FontDesc if not defined by User
+                    if (this.FontDesc != null) CellRenderer.FontDesc = this.FontDesc;
                     break;
 
                 case "Disabled":
                     CellRenderer = new CellRendererText()
                     {
-                        FontDesc = this.FontDesc,
                         Alignment = Pango.Alignment.Right
                     };
+                    // Always apply default FontDesc if not defined by User
+                    if (this.FontDesc != null) CellRenderer.FontDesc = this.FontDesc;
                     break;
 
                 default:

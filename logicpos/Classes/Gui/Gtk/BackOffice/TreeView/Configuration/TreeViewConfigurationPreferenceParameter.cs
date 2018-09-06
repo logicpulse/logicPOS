@@ -31,8 +31,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("ResourceString") { Title = Resx.global_designation, MinWidth = 560, ResourceString = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Value") { Title = Resx.global_value });
+            columnProperties.Add(new GenericTreeViewColumnProperty("ResourceString") { Title = Resx.global_designation, Expand = true, ResourceString = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Value") { Title = Resx.global_value, Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model : pXpoCriteria Parameter sent by BO
             CriteriaOperator criteria = pXpoCriteria;
@@ -57,12 +58,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             // Get ConfigurationPreferenceParameter Reference
             CFG_ConfigurationPreferenceParameter configurationPreferenceParameter = (_dataSourceRow as CFG_ConfigurationPreferenceParameter);
 
-            // We Must Modify GlobalFramework.PreferenceParameters after user Change Value, if Value is Changed
-            if (!GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value))
+            try
             {
-                if (_debug) _log.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
-                GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
-                if (_debug) _log.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                // We Must Modify GlobalFramework.PreferenceParameters after user Change Value, if Value is Changed, this will Update in Memory GlobalFramework.PreferenceParameters Dictionary
+                if (GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
+                    !GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
+                    )
+                {
+                    if (_debug) _log.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                    GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
+                    if (_debug) _log.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
             }
         }
     }

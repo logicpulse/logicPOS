@@ -126,12 +126,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             //Global Updates
             UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
-
             if (GlobalFramework.LoggedUser != null)
             {
                 UpdatedBy = this.Session.GetObjectByKey<SYS_UserDetail>(GlobalFramework.LoggedUser.Oid);
             }
-
             if (GlobalFramework.LoggedTerminal != null)
             {
                 UpdatedWhere = this.Session.GetObjectByKey<POS_ConfigurationPlaceTerminal>(GlobalFramework.LoggedTerminal.Oid);
@@ -139,6 +137,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             if (_isNewRecord)
             {
+                //Global Updates
+                CreatedAt = FrameworkUtils.CurrentDateTimeAtomic();
+                if (GlobalFramework.LoggedUser != null)
+                {
+                    CreatedBy = this.Session.GetObjectByKey<SYS_UserDetail>(GlobalFramework.LoggedUser.Oid);
+                }
+                if (GlobalFramework.LoggedTerminal != null)
+                {
+                    CreatedWhere = this.Session.GetObjectByKey<POS_ConfigurationPlaceTerminal>(GlobalFramework.LoggedTerminal.Oid);
+                }
                 // Call EncryptProperties to be used when we create Objects outside BO, 
                 // this will trigger Encrypted Automatically
                 EncryptProperties();

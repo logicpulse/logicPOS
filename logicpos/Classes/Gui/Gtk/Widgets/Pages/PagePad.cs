@@ -19,6 +19,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         //Private Fields
         private HBox _navigator;
+        private Color _colorPagePadHotButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPagePadHotButtonBackground"]);
+
         //Public Properties
         private TouchButtonIconWithText _buttonPrev;
         public TouchButtonIconWithText ButtonPrev
@@ -72,8 +74,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _pages = pPages;
 
             HBox navigatorButtons = new HBox(true, 0);
-            _buttonPrev = new TouchButtonIconWithText("buttonPrev", Color.Transparent, Resx.pos_button_label_prev_pages_toolbar, fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
-            _buttonNext = new TouchButtonIconWithText("buttonNext", Color.Transparent, Resx.pos_button_label_next_pages_toolbar, fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
+            _buttonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, Resx.pos_button_label_prev_pages_toolbar, fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
+            _buttonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, Resx.pos_button_label_next_pages_toolbar, fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
 
             //Events
             _buttonPrev.Clicked += buttonPrev_Clicked;
@@ -85,7 +87,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 i++;
                 page.NavigatorButton = new TouchButtonIconWithText(page.PageName, Color.Transparent, page.PageName, fontPagePadNavigatorButton, Color.White, page.PageIcon, sizePagesPadNavigatorButtonIcon, 0, sizePagesPadNavigatorButton.Height);
+                // Start Active Pad Button
                 page.NavigatorButton.Sensitive = (i == 1) ? true : false;
+                // Change color of current Button
+                if ((i == 1)) page.NavigatorButton.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(_colorPagePadHotButtonBackground));
+                // Pack
                 navigatorButtons.PackStart(page.NavigatorButton, true, true, 2);
             }
 
@@ -174,10 +180,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 this.Remove(_activePage);
                 _activePage.NavigatorButton.Sensitive = false;
+
                 if (pNext) { _currentPageIndex++; } else { _currentPageIndex--; };
                 _activePage = _pages[_currentPageIndex];
                 this.PackStart(_activePage);
                 _activePage.NavigatorButton.Sensitive = true;
+                // Change color of current Button
+                _activePage.NavigatorButton.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(_colorPagePadHotButtonBackground));
                 //The Trick to Show when Hidden, ex Not Packed in Dialog Expose, this way we need to ShowAll here
                 if (_activePage.Visible == false) _activePage.ShowAll();
                 UpdateUI();

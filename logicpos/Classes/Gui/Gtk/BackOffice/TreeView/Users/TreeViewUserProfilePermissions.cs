@@ -109,12 +109,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             };
 
             //Treeview
-            treeViewProfile = new TreeView(_listStoreModelFilterSort);
+            TreeView = new TreeView(_listStoreModelFilterSort);
 
             //_treeView.RulesHint = true;
-            treeViewProfile.EnableSearch = true;
-            treeViewProfile.SearchColumn = 1;
-            treeViewProfile.ModifyCursor(new Gdk.Color(100, 100, 100), new Gdk.Color(200, 200, 200));
+            TreeView.EnableSearch = true;
+            TreeView.SearchColumn = 1;
+            TreeView.ModifyCursor(new Gdk.Color(100, 100, 100), new Gdk.Color(200, 200, 200));
             //Add Columns
             AddColumns();
 
@@ -140,7 +140,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //}
 
             //Pack components
-            scrolledWindowProfile.Add(treeViewProfile);
+            scrolledWindowProfile.Add(TreeView);
 
             HBox hbox = new HBox(false, 1);
             hbox.PackStart(scrolledWindowProfile);
@@ -161,10 +161,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 if (_dataSource.Count > 0)
                 {
-                    treeViewProfile.Model.GetIterFirst(out _treeIter);
+                    TreeView.Model.GetIterFirst(out _treeIter);
                     _treePath = ListStoreModelFilter.GetPath(_treeIter);
-                    treeViewProfile.SetCursor(_treePath, null, false);
-                    _dataSourceRow = (SYS_UserProfile)_dataSource.Lookup(new Guid(Convert.ToString(treeViewProfile.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex))));
+                    TreeView.SetCursor(_treePath, null, false);
+                    _dataSourceRow = (SYS_UserProfile)_dataSource.Lookup(new Guid(Convert.ToString(TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex))));
                 }
             }
             catch (Exception ex)
@@ -173,10 +173,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
 
             //Events
-            treeViewProfile.CursorChanged += _treeView_CursorChanged;
-            treeViewProfile.RowActivated += delegate { Update(); };
-            treeViewProfile.Vadjustment.ValueChanged += delegate { UpdatePages(); };
-            treeViewProfile.Vadjustment.Changed += delegate { UpdatePages(); };
+            TreeView.CursorChanged += _treeView_CursorChanged;
+            TreeView.RowActivated += delegate { Update(); };
+            TreeView.Vadjustment.ValueChanged += delegate { UpdatePages(); };
+            TreeView.Vadjustment.Changed += delegate { UpdatePages(); };
 
             //****************************************************************************
 
@@ -221,7 +221,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void UpdateState(string pOid, bool pNewValue)
         {
             //UserProfile _currentXPObject = (UserProfile)_dataSource.Lookup(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
-            SYS_UserProfile _currentXPObject = (SYS_UserProfile)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(SYS_UserProfile), new Guid("" + treeViewProfile.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
+            SYS_UserProfile _currentXPObject = (SYS_UserProfile)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(SYS_UserProfile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
 
             SYS_UserPermissionProfile tmpUserPermissionProfileUpdate = null;// (UserPermissionProfile)_xpCollection2.Lookup(new Guid("" + pOid));
 
@@ -290,7 +290,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _listStoreModelPermissionItem.Clear();
 
             //UserProfile _currentXPObject = (UserProfile)_dataSource.Lookup(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
-            SYS_UserProfile _currentXPObject = (SYS_UserProfile)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(SYS_UserProfile), new Guid("" + treeViewProfile.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
+            SYS_UserProfile _currentXPObject = (SYS_UserProfile)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(SYS_UserProfile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
 
             for (int i = 0; i < _xpCollectionUserPermissionItem.Count; i++)
             {

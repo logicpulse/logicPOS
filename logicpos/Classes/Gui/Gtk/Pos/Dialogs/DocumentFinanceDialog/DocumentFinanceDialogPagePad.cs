@@ -1,10 +1,8 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.shared;
+using logicpos.datalayer.DataLayer.Xpo;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog

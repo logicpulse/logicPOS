@@ -84,6 +84,13 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<Boolean>("Credit", ref fCredit, value); }
         }
 
+        Int32 fCreditDebit;
+        public Int32 CreditDebit
+        {
+            get { return fCreditDebit; }
+            set { SetPropertyValue<Int32>("CreditDebit", ref fCreditDebit, value); }
+        }
+
         //Number of Copies to Print, ex 2, Generate Original, Duplicate, Note: this is not the number of copies to print in document
         Int32 fPrintCopies;
         public Int32 PrintCopies

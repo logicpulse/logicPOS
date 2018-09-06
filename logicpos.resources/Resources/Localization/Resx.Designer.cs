@@ -511,7 +511,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Physical details.
+        ///   Looks up a localized string similar to Other details.
         /// </summary>
         public static string dialog_edit_article_tab3_label {
             get {
@@ -1199,6 +1199,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string dialog_message_low_resolution_detected {
             get {
                 return ResourceManager.GetString("dialog_message_low_resolution_detected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your email has been sent successfully!.
+        /// </summary>
+        public static string dialog_message_mail_sent_successfully {
+            get {
+                return ResourceManager.GetString("dialog_message_mail_sent_successfully", resourceCulture);
             }
         }
         
@@ -1959,6 +1968,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clone.
+        /// </summary>
+        public static string global_button_label_clone_document {
+            get {
+                return ResourceManager.GetString("global_button_label_clone_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Close.
         /// </summary>
         public static string global_button_label_close {
@@ -2009,6 +2027,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_button_label_ok {
             get {
                 return ResourceManager.GetString("global_button_label_ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string global_button_label_open_document {
+            get {
+                return ResourceManager.GetString("global_button_label_open_document", resourceCulture);
             }
         }
         
@@ -2090,6 +2117,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_button_label_readcard {
             get {
                 return ResourceManager.GetString("global_button_label_readcard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Email.
+        /// </summary>
+        public static string global_button_label_send_email_document {
+            get {
+                return ResourceManager.GetString("global_button_label_send_email_document", resourceCulture);
             }
         }
         
@@ -3417,6 +3453,51 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bcc.
+        /// </summary>
+        public static string global_email_bcc {
+            get {
+                return ResourceManager.GetString("global_email_bcc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Body.
+        /// </summary>
+        public static string global_email_body {
+            get {
+                return ResourceManager.GetString("global_email_body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cc.
+        /// </summary>
+        public static string global_email_cc {
+            get {
+                return ResourceManager.GetString("global_email_cc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subject.
+        /// </summary>
+        public static string global_email_subject {
+            get {
+                return ResourceManager.GetString("global_email_subject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To.
+        /// </summary>
+        public static string global_email_to {
+            get {
+                return ResourceManager.GetString("global_email_to", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Entity.
         /// </summary>
         public static string global_entity {
@@ -4092,6 +4173,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Place.
+        /// </summary>
+        public static string global_place {
+            get {
+                return ResourceManager.GetString("global_place", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Table.
         /// </summary>
         public static string global_place_table {
@@ -4619,6 +4709,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_quantity_acronym {
             get {
                 return ResourceManager.GetString("global_quantity_acronym", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Question.
+        /// </summary>
+        public static string global_question {
+            get {
+                return ResourceManager.GetString("global_question", resourceCulture);
             }
         }
         
@@ -5357,6 +5456,24 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_total_change {
             get {
                 return ResourceManager.GetString("global_total_change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total commission day.
+        /// </summary>
+        public static string global_total_commission_day {
+            get {
+                return ResourceManager.GetString("global_total_commission_day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total commission user.
+        /// </summary>
+        public static string global_total_commission_user {
+            get {
+                return ResourceManager.GetString("global_total_commission_user", resourceCulture);
             }
         }
         
@@ -7072,6 +7189,78 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Body.
+        /// </summary>
+        public static string prefparam_send_mail_finance_documents_body {
+            get {
+                return ResourceManager.GetString("prefparam_send_mail_finance_documents_body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Html Body.
+        /// </summary>
+        public static string prefparam_send_mail_finance_documents_html_body {
+            get {
+                return ResourceManager.GetString("prefparam_send_mail_finance_documents_html_body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subject.
+        /// </summary>
+        public static string prefparam_send_mail_finance_documents_subject {
+            get {
+                return ResourceManager.GetString("prefparam_send_mail_finance_documents_subject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMTP SSL Enabled.
+        /// </summary>
+        public static string prefparam_send_mail_smtp_enable_ssl {
+            get {
+                return ResourceManager.GetString("prefparam_send_mail_smtp_enable_ssl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMTP Password.
+        /// </summary>
+        public static string prefparam_send_mail_smtp_password {
+            get {
+                return ResourceManager.GetString("prefparam_send_mail_smtp_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMTP Port.
+        /// </summary>
+        public static string prefparam_send_mail_smtp_port {
+            get {
+                return ResourceManager.GetString("prefparam_send_mail_smtp_port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMTP Server.
+        /// </summary>
+        public static string prefparam_send_mail_smtp_server {
+            get {
+                return ResourceManager.GetString("prefparam_send_mail_smtp_server", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SMTP Username.
+        /// </summary>
+        public static string prefparam_send_mail_smtp_username {
+            get {
+                return ResourceManager.GetString("prefparam_send_mail_smtp_username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autoridade Tributária Service : Account Fiscal Number.
         /// </summary>
         public static string prefparam_service_at_production_account_fiscal_number {
@@ -7315,6 +7504,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Current Account.
+        /// </summary>
+        public static string report_list_current_account {
+            get {
+                return ResourceManager.GetString("report_list_current_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Customers.
         /// </summary>
         public static string report_list_customers {
@@ -7338,6 +7536,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string report_list_stock_movements {
             get {
                 return ResourceManager.GetString("report_list_stock_movements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commissions.
+        /// </summary>
+        public static string report_list_user_commission {
+            get {
+                return ResourceManager.GetString("report_list_user_commission", resourceCulture);
             }
         }
         
@@ -7996,6 +8203,17 @@ namespace logicpos.resources.Resources.Localization {
         public static string window_title_dialog_change_user {
             get {
                 return ResourceManager.GetString("window_title_dialog_change_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This process cant be undone! Confirm clone folloing documents?
+        ///
+        ///{0}.
+        /// </summary>
+        public static string window_title_dialog_clone_documents_confirmation {
+            get {
+                return ResourceManager.GetString("window_title_dialog_clone_documents_confirmation", resourceCulture);
             }
         }
         
@@ -8761,6 +8979,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string window_title_select_worksession_period_day {
             get {
                 return ResourceManager.GetString("window_title_select_worksession_period_day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send Email.
+        /// </summary>
+        public static string window_title_send_email {
+            get {
+                return ResourceManager.GetString("window_title_send_email", resourceCulture);
             }
         }
         

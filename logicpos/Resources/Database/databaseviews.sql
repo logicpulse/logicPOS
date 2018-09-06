@@ -294,9 +294,11 @@ CREATE VIEW view_documentfinance AS
         dm.PlaceTable AS dmPlaceTable,
         ct.Ord AS ctPlaceTableOrd,
         ct.Code AS ctPlaceTableCode,
-        ct.Designation AS ctPlaceTableDesignation
+        ct.Designation AS ctPlaceTableDesignation,
+        cg.Designation AS cgDesignation,
+        cg.Commission AS cgCommission
     FROM
-        (((((((((((((((((fin_documentfinancemaster fm
+        ((((((((((((((((((fin_documentfinancemaster fm
         LEFT JOIN fin_documentfinancedetail fd ON ((fm.Oid = fd.DocumentMaster)))
         LEFT JOIN fin_documentfinancetype ft ON ((fm.DocumentType = ft.Oid)))
         LEFT JOIN fin_article ar ON ((ar.Oid = fd.Article)))
@@ -312,6 +314,7 @@ CREATE VIEW view_documentfinance AS
         LEFT JOIN cfg_configurationcountry cc ON ((fm.EntityCountry = cc.Code2)))
         LEFT JOIN cfg_configurationcurrency cr ON ((fm.Currency = cr.Oid)))
         LEFT JOIN sys_userdetail ud ON ((fm.UpdatedBy = ud.Oid)))
+        LEFT JOIN pos_usercommissiongroup cg ON ((cg.Oid = ud.CommissionGroup)))
         LEFT JOIN pos_configurationplaceterminal tr ON ((fm.UpdatedWhere = tr.Oid)))
         LEFT JOIN erp_customer cu ON ((fm.EntityOid = cu.Oid)))
 ;
@@ -352,6 +355,65 @@ CREATE VIEW view_documentfinancecommision AS
         LEFT JOIN fin_documentfinancedetail dfd ON ((dfc.FinanceDetail = dfd.Oid)))
         LEFT JOIN sys_userdetail usd ON ((dfc.UserDetail = usd.Oid)))
         LEFT JOIN pos_configurationplaceterminal cpt ON ((dfc.Terminal = cpt.Oid)))
+;
+
+CREATE VIEW view_documentfinancecurrentaccount AS
+	SELECT 
+		ft.Oid AS DocumentTypeOid, 
+		ft.Ord AS DocumentTypeOrd, 
+		ft.Code AS DocumentTypeCode, 
+		ft.Designation AS DocumentType, 
+		fm.EntityOid AS EntityOid,
+		fm.EntityName AS EntityName,
+		fm.EntityName AS EntityFiscalNumber,
+		fm.DocumentDate AS DocumentDate,
+		fm.Date AS Date,
+		fm.DocumentNumber AS DocumentNumber,
+		fm.TotalFinal AS DocumentAmount,
+		fm.DocumentStatusStatus AS DocumentStatus,
+		ft.CreditDebit AS CreditDebit, 
+		(SELECT fm.TotalFinal WHERE ft.CreditDebit = 1 OR ft.CreditDebit = 0) AS Credit,
+		(SELECT fm.TotalFinal WHERE ft.CreditDebit = -1 OR ft.CreditDebit = 0) AS Debit
+	FROM 
+		fin_documentfinancemaster as fm
+		LEFT JOIN fin_documentfinancetype AS ft ON ((fm.DocumentType = ft.Oid))
+	WHERE 
+	  (
+		fm.DocumentType = '7af04618-74a6-42a3-aaba-454b7076f5a6' OR
+		fm.DocumentType = 'f8878cf5-0f88-4270-8a55-1fc2488d81a2' OR
+		fm.DocumentType = '2c69b109-318a-4375-a573-28e5984b6503' OR
+		fm.DocumentType = '09b6aa6e-dc0e-41fd-8dbe-8678a3d11cbc' OR
+		fm.DocumentType = '3942d940-ed13-4a62-a352-97f1ce006d8a' OR
+		fm.DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47' OR
+		fm.DocumentType = 'b8554d36-642a-4083-b608-8f1da35f0fec' OR
+		fm.DocumentType = '235f06f3-5ec3-4e13-977b-325614b07e35'  
+	  )
+	  AND (
+		fm.DocumentStatusStatus <> 'A' AND (fm.Disabled = 0 OR fm.Disabled IS NULL)
+	  )  
+	UNION
+	SELECT 
+		ft.Oid AS DocumentTypeOid,
+		ft.Ord AS DocumentTypeOrd,
+		ft.Code AS DocumentTypeCode,
+		ft.Designation AS DocumentType,
+		cu.Oid AS EntityOid, 
+		cu.Name AS EntityName,
+		cu.FiscalNumber AS EntityFiscalNumber,
+		fp.DocumentDate AS DocumentDate, 
+		fp.CreatedAt AS Date,
+		fp.PaymentRefNo AS DocumentNumber, 
+		fp.PaymentAmount AS DocumentAmount, 
+		fp.PaymentStatus AS DocumentStatus,
+		ft.CreditDebit AS CreditDebit, 
+		(fp.PaymentAmount) AS Credit,
+		(0) AS Debit
+	FROM 
+		(fin_documentfinancepayment AS fp
+		LEFT JOIN fin_documentfinancetype AS ft ON (fp.DocumentType = ft.Oid)
+		LEFT JOIN erp_customer AS cu ON (cu.Oid = fp.EntityOid))
+	WHERE   
+		fp.PaymentStatus <> 'A' AND (fp.Disabled = 0 OR fp.Disabled IS NULL)
 ;
 
 CREATE VIEW view_documentfinancemastertotal AS
@@ -471,51 +533,63 @@ CREATE VIEW view_documentfinanceseries AS
 ;
 
 CREATE VIEW view_orders AS
-	SELECT 
-		dm.Oid AS dmOid,
-		dm.DateStart AS dmDateStart,
-		dm.OrderStatus AS dmOrderStatus,
-		dm.PlaceTable AS dmPlaceTable,
-		ct.Oid AS ctOid,
-		ct.Designation AS ctDesignation,
-		cp.Oid AS cpOid,
-		cp.Designation AS cpDesignation,
-		dm.UpdatedBy AS dmUpdatedBy,
-		dm.UpdatedWhere AS dmUpdatedWhere,
-		dt.Oid AS dtOid,
-		dt.TicketId AS dtTicketId,
-		dt.DateStart AS dtDateStart,
-		dt.PriceType AS dtPriceType,
-		dt.Discount AS dtDiscount,
-		dt.PlaceTable AS dtPlaceTable,
-		dt.UpdatedBy AS dtUpdatedBy,
-		dt.UpdatedWhere AS dtUpdatedWhere,
-		dd.Oid AS ddOid,
-		dd.Article AS ddArticle,
-		dd.Ord AS ddOrd,
-		dd.Code AS ddCode,
-		dd.Designation AS ddDesignation,
-		dd.Price AS ddPrice,
-		dd.Quantity AS ddQuantity,
-		dd.UnitMeasure AS ddUnitMeasure,
-		dd.Discount AS ddDiscount,
-		dd.Vat AS ddVat,
-		dd.VatExemptionReason AS ddVatExemptionReason,
-		dd.TotalGross AS ddTotalGross,
-		dd.TotalDiscount AS ddTotalDiscount,
-		dd.TotalTax AS ddTotalTax,
-		dd.TotalFinal AS ddTotalFinal,
-		dd.Token1 AS ddToken1,
-		dd.Token2 AS ddToken2,
-		dd.UpdatedAt AS ddUpdatedAt,
-		dd.UpdatedBy AS ddUpdatedBy,
-		dd.UpdatedWhere AS ddUpdatedWhere
-	FROM
-		((((fin_documentordermain dm
-		join fin_documentorderticket dt ON ((dm.Oid = dt.OrderMain)))
-		join fin_documentorderdetail dd ON ((dt.Oid = dd.OrderTicket)))
-		join pos_configurationplacetable ct ON ((ct.Oid = dt.PlaceTable)))
-		join pos_configurationplace cp ON ((cp.Oid = ct.Place)))
+    SELECT 
+        dm.Oid AS dmOid,
+        dm.DateStart AS dmDateStart,
+        dm.OrderStatus AS dmOrderStatus,
+        dm.PlaceTable AS dmPlaceTable,
+        ct.Oid AS ctOid,
+        ct.Designation AS ctDesignation,
+        cp.Oid AS cpOid,
+        cp.Designation AS cpDesignation,
+        dm.UpdatedBy AS dmUpdatedBy,
+        dm.UpdatedWhere AS dmUpdatedWhere,
+        dt.Oid AS dtOid,
+        dt.TicketId AS dtTicketId,
+        dt.DateStart AS dtDateStart,
+        dt.PriceType AS dtPriceType,
+        dt.Discount AS dtDiscount,
+        dt.PlaceTable AS dtPlaceTable,
+        dt.UpdatedBy AS dtUpdatedBy,
+        dt.UpdatedWhere AS dtUpdatedWhere,
+        dd.Oid AS ddOid,
+        dd.Article AS ddArticle,
+        dd.Ord AS ddOrd,
+        dd.Code AS ddCode,
+        dd.Designation AS ddDesignation,
+        dd.Price AS ddPrice,
+        dd.Quantity AS ddQuantity,
+        dd.UnitMeasure AS ddUnitMeasure,
+        dd.Discount AS ddDiscount,
+        dd.Vat AS ddVat,
+        dd.VatExemptionReason AS ddVatExemptionReason,
+        dd.TotalGross AS ddTotalGross,
+        dd.TotalDiscount AS ddTotalDiscount,
+        dd.TotalTax AS ddTotalTax,
+        dd.TotalFinal AS ddTotalFinal,
+        dd.Token1 AS ddToken1,
+        dd.Token2 AS ddToken2,
+        dd.UpdatedAt AS ddUpdatedAt,
+        dd.UpdatedBy AS ddUpdatedBy,
+        dd.UpdatedWhere AS ddUpdatedWhere,
+        dd.CreatedAt AS ddCreatedAt,
+        dd.CreatedBy AS ddCreatedBy,
+        dd.CreatedWhere AS ddCreatedWhere,
+		ud.Oid AS udOid,
+		ud.Ord AS udOrd,
+		ud.Code AS udCode,
+		ud.Name AS udName,
+		cg.Ord AS cgOrd,
+		cg.Designation AS cgDesignation,
+        cg.Commission AS cgCommission
+    FROM
+        ((((((fin_documentordermain dm
+        JOIN fin_documentorderticket dt ON ((dm.Oid = dt.OrderMain)))
+        JOIN fin_documentorderdetail dd ON ((dt.Oid = dd.OrderTicket)))
+        JOIN pos_configurationplacetable ct ON ((ct.Oid = dt.PlaceTable)))
+        JOIN pos_configurationplace cp ON ((cp.Oid = ct.Place)))
+        JOIN sys_userdetail ud ON ((ud.Oid = dd.CreatedBy)))
+        LEFT JOIN pos_usercommissiongroup cg ON ((cg.Oid = ud.CommissionGroup)))
 ;
 
 CREATE VIEW view_systemaudit AS
@@ -568,19 +642,78 @@ CREATE VIEW view_tables AS
 		join fin_configurationpricetype cpr ON ((cpr.Oid = cpl.PriceType)))
 ;
 
-CREATE VIEW view_userprofile AS
-	SELECT 
-		upr.Oid AS uprOid,
-		upr.Designation AS uprDesignation,
-		upp.Granted AS uppGranted,
-		upi.Oid AS upiOid,
-		upi.Code AS upiCode,
-		upi.Token AS upiToken,
-		upi.Designation AS upiDesignation
-	FROM
-		((sys_userprofile upr
-		join sys_userpermissionprofile upp ON ((upr.Oid = upp.UserProfile)))
-		join sys_userpermissionitem upi ON ((upi.Oid = upp.PermissionItem)))
+CREATE VIEW view_usercommission AS
+    SELECT 
+		DATE_FORMAT(dmDateStart, '%Y-%m-%d') AS DateDay,
+        ddArticle AS ArticleOid,
+        ddCode AS Code,
+        ddDesignation AS Designation,
+        ddPrice AS Price,
+        ddDiscount AS Discount,
+        ddVat AS Vat,
+        SUM(ddQuantity) AS Quantity,
+        ddUnitMeasure AS UnitMeasure,
+        udOid AS UserOid,
+		udOrd AS UserOrd,
+		udCode AS UserCode,
+		udName AS UserName,
+        cgCommission AS CommissionValue,
+        COUNT(0) AS Count,
+        SUM(((((ddPrice * ddQuantity) - ((ddPrice * ddDiscount) / 100)) * cgCommission) / 100)) AS TotalCommission
+    FROM
+        view_orders
+    WHERE
+        (dmOrderStatus = 2)
+    GROUP BY
+		dmDateStart,	 
+		ddArticle,
+		ddCode,
+		ddDesignation,
+		ddPrice,
+		ddDiscount,
+		ddVat,
+		ddUnitMeasure,
+		udOid, 
+		udOrd,
+		udCode,
+		udName,
+		ddOid,
+		cgCommission
+    UNION SELECT 
+		DATE_FORMAT(fmDate, '%Y-%m-%d') AS DateDay,
+        fdArticle AS ArticleOid,
+        fdCode AS Code,
+        fdDesignation AS Designation,
+        fdPrice AS Price,
+        fdDiscount AS Discount,
+        fdVat AS Vat,
+        SUM(fdQuantity) AS Quantity,
+        fdUnitMeasure AS UnitMeasure,
+		udUserDetail AS UserOid,
+		udUserDetailOrd AS UserOrd,
+		udUserDetailCode AS UserCode,
+		udUserDetailName AS UserName,
+        cgCommission AS CommissionValue,
+        COUNT(0) AS Count,
+        SUM(((((fdPrice * fdQuantity) - ((fdPrice * fdDiscount) / 100)) * cgCommission) / 100)) AS TotalCommission
+    FROM
+        view_documentfinance
+    WHERE
+        fmSourceOrderMain IS NULL
+    GROUP BY 
+		fmDate,
+        fdArticle,
+        fdCode,
+        fdDesignation,
+        fdPrice,
+        fdDiscount,
+        fdVat,
+        fdUnitMeasure,
+		udUserDetailOrd,
+		udUserDetailCode,
+		udUserDetailName,
+        udUserDetail,
+        cgCommission
 ;
 
 CREATE VIEW view_worksessionmovement AS

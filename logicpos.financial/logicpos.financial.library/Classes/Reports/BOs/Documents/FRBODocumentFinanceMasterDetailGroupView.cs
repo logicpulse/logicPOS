@@ -17,38 +17,23 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
     [FRBO(Entity = "view_documentfinance")]
     public class FRBODocumentFinanceMasterDetailGroupView : FRBOBaseObject
     {
-
         // Group
         public string GroupOid { get; set; }
-
         public int GroupOrd { get; set; }
-
         public int GroupCode { get; set; }
-
         public string GroupDesignation { get; set; }
-
         //Article
         public string ArticleOid { get; set; }
-
         public string ArticleCode { get; set; }
-
         public string ArticleDesignation { get; set; }
-
         // Aggregate Fields
         public decimal ArticlePriceWithDiscount { get; set; }
-
         public decimal ArticleQuantity { get; set; }
-
         public string ArticleUnitMeasure { get; set; }
-        
         public decimal ArticleTotalDiscount { get; set; }
-
         public decimal ArticleTotalNet { get; set; }
-
         public decimal ArticleTotalTax { get; set; }
-
         public decimal ArticleTotalFinal { get; set; }
-
         public int GroupCount { get; set; }
 
         /* Old MySQL Implementation / Before Change code to Work With SqlServer

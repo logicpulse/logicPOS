@@ -176,7 +176,7 @@ namespace logicpos.shared.App
         //RegEx : http://regex101.com | http://regexr.com
         public static string RegexAlfa = @"^[A-Za-záéíóúÁÉÍÓÚàèìòùÀÈÌÒÙãõñÃÕÑâêîôûÂÊÎÔÛçÇ \s]*$";
         public static string RegexAlfaNumeric = @"^[0-9A-Za-zéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂçÇ\-_ \s]*$";
-        public static string RegexAlfaNumericExtended = @"^[0-9A-Za-zéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂçÇ€$&@#%ºª()\[\]';:!?<>+\-_ \.\,\s\\\/\*]*$";
+        public static string RegexAlfaNumericExtended = @"^[0-9A-Za-zéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂçÇ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*]*$";
         public static string RegexAlfaNumericFilePath = @"^[0-9A-Za-z\-\\\.:_\/ \s]*$";
         public static string RegexInteger = @"^\d+$";
         public static string RegexIntegerGreaterThanZero = @"^[1-9][0-9]*$";
@@ -189,7 +189,7 @@ namespace logicpos.shared.App
         public static string RegexDecimalGreaterEqualThanZero = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,})?\s*$";//d{1,4}
         //http://www.nationwidebarcode.com/upc-country-codes/ 
         public static string RegexEan12andEan4 = @"^\d{12,14}$|^560\d{12,14}$";// <EAN12 a 14 any COUNTRY (^560\d{9}$|^560\d{11}$ < EAN11 PT, ^600\d{9}$|^560\d{11}$ < EAN11 AO)
-        public static string RegexEmail = @"^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$";
+        public static string RegexEmail = @"^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,4})$";
         public static string RegexGuid = @"^\b[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}\b$";
         //This will match valid dates in the format DD/MM/YYYY. It takes leap years into account when matching feb 29th and covers from 01/01/0000 to 31/12/9999
         //public static string RegexDate = @"^(((0[1-9]|[12][0-9]|3[01])[- /\\.](0[13578]|1[02])|(0[1-9]|[12][0-9]|30)[- /\\.](0[469]|11)|(0[1-9]|1\d|2[0-8])[- /\\.]02)[- /\\.]\d{4}|29[- /\\.]02[- /\\.](\d{2}(0[48]|[2468][048]|[13579][26])|([02468][048]|[1359][26])00))$";
@@ -308,7 +308,7 @@ namespace logicpos.shared.App
 
         //Printers
         //Generic Printer, used in NewDocuments, to choose printer Target
-        public static Guid XpoOidConfigurationPrinterGeneric = new Guid("7b7243d2-5009-4ac8-a96b-2d0d92aceea8");
+        public static Guid XpoOidConfigurationPrinterGeneric = new Guid("b0c917c7-2ea1-4e08-afa5-4744c19e1c5c");
         //Thermal Printer : Used in ThermalPrinterGeneric Class (Enum)
         public static Guid XpoOidConfigurationPrinterThermalWindows = new Guid("e7143ea5-391b-46ef-a28d-4843fd7e21ac");
         public static Guid XpoOidConfigurationPrinterThermalLinux = new Guid("3fab75ce-e81f-4488-b0a0-962c9336f3bb");

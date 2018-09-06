@@ -987,7 +987,7 @@ namespace logicpos.shared.App
                     };
                     systemAudit.Save();
 
-                    _log.Info(string.Format("Audit(): {0} > {1}", pAuditTypeToken, description));
+                    _log.Debug(string.Format("Audit(): {0} > {1}", pAuditTypeToken, description));
 
                     result = true;
                 }

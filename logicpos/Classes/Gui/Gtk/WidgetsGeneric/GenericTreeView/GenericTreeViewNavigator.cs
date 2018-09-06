@@ -149,7 +149,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             HBox hboxNavigatorButtons = new HBox(true, 0);
 
             //Initialize GenericTreeViewSearch
-            _genericTreeViewSearch = new GenericTreeViewSearch(_sourceWindow, _genericTreeView.treeViewProfile, _genericTreeView.ListStoreModelFilter, _genericTreeView.Columns);
+            _genericTreeViewSearch = new GenericTreeViewSearch(_sourceWindow, _genericTreeView.TreeView, _genericTreeView.ListStoreModelFilter, _genericTreeView.Columns);
 
             // Help to Debug some Kind of Types
             //if (_genericTreeView.GetType().Equals(typeof(TreeViewConfigurationPreferenceParameter)))

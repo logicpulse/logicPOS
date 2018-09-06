@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             else
             {
-                SetSizeRequest(500, 689);
+                SetSizeRequest(500, 646);
             }
 
             InitUI();
@@ -259,21 +259,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _vboxTab2.PackStart(boxVatExemptionReason, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxVatExemptionReason, DataSourceRow, "VatExemptionReason", SettingsApp.RegexGuid, true));
 
-                if (GlobalApp.ScreenSize.Width > 800 && GlobalApp.ScreenSize.Height > 600)
-                {
-                    //CommissionGroup
-                    XPOComboBox xpoComboBoxCommissionGroup = new XPOComboBox(DataSourceRow.Session, typeof(POS_UserCommissionGroup), (DataSourceRow as FIN_Article).CommissionGroup, "Designation");
-                    BOWidgetBox boxCommissionGroup = new BOWidgetBox(Resx.global_commission_group, xpoComboBoxCommissionGroup);
-                    _vboxTab2.PackStart(boxCommissionGroup, false, false, 0);
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCommissionGroup, DataSourceRow, "CommissionGroup", SettingsApp.RegexGuid, false));
-
-                    //DiscountGroup
-                    XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(ERP_CustomerDiscountGroup), (DataSourceRow as FIN_Article).DiscountGroup, "Designation");
-                    BOWidgetBox boxDiscountGroup = new BOWidgetBox(Resx.global_discount_group, xpoComboBoxDiscountGroup);
-                    _vboxTab2.PackStart(boxDiscountGroup, false, false, 0);
-                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscountGroup, DataSourceRow, "DiscountGroup", SettingsApp.RegexGuid, false));
-                }
-
                 //Append Tab
                 _notebook.AppendPage(_vboxTab2, new Label(Resx.dialog_edit_article_tab2_label));
 
@@ -335,6 +320,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 BOWidgetBox boxTemplate = new BOWidgetBox(Resx.global_ConfigurationPrintersTemplates, xpoComboBoxTemplate);
                 vboxTab3.PackStart(boxTemplate, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", SettingsApp.RegexGuid, false));
+
+                if (GlobalApp.ScreenSize.Width > 800 && GlobalApp.ScreenSize.Height > 600)
+                {
+                    //CommissionGroup
+                    XPOComboBox xpoComboBoxCommissionGroup = new XPOComboBox(DataSourceRow.Session, typeof(POS_UserCommissionGroup), (DataSourceRow as FIN_Article).CommissionGroup, "Designation");
+                    BOWidgetBox boxCommissionGroup = new BOWidgetBox(Resx.global_commission_group, xpoComboBoxCommissionGroup);
+                    vboxTab3.PackStart(boxCommissionGroup, false, false, 0);
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCommissionGroup, DataSourceRow, "CommissionGroup", SettingsApp.RegexGuid, false));
+
+                    //DiscountGroup
+                    XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(ERP_CustomerDiscountGroup), (DataSourceRow as FIN_Article).DiscountGroup, "Designation");
+                    BOWidgetBox boxDiscountGroup = new BOWidgetBox(Resx.global_discount_group, xpoComboBoxDiscountGroup);
+                    vboxTab3.PackStart(boxDiscountGroup, false, false, 0);
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDiscountGroup, DataSourceRow, "DiscountGroup", SettingsApp.RegexGuid, false));
+                }
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab3, new Label(Resx.dialog_edit_article_tab3_label));

@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _fieldLabel = pFieldLabel;
 
             // Override Criteria with hide Undefined Records Criteria
-            // Tip : Leave == null here and ignore suggestions, else it wont work as expected
+            // Tip : Leave == null here and ignore warnings/suggestions, else it wont work as expected
             if (pCriteria == null)
             {
                 //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here

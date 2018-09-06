@@ -99,7 +99,7 @@ namespace logicpos.Classes.Logic.Hardware
         {
             //Enable Timer
             _timerEnabled = true;
-            // Every second call `update_status' (1000 milliseconds)
+            // Every second call update_status' (1000 milliseconds)
             GLib.Timeout.Add(_timerInterval, new GLib.TimeoutHandler(UpdateTimer));
         }
 

@@ -523,17 +523,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             replace.Add("í", "í");//i´
             replace.Add("ó", "ó");//o´
             replace.Add("ú", "ú");//u´
-            // ` : From VirtualKeyboard > ÀÈÌÒÙ àèìòù
-            replace.Add("À", "À");//A`
-            replace.Add("È", "È");//E`
-            replace.Add("Ì", "Ì");//I`
-            replace.Add("Ò", "Ò");//O`
-            replace.Add("Ù", "Ù");//U`
-            replace.Add("à", "à");//a`
-            replace.Add("è", "è");//e`
-            replace.Add("ì", "ì");//i`
-            replace.Add("ò", "ò");//o`
-            replace.Add("ù", "ù");//u`
+            //  : From VirtualKeyboard > ÀÈÌÒÙ àèìòù
+            replace.Add("À", "À");//A
+            replace.Add("È", "È");//E
+            replace.Add("Ì", "Ì");//I
+            replace.Add("Ò", "Ò");//O
+            replace.Add("Ù", "Ù");//U
+            replace.Add("à", "à");//a
+            replace.Add("è", "è");//e
+            replace.Add("ì", "ì");//i
+            replace.Add("ò", "ò");//o
+            replace.Add("ù", "ù");//u
             // ^ : From VirtualKeyboard > ÂÊÎÔÛ âêîôû
             replace.Add("Â", "Â");//A^
             replace.Add("Ê", "Ê");//E^

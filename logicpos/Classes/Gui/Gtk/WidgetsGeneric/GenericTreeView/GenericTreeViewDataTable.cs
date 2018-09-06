@@ -147,6 +147,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         }
                     }
                 }
+
                 //Add Column Value to Model
                 model.AppendValues(columnValues);
             }

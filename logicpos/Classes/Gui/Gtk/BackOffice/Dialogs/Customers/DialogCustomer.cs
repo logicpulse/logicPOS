@@ -99,7 +99,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 XPOComboBox xpoComboBoxCustomerType = new XPOComboBox(DataSourceRow.Session, typeof(ERP_CustomerType), (DataSourceRow as ERP_Customer).CustomerType, "Designation");
                 BOWidgetBox boxCustomerType = new BOWidgetBox(Resx.global_customer_types, xpoComboBoxCustomerType);
                 vboxTab1.PackStart(boxCustomerType, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCustomerType, DataSourceRow, "CustomerType", SettingsApp.RegexGuid, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCustomerType, DataSourceRow, "CustomerType", SettingsApp.RegexGuid, true));
                 
                 ////DISABLED : DiscountGroup
                 //XPOComboBox xpoComboBoxDiscountGroup = new XPOComboBox(DataSourceRow.Session, typeof(ERP_CustomerDiscountGroup), (DataSourceRow as ERP_Customer).DiscountGroup, "Designation");

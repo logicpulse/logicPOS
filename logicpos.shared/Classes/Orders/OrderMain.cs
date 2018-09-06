@@ -1,9 +1,8 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
-using logicpos.shared.App;
 using logicpos.datalayer.Enums;
+using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using Newtonsoft.Json;
@@ -156,6 +155,7 @@ namespace logicpos.shared.Classes.Orders
         public FIN_DocumentOrderTicket FinishOrder(Session pSession, bool pPrintTicket)
         {
             //Local Vars
+            DateTime currentDateTime = DateTime.Now;
             FIN_DocumentOrderMain xOrderMain;
             Session _sessionXpo = pSession;
             bool isInUOW = (_sessionXpo.GetType() == typeof(UnitOfWork));
@@ -193,7 +193,8 @@ namespace logicpos.shared.Classes.Orders
                 //OrderMain
                 xOrderMain = new FIN_DocumentOrderMain(_sessionXpo)
                 {
-                    DateStart = currentOrderMain.DateStart,
+                    //Always assign New date to Persistent Date
+                    DateStart = currentDateTime,//currentOrderMain.DateStart,
                     OrderStatus = OrderStatus.Open,
                     PlaceTable = xTable,
                     UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic()
@@ -236,7 +237,7 @@ namespace logicpos.shared.Classes.Orders
 
             foreach (OrderDetailLine line in currentOrderTicket.OrderDetails.Lines)
             {
-                //To respect addto ticket order in print tickets etc
+                //Use Order in print tickets etc
                 itemOrd++;
                 xArticle = (FIN_Article)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(FIN_Article), line.ArticleOid);
                 //Get PriceTax from TaxSellType

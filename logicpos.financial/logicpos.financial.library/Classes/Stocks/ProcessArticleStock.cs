@@ -92,15 +92,24 @@ namespace logicpos.financial.library.Classes.Stocks
             return result;
         }
 
-        public static bool Add(FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        /// <summary>
+        /// If ProcessArticleStockMode.None
+        /// </summary>
+        public static bool Add(
+            FIN_DocumentFinanceMaster pDocumentFinanceMaster,
+            // Used to force ReverseStockMode, used in cancel Documents to restore Stocks
+            bool pReverseStockMode = false
+            )
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             bool result = false;
             int ord = 0;
-            ProcessArticleStockMode mode = (pDocumentFinanceMaster.DocumentType.StockMode > 0) 
-                ? (ProcessArticleStockMode) pDocumentFinanceMaster.DocumentType.StockMode 
+
+            // Check if Works with Stock
+            ProcessArticleStockMode mode = (pDocumentFinanceMaster.DocumentType.StockMode > 0)
+                ? (ProcessArticleStockMode)pDocumentFinanceMaster.DocumentType.StockMode
                 : ProcessArticleStockMode.None
             ;
 
@@ -109,6 +118,16 @@ namespace logicpos.financial.library.Classes.Stocks
                 //Only Process if has a Valid Mode and a valid article Class
                 if (mode != ProcessArticleStockMode.None)
                 {
+                    // ReverseStockMode : Used for ex when we cancal Finance Documents to Restore/Revert Stock
+                    if (pReverseStockMode && mode.Equals(ProcessArticleStockMode.Out))
+                    {
+                        mode = ProcessArticleStockMode.In;
+                    }
+                    else if (pReverseStockMode && mode.Equals(ProcessArticleStockMode.In))
+                    {
+                        mode = ProcessArticleStockMode.Out;
+                    }
+
                     using (UnitOfWork uowSession = new UnitOfWork())
                     {
                         try
@@ -126,9 +145,12 @@ namespace logicpos.financial.library.Classes.Stocks
                                     ord += 10;
                                     Add(
                                         uowSession,
-                                        mode, item, 
+                                        mode, item,
                                         customer, ord, documentFinanceMaster.Date, documentFinanceMaster.DocumentNumber,
-                                        item.Article, item.Quantity, item.Notes
+                                        item.Article,
+                                        // ReverseStock
+                                        item.Quantity,
+                                        item.Notes
                                     );
                                 }
                             }

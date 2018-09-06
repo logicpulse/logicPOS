@@ -35,11 +35,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
             columnProperties.Add(new GenericTreeViewColumnProperty("Family") { Title = Resx.global_article_family, ChildName = "Designation" });
             columnProperties.Add(new GenericTreeViewColumnProperty("Printer") { Title = Resx.global_device_printer, ChildName = "Designation" });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-CriteriaOperator criteria = pXpoCriteria;
+            CriteriaOperator criteria = pXpoCriteria;
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             //Call Base Initializer

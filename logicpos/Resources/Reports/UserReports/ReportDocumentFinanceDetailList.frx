@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="06/22/2018 12:57:25" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="08/24/2018 17:19:55" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.Copies="1" PrintSettings.CopyNames="Original">
   <Styles>
     <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
     <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
@@ -163,29 +163,29 @@
       <inherited Name="TextReportTitle" Height="28.35" Text="[Report Title]" VertAlign="Center" Font="Arial, 12pt"/>
       <TextObject Name="TextReportFilter" ZOrder="2" Left="198.45" Top="28.35" Width="519.75" Height="18.9" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt, style=Bold" Wysiwyg="true"/>
     </inherited>
-    <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" CanGrow="true" CanShrink="true" KeepWithData="true" Condition="[DocumentFinanceDetail.DocumentDate]">
-      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" CanGrow="true" CanShrink="true" Text="[DocumentFinanceDetail.DocumentDate]" VertAlign="Center" Font="Arial, 15.75pt" Style="DataLevel1Font"/>
+    <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" CanGrow="true" CanShrink="true" KeepWithData="true" Condition="[DocumentFinanceDetail.DocumentTypeOrd]">
+      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" CanGrow="true" CanShrink="true" Text="[DocumentFinanceDetail.DocumentTypeDesignation] ([DocumentFinanceDetail.DocumentTypeCode])" VertAlign="Center" Style="DataLevel1Font"/>
       <DataBand Name="Data3" Top="126.75" Width="718.2" Height="22.9" CanGrow="true" CanShrink="true" EvenStyle="EvenRow" DataSource="DocumentFinanceDetail">
-        <TextObject Name="TextColumnDateData" Top="4" Width="122.85" Height="18.9" Text="[DocumentFinanceDetail.Date]" Format="Custom" Format.Format="yyyy/MM/dd hh:mm:ss" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-        <TextObject Name="TextColumnDesignationData" Left="207.9" Top="4" Width="236.25" Height="18.9" CanGrow="true" CanShrink="true" CanBreak="false" Text="[DocumentFinanceDetail.ArticleDesignation]" Font="Arial, 9pt, style=Bold" Trimming="EllipsisCharacter" Style="DataFontBold"/>
-        <TextObject Name="Text31" Left="642.6" Top="4" Width="75.6" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalFinal],2)]" HorzAlign="Right" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-        <TextObject Name="Text32" Left="444.15" Top="4" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleQuantity],2)][DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" Font="Arial, 9pt" Style="DataFont">
+        <TextObject Name="TextColumnDateData" Top="4" Width="122.85" Height="18.9" Text="[DocumentFinanceDetail.Date]" Format="Custom" Format.Format="yyyy/MM/dd hh:mm:ss" Style="DataFontBold"/>
+        <TextObject Name="TextColumnDesignationData" Left="207.9" Top="4" Width="236.25" Height="18.9" CanGrow="true" CanShrink="true" CanBreak="false" Text="[DocumentFinanceDetail.ArticleDesignation]" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <TextObject Name="Text31" Left="642.6" Top="4" Width="75.6" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalFinal],2)]" HorzAlign="Right" Style="DataFontBold"/>
+        <TextObject Name="Text32" Left="444.15" Top="4" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleQuantity],2)][DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" Style="DataFont">
           <Formats>
             <NumberFormat/>
             <GeneralFormat/>
           </Formats>
         </TextObject>
-        <TextObject Name="TextColumnCodeData" Left="122.85" Top="4" Width="85.05" Height="18.9" CanGrow="true" CanShrink="true" CanBreak="false" Text="[DocumentFinanceDetail.ArticleCode]" HorzAlign="Right" Font="Arial, 9pt" Trimming="EllipsisCharacter" Style="DataFont"/>
-        <TextObject Name="Text41" Left="510.3" Top="4" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalNet],2)]" HorzAlign="Right" Font="Arial, 9pt" Style="DataFont"/>
-        <TextObject Name="Text42" Left="576.45" Top="4" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalTax],2)]" HorzAlign="Right" Font="Arial, 9pt" Style="DataFont"/>
+        <TextObject Name="TextColumnCodeData" Left="122.85" Top="4" Width="85.05" Height="18.9" CanGrow="true" CanShrink="true" CanBreak="false" Text="[DocumentFinanceDetail.ArticleCode]" HorzAlign="Right" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text41" Left="510.3" Top="4" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalNet],2)]" HorzAlign="Right" Style="DataFont"/>
+        <TextObject Name="Text42" Left="576.45" Top="4" Width="66.15" Height="18.9" Text="[FormatNumber([DocumentFinanceDetail.ArticleTotalTax],2)]" HorzAlign="Right" Style="DataFont"/>
         <DataHeaderBand Name="DataHeader1" Top="94.4" Width="718.2" Height="28.35" Border.Lines="Top" KeepWithData="true">
-          <TextObject Name="TextColumnDateHeader" Top="9.45" Width="122.85" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-          <TextObject Name="TextColumnDesignationHeader" Left="207.9" Top="9.45" Width="236.25" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-          <TextObject Name="Text34" Left="642.6" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_totalfinal_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-          <TextObject Name="TextColumnCodeHeader" Left="122.85" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-          <TextObject Name="Text44" Left="444.15" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-          <TextObject Name="Text46" Left="510.3" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_totalnet_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-          <TextObject Name="Text47" Left="576.45" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_total_tax_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
+          <TextObject Name="TextColumnDateHeader" Top="9.45" Width="122.85" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="TextColumnDesignationHeader" Left="207.9" Top="9.45" Width="236.25" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text34" Left="642.6" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_totalfinal_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="TextColumnCodeHeader" Left="122.85" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text44" Left="444.15" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text46" Left="510.3" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_totalnet_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text47" Left="576.45" Top="9.45" Width="66.15" Height="18.9" Text="[Res(&quot;global_total_tax_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
         </DataHeaderBand>
         <Sort>
           <Sort Expression="[DocumentFinanceDetail.Date]"/>
@@ -193,19 +193,19 @@
         </Sort>
       </DataBand>
       <GroupFooterBand Name="GroupFooter1" Top="153.65" Width="718.2" Height="28.35" Border.Lines="Bottom">
-        <TextObject Name="Text33" Left="642.6" Width="75.6" Height="18.9" Text="[FormatNumber([GroupTotalFinalRound],2)]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-        <TextObject Name="Text48" Left="576.45" Width="66.15" Height="18.9" Text="[FormatNumber([GroupTotalArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-        <TextObject Name="Text49" Left="510.3" Width="66.15" Height="18.9" Text="[FormatNumber([GroupTotalArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-        <TextObject Name="Text51" Left="444.15" Width="66.15" Height="18.9" Text="[FormatNumber([GroupTotalArticleQuantity],2)][DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-        <TextObject Name="Text56" Left="378" Width="66.15" Height="18.9" Text="[Res(&quot;global_short_subtotal&quot;)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 8pt, style=Bold" Style="DataFontBold"/>
+        <TextObject Name="Text33" Left="642.6" Width="75.6" Height="18.9" Text="[FormatNumber([GroupTotalFinalRound],2)]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text48" Left="576.45" Width="66.15" Height="18.9" Text="[FormatNumber([GroupTotalArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text49" Left="510.3" Width="66.15" Height="18.9" Text="[FormatNumber([GroupTotalArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text51" Left="444.15" Width="66.15" Height="18.9" Text="[FormatNumber([GroupTotalArticleQuantity],2)][DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text56" Left="378" Width="66.15" Height="18.9" Text="[Res(&quot;global_short_subtotal&quot;)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
       </GroupFooterBand>
     </GroupHeaderBand>
     <ReportSummaryBand Name="ReportSummary1" ZOrder="-1" Top="186" Width="718.2" Height="18.9">
-      <TextObject Name="Text52" Left="642.6" Width="75.6" Height="18.9" Text="[FormatNumber([ReportTotalFinalRound],2)]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-      <TextObject Name="Text53" Left="576.45" Width="66.15" Height="18.9" Text="[FormatNumber([ReportTotalArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-      <TextObject Name="Text54" Left="510.3" Width="66.15" Height="18.9" Text="[FormatNumber([ReportTotalArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-      <TextObject Name="Text55" Left="444.15" Width="66.15" Height="18.9" Text="[FormatNumber([ReportTotalArticleQuantity],2)][DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" VertAlign="Center" Font="Arial, 9pt, style=Bold" Style="DataFontBold"/>
-      <TextObject Name="Text2" Left="378" Width="66.15" Height="18.9" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Center" Font="Arial, 8pt, style=Bold" Style="DataFontBold"/>
+      <TextObject Name="Text52" Left="642.6" Width="75.6" Height="18.9" Text="[FormatNumber([ReportTotalFinalRound],2)]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+      <TextObject Name="Text53" Left="576.45" Width="66.15" Height="18.9" Text="[FormatNumber([ReportTotalArticleTotalTax],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+      <TextObject Name="Text54" Left="510.3" Width="66.15" Height="18.9" Text="[FormatNumber([ReportTotalArticleTotalNet],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+      <TextObject Name="Text55" Left="444.15" Width="66.15" Height="18.9" Text="[FormatNumber([ReportTotalArticleQuantity],2)][DocumentFinanceDetail.ArticleUnitMeasure]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+      <TextObject Name="Text2" Left="378" Width="66.15" Height="18.9" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
     </ReportSummaryBand>
     <inherited Name="PageFooter1" Top="208.9" Height="56.7">
       <inherited Name="TextFooter1"/>

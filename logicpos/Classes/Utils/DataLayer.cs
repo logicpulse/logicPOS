@@ -172,11 +172,11 @@ namespace logicpos
                     {
                         result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommon, commandSeparator, replace);
                     }
-////Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
-//if (result)
-//{
-//    result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, commandSeparator, replace);
-//}
+                    ////Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
+                    //if (result)
+                    //{
+                    //    result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, commandSeparator, replace);
+                    //}
                     //Process Other Files: DatabaseOtherCommonAppMode
                     if (result)
                     {
@@ -282,9 +282,14 @@ namespace logicpos
                         //Required to Replace with CHAR(13) else nothing seems to work
                         result.Add("\\n", "' + CHAR(13) + '");
                         // view_articlestockmovement
-                        result.Add("DATE_FORMAT(stk.Date, '%Y-%m-%d') AS stkDateDay,", "FORMAT(stk.Date, 'yyyy-MM-dd', 'en-us') AS stkDateDay,");
+                        // Above SQLServer2008
+                        //result.Add("DATE_FORMAT(stk.Date, '%Y-%m-%d') AS stkDateDay,", "FORMAT(stk.Date, 'yyyy-MM-dd', 'en-us') AS stkDateDay,");
+                        // Lower SQLServer2008
+                        result.Add("DATE_FORMAT(stk.Date, '%Y-%m-%d') AS stkDateDay,", "CONVERT(VARCHAR(19), stk.Date, 23) AS stkDateDay,");
                         // view_systemaudit
-                        result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "FORMAT(sau.Date, 'yyyy-MM-dd', 'en-us') AS sauDateDay,");
+                        //result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "FORMAT(sau.Date, 'yyyy-MM-dd', 'en-us') AS sauDateDay,");
+                        // Lower SQLServer2008
+                        result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "CONVERT(VARCHAR(19), sau.Date, 23) AS sauDateDay,");
                         //ByPass Default commandSeparator ;
                         commandSeparator = "GO";
                         break;
@@ -341,14 +346,19 @@ namespace logicpos
 
                 for (int i = 0; i < commands.Length - 1; i++)
                 {
+                    //CarriageReturn \r\n = 
                     executeCommand = string.Format("{0};", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(commands[i]));
+                    //Replace \n (Multiline Text like SEND_MAIL_FINANCE_DOCUMENTS_BODY)
+                    executeCommand = executeCommand.Replace("\\n", Environment.NewLine);
 
                     //TODO: Muga melhorar isto : Move it to Replacable in DataBase Type in a Dynamic Value Action
                     executeCommand = executeCommand.Replace("</NEWGUI>", Guid.NewGuid().ToString());
 
                     // Helper to debug pReplaceables
                     //if (executeCommand.Contains("DATE_FORMAT"))
+                    //if (executeCommand.Contains("3f3c562c-850d-452c-af1a-41f9c9e9c89e"))
                     //{
+                    //    executeCommand = executeCommand.Replace("\\n", Environment.NewLine);
                     //    log.Debug("DEBUG");
                     //}
 

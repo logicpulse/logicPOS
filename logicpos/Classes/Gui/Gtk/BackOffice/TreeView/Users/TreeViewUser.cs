@@ -33,10 +33,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
             columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Name") { Title = Resx.global_users, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Profile") { Title = Resx.global_profile, ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = Resx.global_mobile_phone });
-            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = Resx.global_fiscal_number });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Profile") { Title = Resx.global_profile, ChildName = "Designation", MinWidth = 160 });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = Resx.global_mobile_phone });
+            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = Resx.global_fiscal_number, MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
 
             //configure criteria/xpcollection/model
             CriteriaOperator criteria = pXpoCriteria;

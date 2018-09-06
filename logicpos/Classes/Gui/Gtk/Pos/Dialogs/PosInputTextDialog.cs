@@ -11,7 +11,7 @@ using System.IO;
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     /// <summary>
-    /// Class to get inpuit from user, can incremented with other widgets usign VBoxContent
+    /// Class to get input from user, can incremented with other widgets usign VBoxContent
     /// ex in PosConfirmAcronymSeriesDialog Method
     /// </summary>
 
@@ -37,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
-            : this(pSourceWindow, pDialogFlags, new Size(600, 200), pWindowTitle, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired)
+            : this(pSourceWindow, pDialogFlags, new Size(600, 180), pWindowTitle, pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired)
         {
         }
 

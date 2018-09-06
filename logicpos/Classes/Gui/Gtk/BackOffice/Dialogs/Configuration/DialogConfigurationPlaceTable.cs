@@ -5,6 +5,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.resources.Resources.Localization;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -14,7 +15,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = Utils.GetWindowTitle(Resx.window_title_edit_configurationplacetable);
-            SetSizeRequest(500, 550);
+            SetSizeRequest(500, 353);
             InitUI();
             InitNotes();
             ShowAll();
@@ -44,6 +45,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
+
+                //ConfigurationPlace
+                XPOComboBox xpoComboBoxPlace = new XPOComboBox(DataSourceRow.Session, typeof(POS_ConfigurationPlace), (DataSourceRow as POS_ConfigurationPlaceTable).Place, "Designation");
+                BOWidgetBox boxPlace = new BOWidgetBox(Resx.global_place, xpoComboBoxPlace);
+                vboxTab1.PackStart(boxPlace, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPlace, DataSourceRow, "Place", SettingsApp.RegexGuid, true));
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(Resx.global_record_disabled);

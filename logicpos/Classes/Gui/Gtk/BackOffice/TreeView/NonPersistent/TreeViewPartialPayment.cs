@@ -40,7 +40,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             /*01*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Type = typeof(String), Title = Resx.global_record_code });
             /*02*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = Resx.global_designation, MinWidth = 200, MaxWidth = 200 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = Resx.global_designation, Expand = true });
             /*03*/
             columnProperties.Add(new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Title = Resx.global_price, MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency });
             /*04*/

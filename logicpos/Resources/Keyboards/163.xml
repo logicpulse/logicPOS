@@ -67,7 +67,7 @@
     <key row="1" col="11" level="1" glyph="*" charactername="Asterisk" unicodeid="002A" ibmid="SM04" />
     <key row="1" col="11" level="0" glyph="+" charactername="Plus Sign" unicodeid="002B" ibmid="SA01" />
     <key row="1" col="11" level="2" glyph="¨" charactername="Diaeresis/Umlaut Accent" unicodeid="00A8" ibmid="SD17" deadkey="true" diacritical="0308" />
-    <key row="1" col="12" level="1" glyph="`" charactername="Grave Accent" unicodeid="0060" ibmid="SD13" deadkey="true" diacritical="0300" />
+    <key row="1" col="12" level="1" glyph="" charactername="Grave Accent" unicodeid="0060" ibmid="SD13" deadkey="true" diacritical="0300" />
     <key row="1" col="12" level="0" glyph="´" charactername="Acute Accent" unicodeid="00B4" ibmid="SD11" deadkey="true" diacritical="0301" />
     <key row="2" col="1" level="1" glyph="A" charactername="A Capital" unicodeid="0041" ibmid="LA02" />
     <key row="2" col="1" level="0" glyph="a" charactername="a Small" unicodeid="0061" ibmid="LA01" hidel2="true" bold="true" />

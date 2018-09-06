@@ -11,7 +11,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public TablePadTable(String pSql, String pOrder, String pFilter, Guid pActiveButtonOid, bool pToggleMode, uint pRows, uint pColumns, String pButtonNamePrefix, Color pColorButton, int pButtonWidth, int pButtonHeight, TouchButtonBase buttonPrev, TouchButtonBase buttonNext)
             : base(pSql, pOrder, pFilter, pActiveButtonOid, pToggleMode, pRows, pColumns, pButtonNamePrefix, pColorButton, pButtonWidth, pButtonHeight, buttonPrev, buttonNext)
         {
-            //_log.Info(string.Format("{0} {2} {1}", pSql, pOrder, pFilter));
+            //_log.Debug(string.Format("{0} {2} {1}", pSql, pOrder, pFilter));
         }
 
         public override TouchButtonBase InitializeButton()

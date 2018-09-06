@@ -467,7 +467,7 @@ namespace logicpos.shared.Classes.Finance
                         //Check if OrderMain in Empty, If so Delete it, its not required anymore
                         if (deleteOrderMain.OrderTicket.Count <= 0)
                         {
-                            //Before Delete OrderMain, we must UnAssign DocumentMaster SourceOrderMain else we have a CONSTRAINT ERROR on `FK_DocumentFinanceMaster_SourceOrderMain` trying to delete used OrderMain
+                            //Before Delete OrderMain, we must UnAssign DocumentMaster SourceOrderMain else we have a CONSTRAINT ERROR on FK_DocumentFinanceMaster_SourceOrderMain trying to delete used OrderMain
                             string sql = string.Format(@"UPDATE fin_documentfinancemaster SET SourceOrderMain = NULL WHERE SourceOrderMain = '{0}';", deleteOrderMain.Oid);
                             uowSession.ExecuteScalar(sql);
                             //Open Table
@@ -508,10 +508,10 @@ namespace logicpos.shared.Classes.Finance
 
         public void ShowInLog()
         {
-            _log.Info("\tCode\tDesignation\tQuantity\tPriceUser\tDiscount\tVat\tPriceNet\tPriceWithDiscount\tPriceWithDiscountGlobal\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal\tPriceFinal");
+            _log.Debug("\tCode\tDesignation\tQuantity\tPriceUser\tDiscount\tVat\tPriceNet\tPriceWithDiscount\tPriceWithDiscountGlobal\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal\tPriceFinal");
             foreach (var item in this)
             {
-                _log.Info(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}",
+                _log.Debug(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}",
                     item.Value.Code,
                     item.Key.Designation,
                     item.Value.Quantity,
@@ -530,14 +530,14 @@ namespace logicpos.shared.Classes.Finance
                   ));
             }
             //TaxBag
-            _log.Info("\tVat\tTotal");
+            _log.Debug("\tVat\tTotal");
             foreach (var item in this._taxBag)
             {
-                _log.Info(string.Format("\t{0}\t{1}", item.Key, item.Value));
+                _log.Debug(string.Format("\t{0}\t{1}", item.Key, item.Value));
             }
             //Totals
-            _log.Info("\tTotalItems\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal");
-            _log.Info(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}", _totalQuantity, _totalNet, _totalGross, _totalDiscount, _totalTax, _totalFinal));
+            _log.Debug("\tTotalItems\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal");
+            _log.Debug(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}", _totalQuantity, _totalNet, _totalGross, _totalDiscount, _totalTax, _totalFinal));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

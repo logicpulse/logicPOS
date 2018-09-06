@@ -1,16 +1,14 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -90,6 +88,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Hide After Init Show All
             _buttonClearCustomer.Visible = false;
             _buttonPreview.Visible = false;
+            //Hide Pages
+            _pagePad.Pages[3].NavigatorButton.Visible = false;
+            _pagePad.Pages[4].NavigatorButton.Visible = false;
         }
 
         private void InitPages()

@@ -65,19 +65,8 @@ namespace FastReport
     }
   }
 }</ScriptText>
-  <Styles>
-    <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
-    <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
-    <Style Name="DataLevel1Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
-    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 12pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
-    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 9.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
-    <Style Name="DataFont" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 9pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
-    <Style Name="DataFontBold" Font="Arial, 9pt, style=Bold" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
-    <Style Name="BackgroundColor1" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
-    <Style Name="BackgroundColor2" Fill.Color="Gainsboro" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
-  </Styles>
   <Dictionary>
-    <BusinessObjectDataSource Name="DocumentFinanceMaster" ReferenceName="DocumentFinanceMaster" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+    <BusinessObjectDataSource Name="DocumentFinanceMaster" ReferenceName="DocumentFinanceMaster" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Oid" DataType="System.String"/>
       <Column Name="DocumentNumber" DataType="System.String"/>
       <Column Name="DocumentDate" DataType="System.String"/>
@@ -137,7 +126,7 @@ namespace FastReport
       <Column Name="PaymentConditionAcronym" DataType="System.String"/>
       <Column Name="CurrencyDesignation" DataType="System.String"/>
       <Column Name="CurrencyAcronym" DataType="System.String"/>
-      <BusinessObjectDataSource Name="DocumentFinanceDetail" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceDetail, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+      <BusinessObjectDataSource Name="DocumentFinanceDetail" DataType="System.Collections.Generic.List1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceDetail, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
         <Column Name="Code" DataType="System.String"/>
         <Column Name="Designation" DataType="System.String"/>
         <Column Name="Quantity" DataType="System.Decimal"/>
@@ -152,7 +141,7 @@ namespace FastReport
         <Column Name="Oid" DataType="System.String"/>
         <Column Name="Notes" DataType="System.String"/>
       </BusinessObjectDataSource>
-      <BusinessObjectDataSource Name="DocumentFinanceMasterTotal" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterTotalView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+      <BusinessObjectDataSource Name="DocumentFinanceMasterTotal" DataType="System.Collections.Generic.List1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterTotalView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
         <Column Name="Oid" DataType="System.String"/>
         <Column Name="DocumentMaster" DataType="System.String"/>
         <Column Name="Designation" DataType="System.String"/>

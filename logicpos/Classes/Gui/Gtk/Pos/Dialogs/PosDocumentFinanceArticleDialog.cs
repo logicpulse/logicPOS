@@ -33,6 +33,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //UI
         private VBox _vboxEntrys;
         private XPOEntryBoxSelectRecord<FIN_Article, TreeViewArticle> _entryBoxSelectArticle;
+        private XPOEntryBoxSelectRecord<FIN_ConfigurationVatRate, TreeViewConfigurationVatRate> _entryBoxSelectVatRate;
+        private XPOEntryBoxSelectRecord<FIN_ConfigurationVatExemptionReason, TreeViewConfigurationVatExceptionReason> _entryBoxSelectVatExemptionReason;
         private EntryBoxValidation _entryBoxValidationPrice;
         private EntryBoxValidation _entryBoxValidationPriceDisplay;
         private EntryBoxValidation _entryBoxValidationQuantity;
@@ -42,8 +44,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private EntryBoxValidation _entryBoxValidationToken1;
         private EntryBoxValidation _entryBoxValidationToken2;
         private EntryBoxValidation _entryBoxValidationNotes;
-        private XPOEntryBoxSelectRecord<FIN_ConfigurationVatRate, TreeViewConfigurationVatRate> _entryBoxSelectVatRate;
-        private XPOEntryBoxSelectRecord<FIN_ConfigurationVatExemptionReason, TreeViewConfigurationVatExceptionReason> _entryBoxSelectVatExemptionReason;
         //CRUDWidgetList
         private GenericCRUDWidgetListDataTable _crudWidgetList;
         //CRUDWidget
@@ -56,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private GenericCRUDWidgetDataTable _crudWidgetSelectVatExemptionReason;
         //Document Types
         private FIN_DocumentFinanceType _documentFinanceType;
-        private List<string> _listSaftDocumentType2 = new List<string>();
+        private List<string> _listSaftDocumentType = new List<string>();
         //Store Current Price without ExchangeRate, the price used in all Logic, price from Entry is only for Display
         private decimal _articlePrice = 0.0m;
         //Working Currency
@@ -127,11 +127,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             //Init Transport Documents Lists
-            _listSaftDocumentType2.Add(SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote.ToString());
-            _listSaftDocumentType2.Add(SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide.ToString());
-            _listSaftDocumentType2.Add(SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide.ToString());
-            _listSaftDocumentType2.Add(SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide.ToString());
-            _listSaftDocumentType2.Add(SettingsApp.XpoOidDocumentFinanceTypeReturnGuide.ToString());
+            _listSaftDocumentType.Add(SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote.ToString());
+            _listSaftDocumentType.Add(SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide.ToString());
+            _listSaftDocumentType.Add(SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide.ToString());
+            _listSaftDocumentType.Add(SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide.ToString());
+            _listSaftDocumentType.Add(SettingsApp.XpoOidDocumentFinanceTypeReturnGuide.ToString());
 
             //Init Components
             InitUI();
@@ -172,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 initialValueSelectConfigurationVatRate = (_dataSourceRow["ConfigurationVatRate.Value"] as FIN_ConfigurationVatRate);
                 initialValueSelectConfigurationVatExemptionReason = (_dataSourceRow["VatExemptionReason.Acronym"] as FIN_ConfigurationVatExemptionReason);
                 initialValueNotes = _dataSourceRow["Notes"].ToString();
-                //Required, Else Wrong Calulation in UPDATES, when Price is not Defined : 
+                //Required, Else Wrong Calculation in UPDATES, when Price is not Defined : 
                 //Reverse Price if not in default System Currency, else use value from Input
                 _articlePrice = (_currencyDefaultSystem == _currencyDisplay)
                     ? FrameworkUtils.StringToDecimal(initialValuePriceDisplay)

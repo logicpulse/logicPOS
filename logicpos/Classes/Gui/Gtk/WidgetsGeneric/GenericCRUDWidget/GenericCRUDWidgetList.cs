@@ -105,7 +105,6 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <returns></returns>
         public bool ValidateRecord()
         {
-            bool debug = false;
             bool result = true;
             String currentFieldLabel;
             String invalidFields = string.Empty;
@@ -117,10 +116,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 if (item.Widget.Sensitive == true)
                 {
-                    if (debug && item.Widget.GetType() == typeof(XPOComboBox))
-                    {
-                        _log.Debug(string.Format("item.FieldName:[{0}], item.Widget.GetType():[{1}], item.FieldType:[{2}], item.FieldProperty:[{3}], item.Required:[{4}], item.ValidationRule:[{5}], item.Validated: [{6}]", item.FieldName, item.Widget.GetType(), item.FieldType, item.FieldProperty, item.Required, item.ValidationRule, item.Validated));
-                    }
+                    //Debug Helper
+                    //if (debug && item.Widget.GetType() == typeof(XPOComboBox))
+                    //if (debug && item.Widget.GetType() == typeof(XPOEntryBoxSelectRecord<FIN_Article,TreeViewArticle>))
+                    //{
+                    //    _log.Debug(string.Format("item.FieldName:[{0}], item.Widget.GetType():[{1}], item.FieldType:[{2}], item.FieldProperty:[{3}], item.Required:[{4}], item.ValidationRule:[{5}], item.Validated: [{6}]", item.FieldName, item.Widget.GetType(), item.FieldType, item.FieldProperty, item.Required, item.ValidationRule, item.Validated));
+                    //}
 
                     //Widgets Validation With RegEX Rule
                     if (item.ValidationRule != string.Empty)
@@ -285,7 +286,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             }
                         }
 
-                        //EntryBox
+                        //EntryBoxValidation
                         else if (item.Widget.GetType() == typeof(EntryBoxValidation))
                         {
                             modified = Modified(item.GetMemberValue(), (item.Widget as EntryBoxValidation).EntryValidation.Text, item.FieldType);
@@ -293,7 +294,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 if (!String.IsNullOrEmpty((item.Widget as EntryBoxValidation).EntryValidation.Text))
                                 {
-                                    //_log.Debug(string.Format("Message1: [{0}/{1}/{2}]", item.FieldName, (item.Widget as EntryBox).Entry.Text, GlobalFramework.CurrentCultureNumberFormat));
+                                    //_log.Debug(string.Format("Message1: [{0}/{1}/{2}/{3}]", item.FieldType, item.FieldName, (item.Widget as EntryBoxValidation).EntryValidation.Text, GlobalFramework.CurrentCultureNumberFormat));
                                     //Extra protection to convert string to Decimal, else may occur errors when work with en-US
                                     if (item.FieldType == typeof(decimal))
                                     {

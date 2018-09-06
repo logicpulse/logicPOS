@@ -26,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public BackOfficeMainWindow()
         {
             //Info
-            _log.Info("BackOfficeMainWindow(): Create object BackOfficeMainWindow");
+            _log.Debug("BackOfficeMainWindow(): Create object BackOfficeMainWindow");
 
             this.WindowStateEvent += PosMainWindow_WindowStateEvent;
 

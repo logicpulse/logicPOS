@@ -64,7 +64,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 InitialValue = 1.0m,
                 CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
             });
-            /*04: Used to store DefaultCurrency price, Set visible = true tp show it, Default is Hidden */
+            /*04: Used to store DefaultCurrency price, Set visible = true to show it, Default is Hidden */
             columnProperties.Add(new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Title = string.Format("{0}{1}", Resx.global_price, "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false });
             /*05: Visible Display Value, In Current Selected Currency*/
             columnProperties.Add(new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(Decimal), Title = Resx.global_price, MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });

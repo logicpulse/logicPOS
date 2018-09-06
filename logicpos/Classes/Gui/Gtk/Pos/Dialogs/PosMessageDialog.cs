@@ -145,7 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //}
 
             //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
+            this.InitObject(pSourceWindow/*this*/, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
         }
 
         // Automatically scroll to bottom of _textviewLog

@@ -32,7 +32,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
             columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_profile, Expand = true });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
 
             //configure criteria/xpcollection/model
             CriteriaOperator criteria = pXpoCriteria;

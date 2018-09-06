@@ -85,7 +85,7 @@ namespace logicpos.financial.console
                 //Init XPO Connector DataLayer
                 try
                 {
-                    _log.Info(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
+                    _log.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }

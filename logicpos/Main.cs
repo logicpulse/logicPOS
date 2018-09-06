@@ -27,7 +27,7 @@ namespace logicpos
             try
             {
                 // Show current Configuration File
-                _log.Info(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+                _log.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 
                 // Init Settings Main Config Settings
                 GlobalFramework.Settings = ConfigurationManager.AppSettings;
@@ -43,11 +43,11 @@ namespace logicpos
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
-                    _log.Info(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                    _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
                     // Init Plugin
                     SettingsApp.InitSoftwareVendorPluginSettings();
-                    // Check if all Resources are Embbeded
-                    GlobalFramework.PluginSoftwareVendor.ValidateEmbbededResources();
+                    // Check if all Resources are Embedded
+                    GlobalFramework.PluginSoftwareVendor.ValidateEmbeddedResources();
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace logicpos
                     // Show Loaded Plugin
                     if (GlobalFramework.PluginLicenceManager != null)
                     {
-                        _log.Info(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                        _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
                     }
                 }
 
@@ -105,9 +105,11 @@ namespace logicpos
             GlobalFramework.Path.Add("temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]));
             GlobalFramework.Path.Add("cache", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCache"]));
             GlobalFramework.Path.Add("plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]));
+            GlobalFramework.Path.Add("documents", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathDocuments"]));
             //Create Directories
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"])));
+            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["documents"])));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\Other", Convert.ToString(GlobalFramework.Path["resources"]))));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GlobalFramework.Path["resources"]), GlobalFramework.Settings["databaseType"], @"Database\MSSqlServer")));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GlobalFramework.Path["resources"]), GlobalFramework.Settings["databaseType"], @"Database\SQLite")));
@@ -119,8 +121,9 @@ namespace logicpos
             try
             {
                 // PreferencesValues
-                GlobalFramework.Path.Add("backups", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_BACKUPS"]));
-                GlobalFramework.Path.Add("saftpt", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_SAFTPT"]));
+                // Require to add end Slash, Prefs DirChooser dont add extra Slash in the End
+                GlobalFramework.Path.Add("backups", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_BACKUPS"] + '/'));
+                GlobalFramework.Path.Add("saftpt", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_SAFTPT"] + '/'));
                 //Create Directories
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["saftpt"])));

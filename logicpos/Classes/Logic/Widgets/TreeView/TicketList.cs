@@ -115,7 +115,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
                 FIN_DocumentOrderTicket orderTicket = orderMain.FinishOrder(GlobalFramework.SessionXpo);
 
-                if (orderTicket != null)
+                // If OrderTicket and has a ThermalPrinter connected
+                if (orderTicket != null && GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.PrinterType.ThermalPrinter)
                 {
                     //public static bool PrintOrderRequest(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, OrderMain pDocumentOrderMain, FIN_DocumentOrderTicket pOrderTicket)
                     FrameworkCalls.PrintOrderRequest(_sourceWindow, GlobalFramework.LoggedTerminal.Printer, orderMain, orderTicket);

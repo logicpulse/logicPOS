@@ -59,10 +59,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     _fieldProperty = prop;
 
-                    //Return GetUnderlyingType when is Nullable ex Int16? | [System.Nullable`1[System.Int16]]
+                    //Return GetUnderlyingType when is Nullable ex Int16? | [System.Nullable1[System.Int16]]
                     if (FrameworkUtils.IsNullable(prop.PropertyType))
                     {
-                        //Required Nullable.GetUnderlyingType, else Type is item.FieldType:[System.Nullable`1[System.Int16]], this returns item.FieldType:[System.Int16]
+                        //Required Nullable.GetUnderlyingType, else Type is item.FieldType:[System.Nullable1[System.Int16]], this returns item.FieldType:[System.Int16]
                         _fieldType = Nullable.GetUnderlyingType(prop.PropertyType);
                     }
                     //Return Default Type when is Not Nullable ex Int16 | [System.Int16]

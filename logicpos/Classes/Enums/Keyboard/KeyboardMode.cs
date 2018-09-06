@@ -3,6 +3,6 @@
     //Keyboard Modes
     public enum KeyboardMode
     {
-        None, AlfaNumeric, Alfa, Numeric, Money
+        None, AlfaNumeric, Alfa, Numeric, Money, AlfaPassword
     }
 }

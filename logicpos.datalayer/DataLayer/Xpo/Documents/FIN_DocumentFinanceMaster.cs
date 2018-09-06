@@ -1,10 +1,10 @@
-﻿using System;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
+using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     //Todo : Change File to Work with Encrypted Attributed
-    // 1. change string fEntityCountry; > to [Size(50)] / `EntityCountry` varchar(50) DEFAULT NULL (All Dbs)
+    // 1. change string fEntityCountry; > to [Size(50)] / EntityCountry varchar(50) DEFAULT NULL (All Dbs)
     // 2. uncomment InitEncryptedAttributes<FIN_DocumentFinanceMaster>(); in Constructor and OnAfterConstruction
     // 3. uncomment //[XPGuidObject(Encrypted = true)]
     // 4. saft and print documents are with encrypted values from db, require extra work

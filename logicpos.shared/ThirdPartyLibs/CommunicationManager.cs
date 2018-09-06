@@ -484,7 +484,7 @@ namespace PCComm
             IIIIII = result.Substring(10, 6);
 
             resultList.Add(Convert.ToInt16(WWWWW));
-            // Sanitize : Must Remove last Charcate like detected ondes [= >]
+            // Sanitize : Must Remove last Charcters like detected ones [= >]
             //resultList.Add(Convert.ToInt16(IIIIII.Replace("=", string.Empty)));
             IIIIII = IIIIII.Substring(0, IIIIII.Length -1);
             resultList.Add(Convert.ToInt16(IIIIII));

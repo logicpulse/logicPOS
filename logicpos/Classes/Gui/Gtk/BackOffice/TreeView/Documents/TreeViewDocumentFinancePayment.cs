@@ -31,6 +31,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
+            //Config
+            int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
+
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
             columnProperties.Add(new GenericTreeViewColumnProperty("CreatedAt") { Title = Resx.global_document_date, MinWidth = 180 });
@@ -52,14 +55,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 Title = Resx.global_total,
                 MinWidth = 100,
-                Alignment = 1.0F,
+                //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
-                CellRenderer = new CellRendererText()
-                {
-                    Alignment = Pango.Alignment.Right,
-                    FontDesc = new Pango.FontDescription() { Size = 50 },
-                    Xalign = 1.0F
-                }
+                //CellRenderer = new CellRendererText()
+                //{
+                //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
+                //    Alignment = Pango.Alignment.Right,
+                //    Xalign = 1.0F
+                //}
             });
 
             //Configure Criteria/XPCollection/Model

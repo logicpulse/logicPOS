@@ -46,10 +46,10 @@ namespace logicpos.financial.service.App
         //Todo: CleanUp
 
         // Enable/Disable TestMode
-        public static bool ServiceATEnableTestMode { get { return GetServiceATEnableTestMode(); } }//Convert.ToBoolean(GlobalFramework.Settings["serviceATEnableTestMode"]);
-        public static bool ServiceATSendDocuments { get { return GetServiceATSendDocuments(); } }//Convert.ToBoolean(GlobalFramework.Settings["serviceATSendDocuments"]);
-        public static bool ServiceATSendDocumentsWayBill { get { return GetServiceATSendDocumentsWayBill(); } }//Convert.ToBoolean(GlobalFramework.Settings["serviceATSendDocumentsWayBill"]);
-        public static bool ServiceATWBAgriculturalMode { get { return GetServiceATWBAgriculturalMode(); } }//Convert.ToBoolean(GlobalFramework.Settings["serviceATWBAgriculturalMode"]);
+        public static bool ServiceATEnableTestMode { get { return GetServiceATEnableTestMode(); } }
+        public static bool ServiceATSendDocuments { get { return GetServiceATSendDocuments(); } }
+        public static bool ServiceATSendDocumentsWayBill { get { return GetServiceATSendDocumentsWayBill(); } }
+        public static bool ServiceATWBAgriculturalMode { get { return GetServiceATWBAgriculturalMode(); } }
 
         //Uris
         public static Uri ServicesATUriDocuments { get { return GetServicesATDCUri(ServiceATEnableTestMode); } }

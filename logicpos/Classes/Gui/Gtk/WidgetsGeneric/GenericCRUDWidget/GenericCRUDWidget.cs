@@ -164,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             if (_fieldType == typeof(DateTime))
                             {
                                 //Cast _fieldValue to DateTime
-                                (_widget as Entry).Text = ((DateTime) _fieldValue).ToString(SettingsApp.DateTimeFormat);
+                                (_widget as Entry).Text = ((DateTime)_fieldValue).ToString(SettingsApp.DateTimeFormat);
                                 //_log.Debug(string.Format("{0}:{1}:{2}:{3}:{4}", _dataSourceRow, _fieldName, _fieldValue, _fieldProperty, _fieldType));
                             }
                         }
@@ -304,20 +304,21 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     //Removed check Required to ValidateField, else wont work in no Required Fields
                     //if (_required)
                     //{
-                        ValidateField();
-                        (_widget as XPOComboBox).Changed += delegate { ValidateField(); };
+                    ValidateField();
+                    (_widget as XPOComboBox).Changed += delegate { ValidateField(); };
                     //}
                     break;
 
                 //Used outside BackOffice (Touch)
                 case "EntryBoxValidation":
-                       //Call Validate
-                        (_widget as EntryBoxValidation).EntryValidation.Validate();    
+                    //Call Validate
+                    (_widget as EntryBoxValidation).EntryValidation.Validate();
+                    ValidateField();
+                    (_widget as EntryBoxValidation).EntryValidation.Changed += delegate
+                    {
+                        (_widget as EntryBoxValidation).EntryValidation.Validate();
                         ValidateField();
-                        (_widget as EntryBoxValidation).EntryValidation.Changed += delegate { 
-                            (_widget as EntryBoxValidation).EntryValidation.Validate();    
-                            ValidateField(); 
-                        };
+                    };
                     break;
 
                 /* OLD: Not Used Anymore : Not always use Unified component EntryBoxValidation

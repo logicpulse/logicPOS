@@ -119,6 +119,7 @@ namespace logicpos
                     //Get result to check if DB is created (true)
                     try
                     {
+                        // Launch Scripts
                         databaseCreated = DataLayer.CreateDatabaseSchema(xpoConnectionString, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName);
                     }
                     catch (Exception ex)
@@ -133,7 +134,7 @@ namespace logicpos
                 //Init XPO Connector DataLayer
                 try
                 {
-                    _log.Info(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
+                    _log.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
@@ -148,7 +149,7 @@ namespace logicpos
                 if (!xpoCreateDatabaseAndSchema && !FrameworkUtils.IsRunningOnMono())
                 {
                     bool isSchemaValid = DataLayer.IsSchemaValid(xpoConnectionString);
-                    _log.Info(string.Format("Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
+                    _log.Debug(string.Format("Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
                     if (!isSchemaValid)
                     {
                         string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
@@ -265,7 +266,7 @@ namespace logicpos
                 //Init FastReports Custom Functions and Custom Vars
                 CustomFunctions.Register(SettingsApp.AppName);
 
-                //Init Display
+                //Hardware : Init Display
                 if (GlobalFramework.LoggedTerminal.PoleDisplay != null)
                 {
                     GlobalApp.UsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
@@ -274,13 +275,13 @@ namespace logicpos
                     GlobalApp.UsbDisplay.EnableStandBy();
                 }
 
-                //Init BarCodeReader 
+                //Hardware : Init BarCodeReader 
                 if (GlobalFramework.LoggedTerminal.BarcodeReader != null)
                 {
                     GlobalApp.BarCodeReader = new InputReader();
                 }
 
-                //Init WeighingBalance
+                //Hardware : Init WeighingBalance
                 if (GlobalFramework.LoggedTerminal.WeighingMachine != null)
                 {
                     GlobalApp.WeighingBalance = new WeighingBalance(GlobalFramework.LoggedTerminal.WeighingMachine);
@@ -312,6 +313,28 @@ namespace logicpos
 
                 //Create SystemNotification
                 FrameworkUtils.SystemNotification();
+
+                //Clean Documents Folder on New Database, else we have Document files that dont correspond to Database
+                if (databaseCreated && Directory.Exists(GlobalFramework.Path["documents"].ToString()))
+                {
+                    string documentsFolder = GlobalFramework.Path["documents"].ToString();
+                    System.IO.DirectoryInfo di = new DirectoryInfo(documentsFolder);
+                    if (di.GetFiles().Length > 0)
+                    {
+                        _log.Debug(string.Format("New database created. Start Delete [{0}] document(s) from [{1}] folder!", di.GetFiles().Length, documentsFolder));
+                        foreach (FileInfo file in di.GetFiles())
+                        {
+                            try
+                            {
+                                file.Delete(); 
+                            }
+                            catch (Exception)
+                            {
+                                _log.Error(string.Format("Error! Cant delete Document file : [{0}]", file.Name));
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -493,7 +516,7 @@ namespace logicpos
         {
             try
             {
-                // Every second call `update_status' (1000 milliseconds)
+                // Every second call update_status' (1000 milliseconds)
                 GLib.Timeout.Add(SettingsApp.BackupTimerInterval, new GLib.TimeoutHandler(UpdateBackupTimer));
             }
             catch (Exception ex)

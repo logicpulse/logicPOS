@@ -44,7 +44,7 @@ namespace logicpos.financial.service
             get { return Program._servicePort; }
         }
         //Timer
-        private static System.Timers.Timer _timer;
+        private static System.Timers.Timer _timer = null;
         private static bool _timerRunningTasks = false;
 
         static void Main(string[] args)
@@ -148,7 +148,7 @@ namespace logicpos.financial.service
                 //Init XPO Connector DataLayer
                 try
                 {
-                    _log.Info(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
+                    _log.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
@@ -223,7 +223,7 @@ namespace logicpos.financial.service
             if (GlobalFramework.PluginSoftwareVendor != null)
             {
                 // Show Loaded Plugin
-                _log.Info(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                _log.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
                 // Init Plugin
                 SettingsApp.InitSoftwareVendorPluginSettings();
             }

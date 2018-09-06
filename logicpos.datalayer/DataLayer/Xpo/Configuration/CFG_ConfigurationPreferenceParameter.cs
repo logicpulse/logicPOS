@@ -1,5 +1,6 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using logicpos.datalayer.Enums;
 using System;
 
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -41,7 +42,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fValue;
-        [Size(255)]
+        //[Size(255)]
+        [Size(SizeAttribute.Unlimited)]
         public String Value
         {
             get { return fValue; }
@@ -97,6 +99,13 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return fFormPageNo; }
             set { SetPropertyValue<int>("FormPageNo", ref fFormPageNo, value); }
+        }
+
+        PreferenceParameterInputType fInputType;
+        public PreferenceParameterInputType InputType
+        {
+            get { return fInputType; }
+            set { SetPropertyValue<PreferenceParameterInputType>("InputType", ref fInputType, value); }
         }
     }
 }

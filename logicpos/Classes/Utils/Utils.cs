@@ -17,7 +17,9 @@ using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
+using logicpos.financial.library.Classes.Reports;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -33,6 +35,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -1131,25 +1134,25 @@ namespace logicpos
 
             // Displays the properties of each culture.
 
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "PROPERTY", "INTERNATIONAL", "TRADITIONAL"));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "CompareInfo", myCIintl.CompareInfo, myCItrad.CompareInfo));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "DisplayName", myCIintl.DisplayName, myCItrad.DisplayName));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "EnglishName", myCIintl.EnglishName, myCItrad.EnglishName));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "IsNeutralCulture", myCIintl.IsNeutralCulture, myCItrad.IsNeutralCulture));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "IsReadOnly", myCIintl.IsReadOnly, myCItrad.IsReadOnly));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "LCID", myCIintl.LCID, myCItrad.LCID));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "Name", myCIintl.Name, myCItrad.Name));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "NativeName", myCIintl.NativeName, myCItrad.NativeName));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "Parent", myCIintl.Parent, myCItrad.Parent));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "TextInfo", myCIintl.TextInfo, myCItrad.TextInfo));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterISOLanguageName", myCIintl.ThreeLetterISOLanguageName, myCItrad.ThreeLetterISOLanguageName));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterWindowsLanguageName", myCIintl.ThreeLetterWindowsLanguageName, myCItrad.ThreeLetterWindowsLanguageName));
-            _log.Info(string.Format("{0,-33}{1,-25}{2,-25}", "TwoLetterISOLanguageName", myCIintl.TwoLetterISOLanguageName, myCItrad.TwoLetterISOLanguageName));
-            _log.Info("");
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "PROPERTY", "INTERNATIONAL", "TRADITIONAL"));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "CompareInfo", myCIintl.CompareInfo, myCItrad.CompareInfo));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "DisplayName", myCIintl.DisplayName, myCItrad.DisplayName));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "EnglishName", myCIintl.EnglishName, myCItrad.EnglishName));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "IsNeutralCulture", myCIintl.IsNeutralCulture, myCItrad.IsNeutralCulture));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "IsReadOnly", myCIintl.IsReadOnly, myCItrad.IsReadOnly));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "LCID", myCIintl.LCID, myCItrad.LCID));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "Name", myCIintl.Name, myCItrad.Name));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "NativeName", myCIintl.NativeName, myCItrad.NativeName));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "Parent", myCIintl.Parent, myCItrad.Parent));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "TextInfo", myCIintl.TextInfo, myCItrad.TextInfo));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterISOLanguageName", myCIintl.ThreeLetterISOLanguageName, myCItrad.ThreeLetterISOLanguageName));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterWindowsLanguageName", myCIintl.ThreeLetterWindowsLanguageName, myCItrad.ThreeLetterWindowsLanguageName));
+            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "TwoLetterISOLanguageName", myCIintl.TwoLetterISOLanguageName, myCItrad.TwoLetterISOLanguageName));
+            _log.Debug("");
             // Compare two strings using myCIintl.
-            _log.Info("Comparing \"llegar\" and \"lugar\"");
-            _log.Info(string.Format("   With myCIintl.CompareInfo.Compare: {0}", myCIintl.CompareInfo.Compare("llegar", "lugar")));
-            _log.Info(string.Format("   With myCItrad.CompareInfo.Compare: {0}", myCItrad.CompareInfo.Compare("llegar", "lugar")));
+            _log.Debug("Comparing \"llegar\" and \"lugar\"");
+            _log.Debug(string.Format("   With myCIintl.CompareInfo.Compare: {0}", myCIintl.CompareInfo.Compare("llegar", "lugar")));
+            _log.Debug(string.Format("   With myCItrad.CompareInfo.Compare: {0}", myCItrad.CompareInfo.Compare("llegar", "lugar")));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1260,7 +1263,8 @@ namespace logicpos
             return result;
         }
 
-        public static EventBox GetMinimizeEventBox() {
+        public static EventBox GetMinimizeEventBox()
+        {
 
             string _fileDefaultWindowIconMinimize = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
             EventBox result = null;
@@ -1534,7 +1538,7 @@ namespace logicpos
         //    };
         //    terminalXpo.Save();
 
-        //    _log.Info(string.Format("Registered a new Terminal in Database and Config Settings. TerminalId: [{0}] ]", terminalXpo.Oid));
+        //    _log.Debug(string.Format("Registered a new Terminal in Database and Config Settings. TerminalId: [{0}] ]", terminalXpo.Oid));
         //    //Save to Text
         //    File.WriteAllText(terminalIdFile, terminalXpo.Oid.ToString());
         //  }
@@ -2069,12 +2073,12 @@ namespace logicpos
         //Customers
 
         //Used to Save or Update Customers when Process Finance Documents
-        public static object SaveOrUpdateCustomer(Window pSourceWindow, string pName, string pAddress, string pLocality, string pZipCode, string pCity, CFG_ConfigurationCountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
+        public static object SaveOrUpdateCustomer(Window pSourceWindow, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, CFG_ConfigurationCountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
         {
-            return SaveOrUpdateCustomer(pSourceWindow, null, pName, pAddress, pLocality, pZipCode, pCity, pCountry, pFiscalNumber, pCardNumber, pDiscount, pNotes);
+            return SaveOrUpdateCustomer(pSourceWindow, null, pName, pAddress, pLocality, pZipCode, pCity, pPhone, pEmail, pCountry, pFiscalNumber, pCardNumber, pDiscount, pNotes);
         }
 
-        public static object SaveOrUpdateCustomer(Window pSourceWindow, ERP_Customer pCustomer, string pName, string pAddress, string pLocality, string pZipCode, string pCity, CFG_ConfigurationCountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
+        public static object SaveOrUpdateCustomer(Window pSourceWindow, ERP_Customer pCustomer, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, CFG_ConfigurationCountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
         {
             bool changed = false;
             ERP_Customer result;
@@ -2102,6 +2106,14 @@ namespace logicpos
                     Notes = pNotes,
                     Hidden = (pFiscalNumber != string.Empty) ? false : true
                 };
+                if (pPhone != null)
+                {
+                    result.Phone = pPhone;
+                };
+                if (pEmail != null)
+                {
+                    result.Email = pEmail;
+                };
             }
             //If customer Exists, check for modifications and UPDATE Details
             else
@@ -2120,6 +2132,9 @@ namespace logicpos
                 if (CheckIfFieldChanged(result.CardNumber, pCardNumber)) { result.CardNumber = pCardNumber; changed = true; };
                 if (CheckIfFieldChanged(result.Discount, pDiscount)) { result.Discount = pDiscount; changed = true; };
                 if (CheckIfFieldChanged(result.Notes, pNotes)) { result.Notes = pNotes; changed = true; };
+                // Only used in DocumentFinanceDialogPage2
+                if (pPhone != null && CheckIfFieldChanged(result.Phone, pPhone)) { result.Phone = pPhone; changed = true; };
+                if (pEmail != null && CheckIfFieldChanged(result.Email, pEmail)) { result.Email = pEmail; changed = true; };
 
                 if (changed)
                 {

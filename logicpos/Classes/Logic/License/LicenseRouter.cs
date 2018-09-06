@@ -66,7 +66,7 @@ namespace logicpos.Classes.Logic.License
 
                     hardwareID = GlobalFramework.PluginLicenceManager.GetHardwareID();
                     GlobalFramework.LicenceHardwareId = hardwareID;
-                    _log.Info("Detected hardwareID: " + GlobalFramework.LicenceHardwareId);
+                    _log.Debug("Detected hardwareID: " + GlobalFramework.LicenceHardwareId);
                     string version = "logicpos";
 
                     //Try Update Licence    
@@ -81,7 +81,7 @@ namespace logicpos.Classes.Logic.License
                         registredLicence = GlobalFramework.PluginLicenceManager.GetLicence(hardwareID, version);
 
                         //If Diferent Licenses return 1 byte and update local license file, else if equal return byte 0, skipping if
-                        if (showDebug) _log.Info("registredLicence.Length: " + registredLicence.Length);
+                        if (showDebug) _log.Debug("registredLicence.Length: " + registredLicence.Length);
 
                         if (registredLicence.Length > 0)
                         {
@@ -124,7 +124,7 @@ namespace logicpos.Classes.Logic.License
                 {
                     _loadApp = true;
                     GlobalFramework.LicenceRegistered = true;
-                    _log.Info("LicenceRegistered: " + GlobalFramework.LicenceRegistered);
+                    _log.Debug("LicenceRegistered: " + GlobalFramework.LicenceRegistered);
                 }
             }
             catch (Exception ex)

@@ -7,6 +7,7 @@ using logicpos.financial.library.Classes.Reports.BOs.Articles;
 using logicpos.financial.library.Classes.Reports.BOs.Customers;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.financial.library.Classes.Reports.BOs.System;
+using logicpos.financial.library.Classes.Reports.BOs.Users;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Enums;
 using System;
@@ -24,7 +25,7 @@ namespace logicpos.financial.library.Classes.Reports
         private const string FILENAME_TEMPLATE_BASE = "TemplateBase.frx";
         private const string FILENAME_TEMPLATE_BASE_SIMPLE = "TemplateBaseSimple.frx";
         private bool _debug = false;
-        // Use this to force ReleaseMode and force use Embbeded Reports Resources
+        // Use this to force ReleaseMode and force use Embedded Reports Resources
         private bool _forceReleaseMode = false;
 
         //Constructor Parameters
@@ -499,7 +500,7 @@ namespace logicpos.financial.library.Classes.Reports
                 //Render Child Bussiness Objects
                 foreach (FRBOCustomerType customerType in gcCustomerType)
                 {
-                    //Get Customer
+                    //Get Customer from current customerType
                     gcCustomers = new FRBOGenericCollection<FRBOCustomer>(string.Format("CustomerType = '{0}'", customerType.Oid), "Ord");
                     customerType.Customer = gcCustomers.List;
 
@@ -612,6 +613,88 @@ namespace logicpos.financial.library.Classes.Reports
                 _log.Error(ex.Message, ex);
             }
         }
+
+public static void ProcessReportCurrentAccount(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+{
+    try
+    {
+        //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+        string reportFile = GetReportFilePath("ReportCurrentAccount.frx");
+        CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+        //Report Parameters
+        customReport.SetParameterValue("Report Title", Resx.report_list_current_account);
+        //customReport.SetParameterValue("Factura No", 280);
+
+        //Prepare and Declare FRBOGenericCollections
+        FRBOGenericCollection<FRBODocumentFinanceCurrentAccount> gcCurrentAccount = new FRBOGenericCollection<FRBODocumentFinanceCurrentAccount>(filter);
+
+        // Decrypt Phase
+        //if (GlobalFramework.PluginSoftwareVendor != null)
+        //{
+        //    foreach (var item in gcCurrentAccount)
+        //    {
+        //        if (item.UserDetailName != null)
+        //        {
+        //            item.UserDetailName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.UserDetailName);
+        //        }
+        //    }
+        //}
+
+        //Prepare and Enable DataSources
+        customReport.RegisterData(gcCurrentAccount, "SystemAudit");
+        if (customReport.GetDataSource("SystemAudit") != null) customReport.GetDataSource("SystemAudit").Enabled = true;
+
+        //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+        customReport.Process(pViewMode);
+        customReport.Dispose();
+    }
+    catch (Exception ex)
+    {
+        _log.Error(ex.Message, ex);
+    }
+}
+
+public static void ProcessReportUserCommission(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+{
+    try
+    {
+        //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+        string reportFile = GetReportFilePath("ReportUserCommission.frx");
+        CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+        //Report Parameters
+        customReport.SetParameterValue("Report Title", Resx.report_list_user_commission);
+        //customReport.SetParameterValue("Factura No", 280);
+
+        //Prepare and Declare FRBOGenericCollections
+        FRBOGenericCollection<FRBOUserCommission> gcUserCommission = new FRBOGenericCollection<FRBOUserCommission>(filter);
+
+        // Decrypt Phase
+        if (GlobalFramework.PluginSoftwareVendor != null && gcUserCommission != null)
+        {
+            foreach (var item in gcUserCommission)
+            {
+                if (item.UserName != null)
+                {
+                    item.UserName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.UserName);
+                }
+            }
+        }
+
+        //Prepare and Enable DataSources
+        customReport.RegisterData(gcUserCommission, "UserCommission");
+        if (customReport.GetDataSource("UserCommission") != null) customReport.GetDataSource("UserCommission").Enabled = true;
+
+        //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+        customReport.Process(pViewMode);
+        customReport.Dispose();
+    }
+    catch (Exception ex)
+    {
+        _log.Error(ex.Message, ex);
+    }
+}
 
         public static void ProcessReportDocumentMasterList(CustomReportDisplayMode pViewMode, string resourceString, string groupCondition, string groupTitle)
         {
@@ -767,7 +850,7 @@ namespace logicpos.financial.library.Classes.Reports
         }
 
         //public static string DocumentMasterCreatePDF(DocumentFinanceMaster pDocumentFinanceMaster, string pDestinationFileName, CustomReportDisplayMode pCustomReportDisplayMode)
-        public static string DocumentMasterCreatePDF(CustomReportDisplayMode pViewMode, FIN_DocumentFinanceMaster pDocumentFinanceMaster, string pDestinationFileName)
+        public static string DocumentMasterCreatePDF(CustomReportDisplayMode pDisplayMode, FIN_DocumentFinanceMaster pDocumentFinanceMaster, string pDestinationFileName)
         {
             string result = String.Empty;
             try
@@ -775,7 +858,7 @@ namespace logicpos.financial.library.Classes.Reports
                 //Generate Default CopyNames from DocumentType
                 List<int> copyNames = CopyNames(pDocumentFinanceMaster.DocumentType.PrintCopies);
                 string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(pDocumentFinanceMaster.Hash);
-                result = ProcessReportFinanceDocument(pViewMode, pDocumentFinanceMaster.Oid, hash4Chars, copyNames, pDestinationFileName);
+                result = ProcessReportFinanceDocument(pDisplayMode, pDocumentFinanceMaster.Oid, hash4Chars, copyNames, pDestinationFileName);
             }
             catch (Exception ex)
             {
@@ -789,22 +872,22 @@ namespace logicpos.financial.library.Classes.Reports
 
         public static string DocumentPaymentCreatePDF(FIN_DocumentFinancePayment pDocumentFinancePayment)
         {
-            return DocumentPaymentCreatePDF(pDocumentFinancePayment, String.Empty, CustomReportDisplayMode.ExportPDFSilent);
+            return DocumentPaymentCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinancePayment, String.Empty);
         }
 
         public static string DocumentPaymentCreatePDF(FIN_DocumentFinancePayment pDocumentFinancePayment, string pDestinationFileName)
         {
-            return DocumentPaymentCreatePDF(pDocumentFinancePayment, pDestinationFileName, CustomReportDisplayMode.ExportPDFSilent);
+            return DocumentPaymentCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinancePayment, pDestinationFileName);
         }
 
-        public static string DocumentPaymentCreatePDF(FIN_DocumentFinancePayment pDocumentFinancePayment, string pDestinationFileName, CustomReportDisplayMode pCustomReportDisplayMode)
+        public static string DocumentPaymentCreatePDF(CustomReportDisplayMode pDisplayMode, FIN_DocumentFinancePayment pDocumentFinancePayment, string pDestinationFileName)
         {
             string result = String.Empty;
             try
             {
                 //Generate Default CopyNames from DocumentType
                 List<int> copyNames = CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
-                result = ProcessReportFinanceDocumentPayment(pCustomReportDisplayMode, pDocumentFinancePayment.Oid, copyNames, pDestinationFileName);
+                result = ProcessReportFinanceDocumentPayment(pDisplayMode, pDocumentFinancePayment.Oid, copyNames, pDestinationFileName);
             }
             catch (Exception ex)
             {
