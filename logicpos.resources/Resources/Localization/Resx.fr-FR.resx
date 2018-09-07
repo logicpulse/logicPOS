@@ -955,7 +955,7 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
   <data name="global_currency" xml:space="preserve">
     <value>Monnaie</value>
   </data>
-  <data name="global_current_acount" xml:space="preserve">
+  <data name="global_current_account" xml:space="preserve">
     <value>Compte courant</value>
   </data>
   <data name="global_customer" xml:space="preserve">
@@ -3169,10 +3169,19 @@ Quantité valide: {1}</value>
   <data name="report_list_user_commission" xml:space="preserve">
     <value>Commissions</value>
   </data>
+  <data name="global_credit" xml:space="preserve">
+    <value>Credit</value>
+  </data>
   <data name="global_total_commission_day" xml:space="preserve">
     <value>Totale de la commission Journée</value>
   </data>
   <data name="global_total_commission_user" xml:space="preserve">
     <value>Totale de la commission Utilisateur</value>
+  </data>
+  <data name="global_total_credit" xml:space="preserve">
+    <value>Crédit Total</value>
+  </data>
+  <data name="global_total_debit" xml:space="preserve">
+    <value>Débit Total</value>
   </data>
 </root>

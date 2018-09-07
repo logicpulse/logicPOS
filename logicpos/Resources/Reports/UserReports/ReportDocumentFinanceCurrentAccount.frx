@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="09/07/2018 10:24:01" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+  <Dictionary>
+    <BusinessObjectDataSource Name="CurrentAccount" ReferenceName="CurrentAccount" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Customers.FRBODocumentFinanceCurrentAccount, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="DocumentTypeOrd" DataType="System.UInt32"/>
+      <Column Name="DocumentTypeCode" DataType="System.UInt32"/>
+      <Column Name="DocumentType" DataType="System.String"/>
+      <Column Name="EntityOid" DataType="System.String"/>
+      <Column Name="EntityName" DataType="System.String"/>
+      <Column Name="EntityFiscalNumber" DataType="System.String"/>
+      <Column Name="DocumentDate" DataType="System.String"/>
+      <Column Name="Date" DataType="System.DateTime"/>
+      <Column Name="DocumentNumber" DataType="System.String"/>
+      <Column Name="DocumentAmount" DataType="System.Decimal"/>
+      <Column Name="DocumentStatus" DataType="System.String"/>
+      <Column Name="Credit" DataType="System.Decimal"/>
+      <Column Name="Debit" DataType="System.Decimal"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Total Name="RecordCount" TotalType="Count" Evaluator="Data" PrintOn="GroupFooter"/>
+    <Total Name="TotalCredit" Expression="[CurrentAccount.Credit]" Evaluator="Data" PrintOn="GroupFooter"/>
+    <Total Name="TotalDebit" Expression="[CurrentAccount.Debit]" Evaluator="Data" PrintOn="GroupFooter"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
+      <inherited Name="PictureCompanyLogo"/>
+      <inherited Name="TextReportTitle" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
+    </inherited>
+    <GroupHeaderBand Name="GroupHeader" ZOrder="0" Top="53" Width="718.2" Height="37.8" KeepWithData="true" Condition="[CurrentAccount.EntityName]">
+      <TextObject Name="Text35" Top="9.45" Width="718.2" Height="18.9" CanGrow="true" Text="[CurrentAccount.EntityName] / [CurrentAccount.EntityFiscalNumber]" VertAlign="Center" Font="Arial, 15.75pt" Style="DataLevel1Font"/>
+      <DataBand Name="Data" Top="127.15" Width="718.2" Height="18.9" CanGrow="true" EvenStyle="EvenRow" DataSource="CurrentAccount" KeepTogether="true">
+        <TextObject Name="Text16" Left="75.6" Width="122.85" Height="18.9" CanGrow="true" Text="[CurrentAccount.DocumentNumber]" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text17" Left="198.45" Width="311.85" Height="18.9" CanGrow="true" Text="[CurrentAccount.DocumentType]" VertAlign="Center" Style="DataFont"/>
+        <TextObject Name="Text28" Left="614.25" Width="103.95" Height="18.9" Text="[FormatNumber([CurrentAccount.Debit],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text31" Width="75.6" Height="18.9" CanGrow="true" Text="[CurrentAccount.DocumentDate]" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text34" Left="510.3" Width="103.95" Height="18.9" Text="[FormatNumber([CurrentAccount.Credit],2)]" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+        <DataHeaderBand Name="DataHeader" Top="94.8" Width="718.2" Height="28.35" Border.Lines="Top">
+          <TextObject Name="Text24" Left="75.6" Top="9.45" Width="122.85" Height="18.9" Text="[Res(&quot;global_document_number&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text25" Left="198.45" Top="9.45" Width="311.85" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text27" Left="614.25" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;global_debit&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text32" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text33" Left="510.3" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;global_credit&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+        </DataHeaderBand>
+        <Sort>
+          <Sort Expression="[CurrentAccount.Date]"/>
+        </Sort>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter" Top="150.05" Width="718.2" Height="75.6" KeepWithData="true">
+        <TextObject Name="Text30" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [FormatNumber([RecordCount],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="Text36" Top="18.9" Width="718.2" Height="18.9" Text="[Res(&quot;global_total_credit&quot;)] : [FormatNumber([TotalCredit],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="Text37" Top="37.8" Width="718.2" Height="18.9" Text="[Res(&quot;global_total_debit&quot;)] : [FormatNumber([TotalDebit],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="Text38" Top="56.7" Width="718.2" Height="18.9" Text="[Res(&quot;global_current_account&quot;)] : [FormatNumber([TotalCredit]-[TotalDebit],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <inherited Name="PageFooter1" Top="229.65" Height="56.7">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>

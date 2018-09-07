@@ -103,7 +103,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ? CustomReportDisplayMode.Design
                 : CustomReportDisplayMode.ExportPDF;
             // Override Default Development Mode
-            displayMode = CustomReportDisplayMode.Design;
+            displayMode = CustomReportDisplayMode.ExportPDF;
 
             // Local Variables
             string reportFilter = string.Empty;
@@ -139,16 +139,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 reportsQueryDialogMode = ReportsQueryDialogMode.SYSTEM_AUDIT;
                 databaseSourceObject = "view_systemaudit";
             }
-else if (token.ToString().Equals("REPORT_LIST_CURRENT_ACCOUNT"))
-{
-    reportsQueryDialogMode = ReportsQueryDialogMode.CURRENT_ACCOUNT;
-    databaseSourceObject = "fin_documentfinancemaster";
-}
-else if (token.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
-{
-    reportsQueryDialogMode = ReportsQueryDialogMode.USER_COMMISSION;
-    databaseSourceObject = "view_usercommission";
-}
+            else if (token.ToString().Equals("REPORT_LIST_CURRENT_ACCOUNT"))
+            {
+                reportsQueryDialogMode = ReportsQueryDialogMode.CURRENT_ACCOUNT;
+                databaseSourceObject = "view_documentfinancecurrentaccount";
+            }
+            else if (token.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
+            {
+                reportsQueryDialogMode = ReportsQueryDialogMode.USER_COMMISSION;
+                databaseSourceObject = "view_usercommission";
+            }
 
             // Common GetReportsQueryDialogFilter for All Non Undefined ReportsQueryDialogMode 
             if (reportsQueryDialogMode != ReportsQueryDialogMode.UNDEFINED)
@@ -585,12 +585,12 @@ else if (token.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
                     case ReportsTypeToken.REPORT_LIST_STOCK_MOVEMENTS:
                         CustomReport.ProcessReportArticleStockMovement(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
-case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
-    CustomReport.ProcessReportCurrentAccount(displayMode, reportFilter, reportFilterHumanReadable);
-    break;
-case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
-    CustomReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);
-    break;
+                    case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
+                        CustomReport.ProcessReportDocumentFinanceCurrentAccount(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
+                        CustomReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
                     // ABove are not Implemented Yet
                     case ReportsTypeToken.REPORT_TOTAL_PER_FAMILY:
                         break;

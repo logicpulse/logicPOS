@@ -47,7 +47,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     ticketSubTitleExtra = Resx.global_without_current_acount;
                     break;
                 case SplitCurrentAccountMode.CurrentAcount:
-                    ticketSubTitleExtra = Resx.global_current_acount;
+                    ticketSubTitleExtra = Resx.global_current_account;
                     break;
             }
 

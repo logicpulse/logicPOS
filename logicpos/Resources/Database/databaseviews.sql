@@ -365,7 +365,7 @@ CREATE VIEW view_documentfinancecurrentaccount AS
 		ft.Designation AS DocumentType, 
 		fm.EntityOid AS EntityOid,
 		fm.EntityName AS EntityName,
-		fm.EntityName AS EntityFiscalNumber,
+		fm.EntityFiscalNumber AS EntityFiscalNumber,
 		fm.DocumentDate AS DocumentDate,
 		fm.Date AS Date,
 		fm.DocumentNumber AS DocumentNumber,

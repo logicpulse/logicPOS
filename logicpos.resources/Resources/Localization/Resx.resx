@@ -933,9 +933,6 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="global_currency" xml:space="preserve">
     <value>Currency</value>
   </data>
-  <data name="global_current_acount" xml:space="preserve">
-    <value>Current Account</value>
-  </data>
   <data name="global_customer" xml:space="preserve">
     <value>Customer</value>
   </data>
@@ -2001,7 +1998,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Credit Card</value>
   </data>
   <data name="pos_button_label_payment_type_current_account" xml:space="preserve">
-    <value>Current account</value>
+    <value>Current Account</value>
   </data>
   <data name="pos_button_label_payment_type_customer_card" xml:space="preserve">
     <value>Client Card</value>
@@ -3224,10 +3221,22 @@ Valid Quantity: {1}</value>
   <data name="report_list_user_commission" xml:space="preserve">
     <value>Commissions</value>
   </data>
+  <data name="global_credit" xml:space="preserve">
+    <value>Credit</value>
+  </data>
+  <data name="global_current_account" xml:space="preserve">
+    <value>Current Account</value>
+  </data>
   <data name="global_total_commission_day" xml:space="preserve">
     <value>Total commission day</value>
   </data>
   <data name="global_total_commission_user" xml:space="preserve">
     <value>Total commission user</value>
+  </data>
+  <data name="global_total_credit" xml:space="preserve">
+    <value>Total Credit</value>
+  </data>
+  <data name="global_total_debit" xml:space="preserve">
+    <value>Total Debit</value>
   </data>
 </root>

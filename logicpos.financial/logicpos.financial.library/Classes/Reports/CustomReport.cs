@@ -614,87 +614,85 @@ namespace logicpos.financial.library.Classes.Reports
             }
         }
 
-public static void ProcessReportCurrentAccount(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
-{
-    try
-    {
-        //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
-
-        string reportFile = GetReportFilePath("ReportCurrentAccount.frx");
-        CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
-        //Report Parameters
-        customReport.SetParameterValue("Report Title", Resx.report_list_current_account);
-        //customReport.SetParameterValue("Factura No", 280);
-
-        //Prepare and Declare FRBOGenericCollections
-        FRBOGenericCollection<FRBODocumentFinanceCurrentAccount> gcCurrentAccount = new FRBOGenericCollection<FRBODocumentFinanceCurrentAccount>(filter);
-
-        // Decrypt Phase
-        //if (GlobalFramework.PluginSoftwareVendor != null)
-        //{
-        //    foreach (var item in gcCurrentAccount)
-        //    {
-        //        if (item.UserDetailName != null)
-        //        {
-        //            item.UserDetailName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.UserDetailName);
-        //        }
-        //    }
-        //}
-
-        //Prepare and Enable DataSources
-        customReport.RegisterData(gcCurrentAccount, "SystemAudit");
-        if (customReport.GetDataSource("SystemAudit") != null) customReport.GetDataSource("SystemAudit").Enabled = true;
-
-        //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
-        customReport.Process(pViewMode);
-        customReport.Dispose();
-    }
-    catch (Exception ex)
-    {
-        _log.Error(ex.Message, ex);
-    }
-}
-
-public static void ProcessReportUserCommission(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
-{
-    try
-    {
-        //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
-
-        string reportFile = GetReportFilePath("ReportUserCommission.frx");
-        CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
-        //Report Parameters
-        customReport.SetParameterValue("Report Title", Resx.report_list_user_commission);
-        //customReport.SetParameterValue("Factura No", 280);
-
-        //Prepare and Declare FRBOGenericCollections
-        FRBOGenericCollection<FRBOUserCommission> gcUserCommission = new FRBOGenericCollection<FRBOUserCommission>(filter);
-
-        // Decrypt Phase
-        if (GlobalFramework.PluginSoftwareVendor != null && gcUserCommission != null)
+        public static void ProcessReportDocumentFinanceCurrentAccount(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
-            foreach (var item in gcUserCommission)
+            try
             {
-                if (item.UserName != null)
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportDocumentFinanceCurrentAccount.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", Resx.report_list_current_account);
+                //customReport.SetParameterValue("Factura No", 280);
+
+                //Prepare and Declare FRBOGenericCollections
+                FRBOGenericCollection<FRBODocumentFinanceCurrentAccount> gcCurrentAccount = new FRBOGenericCollection<FRBODocumentFinanceCurrentAccount>(filter);
+
+                // Decrypt Phase
+                if (GlobalFramework.PluginSoftwareVendor != null)
                 {
-                    item.UserName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.UserName);
+                    foreach (var item in gcCurrentAccount)
+                    {
+                        if (item.EntityName != null) item.EntityName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityName);
+                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                    }
                 }
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcCurrentAccount, "CurrentAccount");
+                if (customReport.GetDataSource("CurrentAccount") != null) customReport.GetDataSource("CurrentAccount").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
             }
         }
 
-        //Prepare and Enable DataSources
-        customReport.RegisterData(gcUserCommission, "UserCommission");
-        if (customReport.GetDataSource("UserCommission") != null) customReport.GetDataSource("UserCommission").Enabled = true;
+        public static void ProcessReportUserCommission(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
 
-        //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
-        customReport.Process(pViewMode);
-        customReport.Dispose();
-    }
-    catch (Exception ex)
-    {
-        _log.Error(ex.Message, ex);
-    }
-}
+                string reportFile = GetReportFilePath("ReportUserCommission.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", Resx.report_list_user_commission);
+                //customReport.SetParameterValue("Factura No", 280);
+
+                //Prepare and Declare FRBOGenericCollections
+                FRBOGenericCollection<FRBOUserCommission> gcUserCommission = new FRBOGenericCollection<FRBOUserCommission>(filter);
+
+                // Decrypt Phase
+                if (GlobalFramework.PluginSoftwareVendor != null && gcUserCommission != null)
+                {
+                    foreach (var item in gcUserCommission)
+                    {
+                        if (item.UserName != null)
+                        {
+                            item.UserName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.UserName);
+                        }
+                    }
+                }
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcUserCommission, "UserCommission");
+                if (customReport.GetDataSource("UserCommission") != null) customReport.GetDataSource("UserCommission").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
 
         public static void ProcessReportDocumentMasterList(CustomReportDisplayMode pViewMode, string resourceString, string groupCondition, string groupTitle)
         {

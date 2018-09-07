@@ -2016,9 +2016,6 @@
     <None Include="Resources\Reports\UserReports\ReportArticleStockMovementList.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\Reports\UserReports\ReportCurrentAccount.frx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Resources\Reports\UserReports\ReportCustomerList.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -2033,6 +2030,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinanceMasterList.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Reports\UserReports\ReportDocumentFinancePayment.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -2055,6 +2053,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx" />
     <None Include="Resources\Reports\UserReports\ReportUserCommission.frx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -1631,7 +1631,7 @@ Use um cliente válido e tente novamente.</value>
   <data name="global_print_copy_title4" xml:space="preserve">
     <value>Quadriplicado</value>
   </data>
-  <data name="global_current_acount" xml:space="preserve">
+  <data name="global_current_account" xml:space="preserve">
     <value>Conta Corrente</value>
   </data>
   <data name="window_title_dialog_notification" xml:space="preserve">
@@ -3185,15 +3185,24 @@ Quantidade válida: {1}</value>
     <value>Enviar Email</value>
   </data>
   <data name="report_list_current_account" xml:space="preserve">
-    <value>Contas Corrente</value>
+    <value>Conta Corrente</value>
   </data>
   <data name="report_list_user_commission" xml:space="preserve">
     <value>Comissões</value>
+  </data>
+  <data name="global_credit" xml:space="preserve">
+    <value>Crédito</value>
   </data>
   <data name="global_total_commission_day" xml:space="preserve">
     <value>Total comissão dia</value>
   </data>
   <data name="global_total_commission_user" xml:space="preserve">
     <value>Total comissão utilizador</value>
+  </data>
+  <data name="global_total_credit" xml:space="preserve">
+    <value>Total Crédito</value>
+  </data>
+  <data name="global_total_debit" xml:space="preserve">
+    <value>Total Débito</value>
   </data>
 </root>

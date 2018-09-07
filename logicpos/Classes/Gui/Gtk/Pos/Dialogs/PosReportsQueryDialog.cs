@@ -67,9 +67,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //pastMonths=0 to Work in Curent Month Range, pastMonths=1 Works in Past Month, pastMonths=2 Two months Ago etc
             int pastMonths = 0;
             DateTime workingDate = FrameworkUtils.CurrentDateTimeAtomic().AddMonths(-pastMonths);
+            DateTime firstDayOfYear = new DateTime(workingDate.Year, 1, 1);
             DateTime firstDayOfMonth = new DateTime(workingDate.Year, workingDate.Month, 1);
             DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
-            DateTime dateTimeStart = firstDayOfMonth;
+            DateTime dateTimeStart = firstDayOfYear;
             DateTime dateTimeEnd = lastDayOfMonth.AddHours(23).AddMinutes(59).AddSeconds(59);
 
             InitUI(pDialogFlags, dateTimeStart, dateTimeEnd);
@@ -198,19 +199,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _fieldsModeComponents[ReportsQueryDialogMode.SYSTEM_AUDIT].Add(typeof(SYS_UserDetail).Name, "usdOid");
                 _fieldsModeComponents[ReportsQueryDialogMode.SYSTEM_AUDIT].Add(typeof(POS_ConfigurationPlaceTerminal).Name, "cptOid");
 
-// CURRENT_ACCOUNT
-_fieldsModeComponents.Add(ReportsQueryDialogMode.CURRENT_ACCOUNT, new Dictionary<string, string>());
-//_fieldsModeComponents[ReportsQueryDialogMode.CURRENT_ACCOUNT].Add(typeof(DateTime).Name, "sauDate");
+                // CURRENT_ACCOUNT
+                _fieldsModeComponents.Add(ReportsQueryDialogMode.CURRENT_ACCOUNT, new Dictionary<string, string>());
+                _fieldsModeComponents[ReportsQueryDialogMode.CURRENT_ACCOUNT].Add(typeof(DateTime).Name, "Date");
+                _fieldsModeComponents[ReportsQueryDialogMode.CURRENT_ACCOUNT].Add(typeof(ERP_Customer).Name, "EntityOid");
 
-// USER_COMMISSION
-_fieldsModeComponents.Add(ReportsQueryDialogMode.USER_COMMISSION, new Dictionary<string, string>());
-_fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(DateTime).Name, "DateDay");
-_fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(SYS_UserDetail).Name, "UserOid");
-_fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(FIN_Article).Name, "ArticleOid");
+                // USER_COMMISSION
+                _fieldsModeComponents.Add(ReportsQueryDialogMode.USER_COMMISSION, new Dictionary<string, string>());
+                _fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(DateTime).Name, "DateDay");
+                _fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(SYS_UserDetail).Name, "UserOid");
+                _fieldsModeComponents[ReportsQueryDialogMode.USER_COMMISSION].Add(typeof(FIN_Article).Name, "ArticleOid");
 
                 // Create SelectionBox References / Fill Selection Boxs Dictionary to be used in Dynamic Dialog
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(FIN_DocumentFinanceType)))
                 {
+                    // Leave Indentation, this will be converted to inline
                     string extraFilter = $@" AND (
 Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR 
 Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 

@@ -2688,6 +2688,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit.
+        /// </summary>
+        public static string global_credit {
+            get {
+                return ResourceManager.GetString("global_credit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currency.
         /// </summary>
         public static string global_currency {
@@ -2708,9 +2717,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Current Account.
         /// </summary>
-        public static string global_current_acount {
+        public static string global_current_account {
             get {
-                return ResourceManager.GetString("global_current_acount", resourceCulture);
+                return ResourceManager.GetString("global_current_account", resourceCulture);
             }
         }
         
@@ -5478,6 +5487,24 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total Credit.
+        /// </summary>
+        public static string global_total_credit {
+            get {
+                return ResourceManager.GetString("global_total_credit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Debit.
+        /// </summary>
+        public static string global_total_debit {
+            get {
+                return ResourceManager.GetString("global_total_debit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total deliver.
         /// </summary>
         public static string global_total_deliver {
@@ -6423,7 +6450,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current account.
+        ///   Looks up a localized string similar to Current Account.
         /// </summary>
         public static string pos_button_label_payment_type_current_account {
             get {
