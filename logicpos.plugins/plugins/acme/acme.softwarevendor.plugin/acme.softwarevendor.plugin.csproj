@@ -130,9 +130,9 @@
     <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportUserCommission.frx">
       <Link>Resources\Reports\UserReports\ReportUserCommission.frx</Link>
     </EmbeddedResource>
-    <None Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx">
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx">
       <Link>Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx</Link>
-    </None>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
     <None Include="Properties\Settings.settings">

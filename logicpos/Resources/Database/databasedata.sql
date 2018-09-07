@@ -3,7 +3,7 @@
 -- Encrypted : Will be Updated by Vendor Plugin Script - Require to be Here, and updated After;
 INSERT INTO sys_userdetail (Oid, Name, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO erp_customer (Oid, Name, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
--- Non Encrypted
+-- Non Encrypted;
 INSERT INTO cfg_configurationcountry (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO cfg_configurationcurrency (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);
 INSERT INTO cfg_configurationunitmeasure (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '--- Indefinido ---', 1);

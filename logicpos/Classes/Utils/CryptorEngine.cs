@@ -98,7 +98,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                // If STOP Here in this BreakPoint, maybe you are working on Internal Solution with a Opensource ACME Plugin or ViceVersa
+                // If STOP Here in this BreakPoint, maybe you are working on Internal Solution with a Opensource ACME Plugin/Database or ViceVersa
                 log.Error(ex.Message, ex);
             }
 

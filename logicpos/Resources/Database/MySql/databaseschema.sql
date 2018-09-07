@@ -1687,6 +1687,7 @@ CREATE TABLE fin_documentfinancetype (
   ResourceStringReport varchar(100) DEFAULT NULL,
   Payed bit(1) DEFAULT NULL,
   Credit bit(1) DEFAULT NULL,
+  CreditDebit int(11) DEFAULT NULL,
   PrintCopies int(11) DEFAULT NULL,
   PrintRequestMotive bit(1) DEFAULT NULL,
   PrintRequestConfirmation bit(1) DEFAULT NULL,
