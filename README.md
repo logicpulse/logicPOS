@@ -25,6 +25,9 @@ Open source Point of Sale Solution
 	- **xpo_14_1_5** _(Xpo Dll Reference)_
 - **logicpos** _(LogicPos Main Application)_
 - **logicpos.datalayer** _(DataLayer Project)_
+- **logicpos.documentviewer** _(Document Viewer Project)_
+	- **logicpos.documentviewer** _(Document Viewer Window Project )_
+	- **logicpos.documentviewer.source** _(Document Viewer Library Project )_
 - **logicpos.financial** _(Financial Projects)_
 	- **logicpos.financial.console** _(Console Test Financial Project )_
 	- **logicpos.financial.library** _(Financial Library Project )_
@@ -39,6 +42,7 @@ Open source Point of Sale Solution
 - **logicpos.plugins** _(Plugins Projects and Plugin Implementations)_
 	- **logicpos.plugin.contracts** _(Plugin Contracts/Interfaces)_
 	- **logicpos.plugin.library** _(Plugin Main Library)_
+	- **Medsphere.Widgets** _(Draw Graphics Plugin)_
 	- **plugins** _(Plugin Implementations)_
 		- **acme** _(Sample Plugins)_
 			- **acme.softwarevendor.plugin** _(Sample Plugin SoftwareVendor Implementation)_
