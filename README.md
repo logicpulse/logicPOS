@@ -15,7 +15,7 @@ Open source Point of Sale Solution
 
 ## Tools/Ides
 
-- Visual Studio 2017 Community
+- Visual Studio 2019 Community
 
 ## Directory Structure
 
