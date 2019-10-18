@@ -36,6 +36,15 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
         public decimal ArticleTotalFinal { get; set; }
         public int GroupCount { get; set; }
 
+        /* IN009072 - begin */
+        //[FRBO(Field = "fmEntityFiscalNumber")]                        //fmEntityFiscalNumber AS EntityFiscalNumber,
+        public string EntityFiscalNumber { get; set; }
+        //[FRBO(Field = "ftDocumentTypeAcronym")]                       //ftDocumentTypeAcronym AS DocumentTypeAcronym
+        public string DocumentTypeAcronym { get; set; }
+        //[FRBO(Field = "ftOid")]                                       //ftOid AS DocumentType
+        public string DocumentType { get; set; }
+        /* IN009072 - end */
+
         /* Old MySQL Implementation / Before Change code to Work With SqlServer
 
         // DocumentFinanceType

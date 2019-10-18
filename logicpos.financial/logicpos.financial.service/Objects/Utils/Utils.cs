@@ -8,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Text;
 using System.Xml.Linq;
+using System.Security;
 
 namespace logicpos.financial.service.Objects
 {
@@ -70,10 +71,15 @@ namespace logicpos.financial.service.Objects
             if (!pWayBillMode)
             {
                 //Includes FR SAF-T v1.03
-                where += @"(
+                where += @" (
                     ((ft.Acronym = 'FT' AND ft.WayBill <> 1) OR ft.Acronym = 'FS' OR ft.Acronym = 'NC' OR ft.Acronym = 'ND' OR ft.Acronym = 'FR') 
-                    AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'A')
+                    AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'A') 
+                    AND ((SELECT COUNT(*) FROM sys_systemauditat WHERE DocumentMaster = fm.Oid AND ReturnCode = '0') = 0 ) 
                 )";
+                /* IN009083 - Premisses:
+                 * - we do not cancel financial documents already received by AT, therefore, do not resend them (COUNT statement)
+                 * - "fm.ATResendDocument = 1" is not settled to ft.WayBill <> 1 (non-WayBill documents)
+                 */
             }
             //TransportDocuments/WayBill
             //
@@ -108,7 +114,7 @@ namespace logicpos.financial.service.Objects
             //Não. Estão excluídos das obrigações de comunicação os documentos de transporte em que o destinatário ou adquirente seja consumidor final.
             else
             {
-                where += string.Format(@"(
+                where += string.Format(@" (
                     (ft.Acronym = 'GR' OR ft.Acronym = 'GT' OR ft.Acronym = 'GA' OR ft.Acronym = 'GC' OR ft.Acronym = 'GD')
                     AND (fm.DocumentStatusStatus = 'N' OR fm.DocumentStatusStatus = 'T' OR fm.DocumentStatusStatus = 'A')
                     AND (fm.ShipToCountry = 'PT' AND fm.ShipFromCountry = 'PT')
@@ -193,7 +199,7 @@ namespace logicpos.financial.service.Objects
         /// </summary>
         /// <param name="DocumentNumber"></param>
         /// <returns></returns>
-        public static string IncreaseDocumentNumber(FIN_DocumentFinanceMaster pDocumentMaster)
+        public static string IncreaseDocumentNumber(fin_documentfinancemaster pDocumentMaster)
         {
             string result = string.Empty;
 
@@ -221,8 +227,10 @@ namespace logicpos.financial.service.Objects
         /// </summary>
         /// <param name="DocumentMaster"></param>
         /// <returns></returns>
-        public static string GetDocumentContentLinesAndDocumentTotals(FIN_DocumentFinanceMaster pDocumentMaster)
+        public static string GetDocumentContentLinesAndDocumentTotals(fin_documentfinancemaster pDocumentMaster)
         {
+            _log.Debug($"string GetDocumentContentLinesAndDocumentTotals(fin_documentfinancemaster pDocumentMaster) :: {pDocumentMaster.DocumentNumber}");
+
             //Init Locals Vars
             string result = string.Empty;
             decimal taxPayable = 0.0m;
@@ -323,8 +331,18 @@ namespace logicpos.financial.service.Objects
         /// </summary>
         /// <param name="DocumentMaster"></param>
         /// <returns></returns>
-        public static string GetDocumentWayBillContentLines(FIN_DocumentFinanceMaster pDocumentMaster)
+        public static string GetDocumentWayBillContentLines(fin_documentfinancemaster pDocumentMaster)
         {
+            /* IN007016 - escaping the following list of chars using "System.Security.SecurityElement.Escape()" method:
+             * 
+             *      "   &quot;
+             *      '   &apos;
+             *      <   &lt;
+             *      >   &gt;
+             *      &   &amp;
+             */
+            _log.Debug($"string GetDocumentWayBillContentLines(fin_documentfinancemaster pDocumentMaster) :: {pDocumentMaster.DocumentNumber}");
+
             //Init Locals Vars
             string result = string.Empty;
 
@@ -366,7 +384,7 @@ namespace logicpos.financial.service.Objects
     </Line>
 "
                         , orderReferences
-                        , item["ProductDescription"]
+                        , SecurityElement.Escape(item["ProductDescription"].ToString())
                         , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]), GlobalFramework.CurrentCultureNumberFormat)
                         , item["UnitOfMeasure"]
                         , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]), GlobalFramework.CurrentCultureNumberFormat)
@@ -412,13 +430,15 @@ namespace logicpos.financial.service.Objects
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Timer Service 
 
-        public static Dictionary<FIN_DocumentFinanceMaster, ServicesATSoapResult> ServiceSendPendentDocuments()
+        public static Dictionary<fin_documentfinancemaster, ServicesATSoapResult> ServiceSendPendentDocuments()
         {
-            Dictionary<FIN_DocumentFinanceMaster, ServicesATSoapResult> result = new Dictionary<FIN_DocumentFinanceMaster, ServicesATSoapResult>();
+            _log.Debug("Dictionary<fin_documentfinancemaster, ServicesATSoapResult> Utils.ServiceSendPendentDocuments()");
+            Dictionary<fin_documentfinancemaster, ServicesATSoapResult> result = new Dictionary<fin_documentfinancemaster, ServicesATSoapResult>();
             Guid key = Guid.Empty;
-            FIN_DocumentFinanceMaster documentMaster = null;
+            fin_documentfinancemaster documentMaster = null;
             ServicesATSoapResult soapResult = new ServicesATSoapResult();
 
+            /* IN009083 - #TODO apply same validation for when sending documents to AT */
             try
             {
                 //Invoice Documents
@@ -431,7 +451,7 @@ namespace logicpos.financial.service.Objects
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        documentMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), key);
+                        documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
                         
@@ -457,7 +477,7 @@ namespace logicpos.financial.service.Objects
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        documentMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), key);
+                        documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
                         result.Add(documentMaster, soapResult);
@@ -476,7 +496,7 @@ namespace logicpos.financial.service.Objects
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Send Document : Used from Tests and From Timer Service
 
-        public static ServicesATSoapResult SendDocument(FIN_DocumentFinanceMaster documentMaster)
+        public static ServicesATSoapResult SendDocument(fin_documentfinancemaster documentMaster)
         {
             //Send Document
             ServicesAT sendDocument = new ServicesAT(documentMaster);

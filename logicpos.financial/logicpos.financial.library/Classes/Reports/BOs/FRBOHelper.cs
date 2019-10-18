@@ -67,10 +67,15 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
             try
             {
-                FIN_DocumentFinanceMaster documentFinanceMaster = (FIN_DocumentFinanceMaster)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_DocumentFinanceMaster), pDocumentFinanceMasterOid);
+                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
 
                 bool retificationDocuments = (
                      documentFinanceMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote
+                );
+                /* IN009173 */
+                bool isTransportDocument = (
+                    documentFinanceMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    documentFinanceMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote
                 );
 
                 string sqlFilter = string.Format("fmOid = '{0}'", documentFinanceMaster.Oid.ToString());
@@ -79,53 +84,81 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 FRBOGenericCollection<FRBODocumentFinanceMasterView> gcDocumentFinanceMaster = new FRBOGenericCollection<FRBODocumentFinanceMasterView>(sqlFilter, 1);
                 FRBOGenericCollection<FRBODocumentFinanceDetail> gcDocumentFinanceDetail;
                 FRBOGenericCollection<FRBODocumentFinanceMasterTotalView> gcDocumentFinanceMasterTotal;
+                /* IN005986 - code refactoring */
+                FRBODocumentFinanceMasterView documentFinanceMasterView = gcDocumentFinanceMaster.List[0];
+
+                /* IN009075 - for decrypt phase */
+                bool customerDataHasBeenCleaned = false;
 
                 //Override Default Values
-
                 //If Simplified Invoice - Remove Customer Details (If System Country Equal to PT)
-                if (
-                    (
-                        SettingsApp.XpoOidConfigurationCountryPortugal == SettingsApp.ConfigurationSystemCountry.Oid &&
-                        new Guid(gcDocumentFinanceMaster.List[0].DocumentType) == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice
-                    )
-                    //Added
-                    || FrameworkUtils.GetFinalConsumerEntity().Oid.ToString() == gcDocumentFinanceMaster.List[0].EntityOid
-                    //Removed This Way we only clean Entity data if is a SimplifiedInvoice, to protect Hidden Entitys with FinanceFinalConsumerFiscalNumber 
-                    //|| (
-                    //    gcDocumentFinanceMaster.List[0].EntityFiscalNumber == SettingsApp.FinanceFinalConsumerFiscalNumber 
-                    //)
-                )
+                if (SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryPortugal)
+                    || SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryMozambique) /* IN005986 */
+                    || SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryAngola)) /* IN009230 - Angola is now added to this rule */
                 {
-                    gcDocumentFinanceMaster.List[0].EntityName = string.Empty;
-                    gcDocumentFinanceMaster.List[0].EntityAddress = string.Empty;
-                    gcDocumentFinanceMaster.List[0].EntityZipCode = string.Empty;
-                    gcDocumentFinanceMaster.List[0].EntityCity = string.Empty;
-                    gcDocumentFinanceMaster.List[0].EntityCountry = string.Empty;
+                    /* IN009230 - now, only when Final Customer we have data cleaned */
+                    //if (SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice.Equals(new Guid(documentFinanceMasterView.DocumentType)) 
+                    //    || FrameworkUtils.GetFinalConsumerEntity().Oid.ToString() == documentFinanceMasterView.EntityOid) //Added
+                    if (FrameworkUtils.GetFinalConsumerEntity().Oid.ToString() == documentFinanceMasterView.EntityOid) //Added
+                    {
+                        documentFinanceMasterView.EntityName = string.Empty;
+                        documentFinanceMasterView.EntityAddress = string.Empty;
+                        documentFinanceMasterView.EntityZipCode = string.Empty;
+                        documentFinanceMasterView.EntityCity = string.Empty;
+                        documentFinanceMasterView.EntityCountry = string.Empty;
+                        /* IN009230 */
+                        documentFinanceMasterView.EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
+
+                        customerDataHasBeenCleaned = true;
+                    }
+                    /* IN009230 - "If" content removed from here to the just before block of code */
+                    //Detect if is FinalConsumer with FiscalNumber 999999990 and Hide it
+                    //erp_customer customer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                    //if (documentFinanceMasterView.EntityFiscalNumber == customer.FiscalNumber)
+                    //{
+                    //    documentFinanceMasterView.EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
+                    //}
                 }
 
-                //Detect if is FinalConsumer with FiscalNumber 999999990 and Hide it
-                ERP_Customer customer = (ERP_Customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(ERP_Customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
-                if (gcDocumentFinanceMaster.List[0].EntityFiscalNumber == customer.FiscalNumber)
+                /* IN009075 - decrypt phase */
+                if (!customerDataHasBeenCleaned)
                 {
-                    gcDocumentFinanceMaster.List[0].EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
+                    documentFinanceMasterView.EntityName = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityName);
+                    documentFinanceMasterView.EntityAddress = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityAddress);
+                    documentFinanceMasterView.EntityZipCode = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityZipCode);
+                    documentFinanceMasterView.EntityCity = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCity);
+                    // documentFinanceMasterView.EntityCountry = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCountry);
+                    // EntityLocality???
+                    /* IN009230 */
+                    documentFinanceMasterView.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityFiscalNumber);
                 }
 
-                //Detect if is Retification Document (ND/NC) and add SourceDocument to Show on Notes
-                if (! string.IsNullOrEmpty(gcDocumentFinanceMaster.List[0].ATDocCodeID))
+                /* IN009173 - add Parent document number to Notes field */
+                if (isTransportDocument && documentFinanceMaster.DocumentParent != null)
                 {
-                    string notes = string.Format("{0} : {1}", Resx.global_at_atdoccodeid, gcDocumentFinanceMaster.List[0].ATDocCodeID);
-                    if (! string.IsNullOrEmpty(gcDocumentFinanceMaster.List[0].Notes)) notes += " | "/*Environment.NewLine*/;
-                    notes += gcDocumentFinanceMaster.List[0].Notes;
-                    gcDocumentFinanceMaster.List[0].Notes = notes;
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    if (!string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += " | ";
+                    notes += documentFinanceMasterView.Notes;
+                    documentFinanceMasterView.Notes = notes;
+                }
+
+                /* Add ATDocCodeID to Notes field */
+                if (!string.IsNullOrEmpty(documentFinanceMasterView.ATDocCodeID))
+                {
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_at_atdoccodeid"), documentFinanceMasterView.ATDocCodeID);
+                    if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += " | "/*Environment.NewLine*/;
+                    notes += documentFinanceMasterView.Notes;
+                    documentFinanceMasterView.Notes = notes;
                 }
 
                 //Detect if is Retification Document (ND/NC) and add SourceDocument to Show on Notes
                 if (retificationDocuments)
                 {
-                    string notes = string.Format("{0} : {1}", Resx.global_source_document, documentFinanceMaster.DocumentParent.DocumentNumber);
-                    if (! string.IsNullOrEmpty(gcDocumentFinanceMaster.List[0].Notes)) notes += " | "/*Environment.NewLine*/;
-                    notes += gcDocumentFinanceMaster.List[0].Notes;
-                    gcDocumentFinanceMaster.List[0].Notes = notes;
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    /* IN009252 - "Reason" added to "fin_documentfinancemaster.Notes" */
+                    if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += Environment.NewLine; /* " | " */
+                    notes += String.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reason"), documentFinanceMasterView.Notes);
+                    documentFinanceMasterView.Notes = notes;
                 }
 
                 //Render Child Bussiness Objects
@@ -161,7 +194,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
             try
             {
-                FIN_DocumentFinancePayment documentFinancePayment = (FIN_DocumentFinancePayment)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_DocumentFinancePayment), pDocumentFinancePaymentOid);
+                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancepayment), pDocumentFinancePaymentOid);
 
                 string sqlFilter = string.Format("fpaOid = '{0}'", pDocumentFinancePaymentOid.ToString());
 
@@ -170,11 +203,16 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 FRBOGenericCollection<FRBODocumentFinancePaymentDocumentView> gcDocumentFinancePaymentDocument;
 
                 //Decrypt Values
-                gcDocumentFinancePayment.List[0].EntityName = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityName).ToString();
-                gcDocumentFinancePayment.List[0].EntityAddress = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityAddress).ToString();
-                gcDocumentFinancePayment.List[0].EntityZipCode = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityZipCode).ToString();
-                gcDocumentFinancePayment.List[0].EntityCity = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityCity).ToString();
-                gcDocumentFinancePayment.List[0].EntityFiscalNumber = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityFiscalNumber).ToString();
+                if (! string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityName)) 
+                    gcDocumentFinancePayment.List[0].EntityName = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityName).ToString();
+                if (! string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityAddress)) 
+                    gcDocumentFinancePayment.List[0].EntityAddress = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityAddress).ToString();
+                if (! string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityZipCode)) 
+                    gcDocumentFinancePayment.List[0].EntityZipCode = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityZipCode).ToString();
+                if (! string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityCity)) 
+                    gcDocumentFinancePayment.List[0].EntityCity = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityCity).ToString();
+                if (! string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityFiscalNumber)) 
+                    gcDocumentFinancePayment.List[0].EntityFiscalNumber = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityFiscalNumber).ToString();
 
                 //If FinalConsumer - Clean Output Data
                 if (gcDocumentFinancePayment.List[0].EntityFiscalNumber == SettingsApp.FinanceFinalConsumerFiscalNumber)

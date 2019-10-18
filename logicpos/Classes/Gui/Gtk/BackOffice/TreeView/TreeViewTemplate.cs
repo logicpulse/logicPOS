@@ -35,9 +35,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = Resx.global_record_disabled });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_disabled });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

@@ -53,11 +53,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             String windowTitle;
             if (pTotalOrder > 0)
             {
-                windowTitle = string.Format("{0} - {1} : {2}", Resx.window_title_dialog_moneypad, Resx.global_total_table_tickets, FrameworkUtils.DecimalToStringCurrency(pTotalOrder));
+                windowTitle = string.Format("{0} - {1} : {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_table_tickets"), FrameworkUtils.DecimalToStringCurrency(pTotalOrder));
             }
             else
             {
-                windowTitle = Resx.window_title_dialog_moneypad;
+                windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad");
             }
 
             this.InitObject(pSourceWindow, pDialogFlags, windowTitle, pInitialValue, pTotalOrder);

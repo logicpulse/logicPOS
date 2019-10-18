@@ -138,11 +138,11 @@
 				<ButtonFavorites>
 					<Position>Eval[Size(posMainWindowButtonFavoritesPosition.X, posMainWindowButtonFavoritesPosition.Y)]</Position>
 					<ButtonSize>Eval[Size(posMainWindowBaseButtonSize.Width, posMainWindowBaseButtonSize.Height)]</ButtonSize>
-					<ImageFileName></ImageFileName>
+					<ImageFileName>Assets/Images/Buttons/Pos/button_favorites.png</ImageFileName>
 					<Text>Resx[global_favorites]</Text>
 					<!--<Text>Eval[]</Text>-->
 					<FontSize>Cfg[fontPosBaseButtonSize]</FontSize>
-					<UseImageOverlay>Cfg[useImageOverlay]</UseImageOverlay>
+					<UseImageOverlay>false</UseImageOverlay>
 					<Visible>true</Visible>
 				</ButtonFavorites>
 				<!-- TablePadFamily -->
@@ -368,6 +368,15 @@
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_barcode.png</ImageFileName>
 							<Visible>true</Visible>
 						</ButtonBarCode>
+			            <!-- ButtonCardCode -->
+			            <ButtonCardCode>
+			              <Name>touchButtonPosTicketPadCardCode</Name>
+			              <Text>Resx[global_cardcode_small]</Text>
+			              <Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+			              <Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+			              <ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_card_entry.png</ImageFileName>
+			              <Visible>true</Visible>
+			            </ButtonCardCode>
 						<!-- Column2 : ButtonIncrease -->
 						<ButtonIncrease>
 							<Name>touchButtonPosTicketPadIncrease</Name>

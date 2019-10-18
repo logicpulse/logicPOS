@@ -9,10 +9,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
     }
 
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceMasterTotal : XPGuidObject
+    public class fin_documentfinancemastertotal : XPGuidObject
     {
-        public FIN_DocumentFinanceMasterTotal() : base() { }
-        public FIN_DocumentFinanceMasterTotal(Session session) : base(session) { }
+        public fin_documentfinancemastertotal() : base() { }
+        public fin_documentfinancemastertotal(Session session) : base(session) { }
 
         Decimal fValue;
         public Decimal Value
@@ -43,12 +43,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many DocumentFinanceMasterTotal
-        FIN_DocumentFinanceMaster fDocumentMaster;
+        fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesDocumentFinanceMasterTotal")]
-        public FIN_DocumentFinanceMaster DocumentMaster
+        public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
         }
     }
 }

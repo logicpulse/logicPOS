@@ -35,16 +35,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool result = ProcessWorkSessionPeriod.SessionPeriodClose(GlobalFramework.WorkSessionPeriodDay);
                 if (result)
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = Resx.global_worksession_open_day;
+                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_open_day");
                     _touchButtonCashDrawer.Sensitive = false;
+
+                    //Show ClosePeriodMessage
+                    ShowClosePeriodMessage(this, GlobalFramework.WorkSessionPeriodDay); /* IN009054 -  WorkSessionPeriodDay: NullReferenceException when closing day on non-licensed app */
 
                     //PrintWorkSessionMovement Day
                     //PrintRouter.PrintWorkSessionMovement(GlobalFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
                     //PrintRouter.PrintWorkSessionMovement(GlobalFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
-                    FrameworkCalls.PrintWorkSessionMovement(this, GlobalFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
+                    ResponseType pResponse = Utils.ShowMessageTouch(
+                      this, DialogFlags.Modal, new Size(500, 350), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_print"),
+                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation"));
 
-                    //Show ClosePeriodMessage
-                    ShowClosePeriodMessage(this, GlobalFramework.WorkSessionPeriodDay);
+                    if (pResponse == ResponseType.Yes)
+                    {
+                        FrameworkCalls.PrintWorkSessionMovement(this, GlobalFramework.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodTerminal);
+                    }
+                    //FrameworkCalls.PrintWorkSessionMovement(this, GlobalFramework.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodDay);
                 }
             }
             //Start WorkSessionPeriodDay
@@ -53,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool result = ProcessWorkSessionPeriod.SessionPeriodOpen(WorkSessionPeriodType.Day);
                 if (result)
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = Resx.global_worksession_close_day;
+                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_close_day");
                     _touchButtonCashDrawer.Sensitive = true;
                 }
             }
@@ -67,12 +75,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (noOfOpenOrderTables > 0)
             {
                 string openOrderTables = string.Empty;
-                POS_ConfigurationPlaceTable currentOpenOrderTable;
+                pos_configurationplacetable currentOpenOrderTable;
                 Guid tableOid = Guid.Empty;
                 foreach (SelectStatementResultRow row in xPSelectDataTables.Data)
                 {
                     tableOid = new Guid(row.Values[xPSelectDataTables.GetFieldIndex("PlaceTable")].ToString());
-                    currentOpenOrderTable = GlobalFramework.SessionXpo.GetObjectByKey<POS_ConfigurationPlaceTable>(tableOid);
+                    currentOpenOrderTable = GlobalFramework.SessionXpo.GetObjectByKey<pos_configurationplacetable>(tableOid);
                     openOrderTables += string.Format("{0}{1}", currentOpenOrderTable.Designation, " ");
                 }
 
@@ -82,8 +90,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   new Size(620, 300),
                   MessageType.Error,
                   ButtonsType.Close,
-                  Resx.global_error,
-                  string.Format(Resx.dialog_message_worksession_period_warning_open_orders_tables, noOfOpenOrderTables, string.Format("{0}{1}", Environment.NewLine, openOrderTables))
+                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                  string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_worksession_period_warning_open_orders_tables"), noOfOpenOrderTables, string.Format("{0}{1}", Environment.NewLine, openOrderTables))
                 );
 
                 //Exit Event Button Without Close Cash Drwawer
@@ -96,12 +104,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (noOfTerminalOpenSessions > 0)
             {
                 string openTerminals = string.Empty;
-                POS_ConfigurationPlaceTerminal currentOpenSessionTerminal;
+                pos_configurationplaceterminal currentOpenSessionTerminal;
                 Guid terminalOid = Guid.Empty;
                 foreach (SelectStatementResultRow row in xPSelectDataTerminals.Data)
                 {
                     terminalOid = new Guid(row.Values[xPSelectDataTerminals.GetFieldIndex("Terminal")].ToString());
-                    currentOpenSessionTerminal = GlobalFramework.SessionXpo.GetObjectByKey<POS_ConfigurationPlaceTerminal>(terminalOid);
+                    currentOpenSessionTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_configurationplaceterminal>(terminalOid);
                     openTerminals += string.Format("{0}{1} - {2}", Environment.NewLine, currentOpenSessionTerminal.Designation, row.Values[xPSelectDataTerminals.GetFieldIndex("Designation")].ToString());
                 }
 
@@ -110,17 +118,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 //    this,
 //    DialogFlags.DestroyWithParent,
 //    new Size(600, 300),
-//    string.Format(Resx.dialog_message_worksession_period_warning_open_terminals, noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals)),
+//    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_worksession_period_warning_open_terminals, noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals)),
 //    MessageType.Warning,
 //    ResponseType.Ok,
-//    Resx.global_button_label_ok
+//    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok
 //);
 
 //int messageDialogResponse = messageDialog.Run();
 //messageDialog.Destroy();
 
-                ResponseType responseType = Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 400), MessageType.Question, ButtonsType.YesNo, Resx.global_information,
-                    string.Format(Resx.dialog_message_worksession_period_warning_open_terminals, noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals))
+                ResponseType responseType = Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 400), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_worksession_period_warning_open_terminals"), noOfTerminalOpenSessions, string.Format("{0}{1}", Environment.NewLine, openTerminals))
                 );
 
                 if (responseType == ResponseType.Yes) {
@@ -149,8 +157,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (response == (int)ResponseType.Ok)
             {
                 //Get Fresh XPO Objects, Prevent Deleted Object Bug
-                POS_WorkSessionPeriod workSessionPeriodDay = GlobalFramework.SessionXpo.GetObjectByKey<POS_WorkSessionPeriod>(GlobalFramework.WorkSessionPeriodDay.Oid);
-                POS_WorkSessionPeriod workSessionPeriodTerminal;
+                pos_worksessionperiod workSessionPeriodDay = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
+                pos_worksessionperiod workSessionPeriodTerminal;
 
                 switch (dialogCashDrawer.MovementType.Token)
                 {
@@ -167,7 +175,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             //Here we already have GlobalFramework.WorkSessionPeriodTerminal, assigned on ProcessWorkSessionPeriod.SessionPeriodStart
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
-                            workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<POS_WorkSessionPeriod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
 
                             result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
@@ -183,16 +191,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //PrintWorkSessionMovement
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, Resx.ticket_title_worksession_terminal_open, 0.0m, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_terminal_open"), 0.0m, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
 
                             //Enable UI Buttons When Have Open Session
                             GlobalApp.WindowPos.TouchButtonPosToolbarNewFinanceDocument.Sensitive = true;
                             //Open CashDrawer
-                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 280), MessageType.Info, ButtonsType.Close, Resx.global_information, Resx.dialog_message_cashdrawer_open_successfully);
+                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 280), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_open_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.app_error_contact_support);
+                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_contact_support"));
                         }
                         break;
 
@@ -205,10 +213,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         {
                             //Update UI
                             GlobalApp.WindowPos.UpdateWorkSessionUI();
-                            GlobalApp.WindowPos.LabelCurrentTable.Text = Resx.status_message_open_cashdrawer;
+                            GlobalApp.WindowPos.LabelCurrentTable.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "status_message_open_cashdrawer");
 
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
-                            workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<POS_WorkSessionPeriod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
+                            workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
 
                             //Add CASHDRAWER_CLOSE Movement to Day Period
                             result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
@@ -235,7 +243,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         dialogCashDrawer.TotalAmountInCashDrawer += dialogCashDrawer.MovementAmountMoney;
 
-                        workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<POS_WorkSessionPeriod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
+                        workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
 
                         result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                           workSessionPeriodTerminal,
@@ -250,22 +258,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //PrintCashDrawerOpenAndMoneyInOut
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, Resx.ticket_title_worksession_money_in, dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_money_in"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
                             //Open CashDrawer
                             PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
                             //Audit
                             FrameworkUtils.Audit("CASHDRAWER_IN", string.Format(
-                                Resx.audit_message_cashdrawer_in, 
+                                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_in"), 
                                 FrameworkUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney), 
                                 dialogCashDrawer.MovementDescription)
                             );
 
                             //ShowMessage
-                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, Resx.global_information, Resx.dialog_message_operation_successfully);
+                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.app_error_contact_support);
+                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_contact_support"));
                         }
                         break;
 
@@ -274,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         dialogCashDrawer.TotalAmountInCashDrawer -= dialogCashDrawer.MovementAmountMoney;
 
-                        workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<POS_WorkSessionPeriod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
+                        workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
 
                         //In Period Terminal
                         result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
@@ -290,21 +298,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //PrintCashDrawerOpenAndMoneyInOut
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, Resx.ticket_title_worksession_money_out, dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_money_out"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
                             //Open CashDrawer
                             PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
                             //Audit
                             FrameworkUtils.Audit("CASHDRAWER_OUT", string.Format(
-                                Resx.audit_message_cashdrawer_out, 
+                                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"), 
                                 FrameworkUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney), 
                                 dialogCashDrawer.MovementDescription)
                             );
                             //ShowMessage
-                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, Resx.global_information, Resx.dialog_message_operation_successfully);
+                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.app_error_contact_support);
+                            Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_contact_support"));
                         }
 
                         break;
@@ -335,9 +343,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //With Valid WorkSessionPeriodDay
                 if (GlobalFramework.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
-                    if (_touchButtonStartStopWorkSessionPeriodDay.LabelText != Resx.global_worksession_close_day)
+                    if (_touchButtonStartStopWorkSessionPeriodDay.LabelText != resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_close_day"))
                     {
-                        _touchButtonStartStopWorkSessionPeriodDay.LabelText = Resx.global_worksession_close_day;
+                        _touchButtonStartStopWorkSessionPeriodDay.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_close_day");
                     }
 
                     if (!_touchButtonCashDrawer.Sensitive == true)
@@ -351,9 +359,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //No WorkSessionPeriodDay
             else
             {
-                if (_touchButtonStartStopWorkSessionPeriodDay.LabelText != Resx.global_worksession_open_day)
+                if (_touchButtonStartStopWorkSessionPeriodDay.LabelText != resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_open_day"))
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = Resx.global_worksession_open_day;
+                    _touchButtonStartStopWorkSessionPeriodDay.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_open_day");
                 }
                 _touchButtonCashDrawer.Sensitive = false;
             }
@@ -364,11 +372,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         /// </summary>
         /// <param name="pWorkSessionPeriod"></param>
         /// <returns></returns>
-        public void ShowClosePeriodMessage(Window pSourceWindow, POS_WorkSessionPeriod pWorkSessionPeriod)
+        public void ShowClosePeriodMessage(Window pSourceWindow, pos_worksessionperiod pWorkSessionPeriod)
         {
             string messageResource = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day) ?
-              Resx.dialog_message_worksession_day_close_successfully :
-              Resx.dialog_message_worksession_terminal_close_successfully
+              resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_worksession_day_close_successfully") :
+              resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_worksession_terminal_close_successfully")
             ;
             string messageTotalSummary = string.Empty;
             //used to store number of payments used, to increase dialog window size
@@ -380,11 +388,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Get Session Period Details
             Hashtable resultHashTable = ProcessWorkSessionPeriod.GetSessionPeriodSummaryDetails(pWorkSessionPeriod);
             //Get Total Money in CashDrawer On Open/Close
-            string totalMoneyInCashDrawerOnOpen = string.Format("{0}: {1}", Resx.global_total_cashdrawer_on_open, FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"]));
-            string totalMoneyInCashDrawer = string.Format("{0}: {1}", Resx.global_total_cashdrawer, FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawer"]));
+            string totalMoneyInCashDrawerOnOpen = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_cashdrawer_on_open"), FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"]));
+            string totalMoneyInCashDrawer = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_cashdrawer"), FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawer"]));
             //Get Total Money and TotalMoney Out (NonPayments)
-            string totalMoneyIn = string.Format("{0}: {1}", Resx.global_cashdrawer_money_in, FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyIn"]));
-            string totalMoneyOut = string.Format("{0}: {1}", Resx.global_cashdrawer_money_out, FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyOut"]));
+            string totalMoneyIn = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cashdrawer_money_in"), FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyIn"]));
+            string totalMoneyOut = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cashdrawer_money_out"), FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyOut"]));
             //Init Message
             messageTotalSummary = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}", Environment.NewLine, totalMoneyInCashDrawerOnOpen, totalMoneyInCashDrawer, totalMoneyIn, totalMoneyOut);
 
@@ -394,8 +402,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 XPCollection workSessionPeriodTotal = ProcessWorkSessionPeriod.GetSessionPeriodTotal(pWorkSessionPeriod);
                 if (workSessionPeriodTotal.Count > 0)
                 {
-                    messageTotalSummary += string.Format("{0}{1}{0}", Environment.NewLine, Resx.global_total_by_type_of_payment);
-                    foreach (POS_WorkSessionPeriodTotal item in workSessionPeriodTotal)
+                    messageTotalSummary += string.Format("{0}{1}{0}", Environment.NewLine, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_by_type_of_payment"));
+                    foreach (pos_worksessionperiodtotal item in workSessionPeriodTotal)
                     {
                         messageTotalSummary += string.Format("{1}-{2}: {3}{0}", Environment.NewLine, item.PaymentMethod.Acronym, item.PaymentMethod.Designation, FrameworkUtils.DecimalToStringCurrency(item.Total));
                     }

@@ -14,7 +14,10 @@ SELECT
     DocumentStatus, 
     CreditDebit, 
     Credit, 
-    Debit
+    Debit,
+    PaymentDocumentNumber,
+    PaymentDate,
+    IsPayed
 FROM 
     view_documentfinancecurrentaccount
 ;
@@ -44,5 +47,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Customers
         public string DocumentStatus { get; set; }
         public decimal Credit { get; set; }
         public decimal Debit { get; set; }
+
+        /* IN005997 and IN005998 */
+        public string PaymentDocumentNumber { get; set; }
+        public string PaymentDate { get; set; }
+        public bool IsPayed { get; set; }
     }
 }

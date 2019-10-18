@@ -6,19 +6,19 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceYears : XPGuidObject
+    public class fin_documentfinanceyears : XPGuidObject
     {
-        public FIN_DocumentFinanceYears() : base() { }
-        public FIN_DocumentFinanceYears(Session pSession) : base(pSession) { }
+        public fin_documentfinanceyears() : base() { }
+        public fin_documentfinanceyears(Session pSession) : base(pSession) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceYears), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceYears), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Code");
             int currentYear = FrameworkUtils.CurrentDateTimeAtomic().Year;
             FiscalYear = currentYear;
             Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code/10);
-            Designation = string.Format("{0} {1} {2}{3}", Resx.global_fiscal_year, FiscalYear, "A", Code/10);
+            Designation = string.Format("{0} {1} {2}{3}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), FiscalYear, "A", Code/10);
         }
 
         UInt32 fOrd;
@@ -69,17 +69,17 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlaceTerminal  One <> Many DocumentFinanceYearSerieTerminal
-        [Association(@"DocumentFinanceYearsReferencesDocumentFinanceYearSerieTerminal", typeof(FIN_DocumentFinanceYearSerieTerminal))]
-        public XPCollection<FIN_DocumentFinanceYearSerieTerminal> YearSerieTerminal
+        [Association(@"DocumentFinanceYearsReferencesDocumentFinanceYearSerieTerminal", typeof(fin_documentfinanceyearserieterminal))]
+        public XPCollection<fin_documentfinanceyearserieterminal> YearSerieTerminal
         {
-            get { return GetCollection<FIN_DocumentFinanceYearSerieTerminal>("YearSerieTerminal"); }
+            get { return GetCollection<fin_documentfinanceyearserieterminal>("YearSerieTerminal"); }
         }
 
         //DocumentFinanceYears  One <> Many DocumentFinanceSeries
-        [Association(@"DocumentFinanceYearsReferencesDocumentFinanceSeries", typeof(FIN_DocumentFinanceSeries))]
-        public XPCollection<FIN_DocumentFinanceSeries> Series
+        [Association(@"DocumentFinanceYearsReferencesDocumentFinanceSeries", typeof(fin_documentfinanceseries))]
+        public XPCollection<fin_documentfinanceseries> Series
         {
-            get { return GetCollection<FIN_DocumentFinanceSeries>("Series"); }
+            get { return GetCollection<fin_documentfinanceseries>("Series"); }
         }
     }
 }

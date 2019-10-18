@@ -12,7 +12,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
     public abstract class ThermalPrinterBaseFinanceTemplate : ThermalPrinterBaseTemplate
     {
-        protected FIN_DocumentFinanceType _documentType;
+        protected fin_documentfinancetype _documentType;
         protected List<int> _copyNames;
         protected string[] _copyNamesArray;
         protected bool _secondCopy;
@@ -20,12 +20,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         protected string _copyName = string.Empty;
         protected int _ticketTablePaddingLeftLength = 2;
 
-        public ThermalPrinterBaseFinanceTemplate(SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinanceType pDocumentType, List<int> pCopyNames)
+        public ThermalPrinterBaseFinanceTemplate(sys_configurationprinters pPrinter, fin_documentfinancetype pDocumentType, List<int> pCopyNames)
             : this(pPrinter, pDocumentType, pCopyNames, false)
         {
         }
 
-        public ThermalPrinterBaseFinanceTemplate(SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinanceType pDocumentType, List<int> pCopyNames, bool pSecondCopy)
+        public ThermalPrinterBaseFinanceTemplate(sys_configurationprinters pPrinter, fin_documentfinancetype pDocumentType, List<int> pCopyNames, bool pSecondCopy)
             : base(pPrinter, SettingsApp.PrinterThermalImageCompanyLogo)
         {
             //Assign Parameter Properties
@@ -58,8 +58,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     //Get CopyName Position, ex 0[Original], 4[Quadriplicate], we cant use I, else 0[Original], 1[Duplicate]
                     copyNameIndex = _copyNames[i] + 1;
                     //Overrided by Child Classes
-                    _copyName = Resx.ResourceManager.GetString(string.Format("global_print_copy_title{0}", copyNameIndex));
-                    if (_secondCopy && i < 1) _copyName = string.Format("{0}/{1}", _copyName, Resx.global_print_second_print);
+                    _copyName = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_print_copy_title{0}", copyNameIndex));
+                    if (_secondCopy && i < 1) _copyName = string.Format("{0}/{1}", _copyName, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_second_print"));
                     //_log.Debug(String.Format("copyName: [{0}], copyNameIndex: [{1}]", _copyName, copyNameIndex));
 
                     //Call Child Content (Overrided)
@@ -79,6 +79,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
+                _log.Debug("override bool Print() :: Thermal Printer: " + ex.Message, ex);
                 throw ex;
             }
 
@@ -89,28 +90,29 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         protected void PrintExtendedHeader()
         {
             //Align Center
-            _thermalPrinterGeneric.SetAlignCenter();
+            _thermalPrinterGeneric.SetAlignLeft();/* IN009055 */
 
             //Extended Header
             _thermalPrinterGeneric.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
             _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
-            _thermalPrinterGeneric.WriteLine(Resx.global_phone, _customVars["COMPANY_TELEPHONE"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_fax, _customVars["COMPANY_FAX"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_email, _customVars["COMPANY_EMAIL"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_website, _customVars["COMPANY_WEBSITE"]);
-            _thermalPrinterGeneric.WriteLine(Resx.global_fiscal_number_acronym, _customVars["COMPANY_FISCALNUMBER"]);
+			/* IN009055 block */
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
+            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
+            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fax, _customVars["COMPANY_FAX"]);
+            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email"), _customVars["COMPANY_EMAIL"]);
+            _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_WEBSITE"], false); /* IN009211 */
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "prefparam_company_fiscalnumber"), _customVars["COMPANY_FISCALNUMBER"]);
             _thermalPrinterGeneric.LineFeed();
 
             //Reset to Left
-            _thermalPrinterGeneric.SetAlignLeft();
+            //_thermalPrinterGeneric.SetAlignLeft(); /* IN009055 */
         }
 
         //Child Shared PrintDocumentMaster
         protected void PrintDocumentMaster(string pDocumentTypeResourceString, string pDocumentID, string pDocumentDateTime)
         {
             //Call Base PrintTitle()
-            base.PrintTitles(Resx.ResourceManager.GetString(pDocumentTypeResourceString), pDocumentID);
+            base.PrintTitles(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], pDocumentTypeResourceString), pDocumentID);
 
             //Set Align Center
             _thermalPrinterGeneric.SetAlignCenter();
@@ -127,13 +129,39 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         //Child Shared PrintCustomer
         protected void PrintCustomer(string pName, string pAddress, string pZipCode, string pCity, string pCountry, string pFiscalNumber)
         {
-            _thermalPrinterGeneric.WriteLine(Resx.global_customer, pName);
-            _thermalPrinterGeneric.WriteLine(Resx.global_address, pAddress);
-            if (!string.IsNullOrEmpty(pZipCode) && !string.IsNullOrEmpty(pCity) && !string.IsNullOrEmpty(pCountry))
+			/* IN009055 block */
+            string fiscalNumber = pFiscalNumber;
+            string name = pName;
+
+            /* IN009055: pFiscalNumber real value is overwritten by GetFRBOFinancePayment(Guid pDocumentFinancePaymentOid) method */
+            if (SettingsApp.FinanceFinalConsumerFiscalNumberDisplay.Equals(pFiscalNumber) || SettingsApp.FinanceFinalConsumerFiscalNumber.Equals(pFiscalNumber))
             {
-                _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} - {2}", pZipCode, pCity, pCountry), false);
+                //fiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
+                fiscalNumber = string.Empty; /* show the Fical Number display value is not necessary */
+                name = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_final_consumer");
             }
-            _thermalPrinterGeneric.WriteLine(Resx.global_fiscal_number, pFiscalNumber);
+
+			/* IN009055 block - begin */
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer"), name, false);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_address"), pAddress, false);
+
+            string addressDetails = pCountry;
+
+            if (!string.IsNullOrEmpty(pZipCode) && !string.IsNullOrEmpty(pCity))
+            {
+                addressDetails = string.Format("{0} {1} - {2}", pZipCode, pCity, pCountry);
+            }
+            else if (!string.IsNullOrEmpty(pZipCode))
+            {
+                addressDetails = string.Format("{0} - {1}", pZipCode, pCountry);
+            }
+            else if (!string.IsNullOrEmpty(pCity))
+            {
+                addressDetails = string.Format("{0} - {1}", pCity, pCountry);
+            }
+            _thermalPrinterGeneric.WriteLine(addressDetails, false); /* When FS, no details */
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), fiscalNumber, false); /* Do not print Fiscal Number when empty */
+            /* IN009055  block - end */
             _thermalPrinterGeneric.LineFeed();
         }
 
@@ -173,7 +201,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             if (!string.IsNullOrEmpty(pPaymentCondition))
             {
                 dataRow = dataTable.NewRow();
-                dataRow[0] = Resx.global_payment_conditions;
+                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_conditions");
                 dataRow[1] = pPaymentCondition;
                 dataTable.Rows.Add(dataRow);
             }
@@ -181,13 +209,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             if (!string.IsNullOrEmpty(pPaymentMethod))
             {
                 dataRow = dataTable.NewRow();
-                dataRow[0] = Resx.global_payment_method;
+                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_method_field"); /* IN009055 */
                 dataRow[1] = pPaymentMethod;
                 dataTable.Rows.Add(dataRow);
             }
             //Add Row : Currency
             dataRow = dataTable.NewRow();
-            dataRow[0] = Resx.global_currency;
+            dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_currency_field"); /* IN009055 */
             dataRow[1] = pCurrency;
             dataTable.Rows.Add(dataRow);
 
@@ -213,7 +241,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             //Differ from Payments and Other Document Types
-            string message = Resx.ResourceManager.GetString(pDocumentTypeMessage);
+            string message = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], pDocumentTypeMessage);
             if (pDocumentTypeMessage != string.Empty && message != null) _thermalPrinterGeneric.WriteLine(message);
 
             //Line Feed
@@ -234,38 +262,64 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             //Align Center
             _thermalPrinterGeneric.SetAlignCenter();
 
-            //All Finance Documents use Processed, else Payments that use Emmited 
-            string prefix = (_documentType.SaftDocumentType == SaftDocumentType.Payments)
-                ? Resx.global_report_overlay_software_certification_emitted
-                : Resx.global_report_overlay_software_certification_processed
-            ;
-            //Processed|Emitted with certified Software Nº {0}/AT
-            string certificationText = string.Format(
-                Resx.global_report_overlay_software_certification,
-                prefix,
-                SettingsApp.SaftSoftwareCertificateNumber
-            );
-
-            //Add Hash Validation if Defined (In DocumentFinance Only)
-            if (pHash4Chars != string.Empty) certificationText = string.Format("{0} - {1}", pHash4Chars, certificationText);
-
+            /* IN009211 */
             string copyRightText = string.Format(
-                "Copyright {0}",
+                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_copyright") + " {0}",
                 SettingsApp.SaftProductID
             );
 
-            string licenseText = string.Format(
-                Resx.global_licensed_to,
-                GlobalFramework.LicenceCompany
-            );
+            string certificationText = string.Empty;
 
             //Write Certification,CopyRight and License Text 
-            if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal)
+            if (SettingsApp.XpoOidConfigurationCountryPortugal.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
             {
-                _thermalPrinterGeneric.WriteLine(certificationText, WriteLineTextMode.Small);
+                //All Finance Documents use Processed, else Payments that use Emmited 
+                string prefix = (_documentType.SaftDocumentType == SaftDocumentType.Payments)
+                    ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted")
+                    : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
+                ;
+                //Processed|Emitted with certified Software Nº {0}/AT
+                certificationText = string.Format(
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
+                    prefix,
+                    SettingsApp.SaftSoftwareCertificateNumber
+                );
+
+                //Add Hash Validation if Defined (In DocumentFinance Only)
+                if (pHash4Chars != string.Empty)
+                {
+                    certificationText = string.Format("{0} - {1}", pHash4Chars, certificationText);
+                }
             }
+            /* IN005975 and IN005979 for Mozambique deployment */
+            else if (SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+            {/* IN009055 - related to IN006047 */
+				/* {Processado por computador} || Autorização da Autoridade Tributária: {DAFM1 - 0198 / 2018} */
+                certificationText = string.Format(
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_short"),
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_moz_tax_authority_cert_number") + "\n" + 
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
+                 );
+            }
+            else {
+				/* All other countries: "Processado por computador" */
+                certificationText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed");
+            }
+
+            _thermalPrinterGeneric.WriteLine(certificationText, WriteLineTextMode.Small);
+
             _thermalPrinterGeneric.WriteLine(copyRightText, WriteLineTextMode.Small);
-            _thermalPrinterGeneric.WriteLine(licenseText, WriteLineTextMode.Small);
+
+            /* IN009211 - it was printing empty label */
+            if (!String.IsNullOrEmpty(GlobalFramework.LicenceCompany))
+            {
+                string licenseText = string.Format(
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_licensed_to"),
+                    GlobalFramework.LicenceCompany
+            );
+                _thermalPrinterGeneric.WriteLine(licenseText, WriteLineTextMode.Small);
+            }
+
             _thermalPrinterGeneric.LineFeed();
 
             //Reset to Left

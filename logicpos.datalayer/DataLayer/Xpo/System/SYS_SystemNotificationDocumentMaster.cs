@@ -4,27 +4,27 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_SystemNotificationDocumentMaster : XPGuidObject
+    public class sys_systemnotificationdocumentmaster : XPGuidObject
     {
-        public SYS_SystemNotificationDocumentMaster() : base() { }
-        public SYS_SystemNotificationDocumentMaster(Session session) : base(session) { }
+        public sys_systemnotificationdocumentmaster() : base() { }
+        public sys_systemnotificationdocumentmaster(Session session) : base(session) { }
 
         //SystemNotification One <> Many DocumentFinanceMaster
-        SYS_SystemNotification fNotification;
+        sys_systemnotification fNotification;
         [Association(@"SystemNotificationReferenceDocumentFinanceMaster")]
-        public SYS_SystemNotification Notification
+        public sys_systemnotification Notification
         {
             get { return fNotification; }
-            set { SetPropertyValue<SYS_SystemNotification>("Notification", ref fNotification, value); }
+            set { SetPropertyValue<sys_systemnotification>("Notification", ref fNotification, value); }
         }
 
         //DocumentFinanceMaster One <> Many SystemNotification
-        FIN_DocumentFinanceMaster fDocumentMaster;
+        fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferenceSystemNotification")]
-        public FIN_DocumentFinanceMaster DocumentMaster
+        public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
         }
     }
 }

@@ -6,15 +6,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_ConfigurationPlaceTable : XPGuidObject
+    public class pos_configurationplacetable : XPGuidObject
     {
-        public POS_ConfigurationPlaceTable() : base() { }
-        public POS_ConfigurationPlaceTable(Session session) : base(session) { }
+        public pos_configurationplacetable() : base() { }
+        public pos_configurationplacetable(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceTable), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceTable), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacetable), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacetable), "Code");
         }
 
         UInt32 fOrd;
@@ -84,26 +84,26 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlace One <> Many ConfigurationPlaceTable
-        POS_ConfigurationPlace fPlace;
+        pos_configurationplace fPlace;
         [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTable")]
-        public POS_ConfigurationPlace Place
+        public pos_configurationplace Place
         {
             get { return fPlace; }
-            set { SetPropertyValue<POS_ConfigurationPlace>("Place", ref fPlace, value); }
+            set { SetPropertyValue<pos_configurationplace>("Place", ref fPlace, value); }
         }
 
         //ConfigurationPlaceTable One <> Many DocumentOrderMain
-        [Association(@"ConfigurationPlaceTableReferencesDocumentOrderMain", typeof(FIN_DocumentOrderMain))]
-        public XPCollection<FIN_DocumentOrderMain> OrderMain
+        [Association(@"ConfigurationPlaceTableReferencesDocumentOrderMain", typeof(fin_documentordermain))]
+        public XPCollection<fin_documentordermain> OrderMain
         {
-            get { return GetCollection<FIN_DocumentOrderMain>("OrderMain"); }
+            get { return GetCollection<fin_documentordermain>("OrderMain"); }
         }
 
         //ConfigurationPlaceTable One <> Many DocumentOrderTicket
-        [Association(@"ConfigurationPlaceTableReferencesDocumentOrderTicket", typeof(FIN_DocumentOrderTicket))]
-        public XPCollection<FIN_DocumentOrderTicket> OrderTicket
+        [Association(@"ConfigurationPlaceTableReferencesDocumentOrderTicket", typeof(fin_documentorderticket))]
+        public XPCollection<fin_documentorderticket> OrderTicket
         {
-            get { return GetCollection<FIN_DocumentOrderTicket>("OrderTicket"); }
+            get { return GetCollection<fin_documentorderticket>("OrderTicket"); }
         }
     }
 }

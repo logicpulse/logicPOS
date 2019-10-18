@@ -13,7 +13,8 @@ namespace logicpos
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected
-        protected string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+        /* IN008024 */
+        //protected string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
         protected EventBox _eventBoxMinimize;
         protected bool _showMinimize;
 
@@ -127,10 +128,12 @@ namespace logicpos
             try
             {
                 Gdk.Screen screen = this.Screen;
-                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(0);
+                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(string.IsNullOrEmpty(GlobalFramework.Settings["appScreen"])
+                    ? 0
+                    : Convert.ToInt32(GlobalFramework.Settings["appScreen"]));
                 if (monitorGeometry.Width < pWidth || monitorGeometry.Height < pHeight)
                 {
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, string.Format(Resx.dialog_message_low_resolution_detected, pWidth, pHeight));
+                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_low_resolution_detected"), pWidth, pHeight));
                     Environment.Exit(0);
                 }
             }

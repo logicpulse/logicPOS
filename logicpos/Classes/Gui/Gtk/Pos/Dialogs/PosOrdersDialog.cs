@@ -16,7 +16,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = string.Format("{0} : {1} #{2}", Resx.window_title_dialog_orders, Resx.global_place_table, pTable);
+            String windowTitle = string.Format("{0} : {1} #{2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_place_table"), pTable);
             Size windowSize = new Size(429, 205);//618 (3buts)
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_orders.png");
 
@@ -31,9 +31,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //String fileIconListFinanceDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
 
             //Buttons
-            TouchButtonIconWithText buttonPrintOrder = new TouchButtonIconWithText("touchButtonPrintOrder_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_orders_button_label_print_order, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
-            TouchButtonIconWithText buttonTableConsult = new TouchButtonIconWithText("touchButtonListOrders_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_orders_button_label_table_consult, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconListOrders, sizeIcon, buttonWidth, buttonHeight);
-            //TouchButtonIconWithText buttonListFinanceDocuments = new TouchButtonIconWithText("touchButtonListFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_button_label_select_record_finance_documents, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonPrintOrder = new TouchButtonIconWithText("touchButtonPrintOrder_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_print_order"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
+            TouchButtonIconWithText buttonTableConsult = new TouchButtonIconWithText("touchButtonListOrders_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_table_consult"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconListOrders, sizeIcon, buttonWidth, buttonHeight);
+            //TouchButtonIconWithText buttonListFinanceDocuments = new TouchButtonIconWithText("touchButtonListFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_record_finance_documents, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, fileIconPrintOrder, sizeIcon, buttonWidth, buttonHeight);
 
             //Table
             Table table = new Table(1, 2, true);
@@ -52,7 +52,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //buttonListFinanceDocuments.Clicked += buttonListFinanceDocuments_Clicked;
 
             // Enable/Disable PrintTicket based on Printer Type, Currently PrintTicket is only Implemented in Thermal Printers
-            bool printerMissing = (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.PrinterType.Token.StartsWith("THERMAL_PRINTER_"));
+			//TK016249 - Impressoras - Diferenciação entre Tipos
+            bool printerMissing = (GlobalFramework.LoggedTerminal.ThermalPrinter != null && GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token.StartsWith("THERMAL_PRINTER_"));
             buttonPrintOrder.Sensitive = printerMissing;
             buttonTableConsult.Sensitive = printerMissing;
         }

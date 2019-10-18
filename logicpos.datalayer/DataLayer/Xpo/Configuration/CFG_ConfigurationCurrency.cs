@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class CFG_ConfigurationCurrency : XPGuidObject
+    public class cfg_configurationcurrency : XPGuidObject
     {
-        public CFG_ConfigurationCurrency() : base() { }
-        public CFG_ConfigurationCurrency(Session session) : base(session) { }
+        public cfg_configurationcurrency() : base() { }
+        public cfg_configurationcurrency(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationCurrency), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationCurrency), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Code");
         }
 
         UInt32 fOrd;
@@ -70,17 +70,17 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationCurrency One <> Many DocumentFinanceMaster
-        [Association(@"ConfigurationCurrencyReferencesDocumentFinanceMaster", typeof(FIN_DocumentFinanceMaster))]
-        public XPCollection<FIN_DocumentFinanceMaster> DocumentMaster
+        [Association(@"ConfigurationCurrencyReferencesDocumentFinanceMaster", typeof(fin_documentfinancemaster))]
+        public XPCollection<fin_documentfinancemaster> DocumentMaster
         {
-            get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentMaster"); }
+            get { return GetCollection<fin_documentfinancemaster>("DocumentMaster"); }
         }
 
         //ConfigurationCurrency One <> Many DocumentFinancePayment
-        [Association(@"ConfigurationCurrencyReferencesDocumentFinancePayment", typeof(FIN_DocumentFinancePayment))]
-        public XPCollection<FIN_DocumentFinanceMaster> DocumentPayment
+        [Association(@"ConfigurationCurrencyReferencesDocumentFinancePayment", typeof(fin_documentfinancepayment))]
+        public XPCollection<fin_documentfinancemaster> DocumentPayment
         {
-            get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentPayment"); }
+            get { return GetCollection<fin_documentfinancemaster>("DocumentPayment"); }
         }
     }
 }

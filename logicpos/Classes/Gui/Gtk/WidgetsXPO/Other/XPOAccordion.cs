@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     //Bypass default db label with Resources Localization Label
                     if (Resx
                         .ResourceManager.GetString(parentResource) != null)
-                        parentLabel = Resx.ResourceManager.GetString(parentResource);
+                        parentLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], parentResource);
                 }
 
                 //Get Child Data
@@ -71,8 +71,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     {
                         childResource = childRow.Values[xPSelectDataChild.GetFieldIndex("resource")].ToString();
                         //Bypass default db label with Resources Localization Label
-                        if (Resx.ResourceManager.GetString(childResource) != null)
-                            childLabel = Resx.ResourceManager.GetString(childResource);
+                        if (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], childResource) != null)
+                            childLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], childResource);
                     }
                     _accordionChilds.Add(string.Format("childId_{0}", childId), new AccordionNode(childLabel) { Content = new Button(childLabel) });
                 }

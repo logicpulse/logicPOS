@@ -8,6 +8,11 @@ using System;
 using System.Collections;
 using System.Configuration;
 using System.Diagnostics;
+using logicpos.resources.Resources.Localization;
+using System.Globalization;
+using System.Threading;
+using logicpos.datalayer.Enums;
+using System.IO;
 
 //Log4Net
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -21,74 +26,138 @@ namespace logicpos
         // Use this to force Plugin with Debug Attach
         private static bool forceShowPluginLicenceWithDebugger = false;
 
+        /* IN009203 - Mutex */
+        private static string appGuid = "bfb677c2-a44a-46f8-93ab-d2d6a54e0b53";
+        private static SingleProgramInstance _SingleProgramInstance = new SingleProgramInstance(appGuid);
+
         [STAThread]
         public static void Main(string[] args)
         {
             try
             {
                 // Show current Configuration File
-                _log.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+                 _log.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 
-                // Init Settings Main Config Settings
-                GlobalFramework.Settings = ConfigurationManager.AppSettings;
-
-                // BootStrap Paths
-                InitPaths();
-
-                // Init PluginContainer
-                GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
-
-                // PluginSoftwareVendor
-                GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
-                if (GlobalFramework.PluginSoftwareVendor != null)
+                /* IN009203 - Mutex block */
+                using (_SingleProgramInstance)
                 {
-                    // Show Loaded Plugin
-                    _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
-                    // Init Plugin
-                    SettingsApp.InitSoftwareVendorPluginSettings();
-                    // Check if all Resources are Embedded
-                    GlobalFramework.PluginSoftwareVendor.ValidateEmbeddedResources();
-                }
-                else
-                {
-                    // Show Loaded Plugin
-                    _log.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
-                }
+                    // Init Settings Main Config Settings
+                    GlobalFramework.Settings = ConfigurationManager.AppSettings;
+                    
+                    //IN009296 BackOffice - Mudar o idioma da aplicação
+                    SetCulture();
 
-                // Try to Get LicenceManager IntellilockPlugin if in Release 
-                if (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger)
-                {
-                    GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
-                    // Show Loaded Plugin
-                    if (GlobalFramework.PluginLicenceManager != null)
+                    // BootStrap Paths
+                    InitPaths();
+
+                    // Init PluginContainer
+                    GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
+
+                    // PluginSoftwareVendor
+                    GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
+                    if (GlobalFramework.PluginSoftwareVendor != null)
                     {
-                        _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                        // Show Loaded Plugin
+                        _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                        // Init Plugin
+                        SettingsApp.InitSoftwareVendorPluginSettings();
+                        // Check if all Resources are Embedded
+                        GlobalFramework.PluginSoftwareVendor.ValidateEmbeddedResources();
                     }
-                }
+                    else
+                    {
+                        // Show Loaded Plugin
+                        _log.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
+                    }
 
-                // Required before LicenseRouter
-                Application.Init();
+                    // Try to Get LicenceManager IntellilockPlugin if in Release 
+                    if (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger)
+                    {
+                        GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
+                        // Show Loaded Plugin
+                        if (GlobalFramework.PluginLicenceManager != null)
+                        {
+                            _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                        }
+                    }
 
-                //Render GTK Theme : In Start to Style UI in BootStrap Dialogs Error
-                Theme.ParseTheme(true, false);
+                    // Required before LicenseRouter
+                    Application.Init();
 
-                // Initialize LicenseRouter if IntellilockPlugin plugin is Registered in PluginContainer
-                if (GlobalFramework.PluginLicenceManager != null && (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger))
-                {
-                    // Boot LogicPos after LicenceManager.IntellilockPlugin
-                    LicenseRouter licenseRouter = new LicenseRouter();
-                }
-                else
-                {
-                    // Boot LogicPos without pass in LicenseRouter
-                    LogicPos logicPos = new LogicPos();
-                    logicPos.StartApp(AppMode.FrontOffice);
+                    //Render GTK Theme : In Start to Style UI in BootStrap Dialogs Error
+                    Theme.ParseTheme(true, false);
+
+                    /* IN009203 - prevent lauching multiple instances of application */
+                    if (_SingleProgramInstance.IsSingleInstance)
+                    {/* No app instance is running, start it */
+                        /* IN009034 */
+                        StartApp();
+                    }
+                    else
+                    {/* App already running, show info to user and ends the main flow. */
+
+                        {/* Forcing to load Custom Culture when showing proper message to user for Mutex implementation  */
+
+                            /* IN006018 and IN007009 */
+                            //logicpos.shared.App.CustomRegion.RegisterCustomRegion();
+                            //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
+                        }
+
+                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"));
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
             }
+        }
+        
+        /// <summary>
+        /// Start application.
+		/// Please see IN009005 and IN009034 for details.
+        /// </summary>
+		private static void StartApp()
+        {
+
+
+            if (GlobalFramework.PluginLicenceManager != null && (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger))
+            {
+                _log.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
+                // Boot LogicPos after LicenceManager.IntellilockPlugin
+                LicenseRouter licenseRouter = new LicenseRouter();
+            }
+            else
+            {
+                    bool dbExists = Utils.checkIfDbExists();
+                    // Boot LogicPos without pass in LicenseRouter
+                    _log.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
+                    /* IN009005: creating a new thread for app start up */
+                    System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartFrontOffice));
+                    GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.ThreadDialogReadyEvent));
+                    thread.Start();
+
+                    /* Show "loading" */
+                    _log.Debug("void StartApp() :: Show 'loading'");
+                    GlobalApp.DialogThreadWork = Utils.GetThreadDialog(new Window("POS start up"), dbExists);
+                    GlobalApp.DialogThreadWork.Run();
+                    /* IN009005: end */              
+
+
+            }
+        }
+
+        /// <summary>
+        /// Start application in FrontOffice mode.
+		/// See IN009034 for further details.
+        /// </summary>
+        private static void StartFrontOffice()
+        {
+            _log.Debug("void StartFrontOffice() :: StartApp: AppMode.FrontOffice");
+
+            LogicPos logicPos = new LogicPos();
+            logicPos.StartApp(AppMode.FrontOffice);
         }
 
         private static void InitPaths()
@@ -132,6 +201,25 @@ namespace logicpos
             {
                 _log.Error(ex.Message, ex);
             }
+        }
+
+        //IN009296 BackOffice - Mudar o idioma da aplicação
+        public static void SetCulture()
+        {            
+            try
+            {
+                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                GlobalFramework.SessionXpo = Utils.SessionXPO();
+                string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
+                GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+            }
+            catch
+            {
+                GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                GlobalFramework.CurrentCulture = new CultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
+                _log.Error(String.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
+            }            
         }
     }
 }

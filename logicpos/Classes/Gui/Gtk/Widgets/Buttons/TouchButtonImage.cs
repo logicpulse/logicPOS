@@ -11,6 +11,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         private const int _BUTTON_TEXT_OVERLAY_INNER_MARGIN = 0;
         private const int _BUTTON_TEXT_ALPHA_OVERLAY = 250;
         private bool _useCachedImages = Utils.UseCache();
+        private bool _useVatAutocompletee = Utils.UseVatAutocomplete();
         private string _pathCache = FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"]));
 
         public Widget widget;

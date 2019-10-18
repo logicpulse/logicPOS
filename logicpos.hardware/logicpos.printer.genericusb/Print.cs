@@ -38,7 +38,7 @@ namespace logicpos.printer.genericusb
                 usbDevice = UsbDevice.OpenUsbDevice(usbFinder);
 
                 // If the device is open and ready
-                if (usbDevice == null) throw new Exception("Device Not Found.");
+                if (usbDevice == null) throw new Exception(string.Format("UsbDisplayDevice: Device NOT Found [ VID:{0}, PID:{1}, ENDPOINT:{2} ]", vid, pid, endpointWrite));
 
                 // If this is a "whole" usb device (libusb-win32, linux libusb)
                 // it will have an IUsbDevice interface. If not (WinUSB) the

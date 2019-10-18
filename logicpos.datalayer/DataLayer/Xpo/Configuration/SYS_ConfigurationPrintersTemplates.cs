@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_ConfigurationPrintersTemplates : XPGuidObject
+    public class sys_configurationprinterstemplates : XPGuidObject
     {
-        public SYS_ConfigurationPrintersTemplates() : base() { }
-        public SYS_ConfigurationPrintersTemplates(Session session) : base(session) { }
+        public sys_configurationprinterstemplates() : base() { }
+        public sys_configurationprinterstemplates(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrintersTemplates), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrintersTemplates), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinterstemplates), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinterstemplates), "Code");
         }
 
         UInt32 fOrd;
@@ -54,57 +54,57 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
 
         //ConfigurationPrintersTemplates One <> Many Article
-        [Association(@"ConfigurationPrintersTemplatesReferencesArticle", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> Articles
+        [Association(@"ConfigurationPrintersTemplatesReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> Articles
         {
-            get { return GetCollection<FIN_Article>("Articles"); }
+            get { return GetCollection<fin_article>("Articles"); }
         }
 
         //ConfigurationPrintersTemplates One <> Many Article
-        [Association(@"ConfigurationPrintersTemplatesReferencesArticleFamily", typeof(FIN_ArticleFamily))]
-        public XPCollection<FIN_Article> ArticlesFamily
+        [Association(@"ConfigurationPrintersTemplatesReferencesArticleFamily", typeof(fin_articlefamily))]
+        public XPCollection<fin_article> ArticlesFamily
         {
-            get { return GetCollection<FIN_Article>("ArticlesFamily"); }
+            get { return GetCollection<fin_article>("ArticlesFamily"); }
         }
 
         //ConfigurationPrintersTemplates One <> Many ArticleSubFamily
-        [Association(@"ConfigurationPrintersTemplatesReferencesArticleSubFamily", typeof(FIN_ArticleSubFamily))]
-        public XPCollection<FIN_ArticleSubFamily> ArticlesSubFamily
+        [Association(@"ConfigurationPrintersTemplatesReferencesArticleSubFamily", typeof(fin_articlesubfamily))]
+        public XPCollection<fin_articlesubfamily> ArticlesSubFamily
         {
-            get { return GetCollection<FIN_ArticleSubFamily>("ArticlesSubFamily"); }
+            get { return GetCollection<fin_articlesubfamily>("ArticlesSubFamily"); }
         }
 
 
         //ConfigurationPrintersTemplates One <> Many DocumentFinanceYearSerieTerminal
-        [Association(@"ConfigurationPrintersTemplatesReferencesDFYearSerieTerminal", typeof(FIN_DocumentFinanceYearSerieTerminal))]
-        public XPCollection<FIN_DocumentFinanceYearSerieTerminal> YearSerieTerminal
+        [Association(@"ConfigurationPrintersTemplatesReferencesDFYearSerieTerminal", typeof(fin_documentfinanceyearserieterminal))]
+        public XPCollection<fin_documentfinanceyearserieterminal> YearSerieTerminal
         {
-            get { return GetCollection<FIN_DocumentFinanceYearSerieTerminal>("YearSerieTerminal"); }
+            get { return GetCollection<fin_documentfinanceyearserieterminal>("YearSerieTerminal"); }
         }
 
         //ConfigurationPrintersTemplates One <> Many DocumentFinanceType
-        [Association(@"ConfigurationPrintersTemplatesReferencesDocumentFinanceType", typeof(FIN_DocumentFinanceType))]
-        public XPCollection<FIN_DocumentFinanceType> DocumentsType
+        [Association(@"ConfigurationPrintersTemplatesReferencesDocumentFinanceType", typeof(fin_documentfinancetype))]
+        public XPCollection<fin_documentfinancetype> DocumentsType
         {
-            get { return GetCollection<FIN_DocumentFinanceType>("DocumentsType"); }
+            get { return GetCollection<fin_documentfinancetype>("DocumentsType"); }
         }
 
 
 
         //....
-        [Association(@"ConfigurationPrintersTemplatesTemplateTicketReferencesTerminal", typeof(POS_ConfigurationPlaceTerminal))]
-        public XPCollection<POS_ConfigurationPlaceTerminal> TemplateTicket
+        [Association(@"ConfigurationPrintersTemplatesTemplateTicketReferencesTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> TemplateTicket
         {
-            get { return GetCollection<POS_ConfigurationPlaceTerminal>("TemplateTicket"); }
+            get { return GetCollection<pos_configurationplaceterminal>("TemplateTicket"); }
         }
 
 
 
         //.....
-        [Association(@"ConfigurationPrintersTemplatesTemplateTablesConsultReferencesTerminal", typeof(POS_ConfigurationPlaceTerminal))]
-        public XPCollection<POS_ConfigurationPlaceTerminal> TemplatesTemplateTables
+        [Association(@"ConfigurationPrintersTemplatesTemplateTablesConsultReferencesTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> TemplatesTemplateTables
         {
-            get { return GetCollection<POS_ConfigurationPlaceTerminal>("TemplatesTemplateTables"); }
+            get { return GetCollection<pos_configurationplaceterminal>("TemplatesTemplateTables"); }
         }
 
     }

@@ -11,18 +11,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     class PosSendMessageDialog : PosInputTextDialog
     {
         //UI EntryBox
-        private XPOEntryBoxSelectRecordValidation<SYS_UserDetail, TreeViewUser> _entryBoxSelectUser;
-        private XPOEntryBoxSelectRecordValidation<POS_ConfigurationPlaceTerminal, TreeViewConfigurationPlaceTerminal> _entryBoxSelectTerminal;
+        private XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser> _entryBoxSelectUser;
+        private XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal> _entryBoxSelectTerminal;
         //Default Values
-        private SYS_UserDetail _valueUser = null;
-        public SYS_UserDetail ValueUser
+        private sys_userdetail _valueUser = null;
+        public sys_userdetail ValueUser
         {
           get { return _valueUser; }
           set { _valueUser = value; }
         }
 
-        private POS_ConfigurationPlaceTerminal _valueTerminal = null;
-        public POS_ConfigurationPlaceTerminal ValueTerminal
+        private pos_configurationplaceterminal _valueTerminal = null;
+        public pos_configurationplaceterminal ValueTerminal
         {
           get { return _valueTerminal; }
           set { _valueTerminal = value; }
@@ -30,20 +30,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public PosSendMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon)
         //public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)            
-            : base(pSourceWindow, pDialogFlags, Resx.window_title_dialog_send_message, pWindowIcon, "Label", "Default", SettingsApp.RegexAlfaNumericExtended, true)
+            : base(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", SettingsApp.RegexAlfaNumericExtended, true)
         {
             this.HeightRequest = 320;
 
             //UserDetail
             CriteriaOperator criteriaOperatorUser = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectUser = new XPOEntryBoxSelectRecordValidation<SYS_UserDetail, TreeViewUser>(_sourceWindow, Resx.global_user, "Designation", "Oid", _valueUser, criteriaOperatorUser, SettingsApp.RegexGuid, false);
+            _entryBoxSelectUser = new XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser>(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user"), "Designation", "Oid", _valueUser, criteriaOperatorUser, SettingsApp.RegexGuid, false);
             _entryBoxSelectUser.EntryValidation.IsEditable = false;
             //Public Reference
             _valueUser = _entryBoxSelectUser.Value;
 
             //Terminal
             CriteriaOperator criteriaOperatorTerminal = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectTerminal = new XPOEntryBoxSelectRecordValidation<POS_ConfigurationPlaceTerminal, TreeViewConfigurationPlaceTerminal>(_sourceWindow, Resx.global_user, "Designation", "Oid", _valueTerminal, criteriaOperatorTerminal, SettingsApp.RegexGuid, false);
+            _entryBoxSelectTerminal = new XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user"), "Designation", "Oid", _valueTerminal, criteriaOperatorTerminal, SettingsApp.RegexGuid, false);
             _entryBoxSelectTerminal.EntryValidation.IsEditable = false;
             //Public Reference
             _valueTerminal = _entryBoxSelectTerminal.Value;
@@ -57,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             /*
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_send_message;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_send_message;
             Size windowSize = new Size(600, 500);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_send_message.png");
 

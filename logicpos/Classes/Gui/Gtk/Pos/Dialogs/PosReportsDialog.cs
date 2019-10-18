@@ -20,11 +20,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         // Start Ord Code Int
         private int _userpermissionitemOrdAndCode = 1000;
 
+        public PosReportsDialog(){}
+
         public PosReportsDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = Resx.global_reports;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reports");
             System.Drawing.Size windowSize = new System.Drawing.Size(500, 509);//454
             string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_reports.png");
 
@@ -89,18 +91,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("Ord", SortingDirection.Ascending);
                 sortProperty[1] = new SortProperty("Designation", SortingDirection.Ascending);
-                XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, typeof(RPT_ReportType), criteriaOperator, sortProperty);
+                XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, typeof(rpt_reporttype), criteriaOperator, sortProperty);
 
                 // Report : Collection (ReportType Property Navigations)
                 SortingCollection sortingCollection = new SortingCollection();
                 sortingCollection.Add(new SortProperty("Ord", SortingDirection.Ascending));
 
-                foreach (RPT_ReportType reportType in xpoCollection)
+                foreach (rpt_reporttype reportType in xpoCollection)
                 {
                     // Init AccordionChild
                     Dictionary<string, AccordionNode> accordionChilds = new Dictionary<string, AccordionNode>();
 
-                    buttonLabelReportTypeString = Resx.ResourceManager.GetString(reportType.ResourceString);
+                    buttonLabelReportTypeString = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], reportType.ResourceString);
                     // Try to get Resource
                     if (string.IsNullOrEmpty(buttonLabelReportTypeString))
                     {
@@ -113,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     reportType.Report.Sorting = sortingCollection;
 
                     // Loop ReportType Reports
-                    foreach (RPT_Report report in reportType.Report)
+                    foreach (rpt_report report in reportType.Report)
                     {
                         if (!report.Disabled)
                         {

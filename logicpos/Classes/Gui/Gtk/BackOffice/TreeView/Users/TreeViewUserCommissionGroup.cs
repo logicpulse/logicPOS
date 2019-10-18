@@ -24,9 +24,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewUserCommissionGroup(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(POS_UserCommissionGroup);
+            Type xpoGuidObjectType = typeof(pos_usercommissiongroup);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            POS_UserCommissionGroup defaultValue = (pDefaultValue != null) ? pDefaultValue as POS_UserCommissionGroup : null;
+            pos_usercommissiongroup defaultValue = (pDefaultValue != null) ? pDefaultValue as pos_usercommissiongroup : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogUserCommissionGroup);
 
@@ -35,11 +35,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
             columnProperties.Add(new GenericTreeViewColumnProperty("Commission")
             {
-                Title = Resx.global_commission,
+                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_commission"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimal(),
@@ -50,7 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //    Xalign = 1.0F
                 //}
             });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

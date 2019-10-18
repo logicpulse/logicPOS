@@ -21,7 +21,7 @@ namespace logicpos.financial.library.App
         //FinanceDocument
 
         //Check if Document has DocumentFinanceType Parent (Recursively)
-        public static bool IsDocumentMasterChildOfDocumentType(FIN_DocumentFinanceMaster pDocumentFinanceMaster, List<Guid> pDocumentFinanceTypeList)
+        public static bool IsDocumentMasterChildOfDocumentType(fin_documentfinancemaster pDocumentFinanceMaster, List<Guid> pDocumentFinanceTypeList)
         {
             bool debug = false;
             bool result = false;
@@ -53,7 +53,7 @@ namespace logicpos.financial.library.App
         }
 
         //Check if Document has SaftDocumentType Parent (Recursively)
-        public static bool IsDocumentMasterChildOfDocumentType(FIN_DocumentFinanceMaster pDocumentFinanceMaster, SaftDocumentType pSaftDocumentType)
+        public static bool IsDocumentMasterChildOfDocumentType(fin_documentfinancemaster pDocumentFinanceMaster, SaftDocumentType pSaftDocumentType)
         {
             bool debug = false;
             bool result = false;
@@ -61,11 +61,11 @@ namespace logicpos.financial.library.App
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled is NULL) AND (SaftDocumentType = {0})", (int)pSaftDocumentType));
             SortingCollection sortingCollection = new SortingCollection();
             sortingCollection.Add(new SortProperty("Ord", SortingDirection.Ascending));
-            XPCollection xpcDocumentFinanceType = GetXPCollectionFromCriteria(GlobalFramework.SessionXpo, typeof(FIN_DocumentFinanceType), criteriaOperator, sortingCollection);
+            XPCollection xpcDocumentFinanceType = GetXPCollectionFromCriteria(GlobalFramework.SessionXpo, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
 
             try
             {
-                foreach (FIN_DocumentFinanceType item in xpcDocumentFinanceType)
+                foreach (fin_documentfinancetype item in xpcDocumentFinanceType)
                 {
                     if (debug) _log.Debug(string.Format("Add DocumentFinanceType: [{0}]", item.Designation));
                     documentFinanceTypeList.Add(item.Oid);
@@ -133,8 +133,8 @@ namespace logicpos.financial.library.App
                 //MovementOfGoods,WorkingDocuments
                 else if (
                     //SaftDocumentType = 2
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote ||
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    // pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote || /* IN009175 */
+                    // pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide || /* IN009175 */
                     pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
                     pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide ||
                     pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeReturnGuide ||
@@ -153,6 +153,20 @@ namespace logicpos.financial.library.App
                         //SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice,
                         //SaftDocumentType = 0
                         SettingsApp.XpoOidDocumentFinanceTypeBudget,
+                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice
+                    };
+                }
+                /* IN009175 - Transport Documents ("Guia de Transporte" and "Guia de Remessa") */
+                else if (
+                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote
+                    )
+                { /* #TODO check this list and all others here */
+                    result = new Guid[] { 
+                        SettingsApp.XpoOidDocumentFinanceTypeInvoice,
+                        SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice,
+                        SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                        SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument,
                         SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice
                     };
                 }
@@ -187,11 +201,11 @@ namespace logicpos.financial.library.App
         /// Get a Collection of UnCredited DocumentFinance Detail Items , ex Detail Lines that dont have been already Credited from a Invoice Type Document
         /// Method specific to CreditNotes
         /// </summary>
-        public static XPCollection<FIN_DocumentFinanceDetail> GetUnCreditedItemsFromSourceDocument(FIN_DocumentFinanceMaster pSourceDocument, out string pCreditedDocuments)
+        public static XPCollection<fin_documentfinancedetail> GetUnCreditedItemsFromSourceDocument(fin_documentfinancemaster pSourceDocument, out string pCreditedDocuments)
         {
-            XPCollection<FIN_DocumentFinanceDetail> result = new XPCollection<FIN_DocumentFinanceDetail>(pSourceDocument.Session, false);
+            XPCollection<fin_documentfinancedetail> result = new XPCollection<fin_documentfinancedetail>(pSourceDocument.Session, false);
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("DocumentMaster = '{0}'", pSourceDocument.Oid));
-            XPCollection xpoCollectionReferences = new XPCollection(pSourceDocument.Session, typeof(FIN_DocumentFinanceDetailReference), criteria);
+            XPCollection xpoCollectionReferences = new XPCollection(pSourceDocument.Session, typeof(fin_documentfinancedetailreference), criteria);
             bool addToCollection = true;
             List<string> listCreditedDocuments = new List<string>();
             pCreditedDocuments = string.Empty;
@@ -199,7 +213,7 @@ namespace logicpos.financial.library.App
             try
             {
                 //Loop SourceDocument Details
-                foreach (FIN_DocumentFinanceDetail itemSource in pSourceDocument.DocumentDetail)
+                foreach (fin_documentfinancedetail itemSource in pSourceDocument.DocumentDetail)
                 {
                     //Reset
                     addToCollection = true;
@@ -208,7 +222,7 @@ namespace logicpos.financial.library.App
                     itemSource.Reload();
 
                     //Loop SourceDocument Details
-                    foreach (FIN_DocumentFinanceDetailReference itemReferences in xpoCollectionReferences)
+                    foreach (fin_documentfinancedetailreference itemReferences in xpoCollectionReferences)
                     {
                         if (
                             //Same props has ArticleBag Key
@@ -220,8 +234,23 @@ namespace logicpos.financial.library.App
                             itemSource.VatExemptionReason == itemReferences.DocumentDetail.VatExemptionReason
                         )
                         {
+							/* IN009235 - Begin */
+                            Decimal itemDiscountValue = (itemReferences.DocumentDetail.TotalGross * itemReferences.DocumentDetail.Discount / 100);
+                            Decimal itemTotalNetValue = itemReferences.DocumentDetail.TotalGross - itemDiscountValue;
+                            Decimal itemTaxValue = (itemTotalNetValue * itemReferences.DocumentDetail.Vat / 100);
+                            Decimal itemTotalFinalValue = itemTotalNetValue + itemTaxValue;
+
+                            Decimal itemOldDiscountValue = (itemSource.TotalGross * itemSource.Discount / 100);
+                            Decimal itemOldTotalNetValue = itemSource.TotalGross - itemOldDiscountValue;
+                            Decimal itemOldTaxValue = (itemOldTotalNetValue * itemSource.Vat / 100);
+                            Decimal itemOldTotalFinalValue = itemOldTotalNetValue + itemOldTaxValue;
+
                             // Substract Credited Quantity from itemSource
                             itemSource.Quantity -= itemReferences.DocumentDetail.Quantity;
+                            itemSource.TotalGross -= itemReferences.DocumentDetail.TotalGross;
+                            itemSource.TotalNet = itemOldTotalNetValue - itemTotalNetValue;
+                            itemSource.TotalFinal = itemOldTotalFinalValue - itemTotalFinalValue;
+							/* IN009235 - End */
 
                             // Debug Helper
                             //_log.Debug(string.Format("DocumentNumber: [{0}], Designation: [{1}], Quantity: [{2}], itemReferences.Quantity: [{3}]",
@@ -260,7 +289,7 @@ namespace logicpos.financial.library.App
         /// <summary>
         /// Method to check if Credit Note ArticleBag is Valid
         /// </summary>
-        public static bool GetCreditNoteValidation(FIN_DocumentFinanceMaster pDocumentParent, ArticleBag pArticleBag)
+        public static bool GetCreditNoteValidation(fin_documentfinancemaster pDocumentParent, ArticleBag pArticleBag)
         {
             bool debug = false;
             bool result = false;
@@ -405,18 +434,18 @@ namespace logicpos.financial.library.App
 
         //Detect if ArticleBag has a "Recharge Article" and Valid "Customer Card" customer
         //Returns true if is valid, or false if is invalidCustomerCardDetected
-        public static bool IsCustomerCardValidForArticleBag(ArticleBag pArticleBag, ERP_Customer pCustomer)
+        public static bool IsCustomerCardValidForArticleBag(ArticleBag pArticleBag, erp_customer pCustomer)
         {
             //Default result is true
             bool result = true;
 
             try
             {
-                FIN_Article article;
+                fin_article article;
                 foreach (var item in pArticleBag)
                 {
                     //Get Article
-                    article = (FIN_Article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_Article), item.Key.ArticleOid);
+                    article = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                     //Assign Required if ArticleClassCustomerCard Detected
                     if (article.Type.Oid == SettingsApp.XpoOidArticleClassCustomerCard
                         && (
@@ -488,23 +517,34 @@ namespace logicpos.financial.library.App
         //Returns Last|New DocumentConference, for table current OrderMain
         //GenerateNewIfDiferentFromArticleBag : Used to generate a new Document if latest Document has been changed (Compare it to current ArticleBag), 
         //else if false use the latest on Database ignoring Diferences, Used to Get latest DocumentConference to use in Generate DocumentConference PosOrdersDialog.buttonTableConsult_Clicked
-        public static FIN_DocumentFinanceMaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false)
+        public static fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false)
         {
             //Declare local Variables
-            FIN_DocumentFinanceMaster lastDocument = null;
-            FIN_DocumentFinanceMaster newDocument = null;
-            FIN_DocumentFinanceMaster result = null;
-            FIN_DocumentOrderMain orderMain = null;
+            fin_documentfinancemaster lastDocument = null;
+            fin_documentfinancemaster newDocument = null;
+            fin_documentfinancemaster result = null;
+            fin_documentordermain orderMain = null;
             Guid currentOrderMainOid = GlobalFramework.SessionApp.CurrentOrderMainOid;
-            OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[currentOrderMainOid];
-
+            _log.Debug("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMainOid: " + currentOrderMainOid);
+            OrderMain currentOrderMain = null;
+            
             try
             {
+                /* IN009179 - System.Collections.Generic.KeyNotFoundException */
+                if (GlobalFramework.SessionApp.OrdersMain.Count > 0)
+                {
+                    currentOrderMain = GlobalFramework.SessionApp.OrdersMain[currentOrderMainOid];
+                }
+                else
+                {
+                    currentOrderMain = new OrderMain();
+                }
+
                 string sql = string.Format(@"
                     SELECT 
 	                    Oid
                     FROM 
-	                    FIN_documentfinancemaster 
+	                    fin_documentfinancemaster 
                     WHERE 
 	                    DocumentType = '{0}' AND 
 	                    SourceOrderMain = '{1}'
@@ -518,7 +558,7 @@ namespace logicpos.financial.library.App
                 var sqlResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
 
                 //Get LastDocument Object
-                if (sqlResult != null) lastDocument = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), new Guid(Convert.ToString(sqlResult)));
+                if (sqlResult != null) lastDocument = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(Convert.ToString(sqlResult)));
 
                 //If GenerateNewIfDiferentFromArticleBag Enabled compare ArticleBag with Document and If is diferent Generate a New One
                 if (pGenerateNewIfDiferentFromArticleBag)
@@ -537,12 +577,12 @@ namespace logicpos.financial.library.App
                             Customer = SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity
                         };
 
-                        orderMain = (FIN_DocumentOrderMain)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentOrderMain), currentOrderMain.PersistentOid);
+                        orderMain = (fin_documentordermain)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentordermain), currentOrderMain.PersistentOid);
                         processFinanceDocumentParameter.SourceOrderMain = orderMain;
                         if (lastDocument != null)
                         {
                             processFinanceDocumentParameter.DocumentParent = lastDocument.Oid;
-                            processFinanceDocumentParameter.OrderReferences = new List<FIN_DocumentFinanceMaster>();
+                            processFinanceDocumentParameter.OrderReferences = new List<fin_documentfinancemaster>();
                             processFinanceDocumentParameter.OrderReferences.Add(lastDocument);
                         }
 
@@ -554,7 +594,7 @@ namespace logicpos.financial.library.App
                         {
                             //Assign Result Document to New Document
                             //Get Object outside UOW else we have a problem with "A first chance exception of type 'System.ObjectDisposedException'"
-                            result = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), newDocument.Oid);
+                            result = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), newDocument.Oid);
 
                             ////Old Code that changes last Conference Document to Status "A", it is not Required, Confirmed with Carlos Bento, we must Leave it without status changes
                             //if (lastDocument != null) 
@@ -575,6 +615,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
+                _log.Error("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMain: " + currentOrderMain);
                 // Send Exception to logicpos, must treat exception in ui, to Show Alert to User
                 throw ex;
             }
@@ -585,14 +626,14 @@ namespace logicpos.financial.library.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Customer
 
-        public static ERP_Customer GetFinalConsumerEntity()
+        public static erp_customer GetFinalConsumerEntity()
         {
-            ERP_Customer result = null;
+            erp_customer result = null;
 
             try
             {
                 string filterCriteria = string.Format("Oid = '{0}'", SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
-                result = (GetXPGuidObjectFromCriteria(typeof(ERP_Customer), filterCriteria) as ERP_Customer);
+                result = (GetXPGuidObjectFromCriteria(typeof(erp_customer), filterCriteria) as erp_customer);
             }
             catch (Exception ex)
             {

@@ -23,21 +23,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewConfigurationCashRegister(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(POS_ConfigurationCashRegister);
+            Type xpoGuidObjectType = typeof(pos_configurationcashregister);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            POS_ConfigurationCashRegister defaultValue = (pDefaultValue != null) ? pDefaultValue as POS_ConfigurationCashRegister : null;
+            pos_configurationcashregister defaultValue = (pDefaultValue != null) ? pDefaultValue as pos_configurationcashregister : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationCashRegister);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation_Drawer, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Drawer") { Title = Resx.global_ConfigurationCashRegister });
-            columnProperties.Add(new GenericTreeViewColumnProperty("AutomaticDrawer") { Title = Resx.global_ConfigurationCashRegister_AutomaticDrawer });
-            columnProperties.Add(new GenericTreeViewColumnProperty("ActiveSales") { Title = Resx.global_ConfigurationCashRegister_ActiveSales });
-            columnProperties.Add(new GenericTreeViewColumnProperty("AllowChargeBacks") { Title = Resx.global_ConfigurationCashRegister_AllowChargeBacks });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation_Drawer"), Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Drawer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCashRegister") });
+            columnProperties.Add(new GenericTreeViewColumnProperty("AutomaticDrawer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCashRegister_AutomaticDrawer") });
+            columnProperties.Add(new GenericTreeViewColumnProperty("ActiveSales") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCashRegister_ActiveSales") });
+            columnProperties.Add(new GenericTreeViewColumnProperty("AllowChargeBacks") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCashRegister_AllowChargeBacks") });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

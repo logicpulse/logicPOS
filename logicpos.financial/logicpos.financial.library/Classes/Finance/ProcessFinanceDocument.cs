@@ -12,6 +12,7 @@ using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace logicpos.financial.library.Classes.Finance
 {
@@ -20,7 +21,7 @@ namespace logicpos.financial.library.Classes.Finance
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static FIN_DocumentFinanceMaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
+        public static fin_documentfinancemaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
         {
             Guid userDetailGuid = (GlobalFramework.LoggedUser != null) ? GlobalFramework.LoggedUser.Oid : Guid.Empty;
             Guid terminalGuid = (GlobalFramework.LoggedTerminal != null) ? GlobalFramework.LoggedTerminal.Oid : Guid.Empty;
@@ -28,9 +29,9 @@ namespace logicpos.financial.library.Classes.Finance
             return (PersistFinanceDocument(pParameters, userDetailGuid, terminalGuid, pIgnoreWarning));
         }
 
-        public static FIN_DocumentFinanceMaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, Guid pLoggedUser, Guid pTerminal, bool pIgnoreWarning = false)
+        public static fin_documentfinancemaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, Guid pLoggedUser, Guid pTerminal, bool pIgnoreWarning = false)
         {
-            FIN_DocumentFinanceMaster result = null;
+            fin_documentfinancemaster result = null;
 
             try
             {
@@ -65,29 +66,29 @@ namespace logicpos.financial.library.Classes.Finance
                 {
                     //Get Objects, To Prevent XPO Stress of Deleted Objects inside UOW
                     //WorkSessionPeriod workSessionPeriod = (WorkSessionPeriod)FrameworkUtils.GetXPGuidObjectFromSession(uowSession, typeof(WorkSessionPeriod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
-                    SYS_UserDetail userDetail = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(uowSession, typeof(SYS_UserDetail), pLoggedUser);
-                    POS_ConfigurationPlaceTerminal terminal = (POS_ConfigurationPlaceTerminal)FrameworkUtils.GetXPGuidObject(uowSession, typeof(POS_ConfigurationPlaceTerminal), pTerminal);
+                    sys_userdetail userDetail = (sys_userdetail)FrameworkUtils.GetXPGuidObject(uowSession, typeof(sys_userdetail), pLoggedUser);
+                    pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pTerminal);
 
                     //Prepare Modes
-                    FIN_DocumentOrderMain documentOrderMain = null;
+                    fin_documentordermain documentOrderMain = null;
                     if (pParameters.SourceMode == PersistFinanceDocumentSourceMode.CurrentOrderMain)
                     {
                         orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
                         //Get Persistent Oid from orderMain
-                        documentOrderMain = (FIN_DocumentOrderMain)uowSession.GetObjectByKey(typeof(FIN_DocumentOrderMain), orderMain.PersistentOid);
+                        documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
                     }
                     else
                     {
                         if (pParameters.SourceOrderMain != null)
                         {
-                            documentOrderMain = (FIN_DocumentOrderMain)uowSession.GetObjectByKey(typeof(FIN_DocumentOrderMain), pParameters.SourceOrderMain.Oid);
+                            documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), pParameters.SourceOrderMain.Oid);
                         }
                     }
 
                     //Initialize DocumentFinance* Objects 
-                    FIN_DocumentFinanceType documentFinanceType = (FIN_DocumentFinanceType)uowSession.GetObjectByKey(typeof(FIN_DocumentFinanceType), pParameters.DocumentType);
-                    FIN_DocumentFinanceSeries documentFinanceSerie = null;
-                    FIN_DocumentFinanceYearSerieTerminal documentFinanceYearSerieTerminal = null;
+                    fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)uowSession.GetObjectByKey(typeof(fin_documentfinancetype), pParameters.DocumentType);
+                    fin_documentfinanceseries documentFinanceSerie = null;
+                    fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
 
                     //Get Document Serie for current Terminal
                     documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(uowSession, documentFinanceType.Oid);
@@ -119,7 +120,7 @@ namespace logicpos.financial.library.Classes.Finance
                     documentFinanceSerie.NextDocumentNumber++;
 
                     //Start Persist Objects
-                    FIN_DocumentFinanceMaster documentFinanceMaster = new FIN_DocumentFinanceMaster(uowSession)
+                    fin_documentfinancemaster documentFinanceMaster = new fin_documentfinancemaster(uowSession)
                     {
                         DocumentType = documentFinanceType,
                         DocumentSerie = documentFinanceSerie,
@@ -136,10 +137,10 @@ namespace logicpos.financial.library.Classes.Finance
                     }
 
                     //DocumentParent/SourceDocumentID(SAF-T PT)
-                    FIN_DocumentFinanceMaster documentFinanceMasterParentDocument = null;
+                    fin_documentfinancemaster documentFinanceMasterParentDocument = null;
                     if (pParameters.DocumentParent != null && pParameters.DocumentParent != Guid.Empty)
                     {
-                        documentFinanceMasterParentDocument = (FIN_DocumentFinanceMaster)uowSession.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), pParameters.DocumentParent);
+                        documentFinanceMasterParentDocument = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), pParameters.DocumentParent);
                         documentFinanceMaster.DocumentParent = documentFinanceMasterParentDocument;
 
                         if (documentFinanceMasterParentDocument != null)
@@ -166,13 +167,13 @@ namespace logicpos.financial.library.Classes.Finance
                     }
 
                     //If Has a Valid Customer
-                    ERP_Customer customer = (ERP_Customer)uowSession.GetObjectByKey(typeof(ERP_Customer), pParameters.Customer);
+                    erp_customer customer = (erp_customer)uowSession.GetObjectByKey(typeof(erp_customer), pParameters.Customer);
                     if (customer != null)
                     {
                         documentFinanceMaster.EntityOid = customer.Oid;
                         //Store CodeInternal to use in SAF-T
                         documentFinanceMaster.EntityInternalCode = customer.CodeInternal;
-                        documentFinanceMaster.EntityFiscalNumber = customer.FiscalNumber;
+                        documentFinanceMaster.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.FiscalNumber); /* IN009075 */
                         //Always Update EntityCountryOid, usefull to AT WebServices to detect Country
                         if (customer.Country != null)
                         {
@@ -183,7 +184,7 @@ namespace logicpos.financial.library.Classes.Finance
                         //Only persist Customer Details If is (! Simplified Invoice) AND (! FinalConsumer (in Invoices for ex))
                         if (
                             (
-                                documentFinanceMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice &&
+                                // documentFinanceMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice && /* IN009076 - FS is not saving customer data */
                                 customer.Oid != FrameworkUtils.GetFinalConsumerEntity().Oid
                             )
                             ||
@@ -197,11 +198,12 @@ namespace logicpos.financial.library.Classes.Finance
                             //&& !FrameworkUtils.IsFinalConsumerEntity(customer.FiscalNumber)
                             )
                         {
-                            documentFinanceMaster.EntityName = customer.Name;
-                            documentFinanceMaster.EntityAddress = customer.Address;
-                            documentFinanceMaster.EntityLocality = customer.Locality;
-                            documentFinanceMaster.EntityZipCode = customer.ZipCode;
-                            documentFinanceMaster.EntityCity = customer.City;
+                            /* IN009075 - encrypting customer datum when persisting finance document */
+                            documentFinanceMaster.EntityName        = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.Name);
+                            documentFinanceMaster.EntityAddress     = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.Address);
+                            documentFinanceMaster.EntityLocality    = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.Locality);
+                            documentFinanceMaster.EntityZipCode     = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.ZipCode);
+                            documentFinanceMaster.EntityCity        = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.City);
                             //Deprecated Now Always assign Country, usefull to AT WebServices to detect Country 
                             //if (customer.Country != null)
                             //{
@@ -212,23 +214,23 @@ namespace logicpos.financial.library.Classes.Finance
                         //Persist Name if is has a FinalConsumer NIF and Name (Hidden Customer)
                         else if (FrameworkUtils.IsFinalConsumerEntity(customer.FiscalNumber) && customer.Name != string.Empty)
                         {
-                            documentFinanceMaster.EntityName = customer.Name;
+                            documentFinanceMaster.EntityName = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.Name); /* IN009075 */
                         }
                     }
 
                     //Currency
-                    CFG_ConfigurationCurrency configurationCurrency = null;
-                    if (pParameters.Currency != null && pParameters.Currency != new Guid()) configurationCurrency = (CFG_ConfigurationCurrency)uowSession.GetObjectByKey(typeof(CFG_ConfigurationCurrency), pParameters.Currency);
+                    cfg_configurationcurrency configurationCurrency = null;
+                    if (pParameters.Currency != null && pParameters.Currency != new Guid()) configurationCurrency = (cfg_configurationcurrency)uowSession.GetObjectByKey(typeof(cfg_configurationcurrency), pParameters.Currency);
                     //Assign Currency to Document
                     if (configurationCurrency != null) documentFinanceMaster.Currency = configurationCurrency;
                     //ExchangeRate
                     documentFinanceMaster.ExchangeRate = pParameters.ExchangeRate;
 
                     //PaymentMethod
-                    FIN_ConfigurationPaymentMethod paymentMethod = null;
+                    fin_configurationpaymentmethod paymentMethod = null;
                     if (pParameters.PaymentMethod != new Guid())
                     {
-                        paymentMethod = (FIN_ConfigurationPaymentMethod)uowSession.GetObjectByKey(typeof(FIN_ConfigurationPaymentMethod), pParameters.PaymentMethod);
+                        paymentMethod = (fin_configurationpaymentmethod)uowSession.GetObjectByKey(typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod);
                     }
                     //Assign Only it was not Null
                     if (paymentMethod != null)
@@ -237,10 +239,10 @@ namespace logicpos.financial.library.Classes.Finance
                     }
 
                     //PaymentMethod
-                    FIN_ConfigurationPaymentCondition paymentCondition = null;
+                    fin_configurationpaymentcondition paymentCondition = null;
                     if (pParameters.PaymentCondition != new Guid())
                     {
-                        paymentCondition = (FIN_ConfigurationPaymentCondition)uowSession.GetObjectByKey(typeof(FIN_ConfigurationPaymentCondition), pParameters.PaymentCondition);
+                        paymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), pParameters.PaymentCondition);
                     }
                     if (paymentCondition != null)
                     {
@@ -330,27 +332,27 @@ namespace logicpos.financial.library.Classes.Finance
                     //DocumentFinanceDetail
 
                     //Cant Work Here, Because in UnitOfWork we cant get the "last inserted oid..."
-                    FIN_DocumentFinanceDetail documentFinanceDetail;
+                    fin_documentfinancedetail documentFinanceDetail;
                     Guid vatRateOid;
-                    FIN_ConfigurationVatRate vatRate;
-                    FIN_ConfigurationVatExemptionReason vatExemptionReason;
-                    FIN_Article article;
+                    fin_configurationvatrate vatRate;
+                    fin_configurationvatexemptionreason vatExemptionReason;
+                    fin_article article;
                     uint lineNumber = 1;
 
                     foreach (var item in pParameters.ArticleBag)
                     {
                         //Get Article
-                        article = (FIN_Article)uowSession.GetObjectByKey(typeof(FIN_Article), item.Key.ArticleOid);
+                        article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                         //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
                         string filterVat = FrameworkUtils.DecimalToString(item.Key.Vat, GlobalFramework.CurrentCultureNumberFormat);
                         string executeSql = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Value = '{0}';", filterVat);
                         vatRateOid = FrameworkUtils.GetGuidFromQuery(executeSql);
-                        vatRate = (FIN_ConfigurationVatRate)uowSession.GetObjectByKey(typeof(FIN_ConfigurationVatRate), vatRateOid);
+                        vatRate = (fin_configurationvatrate)uowSession.GetObjectByKey(typeof(fin_configurationvatrate), vatRateOid);
 
                         //If Type dont Have Price it Creates an Empty Details document, always use HavePrice, Only Type : Informative Created by Muga dont use HavePrice
                         if (article.Type.HavePrice)
                         {
-                            documentFinanceDetail = new FIN_DocumentFinanceDetail(uowSession)
+                            documentFinanceDetail = new fin_documentfinancedetail(uowSession)
                             {
                                 Ord = lineNumber,
                                 Code = item.Value.Code,
@@ -379,7 +381,7 @@ namespace logicpos.financial.library.Classes.Finance
                             if (item.Key.VatExemptionReasonOid != new Guid())
                             {
                                 //Get Fresh Object to Prevent Mixing Sessions
-                                vatExemptionReason = (FIN_ConfigurationVatExemptionReason)uowSession.GetObjectByKey(typeof(FIN_ConfigurationVatExemptionReason), item.Key.VatExemptionReasonOid);
+                                vatExemptionReason = (fin_configurationvatexemptionreason)uowSession.GetObjectByKey(typeof(fin_configurationvatexemptionreason), item.Key.VatExemptionReasonOid);
                                 documentFinanceDetail.VatExemptionReason = vatExemptionReason;
                                 documentFinanceDetail.VatExemptionReasonDesignation = vatExemptionReason.Designation;
                             }
@@ -395,15 +397,15 @@ namespace logicpos.financial.library.Classes.Finance
                             if (pParameters.OrderReferences != null && pParameters.OrderReferences.Count > 0)
                             {
                                 uint ord = 0;
-                                foreach (FIN_DocumentFinanceMaster documentMaster in pParameters.OrderReferences)
+                                foreach (fin_documentfinancemaster documentMaster in pParameters.OrderReferences)
                                 {
                                     ord++;
                                     //Require Fresh Objects to Prevent Xpo Mixing Sessions
                                     documentFinanceDetail.OrderReferences.Add(
-                                      new FIN_DocumentFinanceDetailOrderReference(uowSession)
+                                      new fin_documentfinancedetailorderreference(uowSession)
                                       {
                                           Ord = ord,
-                                          DocumentMaster = (FIN_DocumentFinanceMaster)uowSession.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), documentMaster.Oid),
+                                          DocumentMaster = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), documentMaster.Oid),
                                           OriginatingON = documentMaster.DocumentNumber,
                                           OrderDate = documentMaster.Date
                                       }
@@ -416,14 +418,22 @@ namespace logicpos.financial.library.Classes.Finance
                             if (item.Value.Reference != null)
                             {
                                 documentFinanceDetail.References.Add(
-                                    new FIN_DocumentFinanceDetailReference(uowSession)
+                                    new fin_documentfinancedetailreference(uowSession)
                                     {
                                         Ord = 0,
-                                        DocumentMaster = (FIN_DocumentFinanceMaster)uowSession.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), item.Value.Reference.Oid),
+                                        DocumentMaster = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), item.Value.Reference.Oid),
                                         Reference = item.Value.Reference.DocumentNumber,
                                         Reason = item.Value.Reason
                                     }
                                 );
+                            }
+
+                            /* IN009252 - This represents one of article Reason value. 
+                             * Because we have the same value included on Document when 
+                             * issuing it for its whole article list, therefore overwritting */
+                            if (documentFinanceDetail.References.Count > 0)
+                            {
+                                documentFinanceMaster.Notes += documentFinanceDetail.References[0].Reason;
                             }
 
                             //Inc lineNumber for Ord
@@ -432,16 +442,52 @@ namespace logicpos.financial.library.Classes.Finance
                             //Commissions Work
                             PersistFinanceDocumentCommission(uowSession, documentFinanceDetail, userDetail);
                         }
+
+                        // TK013134
+                        if (GlobalFramework.AppUseParkingTicketModule)
+                        {
+                            //Add to PendentPayedParkingTickets
+                            //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingTicket))
+                            //Get Original Designation from Fresh Object
+                            fin_article articleForDesignation = (fin_article)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleOid);
+                            // Extract Ean from Designation 
+                            string ticketEan = item.Key.Designation
+                                .Replace($"{articleForDesignation.Designation} [", string.Empty)
+                                .Replace("]", string.Empty);
+                            // Extract Ean from designation after n~hours showed on ticket
+                            string output = ticketEan.Split('[').Last();
+                            /* 
+                             * TK013134
+                             * Defined on 2018-12-12 that Designation must be kept the same as it is when billing.
+                             */
+                            /*articleForDesignation.Reload();
+                            item.Key.Designation = articleForDesignation.Designation;
+                            item.Value.Notes = $"[{ticketEan}]";*/
+                            
+                            //Add to PendentPayedParkingCards
+                            //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingCard))
+                            
+                            //IN009279 If ticket (EAN 13)
+                            if (output.Length != 13)
+                            {
+                                int quantity = Convert.ToInt32(item.Value.Quantity);
+                                documentFinanceMaster.Notes += string.Format("{0} ", quantity.ToString()); 
+                                //documentOrderMain.Notes = item.Value.Quantity.ToString();
+                                GlobalFramework.PendentPayedParkingCards.Add(output, documentOrderMain.Oid);
+                            }
+                            //IN009279 If Card
+                            else GlobalFramework.PendentPayedParkingTickets.Add(output, documentOrderMain.Oid);
+                        }
                     }
 
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                     //Persist Totals
 
-                    FIN_DocumentFinanceMasterTotal documentFinanceMasterTotal;
+                    fin_documentfinancemastertotal documentFinanceMasterTotal;
                     foreach (var item in pParameters.ArticleBag.TaxBag)
                     {
                         //Console.WriteLine(string.Format("{0}\t{1}", item.Key, item.Value));
-                        documentFinanceMasterTotal = new FIN_DocumentFinanceMasterTotal(uowSession)
+                        documentFinanceMasterTotal = new fin_documentfinancemastertotal(uowSession)
                         {
                             Value = item.Key,
                             Total = item.Value.Total,
@@ -497,7 +543,7 @@ namespace logicpos.financial.library.Classes.Finance
                     foreach (var item in pParameters.ArticleBag)
                     {
                         //Get Article
-                        article = (FIN_Article)uowSession.GetObjectByKey(typeof(FIN_Article), item.Key.ArticleOid);
+                        article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                         if (article.Type.Oid == SettingsApp.XpoOidArticleClassCustomerCard)
                         {
                             customer.CardCredit = customer.CardCredit + item.Value.TotalFinal;
@@ -530,6 +576,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                             //Get current OrderMain Article Bag, After Process Payment/PartialPayment to check if current OrderMain has Items, or is Empty
                             pParameters.ArticleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
+
                             if (pParameters.ArticleBag.Count <= 0)
                             {
                                 // Warning required to check if (documentOrderMain != null), when we work with SplitPayments and work only one product, 
@@ -542,17 +589,17 @@ namespace logicpos.financial.library.Classes.Finance
                                 if (documentOrderMain != null) documentOrderMain.UpdatedAt = documentDateTime;
 
                                 //Change Table Status to Free
-                                POS_ConfigurationPlaceTable placeTable;
-                                placeTable = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(uowSession, typeof(POS_ConfigurationPlaceTable), orderMain.Table.Oid);
+                                pos_configurationplacetable placeTable;
+                                placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 placeTable.TableStatus = TableStatus.Free;
-                                FrameworkUtils.Audit("TABLE_OPEN", string.Format(Resx.audit_message_table_open, placeTable.Designation));
+                                FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
                                 placeTable.DateTableClosed = documentDateTime;
                                 placeTable.TotalOpen = 0;
 
                                 //Required to Reload Objects after has been changed in Another Session(uowSession)
-                                if (documentOrderMain != null) documentOrderMain = (FIN_DocumentOrderMain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_DocumentOrderMain), orderMain.PersistentOid);
+                                if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
                                 if (documentOrderMain != null) documentOrderMain.Reload();
-                                placeTable = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(POS_ConfigurationPlaceTable), orderMain.Table.Oid);
+                                placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 placeTable.Reload();
 
                                 //Clean Session if Commited without problems
@@ -568,10 +615,10 @@ namespace logicpos.financial.library.Classes.Finance
                         //Update CurrentAccount Documents
                         else if (pParameters.SourceMode == PersistFinanceDocumentSourceMode.CurrentAcountDocuments)
                         {
-                            FIN_DocumentFinanceMaster currentAcountDocument;
-                            foreach (FIN_DocumentFinanceMaster financeDocument in pParameters.FinanceDocuments)
+                            fin_documentfinancemaster currentAcountDocument;
+                            foreach (fin_documentfinancemaster financeDocument in pParameters.FinanceDocuments)
                             {
-                                currentAcountDocument = (FIN_DocumentFinanceMaster)uowSession.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), financeDocument.Oid);
+                                currentAcountDocument = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), financeDocument.Oid);
                                 currentAcountDocument.Payed = true;
                                 currentAcountDocument.PayedDate = documentDateTime;
                                 currentAcountDocument.DocumentChild = documentFinanceMaster;
@@ -580,6 +627,22 @@ namespace logicpos.financial.library.Classes.Finance
 
                         //Finnaly Commit Changes
                         uowSession.CommitChanges();
+
+// TK013134
+if (GlobalFramework.AppUseParkingTicketModule)
+//{
+//    foreach (var item in GlobalFramework.PendentPayedParkingTickets)
+//    {
+//        // Call #Ws Part 2 : Send Payed Cached Tickets
+//        _log.Debug($"TicketId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
+//    }
+
+//    foreach (var item in GlobalFramework.PendentPayedParkingCards)
+//    {
+//        // Call #Ws Part 3 : Send Payed Cached Cards
+//        _log.Debug($"CardId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
+//    }
+//}
 
                         //Always Assign DocumentChild Reference to DocumentParent
                         if (documentFinanceMasterParentDocument != null)
@@ -590,7 +653,7 @@ namespace logicpos.financial.library.Classes.Finance
                         }
 
                         //Audit
-                        FrameworkUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, Resx.global_document_created, documentFinanceMaster.DocumentNumber));
+                        FrameworkUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
                         ProcessArticleStock.Add(documentFinanceMaster);
@@ -612,7 +675,7 @@ namespace logicpos.financial.library.Classes.Finance
             catch (ProcessFinanceDocumentValidationException ex)
             {
                 _log.Error(ex.Message, ex);
-                throw new Exception(ex.Message, ex.InnerException);
+                throw new Exception(ex.Exception.Message, ex.InnerException);
             }
 
             return (result);
@@ -628,11 +691,11 @@ namespace logicpos.financial.library.Classes.Finance
         //No caso de utilização de séries plurianuais, no início de cada exercício, o primeiro documento poderá ser assinado tendo em consideração o Hash do 
         //último documento emitido da mesma série/tipo, no exercício fiscal anterior.
 
-        public static string GenDocumentHash(Session pSession, FIN_DocumentFinanceType pDocType, FIN_DocumentFinanceSeries pDocSerie, FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static string GenDocumentHash(Session pSession, fin_documentfinancetype pDocType, fin_documentfinanceseries pDocSerie, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             bool debug = false;
             string resultSignedHash = "";
-            FIN_DocumentFinanceMaster doc = pDocumentFinanceMaster;
+            fin_documentfinancemaster doc = pDocumentFinanceMaster;
             //Required to ALways use "." and not Culture Decimal separator, ex ","
             //string TotalFinalRound = FrameworkUtils.DecimalToString(doc.TotalFinalRound).Replace(',', '.');
             string TotalFinalRound = FrameworkUtils.DecimalToString(Convert.ToDecimal(doc.TotalFinalRound), GlobalFramework.CurrentCultureNumberFormat);
@@ -668,7 +731,7 @@ namespace logicpos.financial.library.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //GenDocumentNumber
 
-        public static string GenDocumentNumber(FIN_DocumentFinanceSeries pDocType)
+        public static string GenDocumentNumber(fin_documentfinanceseries pDocType)
         {
             string documentNumber = "INVALID_DOCUMENT_NUMBER";
 
@@ -705,7 +768,7 @@ namespace logicpos.financial.library.Classes.Finance
             // Protection In case of bad hash, ex when we dont have SoftwareVendorPlugin Registered
             if (string.IsNullOrEmpty(pHash))
             {
-                throw new Exception(Resx.dialog_message_error_creating_financial_document_bad_hash_detected);
+                throw new Exception(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_bad_hash_detected"));
             }
             else
             {
@@ -729,7 +792,7 @@ namespace logicpos.financial.library.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Process Payments/Recibos
 
-        public static FIN_DocumentFinancePayment PersistFinanceDocumentPayment(List<FIN_DocumentFinanceMaster> pInvoices, List<FIN_DocumentFinanceMaster> pCreditNotes, Guid pCustomer, Guid pPaymentMethod, Guid pConfigurationCurrency, decimal pPaymentAmount, string pPaymentNotes = "")
+        public static fin_documentfinancepayment PersistFinanceDocumentPayment(List<fin_documentfinancemaster> pInvoices, List<fin_documentfinancemaster> pCreditNotes, Guid pCustomer, Guid pPaymentMethod, Guid pConfigurationCurrency, decimal pPaymentAmount, string pPaymentNotes = "")
         {
             //Proccess Validation
             SortedDictionary<FinanceValidationError, object> errorsValidation = ProcessFinanceDocumentValidation.ValidatePersistFinanceDocumentPayment(pInvoices, pCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
@@ -768,9 +831,9 @@ namespace logicpos.financial.library.Classes.Finance
             //CurrentDateTime
             DateTime currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
             //XpoObjects
-            FIN_DocumentFinanceMaster documentMaster = null;
-            FIN_DocumentFinancePayment documentFinancePayment = null;
-            FIN_DocumentFinanceMasterPayment documentFinanceMasterPayment = null;
+            fin_documentfinancemaster documentMaster = null;
+            fin_documentfinancepayment documentFinancePayment = null;
+            fin_documentfinancemasterpayment documentFinanceMasterPayment = null;
 
             //Start UnitOfWork
             using (UnitOfWork uowSession = new UnitOfWork())
@@ -778,17 +841,17 @@ namespace logicpos.financial.library.Classes.Finance
                 try
                 {
                     //Get DocumentType
-                    FIN_DocumentFinanceType documentFinanceType = (FIN_DocumentFinanceType)uowSession.GetObjectByKey(typeof(FIN_DocumentFinanceType), SettingsApp.XpoOidDocumentFinanceTypePayment);
+                    fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)uowSession.GetObjectByKey(typeof(fin_documentfinancetype), SettingsApp.XpoOidDocumentFinanceTypePayment);
                     if (documentFinanceType == null)
                     {
                         throw new Exception("ERROR_MISSING_DOCUMENT_TYPE");
                     }
 
                     //Get UserDetail
-                    SYS_UserDetail userDetail = (SYS_UserDetail)uowSession.GetObjectByKey(typeof(SYS_UserDetail), GlobalFramework.LoggedUser.Oid);
+                    sys_userdetail userDetail = (sys_userdetail)uowSession.GetObjectByKey(typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
                     //Get Document Serie
-                    FIN_DocumentFinanceSeries documentFinanceSerie = null;
-                    FIN_DocumentFinanceYearSerieTerminal documentFinanceYearSerieTerminal = null;
+                    fin_documentfinanceseries documentFinanceSerie = null;
+                    fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
                     //Get Document Serie for current Terminal
                     documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(uowSession, SettingsApp.XpoOidDocumentFinanceTypePayment);
                     if (documentFinanceYearSerieTerminal != null)
@@ -816,20 +879,25 @@ namespace logicpos.financial.library.Classes.Finance
                     if (debug) _log.Debug(string.Format("documentNumber: [{0}]", documentNumber));
 
                     //Get Fresh UOW Objects
-                    ERP_Customer customer = (ERP_Customer)FrameworkUtils.GetXPGuidObject(uowSession, typeof(ERP_Customer), pCustomer);
-                    FIN_ConfigurationPaymentMethod paymentMethod = (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_ConfigurationPaymentMethod), pPaymentMethod);
+                    erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(uowSession, typeof(erp_customer), pCustomer);
+                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_configurationpaymentmethod), pPaymentMethod);
 
                     //Initialize Payment/Recibo (Many(Invoices&CreditNotes) 2 One(Payment))
                     if (pInvoices.Count > 0)
                     {
+                        /* IN009246 */
+                        pInvoices.Sort((documentMasterBase, documentMasterToCompare) => documentMasterBase.Date.CompareTo(documentMasterToCompare.Date));
+
                         //DocumentFinancePayment: Payments
-                        documentFinancePayment = new FIN_DocumentFinancePayment(uowSession);
+                        documentFinancePayment = new fin_documentfinancepayment(uowSession);
                         documentFinancePayment.PaymentRefNo = documentNumber;
                         documentFinancePayment.TransactionDate = currentDateTime.ToString(dateTimeFormatDocumentDate);
                         documentFinancePayment.PaymentType = "RG"; //Outros recibos emitidos
                         documentFinancePayment.PaymentStatus = "N";//Recibo normal e vigente
                         documentFinancePayment.PaymentDate = currentDateTime.ToString(dateTimeFormatDocumentDate); ;
+                        //IN009294 Recibos - Data do documento = Data do recibo 
                         documentFinancePayment.DocumentDate = currentDateTime.ToString(dateTimeFormatDocumentDate);
+                        //documentFinancePayment.DocumentDate = documentFinancePayment.PaymentDate;
                         documentFinancePayment.PaymentStatusDate = currentDateTime.ToString(dateTimeFormatCombinedDateTime);
                         documentFinancePayment.SourceID = userDetail.CodeInternal;
                         documentFinancePayment.SourcePayment = "P"; //Recibo produzido na aplicação
@@ -846,19 +914,19 @@ namespace logicpos.financial.library.Classes.Finance
                     }
 
                     //Get Default defaultCurrency
-                    CFG_ConfigurationCurrency defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
+                    cfg_configurationcurrency defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
                     //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
-                    CFG_ConfigurationCurrency configurationCurrency;
+                    cfg_configurationcurrency configurationCurrency;
                     if (SettingsApp.ConfigurationSystemCurrency.Oid != pConfigurationCurrency)
                     {
-                        configurationCurrency = (CFG_ConfigurationCurrency)uowSession.GetObjectByKey(typeof(CFG_ConfigurationCurrency), pConfigurationCurrency);
+                        configurationCurrency = (cfg_configurationcurrency)uowSession.GetObjectByKey(typeof(cfg_configurationcurrency), pConfigurationCurrency);
                     }
                     //Default Currency
                     else
                     {
                         //configurationCurrency = defaultCurrency;
                         //Fix for LogicErp else diferent Sessions Occur : Get Object in this Session
-                        configurationCurrency = (CFG_ConfigurationCurrency)uowSession.GetObjectByKey(typeof(CFG_ConfigurationCurrency), defaultCurrency.Oid); ;
+                        configurationCurrency = (cfg_configurationcurrency)uowSession.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid); ;
                     }
                     //Always Assign Currency,ExchangeRate and CurrencyCode
                     if (configurationCurrency != null)
@@ -872,13 +940,13 @@ namespace logicpos.financial.library.Classes.Finance
                     }
 
                     //Process CreditNotes/NC, and get totalCreditNotes
-                    foreach (FIN_DocumentFinanceMaster item in pCreditNotes)
+                    foreach (fin_documentfinancemaster item in pCreditNotes)
                     {
                         //If TotalCredit Greater than Current Credit Note, we Use this Credit Note, Else we Skip it and remain Untoutched for future uses
                         //if (Math.Round(totalCredit, decimalRoundTo) > Math.Round(item.TotalFinal, decimalRoundTo))
                         //{
                         //Get Fresh Object in UOW
-                        documentMaster = (FIN_DocumentFinanceMaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_DocumentFinanceMaster), item.Oid);
+                        documentMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
                         //Persist DocumentFinanceMaster Payment 
                         documentMaster.Payed = true;
                         documentMaster.PayedDate = currentDateTime;
@@ -886,7 +954,7 @@ namespace logicpos.financial.library.Classes.Finance
                         totalCredit += item.TotalFinal;
                         //DocumentFinanceMasterPayment: Many2Many Connection
                         documentFinanceMasterPaymentOrd++;
-                        documentFinanceMasterPayment = new FIN_DocumentFinanceMasterPayment(uowSession);
+                        documentFinanceMasterPayment = new fin_documentfinancemasterpayment(uowSession);
                         documentFinanceMasterPayment.Ord = documentFinanceMasterPaymentOrd;
                         documentFinanceMasterPayment.DebitAmount = item.TotalFinal;
                         documentFinanceMasterPayment.DocumentFinanceMaster = documentMaster;
@@ -896,12 +964,117 @@ namespace logicpos.financial.library.Classes.Finance
                     }
 
                     //Process Invoices/FTs
-                    foreach (FIN_DocumentFinanceMaster item in pInvoices)
+                    foreach (fin_documentfinancemaster item in pInvoices)
                     {
                         if (Math.Round(totalCredit, decimalRoundTo) > 0)
                         {
+							/* IN009182 - making this flow the same as Document presentation */
+                            string stringFormatIndexZero = "{0}";
+                            /* The following document types has no debit amount:
+                             * Orçamento
+                             * Guia ou Nota de Devolução
+                             * Guia de Transporte
+                             * Fatura Simplificada
+                             * Documento de Conferência
+                             * Fatura Pró-Forma
+                             * Fatura-Recibo
+                             * Nota de Crédito
+                             * Guia de Consignação
+                             * Guia de Remessa
+                             * Guia de Movimentação de Ativos Fixos Próprios
+                             */
+                            string queryForTotalDebit = $@"
+SELECT
+(
+	CASE  
+		WHEN DFM.DocumentType IN (
+            '{SettingsApp.XpoOidDocumentFinanceTypeBudget}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeCreditNote}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeReturnGuide}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
+            '{SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide}'
+        ) THEN NULL 
+		ELSE (
+			DFM.TotalFinal - (
+				(
+					SELECT 
+						SUM(DocFinMaster.TotalFinal) AS TotalFinal
+					FROM
+						fin_documentfinancemaster AS DocFinMaster
+					WHERE
+						DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47'
+						AND 
+							DocFinMaster.DocumentParent = DFM.Oid
+						AND
+							( DocFinMaster.DocumentStatusStatus <> 'A' AND DocFinMaster.Disabled <> 1)
+					GROUP BY
+						DocFinMaster.DocumentParent
+					UNION 
+						SELECT 
+							0 AS CreditAmount
+						WHERE 
+							NOT EXISTS (
+								SELECT 1
+								FROM 
+									fin_documentfinancemaster AS DFMNC
+								WHERE
+									DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47'
+									AND 
+										DFMNC.DocumentParent = DFM.Oid
+									AND
+										( DFMNC.DocumentStatusStatus <> 'A' AND DFMNC.Disabled <> 1)
+							) 
+				) + 
+				(
+					SELECT 
+						 SUM(DocFinMasterPay.CreditAmount) AS CreditAmount
+					FROM
+						fin_documentfinancemasterpayment AS DocFinMasterPay
+					LEFT JOIN 
+						fin_documentfinancepayment AS DocFinPay ON (DocFinPay.Oid = DocFinMasterPay.DocumentFinancePayment)
+					WHERE
+						DocFinMasterPay.DocumentFinanceMaster = DFM.Oid
+						AND
+							(DocFinPay.PaymentStatus <> 'A' AND DocFinPay.Disabled <> 1)
+					GROUP BY
+						DocFinMasterPay.DocumentFinanceMaster
+					UNION 
+						SELECT 
+							0 AS CreditAmount
+						WHERE 
+							NOT EXISTS (
+								SELECT 1
+								FROM 
+									fin_documentfinancemasterpayment AS DFMRC
+								LEFT JOIN 
+									fin_documentfinancepayment AS DFPRC ON (DFPRC.Oid = DFMRC.DocumentFinancePayment)
+								WHERE
+									DFMRC.DocumentFinanceMaster = DFM.Oid
+									AND
+										( DFPRC.PaymentStatus <> 'A' AND DFMRC.Disabled <> 1)
+							) 
+				) 
+			)
+		)
+	END
+)
+	 AS Balance
+FROM
+	fin_documentfinancemaster DFM
+WHERE DFM.Oid =  '{stringFormatIndexZero}';
+";
+
                             //This Query Exists 3 Locations, Find it and change in all Locations - Required "GROUP BY fmaOid,fmaTotalFinal" to work with SQLServer
-                            sql = string.Format("SELECT fmaTotalFinal - SUM(fmpCreditAmount) as Result FROM view_documentfinancepayment WHERE fmaOid = '{0}' AND fpaPaymentStatus <> 'A' GROUP BY fmaOid,fmaTotalFinal;", item.Oid);
+                            /* IN009182 - option #1 */
+                            //sql = string.Format("SELECT fmaTotalFinal - SUM(fmpCreditAmount) as Result FROM view_documentfinancepayment WHERE fmaOid = '{0}' AND fpaPaymentStatus <> 'A' GROUP BY fmaOid,fmaTotalFinal;", item.Oid);
+                            /* IN009182 - option #2 */
+                            sql = string.Format(queryForTotalDebit, item.Oid);
                             documentDebit = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(sql));
                             //Get current Document remain value to Pay
                             documentTotalPayRemain = (documentDebit > 0) ? documentDebit : item.TotalFinal;
@@ -927,7 +1100,7 @@ namespace logicpos.financial.library.Classes.Finance
                             if (debug) _log.Debug(string.Format("[{0}] PayRemain: [{1}], PayInCurrent: [{2}], RemainToPay: [{3}], Credit: [{4}], totalPayed: [{5}], PartialPayed: [{6}], FullPayed: [{7}]", item.DocumentNumber, documentTotalPayRemain, totalToPayInCurrentInvoice, (documentTotalPayRemain - totalToPayInCurrentInvoice), totalCredit, totalPayed, documentPartialPayed, documentFullPayed));
 
                             //Always Get Fresh Object in UOW, used to Assign to Full and Partial Payments, need to be Outside FullPayed
-                            documentMaster = (FIN_DocumentFinanceMaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_DocumentFinanceMaster), item.Oid);
+                            documentMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
 
                             //Persist DocumentFinanceMaster Payment if FullPayed
                             if (documentFullPayed)
@@ -936,13 +1109,13 @@ namespace logicpos.financial.library.Classes.Finance
                                 documentMaster.PayedDate = currentDateTime;
 
                                 //On Full Invoice Payment Call ChangePayedInvoiceAndRelatedDocumentsStatus (Change status of Parent Document to F)
-                                string statusReason = string.Format(Resx.global_documents_status_document_invoiced, documentMaster.DocumentNumber);
+                                string statusReason = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
                                 //Get Fresh Object in UOW
-                                FIN_DocumentFinanceMaster documentParent = null;
+                                fin_documentfinancemaster documentParent = null;
                                 //Send with UOW Objects
                                 if (item.DocumentParent != null)
                                 {
-                                    documentParent = (FIN_DocumentFinanceMaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_DocumentFinanceMaster), item.DocumentParent.Oid);
+                                    documentParent = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.DocumentParent.Oid);
                                     ChangePayedInvoiceRelatedDocumentsStatus(uowSession, documentParent, statusReason, documentMaster.DocumentStatusDate, userDetail);
                                 }
                             }
@@ -952,12 +1125,33 @@ namespace logicpos.financial.library.Classes.Finance
                             {
                                 //DocumentFinanceMasterPayment: Many2Many Connection
                                 documentFinanceMasterPaymentOrd++;
-                                documentFinanceMasterPayment = new FIN_DocumentFinanceMasterPayment(uowSession);
+                                documentFinanceMasterPayment = new fin_documentfinancemasterpayment(uowSession);
                                 documentFinanceMasterPayment.Ord = documentFinanceMasterPaymentOrd;
                                 documentFinanceMasterPayment.CreditAmount = totalToPayInCurrentInvoice;
                                 documentFinanceMasterPayment.DocumentFinanceMaster = documentMaster;
                                 documentFinanceMasterPayment.DocumentFinancePayment = documentFinancePayment;
                                 //if(debug) _log.Debug(string.Format("  [{0}], Persisted PaymentAmount: [{1}]", documentMaster.DocumentNumber, totalToPayInCurrentInvoice));
+                            }
+                            /* IN009182 - adding related documents for reference */
+                            string relatedDocumentsQuery = GenerateRelatedDocumentsQueryByDocumentType(documentMaster.Oid.ToString());
+                            string relatedDocuments = Convert.ToString(datalayer.App.GlobalFramework.SessionXpo.ExecuteScalar(relatedDocumentsQuery));
+                            if (!string.IsNullOrEmpty(relatedDocuments))
+                            {
+                                if (!string.IsNullOrEmpty(documentFinancePayment.Notes))
+                                {
+                                    if (documentFinancePayment.Notes.Contains(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc")))
+                                    {
+                                        documentFinancePayment.Notes += "; [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                    }
+                                    else
+                                    {
+                                        documentFinancePayment.Notes += Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                    }
+                                }
+                                else
+                                {
+                                    documentFinancePayment.Notes += resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                }
                             }
                         }
                     }
@@ -999,7 +1193,7 @@ namespace logicpos.financial.library.Classes.Finance
         }
 
         //Recursive Method : Change Document Status of related invoice Documents : Change to (“F” — Documento faturado)
-        public static bool ChangePayedInvoiceRelatedDocumentsStatus(Session pSession, FIN_DocumentFinanceMaster pDocumentFinanceMaster, string pStatusReason, string pCombinedDateTime, SYS_UserDetail pUserDetail)
+        public static bool ChangePayedInvoiceRelatedDocumentsStatus(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, string pStatusReason, string pCombinedDateTime, sys_userdetail pUserDetail)
         {
             bool debug = true;
             bool result = false;
@@ -1030,28 +1224,28 @@ namespace logicpos.financial.library.Classes.Finance
         //Process
 
         //Used with DocumentFinancePayment
-        public static bool PersistFinanceDocumentWorkSession(Session pSession, FIN_DocumentFinancePayment pDocumentFinancePayment, FIN_ConfigurationPaymentMethod pPaymentMethod)
+        public static bool PersistFinanceDocumentWorkSession(Session pSession, fin_documentfinancepayment pDocumentFinancePayment, fin_configurationpaymentmethod pPaymentMethod)
         {
             return PersistFinanceDocumentWorkSession(pSession, null, null, pDocumentFinancePayment, pPaymentMethod);
         }
 
         //Used With DocumentFinanceMaster
-        public static bool PersistFinanceDocumentWorkSession(Session pSession, FIN_DocumentFinanceMaster pDocumentFinanceMaster, ProcessFinanceDocumentParameter pParameters, FIN_ConfigurationPaymentMethod pPaymentMethod)
+        public static bool PersistFinanceDocumentWorkSession(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, ProcessFinanceDocumentParameter pParameters, fin_configurationpaymentmethod pPaymentMethod)
         {
             return PersistFinanceDocumentWorkSession(pSession, pDocumentFinanceMaster, pParameters, null, pPaymentMethod);
         }
 
         //Main Method
-        public static bool PersistFinanceDocumentWorkSession(Session pSession, FIN_DocumentFinanceMaster pDocumentFinanceMaster, ProcessFinanceDocumentParameter pParameters, FIN_DocumentFinancePayment pDocumentFinancePayment, FIN_ConfigurationPaymentMethod pPaymentMethod)
+        public static bool PersistFinanceDocumentWorkSession(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, ProcessFinanceDocumentParameter pParameters, fin_documentfinancepayment pDocumentFinancePayment, fin_configurationpaymentmethod pPaymentMethod)
         {
             bool result = false;
 
             try
             {
                 //Get Period WorkSessionPeriodTerminal, UserDetail and Terminal
-                POS_WorkSessionPeriod workSessionPeriod = (POS_WorkSessionPeriod)FrameworkUtils.GetXPGuidObject(pSession, typeof(POS_WorkSessionPeriod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
-                SYS_UserDetail userDetail = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(pSession, typeof(SYS_UserDetail), GlobalFramework.LoggedUser.Oid);
-                POS_ConfigurationPlaceTerminal configurationPlaceTerminal = (POS_ConfigurationPlaceTerminal)FrameworkUtils.GetXPGuidObject(pSession, typeof(POS_ConfigurationPlaceTerminal), GlobalFramework.LoggedTerminal.Oid);
+                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)FrameworkUtils.GetXPGuidObject(pSession, typeof(pos_worksessionperiod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
+                sys_userdetail userDetail = (sys_userdetail)FrameworkUtils.GetXPGuidObject(pSession, typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
+                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid);
 
                 //Variables to diferent Document Types : DocumentFinanceMaster or DocumentFinancePayment
                 DateTime documentDate = FrameworkUtils.CurrentDateTimeAtomic();
@@ -1066,9 +1260,9 @@ namespace logicpos.financial.library.Classes.Finance
                 {
                     documentDate = pDocumentFinanceMaster.Date;
                     movementAmount = pDocumentFinanceMaster.TotalFinal;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, Resx.global_finance_document);
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, Resx.global_total_deliver);
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, Resx.global_total_change);
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_finance_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_change"));
                     if (pParameters.TotalDelivery > 0) totalDelivery = pParameters.TotalDelivery;
                     if (pParameters.TotalChange > 0) totalChange = pParameters.TotalChange;
                 }
@@ -1076,9 +1270,9 @@ namespace logicpos.financial.library.Classes.Finance
                 {
                     documentDate = pDocumentFinancePayment.CreatedAt;//.PaymentDate
                     movementAmount = pDocumentFinancePayment.PaymentAmount;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, Resx.global_payment_document);
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, Resx.global_total_deliver);
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, Resx.global_total_change);
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_change"));
                     //TODO: Improve with Payment TotalChange Functionality
                     totalDelivery = movementAmount;
                 }
@@ -1091,7 +1285,7 @@ namespace logicpos.financial.library.Classes.Finance
                 ProcessWorkSessionMovement.PersistWorkSessionMovement(
                     pSession,
                     workSessionPeriod,
-                    (POS_WorkSessionMovementType)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(POS_WorkSessionMovementType), "Token", "FINANCE_DOCUMENT"),
+                    (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "FINANCE_DOCUMENT"),
                     pDocumentFinanceMaster,
                     pDocumentFinancePayment,
                     userDetail,
@@ -1109,7 +1303,7 @@ namespace logicpos.financial.library.Classes.Finance
                     ProcessWorkSessionMovement.PersistWorkSessionMovement(
                         pSession,
                         workSessionPeriod,
-                        (POS_WorkSessionMovementType)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(POS_WorkSessionMovementType), "Token", "CASHDRAWER_IN"),
+                        (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_IN"),
                         pDocumentFinanceMaster,
                         pDocumentFinancePayment,
                         userDetail,
@@ -1125,7 +1319,7 @@ namespace logicpos.financial.library.Classes.Finance
                         if (pParameters.TotalChange > 0) ProcessWorkSessionMovement.PersistWorkSessionMovement(
                             pSession,
                             workSessionPeriod,
-                            (POS_WorkSessionMovementType)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(POS_WorkSessionMovementType), "Token", "CASHDRAWER_OUT"),
+                            (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_OUT"),
                             pDocumentFinanceMaster,
                             pDocumentFinancePayment,
                             userDetail,
@@ -1189,11 +1383,11 @@ namespace logicpos.financial.library.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ProcessArticleStock Commisions
 
-        private static void PersistFinanceDocumentCommission(Session pSession, FIN_DocumentFinanceDetail pDocumentFinanceDetail, SYS_UserDetail pUserDetail)
+        private static void PersistFinanceDocumentCommission(Session pSession, fin_documentfinancedetail pDocumentFinanceDetail, sys_userdetail pUserDetail)
         {
             try
             {
-                POS_UserCommissionGroup commissionGroup = null;
+                pos_usercommissiongroup commissionGroup = null;
 
                 if (pDocumentFinanceDetail.Article.CommissionGroup != null)
                 {
@@ -1211,10 +1405,10 @@ namespace logicpos.financial.library.Classes.Finance
                 //Check if CommissionGroup has Commission
                 if (commissionGroup != null && commissionGroup.Commission > 0 && commissionGroup == pUserDetail.CommissionGroup)
                 {
-                    POS_ConfigurationPlaceTerminal configurationPlaceTerminal = (POS_ConfigurationPlaceTerminal)FrameworkUtils.GetXPGuidObject(pSession, typeof(POS_ConfigurationPlaceTerminal), GlobalFramework.LoggedTerminal.Oid);
+                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid);
                     decimal totalCommission = (pDocumentFinanceDetail.TotalNet * pUserDetail.CommissionGroup.Commission) / 100;
 
-                    FIN_DocumentFinanceCommission documentFinanceCommission = new FIN_DocumentFinanceCommission(pSession)
+                    fin_documentfinancecommission documentFinanceCommission = new fin_documentfinancecommission(pSession)
                     {
                         Ord = pDocumentFinanceDetail.Ord,
                         Date = pDocumentFinanceDetail.DocumentMaster.Date,
@@ -1237,7 +1431,7 @@ namespace logicpos.financial.library.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Documents
 
-        public static string GenerateDocumentFinanceMasterPDFIfNotExists(FIN_DocumentFinanceMaster documentFinanceMaster)
+        public static string GenerateDocumentFinanceMasterPDFIfNotExists(fin_documentfinancemaster documentFinanceMaster)
         {
             string result = string.Empty;
             
@@ -1258,7 +1452,9 @@ namespace logicpos.financial.library.Classes.Finance
 
                     if (generatePdfDocuments)
                     {
-                        string entityName = (!string.IsNullOrEmpty(documentFinanceMaster.EntityName)) ? string.Format("_{0}", documentFinanceMaster.EntityName.ToLower().Replace(' ', '_')) : string.Empty;
+                        string entityName = (!string.IsNullOrEmpty(documentFinanceMaster.EntityName)) 
+                            ? string.Format("_{0}", GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
+                            : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
                             GlobalFramework.Path["documents"],
                             documentFinanceMaster.DocumentNumber.Replace('/', '-').Replace(' ', '_'),
@@ -1286,7 +1482,7 @@ namespace logicpos.financial.library.Classes.Finance
             return result;
         }
 
-        public static string GenerateDocumentFinancePaymentPDFIfNotExists(FIN_DocumentFinancePayment documentFinancePayment)
+        public static string GenerateDocumentFinancePaymentPDFIfNotExists(fin_documentfinancepayment documentFinancePayment)
         {
             string result = string.Empty;
             
@@ -1307,7 +1503,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                     if (generatePdfDocuments)
                     {
-                        ERP_Customer customer = (ERP_Customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(ERP_Customer), documentFinancePayment.EntityOid);
+                        erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), documentFinancePayment.EntityOid);
                         string entityName = (customer != null && !string.IsNullOrEmpty(customer.Name)) ? string.Format("_{0}", customer.Name.ToLower().Replace(' ', '_')) : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
                             GlobalFramework.Path["documents"],
@@ -1334,6 +1530,144 @@ namespace logicpos.financial.library.Classes.Finance
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// /// Creates the SQL query for when retrieving linked documents based on DocumentType parameter.
+        /// </summary>
+        /// <param name="Oid"></param>
+        /// <param name="documentType"></param>
+        /// <returns></returns>
+        private static string GenerateRelatedDocumentsQueryByDocumentType(string Oid, string documentType = "fa924162-beed-4f2f-938d-919deafb7d47")
+        {
+            string relatedDocumentsQuery = string.Empty;
+            string andDocumentType = string.Empty;
+
+            if (!string.IsNullOrEmpty(documentType))
+            {
+                andDocumentType = $" AND DocFinMaster.DocumentType = '{documentType}'";
+            }
+
+            switch (GlobalFramework.DatabaseType)
+            {
+                case datalayer.Enums.DatabaseType.MySql:
+                case datalayer.Enums.DatabaseType.SQLite:
+                case datalayer.Enums.DatabaseType.MonoLite:
+
+                    {
+                        relatedDocumentsQuery = @"
+SELECT 
+    GROUP_CONCAT(DISTINCT RelatedDocument.DocumentNumber) AS ResultConcat
+FROM(
+	SELECT
+		DocFinMaster.DocumentNumber AS DocumentNumber,
+		DocFinMaster.Date AS Date,
+		DocFinMaster.DocumentParent AS DocumentParent,
+		DocFinMaster.DocumentChild AS DocumentChild
+	FROM
+		fin_documentfinancemaster AS DocFinMaster
+	WHERE
+		(
+            DocFinMaster.DocumentStatusStatus <> 'A' AND DocFinMaster.Disabled <> 1
+        )
+		AND (
+			DocFinMaster.DocumentParent = '{0}'
+			OR
+				DocFinMaster.DocumentChild = '{0}'
+				OR 
+					DocFinMaster.Oid IN (
+						SELECT 
+							(SELECT B.Oid FROM fin_documentfinancemaster B WHERE B.Oid =  A.DocumentParent) AS DocumentParent
+						FROM 
+							fin_documentfinancemaster AS A
+						WHERE
+							A.Oid = '{0}'
+					)
+		)
+        {1}
+	UNION
+	SELECT
+		DocFinPay.PaymentRefNo AS DocumentNumber,
+		DocFinPay.DocumentDate AS Date,
+		DocFinMasterPay.DocumentFinanceMaster AS DocumentParent,
+		NULL AS DocumentChild
+	FROM
+		fin_documentfinancepayment AS DocFinPay
+	LEFT JOIN fin_documentfinancemasterpayment DocFinMasterPay ON (DocFinPay.Oid = DocFinMasterPay.DocumentFinancePayment)
+	WHERE
+		(
+            DocFinPay.PaymentStatus <> 'A' AND DocFinPay.Disabled <> 1
+        )
+		AND
+			DocFinMasterPay.DocumentFinanceMaster = '{0}'
+) AS RelatedDocument;
+";
+                    }
+                    break;
+                case datalayer.Enums.DatabaseType.MSSqlServer:
+                    {
+                        relatedDocumentsQuery = @"
+DECLARE @RelatedDocuments VARCHAR(MAX);
+SELECT
+    @RelatedDocuments = COALESCE(@RelatedDocuments + ', ', '') + RelatedDocument.DocumentNumber
+FROM(
+	SELECT
+		DocFinMaster.DocumentNumber AS DocumentNumber,
+		DocFinMaster.Date AS Date,
+		DocFinMaster.DocumentParent AS DocumentParent,
+		DocFinMaster.DocumentChild AS DocumentChild
+	FROM
+		fin_documentfinancemaster AS DocFinMaster
+	WHERE
+		(
+            DocFinMaster.DocumentStatusStatus <> 'A' AND DocFinMaster.Disabled <> 1
+        )
+		AND (
+			DocFinMaster.DocumentParent = '{0}'
+			OR
+				DocFinMaster.DocumentChild = '{0}'
+				OR 
+					DocFinMaster.Oid IN (
+						SELECT 
+							(SELECT B.Oid FROM fin_documentfinancemaster B WHERE B.Oid =  A.DocumentParent) AS DocumentParent
+						FROM 
+							fin_documentfinancemaster AS A
+						WHERE
+							A.Oid = '{0}'
+					)
+		)
+        {1}
+	UNION
+	SELECT
+		DocFinPay.PaymentRefNo AS DocumentNumber,
+		DocFinPay.DocumentDate AS Date,
+		DocFinMasterPay.DocumentFinanceMaster AS DocumentParent,
+		NULL AS DocumentChild
+	FROM
+		fin_documentfinancepayment AS DocFinPay
+	LEFT JOIN fin_documentfinancemasterpayment DocFinMasterPay ON (DocFinPay.Oid = DocFinMasterPay.DocumentFinancePayment)
+	WHERE
+		(
+            DocFinPay.PaymentStatus <> 'A' AND DocFinPay.Disabled <> 1
+        )
+		AND
+			DocFinMasterPay.DocumentFinanceMaster = '{0}'
+) AS RelatedDocument
+
+ORDER BY 
+    RelatedDocument.Date ASC;
+SELECT 
+    @RelatedDocuments;
+";
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            relatedDocumentsQuery = string.Format(relatedDocumentsQuery, Oid, andDocumentType);
+
+            return relatedDocumentsQuery;
         }
     }
 }

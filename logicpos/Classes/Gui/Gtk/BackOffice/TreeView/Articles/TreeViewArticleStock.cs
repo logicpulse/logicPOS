@@ -25,9 +25,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewArticleStock(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(FIN_ArticleStock);
+            Type xpoGuidObjectType = typeof(fin_articlestock);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            FIN_ArticleStock defaultValue = (pDefaultValue != null) ? pDefaultValue as FIN_ArticleStock : null;
+            fin_articlestock defaultValue = (pDefaultValue != null) ? pDefaultValue as fin_articlestock : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
@@ -36,14 +36,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity") { Title = Resx.global_stock_movement, MinWidth = 100, FormatProvider = new FormatterStockMovement(), });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Date") { Title = Resx.global_date, MinWidth = 100, FormatProvider = new FormatterDate(), });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Customer") { Title = Resx.global_entity, ChildName = "Name", MinWidth = 125 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("DocumentNumber") { Title = Resx.global_document_number, MinWidth = 125 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article") { Title = Resx.global_article, ChildName = "Designation", MinWidth = 125 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movement"), MinWidth = 100, FormatProvider = new FormatterStockMovement(), });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100, FormatProvider = new FormatterDate(), });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Customer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_entity"), ChildName = "Name", MinWidth = 125 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 125 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Article") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), ChildName = "Designation", MinWidth = 125 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Quantity")
             {
-                Title = Resx.global_quantity,
+                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimal(),
@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //    Xalign = 1.0F
                 //}
             });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

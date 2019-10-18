@@ -138,11 +138,11 @@
 				<ButtonFavorites>
 					<Position>Eval[Size(posMainWindowButtonFavoritesPosition.X, posMainWindowButtonFavoritesPosition.Y)]</Position>
 					<ButtonSize>Eval[Size(posMainWindowBaseButtonSize.Width, posMainWindowBaseButtonSize.Height)]</ButtonSize>
-					<ImageFileName></ImageFileName>
+					<ImageFileName>Assets/Images/Buttons/Pos/button_favorites.png</ImageFileName>
 					<Text>Resx[global_favorites]</Text>
 					<!--<Text>Eval[]</Text>-->
 					<FontSize>Cfg[fontPosBaseButtonSize]</FontSize>
-					<UseImageOverlay>Cfg[useImageOverlay]</UseImageOverlay>
+					<UseImageOverlay>false</UseImageOverlay>
 					<Visible>true</Visible>
 				</ButtonFavorites>
 				<!-- TablePadFamily -->
@@ -406,13 +406,22 @@
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_barcode.png</ImageFileName>
 							<Visible>true</Visible>
 						</ButtonBarCode>
+						<!-- ButtonCardCode -->
+            			<ButtonCardCode>
+							<Name>touchButtonPosTicketPadCardCode</Name>
+							<Text>Resx[global_cardcode_small]</Text>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_card_entry.png</ImageFileName>
+							<Visible>true</Visible>
+						</ButtonCardCode>
 						<!-- Column4 : ButtonFinishOrder -->
 						<ButtonFinishOrder>
 							<Name>touchButtonPosTicketPadFinishOrder_Green</Name>
 							<Text>Resx[pos_button_label_finish_order]</Text>
 							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 0)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
-							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_order.png</ImageFileName>
+							<ImageFileName>Assets/Images/Icons/icon_pos_retail_ticketpad_finish_order.png</ImageFileName>
 							<Visible>true</Visible>
 						</ButtonFinishOrder>
 						<!-- ButtonWeight -->
@@ -449,7 +458,7 @@
 							<Text>Resx[pos_button_label_orders]</Text>
 							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
-							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_orderlist.png</ImageFileName>
+							<ImageFileName>Assets/Images/Icons/icon_pos_retail_ticketpad_finish_order.png</ImageFileName>
 							<Visible>false</Visible>
 						</ButtonListOrder>
 						<!-- ButtonGifts -->

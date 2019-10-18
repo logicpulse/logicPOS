@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_SystemAuditType : XPGuidObject
+    public class sys_systemaudittype : XPGuidObject
     {
-        public SYS_SystemAuditType() : base() { }
-        public SYS_SystemAuditType(Session session) : base(session) { }
+        public sys_systemaudittype() : base() { }
+        public sys_systemaudittype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_SystemAuditType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_SystemAuditType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_systemaudittype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_systemaudittype), "Code");
         }
 
         UInt32 fOrd;
@@ -57,10 +57,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //SystemAuditType One <> Many SystemAudit
-        [Association(@"SystemAuditTypeReferencesSystemAudit", typeof(SYS_SystemAudit))]
-        public XPCollection<SYS_SystemAudit> Audit
+        [Association(@"SystemAuditTypeReferencesSystemAudit", typeof(sys_systemaudit))]
+        public XPCollection<sys_systemaudit> Audit
         {
-            get { return GetCollection<SYS_SystemAudit>("Audit"); }
+            get { return GetCollection<sys_systemaudit>("Audit"); }
         }
     }
 }

@@ -13,8 +13,8 @@ namespace logicpos.datalayer.App
         // Database
         public static DatabaseType DatabaseType;
         // User/Terminal/Permissions
-        public static SYS_UserDetail LoggedUser;
-        public static POS_ConfigurationPlaceTerminal LoggedTerminal;
+        public static sys_userdetail LoggedUser;
+        public static pos_configurationplaceterminal LoggedTerminal;
         // System Paths
         public static Hashtable Path;
         // Settings

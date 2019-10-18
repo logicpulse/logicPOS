@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>acme.softwarevendor.plugin</RootNamespace>
     <AssemblyName>AcmeSoftwareVendorPlugin</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -71,7 +71,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
-      <Name>PluginContracts</Name>
+      <Name>logicpos.plugin.contracts</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +91,22 @@
       <Link>Resources\Reports\UserReports\ReportDocumentFinance.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceCompanyBilling.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceCompanyBilling.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceCustomerBalanceDetails.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceCustomerBalanceDetails.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceCustomerBalanceSummary.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceCustomerBalanceSummary.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceDetailGroupList.frx">
       <Link>Resources\Reports\UserReports\ReportDocumentFinanceDetailGroupList.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -107,8 +123,104 @@
       <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-AO.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-AO.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-BR-bra.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-BR-bra.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-BR.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-BR.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-MZ.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-MZ.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-PT-ago.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-PT-ago.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-PT-moz.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-PT-moz.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-PT-prt.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-PT-prt.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-PT.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinancePayment_pt-PT.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx">
       <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-AO.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-AO.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-BR-bra.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-BR-bra.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-BR.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-BR.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-MZ.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-MZ.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-PT-ago.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-PT-ago.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-PT-moz.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-PT-moz.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-PT-prt.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-PT-prt.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-PT.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinanceWayBill_pt-PT.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance_pt-AO.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance_pt-AO.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance_pt-BR-bra.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance_pt-BR-bra.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance_pt-BR.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance_pt-BR.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance_pt-MZ.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance_pt-MZ.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance_pt-PT-ago.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance_pt-PT-ago.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance_pt-PT-moz.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance_pt-PT-moz.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance_pt-PT-prt.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance_pt-PT-prt.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinance_pt-PT.frx">
+      <Link>Resources\Reports\UserReports\ReportDocumentFinance_pt-PT.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportSystemAuditList.frx">
@@ -119,6 +231,10 @@
       <Link>Resources\Reports\UserReports\ReportTest.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportUserCommission.frx">
+      <Link>Resources\Reports\UserReports\ReportUserCommission.frx</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\TemplateBase.frx">
       <Link>Resources\Reports\UserReports\TemplateBase.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -126,12 +242,6 @@
     <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\TemplateBaseSimple.frx">
       <Link>Resources\Reports\UserReports\TemplateBaseSimple.frx</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportUserCommission.frx">
-      <Link>Resources\Reports\UserReports\ReportUserCommission.frx</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\..\..\logicpos\Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx">
-      <Link>Resources\Reports\UserReports\ReportDocumentFinanceCurrentAccount.frx</Link>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\DataSources\System.Data.DataTable.datasource" />

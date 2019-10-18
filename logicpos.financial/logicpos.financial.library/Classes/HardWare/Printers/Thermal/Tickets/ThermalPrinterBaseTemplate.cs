@@ -36,12 +36,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             set { _ticketSubTitle = value; }
         }
 
-        public ThermalPrinterBaseTemplate(SYS_ConfigurationPrinters pPrinter)
+        public ThermalPrinterBaseTemplate(sys_configurationprinters pPrinter)
             : this(pPrinter, SettingsApp.PrinterThermalImageCompanyLogo)
         {
         }
 
-        public ThermalPrinterBaseTemplate(SYS_ConfigurationPrinters pPrinter, string pCompanyLogo)
+        public ThermalPrinterBaseTemplate(sys_configurationprinters pPrinter, string pCompanyLogo)
         {
             try
             {
@@ -84,7 +84,18 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             return result;
         }
 
+        /* IN009055 */
         protected void PrintHeader()
+        {
+            PrintHeader(false); /* IN009055 - "true" when Order, and "false" when Invoice */
+        }
+        /// <summary>
+        /// When printing the order/invoice, this method inserts the header of document, with logo or company details.
+        /// The original method has been overloaded to allow to remove some details from order document.
+        /// Please see IN009055 for more details.
+        /// </summary>
+        /// <param name="isOrder">"true" when Order, and "false" when Invoice</param>
+        protected void PrintHeader(bool isOrder)
         {
             try
             {
@@ -98,14 +109,19 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 );
 
                 //Print Logo or Name + BusinessName
-                if (File.Exists(logo) && GlobalFramework.LoggedTerminal.Printer.ThermalPrintLogo)
+				//TK016249 - Impressoras - Diferenciação entre Tipos
+                if (File.Exists(logo) && GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
                 {
                     _thermalPrinterGeneric.PrintImage(logo);
                 }
+                else if(isOrder) /* IN009055 */
+                {
+                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_BUSINESS_NAME"], WriteLineTextMode.DoubleHeightBold);
+                }
                 else
                 {
-                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_NAME"], WriteLineTextMode.Big);
-                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_BUSINESS_NAME"]);
+                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_BUSINESS_NAME"], WriteLineTextMode.Big);
+                    _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_NAME"]);
                 }
 
                 //Reset to Left
@@ -156,7 +172,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Print Notes
                 if (pNotes != string.Empty)
                 {
-                    _thermalPrinterGeneric.WriteLine(Resx.global_notes, WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(pNotes);
                     //Line Feed
                     _thermalPrinterGeneric.LineFeed();
@@ -183,7 +199,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _thermalPrinterGeneric.LineFeed();
 
                 //Printed On | Company|App|Version
-                _thermalPrinterGeneric.WriteLine(string.Format("{1} : {2}{0}{3} {4} {5}"
+                _thermalPrinterGeneric.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
                     , Environment.NewLine
                     , CustomFunctions.Res("global_printed_on_date")
                     , FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateTimeFormat)
@@ -191,7 +207,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     , _customVars["APP_NAME"]
                     , _customVars["APP_VERSION"]
                     )
-                );
+                ); /* IN009211 */
 
                 //Reset Font Size: Normal
                 _thermalPrinterGeneric.SetFont(0);
@@ -203,7 +219,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _thermalPrinterGeneric.SetAlignLeft();
 
                 //Finish With Cut and Print Buffer
-                _thermalPrinterGeneric.Cut(true, GlobalFramework.LoggedTerminal.Printer.ThermalCutCommand);
+				//TK016249 - Impressoras - Diferenciação entre Tipos
+                _thermalPrinterGeneric.Cut(true, GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalCutCommand);
             }
             catch (Exception ex)
             {
@@ -219,6 +236,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
+                _log.Error("void PrintBuffer() 1:: " + ex.Message, ex);
                 throw ex;
             }
         }

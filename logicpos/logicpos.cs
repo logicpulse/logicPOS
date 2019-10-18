@@ -6,6 +6,7 @@ using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Logic.Hardware;
+using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Reports;
@@ -28,6 +29,8 @@ namespace logicpos
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //BootStrap
         private bool _quitAfterBootStrap = false;
+        /* IN009163 and IN009164 - Opt to auto-backup flow */
+        private bool _autoBackupFlowIsEnabled = false;
         //Days, hours, minutes, seconds, milliseconds
         private TimeSpan _backupDatabaseTimeSpan = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeStart = new TimeSpan();
@@ -38,16 +41,23 @@ namespace logicpos
             try
             {
                 Init();
+                /* IN009005: this must stay here if "loading" is implemented */
+                GlobalApp.DialogThreadNotify.WakeupMain();
                 InitAppMode(pMode);
+
                 // Old Stub used to Init MediaNova Module
                 InitModules();
+
+                /* IN009164 */
+                InitBackupTimerProcess();
+
                 // Check if user cancel App Run on BootStrap and Launch Quit
                 if (!_quitAfterBootStrap) Application.Run();
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 240), MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.app_error_contact_support);
+                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 240), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_contact_support"));
             }
             finally
             {
@@ -120,40 +130,57 @@ namespace logicpos
                     try
                     {
                         // Launch Scripts
-                        databaseCreated = DataLayer.CreateDatabaseSchema(xpoConnectionString, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName);
+                        SettingsApp.firstBoot = true;
+                        databaseCreated = DataLayer.CreateDatabaseSchema(xpoConnectionString, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName);                        
                     }
                     catch (Exception ex)
                     {
                         //Extra protection to prevent goes to login without a valid connection
-                        _log.Error(ex.Message, ex);
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, Resx.global_error, ex.Message);
+                        _log.Error("void Init() :: DataLayer.CreateDatabaseSchema :: " + ex.Message, ex);
+
+                        /* IN009034 */
+                        GlobalApp.DialogThreadNotify.WakeupMain();
+
+                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                         Environment.Exit(0);
                     }
                 }
-
+                SettingsApp.firstBoot = false;
                 //Init XPO Connector DataLayer
                 try
                 {
-                    _log.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
+                    /* IN007011 */
+                    var connectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+                    { ConnectionString = xpoConnectionString };
+                    if (connectionStringBuilder.ContainsKey("password")) { connectionStringBuilder["password"] = "*****"; };
+                    _log.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
+
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
-                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, Resx.global_error, ex.Message);
-                    throw;
+                    _log.Error("void Init() :: Init XpoDefault.DataLayer: " + ex.Message, ex);
+
+                    /* IN009034 */
+                    GlobalApp.DialogThreadNotify.WakeupMain();
+
+                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                    throw; // TO DO
                 }
 
                 //Check Valid Database Scheme
                 if (!xpoCreateDatabaseAndSchema && !FrameworkUtils.IsRunningOnMono())
                 {
                     bool isSchemaValid = DataLayer.IsSchemaValid(xpoConnectionString);
-                    _log.Debug(string.Format("Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
+                    _log.Debug(string.Format("void Init() :: Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
                     if (!isSchemaValid)
                     {
+                        /* IN009034 */
+                        GlobalApp.DialogThreadNotify.WakeupMain();
+
                         string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, Resx.global_error, string.Format(endMessage, Environment.NewLine));
+                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(endMessage, Environment.NewLine));
                         Environment.Exit(0);
                     }
                 }
@@ -180,8 +207,13 @@ namespace logicpos
                 //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
                 if (xpoCreateDatabaseAndSchema)
                 {
+                    /* IN009034 */
+                    GlobalApp.DialogThreadNotify.WakeupMain();
+
                     string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
-                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, Resx.global_information, string.Format(endMessage, Environment.NewLine));
+                    _log.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
+
+                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(endMessage, Environment.NewLine));
                     Environment.Exit(0);
                 }
 
@@ -190,22 +222,30 @@ namespace logicpos
                 //Init Preferences Path
                 MainApp.InitPathsPrefs();
 
-                bool validDirectoryBackup = FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
-                //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
-                if (!validDirectoryBackup)
-                {
-                    ResponseType response = Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, Resx.global_error, string.Format(Resx.dialog_message_error_create_directory_backups, Convert.ToString(GlobalFramework.Path["backups"])));
-                    //Enable Quit After BootStrap, Preventing Application.Run()
-                    if (response == ResponseType.No) _quitAfterBootStrap = true;
-                }
-
                 //CultureInfo/Localization
                 string culture = GlobalFramework.PreferenceParameters["CULTURE"];
-                if (!string.IsNullOrEmpty(culture))
+
+                /* IN008013 */
+                if (String.IsNullOrEmpty(culture))
                 {
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+                    culture = GlobalFramework.Settings["customCultureResourceDefinition"];
                 }
+
+                //if (!string.IsNullOrEmpty(culture))
+                //{
+                /* IN006018 and IN007009 */
+                //logicpos.shared.App.CustomRegion.RegisterCustomRegion();
+                //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+                //}
+                //if (!Utils.IsLinux)
+                //{
+                //    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+                //}                
                 GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
+                
+                /* IN006018 and IN007009 */
+                _log.Debug(string.Format("CUSTOM CULTURE :: CurrentUICulture '{0}' in use.", CultureInfo.CurrentUICulture));
+
                 //Always use en-US NumberFormat because of mySql Requirements
                 GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
 
@@ -219,7 +259,7 @@ namespace logicpos
                 GlobalFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Use Detected ScreenSize
-                string appScreenSize = string.IsNullOrEmpty(GlobalFramework.Settings["appScreenSize"]) 
+                string appScreenSize = string.IsNullOrEmpty(GlobalFramework.Settings["appScreenSize"])
                     ? GlobalFramework.PreferenceParameters["APP_SCREEN_SIZE"]
                     : GlobalFramework.Settings["appScreenSize"];
                 if (appScreenSize.Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(appScreenSize))
@@ -245,7 +285,8 @@ namespace logicpos
                 GlobalApp.MaxWindowSize = new Size(GlobalApp.ScreenSize.Width - 40, GlobalApp.ScreenSize.Height - 40);
                 // Add Variables to ExpressionEvaluator.Variables Singleton
                 GlobalApp.ExpressionEvaluator.Variables.Add("globalScreenSize", GlobalApp.ScreenSize);
-
+                //to used in shared projects
+                GlobalFramework.screenSize = GlobalApp.ScreenSize;
                 //Parse and store Theme in Singleton
                 try
                 {
@@ -260,6 +301,10 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
+                    /* IN009034 */
+                    GlobalApp.DialogThreadNotify.WakeupMain();
+
+                    _log.Debug("void Init() :: XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme) :: " + ex);
                     Utils.ShowMessageTouchErrorRenderTheme(GlobalApp.WindowStartup, ex.Message);
                 }
 
@@ -288,17 +333,8 @@ namespace logicpos
                     //_log.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen()));
                 }
 
-                //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
-                if (GlobalFramework.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
-                {
-                    _backupDatabaseTimeSpan = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
-                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
-                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
-                    StartBackupTimer();
-                }
-
                 //Send To Log
-                _log.Debug(string.Format("ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
+                _log.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
 
                 //Audit
                 FrameworkUtils.Audit("APP_START", string.Format("{0} {1} clr {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion));
@@ -307,8 +343,34 @@ namespace logicpos
                 // Plugin Errors Messages
                 if (GlobalFramework.PluginSoftwareVendor == null || !GlobalFramework.PluginSoftwareVendor.IsValidSecretKey(SettingsApp.SecretKey))
                 {
-                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_error_plugin_softwarevendor_not_registered);
-                    _log.Debug(String.Format("Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
+                    /* IN009034 */
+                    GlobalApp.DialogThreadNotify.WakeupMain();
+
+                    _log.Debug(String.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
+                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_plugin_softwarevendor_not_registered"));
+                }
+
+                // TK013134: HardCoded Modules : PakingTicket
+                try
+                {
+                    // Override default AppUseParkingTicketModule
+                    /* IN009239 */
+                    //GlobalFramework.AppUseParkingTicketModule = Convert.ToBoolean(GlobalFramework.Settings["appMultiUserEnvironment"]);
+                    CustomAppOperationMode customAppOperationMode = FrameworkUtils.GetCustomAppOperationMode();
+                    GlobalFramework.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
+
+                    //TK016235 BackOffice - Mode
+                    GlobalFramework.AppUseBackOfficeMode = CustomAppOperationMode.BACKOFFICE.Equals(customAppOperationMode);
+
+                    // Init Global Object GlobalApp.ParkingTicket
+                    if (GlobalFramework.AppUseParkingTicketModule)
+                    {
+                        GlobalApp.ParkingTicket = new ParkingTicket();
+                    }
+                }
+                catch (Exception)
+                {
+                    _log.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GlobalFramework.AppUseParkingTicketModule));
                 }
 
                 //Create SystemNotification
@@ -321,16 +383,16 @@ namespace logicpos
                     System.IO.DirectoryInfo di = new DirectoryInfo(documentsFolder);
                     if (di.GetFiles().Length > 0)
                     {
-                        _log.Debug(string.Format("New database created. Start Delete [{0}] document(s) from [{1}] folder!", di.GetFiles().Length, documentsFolder));
+                        _log.Debug(string.Format("void Init() :: New database created. Start Delete [{0}] document(s) from [{1}] folder!", di.GetFiles().Length, documentsFolder));
                         foreach (FileInfo file in di.GetFiles())
                         {
                             try
                             {
-                                file.Delete(); 
+                                file.Delete();
                             }
                             catch (Exception)
                             {
-                                _log.Error(string.Format("Error! Cant delete Document file : [{0}]", file.Name));
+                                _log.Error(string.Format("void Init() :: Error! Cant delete Document file: [{0}]", file.Name));
                             }
                         }
                     }
@@ -338,7 +400,45 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _log.Error("void Init() :: " + ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// It creates automatic backup process and its call to TimerHandler.
+        /// 
+        /// Please see IN009163 and IN009164
+        /// </summary>
+        private void InitBackupTimerProcess()
+        {
+            bool xpoCreateDatabaseAndSchema = SettingsApp.XPOCreateDatabaseAndSchema;
+            bool validDirectoryBackup = FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
+            _log.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
+
+            //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
+            if (!validDirectoryBackup)
+            {
+                ResponseType response = Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_create_directory_backups"), Convert.ToString(GlobalFramework.Path["backups"])));
+                //Enable Quit After BootStrap, Preventing Application.Run()
+                if (response == ResponseType.No) _quitAfterBootStrap = true;
+            }
+
+            //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
+            if (GlobalFramework.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
+            {
+                /* IN009163 and IN009164 - Opt to auto-backup flow */
+                _autoBackupFlowIsEnabled = Boolean.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
+
+                /* IN009164 */
+                if (_autoBackupFlowIsEnabled)
+                {
+                    /* IN009164 - considering these variables are only used for automatic backup purposes, will be settled only when Auto-Backup Flow is enabled */
+                    _backupDatabaseTimeSpan = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
+                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
+                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
+                    /* IN009164 - TimeoutHandler() for UpdateBackupTimer() will not be created if Auto-Backup Flow is enabled */
+                    StartBackupTimer();
+                }
             }
         }
 
@@ -366,7 +466,7 @@ namespace logicpos
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, Resx.global_information, message);
+                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
                 Environment.Exit(0);
             }
             //Dont check changed files if Developer, Uncomment to Enable
@@ -397,7 +497,7 @@ namespace logicpos
                     //If Not IgnoreProtection, show alert and exit
                     if (!SettingsApp.ProtectedFilesIgnoreProtection)
                     {
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, Resx.global_error, string.Format(Resx.dialog_message_error_protected_files_invalid_files_detected, filesMessage));
+                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected"), filesMessage));
                         Environment.Exit(0);
                     }
                 }
@@ -485,9 +585,10 @@ namespace logicpos
                 //Audit
                 if (pAudit) FrameworkUtils.Audit("APP_CLOSE");
                 //Before use DeleteSession()
-                //GlobalFramework.SessionApp.CleanSession();
-                //GlobalFramework.SessionApp.Write();
-                GlobalFramework.SessionApp.DeleteSession();
+                /* IN005943 */
+                GlobalFramework.SessionApp.CleanSession();
+                GlobalFramework.SessionApp.Write();
+                //GlobalFramework.SessionApp.DeleteSession();
                 //Disconnect SessionXpo
                 GlobalFramework.SessionXpo.Disconnect();
             }
@@ -497,11 +598,12 @@ namespace logicpos
             }
 
             Application.Quit();
+            //Environment.Exit(0);
         }
 
         public static void Quit(Window pSourceWindow)
         {
-            ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(400, 300), MessageType.Question, ButtonsType.YesNo, Resx.global_quit_title, Resx.global_quit_message);
+            ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(400, 300), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quit_title"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quit_message"));
 
             if (responseType == ResponseType.Yes)
             {
@@ -521,12 +623,13 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _log.Error("void StartBackupTimer() :: _autoBackupFlowIsActive: [" + _autoBackupFlowIsEnabled + "] :: "  + ex.Message, ex);
             }
         }
 
         private bool UpdateBackupTimer()
         {
+            _log.Debug("bool UpdateBackupTimer()");
             bool debug = false;
 
             DateTime currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
@@ -538,7 +641,9 @@ namespace logicpos
             {
                 if (timeSpanDiference >= _backupDatabaseTimeSpan)
                 {
-                    DataBaseBackup.Backup();
+                    /* ERR201810#15 - Database backup issues */
+                    DataBaseBackup.Backup(null);
+                    //DataBaseBackup.Backup();
                 }
                 else
                 {

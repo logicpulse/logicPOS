@@ -5,15 +5,15 @@ using logicpos.datalayer.App;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ConfigurationVatRate : XPGuidObject
+    public class fin_configurationvatrate : XPGuidObject
     {
-        public FIN_ConfigurationVatRate() : base() { }
-        public FIN_ConfigurationVatRate(Session session) : base(session) { }
+        public fin_configurationvatrate() : base() { }
+        public fin_configurationvatrate(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationVatRate), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationVatRate), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationvatrate), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationvatrate), "Code");
         }
 
         UInt32 fOrd;
@@ -93,38 +93,38 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationVatRate One <> Many SubFamily
-        [Association(@"ConfigurationVatRateReferencesSubFamily_ForVatOnTable", typeof(FIN_ArticleSubFamily))]
-        public XPCollection<FIN_ArticleSubFamily> SubFamilyVatOnTable
+        [Association(@"ConfigurationVatRateReferencesSubFamily_ForVatOnTable", typeof(fin_articlesubfamily))]
+        public XPCollection<fin_articlesubfamily> SubFamilyVatOnTable
         {
-            get { return GetCollection<FIN_ArticleSubFamily>("SubFamilyVatOnTable"); }
+            get { return GetCollection<fin_articlesubfamily>("SubFamilyVatOnTable"); }
         }
 
         //ConfigurationVatRate One <> Many SubFamily
-        [Association(@"ConfigurationVatRateReferencesSubFamily_ForVatDirectSelling", typeof(FIN_ArticleSubFamily))]
-        public XPCollection<FIN_ArticleSubFamily> SubFamilyVatDirectSelling
+        [Association(@"ConfigurationVatRateReferencesSubFamily_ForVatDirectSelling", typeof(fin_articlesubfamily))]
+        public XPCollection<fin_articlesubfamily> SubFamilyVatDirectSelling
         {
-            get { return GetCollection<FIN_ArticleSubFamily>("SubFamilyVatDirectSelling"); }
+            get { return GetCollection<fin_articlesubfamily>("SubFamilyVatDirectSelling"); }
         }
 
         //ConfigurationVatRate One <> Many Article
-        [Association(@"ConfigurationVatRateReferencesArticle_ForVatOnTable", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> ArticleVatOnTable
+        [Association(@"ConfigurationVatRateReferencesArticle_ForVatOnTable", typeof(fin_article))]
+        public XPCollection<fin_article> ArticleVatOnTable
         {
-            get { return GetCollection<FIN_Article>("ArticleVatOnTable"); }
+            get { return GetCollection<fin_article>("ArticleVatOnTable"); }
         }
 
         //ConfigurationVatRate One <> Many Article
-        [Association(@"ConfigurationVatRateReferencesArticle_ForVatDirectSelling", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> ArticleVatDirectSelling
+        [Association(@"ConfigurationVatRateReferencesArticle_ForVatDirectSelling", typeof(fin_article))]
+        public XPCollection<fin_article> ArticleVatDirectSelling
         {
-            get { return GetCollection<FIN_Article>("ArticleVatDirectSelling"); }
+            get { return GetCollection<fin_article>("ArticleVatDirectSelling"); }
         }
 
         //ConfigurationVatRate One <> Many DocumentFinanceDetail
-        [Association(@"ConfigurationVatRateReferencesDocumentDocumentFinanceDetail", typeof(FIN_DocumentFinanceDetail))]
-        public XPCollection<FIN_DocumentFinanceDetail> DocumentFinanceDetail
+        [Association(@"ConfigurationVatRateReferencesDocumentDocumentFinanceDetail", typeof(fin_documentfinancedetail))]
+        public XPCollection<fin_documentfinancedetail> DocumentFinanceDetail
         {
-            get { return GetCollection<FIN_DocumentFinanceDetail>("DocumentFinanceDetail"); }
+            get { return GetCollection<fin_documentfinancedetail>("DocumentFinanceDetail"); }
         }
     }
 }

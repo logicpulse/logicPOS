@@ -23,7 +23,7 @@ namespace logicpos
             set { _tablePadUser = value; }
         }
         //Non Ui
-        SYS_UserDetail _selectedUserDetail;
+        sys_userdetail _selectedUserDetail;
 
         public StartupWindow(String pBackgroundImage)
             : base(pBackgroundImage)
@@ -49,10 +49,10 @@ namespace logicpos
             try
             {
                 //Get ConfigurationPreferenceParameter Values to Check if Plataform is Inited
-                CFG_ConfigurationPreferenceParameter configurationPreferenceParameterCompanyCountryOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as CFG_ConfigurationPreferenceParameter);
-                CFG_ConfigurationPreferenceParameter configurationPreferenceParameterSystemCurrencyOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as CFG_ConfigurationPreferenceParameter);
-                CFG_ConfigurationPreferenceParameter configurationPreferenceParameterCompanyCountryCode2 = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as CFG_ConfigurationPreferenceParameter);
-                CFG_ConfigurationPreferenceParameter configurationPreferenceParameterCompanyFiscalNumber = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as CFG_ConfigurationPreferenceParameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
 
                 if (
                     string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryOid.Value) ||
@@ -61,16 +61,16 @@ namespace logicpos
                     string.IsNullOrEmpty(configurationPreferenceParameterSystemCurrencyOid.Value)
                 )
                 {
-                    PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal);
+                    PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, false);
                     ResponseType response = (ResponseType)dialog.Run();
                     dialog.Destroy();
                 }
 
                 //Always Get Objects from Prefs to Singleton : with and without PosEditCompanyDetails
-                configurationPreferenceParameterCompanyCountryOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as CFG_ConfigurationPreferenceParameter);
-                configurationPreferenceParameterSystemCurrencyOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as CFG_ConfigurationPreferenceParameter);
-                SettingsApp.ConfigurationSystemCountry = (CFG_ConfigurationCountry)GlobalFramework.SessionXpo.GetObjectByKey(typeof(CFG_ConfigurationCountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
-                SettingsApp.ConfigurationSystemCurrency = (CFG_ConfigurationCurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(CFG_ConfigurationCurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
+                configurationPreferenceParameterCompanyCountryOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+                configurationPreferenceParameterSystemCurrencyOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+                SettingsApp.ConfigurationSystemCountry = (cfg_configurationcountry)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
+                SettingsApp.ConfigurationSystemCurrency = (cfg_configurationcurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
 
                 _log.Debug(String.Format("Using System Country: [{0}], Currency: [{1}]", SettingsApp.ConfigurationSystemCountry.Designation, SettingsApp.ConfigurationSystemCurrency.Designation));
             }
@@ -218,10 +218,15 @@ namespace logicpos
 
                     //Label Version
                     string appVersion = string.Format(logicpos.App.SettingsApp.AppSoftwareVersionFormat, FrameworkUtils.ProductVersion);
+                    if(GlobalFramework.LicenceReseller != "Logicpulse")
+                    {
+                        appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
+                    }
                     Label labelVersion = new Label(appVersion);
                     Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
                     labelVersion.ModifyFg(StateType.Normal, labelVersionFontColor);
                     labelVersion.ModifyFont(fontDescLabelVersion);
+                    labelVersion.Justify = Justification.Center;
                     labelVersion.WidthRequest = 307;
                     labelVersion.HeightRequest = 50;
                     labelVersion.SetAlignment(0.5F, 0.5F);
@@ -231,7 +236,7 @@ namespace logicpos
 
                     //Developer Dialog - Enabled / Disable Developer Button
 #if (DEBUG)
-                    bool buttonDeveloperEnabled = false;
+                    bool buttonDeveloperEnabled = true;
 #else
                     bool buttonDeveloperEnabled = false;
 #endif
@@ -628,7 +633,7 @@ namespace logicpos
             //Get BarCode Input
 
             //logicpos.Utils.ResponseText dialogResponse;
-            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, Resx.global_barcode, string.Empty, SettingsApp.RegexInteger, true);
+            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
             //if (dialogResponse.ResponseType == ResponseType.Ok)
             //{
             //    _log.Debug(String.Format("BarCode: [{0}]", dialogResponse.Text));
@@ -637,8 +642,8 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test Country Code2
 
-            //CFG_ConfigurationCountry countryPT = (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
-            //CFG_ConfigurationCountry countryAO = (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
+            //cfg_configurationcountry countryPT = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
+            //cfg_configurationcountry countryAO = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
             //_log.Debug(String.Format("countryPT: [{0}], [{1}]", countryPT.Designation, countryPT.Code2));
             //_log.Debug(String.Format("countryAO: [{0}], [{1}]", countryAO.Designation, countryAO.Code2));
 
@@ -751,7 +756,7 @@ namespace logicpos
             //{
             //    int size = 10;
 
-            //    ERP_Customer customer = new ERP_Customer(GlobalFramework.SessionXpo)
+            //    erp_customer customer = new erp_customer(GlobalFramework.SessionXpo)
             //    {
             //        Name = Utils.GenerateRandomStringAlphaUpper(size),
             //        Address = Utils.GenerateRandomStringAlphaUpper(size),
@@ -780,9 +785,9 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             // Test XPGuidObjectAttribute[]
 
-            //XPGuidObjectAttribute[] attr = Utils.GetXPGuidObjectAttributes(typeof(ERP_Customer));
+            //XPGuidObjectAttribute[] attr = Utils.GetXPGuidObjectAttributes(typeof(erp_customer));
 
-            //Dictionary<string, PropertyInfo> attributes = XPGuidObject.GetXPGuidObjectAttributes(typeof(ERP_Customer), false);
+            //Dictionary<string, PropertyInfo> attributes = XPGuidObject.GetXPGuidObjectAttributes(typeof(erp_customer), false);
             //foreach (var item in attributes)
             //{
             //    _log.Debug($"[{item.Key}]=[{item.Value}]");

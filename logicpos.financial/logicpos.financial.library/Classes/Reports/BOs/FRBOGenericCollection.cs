@@ -159,7 +159,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                                     fieldValue = FrameworkUtils.GetXPGuidObjectFromCriteria(propertyInfo.PropertyType, string.Format("Oid = '{0}'", fieldValue));
                                 }
                                 // Debug purpose helper
-                                //if(propertyInfo.PropertyType == typeof(SYS_UserDetail) || propertyInfo.PropertyType == typeof(POS_ConfigurationPlaceTerminal))
+                                //if(propertyInfo.PropertyType == typeof(sys_userdetail) || propertyInfo.PropertyType == typeof(pos_configurationplaceterminal))
                                 //{
                                 //    _log.Debug(String.Format("fieldName: [{0}], fieldValue: [{1}]", fieldName, fieldValue));
                                 //}

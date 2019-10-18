@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public event EventHandler ClosePopup;
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, Resx.global_date, FrameworkUtils.CurrentDateTimeAtomic(), pRule, pRequired)
+            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), FrameworkUtils.CurrentDateTimeAtomic(), pRule, pRequired)
         {
         }
 
@@ -53,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, DateTime pDateTime, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, Resx.global_date, pDateTime, pRule, pRequired)
+            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), pDateTime, pRule, pRequired)
         {
         }
 
@@ -61,9 +61,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             :this(pSourceWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, SettingsApp.DateFormat)
         {
         }
-
+        /* IN005974 -  KeyboardMode.AlfaNumeric makes date fields accept text */
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, string pRule, bool pRequired, string pDateFormat)
-            :this(pSourceWindow, pLabelText, string.Empty, pDateTime, KeyboardMode.None, pRule, pRequired, pDateFormat)
+            :this(pSourceWindow, pLabelText, string.Empty, pDateTime, KeyboardMode.AlfaNumeric, pRule, pRequired, pDateFormat)
         {
         }
 

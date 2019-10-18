@@ -106,8 +106,8 @@ namespace logicpos.shared.Classes.Finance
         }
 
         //Reference DocumentMaster usefull for <References> in CreditNotes, see SAF-T PT References
-        FIN_DocumentFinanceMaster fReference;
-        public FIN_DocumentFinanceMaster Reference
+        fin_documentfinancemaster fReference;
+        public fin_documentfinancemaster Reference
         {
             get { return fReference; }
             set { fReference = value; }

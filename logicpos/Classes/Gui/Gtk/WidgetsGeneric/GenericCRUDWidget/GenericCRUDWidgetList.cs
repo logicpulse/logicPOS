@@ -118,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     //Debug Helper
                     //if (debug && item.Widget.GetType() == typeof(XPOComboBox))
-                    //if (debug && item.Widget.GetType() == typeof(XPOEntryBoxSelectRecord<FIN_Article,TreeViewArticle>))
+                    //if (debug && item.Widget.GetType() == typeof(XPOEntryBoxSelectRecord<fin_article,TreeViewArticle>))
                     //{
                     //    _log.Debug(string.Format("item.FieldName:[{0}], item.Widget.GetType():[{1}], item.FieldType:[{2}], item.FieldProperty:[{3}], item.Required:[{4}], item.ValidationRule:[{5}], item.Validated: [{6}]", item.FieldName, item.Widget.GetType(), item.FieldType, item.FieldProperty, item.Required, item.ValidationRule, item.Validated));
                     //}
@@ -159,7 +159,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, Resx.window_title_dialog_validation_error, string.Format(Resx.dialog_message_field_validation_error, invalidFields));
+                ResponseType response = Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_validation_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error"), invalidFields));
             };
 
             return result;
@@ -278,7 +278,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         else if (item.Widget.GetType() == typeof(FileChooserButton))
                         {
                             String relativeFilename = (String)Convert.ChangeType((item.Widget as FileChooserButton).Filename, item.FieldType);
-                            if (relativeFilename != null) relativeFilename = FrameworkUtils.RelativePath(relativeFilename);
+                            /* ERR201810#15 - Database backup issues */
+                            //if (relativeFilename != null) relativeFilename = FrameworkUtils.RelativePath(relativeFilename);
                             modified = Modified(item.GetMemberValue(), relativeFilename, item.FieldType);
                             if (modified)
                             {
@@ -379,7 +380,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, Resx.global_error, ex.Message);
+                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                 result = false;
             }
 

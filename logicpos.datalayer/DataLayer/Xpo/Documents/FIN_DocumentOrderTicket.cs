@@ -5,10 +5,10 @@ using logicpos.datalayer.Enums;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentOrderTicket : XPGuidObject
+    public class fin_documentorderticket : XPGuidObject
     {
-        public FIN_DocumentOrderTicket() : base() { }
-        public FIN_DocumentOrderTicket(Session session) : base(session) { }
+        public fin_documentorderticket() : base() { }
+        public fin_documentorderticket(Session session) : base(session) { }
 
         Int32 fTicketId;
         public Int32 TicketId
@@ -39,28 +39,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentOrderTicket One <> Many DocumentOrderDetail
-        [Association(@"DocumentOrderTicketReferencesDocumentOrderDetail", typeof(FIN_DocumentOrderDetail))]
-        public XPCollection<FIN_DocumentOrderDetail> OrderDetail
+        [Association(@"DocumentOrderTicketReferencesDocumentOrderDetail", typeof(fin_documentorderdetail))]
+        public XPCollection<fin_documentorderdetail> OrderDetail
         {
-            get { return GetCollection<FIN_DocumentOrderDetail>("OrderDetail"); }
+            get { return GetCollection<fin_documentorderdetail>("OrderDetail"); }
         }
 
         //DocumentOrderMain One <> Many DocumentOrderTicket
-        FIN_DocumentOrderMain fOrderMain;
+        fin_documentordermain fOrderMain;
         [Association(@"DocumentOrderMainReferencesDocumentOrderTicket")]
-        public FIN_DocumentOrderMain OrderMain
+        public fin_documentordermain OrderMain
         {
             get { return fOrderMain; }
-            set { SetPropertyValue<FIN_DocumentOrderMain>("OrderMain", ref fOrderMain, value); }
+            set { SetPropertyValue<fin_documentordermain>("OrderMain", ref fOrderMain, value); }
         }
 
         //ConfigurationPlaceTable One <> Many DocumentOrderTicket
-        POS_ConfigurationPlaceTable fPlaceTable;
+        pos_configurationplacetable fPlaceTable;
         [Association(@"ConfigurationPlaceTableReferencesDocumentOrderTicket")]
-        public POS_ConfigurationPlaceTable PlaceTable
+        public pos_configurationplacetable PlaceTable
         {
             get { return fPlaceTable; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTable>("PlaceTable", ref fPlaceTable, value); }
+            set { SetPropertyValue<pos_configurationplacetable>("PlaceTable", ref fPlaceTable, value); }
         }
     }
 }

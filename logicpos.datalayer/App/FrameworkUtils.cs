@@ -14,13 +14,52 @@ namespace logicpos.datalayer.App
         public static AppOperationMode GetAppMode()
         {
             AppOperationMode result = AppOperationMode.Default;
+            string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
 
-            if (!string.IsNullOrEmpty(GlobalFramework.Settings["appOperationModeToken"]))
+            try
             {
-                result = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), GlobalFramework.Settings["appOperationModeToken"]);
+                if (!string.IsNullOrEmpty(appOperationModeToken))
+                {
+                    /* IN008024 */
+                    CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(appOperationModeToken);
+                    result = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), customAppOperationMode.AppOperationTheme); //TO DO
+                    //result = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), appOperationModeToken);
+                    _log.Debug("AppOperationMode GetAppMode() :: '" + appOperationModeToken + "' with '" + result + "' AppOperationMode");
+                }
+            }
+            catch (Exception ex)
+            {
+                /* IN009036 */
+                _log.Error(String.Format("AppOperationMode GetAppMode() :: [{0}]: {1}", appOperationModeToken, ex.Message));
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Based on "appOperationModeToken" key it returns the proper CustomAppOperationMode for app operation mode.
+        /// Please see #IN008024# for further details.
+        /// </summary>
+        /// <returns></returns>
+        public static CustomAppOperationMode GetCustomAppOperationMode()
+        {
+            return CustomAppOperationMode.GetAppOperationMode(GlobalFramework.Settings["appOperationModeToken"]);
+        }
+
+        /// <summary>
+        /// Checks for default theme. This is used for POS components to be created accordingly.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsDefaultAppOperationTheme()
+        {
+            bool isDefaultAppOperationTheme = false;
+
+            if (SettingsApp.CustomAppOperationMode != null)
+            {
+                isDefaultAppOperationTheme = CustomAppOperationMode.DEFAULT.AppOperationTheme.Equals(SettingsApp.CustomAppOperationMode.AppOperationTheme);
+            }
+
+            return isDefaultAppOperationTheme;
         }
 
         /// <summary>

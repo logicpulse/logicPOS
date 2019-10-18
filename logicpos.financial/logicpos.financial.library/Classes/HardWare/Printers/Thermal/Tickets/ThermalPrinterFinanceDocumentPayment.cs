@@ -14,12 +14,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
     public class ThermalPrinterFinanceDocumentPayment : ThermalPrinterBaseFinanceTemplate
     {
         //Parameters Properties
-        private FIN_DocumentFinancePayment _documentFinancePayment = null;
+        private fin_documentfinancepayment _documentFinancePayment = null;
         //Business Objects
         private List<FRBODocumentFinancePaymentView> _documentFinancePaymentList;
         private List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
 
-        public ThermalPrinterFinanceDocumentPayment(SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinancePayment pDocumentFinancePayment, List<int> pCopyNames, bool pSecondCopy)
+        public ThermalPrinterFinanceDocumentPayment(sys_configurationprinters pPrinter, fin_documentfinancepayment pDocumentFinancePayment, List<int> pCopyNames, bool pSecondCopy)
             : base(pPrinter, pDocumentFinancePayment.DocumentType, pCopyNames, pSecondCopy)
         {
             try
@@ -84,10 +84,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 List<TicketColumn> columns = new List<TicketColumn>();
-                columns.Add(new TicketColumn("DocumentDate", Resx.global_date, 11, TicketColumnsAlign.Left));
-                columns.Add(new TicketColumn("DocumentNumber", Resx.global_document_number_acronym, 0, TicketColumnsAlign.Left));
-                columns.Add(new TicketColumn("DocumentTotal", Resx.global_document_total, 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
-                columns.Add(new TicketColumn("TotalPayed", Resx.global_total_payed_acronym, 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                columns.Add(new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), 11, TicketColumnsAlign.Left));
+                columns.Add(new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number_acronym"), 0, TicketColumnsAlign.Left));
+                columns.Add(new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                columns.Add(new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
                 columns.Add(new TicketColumn("Payed", "L", 1, TicketColumnsAlign.Right, typeof(bool)));
                 //Prepare Table with Padding
                 DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);
@@ -161,7 +161,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
-                dataRow[0] = Resx.global_total;
+                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total");
                 dataRow[1] = FrameworkUtils.DecimalToString(_documentFinancePaymentList[0].PaymentAmount * _documentFinancePaymentList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
@@ -198,7 +198,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
 
                 //ExtendedValue
-                _thermalPrinterGeneric.WriteLine(Resx.global_total_extended_label, WriteLineTextMode.Bold);
+                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_extended_label"), WriteLineTextMode.Bold);
                 _thermalPrinterGeneric.WriteLine(extended);
 
                 //Line Feed

@@ -281,18 +281,18 @@ namespace logicpos.shared.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         //Add From Article
-        public void Add(FIN_Article pArticle, Guid pPlaceOid, Guid pTableOid, PriceType pPriceType, decimal pQuantity)
+        public void Add(fin_article pArticle, Guid pPlaceOid, Guid pTableOid, PriceType pPriceType, decimal pQuantity)
         {
             Add(pArticle, pPlaceOid, pTableOid, pPriceType, pQuantity, null);
         }
 
-        public void Add(FIN_Article pArticle, Guid pPlaceOid, Guid pTableOid, PriceType pPriceType, decimal pQuantity, FIN_ConfigurationVatExemptionReason pVatExemptionReason)
+        public void Add(fin_article pArticle, Guid pPlaceOid, Guid pTableOid, PriceType pPriceType, decimal pQuantity, fin_configurationvatexemptionreason pVatExemptionReason)
         {
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
             
             //Get Place Object to extract TaxSellType Normal|TakeWay
-            POS_ConfigurationPlace configurationPlace = (POS_ConfigurationPlace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(POS_ConfigurationPlace), pPlaceOid);
+            pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), pPlaceOid);
             TaxSellType taxSellType = (configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             PriceProperties priceProperties = FrameworkUtils.GetArticlePrice(pArticle, taxSellType);
@@ -327,13 +327,13 @@ namespace logicpos.shared.Classes.Finance
             bool debug = false;
             Dictionary<string, decimal> result = new Dictionary<string, decimal>();
 
-            FIN_Article article;
+            fin_article article;
 
             try
             {
                 foreach (var item in this)
                 {
-                    article = (FIN_Article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_Article), item.Key.ArticleOid);
+                    article = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                     if (!result.ContainsKey(article.Class.Acronym))
                     {
                         result.Add(article.Class.Acronym, item.Value.TotalFinal);
@@ -382,22 +382,22 @@ namespace logicpos.shared.Classes.Finance
             decimal resultRemainQuantity = 0;
             string where = string.Empty;
             //Store Reference to Future delete Object (After foreach Loop)
-            FIN_DocumentOrderMain deleteOrderMain = null;
-            FIN_DocumentOrderTicket deleteOrderTicket = null;
-            FIN_DocumentOrderDetail deleteOrderDetail = null;
+            fin_documentordermain deleteOrderMain = null;
+            fin_documentorderticket deleteOrderTicket = null;
+            fin_documentorderdetail deleteOrderDetail = null;
             string articleDesignation = string.Empty;
 
             //Start UnitOfWork
             using (UnitOfWork uowSession = new UnitOfWork())
             {
                 OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-                FIN_DocumentOrderMain xDocumentOrderMain = (FIN_DocumentOrderMain)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_DocumentOrderMain), orderMain.PersistentOid);
+                fin_documentordermain xDocumentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentordermain), orderMain.PersistentOid);
 
                 if (xDocumentOrderMain != null && xDocumentOrderMain.OrderTicket != null)
                 {
-                    foreach (FIN_DocumentOrderTicket ticket in xDocumentOrderMain.OrderTicket)
+                    foreach (fin_documentorderticket ticket in xDocumentOrderMain.OrderTicket)
                     {
-                        foreach (FIN_DocumentOrderDetail detail in ticket.OrderDetail)
+                        foreach (fin_documentorderdetail detail in ticket.OrderDetail)
                         {
                             try
                             {
@@ -433,7 +433,7 @@ namespace logicpos.shared.Classes.Finance
 
                 //Audit
                 FrameworkUtils.Audit("ORDER_ARTICLE_REMOVED", string.Format(
-                        Resx.audit_message_order_article_removed,
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_order_article_removed"),
                         articleDesignation,
                         1,
                         resultRemainQuantity - 1,
@@ -473,7 +473,7 @@ namespace logicpos.shared.Classes.Finance
                             //Open Table
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
                             //Audit
-                            FrameworkUtils.Audit("TABLE_OPEN", string.Format(Resx.audit_message_table_open, deleteOrderMain.PlaceTable.Designation));
+                            FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
                             //Delete OrderMain
                             deleteOrderMain.Delete();
                         };
@@ -685,7 +685,7 @@ namespace logicpos.shared.Classes.Finance
         }
 
         //Create ArticleBag From DocumentFinanceMaster
-        public static ArticleBag DocumentFinanceMasterToArticleBag(FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static ArticleBag DocumentFinanceMasterToArticleBag(fin_documentfinancemaster pDocumentFinanceMaster)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -702,7 +702,7 @@ namespace logicpos.shared.Classes.Finance
                     && pDocumentFinanceMaster.DocumentDetail.Count > 0
                 )
                 {
-                    foreach (FIN_DocumentFinanceDetail detail in pDocumentFinanceMaster.DocumentDetail)
+                    foreach (fin_documentfinancedetail detail in pDocumentFinanceMaster.DocumentDetail)
                     {
                         //Prepare articleBag Key and Props
                         articleBagKey = new ArticleBagKey(

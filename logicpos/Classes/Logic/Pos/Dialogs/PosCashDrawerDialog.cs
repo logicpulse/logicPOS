@@ -34,6 +34,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         this.Run();
                     }
+                    else
+                    {
+                        pResponse = Utils.ShowMessageTouch(
+                      this, DialogFlags.Modal, new Size(500, 350), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_print"),
+                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation"));
+
+                        if (pResponse == ResponseType.Yes)
+                        {
+                            FrameworkCalls.PrintWorkSessionMovement(this, GlobalFramework.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodTerminal);
+                        }
+                    }
                 }
                 else if (_selectedMovementType.Token == "CASHDRAWER_OUT")
                 {
@@ -42,9 +53,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         string movementAmountMoney = FrameworkUtils.DecimalToStringCurrency(_movementAmountMoney);
                         string totalAmountInCashDrawer = FrameworkUtils.DecimalToStringCurrency(_totalAmountInCashDrawer);
+                        
                         Utils.ShowMessageTouch(
-                            this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, Resx.global_error, 
-                            string.Format(Resx.dialog_message_cashdrawer_money_out_error, movementAmountMoney, totalAmountInCashDrawer)
+                            this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                            string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
                         );
                         //Keep Running            
                         this.Run();
@@ -58,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //PrintWorkSessionMovement
                 //PrintRouter.PrintWorkSessionMovement(GlobalFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
-                FrameworkCalls.PrintWorkSessionMovement(this, GlobalFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
+                FrameworkCalls.PrintWorkSessionMovement(this, GlobalFramework.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodTerminal);
 
                 //PrintTicket.PrintWorkSessionMovement(GlobalFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
                 //PrintTicket.PrintWorkSessionMovement(GlobalFramework.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
@@ -130,7 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Assign _selectedMovementType
-            _selectedMovementType = (POS_WorkSessionMovementType)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(POS_WorkSessionMovementType), pButton.CurrentButtonOid);
+            _selectedMovementType = (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_worksessionmovementtype), pButton.CurrentButtonOid);
 
             //Detect Cash open
             if (_selectedMovementType.Token == "CASHDRAWER_OPEN")
@@ -227,12 +239,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (diference != 0)
             {
-                message = string.Format(Resx.dialog_message_cashdrawer_open_close_total_enter_diferent_from_total_in_cashdrawer
+                message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_open_close_total_enter_diferent_from_total_in_cashdrawer")
                   , FrameworkUtils.DecimalToStringCurrency(totalInCashDrawer)
                   , FrameworkUtils.DecimalToStringCurrency(_movementAmountMoney)
                   , FrameworkUtils.DecimalToStringCurrency(diference)
                 );
-                Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 450), MessageType.Error, ButtonsType.Close, Resx.global_error, message);
+                Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 450), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
 
                 return false;
             }

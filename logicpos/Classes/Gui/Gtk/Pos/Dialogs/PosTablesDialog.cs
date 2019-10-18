@@ -68,19 +68,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_orders;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders");
             //TODO:THEME
             //Size windowSize = new Size(837, 650);
             Size windowSize = new Size(720, 580);
             String fileDefaultWindowIcon = string.Empty;
-
-            if (_appOperationModeToken.ToUpper() == "RETAIL")
+			/* IN009035 */
+            String fileActionViewOrders = string.Empty;
+            /* IN008024 */
+            if (!SettingsApp.IsDefaultTheme)
             {
                 fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_tables_retail.png");
+                fileActionViewOrders = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_retail_view_order.png");
             }
             else
             {
                 fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_tables.png");
+                fileActionViewOrders = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_view_order.png");
             }
 
             //ActionArea Icons
@@ -89,7 +93,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             String fileActionTableFilterFree = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_free.png");
             String fileActionTableFilterOpen = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_open.png");
             String fileActionTableFilterReserved = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_reserved.png");
-            String fileActionTableViewOrders = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_view_order.png");
             String fileActionTableViewTables = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_view_tables.png");
 
             //Parameters
@@ -125,24 +128,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //Table Actions  
-            _buttonTableReservation = new TouchButtonIconWithText("touchButtonTableReservation_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, Resx.pos_button_label_table_reservation, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableReservation, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonTableReservation = new TouchButtonIconWithText("touchButtonTableReservation_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_table_reservation"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableReservation, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
             //Tables
-            _buttonTableFilterAll = new TouchButtonIconWithText("touchButtonTableFilterAll_Green", Color.Transparent, Resx.dialog_orders_button_label_tables_all, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterAll, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false, Sensitive = false };
-            _buttonTableFilterFree = new TouchButtonIconWithText("touchButtonTableFilterFree_Green", Color.Transparent, Resx.dialog_orders_button_label_tables_free, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterFree, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
-            _buttonTableFilterOpen = new TouchButtonIconWithText("touchButtonTableFilterOpen_Green", Color.Transparent, Resx.dialog_orders_button_label_tables_open, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterOpen, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
-            _buttonTableFilterReserved = new TouchButtonIconWithText("touchButtonTableFilterReserved_Green", Color.Transparent, Resx.dialog_orders_button_label_tables_reserved, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterReserved, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
+            _buttonTableFilterAll = new TouchButtonIconWithText("touchButtonTableFilterAll_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_all"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterAll, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false, Sensitive = false };
+            _buttonTableFilterFree = new TouchButtonIconWithText("touchButtonTableFilterFree_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_free"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterFree, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
+            _buttonTableFilterOpen = new TouchButtonIconWithText("touchButtonTableFilterOpen_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_open"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterOpen, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
+            _buttonTableFilterReserved = new TouchButtonIconWithText("touchButtonTableFilterReserved_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_reserved"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterReserved, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
             //Views
-            _buttonTableViewOrders = new TouchButtonIconWithText("touchButtonViewOrders_Red", Color.Transparent, Resx.dialog_orders_button_label_view_orders, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableViewOrders, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
-            _buttonTableViewTables = new TouchButtonIconWithText("touchButtonViewTables_Green", Color.Transparent, Resx.dialog_orders_button_label_view_tables, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableViewTables, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            _buttonTableViewOrders = new TouchButtonIconWithText("touchButtonViewOrders_Red", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_view_orders"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionViewOrders, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            _buttonTableViewTables = new TouchButtonIconWithText("touchButtonViewTables_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_view_tables"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableViewTables, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             //Orders
-            //_buttonOrderChangeTable = new TouchButtonIconWithText("touchButtonOrderChangeTable_Red", Color.Transparent, Resx.pos_button_label_change_table, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionDefault, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            //_buttonOrderChangeTable = new TouchButtonIconWithText("touchButtonOrderChangeTable_Red", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_change_table, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionDefault, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
             //Orders
             //actionAreaButtons.Add(new ActionAreaButton(_buttonOrderChangeTable, _responseTypeOrderChangeTable));
             //Tables
-            if (_appOperationModeToken.ToUpper() == "DEFAULT")
+            if (SettingsApp.IsDefaultTheme)/* IN008024 */
             {
                 actionAreaButtons.Add(new ActionAreaButton(_buttonTableFilterAll, (ResponseType)_tablesStatusShowAllIndex));
                 actionAreaButtons.Add(new ActionAreaButton(_buttonTableFilterFree, (ResponseType)TableStatus.Free));

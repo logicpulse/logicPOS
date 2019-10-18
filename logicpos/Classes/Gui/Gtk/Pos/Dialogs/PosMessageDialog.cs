@@ -60,7 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, String pTitle, String pMessage, ActionAreaButtons pActionAreaButtons, String pImageWindowIcon, String pImageDialog = "")
         {
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_message_dialog;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog");
             System.Drawing.Size windowSize = pSize;
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
 

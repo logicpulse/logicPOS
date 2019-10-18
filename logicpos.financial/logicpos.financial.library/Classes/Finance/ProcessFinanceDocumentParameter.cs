@@ -9,8 +9,8 @@ namespace logicpos.financial.library.Classes.Finance
 {
     public class DocumentReference
     {
-        private FIN_DocumentFinanceMaster _reference;
-        public FIN_DocumentFinanceMaster Reference
+        private fin_documentfinancemaster _reference;
+        public fin_documentfinancemaster Reference
         {
             get { return _reference; }
             set { _reference = value; }
@@ -23,7 +23,7 @@ namespace logicpos.financial.library.Classes.Finance
             set { _reason = value; }
         }
 
-        public DocumentReference(FIN_DocumentFinanceMaster pDocumentFinanceMaster, string pReason)
+        public DocumentReference(fin_documentfinancemaster pDocumentFinanceMaster, string pReason)
         {
             _reference = pDocumentFinanceMaster;
             _reason = pReason;
@@ -192,8 +192,8 @@ namespace logicpos.financial.library.Classes.Finance
         }
 
         //Optional: DocumentOrderMain
-        private FIN_DocumentOrderMain _sourceOrderMain;
-        public FIN_DocumentOrderMain SourceOrderMain
+        private fin_documentordermain _sourceOrderMain;
+        public fin_documentordermain SourceOrderMain
         {
             get { return _sourceOrderMain; }
             set { _sourceOrderMain = value; }
@@ -208,8 +208,8 @@ namespace logicpos.financial.library.Classes.Finance
         }
 
         //Optional: FinanceDocuments
-        private List<FIN_DocumentFinanceMaster> _financeDocuments;
-        public List<FIN_DocumentFinanceMaster> FinanceDocuments
+        private List<fin_documentfinancemaster> _financeDocuments;
+        public List<fin_documentfinancemaster> FinanceDocuments
         {
             get { return _financeDocuments; }
             set { _financeDocuments = value; }
@@ -232,8 +232,8 @@ namespace logicpos.financial.library.Classes.Finance
         }
 
         //Optional: OrderReferences
-        private List<FIN_DocumentFinanceMaster> _orderReferences;
-        public List<FIN_DocumentFinanceMaster> OrderReferences
+        private List<fin_documentfinancemaster> _orderReferences;
+        public List<fin_documentfinancemaster> OrderReferences
         {
             get { return _orderReferences; }
             set { _orderReferences = value; }

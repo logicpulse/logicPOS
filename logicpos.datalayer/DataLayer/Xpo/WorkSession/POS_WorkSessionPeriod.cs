@@ -14,10 +14,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
     }
 
     [DeferredDeletion(false)]
-    public class POS_WorkSessionPeriod : XPGuidObject
+    public class pos_worksessionperiod : XPGuidObject
     {
-        public POS_WorkSessionPeriod() : base() { }
-        public POS_WorkSessionPeriod(Session session) : base(session) { }
+        public pos_worksessionperiod() : base() { }
+        public pos_worksessionperiod(Session session) : base(session) { }
 
         WorkSessionPeriodType fPeriodType;
         public WorkSessionPeriodType PeriodType
@@ -55,41 +55,41 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DateTime>("DateEnd", ref fDateEnd, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminal;
-        public POS_ConfigurationPlaceTerminal Terminal
+        pos_configurationplaceterminal fTerminal;
+        public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
         }
 
         //RECURSIVE RelationShip : WorkSessionPeriod One (Type Day) <> Many WorkSessionPeriod (Type Terminal)
-        [Association(@"WorkSessionPeriodReferencesWorkSessionPeriod", typeof(POS_WorkSessionPeriod))]
-        public XPCollection<POS_WorkSessionPeriod> Child
+        [Association(@"WorkSessionPeriodReferencesWorkSessionPeriod", typeof(pos_worksessionperiod))]
+        public XPCollection<pos_worksessionperiod> Child
         {
-            get { return GetCollection<POS_WorkSessionPeriod>("Child"); }
+            get { return GetCollection<pos_worksessionperiod>("Child"); }
         }
 
         //RECURSIVE RelationShip : WorkSessionPeriod One (Type Day) <> Many WorkSessionPeriod (Type Terminal)
-        POS_WorkSessionPeriod fParent;
+        pos_worksessionperiod fParent;
         [Association(@"WorkSessionPeriodReferencesWorkSessionPeriod")]
-        public POS_WorkSessionPeriod Parent
+        public pos_worksessionperiod Parent
         {
             get { return fParent; }
-            set { SetPropertyValue<POS_WorkSessionPeriod>("Parent", ref fParent, value); }
+            set { SetPropertyValue<pos_worksessionperiod>("Parent", ref fParent, value); }
         }
 
         //WorkSessionPeriod One <> Many WorkSessionMovement
-        [Association(@"WorkSessionPeriodReferencesWorkSessionMovement", typeof(POS_WorkSessionMovement))]
-        public XPCollection<POS_WorkSessionMovement> Movement
+        [Association(@"WorkSessionPeriodReferencesWorkSessionMovement", typeof(pos_worksessionmovement))]
+        public XPCollection<pos_worksessionmovement> Movement
         {
-            get { return GetCollection<POS_WorkSessionMovement>("Movement"); }
+            get { return GetCollection<pos_worksessionmovement>("Movement"); }
         }
 
         //WorkSessionPeriod One <> Many WorkSessionPeriodTotal
-        [Association(@"WorkSessionPeriodReferencesWorkSessionPeriodTotal", typeof(POS_WorkSessionPeriodTotal))]
-        public XPCollection<POS_WorkSessionPeriodTotal> TotalPeriod
+        [Association(@"WorkSessionPeriodReferencesWorkSessionPeriodTotal", typeof(pos_worksessionperiodtotal))]
+        public XPCollection<pos_worksessionperiodtotal> TotalPeriod
         {
-            get { return GetCollection<POS_WorkSessionPeriodTotal>("TotalPeriod"); }
+            get { return GetCollection<pos_worksessionperiodtotal>("TotalPeriod"); }
         }
     }
 }

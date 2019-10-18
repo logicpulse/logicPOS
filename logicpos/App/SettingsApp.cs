@@ -14,8 +14,8 @@ namespace logicpos.App
         //Used to Force/Override Intellilock assigned GlobalFramework.LicenceRegistered in BootStrap
         public static bool LicenceRegistered = true;
         //Valid databaseType Values: SQLite, MySql, MSSqlServer (DBName Must be lowercase)
-        public static string DatabaseName = "logicposdb";
-        //Used to Force create DatabaseScema and Fixtures with XPO (Non Script Mode): Requirements for Work: Empty or Non Exist Database
+        public static string DatabaseName = "logicposdbdevelopment";
+        //Used to Force create DatabaseSchema and Fixtures with XPO (Non Script Mode): Requirements for Work: Empty or Non Exist Database
         //Notes: OnError "An exception of type 'DevExpress.Xpo.DB.Exceptions.SchemaCorrectionNeededException'", UnCheck [X] Break when this exception is user-unhandled and continue, watch log and wait until sucefull message appear
         public static bool XPOCreateDatabaseAndSchema = false;
         //Use file based Protected Files
@@ -27,7 +27,7 @@ namespace logicpos.App
         //Used to Work in DEBUG Mode and Fake Hardware ID, Must be UNIQUE for Terminals
         //TIP: Must be changed if Work in Multi User Database Environments, else all Terminals act like there is only one Terminal
         //Disable > public static string AppHardwareId = null;
-        public static string AppHardwareId = "92A4-EADD-8AF0-B693-DBD0-2A21";
+        public static string AppHardwareId = "92A4-EADD-8AF0-B693-DBD0-2A22";
 #else
         public static bool LicenceRegistered = false;
         public static string DatabaseName = "logicposdb";
@@ -72,7 +72,8 @@ namespace logicpos.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //DataBase Backup System
 
-        public static uint BackupTimerInterval = 1000 * 5;
+        /* ERR201810#15 - Database backup issues */
+        public static uint BackupTimerInterval = 1000 * 60;
         public static string BackupExtension = "bak";
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -94,14 +95,28 @@ namespace logicpos.App
 
         //Database Script Files
         public static string FileDatabaseSchema = @"Resources\Database\{0}\databaseschema.sql";
-        public static string FileDatabaseData = @"Resources\Database\databasedata.sql";
-        public static string FileDatabaseDataDemo = @"Resources\Database\databasedatademo.sql";
+        public static string FileDatabaseSchemaLinux = @"Resources\Database\{0}\databaseschemalinux.sql";
+
+        public static string FileDatabaseUpdate = @"Resources\Database\{0}\databaseschemaupdate.sql";
+        public static string FileDatabaseUpdateLinux = @"Resources\Database\{0}\databaseschemaupdatelinux.sql";
+        
+        /* IN009035 */
+        public static string FileDatabaseDataPath = @"Resources\Database\Data\{0}\{1}\databasedata.sql"; // "Resources\Database\Data\Default\en\databasedata.sql"
+        public static string FileDatabaseData = GetDatabaseFileName(false, FileDatabaseDataPath);// Default Script: "databasedata.sql";
+        /* IN008024 */
+        public static string FileDatabaseDataDemoPath = @"Resources\Database\Demos\{0}\{1}\{2}"; // "Resources\Database\Demos\Backery\en\databasedatademo_backery.sql"
+        public static string FileDatabaseDataDemo = GetDatabaseFileName(true, FileDatabaseDataDemoPath);// Default Script: "databasedatademo.sql";
+
         public static string FileDatabaseViews = @"Resources\Database\databaseviews.sql";
-        public static string FileDatabaseOtherDatabaseType = @"Resources\Database\{0}\Other\";
+        // public static string FileDatabaseOtherDatabaseType = @"Resources\Database\{0}\Other\";/* IN009045: Not in use */
         public static string FileDatabaseOtherCommon = @"Resources\Database\Other\";
-        public static string FileDatabaseOtherCommonAppMode = @"Resources\Database\Other\AppMode";
+        /* IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
+        // public static string FileDatabaseOtherCommonAppMode = @"Resources\Database\Other\AppMode";
         //Encrypted Scripts
-        public static string FileDatabaseOtherCommonPluginsSoftwareVendor = @"Resources\Database\Other\Plugins\SoftwareVendor";
+        /* IN009035 */
+        public static string FileDatabaseOtherCommonPluginsSoftwareVendorPath = @"Resources\Database\Other\Plugins\SoftwareVendor\Data\{0}\{1}"; // "Resources\Database\Other\Plugins\SoftwareVendor\Data\Default\en"
+        public static string FileDatabaseOtherCommonPluginsSoftwareVendor = GetDatabaseFileName(false, FileDatabaseOtherCommonPluginsSoftwareVendorPath);// Default Path: "Resources\Database\Other\Plugins\SoftwareVendor"
+
         //Country Scripts
         public static string FileDatabaseOtherCommonCountry = @"Resources\Database\Other\Country";
         //Country Encrypted Scripts
@@ -144,6 +159,15 @@ namespace logicpos.App
 
         //Use CurrentAccount or CustomerCard in PaymentsDialog
         public static bool PosPaymentsDialogUseCurrentAccount = Convert.ToBoolean(GlobalFramework.Settings["posPaymentsDialogUseCurrentAccount"]);
+
+        //First time boot POS flag
+        public static bool firstBoot;
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //Pagination Related
+        /// <summary>
+        /// Define Rows per Page for pagination load
+        /// </summary>
+        public static int PaginationRowsPerPage = 20;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Helper Methods
@@ -194,6 +218,24 @@ namespace logicpos.App
             //result.Add(@"Resources\Keyboards\163.xml");
             result.Add(@"Resources\Reports\UserReports\ReportArticle.frx");
             result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.frx");
+            /// <summary>
+            ///     This change refers to "ENH201810#04".
+            /// </summary>
+            /// <remarks>
+            ///     <para>DESCRIPTION: This code change covers MZ and AO invoice layout enhancement, based on "CurrentCulture" settings.</para>
+            ///     <para>ISSUE: all prices greater than million were being cut on invoice.</para>
+            ///     <para>CAUSE: there was no proper locale based invoice files.</para>
+            ///     <para>SOLUTION: It was created a file for each of those specific locale settings, based on original files. 
+            ///     For example: based on "ReportDocumentFinance.frx" it was created "ReportDocumentFinance_pt-MZ.frx".
+            ///     </para>
+            /// </remarks>
+            /// <example>
+            ///     "Preço" value: 35 000 000,00
+            ///     Shows the value:  000 000,00
+            /// </example>
+            //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-PT.frx");
+            //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-MZ.frx");
+            //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-AO.frx");
             result.Add(@"Resources\Reports\UserReports\ReportDocumentFinancePayment.frx");
             result.Add(@"Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx");
             result.Add(@"Resources\Reports\UserReports\ReportTest.frx");
@@ -203,7 +245,11 @@ namespace logicpos.App
             return result;
         }
 
-        // This method is Changed for dynamic Themes, now it has only one theme for all resolutions
+        /// <summary>
+        /// It is responsible for loading the file theme based on user´s choice during POS installation.
+        /// Please see #IN008024# for further details.
+        /// </summary>
+        /// <returns></returns>
         private static string GetFileTheme()
         {
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -212,19 +258,28 @@ namespace logicpos.App
 
             try
             {
+                /* IN008024 */
+                //logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = logicpos.datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(GlobalFramework.Settings["appOperationModeToken"]);
+                logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = SettingsApp.CustomAppOperationMode;
+
+                /* 
+                 * Possible themes:
+                 * theme_default_default.xml
+                 * theme_default_retail.xml
+                 */
                 result = string.Format(
                     "{0}{1}",
                     GlobalFramework.Path["themes"],
                     string.Format(
                         FileFormatThemeFile
-                        , GlobalFramework.PreferenceParameters["APP_THEME"].ToLower()
-                        , GlobalFramework.Settings["appOperationModeToken"].ToLower()
+                        , AppTheme.ToLower() /* IN008024: Before, from Database : GlobalFramework.PreferenceParameters["APP_THEME"].ToLower() */
+                        , customAppOperationMode.AppOperationTheme.ToLower()/*  From App.Config: Default|Coffee|Bakery|Fish|Butchery|Shoe|Clothing|Hardware */
                     )
                 );
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message, ex);
+                log.Error("string GetFileTheme() :: " + ex.Message, ex);
             }
 
             return result;
@@ -238,6 +293,62 @@ namespace logicpos.App
         private static bool GetServiceATSendDocumentsWayBill()
         {
             return Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
+        }
+
+        /// <summary>
+        /// This method is responsible for loading the proper Demo database script for selected user's option during POS installation.
+        /// For further details, please see #IN008024# and #IN009035#.
+        /// </summary>
+        /// <returns></returns>
+        private static string GetDatabaseFileName(bool demo, string basePath)
+        {
+            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+            string result = String.Empty;
+
+            /* Custom scripts */
+            try
+            {
+                logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(GlobalFramework.Settings["appOperationModeToken"]);
+                        
+                string customCultureResourceDefinition = GlobalFramework.Settings["customCultureResourceDefinition"];
+                string customCultureCountryPrefix = customCultureResourceDefinition.Substring(0, customCultureResourceDefinition.IndexOf('-'));
+
+
+                if (demo)
+                {
+                    //string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+                    string appOperationModeToken = customAppOperationMode.AppOperationModeToken;
+                    //..\Resources\Database\Demos\..\..\databasedatademo_backery.sql
+                    string fileName = customAppOperationMode.DatabaseDemoFileName;
+
+                    //"Resources\Database\Demos\{0}\{1}\{2}
+                    result = string.Format(basePath,
+                        appOperationModeToken,
+                        customCultureCountryPrefix,
+                        fileName
+                    );
+                }
+                else
+                {
+                    /* Default or Retail */
+                    string appOperationTheme = customAppOperationMode.AppOperationTheme;
+                    // "Resources\Database\Data\{0}\{1}\databasedata.sql"
+                    // "..\Resources\Database\Other\Plugins\SoftwareVendor\Data\{0}\{1}"
+                    result = string.Format(basePath,
+                        appOperationTheme,
+                        customCultureCountryPrefix
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("string GetDatabaseFileName(bool demo) :: " + ex.Message, ex);
+                /* Default script for demo or data */
+                  result = demo ?  @"Resources\Database\databasedatademo.sql" : basePath.EndsWith(".sql") ? @"Resources\Database\databasedata.sql" : @"Resources\Database\Other\Plugins\SoftwareVendor";
+            }
+
+            return result;
         }
     }
 }

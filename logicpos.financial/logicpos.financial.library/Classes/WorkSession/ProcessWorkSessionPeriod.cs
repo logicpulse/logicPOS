@@ -21,7 +21,7 @@ namespace logicpos.financial.library.Classes.WorkSession
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static POS_WorkSessionPeriod GetSessionPeriod(WorkSessionPeriodType pWorkSessionPeriodType)
+        public static pos_worksessionperiod GetSessionPeriod(WorkSessionPeriodType pWorkSessionPeriodType)
         {
             string whereTerminal = String.Empty;
             if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
@@ -33,7 +33,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             Guid workSessionPeriodOid = FrameworkUtils.GetGuidFromQuery(sql);
             if (workSessionPeriodOid != Guid.Empty)
             {
-                POS_WorkSessionPeriod resultWorkSessionPeriod = GlobalFramework.SessionXpo.GetObjectByKey<POS_WorkSessionPeriod>(workSessionPeriodOid);
+                pos_worksessionperiod resultWorkSessionPeriod = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodOid);
                 //Add Parent Reference, not used because we use GlobalFramework.WorkSessionPeriodDay and not GlobalFramework.WorkSessionPeriodTerminal.Parent
                 if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
                 {
@@ -55,10 +55,10 @@ namespace logicpos.financial.library.Classes.WorkSession
             {
                 string periodType = (pWorkSessionPeriodType == WorkSessionPeriodType.Day) ? "Day" : "Terminal";
                 string description = (pDescription != String.Empty) ? string.Format(" - {0}", pDescription) : String.Empty;
-                POS_ConfigurationPlaceTerminal terminal = GlobalFramework.SessionXpo.GetObjectByKey<POS_ConfigurationPlaceTerminal>(GlobalFramework.LoggedTerminal.Oid);
+                pos_configurationplaceterminal terminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
                 DateTime dateTime = FrameworkUtils.CurrentDateTimeAtomic();
 
-                POS_WorkSessionPeriod workSessionPeriod = new POS_WorkSessionPeriod(GlobalFramework.SessionXpo)
+                pos_worksessionperiod workSessionPeriod = new pos_worksessionperiod(GlobalFramework.SessionXpo)
                 {
                     PeriodType = pWorkSessionPeriodType,
                     SessionStatus = WorkSessionPeriodStatus.Open,
@@ -69,7 +69,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 //Assign Parent
                 if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
                 {
-                    workSessionPeriod.Parent = GlobalFramework.SessionXpo.GetObjectByKey<POS_WorkSessionPeriod>(GlobalFramework.WorkSessionPeriodDay.Oid);
+                    workSessionPeriod.Parent = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
                 }
                 //Persist
                 workSessionPeriod.Save();
@@ -95,7 +95,7 @@ namespace logicpos.financial.library.Classes.WorkSession
         /// Close WorkSessionPeriod, work in all PeriodTypes Day and Terminal
         /// </summary>
         /// <param name="pWorkSessionPeriod"></param>
-        public static bool SessionPeriodClose(POS_WorkSessionPeriod pWorkSessionPeriod)
+        public static bool SessionPeriodClose(pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
 
@@ -106,7 +106,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             {
                 try
                 {
-                    POS_WorkSessionPeriod workSessionPeriod = GlobalFramework.SessionXpo.GetObjectByKey<POS_WorkSessionPeriod>(pWorkSessionPeriod.Oid);
+                    pos_worksessionperiod workSessionPeriod = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(pWorkSessionPeriod.Oid);
                     DateTime dateTime = FrameworkUtils.CurrentDateTimeAtomic();
                     workSessionPeriod.DateEnd = dateTime;
                     workSessionPeriod.SessionStatus = WorkSessionPeriodStatus.Close;
@@ -132,21 +132,21 @@ namespace logicpos.financial.library.Classes.WorkSession
             return result;
         }
 
-        public static XPCollection GetSessionPeriodTotal(POS_WorkSessionPeriod pWorkSessionPeriod)
+        public static XPCollection GetSessionPeriodTotal(pos_worksessionperiod pWorkSessionPeriod)
         {
             return GetSessionPeriodTotal(GlobalFramework.SessionXpo, pWorkSessionPeriod);
         }
 
-        public static XPCollection GetSessionPeriodTotal(Session pSession, POS_WorkSessionPeriod pWorkSessionPeriod)
+        public static XPCollection GetSessionPeriodTotal(Session pSession, pos_worksessionperiod pWorkSessionPeriod)
         {
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("Period = '{0}'", pWorkSessionPeriod.Oid));
             SortProperty sortProperty = new SortProperty("Ord", SortingDirection.Ascending);
-            XPCollection resultXPCollection = new XPCollection(pSession, typeof(POS_WorkSessionPeriodTotal), criteria, sortProperty);
+            XPCollection resultXPCollection = new XPCollection(pSession, typeof(pos_worksessionperiodtotal), criteria, sortProperty);
 
             return resultXPCollection;
         }
 
-        public static bool PersistWorkSessionTotals(POS_WorkSessionPeriod pWorkSessionPeriod)
+        public static bool PersistWorkSessionTotals(pos_worksessionperiod pWorkSessionPeriod)
         {
             try
             {
@@ -156,9 +156,9 @@ namespace logicpos.financial.library.Classes.WorkSession
                     uint paymentMethodOrd = 0;
                     string paymentMethodToken = String.Empty;
                     MovementTypeTotal movementTypeTotal = MovementTypeTotal.None;
-                    POS_WorkSessionPeriod workSessionPeriod;
-                    FIN_ConfigurationPaymentMethod configurationPaymentMethod;
-                    POS_WorkSessionPeriodTotal workSessionPeriodTotal;
+                    pos_worksessionperiod workSessionPeriod;
+                    fin_configurationpaymentmethod configurationPaymentMethod;
+                    pos_worksessionperiodtotal workSessionPeriodTotal;
                     //Can filter by Day or Terminal type
                     string wherePeriodField = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Terminal) ? "wspPeriod" : "wspPeriodParent";
 
@@ -208,11 +208,11 @@ namespace logicpos.financial.library.Classes.WorkSession
                         if (movementTypeTotal != MovementTypeTotal.None)
                         {
                             //Get XPObjects
-                            workSessionPeriod = uowSession.GetObjectByKey<POS_WorkSessionPeriod>(pWorkSessionPeriod.Oid);
-                            configurationPaymentMethod = (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObjectFromField(uowSession, typeof(FIN_ConfigurationPaymentMethod), "Token", paymentMethodToken);
+                            workSessionPeriod = uowSession.GetObjectByKey<pos_worksessionperiod>(pWorkSessionPeriod.Oid);
+                            configurationPaymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObjectFromField(uowSession, typeof(fin_configurationpaymentmethod), "Token", paymentMethodToken);
 
                             //Persist WorkSessionPeriodTotal
-                            workSessionPeriodTotal = new POS_WorkSessionPeriodTotal(uowSession)
+                            workSessionPeriodTotal = new pos_worksessionperiodtotal(uowSession)
                             {
                                 Ord = paymentMethodOrd,
                                 PaymentMethod = configurationPaymentMethod,
@@ -281,12 +281,12 @@ namespace logicpos.financial.library.Classes.WorkSession
             }
         }
 
-        public static decimal GetSessionPeriodMovementTotal(POS_WorkSessionPeriod pWorkSessionPeriod, MovementTypeTotal pMovementTypeTotal)
+        public static decimal GetSessionPeriodMovementTotal(pos_worksessionperiod pWorkSessionPeriod, MovementTypeTotal pMovementTypeTotal)
         {
             return GetSessionPeriodMovementTotal(GlobalFramework.SessionXpo, pWorkSessionPeriod, pMovementTypeTotal);
         }
 
-        public static decimal GetSessionPeriodMovementTotal(Session pSession, POS_WorkSessionPeriod pWorkSessionPeriod, MovementTypeTotal pMovementTypeTotal)
+        public static decimal GetSessionPeriodMovementTotal(Session pSession, pos_worksessionperiod pWorkSessionPeriod, MovementTypeTotal pMovementTypeTotal)
         {
             string sqlShared = @"
                 SELECT 
@@ -376,7 +376,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             return resultTotal;
         }
 
-        public static string GetSessionPeriodMovementTotalDebug(POS_WorkSessionPeriod pWorkSessionPeriod, bool pOutputToLog)
+        public static string GetSessionPeriodMovementTotalDebug(pos_worksessionperiod pWorkSessionPeriod, bool pOutputToLog)
         {
             string result = String.Empty;
             string resultDetail = string.Format("WorkSessionPeriod:[{0}] Type:[{1}]", pWorkSessionPeriod.Oid, pWorkSessionPeriod.PeriodType);
@@ -400,7 +400,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(GlobalFramework.SessionXpo, GlobalFramework.WorkSessionPeriodTerminal, pMoventTypeToken);
         }
 
-        public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(POS_WorkSessionPeriod pWorkSessionPeriod, String pMoventTypeToken)
+        public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(pos_worksessionperiod pWorkSessionPeriod, String pMoventTypeToken)
         {
             return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(GlobalFramework.SessionXpo, pWorkSessionPeriod, pMoventTypeToken);
         }
@@ -408,7 +408,7 @@ namespace logicpos.financial.library.Classes.WorkSession
         /// <summary>
         /// Get Last CASHDRAWER_OPEN/CASHDRAWER_CLOSE Value, Required WorkSessionPeriod, to Re-Print Sessions from Other Terminals, do not use GlobalFramework.LoggedTerminal.Oid
         /// </summary>
-        public static decimal GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(Session pSession, POS_WorkSessionPeriod pWorkSessionPeriod, String pMoventTypeToken)
+        public static decimal GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(Session pSession, pos_worksessionperiod pWorkSessionPeriod, String pMoventTypeToken)
         {
             //If Has a Valid pWorkSessionPeriod get Terminal from it, else use logged Terminal
             Guid whereTerminalGuid = (pWorkSessionPeriod != null) ? pWorkSessionPeriod.Terminal.Oid : GlobalFramework.LoggedTerminal.Oid;
@@ -439,7 +439,7 @@ namespace logicpos.financial.library.Classes.WorkSession
         /// <summary>
         /// Get CashDrawer Open Amount for all Used terminals, Required three queries
         /// </summary>
-        public static decimal GetSessionPeriodDayCashDrawerOpenOrCloseAmount(POS_WorkSessionPeriod pWorkSessionPeriod, bool pEnableOpenMode)
+        public static decimal GetSessionPeriodDayCashDrawerOpenOrCloseAmount(pos_worksessionperiod pWorkSessionPeriod, bool pEnableOpenMode)
         {
             decimal result = 0.0m;
 
@@ -535,7 +535,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             return result;
         }
 
-        public static Hashtable GetSessionPeriodSummaryDetails(POS_WorkSessionPeriod pWorkSessionPeriod)
+        public static Hashtable GetSessionPeriodSummaryDetails(pos_worksessionperiod pWorkSessionPeriod)
         {
             //Get Total Money and TotalMoney Out (NonPayments)
             decimal totalMoneyIn = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(pWorkSessionPeriod, MovementTypeTotal.MoneyIn);

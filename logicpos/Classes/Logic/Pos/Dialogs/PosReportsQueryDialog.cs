@@ -1,10 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,13 +30,39 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Validate();
         }
 
+        /// <summary>
+        /// It makes datepicker accepts text.
+        /// Please see #IN005974
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void entryBoxDateStart_Changed(object sender, EventArgs e)
+        {
+            DateStart = _entryBoxDateStart.Value;
+            // Call Validate
+            Validate();
+        }
+
+        /// <summary>
+        /// It makes datepicker accepts text.
+        /// Please see #IN005974
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void entryBoxDateEnd_Changed(object sender, EventArgs e)
+        {
+            DateEnd = _entryBoxDateEnd.Value.AddHours(23).AddMinutes(59).AddSeconds(59);
+            // Call Validate
+            Validate();
+        }
+
         private void _entryBoxSelectShared_ClosePopup(object sender, EventArgs e)
         {
             bool debug = false;
             Widget widget = (sender as Widget);
 
             // Helper to debug Senders
-            //XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceType, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = (sender as XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceType, TreeViewDocumentFinanceType>);
+            //XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = (sender as XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>);
 
             if (_selectionBoxs.ContainsKey(widget.Name))
             {
@@ -60,15 +88,54 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 throw new Exception("Error! Cant get filter Values from GetComposedFilter");
             }
         }
-
+        private void _buttonExportXls_Clicked(object sender, EventArgs e)
+        {
+            // Call Validate
+            Validate();
+            PosReportsDialog.exportType = CustomReportDisplayMode.ExportXls;
+            
+            List<string> result = GetComposedFilter();
+            if (result.Count == 2)
+            {
+                _filterValue = result[0];
+                FilterValueHumanReadble = result[1];
+            }
+            else
+            {
+                throw new Exception("Error! Cant get filter Values from GetComposedFilter");
+            }
+        }
+        private void _buttonExportPdf_Clicked(object sender, EventArgs e)
+        {
+            // Call Validate
+            Validate();
+            PosReportsDialog.exportType = CustomReportDisplayMode.ExportPDF;
+            
+            List<string> result = GetComposedFilter();
+            if (result.Count == 2)
+            {
+                _filterValue = result[0];
+                FilterValueHumanReadble = result[1];
+            }
+            else
+            {
+                throw new Exception("Error! Cant get filter Values from GetComposedFilter");
+            }
+        }
+        
         // Prevent Dialog Destroy, Validate Count Records, we must override OnResponse to prevent Close Dialog
         protected override void OnResponse(ResponseType pResponse)
         {
-            if (pResponse == ResponseType.Ok)
+            //add responseType Export to Excel
+            if (pResponse == ResponseType.Ok || pResponse == (ResponseType)DialogResponseType.ExportXls || pResponse == (ResponseType)DialogResponseType.ExportPdf)
             {
                 // Test Query for Records
                 int count = 0;
                 string countQuerySql = string.Empty;
+                if(pResponse == ResponseType.Ok)
+                {
+                    PosReportsDialog.exportType = CustomReportDisplayMode.ExportPDF;
+                }
 
                 try
                 {
@@ -84,7 +151,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (count <= 0)
                 {
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(500, 240), MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_report_filter_no_records_with_criteria);
+					/* IN009062 */
+                    Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_report_filter_no_records_with_criteria"));
                     //Keep Running
                     this.Run();
                 }
@@ -172,13 +240,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 filterSelectionBoxsHumanReadable = filterSelectionBoxsHumanReadable.Substring(0, filterSelectionBoxsHumanReadable.LastIndexOf(", "));
             }
 
+			/* IN009010 */
+            //if (_reportsQueryDialogMode.Equals(ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY))
+            if("UNDEFINED_DATE_FIELD".Equals(filterDateField))//TO DO
+            {
+                filterDateField = "CustomerSinceDate";
+                _dateStart = new DateTime(1900, 1, 1, 0, 0, 0);// "1900-01-01 00:00:00"
+                _dateEnd = DateTime.Now;
+            }
+
             // Combine final where Filter
             string datesFilter = string.Format("{0} > '{1}' AND {0} < '{2}'", filterDateField, _dateStart.ToString(SettingsApp.DateTimeFormat), _dateEnd.ToString(SettingsApp.DateTimeFormat));
             string filter = (!string.IsNullOrEmpty(filterSelectionBoxs))
                 ? string.Format("({0}) AND ({1})", datesFilter, filterSelectionBoxs)
                 : string.Format("({0})", datesFilter);
             // HumanReadable
-            string datesFilterHumanReadable = string.Format("{0} > '{1}', {0} < '{2}'", Resx.global_date, _dateStart.ToString(SettingsApp.DateTimeFormat), _dateEnd.ToString(SettingsApp.DateTimeFormat));
+            /* IN006004 */
+            string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart.ToString(SettingsApp.DateTimeFormat), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd.ToString(SettingsApp.DateTimeFormat));
             string filterHumanReadable = (!string.IsNullOrEmpty(filterSelectionBoxsHumanReadable))
                 ? string.Format("{0}, {1}", datesFilterHumanReadable, filterSelectionBoxsHumanReadable)
                 : datesFilterHumanReadable;
@@ -186,8 +264,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (debug) _log.Debug(string.Format("Filter: [{0}]", filter));
             if (debug) _log.Debug(string.Format("filterHumanReadable: [{0}]", filterHumanReadable));
 
+            /* IN009204 - RCs should be removed from this report, only AT Financial documents here */
+            if (Enums.Reports.ReportsQueryDialogMode.COMPANY_BILLING.Equals(_reportsQueryDialogMode))
+            {
+                string documentTypeOid = SettingsApp.XpoOidDocumentFinanceTypePayment.ToString();
+                string documentTypeDesignation = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc");
+                /* Based on "view_documentfinancecustomerbalancedetails" we are removing RCs ("a009168d-fed1-4f52-b9e3-77e280b18ff5") */
+                filter += $" AND DocumentTypeOid <> '{documentTypeOid}'";
+                // filterHumanReadable += $", {resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type} <> '{documentTypeDesignation}'";
+            }
+
             result.Add(filter);
-            result.Add(string.Format("{0}: [{1}]", Resx.global_filter, filterHumanReadable));
+            result.Add(string.Format("{0}: [{1}]", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_filter"), filterHumanReadable));
 
             // Return Result Filter List
             return result;

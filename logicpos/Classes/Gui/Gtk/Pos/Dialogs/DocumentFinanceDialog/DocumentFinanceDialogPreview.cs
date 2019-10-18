@@ -17,9 +17,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private bool _debug = false;
         private Alignment _alignmentWindow;
         private ArticleBag _articleBag;
-        private CFG_ConfigurationCurrency _configurationCurrency;
+        private cfg_configurationcurrency _configurationCurrency;
 
-        public DocumentFinanceDialogPreview(Window pSourceWindow, DialogFlags pDialogFlags, DocumentFinanceDialogPreviewMode pMode, ArticleBag pArticleBag, CFG_ConfigurationCurrency pConfigurationCurrency)
+        public DocumentFinanceDialogPreview(Window pSourceWindow, DialogFlags pDialogFlags, DocumentFinanceDialogPreviewMode pMode, ArticleBag pArticleBag, cfg_configurationcurrency pConfigurationCurrency)
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
@@ -36,15 +36,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (pMode == DocumentFinanceDialogPreviewMode.Preview)
             {
-                windowTitle = Resx.window_title_dialog_documentfinance_preview_totals_mode_preview;
+                windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_documentfinance_preview_totals_mode_preview");
                 //ActionArea Buttons
-                TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, Resx.global_button_label_ok, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+                TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
                 //ActionArea
                 actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
             }
             else
             {
-                windowTitle = Resx.window_title_dialog_documentfinance_preview_totals_mode_confirm;
+                windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_documentfinance_preview_totals_mode_confirm");
                 //ActionArea Buttons
                 TouchButtonIconWithText buttonNo = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.No);
                 TouchButtonIconWithText buttonYes = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Yes);
@@ -73,22 +73,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Pango.FontDescription fontDescriptionValue = Pango.FontDescription.FromString("11");
 
                 //Titles: Table Tax
-                Label labelTitleTaxDesignation = new Label(Resx.global_designation);
-                Label labelTitleTaxValue = new Label(Resx.global_tax);
-                Label labelTitleTaxBase = new Label(Resx.global_total_tax_base);
-                Label labelTitleTaxTotal = new Label(Resx.global_total);
+                Label labelTitleTaxDesignation = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"));
+                Label labelTitleTaxValue = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_tax"));
+                Label labelTitleTaxBase = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_tax_base"));
+                Label labelTitleTaxTotal = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax_acronym"));
                 //Titles: Table Totals
-                Label labelTitleDiscount = new Label(Resx.global_discount);
-                Label labelTitleTotalNet = new Label(Resx.global_documentfinance_totalgross);
-                Label labelTitleDiscountCustomer = new Label(Resx.global_documentfinance_discount_customer);
-                Label labelTitleDiscountPaymentConditions = new Label(Resx.global_documentfinance_discount_payment_conditions);
-                Label labelTitleTotalTax = new Label(Resx.global_documentfinance_totaltax);
-                Label labelTitleTotalFinal = new Label(Resx.global_documentfinance_totalfinal);
-                //Values: Table Totals
-                Label labelValueDiscount = new Label(FrameworkUtils.DecimalToString(_articleBag.DiscountGlobal)) { WidthRequest = 100 };
+                Label labelTitleDiscountCustomer = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_discount_customer") + " (%)"); /* IN009206 */
+                Label labelTitleTotalNet = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_totalnet"));
+                Label labelTitleTotalGross = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totalgross"));
+                Label labelTitleDiscountTotal = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_total_discount")); /* IN009206 */
+				/* IN009206 */
+                //Label labelTitleDiscountPaymentConditions = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_discount_payment_conditions);
+                Label labelTitleTotalTax = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax")); /* IN009206 */
+                Label labelTitleTotalFinal = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totalfinal"));
+
+				//Values: Table Totals
+				/* IN009206 - Begin */
+                Label labelValueTotalGross = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalGross * exchangeRate));
+                Label labelValueDiscountCustomer = new Label(FrameworkUtils.DecimalToString(_articleBag.DiscountGlobal)) { WidthRequest = 100 };
+				/* IN009206 */                
+				//Label labelValueDiscountPaymentConditions  = new Label(FrameworkUtils.DecimalToString(0.0m));
+                Label labelValueDiscountTotal = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalDiscount * exchangeRate));
                 Label labelValueTotalNet = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalNet * exchangeRate));
-                Label labelValueDiscountCustomer = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalDiscount * exchangeRate));
-                Label labelValueDiscountPaymentConditions  = new Label(FrameworkUtils.DecimalToString(0.0m));
                 Label labelValueTotalTax = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalTax * exchangeRate));
                 Label labelValueTotalFinal = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalFinal * exchangeRate));
                 //Add to Titles List 
@@ -96,18 +102,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 labelsTitle.Add(labelTitleTaxValue);
                 labelsTitle.Add(labelTitleTaxBase);
                 labelsTitle.Add(labelTitleTaxTotal);
-                labelsTitle.Add(labelTitleDiscount);
-                labelsTitle.Add(labelTitleTotalNet);
+
+                labelsTitle.Add(labelTitleTotalGross);
+                labelsValue.Add(labelValueTotalGross);
+
                 labelsTitle.Add(labelTitleDiscountCustomer);
-                labelsTitle.Add(labelTitleDiscountPaymentConditions);
-                labelsTitle.Add(labelTitleTotalTax);
-                labelsTitle.Add(labelTitleTotalFinal);
-                //Add Values to List
-                labelsValue.Add(labelValueDiscount);
-                labelsValue.Add(labelValueTotalNet);
                 labelsValue.Add(labelValueDiscountCustomer);
-                labelsValue.Add(labelValueDiscountPaymentConditions);
+
+				/* IN009206 */
+                //labelsTitle.Add(labelTitleDiscountPaymentConditions);
+                //labelsValue.Add(labelValueDiscountPaymentConditions);
+
+                labelsTitle.Add(labelTitleDiscountTotal);
+                labelsValue.Add(labelValueDiscountTotal);
+
+                labelsTitle.Add(labelTitleTotalNet);
+                labelsValue.Add(labelValueTotalNet);
+
+                labelsTitle.Add(labelTitleTotalTax);
                 labelsValue.Add(labelValueTotalTax);
+				/* IN009206 - End */
+
+                labelsTitle.Add(labelTitleTotalFinal);
                 labelsValue.Add(labelValueTotalFinal);
                 
                 //Add Tax Table and Rows
@@ -145,25 +161,32 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Table tableTotal = new Table(6, 2, false);
                 //tableTax.WidthRequest = 280;
                 //Row0
-                tableTotal.Attach(labelTitleDiscount, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-                tableTotal.Attach(labelValueDiscount, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+                tableTotal.Attach(labelTitleTotalGross, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding); /* IN009206 */
+                tableTotal.Attach(labelValueTotalGross, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding); /* IN009206 */
                 //Row1
-                row++;
-                tableTotal.Attach(labelTitleTotalNet, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-                tableTotal.Attach(labelValueTotalNet, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-                //Row2
                 row++;
                 tableTotal.Attach(labelTitleDiscountCustomer, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 tableTotal.Attach(labelValueDiscountCustomer, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-                //Row3
+                //Row2
                 row++;
-                tableTotal.Attach(labelTitleDiscountPaymentConditions, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-                tableTotal.Attach(labelValueDiscountPaymentConditions, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+				/* IN009206 */
+                //tableTotal.Attach(labelTitleDiscountPaymentConditions, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+                //tableTotal.Attach(labelValueDiscountPaymentConditions, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+                //Row3
+				/* IN009206 */
+                row++;
+                tableTotal.Attach(labelTitleDiscountTotal, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+                tableTotal.Attach(labelValueDiscountTotal, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 //Row4
+				/* IN009206 */
+                row++;
+                tableTotal.Attach(labelTitleTotalNet, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+                tableTotal.Attach(labelValueTotalNet, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+                //Row5
                 row++;
                 tableTotal.Attach(labelTitleTotalTax, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 tableTotal.Attach(labelValueTotalTax, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-                //Row5
+                //Row6
                 row++;
                 tableTotal.Attach(labelTitleTotalFinal, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                 tableTotal.Attach(labelValueTotalFinal, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);

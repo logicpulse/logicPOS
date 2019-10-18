@@ -57,8 +57,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             get { return _movementDescription; }
             set { _movementDescription = value; }
         }
-        private POS_WorkSessionMovementType _selectedMovementType;
-        public POS_WorkSessionMovementType MovementType
+        private pos_worksessionmovementtype _selectedMovementType;
+        public pos_worksessionmovementtype MovementType
         {
             get { return _selectedMovementType; }
             set { _selectedMovementType = value; }
@@ -87,7 +87,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
                 //Init Local Vars
-                String windowTitle = string.Format(Resx.window_title_dialog_cashdrawer, FrameworkUtils.DecimalToStringCurrency(_totalAmountInCashDrawer));
+                String windowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cashdrawer"), FrameworkUtils.DecimalToStringCurrency(_totalAmountInCashDrawer));
                 Size windowSize = new Size(462, 310);//400 With Other Payments
                 String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
                 String fileActionPrint = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
@@ -112,7 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     touchButtonIconWithText = new TouchButtonIconWithText(
                       string.Format("touchButton{0}_Green", buttonBagKey),
                       Color.Transparent/*_colorBaseDialogDefaultButtonBackground*/,
-                      Resx.ResourceManager.GetString(row.Values[xPSelectData.GetFieldIndex("ResourceString")].ToString()),
+                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], row.Values[xPSelectData.GetFieldIndex("ResourceString")].ToString()),
                       _fontBaseDialogButton,
                       _colorBaseDialogDefaultButtonFont,
                      FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], row.Values[xPSelectData.GetFieldIndex("ButtonIcon")].ToString())),
@@ -155,20 +155,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Initial Dialog Values
                 _selectedCashDrawerButton = buttonBag[initialButtonToken];
                 _selectedCashDrawerButton.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(Utils.Lighten(_colorBaseDialogDefaultButtonBackground, 0.50f)));
-                _selectedMovementType = (POS_WorkSessionMovementType)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(POS_WorkSessionMovementType), _selectedCashDrawerButton.CurrentButtonOid);
+                _selectedMovementType = (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_worksessionmovementtype), _selectedCashDrawerButton.CurrentButtonOid);
                 _selectedMovementType.Token = initialButtonToken;
 
                 //EntryAmountMoney
-                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, Resx.global_money, KeyboardMode.Money, SettingsApp.RegexDecimalGreaterEqualThanZero, true);
+                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_money"), KeyboardMode.Money, SettingsApp.RegexDecimalGreaterEqualThanZero, true);
                 _entryBoxMovementAmountMoney.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //TODO: Enable Other Payments
                 //EntryAmountOtherPayments
-                //_entryBoxMovementAmountOtherPayments = new EntryBox(Resx.global_other_payments, KeyboardModes.Money, regexDecimalGreaterThanZero, false);
+                //_entryBoxMovementAmountOtherPayments = new EntryBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_other_payments, KeyboardModes.Money, regexDecimalGreaterThanZero, false);
                 //_entryBoxMovementAmountOtherPayments.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //EntryDescription
-                _entryBoxMovementDescription = new EntryBoxValidation(this, Resx.global_description, KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
+                _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_description"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
                 _entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //VBox

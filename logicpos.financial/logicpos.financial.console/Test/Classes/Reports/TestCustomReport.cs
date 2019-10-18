@@ -9,7 +9,7 @@ namespace logicpos.financial.console.Test.Classes.Reports
     {
         public static string DocumentMasterCreatePDF()
         {
-            FIN_DocumentFinanceMaster documentFinanceMaster = TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeInvoice);
+            fin_documentfinancemaster documentFinanceMaster = TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeInvoice);
             string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
             Console.WriteLine(string.Format("fileName: [{0}]", fileName));
             return fileName;

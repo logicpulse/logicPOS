@@ -113,11 +113,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //}
 
         private GenericTreeViewSearch _genericTreeViewSearch;
+        //private GenericTreeViewSearch _genericTreeViewSearchWithButtons;
         public GenericTreeViewSearch TreeViewSearch
         {
             get { return _genericTreeViewSearch; }
             set { _genericTreeViewSearch = value; }
         }
+
+        //public GenericTreeViewSearch TreeViewSearchWithButtons
+        //{
+        //    get { return _genericTreeViewSearchWithButtons; }
+        //    set { _genericTreeViewSearchWithButtons = value; }
+        //}
+
+        
 
         //public Properties
         public int CurrentPage { get; set; }
@@ -147,10 +156,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Container For Search, ExtraButtons and Navigator Buttons
             HBox hboxNavigator = new HBox(false, 0);
             HBox hboxNavigatorButtons = new HBox(true, 0);
+           
+            string name = _genericTreeView.Toplevel.ToString();
+            bool buttonMoreFilterVisible = false;
+            if (name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinanceMaster" || name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinancePayment") { buttonMoreFilterVisible = true; }
 
             //Initialize GenericTreeViewSearch
-            _genericTreeViewSearch = new GenericTreeViewSearch(_sourceWindow, _genericTreeView.TreeView, _genericTreeView.ListStoreModelFilter, _genericTreeView.Columns);
-
+            //_genericTreeViewSearch = new GenericTreeViewSearch(_sourceWindow, _genericTreeView.TreeView, _genericTreeView.ListStoreModelFilter, _genericTreeView.Columns);
+            _genericTreeViewSearch = new GenericTreeViewSearch(_sourceWindow, _genericTreeView.TreeView, _genericTreeView.ListStoreModelFilter, _genericTreeView.Columns, buttonMoreFilterVisible);
             // Help to Debug some Kind of Types
             //if (_genericTreeView.GetType().Equals(typeof(TreeViewConfigurationPreferenceParameter)))
             //{
@@ -158,14 +171,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //}
 
             //Initialize Buttons     
-            _buttonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", Resx.widget_generictreeviewnavigator_record_prev, @"Icons/icon_pos_nav_prev.png");
-            _buttonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", Resx.widget_generictreeviewnavigator_record_next, @"Icons/icon_pos_nav_next.png");
-            _buttonInsert = GetNewButton("touchButtonInsert_DialogActionArea", Resx.widget_generictreeviewnavigator_insert, @"Icons/icon_pos_nav_new.png");
-            _buttonView = GetNewButton("touchButtonView_DialogActionArea", Resx.widget_generictreeviewnavigator_view, @"Icons/icon_pos_nav_view.png");
-            _buttonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", Resx.widget_generictreeviewnavigator_update, @"Icons/icon_pos_nav_update.png");
-            _buttonDelete = GetNewButton("touchButtonDelete_DialogActionArea", Resx.widget_generictreeviewnavigator_delete, @"Icons/icon_pos_nav_delete.png");
-            _buttonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", Resx.widget_generictreeviewnavigator_refresh, @"Icons/icon_pos_nav_refresh.png");
-            //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", Resx.global_pos, @"Icons/icon_pos_toolbar_application_close.png");
+            _buttonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            _buttonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
+            _buttonInsert = GetNewButton("touchButtonInsert_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
+            _buttonView = GetNewButton("touchButtonView_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
+            _buttonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
+            _buttonDelete = GetNewButton("touchButtonDelete_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
+            _buttonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
+            //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
 
             //Events
             //GenericTreeView : Shared
@@ -199,6 +212,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //hboxNav.PackStart(_buttonClose, false, false, 0);
                 //Pack Final Hbox
                 hboxNavigator.PackStart(_genericTreeViewSearch, false, false, 0);
+                //hboxNavigator.PackStart(_genericTreeViewSearchWithButtons, false, false, 0);
                 hboxNavigator.PackStart(_hboxExtraSlot, true, true, 0);
                 hboxNavigator.PackStart(hboxNavigatorButtons, false, false, 0);
                 this.PackStart(hboxNavigator);

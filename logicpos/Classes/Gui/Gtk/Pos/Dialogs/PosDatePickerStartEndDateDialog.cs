@@ -60,7 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _dateEnd = pDateEnd;
 
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_datepicket_startend;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicket_startend");
             Size windowSize = new Size(300, 255);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
 
@@ -68,12 +68,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent = new Fixed();
 
             //Init DateEntry Start
-            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, Resx.global_date_start, _dateStart, SettingsApp.RegexDate, true);
+            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart, SettingsApp.RegexDate, true);
             _entryBoxDateStart.EntryValidation.Text = _dateStart.ToString(SettingsApp.DateFormat);
             _entryBoxDateStart.EntryValidation.Validate();
             _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;    
             //Init DateEntry End
-            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, Resx.global_date_end, _dateEnd, SettingsApp.RegexDate, true);
+            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd, SettingsApp.RegexDate, true);
             _entryBoxDateEnd.EntryValidation.Text = _dateEnd.ToString(SettingsApp.DateFormat);
             _entryBoxDateEnd.EntryValidation.Validate();
             _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;

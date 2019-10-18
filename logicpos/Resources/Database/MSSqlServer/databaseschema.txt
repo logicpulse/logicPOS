@@ -3,9 +3,9 @@ Add to bottom of databaseschema.sql
 /****** Required Changes for XPO Defaults ******/
 
 /****** Drop Index, else must have a CardNumber for every Customer ******/
-DROP INDEX [iCardNumber_ERP_Customer] ON [dbo].[ERP_Customer]
+DROP INDEX [iCardNumber_erp_customer] ON [dbo].[erp_customer]
 GO
 
 /****** Drop Index, else must have a BarCode for every Article ******/
-DROP INDEX [iBarCode_FIN_Article] ON [dbo].[FIN_Article]
+DROP INDEX [iBarCode_fin_article] ON [dbo].[fin_article]
 GO

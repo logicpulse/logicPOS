@@ -24,17 +24,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewConfigurationCountry(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(CFG_ConfigurationCountry);
+            Type xpoGuidObjectType = typeof(cfg_configurationcountry);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            CFG_ConfigurationCountry defaultValue = (pDefaultValue != null) ? pDefaultValue as CFG_ConfigurationCountry : null;
+            cfg_configurationcountry defaultValue = (pDefaultValue != null) ? pDefaultValue as cfg_configurationcountry : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationCountry);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null)) ? null : pXpoCriteria;

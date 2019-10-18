@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_UserProfile : XPGuidObject
+    public class sys_userprofile : XPGuidObject
     {
-        public SYS_UserProfile() : base() { }
-        public SYS_UserProfile(Session session) : base(session) { }
+        public sys_userprofile() : base() { }
+        public sys_userprofile(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserProfile), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserProfile), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_userprofile), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_userprofile), "Code");
         }
 
         UInt32 fOrd;
@@ -49,17 +49,17 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserProfile One <> Many User
-        [Association(@"UserProfileReferencesUserDetail", typeof(SYS_UserDetail))]
-        public XPCollection<SYS_UserDetail> Users
+        [Association(@"UserProfileReferencesUserDetail", typeof(sys_userdetail))]
+        public XPCollection<sys_userdetail> Users
         {
-            get { return GetCollection<SYS_UserDetail>("Users"); }
+            get { return GetCollection<sys_userdetail>("Users"); }
         }
 
         //UserProfile One <> Many UserPermissionProfile
-        [Association(@"UserProfile-UserPermissionProfile", typeof(SYS_UserPermissionProfile))]
-        public XPCollection<SYS_UserPermissionProfile> Permissions
+        [Association(@"UserProfile-UserPermissionProfile", typeof(sys_userpermissionprofile))]
+        public XPCollection<sys_userpermissionprofile> Permissions
         {
-            get { return GetCollection<SYS_UserPermissionProfile>("Permissions"); }
+            get { return GetCollection<sys_userpermissionprofile>("Permissions"); }
         }
     }
 }

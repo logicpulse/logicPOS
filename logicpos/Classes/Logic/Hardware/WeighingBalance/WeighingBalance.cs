@@ -19,7 +19,7 @@ namespace logicpos.Classes.Logic.Hardware
 
         private CommunicationManager _communicationManager;
 
-        public WeighingBalance(SYS_ConfigurationWeighingMachine weighingMachine)
+        public WeighingBalance(sys_configurationweighingmachine weighingMachine)
             : this(weighingMachine.BaudRate.ToString(), weighingMachine.Parity, weighingMachine.StopBits, weighingMachine.DataBits.ToString(), weighingMachine.PortName)
         {
         }
@@ -41,8 +41,8 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, Resx.global_error,
-                    string.Format(Resx.dialog_message_error_initializing_weighing_balance, GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
+                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
                     );
                 _log.Error(ex.Message, ex);
                 return false;

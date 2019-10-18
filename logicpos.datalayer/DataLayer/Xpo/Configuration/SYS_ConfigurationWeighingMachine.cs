@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_ConfigurationWeighingMachine : XPGuidObject
+    public class sys_configurationweighingmachine : XPGuidObject
     {
-        public SYS_ConfigurationWeighingMachine() : base() { }
-        public SYS_ConfigurationWeighingMachine(Session session) : base(session) { }
+        public sys_configurationweighingmachine() : base() { }
+        public sys_configurationweighingmachine(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationWeighingMachine), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationWeighingMachine), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationweighingmachine), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationweighingmachine), "Code");
         }
 
         UInt32 fOrd;
@@ -77,10 +77,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationHardwareWeighingMachine One <> Many CConfigurationPlaceTerminal
-        [Association(@"ConfigurationHardwareWeighingMachineReferencesConfigurationPlaceTerminal", typeof(POS_ConfigurationPlaceTerminal))]
-        public XPCollection<POS_ConfigurationPlaceTerminal> Terminals
+        [Association(@"ConfigurationHardwareWeighingMachineReferencesConfigurationPlaceTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> Terminals
         {
-            get { return GetCollection<POS_ConfigurationPlaceTerminal>("Terminals"); }
+            get { return GetCollection<pos_configurationplaceterminal>("Terminals"); }
         }
     }
 }

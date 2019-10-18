@@ -27,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(currentOrderMain);
 
                 //Get Latest DocumentConference Document without Recreate it if Diference, compare it in Above Line
-                FIN_DocumentFinanceMaster lastDocument = FrameworkUtils.GetOrderMainLastDocumentConference(false);
+                fin_documentfinancemaster lastDocument = FrameworkUtils.GetOrderMainLastDocumentConference(false);
 
                 //Reprint Existing Document After compare with current ArticleBag
                 if (
@@ -43,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     try
                     {
                         //Call Recreate New Document
-                        FIN_DocumentFinanceMaster newDocument = FrameworkUtils.GetOrderMainLastDocumentConference(true);
+                        fin_documentfinancemaster newDocument = FrameworkUtils.GetOrderMainLastDocumentConference(true);
 
                         //Call Print New Document
                         FrameworkCalls.PrintFinanceDocument(this, newDocument);
@@ -55,11 +55,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         switch (ex.Message)
                         {
                             case "ERROR_MISSING_SERIE":
-                                errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, Resx.dialog_message_error_creating_financial_document_missing_series);
+                                errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                                 break;
                             case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                             default:
-                                errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Message);
+                                errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
                                 break;
                         }
                         Utils.ShowMessageTouch(
@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                           new Size(600, 400),
                           MessageType.Error,
                           ButtonsType.Close,
-                          Resx.global_error,
+                          resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                           errorMessage
                         );
 
@@ -105,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentOrderTicket>(
                     this.SourceWindow,
                     DialogFlags.DestroyWithParent,
-                    Resx.window_title_select_ticket,
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_select_ticket"),
                     //TODO:THEME
                     GlobalApp.MaxWindowSize,
                     null, //XpoDefaultValue
@@ -131,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (orderTicketOid != new Guid())
             {
-                FIN_DocumentOrderTicket orderTicket = (FIN_DocumentOrderTicket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentOrderTicket), orderTicketOid);
+                fin_documentorderticket orderTicket = (fin_documentorderticket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
                 ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(GlobalFramework.LoggedTerminal.Printer, orderTicket);
                 thermalPrinterInternalDocumentOrderRequest.Print();
             }

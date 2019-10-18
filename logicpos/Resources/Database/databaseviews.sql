@@ -358,11 +358,11 @@ CREATE VIEW view_documentfinancecommision AS
 ;
 
 CREATE VIEW view_documentfinancecurrentaccount AS
-	SELECT 
-		ft.Oid AS DocumentTypeOid, 
-		ft.Ord AS DocumentTypeOrd, 
-		ft.Code AS DocumentTypeCode, 
-		ft.Designation AS DocumentType, 
+	SELECT
+		ft.Oid AS DocumentTypeOid,
+		ft.Ord AS DocumentTypeOrd,
+		ft.Code AS DocumentTypeCode,
+		ft.Designation AS DocumentType,
 		fm.EntityOid AS EntityOid,
 		fm.EntityName AS EntityName,
 		fm.EntityFiscalNumber AS EntityFiscalNumber,
@@ -371,49 +371,123 @@ CREATE VIEW view_documentfinancecurrentaccount AS
 		fm.DocumentNumber AS DocumentNumber,
 		fm.TotalFinal AS DocumentAmount,
 		fm.DocumentStatusStatus AS DocumentStatus,
-		ft.CreditDebit AS CreditDebit, 
-		(SELECT fm.TotalFinal WHERE ft.CreditDebit = 1 OR ft.CreditDebit = 0) AS Credit,
-		(SELECT fm.TotalFinal WHERE ft.CreditDebit = -1 OR ft.CreditDebit = 0) AS Debit
+		ft.CreditDebit AS CreditDebit,
+		(SELECT fmasterCredDeb.TotalFinal FROM fin_documentfinancemaster AS fmasterCredDeb WHERE fm.DocumentChild = fmasterCredDeb.Oid) AS Credit,
+		(SELECT fm.TotalFinal WHERE ft.CreditDebit = -1 OR ft.CreditDebit = 0) AS Debit,
+		(SELECT fmaster.DocumentNumber FROM fin_documentfinancemaster AS fmaster WHERE fm.DocumentChild = fmaster.Oid) AS PaymentDocumentNumber,
+		(SELECT fmaster.DocumentDate FROM fin_documentfinancemaster AS fmaster WHERE fm.DocumentChild = fmaster.Oid) AS PaymentDate,
+		(SELECT fmaster.Payed FROM fin_documentfinancemaster AS fmaster WHERE fm.DocumentChild = fmaster.Oid) AS IsPayed
 	FROM 
-		fin_documentfinancemaster as fm
-		LEFT JOIN fin_documentfinancetype AS ft ON ((fm.DocumentType = ft.Oid))
-	WHERE 
-	  (
-		fm.DocumentType = '7af04618-74a6-42a3-aaba-454b7076f5a6' OR
-		fm.DocumentType = 'f8878cf5-0f88-4270-8a55-1fc2488d81a2' OR
-		fm.DocumentType = '2c69b109-318a-4375-a573-28e5984b6503' OR
-		fm.DocumentType = '09b6aa6e-dc0e-41fd-8dbe-8678a3d11cbc' OR
-		fm.DocumentType = '3942d940-ed13-4a62-a352-97f1ce006d8a' OR
-		fm.DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47' OR
-		fm.DocumentType = 'b8554d36-642a-4083-b608-8f1da35f0fec' OR
-		fm.DocumentType = '235f06f3-5ec3-4e13-977b-325614b07e35'  
-	  )
-	  AND (
-		fm.DocumentStatusStatus <> 'A' AND (fm.Disabled = 0 OR fm.Disabled IS NULL)
-	  )  
-	UNION
-	SELECT 
-		ft.Oid AS DocumentTypeOid,
-		ft.Ord AS DocumentTypeOrd,
-		ft.Code AS DocumentTypeCode,
-		ft.Designation AS DocumentType,
-		cu.Oid AS EntityOid, 
-		cu.Name AS EntityName,
-		cu.FiscalNumber AS EntityFiscalNumber,
-		fp.DocumentDate AS DocumentDate, 
-		fp.CreatedAt AS Date,
-		fp.PaymentRefNo AS DocumentNumber, 
-		fp.PaymentAmount AS DocumentAmount, 
-		fp.PaymentStatus AS DocumentStatus,
-		ft.CreditDebit AS CreditDebit, 
-		(fp.PaymentAmount) AS Credit,
-		(0) AS Debit
-	FROM 
-		(fin_documentfinancepayment AS fp
-		LEFT JOIN fin_documentfinancetype AS ft ON (fp.DocumentType = ft.Oid)
-		LEFT JOIN erp_customer AS cu ON (cu.Oid = fp.EntityOid))
-	WHERE   
-		fp.PaymentStatus <> 'A' AND (fp.Disabled = 0 OR fp.Disabled IS NULL)
+		fin_documentfinancemaster AS fm
+	LEFT JOIN 
+		fin_documentfinancetype AS ft ON ((fm.DocumentType = ft.Oid))
+	WHERE
+		(fm.DocumentType = '235f06f3-5ec3-4e13-977b-325614b07e35') 
+	AND 
+		(fm.DocumentStatusStatus <> 'A' AND
+			(fm.Disabled = 0 OR
+			fm.Disabled IS NULL))
+;
+
+-- This view has been created based on the old 'view_documentfinancecurrentaccount';
+-- Old changes related to IN005997 and IN005998, and now IN008018. 2019-07: IN009204.;
+CREATE VIEW view_documentfinancecustomerbalancedetails AS
+  SELECT ft.Oid                                  AS DocumentTypeOid, 
+         ft.Ord                                  AS DocumentTypeOrd, 
+         ft.Code                                 AS DocumentTypeCode, 
+         ft.Designation                          AS DocumentType, 
+         fm.EntityOid                            AS EntityOid, 
+         fm.EntityName                           AS EntityName, 
+         fm.EntityFiscalNumber                   AS EntityFiscalNumber, 
+         fm.DocumentDate                         AS DocumentDate, 
+         fm.Date                                 AS Date, 
+         fm.DocumentNumber                       AS DocumentNumber, 
+		 fm.TotalGross							 AS TotalGross,
+		 fm.TotalNet							 AS TotalNet,
+         fm.TotalFinal                           AS DocumentAmount, 
+		 fm.TotalFinalRound                      AS DocumentAmountRound, 
+         fm.DocumentStatusStatus                 AS DocumentStatus, 
+         ft.CreditDebit                          AS CreditDebit, 
+         (SELECT fm.TotalFinal 
+          WHERE  ft.CreditDebit = 1 
+                  OR ft.CreditDebit = 0)         AS Credit, 
+         (SELECT fm.TotalFinal 
+          WHERE  ft.CreditDebit = -1 
+                  OR ft.CreditDebit = 0)         AS Debit, 
+         (SELECT fmaster.Payed 
+          FROM   fin_documentfinancemaster AS fmaster 
+          WHERE  fm.DocumentChild = fmaster.Oid) AS IsPayed, 
+		  fm.TotalTax							 AS TotalTax,
+         ( ' ' )                                 AS PaymentDocumentReference 
+  FROM   (fin_documentfinancemaster AS fm 
+          LEFT JOIN fin_documentfinancetype AS ft 
+                 ON (( fm.DocumentType = ft.Oid )) 
+          LEFT JOIN fin_documentfinancemasterpayment AS DocFinMasterPay 
+                 ON (( fm.Oid = DocFinMasterPay.DocumentFinanceMaster )) 
+          LEFT JOIN fin_documentfinancepayment AS DocFinPay 
+                 ON (( DocFinMasterPay.DocumentFinancePayment = 
+         DocFinPay.Oid ))) 
+  WHERE  ( fm.DocumentType = '7af04618-74a6-42a3-aaba-454b7076f5a6' 
+            OR fm.DocumentType = 'f8878cf5-0f88-4270-8a55-1fc2488d81a2' 
+            OR fm.DocumentType = '2c69b109-318a-4375-a573-28e5984b6503' 
+            OR fm.DocumentType = '09b6aa6e-dc0e-41fd-8dbe-8678a3d11cbc' 
+            OR fm.DocumentType = '3942d940-ed13-4a62-a352-97f1ce006d8a' 
+            OR fm.DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47' 
+            OR fm.DocumentType = 'b8554d36-642a-4083-b608-8f1da35f0fec' ) 
+         AND ( fm.DocumentStatusStatus <> 'A' 
+               AND ( fm.Disabled = 0 
+                      OR fm.Disabled IS NULL ) ) 
+  UNION 
+  SELECT ft.Oid                               AS DocumentTypeOid, 
+         ft.Ord                               AS DocumentTypeOrd, 
+         ft.Code                              AS DocumentTypeCode, 
+         ft.Designation                       AS DocumentType,
+         cu.Oid                               AS EntityOid, 
+         cu.NAME                              AS EntityName, 
+         cu.FiscalNumber                      AS EntityFiscalNumber, 
+         fp.DocumentDate                      AS DocumentDate, 
+         fp.CreatedAt                         AS Date, 
+         fp.PaymentRefNo                      AS DocumentNumber, 
+		 fp.GrossTotal						  AS TotalGross,
+		 fp.NetTotal						  AS TotalNet,
+         fp.PaymentAmount                     AS DocumentAmount, 
+		 docFinMasterPayment.CreditAmount     AS DocumentAmountRound, 
+         fp.PaymentStatus                     AS DocumentStatus, 
+         ft.CreditDebit                       AS CreditDebit, 
+         ( docFinMasterPayment.CreditAmount ) AS Credit, 
+         ( docFinMasterPayment.DebitAmount )  AS Debit, 
+         ( 0 )                                AS IsPayed,
+		 ( 0 )                                AS TotalTax,
+         docFinMaster.DocumentNumber          AS PaymentDocumentReference 
+  FROM   (fin_documentfinancepayment AS fp 
+          LEFT JOIN fin_documentfinancetype AS ft 
+                 ON ( fp.DocumentType = ft.Oid ) 
+          LEFT JOIN erp_customer AS cu 
+                 ON ( cu.Oid = fp.EntityOid ) 
+          LEFT JOIN fin_documentfinancemasterpayment AS docFinMasterPayment 
+                 ON ( fp.Oid = docFinMasterPayment.DocumentFinancePayment ) 
+          LEFT JOIN fin_documentfinancemaster AS docFinMaster 
+                 ON ( docFinMasterPayment.DocumentFinanceMaster = 
+                    docFinMaster.Oid ) ) 
+  WHERE  fp.PaymentStatus <> 'A' 
+         AND ( fp.Disabled = 0 
+                OR fp.Disabled IS NULL )
+;
+
+-- Related to IN008018 and IN009010;
+CREATE VIEW
+		view_documentfinancecustomerbalancesummary
+	AS
+		SELECT
+			EntityOid,
+			MIN(Date) as CustomerSinceDate,
+			SUM(Credit) AS TotalCredit,
+			SUM(Debit) AS TotalDebit,
+			SUM(Credit) - SUM(Debit) AS Balance
+		FROM
+			view_documentfinancecustomerbalancedetails
+		GROUP BY
+			EntityOid
 ;
 
 CREATE VIEW view_documentfinancemastertotal AS
@@ -839,4 +913,106 @@ CREATE VIEW view_worksessionperiodtotal AS
 		((pos_worksessionperiodtotal wpt
 		left join pos_worksessionperiod wsp ON ((wpt.Period = wsp.Oid)))
 		left join fin_configurationpaymentmethod cpm ON ((wpt.PaymentMethod = cpm.Oid)))
+;
+
+-- Related to IN009067 and IN009151/IN009152;
+-- NC: DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47';
+-- RC: DocumentType = 'a009168d-fed1-4f52-b9e3-77e280b18ff5';
+CREATE VIEW
+	view_documentfinancepaymentdocumenttotal	AS 
+SELECT
+	DocFinMaster.Oid AS Oid,
+	DocFinMaster.Date AS Date,
+	DocFinMaster.DocumentNumber AS DocumentNumber,
+	DocFinMaster.DocumentType AS DocumentType,
+	DocFinMaster.EntityOid AS EntityOid,
+	DocFinMaster.PayedDate AS PayedDate,
+	DocFinMaster.PaymentMethod AS PaymentMethod,
+	DocFinMaster.TotalFinal AS TotalFinal,
+	DocFinMaster.DocumentParent AS DocumentPayed,
+	0 AS CreditAmount,
+	DocFinMaster.TotalFinal AS CreditInvoiceTotal,
+	DocFinMasterPay.DebitAmount AS DebitAmount
+FROM
+	fin_documentfinancemaster AS DocFinMaster
+LEFT JOIN
+	fin_documentfinancemasterpayment AS DocFinMasterPay ON (DocFinMaster.Oid = DocFinMasterPay.DocumentFinanceMaster)
+WHERE
+		DocFinMaster.DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47' AND
+		DocFinMaster.DocumentStatusStatus <> 'A'
+UNION
+SELECT
+	DocFinPay.Oid AS Oid,
+	DocFinPay.CreatedAt AS Date,
+	DocFinPay.PaymentRefNo AS DocumentNumber,
+	DocFinPay.DocumentType AS DocumentType,
+	DocFinPay.EntityOid AS EntityOid,
+	DocFinPay.PaymentDate AS PayedDate,
+	DocFinPay.PaymentMethod AS PaymentMethod,
+	DocFinPay.PaymentAmount AS TotalFinal,
+	DocFinMasterPay.DocumentFinanceMaster AS DocumentPayed,
+	DocFinMasterPay.CreditAmount AS CreditAmount,
+	0 AS CreditInvoiceTotal,
+	DocFinMasterPay.DebitAmount AS DebitAmount
+FROM
+	fin_documentfinancepayment AS DocFinPay
+LEFT JOIN
+	fin_documentfinancemasterpayment AS DocFinMasterPay ON (DocFinPay.Oid = DocFinMasterPay.DocumentFinancePayment)
+WHERE
+	DocFinPay.DocumentType = 'a009168d-fed1-4f52-b9e3-77e280b18ff5' AND 
+	DocFinPay.PaymentStatus <> 'A'
+;
+
+-- Related to IN009067 and IN009153;
+CREATE VIEW 
+	view_documentfinancerelateddocumentlist AS
+SELECT
+	DocFinMaster.DocumentNumber AS DocumentNumber,
+	DocFinMaster.Date as Date,
+	DocFinMaster.DocumentParent AS DocumentParent,
+	DocFinMaster.DocumentChild AS DocumentChild
+FROM
+	fin_documentfinancemaster AS DocFinMaster
+WHERE
+	DocFinMaster.DocumentStatusStatus <> 'A'
+UNION
+SELECT
+	DocFinPay.PaymentRefNo AS DocumentNumber,
+	DocFinPay.DocumentDate AS Date,
+	DocFinMasterPay.DocumentFinanceMaster AS DocumentParent,
+	NULL AS DocumentChild
+FROM
+	fin_documentfinancepayment AS DocFinPay
+LEFT JOIN fin_documentfinancemasterpayment DocFinMasterPay ON (DocFinPay.Oid = DocFinMasterPay.DocumentFinancePayment)
+WHERE
+	DocFinPay.PaymentStatus <> 'A'
+;
+
+-- Related to IN009067;
+CREATE VIEW
+	viewdocumentfinancepaymenttotals
+AS
+	SELECT
+		DocumentOid AS DocumentOid, SUM(TotalPayed) AS Total
+		FROM(
+			SELECT 
+				DocFinMaster.DocumentParent AS DocumentOid, SUM(DocFinMaster.TotalFinal) AS TotalPayed
+			FROM
+				fin_documentfinancemaster AS DocFinMaster
+			WHERE
+				DocFinMaster.DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47'
+				AND DocFinMaster.DocumentStatusStatus <> 'A'
+				GROUP BY DocFinMaster.DocumentParent
+			UNION ALL
+			SELECT 
+				DocFinMasterPay.DocumentFinanceMaster AS DocumentOid, SUM(DocFinMasterPay.CreditAmount) AS TotalPayed
+			FROM
+				fin_documentfinancemasterpayment AS DocFinMasterPay
+			LEFT JOIN
+				fin_documentfinancepayment DocFinPay ON (DocFinMasterPay.DocumentFinancePayment = DocFinPay.Oid)
+			WHERE
+				DocFinPay.PaymentStatus <> 'A'
+				GROUP BY DocFinMasterPay.DocumentFinanceMaster
+		) T
+		GROUP BY T.DocumentOid
 ;

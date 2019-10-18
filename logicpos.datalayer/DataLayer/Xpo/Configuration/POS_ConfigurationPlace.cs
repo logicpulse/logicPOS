@@ -10,15 +10,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
     }
 
     [DeferredDeletion(false)]
-    public class POS_ConfigurationPlace : XPGuidObject
+    public class pos_configurationplace : XPGuidObject
     {
-        public POS_ConfigurationPlace() : base() { }
-        public POS_ConfigurationPlace(Session session) : base(session) { }
+        public pos_configurationplace() : base() { }
+        public pos_configurationplace(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlace), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlace), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplace), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplace), "Code");
         }
 
         UInt32 fOrd;
@@ -74,35 +74,35 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlace One <> Many ConfigurationPlaceTerminal
-        [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTerminal", typeof(POS_ConfigurationPlaceTerminal))]
-        public XPCollection<POS_ConfigurationPlaceTerminal> Terminal
+        [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> Terminal
         {
-            get { return GetCollection<POS_ConfigurationPlaceTerminal>("Terminal"); }
+            get { return GetCollection<pos_configurationplaceterminal>("Terminal"); }
         }
 
         //ConfigurationPlace One <> Many ConfigurationPlaceTable
-        [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTable", typeof(POS_ConfigurationPlaceTable))]
-        public XPCollection<POS_ConfigurationPlaceTable> PlaceTable
+        [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTable", typeof(pos_configurationplacetable))]
+        public XPCollection<pos_configurationplacetable> PlaceTable
         {
-            get { return GetCollection<POS_ConfigurationPlaceTable>("PlaceTable"); }
+            get { return GetCollection<pos_configurationplacetable>("PlaceTable"); }
         }
 
         //ConfigurationPriceType One <> Many ConfigurationPlace
-        FIN_ConfigurationPriceType fPriceType;
+        fin_configurationpricetype fPriceType;
         [Association(@"ConfigurationPriceTypeReferencesConfigurationPlace")]
-        public FIN_ConfigurationPriceType PriceType
+        public fin_configurationpricetype PriceType
         {
             get { return fPriceType; }
-            set { SetPropertyValue<FIN_ConfigurationPriceType>("PriceType", ref fPriceType, value); }
+            set { SetPropertyValue<fin_configurationpricetype>("PriceType", ref fPriceType, value); }
         }
 
         //ConfigurationPlaceMovementType One <> Many ConfigurationPlace
-        POS_ConfigurationPlaceMovementType fMovementType;
+        pos_configurationplacemovementtype fMovementType;
         [Association(@"ConfigurationPlaceMovementTypeReferencesConfigurationPlace")]
-        public POS_ConfigurationPlaceMovementType MovementType
+        public pos_configurationplacemovementtype MovementType
         {
             get { return fMovementType; }
-            set { SetPropertyValue<POS_ConfigurationPlaceMovementType>("MovementType", ref fMovementType, value); }
+            set { SetPropertyValue<pos_configurationplacemovementtype>("MovementType", ref fMovementType, value); }
         }
     }
 }

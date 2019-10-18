@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceMasterPayment : XPGuidObject
+    public class fin_documentfinancemasterpayment : XPGuidObject
     {
-        public FIN_DocumentFinanceMasterPayment() : base() { }
-        public FIN_DocumentFinanceMasterPayment(Session session) : base(session) { }
+        public fin_documentfinancemasterpayment() : base() { }
+        public fin_documentfinancemasterpayment(Session session) : base(session) { }
 
         UInt32 fOrd;
         public UInt32 Ord
@@ -31,30 +31,30 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinanceMaster
-        FIN_DocumentFinanceMaster fDocumentFinanceMaster;
+        fin_documentfinancemaster fDocumentFinanceMaster;
         [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinanceMaster")]
-        public FIN_DocumentFinanceMaster DocumentFinanceMaster
+        public fin_documentfinancemaster DocumentFinanceMaster
         {
             get { return fDocumentFinanceMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinancePayment
-        FIN_DocumentFinancePayment fDocumentFinancePayment;
+        fin_documentfinancepayment fDocumentFinancePayment;
         [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinancePayment")]
-        public FIN_DocumentFinancePayment DocumentFinancePayment
+        public fin_documentfinancepayment DocumentFinancePayment
         {
             get { return fDocumentFinancePayment; }
-            set { SetPropertyValue<FIN_DocumentFinancePayment>("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
+            set { SetPropertyValue<fin_documentfinancepayment>("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinanceMaster
-        FIN_DocumentFinanceMaster fDocumentFinanceMasterCreditNote;
+        fin_documentfinancemaster fDocumentFinanceMasterCreditNote;
         [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinanceMasterCreditNote")]
-        public FIN_DocumentFinanceMaster DocumentFinanceMasterCreditNote
+        public fin_documentfinancemaster DocumentFinanceMasterCreditNote
         {
             get { return fDocumentFinanceMasterCreditNote; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentFinanceMasterCreditNote", ref fDocumentFinanceMasterCreditNote, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentFinanceMasterCreditNote", ref fDocumentFinanceMasterCreditNote, value); }
         }
     }
 }

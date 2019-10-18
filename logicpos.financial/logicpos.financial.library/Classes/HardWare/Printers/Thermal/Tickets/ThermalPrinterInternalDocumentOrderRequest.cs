@@ -11,14 +11,15 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
     public class ThermalPrinterInternalDocumentOrderRequest : ThermalPrinterBaseInternalTemplate
     {
         //Private Members
-        private string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
-        private FIN_DocumentOrderTicket _orderTicket;
+        /* IN008024 */
+        //private string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+        private fin_documentorderticket _orderTicket;
         private bool _enableArticlePrinter;
 
-        public ThermalPrinterInternalDocumentOrderRequest(SYS_ConfigurationPrinters pPrinter, FIN_DocumentOrderTicket pOrderTicket)
+        public ThermalPrinterInternalDocumentOrderRequest(sys_configurationprinters pPrinter, fin_documentorderticket pOrderTicket)
             :this(pPrinter, pOrderTicket, false) { }
 
-        public ThermalPrinterInternalDocumentOrderRequest(SYS_ConfigurationPrinters pPrinter, FIN_DocumentOrderTicket pOrderTicket, bool pEnableArticlePrinter)
+        public ThermalPrinterInternalDocumentOrderRequest(sys_configurationprinters pPrinter, fin_documentorderticket pOrderTicket, bool pEnableArticlePrinter)
             : base(pPrinter)
         {
             try
@@ -28,14 +29,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _enableArticlePrinter = pEnableArticlePrinter;
 
                 //Order Request #1/3
-                _ticketTitle = string.Format("{0} : #{1}"
-                    , Resx.global_order_request
+                _ticketTitle = string.Format("{0}: #{1}"
+                    , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_order_request")
                     , _orderTicket.TicketId
                 );
 
                 //Table|Order #2|Name/Zone
-                _ticketSubTitle = string.Format("{0} : #{1}/{2}"
-                    , Resx.ResourceManager.GetString(string.Format("global_table_appmode_{0}", _appOperationModeToken).ToLower())
+                _ticketSubTitle = string.Format("{0}: #{1}/{2}"
+                    , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", SettingsApp.CustomAppOperationMode.AppOperationTheme).ToLower()) /* IN008024 */
                     , _orderTicket.OrderMain.PlaceTable.Designation
                     , _orderTicket.OrderMain.PlaceTable.Place.Designation
                 );
@@ -74,9 +75,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         private void PrintDocumentDetails()
         {
             List<TicketColumn> columns = new List<TicketColumn>();
-            columns.Add(new TicketColumn("Designation", Resx.global_designation, 0, TicketColumnsAlign.Left));
-            columns.Add(new TicketColumn("Quantity", Resx.global_quantity_acronym, 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("UnitMeasure", Resx.global_unit_measure_acronym, 3, TicketColumnsAlign.Right));
+            columns.Add(new TicketColumn("Designation", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left));
+            columns.Add(new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+            columns.Add(new TicketColumn("UnitMeasure", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
 
             //Prepare Table with Padding
             DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);
@@ -84,7 +85,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
             //Print Items
             DataRow dataRow;
-            foreach (FIN_DocumentOrderDetail item in _orderTicket.OrderDetail)
+            foreach (fin_documentorderdetail item in _orderTicket.OrderDetail)
             {
                 //Add All Rows if Normal Mode without explicit ArticlePrinter defined, or print Printer Articles for explicit defined ArticlePrinter 
                 if (! _enableArticlePrinter || _thermalPrinterGeneric.Printer == item.Article.Printer)

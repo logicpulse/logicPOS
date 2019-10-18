@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>logicpos.printer.generic</RootNamespace>
     <AssemblyName>LogicposPrinterGeneric</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>

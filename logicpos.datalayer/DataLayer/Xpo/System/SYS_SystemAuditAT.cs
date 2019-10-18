@@ -5,10 +5,10 @@ using logicpos.datalayer.Enums;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_SystemAuditAT : XPGuidObject
+    public class sys_systemauditat : XPGuidObject
     {
-        public SYS_SystemAuditAT() : base() { }
-        public SYS_SystemAuditAT(Session session) : base(session) { }
+        public sys_systemauditat() : base() { }
+        public sys_systemauditat(Session session) : base(session) { }
 
         DateTime fDate;
         public DateTime Date
@@ -70,12 +70,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many SystemAuditATWS
-        FIN_DocumentFinanceMaster fDocumentMaster;
+        fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesSystemAuditAT")]
-        public FIN_DocumentFinanceMaster DocumentMaster
+        public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
         }
     }
 }

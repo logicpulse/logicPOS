@@ -56,18 +56,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DateTime>("CreatedAt", ref fCreatedAt, value); }
         }
 
-        SYS_UserDetail fCreatedBy;
-        public SYS_UserDetail CreatedBy
+        sys_userdetail fCreatedBy;
+        public sys_userdetail CreatedBy
         {
             get { return fCreatedBy; }
-            set { SetPropertyValue<SYS_UserDetail>("CreatedBy", ref fCreatedBy, value); }
+            set { SetPropertyValue<sys_userdetail>("CreatedBy", ref fCreatedBy, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fCreatedWhere;
-        public POS_ConfigurationPlaceTerminal CreatedWhere
+        pos_configurationplaceterminal fCreatedWhere;
+        public pos_configurationplaceterminal CreatedWhere
         {
             get { return fCreatedWhere; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("CreatedWhere", ref fCreatedWhere, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("CreatedWhere", ref fCreatedWhere, value); }
         }
 
         DateTime fUpdatedAt;
@@ -77,18 +77,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DateTime>("UpdatedAt", ref fUpdatedAt, value); }
         }
 
-        SYS_UserDetail fUpdatedBy;
-        public SYS_UserDetail UpdatedBy
+        sys_userdetail fUpdatedBy;
+        public sys_userdetail UpdatedBy
         {
             get { return fUpdatedBy; }
-            set { SetPropertyValue<SYS_UserDetail>("UpdatedBy", ref fUpdatedBy, value); }
+            set { SetPropertyValue<sys_userdetail>("UpdatedBy", ref fUpdatedBy, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fUpdatedWhere;
-        public POS_ConfigurationPlaceTerminal UpdatedWhere
+        pos_configurationplaceterminal fUpdatedWhere;
+        public pos_configurationplaceterminal UpdatedWhere
         {
             get { return fUpdatedWhere; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("UpdatedWhere", ref fUpdatedWhere, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("UpdatedWhere", ref fUpdatedWhere, value); }
         }
 
         DateTime fDeletedAt;
@@ -98,18 +98,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DateTime>("DeletedAt", ref fDeletedAt, value); }
         }
 
-        SYS_UserDetail fDeletedBy;
-        public SYS_UserDetail DeletedBy
+        sys_userdetail fDeletedBy;
+        public sys_userdetail DeletedBy
         {
             get { return fDeletedBy; }
-            set { SetPropertyValue<SYS_UserDetail>("DeletedBy", ref fDeletedBy, value); }
+            set { SetPropertyValue<sys_userdetail>("DeletedBy", ref fDeletedBy, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fDeletedWhere;
-        public POS_ConfigurationPlaceTerminal DeletedWhere
+        pos_configurationplaceterminal fDeletedWhere;
+        public pos_configurationplaceterminal DeletedWhere
         {
             get { return fDeletedWhere; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("DeletedWhere", ref fDeletedWhere, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("DeletedWhere", ref fDeletedWhere, value); }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -128,11 +128,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
             if (GlobalFramework.LoggedUser != null)
             {
-                UpdatedBy = this.Session.GetObjectByKey<SYS_UserDetail>(GlobalFramework.LoggedUser.Oid);
+                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(GlobalFramework.LoggedUser.Oid);
             }
             if (GlobalFramework.LoggedTerminal != null)
             {
-                UpdatedWhere = this.Session.GetObjectByKey<POS_ConfigurationPlaceTerminal>(GlobalFramework.LoggedTerminal.Oid);
+                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
             }
 
             if (_isNewRecord)
@@ -141,11 +141,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
                 CreatedAt = FrameworkUtils.CurrentDateTimeAtomic();
                 if (GlobalFramework.LoggedUser != null)
                 {
-                    CreatedBy = this.Session.GetObjectByKey<SYS_UserDetail>(GlobalFramework.LoggedUser.Oid);
+                    CreatedBy = this.Session.GetObjectByKey<sys_userdetail>(GlobalFramework.LoggedUser.Oid);
                 }
                 if (GlobalFramework.LoggedTerminal != null)
                 {
-                    CreatedWhere = this.Session.GetObjectByKey<POS_ConfigurationPlaceTerminal>(GlobalFramework.LoggedTerminal.Oid);
+                    CreatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
                 }
                 // Call EncryptProperties to be used when we create Objects outside BO, 
                 // this will trigger Encrypted Automatically
@@ -170,7 +170,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             if (GlobalFramework.LoggedUser != null)
             {
-                UpdatedBy = this.Session.GetObjectByKey<SYS_UserDetail>(GlobalFramework.LoggedUser.Oid);
+                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(GlobalFramework.LoggedUser.Oid);
                 // This Prevent : DevExpress.Xpo.DB.Exceptions.LockingException: Cannot persist the object. It was modified or deleted (purged) by another application.
                 // Created to prevent Creating Year Series problems
                 UpdatedBy.Reload();
@@ -178,7 +178,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
             if (GlobalFramework.LoggedTerminal != null)
             {
-                UpdatedWhere = this.Session.GetObjectByKey<POS_ConfigurationPlaceTerminal>(GlobalFramework.LoggedTerminal.Oid);
+                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
                 // This Prevent : DevExpress.Xpo.DB.Exceptions.LockingException: Cannot persist the object. It was modified or deleted (purged) by another application.
                 // Created to prevent Creating Year Series problems
                 UpdatedWhere.Reload();

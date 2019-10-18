@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>logicpos.datalayer</RootNamespace>
     <AssemblyName>LogicposDatalayer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -34,12 +34,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\xpo_14_1_5\DevExpress.Data.v14.1.dll</HintPath>
+    <Reference Include="DevExpress.Data.v18.1, Version=18.1.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\logicpos_pos_internal\packages\DevExpress.Data.18.1.9\lib\net40\DevExpress.Data.v18.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpo.v14.1">
-      <HintPath>..\libs\xpo_14_1_5\DevExpress.Xpo.v14.1.dll</HintPath>
+    <Reference Include="DevExpress.Xpo.v18.1, Version=18.1.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\logicpos_pos_internal\packages\DevExpress.Xpo.18.1.9\lib\net40\DevExpress.Xpo.v18.1.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
@@ -54,6 +53,7 @@
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationInputReader.cs" />
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationPoleDisplay.cs" />
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationWeighingMachine.cs" />
+    <Compile Include="DataLayer\Xpo\Documents\VIEW_ViewDocumentFinancePaymentTotals.cs" />
     <Compile Include="DataLayer\Xpo\System\SYS_SystemNotificationDocumentMaster.cs" />
     <Compile Include="DataLayer\Xpo\XPGuidObjectAttribute.cs" />
     <Compile Include="Enums\AppOperationMode.cs" />
@@ -149,6 +149,9 @@
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>logicpos.resources</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

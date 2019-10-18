@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1C688B96-9FCC-465A-9347-1F933C703E21}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Patagames.Pdf.Net.Controls.WinForms</RootNamespace>
+    <AssemblyName>Patagames.Pdf.WinForms</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Patagames.Pdf, Version=4.3.4.40, Culture=neutral, PublicKeyToken=60fd6cf9b15941cf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Patagames.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BookmarksViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BookmarksViewer.Designer.cs">
+      <DependentUpon>BookmarksViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BookmarksViewerNode.cs" />
+    <Compile Include="HighlightInfo.cs" />
+    <Compile Include="MouseModes.cs" />
+    <Compile Include="NamedDestinationsViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NamedDestinationsViewer.Designer.cs">
+      <DependentUpon>NamedDestinationsViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NamedDestinationsViewerItem.cs" />
+    <Compile Include="PRCollection.cs" />
+    <Compile Include="Print\BeforeRenderPageEventArgs.cs" />
+    <Compile Include="Print\PdfPrintDocument.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Print\PrintSizeMode.cs" />
+    <Compile Include="PRItem.cs" />
+    <Compile Include="Properties\Error.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Error.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PdfViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PdfViewer.Designer.cs">
+      <DependentUpon>PdfViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\PdfToolStrip.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PdfToolStrip.resx</DependentUpon>
+    </Compile>
+    <Compile Include="RenderRect.cs" />
+    <Compile Include="SelectInfo.cs" />
+    <Compile Include="SizeModes.cs" />
+    <Compile Include="ToolBars\PdfToolStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripClipboard.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripMain.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripPages.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripRotate.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripSearch.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripSizes.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripViewModes.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripZoom.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\PdfToolStripZoomEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\SearchBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolBars\SearchBar.Designer.cs">
+      <DependentUpon>SearchBar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolBars\ToolStripSearchBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolBars\ToolStripTrackBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ViewModes.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NamedDestinationsViewer.resx">
+      <DependentUpon>NamedDestinationsViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Error.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Error.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PdfViewer.resx">
+      <DependentUpon>PdfViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\PdfToolStrip.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PdfToolStrip.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolBars\SearchBar.resx">
+      <DependentUpon>SearchBar.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\docClose.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\docExport.png" />
+    <Content Include="Resources\docOpen.png" />
+    <Content Include="Resources\docPrint.png" />
+    <Content Include="Resources\docSave.png" />
+    <Content Include="Resources\down.png" />
+    <Content Include="Resources\down_disabled.png" />
+    <Content Include="Resources\modeHorizontal.png" />
+    <Content Include="Resources\modeSingle.png" />
+    <Content Include="Resources\modeTiles.png" />
+    <Content Include="Resources\modeTwoPage.png" />
+    <Content Include="Resources\modeVertical.png" />
+    <Content Include="Resources\rotateLeft.png" />
+    <Content Include="Resources\rotateRight.png" />
+    <Content Include="Resources\selectAll.png" />
+    <Content Include="Resources\textCopy.png" />
+    <Content Include="Resources\toBegin.png" />
+    <Content Include="Resources\toEnd.png" />
+    <Content Include="Resources\toLeft.png" />
+    <Content Include="Resources\toRight.png" />
+    <Content Include="Resources\up.png" />
+    <Content Include="Resources\up_disabled.png" />
+    <Content Include="Resources\viewActualSize.PNG" />
+    <Content Include="Resources\viewActualSize16.PNG" />
+    <Content Include="Resources\viewFitHeight.PNG" />
+    <Content Include="Resources\viewFitHeight16.PNG" />
+    <Content Include="Resources\viewFitPage.PNG" />
+    <Content Include="Resources\viewFitPage16.PNG" />
+    <Content Include="Resources\viewFitWidth.PNG" />
+    <Content Include="Resources\viewFitWidth16.PNG" />
+    <Content Include="Resources\zoomExOut.png" />
+    <Content Include="Resources\zoomIn.png" />
+    <Content Include="Resources\zoomOut.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

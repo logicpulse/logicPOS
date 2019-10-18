@@ -1,0 +1,96 @@
+---------------
+#### QuickStart
+
+http://box.logicpulse.pt/files/private/logicpos/quickstart.txt
+
+---------------------------------------------------
+#### LogicPOS - Ubuntu 18.04.3 LTS (Bionic Beaver)
+
+- Download Ubuntu : http://releases.ubuntu.com/18.04/ubuntu-18.04.3-desktop-amd64.iso
+(Install with English version)
+
+---------------------
+#### Partition Layout
+
+- 40000MB Primary  /
+-  4000MB Primary  Swap
+(or all free here, if is not to be a source clone disk)
+
+----------------
+#### Credentials
+
+Your Name: LogicPulse
+Your Computer Name: Client PC Name
+Pick a Username: logicpulse
+Choose password: Logicpulse#2019
+
+(Open Terminal and Type above commands)
+
+-------------
+#### Packages
+
+```
+sudo apt-get update
+sudo apt-get install ssh
+```
+
+-------------
+#### Firewall
+
+```
+sudo ufw allow ssh/tcp
+sudo ufw logging on
+sudo ufw enable
+sudo ufw status
+```
+
+-------------------------
+#### Start Install Script
+
+```
+cd /tmp && [ -f install.sh ] && rm install.sh && rm install_run.sh
+wget http://box.logicpulse.pt/files/private/logicpos/install.sh && cat install.sh | tr -d '\r' > install_run.sh && sudo chmod 755 install_run.sh && ./install_run.sh
+```
+
+-------------------------
+#### Start Update Script
+
+```
+cd /tmp
+if [ -d "/home/logicpos/logicpos/" ]; then sudo rm /home/logicpos/logicpos/ -R; fi;
+
+# Old quick script
+# sudo mkdir /home/logicpos/logicpos/ -p
+# [ -f logicpos.tar.gz ] && sudo rm logicpos.tar.gz
+# wget http://box.logicpulse.pt/files/private/logicpos/logicpos.tar.gz
+# sudo tar ixzf logicpos.tar.gz -C /home/logicpos/logicpos
+# sudo chown logicpos.logicpos /home/logicpos/logicpos -R
+# sudo chmod 755 /home/logicpos/logicpos/*.exe
+# sudo chmod 755 /home/logicpos/logicpos/Scripts/Linux/Kiosk.sh
+# echo "DROP DATABASE IF EXISTS logicpos;" | mysql -u root -ppos#2014
+```
+
+-----------------------------------------------------
+#### Optional : Sinocom F10-15 - eGalax Toutch Driver
+
+```
+cd /tmp
+wget http://box.logicpulse.pt/files/private/logicpos/egtouch_v2.5.3120.l-x.zip
+unzip egtouch_v2.5.3120.l-x.zip
+cd eGTouch_v2.5.3120.L-x
+sudo chmod 755 setup.sh
+sudo ./setup.sh
+
+```
+
+(Q) Which interface controller do you use?
+(A) [1] RS232
+
+(Q) How many controllers do you want to plug-in to system? [1-10]
+(A) Default [1]:
+
+Next
+	Please reboot the system
+
+Next
+	Read http://box.logicpulse.pt/files/private/logicpos/postinstall.txt to proceed

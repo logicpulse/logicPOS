@@ -36,6 +36,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (response == ResponseType.Yes)
                     {
                         //Get Parameters
+						//TK016249 - Impressoras - Diferenciação entre Tipos
+                        GlobalFramework.UsingThermalPrinter = false;
                         ProcessFinanceDocumentParameter processFinanceDocumentParameter = GetFinanceDocumentParameter();
 
                         //If error in Save or Update Customer
@@ -47,7 +49,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         else
                         {
                             //Proccess Document
-                            FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(_sourceWindow, processFinanceDocumentParameter);
+                            fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(_sourceWindow, processFinanceDocumentParameter);
                             //If Errors Occurs, return null Document, Keep Running until user cancel or a Valid Document is Returned
                             if (resultDocument == null) this.Run();
                         }
@@ -64,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 if (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.Count > 0)
                 {
-                    ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, Resx.window_title_dialog_message_dialog, Resx.dialog_message_finance_dialog_confirm_cancel);
+                    ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_finance_dialog_confirm_cancel"));
                     if (response == ResponseType.No)
                     {
                         //Keep Running
@@ -96,12 +98,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             ArticleBag articleBag = new ArticleBag(customerDiscount);
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
-            FIN_Article article;
-            FIN_ConfigurationVatRate configurationVatRate;
-            FIN_ConfigurationVatExemptionReason configurationVatExemptionReason;
+            fin_article article;
+            fin_configurationvatrate configurationVatRate;
+            fin_configurationvatexemptionreason configurationVatExemptionReason;
 
             //DocumentParent/SourceDocument
-            FIN_DocumentFinanceMaster sourceFinanceMaster = null;
+            fin_documentfinancemaster sourceFinanceMaster = null;
             string referencesReason = string.Empty;
             if (
                 _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote
@@ -111,15 +113,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 Guid guidDocumentParent = _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid;
                 //Get Source Document
-                sourceFinanceMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), guidDocumentParent);
+                sourceFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), guidDocumentParent);
                 referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
             };
 
             foreach (DataRow item in _pagePad3.TreeViewArticles.DataSource.Rows)
             {
-                article = (item["Article.Code"] as FIN_Article);
-                configurationVatRate = (item["ConfigurationVatRate.Value"] as FIN_ConfigurationVatRate);
-                configurationVatExemptionReason = (item["VatExemptionReason.Acronym"] as FIN_ConfigurationVatExemptionReason);
+                article = (item["Article.Code"] as fin_article);
+                configurationVatRate = (item["ConfigurationVatRate.Value"] as fin_configurationvatrate);
+                configurationVatExemptionReason = (item["VatExemptionReason.Acronym"] as fin_configurationvatexemptionreason);
 
                 //Prepare articleBag Key and Props
                 articleBagKey = new ArticleBagKey(
@@ -164,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
             _pagePad3.ArticleBag = GetArticleBag();
 
-            ERP_Customer customer = null;
+            erp_customer customer = null;
             bool wayBillMode = _pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill;
 
             object resultObject;
@@ -186,9 +188,9 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 _pagePad2.EntryBoxCustomerNotes.EntryValidation.Text
             );
 
-            if (resultObject.GetType() == typeof(ERP_Customer))
+            if (resultObject.GetType() == typeof(erp_customer))
             {
-                customer = (ERP_Customer)resultObject;
+                customer = (erp_customer)resultObject;
             }
             else
             {
@@ -196,7 +198,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 if (resultObject.GetType() == typeof(ConstraintViolationException))
                 {
                     Exception ex = (Exception)resultObject;
-                    ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, Resx.window_title_dialog_exception_error, ex.InnerException.Message);
+                    ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
                 }
                 customer = null;
             }
@@ -226,7 +228,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //TotalDelivery: If Money force TotalDelivery to be equal to TotalFinal
             if (result.PaymentMethod != null && result.PaymentMethod != new Guid())
             {
-                FIN_ConfigurationPaymentMethod paymentMethod = (FIN_ConfigurationPaymentMethod)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_ConfigurationPaymentMethod), result.PaymentMethod);
+                fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationpaymentmethod), result.PaymentMethod);
                 if (paymentMethod.Token == "MONEY")
                 {
                     result.TotalDelivery = _pagePad3.ArticleBag.TotalFinal;
@@ -257,7 +259,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //OrderReferences
             if (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null) 
             {
-                List<FIN_DocumentFinanceMaster> orderReferences = new List<FIN_DocumentFinanceMaster>();
+                List<fin_documentfinancemaster> orderReferences = new List<fin_documentfinancemaster>();
                 orderReferences.Add(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value);
                 result.OrderReferences = orderReferences;
             }
@@ -335,9 +337,9 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 )
                 {
                     Utils.ShowMessageTouch(
-                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, 
+                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
                         string.Format(
-                            Resx.dialog_message_value_exceed_customer_card_credit, 
+                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), 
                             FrameworkUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit), 
                             FrameworkUtils.DecimalToStringCurrency(articleBag.TotalFinal)
                         )
@@ -348,7 +350,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
                 if (result && ! FrameworkUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
                 {
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_invalid_customer_card_detected);
+                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
                     result = false;
                 }
             }

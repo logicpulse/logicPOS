@@ -26,6 +26,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         void buttonCheck_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
         void buttonMB_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
         void buttonCredit_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+        /* IN009142 */
+        void buttonDebitCard_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
         void buttonVisa_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
         void buttonCurrentAccount_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
         void buttonCustomerCard_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
@@ -44,6 +46,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //ResponseTypeOk
                 else if (pResponse == ResponseType.Ok)
                 {
+					//TK016249 - Impressoras - Diferenciação entre Tipos
+                    GlobalFramework.UsingThermalPrinter = true;
                     //SaveOrUpdateCustomer Before use _selectedCustomer (Can be null)
                     resultObject = Utils.SaveOrUpdateCustomer(
                         this,
@@ -62,9 +66,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _entryBoxCustomerNotes.EntryValidation.Text
                      );
 
-                    if (resultObject.GetType() == typeof(ERP_Customer))
+                    if (resultObject.GetType() == typeof(erp_customer))
                     {
-                        _selectedCustomer = (ERP_Customer)resultObject;
+                        _selectedCustomer = (erp_customer)resultObject;
 
                         //Prevent Default Customer Entity and Hidden Customer (Only with Name Filled) to Process CC Documents
                         if (
@@ -76,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             )
                         )
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_cant_create_cc_document_with_default_entity);
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                             //Prevent Parent Dialog Payments from Close
                             this.Run();
                         }
@@ -160,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                             )
                             {
-                                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, string.Format(Resx.dialog_message_value_exceed_customer_card_credit, FrameworkUtils.DecimalToStringCurrency(_selectedCustomer.CardCredit), FrameworkUtils.DecimalToStringCurrency(processArticleBag.TotalFinal)));
+                                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), FrameworkUtils.DecimalToStringCurrency(_selectedCustomer.CardCredit), FrameworkUtils.DecimalToStringCurrency(processArticleBag.TotalFinal)));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -169,7 +173,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Check if Article Bag Full|Partial has Recharge Article and Valid customer Card
                             else if (!FrameworkUtils.IsCustomerCardValidForArticleBag(processArticleBag, _selectedCustomer))
                             {
-                                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_invalid_customer_card_detected);
+                                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -189,21 +193,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 };
 
                                 //Get Latest DocumentConference Document if Exists, and assign if (REMOVED Total Equality, Request from Carlos)
-                                FIN_DocumentFinanceMaster conferenceDocument = FrameworkUtils.GetOrderMainLastDocumentConference(false);
+                                fin_documentfinancemaster conferenceDocument = FrameworkUtils.GetOrderMainLastDocumentConference(false);
                                 if (
                                     conferenceDocument != null
                                 /*&& (conferenceDocument.TotalFinal.Equals(processArticleBag.TotalFinal) && conferenceDocument.DocumentDetail.Count.Equals(processArticleBag.Count))*/
                                 )
                                 {
                                     _processFinanceDocumentParameter.DocumentParent = conferenceDocument.Oid;
-                                    _processFinanceDocumentParameter.OrderReferences = new List<FIN_DocumentFinanceMaster>();
+                                    _processFinanceDocumentParameter.OrderReferences = new List<fin_documentfinancemaster>();
                                     _processFinanceDocumentParameter.OrderReferences.Add(conferenceDocument);
                                 }
 
                                 // PreventPersistFinanceDocument : Used in SplitPayments, to get ProcessFinanceDocumentParameter and Details without PreventPersistFinanceDocument
                                 if (!_skipPersistFinanceDocument)
                                 {
-                                    FIN_DocumentFinanceMaster resultDocument = FrameworkCalls.PersistFinanceDocument(this, _processFinanceDocumentParameter);
+                                    fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(this, _processFinanceDocumentParameter);
                                     //If Errors Occurs, return null Document, Keep Running until user cancel or a Valid Document is Returned
                                     if (resultDocument == null)
                                     {
@@ -222,7 +226,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     else if (resultObject.GetType() == typeof(ConstraintViolationException))
                     {
                         Exception ex = (Exception)resultObject;
-                        ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, Resx.window_title_dialog_exception_error, ex.InnerException.Message);
+                        ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -264,10 +268,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, Resx.dialog_message_error_creating_financial_document_missing_series);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     default:
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -276,7 +280,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     new Size(600, 400),
                     MessageType.Error,
                     ButtonsType.Close,
-                    Resx.global_error,
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                     errorMessage
                 );
 
@@ -369,7 +373,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             EntryValidation entryValidation = (EntryValidation)sender;
             //Initialize Country DeafultValue
-            CFG_ConfigurationCountry defaultValue = (_selectedCustomer.Country != null)
+            cfg_configurationcountry defaultValue = (_selectedCustomer.Country != null)
               ? _selectedCustomer.Country
               : SettingsApp.ConfigurationSystemCountry
             ;
@@ -379,7 +383,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationCountry>(
                 this.SourceWindow,
                 DialogFlags.DestroyWithParent,
-                Resx.window_title_select_country,
+                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_select_country"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 defaultValue,
@@ -392,7 +396,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (response == (int)ResponseType.Ok)
             {
                 //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                _selectedCountry = (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(typeof(CFG_ConfigurationCountry), dialog.GenericTreeView.DataSourceRow.Oid);
+                _selectedCountry = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(typeof(cfg_configurationcountry), dialog.GenericTreeView.DataSourceRow.Oid);
                 entryValidation.Text = _selectedCountry.Designation;
                 Validate();
             }
@@ -409,7 +413,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Enable Sender
             _selectedPaymentMethodButton = (TouchButtonBase)pSender;
-            _selectedPaymentMethod = (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(typeof(FIN_ConfigurationPaymentMethod), _selectedPaymentMethodButton.CurrentButtonOid);
+            _selectedPaymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), _selectedPaymentMethodButton.CurrentButtonOid);
             //_log.Debug(string.Format("AssignPaymentMethod: ButtonName: [{0}], PaymentMethodToken: [{1}]", _selectedPaymentMethodButton.Name, _selectedPaymentMethod.Token));
 
             if (_selectedPaymentMethod.Token == "MONEY")
@@ -513,7 +517,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     // Only Encrypt Encrypted Fields
-                    if (pFieldName == nameof(ERP_Customer.FiscalNumber) || pFieldName == nameof(ERP_Customer.CardNumber))
+                    if (pFieldName == nameof(erp_customer.FiscalNumber) || pFieldName == nameof(erp_customer.CardNumber))
                     {
                         pFieldValue = GlobalFramework.PluginSoftwareVendor.Encrypt(pFieldValue);
                     }
@@ -528,7 +532,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (customerGuid != Guid.Empty)
                 {
-                    _selectedCustomer = (ERP_Customer)FrameworkUtils.GetXPGuidObject(typeof(ERP_Customer), customerGuid);
+                    _selectedCustomer = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), customerGuid);
                 }
                 else
                 {
@@ -556,6 +560,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _entryBoxSelectCustomerCountry.EntryValidation.Text = (_selectedCountry != null) ? _selectedCountry.Designation : string.Empty;
                     _entryBoxCustomerNotes.EntryValidation.Text = (_selectedCustomer.Notes != null) ? _selectedCustomer.Notes.ToString() : string.Empty;
                 }
+                //IN:009275 Use Euro VAT Info 
+                else if (Utils.UseVatAutocomplete())
+                {
+                    string cod_FiscalNumber = string.Format("{0}{1}", cfg_configurationpreferenceparameter.GetCountryCode2, _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
+                    var address = EuropeanVatInformation.Get(cod_FiscalNumber).Address.Split('\n');
+                    if (address != null)
+                    {
+                        string zip = address[2].Substring(0, address[2].IndexOf(' '));
+                        string city = address[2].Substring(address[2].IndexOf(' ') + 1);
+                        _entryBoxCustomerAddress.EntryValidation.Text = address[0];
+                        _entryBoxCustomerLocality.EntryValidation.Text = address[1];
+                        _entryBoxCustomerZipCode.EntryValidation.Text = zip;
+                        _entryBoxCustomerCity.EntryValidation.Text = city;
+                        _entryBoxSelectCustomerName.EntryValidation.Text = EuropeanVatInformation.Get(cod_FiscalNumber).Name;
+                        _entryBoxCustomerDiscount.EntryValidation.Text = FrameworkUtils.DecimalToString(_discountGlobal);
+                        if (pFieldName != "CardNumber")
+                        {
+                            _entryBoxSelectCustomerCardNumber.Value = null;
+                            _entryBoxSelectCustomerCardNumber.EntryValidation.Text = string.Empty;
+                        }
+                        _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
+                    }
+                }
+                ////IN:009275 ENDS
                 //New User
                 else
                 {
@@ -677,7 +705,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Used To Disable FiscalNumber Edits and to Get Customer
                 string sql = string.Format("SELECT Oid FROM erp_customer WHERE FiscalNumber = '{0}' AND (Hidden IS NULL OR Hidden = 0);", fiscalNumberFilterValue);
                 Guid customerGuid = FrameworkUtils.GetGuidFromQuery(sql);
-                ERP_Customer customer = (customerGuid != Guid.Empty) ? (ERP_Customer)FrameworkUtils.GetXPGuidObject(typeof(ERP_Customer), customerGuid) : null;
+                erp_customer customer = (customerGuid != Guid.Empty) ? (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), customerGuid) : null;
 
                 //Required Minimal Fields Edit : SingularEntity
                 if (isFinalConsumerEntity)
@@ -912,7 +940,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               new PosSelectRecordDialog<DataTable, DataRow, TreeViewPartialPayment>(
                 this,
                 DialogFlags.DestroyWithParent,
-                Resx.window_title_dialog_partial_payment,
+                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"),
                 //TODO:THEME
                 GlobalApp.MaxWindowSize,
                 //new Guid(), //use this to test pDefaultValue 
@@ -947,7 +975,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     bool itemChecked = (bool)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnCheckBox];
                     decimal currentRowPrice = (decimal)_dialogPartialPayment.GenericTreeView.DataSourceRow.ItemArray[indexColumnPriceFinal];
                     _totalPartialPaymentItems += (itemChecked) ? currentRowPrice : -currentRowPrice;
-                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", Resx.window_title_dialog_partial_payment, FrameworkUtils.DecimalToStringCurrency(_totalPartialPaymentItems)) : Resx.window_title_dialog_partial_payment;
+                    _dialogPartialPayment.WindowTitle = (_totalPartialPaymentItems > 0) ? string.Format("{0} : {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment"), FrameworkUtils.DecimalToStringCurrency(_totalPartialPaymentItems)) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_partial_payment");
                 }
             };
 

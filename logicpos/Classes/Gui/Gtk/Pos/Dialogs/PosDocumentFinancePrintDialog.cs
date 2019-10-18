@@ -29,13 +29,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private bool _requestMotive = false;
         private bool _secondCopy = false;
         //Parameters
-        private FIN_DocumentFinanceMaster _documentFinanceMaster;
+        private fin_documentfinancemaster _documentFinanceMaster;
 
-        public PosDocumentFinancePrintDialog(Window pSourceWindow, DialogFlags pDialogFlags, FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public PosDocumentFinancePrintDialog(Window pSourceWindow, DialogFlags pDialogFlags, fin_documentfinancemaster pDocumentFinanceMaster)
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = string.Format(Resx.window_title_dialog_document_finance_print, pDocumentFinanceMaster.DocumentNumber);
+            String windowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_print"), pDocumentFinanceMaster.DocumentNumber);
             Size windowSize = new Size(400, 259);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_document_new.png");
             //Parameters
@@ -67,16 +67,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vboxContent = new VBox(false, 0);
 
             Dictionary<string, bool> buttonGroup = new Dictionary<string, bool>();
-            buttonGroup.Add(Resx.global_print_copy_title1, (_printCopies >= 1));
-            buttonGroup.Add(Resx.global_print_copy_title2, (_printCopies >= 2));
-            buttonGroup.Add(Resx.global_print_copy_title3, (_printCopies >= 3));
-            buttonGroup.Add(Resx.global_print_copy_title4, (_printCopies >= 4));
+            buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title1"), (_printCopies >= 1));
+            buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title2"), (_printCopies >= 2));
+            buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title3"), (_printCopies >= 3));
+            buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title4"), (_printCopies >= 4));
             //Not Used Anymore
-            //buttonGroup.Add(Resx.global_print_copy_title5, (_printCopies >= 5));
-            //buttonGroup.Add(Resx.global_print_copy_title6, (_printCopies >= 6));
+            //buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title5, (_printCopies >= 5));
+            //buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title6, (_printCopies >= 6));
 
             //Construct,Pack and Event
-            _checkButtonCopyNamesBoxGroup = new CheckButtonBoxGroup(Resx.global_print_copies, buttonGroup);
+            _checkButtonCopyNamesBoxGroup = new CheckButtonBoxGroup(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copies"), buttonGroup);
             _vboxContent.PackStart(_checkButtonCopyNamesBoxGroup);
             _checkButtonCopyNamesBoxGroup.Clicked += checkButtonCopyNamesBoxGroup_Clicked;
 
@@ -84,13 +84,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_requestMotive)
             {
                 //CheckButtonBoxSecondCopy
-                _checkButtonBoxSecondCopy = new CheckButtonBox(Resx.global_second_copy, true);
+                _checkButtonBoxSecondCopy = new CheckButtonBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_second_copy"), true);
                 _checkButtonBoxSecondCopy.Clicked += checkButtonBoxSecondCopy_Clicked;
                 _checkButtonBoxSecondCopy.StateChanged += checkButtonBoxSecondCopy_Clicked;
                 //Pack EntryBox with CheckBox into Dialog
                 _vboxContent.PackStart(_checkButtonBoxSecondCopy);
 
-                _entryBoxValidationBoxMotive = new EntryBoxValidation(this, Resx.global_reprint_original_motive, KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumeric, false);
+                _entryBoxValidationBoxMotive = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reprint_original_motive"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumeric, false);
                 //Start Disabled
                 _entryBoxValidationBoxMotive.EntryValidation.Label.Sensitive = false;
                 _entryBoxValidationBoxMotive.EntryValidation.Sensitive = false;
@@ -110,7 +110,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         void checkButtonBox1_Clicked(object sender, EventArgs e)
         {
             //Force CheckBox1 to be always Active if is not in SecondCopy Mode
-            if (!_checkButtonBoxSecondCopy.Active)
+            if (_checkButtonBoxSecondCopy != null && !_checkButtonBoxSecondCopy.Active)/* IN009074 */
             {
                 (sender as CheckButtonExtended).Active = true;
             }
@@ -233,7 +233,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        public static PrintDialogResponse GetDocumentFinancePrintProperties(Window pSourceWindow, FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static PrintDialogResponse GetDocumentFinancePrintProperties(Window pSourceWindow, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

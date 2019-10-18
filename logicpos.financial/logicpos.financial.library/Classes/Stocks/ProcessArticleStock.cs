@@ -14,17 +14,17 @@ namespace logicpos.financial.library.Classes.Stocks
             return Add(pMode, pParameter.Customer, 10, pParameter.DocumentDate, pParameter.DocumentNumber, pParameter.Article, pParameter.Quantity, pParameter.Notes);
         }
 
-        public static bool Add(ProcessArticleStockMode pMode, ERP_Customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, FIN_Article pArticle, decimal pQuantity, string pNotes)
+        public static bool Add(ProcessArticleStockMode pMode, erp_customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, fin_article pArticle, decimal pQuantity, string pNotes)
         {
             return Add(GlobalFramework.SessionXpo, pMode, pCustomer, 10, pDocumentDate, pDocumentNumber, pArticle, pQuantity, pNotes);
         }
 
-        public static bool Add(Session pSession, ProcessArticleStockMode pMode, ERP_Customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, FIN_Article pArticle, decimal pQuantity, string pNotes)
+        public static bool Add(Session pSession, ProcessArticleStockMode pMode, erp_customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, fin_article pArticle, decimal pQuantity, string pNotes)
         {
             return Add(GlobalFramework.SessionXpo, pMode, null, pCustomer, 10, pDocumentDate, pDocumentNumber, pArticle, pQuantity, pNotes);
         }
 
-        public static bool Add(Session pSession, ProcessArticleStockMode pMode, FIN_DocumentFinanceDetail pDocumentDetail, ERP_Customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, FIN_Article pArticle, decimal pQuantity, string pNotes)
+        public static bool Add(Session pSession, ProcessArticleStockMode pMode, fin_documentfinancedetail pDocumentDetail, erp_customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, fin_article pArticle, decimal pQuantity, string pNotes)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -45,12 +45,12 @@ namespace logicpos.financial.library.Classes.Stocks
                 }
 
                 //Get Objects in same Session
-                ERP_Customer customer = (ERP_Customer)pSession.GetObjectByKey(typeof(ERP_Customer), pCustomer.Oid);
-                FIN_Article article = (FIN_Article)pSession.GetObjectByKey(typeof(FIN_Article), pArticle.Oid);
-                POS_ConfigurationPlaceTerminal terminal = (POS_ConfigurationPlaceTerminal)pSession.GetObjectByKey(typeof(POS_ConfigurationPlaceTerminal), GlobalFramework.LoggedTerminal.Oid);
-                SYS_UserDetail userDetail = (SYS_UserDetail)pSession.GetObjectByKey(typeof(SYS_UserDetail), GlobalFramework.LoggedUser.Oid);
+                erp_customer customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), pCustomer.Oid);
+                fin_article article = (fin_article)pSession.GetObjectByKey(typeof(fin_article), pArticle.Oid);
+                pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)pSession.GetObjectByKey(typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid);
+                sys_userdetail userDetail = (sys_userdetail)pSession.GetObjectByKey(typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
 
-                FIN_ArticleStock articleStock = new FIN_ArticleStock(pSession)
+                fin_articlestock articleStock = new fin_articlestock(pSession)
                 {
                     Customer = customer,
                     Date = pDocumentDate,
@@ -75,10 +75,10 @@ namespace logicpos.financial.library.Classes.Stocks
                 switch (pMode)
                 {
                     case ProcessArticleStockMode.Out:
-                        FrameworkUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(Resx.audit_message_stock_movement_out, article.Designation, FrameworkUtils.DecimalToString(quantity, SettingsApp.DecimalFormatStockQuantity)));
+                        FrameworkUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_stock_movement_out"), article.Designation, FrameworkUtils.DecimalToString(quantity, SettingsApp.DecimalFormatStockQuantity)));
                         break;
                     case ProcessArticleStockMode.In:
-                        FrameworkUtils.Audit("STOCK_MOVEMENT_IN", string.Format(Resx.audit_message_stock_movement_in, article.Designation, FrameworkUtils.DecimalToString(quantity, SettingsApp.DecimalFormatStockQuantity)));
+                        FrameworkUtils.Audit("STOCK_MOVEMENT_IN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_stock_movement_in"), article.Designation, FrameworkUtils.DecimalToString(quantity, SettingsApp.DecimalFormatStockQuantity)));
                         break;
                 }
 
@@ -96,7 +96,7 @@ namespace logicpos.financial.library.Classes.Stocks
         /// If ProcessArticleStockMode.None
         /// </summary>
         public static bool Add(
-            FIN_DocumentFinanceMaster pDocumentFinanceMaster,
+            fin_documentfinancemaster pDocumentFinanceMaster,
             // Used to force ReverseStockMode, used in cancel Documents to restore Stocks
             bool pReverseStockMode = false
             )
@@ -133,10 +133,10 @@ namespace logicpos.financial.library.Classes.Stocks
                         try
                         {
                             //Get Objects in same Session
-                            FIN_DocumentFinanceMaster documentFinanceMaster = (FIN_DocumentFinanceMaster)uowSession.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), pDocumentFinanceMaster.Oid);
-                            ERP_Customer customer = (ERP_Customer)uowSession.GetObjectByKey(typeof(ERP_Customer), pDocumentFinanceMaster.EntityOid);
+                            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
+                            erp_customer customer = (erp_customer)uowSession.GetObjectByKey(typeof(erp_customer), pDocumentFinanceMaster.EntityOid);
 
-                            foreach (FIN_DocumentFinanceDetail item in documentFinanceMaster.DocumentDetail)
+                            foreach (fin_documentfinancedetail item in documentFinanceMaster.DocumentDetail)
                             {
                                 //Check if article works in Stock
                                 if (item.Article.Class.WorkInStock)

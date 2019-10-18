@@ -24,9 +24,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewSystemBackup(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(SYS_SystemBackup);
+            Type xpoGuidObjectType = typeof(sys_systembackup);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            SYS_SystemBackup defaultValue = (pDefaultValue != null) ? pDefaultValue as SYS_SystemBackup : null;
+            sys_systembackup defaultValue = (pDefaultValue != null) ? pDefaultValue as sys_systembackup : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
@@ -35,7 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             columnProperties.Add(new GenericTreeViewColumnProperty("Version")
             {
-                Title = Resx.global_version,
+                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_version"),
                 MinWidth = 60,
                 CellRenderer = new CellRendererText()
                 {
@@ -43,9 +43,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     Xalign = 1.0F
                 }
             });
-            columnProperties.Add(new GenericTreeViewColumnProperty("CreatedAt") { Title = Resx.global_date, MinWidth = 180 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("FileNamePacked") { Title = Resx.global_file, MinWidth = 240 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 180 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("FileNamePacked") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file"), MinWidth = 240 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Sort Order
             SortProperty[] sortProperty = new SortProperty[2];

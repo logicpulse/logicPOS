@@ -51,9 +51,11 @@ namespace logicpos.reports
             GlobalFramework.Path.Add("backups", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathBackups"]));
 
             //CultureInfo/Localization
-            if (GlobalFramework.Settings["culture"] != null)
+            string culture = GlobalFramework.Settings["culture"];
+            if (!string.IsNullOrEmpty(culture))
             {
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(GlobalFramework.Settings["culture"]);
+                /* IN006018 and IN007009 */
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
             }
             GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
             //Always use en-US NumberFormat because of mySql Requirements

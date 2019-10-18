@@ -16,7 +16,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printers.Thermal
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Print(SYS_ConfigurationPrinters pPrinter)
+        public static void Print(sys_configurationprinters pPrinter)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printers.Thermal
             }
         }
 
-        public static bool OpenDoor(SYS_ConfigurationPrinters pPrinter)
+        public static bool OpenDoor(sys_configurationprinters pPrinter)
         {
             return PrintRouter.OpenDoor(pPrinter);
         }

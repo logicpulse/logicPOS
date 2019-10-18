@@ -14,7 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogDocumentFinanceYears(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(Resx.window_title_edit_documentfinanceseries);
+            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_documentfinanceseries"));
             SetSizeRequest(500, 288);
             InitUI();
             //InitNotes();
@@ -30,24 +30,24 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Acronym
                 Entry entryAcronym = new Entry();
-                BOWidgetBox boxAcronym = new BOWidgetBox(Resx.global_acronym, entryAcronym);
+                BOWidgetBox boxAcronym = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_acronym"), entryAcronym);
                 vboxTab1.PackStart(boxAcronym, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAcronym, _dataSourceRow, "Acronym", SettingsApp.RegexDocumentSeriesYearAcronym, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
 
                 //FiscalYear
                 Entry entryFiscalYear = new Entry();
-                BOWidgetBox boxFiscalYear = new BOWidgetBox(Resx.global_fiscal_year, entryFiscalYear);
+                BOWidgetBox boxFiscalYear = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), entryFiscalYear);
                 vboxTab1.PackStart(boxFiscalYear, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxFiscalYear, _dataSourceRow, "FiscalYear", SettingsApp.RegexDecimalGreaterThanZero, true));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(Resx.global_record_main_detail));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 

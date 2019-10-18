@@ -13,10 +13,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     class PosPinPadDialog : PosBaseDialog
     {
-        private SYS_UserDetail _selectedUserDetail;
+        private sys_userdetail _selectedUserDetail;
         private NumberPadPin _numberPadPin;
 
-        public PosPinPadDialog(Window pSourceWindow, DialogFlags pDialogFlags, SYS_UserDetail pUserDetail)
+        public PosPinPadDialog(Window pSourceWindow, DialogFlags pDialogFlags, sys_userdetail pUserDetail)
             : base(pSourceWindow, pDialogFlags)
         {
             //Dialog compile time preferences
@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars Parameters
             _selectedUserDetail = pUserDetail;
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_request_user_pin;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
             String fontNumberPadPinButtonKeysTextAndLabel = GlobalFramework.Settings["fontNumberPadPinButtonKeysTextAndLabel"];

@@ -6,15 +6,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceType : XPGuidObject
+    public class fin_documentfinancetype : XPGuidObject
     {
-        public FIN_DocumentFinanceType() : base() { }
-        public FIN_DocumentFinanceType(Session session) : base(session) { }
+        public fin_documentfinancetype() : base() { }
+        public fin_documentfinancetype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinancetype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinancetype), "Code");
         }
 
         UInt32 fOrd;
@@ -159,49 +159,49 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many ConfigurationPlaceTerminal
-        SYS_ConfigurationPrinters fPrinter;
+        sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesDocumentFinanceType")]
-        public SYS_ConfigurationPrinters Printer
+        public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<SYS_ConfigurationPrinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
         }
 
         //DocumentFinanceType One <> Many ConfigurationPrintersTemplates
-        SYS_ConfigurationPrintersTemplates fTemplate;
+        sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesDocumentFinanceType")]
-        public SYS_ConfigurationPrintersTemplates Template
+        public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<SYS_ConfigurationPrintersTemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceMaster
-        [Association(@"DocumentFinanceTypeReferencesDocumentFinanceMaster", typeof(FIN_DocumentFinanceMaster))]
-        public XPCollection<FIN_DocumentFinanceMaster> DocumentMaster
+        [Association(@"DocumentFinanceTypeReferencesDocumentFinanceMaster", typeof(fin_documentfinancemaster))]
+        public XPCollection<fin_documentfinancemaster> DocumentMaster
         {
-            get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentMaster"); }
+            get { return GetCollection<fin_documentfinancemaster>("DocumentMaster"); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinancePayment
-        [Association(@"DocumentFinanceTypeReferencesDocumentFinancePayment", typeof(FIN_DocumentFinancePayment))]
-        public XPCollection<FIN_DocumentFinanceMaster> DocumentPayment
+        [Association(@"DocumentFinanceTypeReferencesDocumentFinancePayment", typeof(fin_documentfinancepayment))]
+        public XPCollection<fin_documentfinancemaster> DocumentPayment
         {
-            get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentPayment"); }
+            get { return GetCollection<fin_documentfinancemaster>("DocumentPayment"); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceSeries
-        [Association(@"DocumentFinanceTypeReferencesDocumentFinanceSeries", typeof(FIN_DocumentFinanceSeries))]
-        public XPCollection<FIN_DocumentFinanceSeries> Series
+        [Association(@"DocumentFinanceTypeReferencesDocumentFinanceSeries", typeof(fin_documentfinanceseries))]
+        public XPCollection<fin_documentfinanceseries> Series
         {
-            get { return GetCollection<FIN_DocumentFinanceSeries>("Series"); }
+            get { return GetCollection<fin_documentfinanceseries>("Series"); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceYearSerieTerminal
-        [Association(@"DocumentFinanceTypeReferencesDocumentFinanceYearSerieTerminal", typeof(FIN_DocumentFinanceYearSerieTerminal))]
-        public XPCollection<FIN_DocumentFinanceYearSerieTerminal> YearSerieTerminal
+        [Association(@"DocumentFinanceTypeReferencesDocumentFinanceYearSerieTerminal", typeof(fin_documentfinanceyearserieterminal))]
+        public XPCollection<fin_documentfinanceyearserieterminal> YearSerieTerminal
         {
-            get { return GetCollection<FIN_DocumentFinanceYearSerieTerminal>("YearSerieTerminal"); }
+            get { return GetCollection<fin_documentfinanceyearserieterminal>("YearSerieTerminal"); }
         }
     }
 }

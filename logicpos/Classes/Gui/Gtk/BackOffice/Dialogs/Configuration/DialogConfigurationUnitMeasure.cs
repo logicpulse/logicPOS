@@ -13,7 +13,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationUnitMeasure(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(Resx.window_title_edit_configurationunitmeasure);
+            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationunitmeasure"));
             SetSizeRequest(500, 353);
             InitUI();
             InitNotes();
@@ -29,36 +29,36 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxLabel = new BOWidgetBox(Resx.global_record_order, entryOrd);
+                BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SettingsApp.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(Resx.global_record_code, entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SettingsApp.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
 
                 //Acronym
                 Entry entryAcronym = new Entry();
-                BOWidgetBox boxAcronym = new BOWidgetBox(Resx.global_acronym, entryAcronym);
+                BOWidgetBox boxAcronym = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_acronym"), entryAcronym);
                 vboxTab1.PackStart(boxAcronym, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAcronym, _dataSourceRow, "Acronym", SettingsApp.RegexAcronym2Chars, true));
 
                 //Disabled
-                CheckButton checkButtonDisabled = new CheckButton(Resx.global_record_disabled);
+                CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = SettingsApp.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(Resx.global_record_main_detail));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
             }
             catch (System.Exception ex)
             {

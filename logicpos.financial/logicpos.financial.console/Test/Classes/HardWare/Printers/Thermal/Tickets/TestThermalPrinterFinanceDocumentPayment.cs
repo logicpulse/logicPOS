@@ -11,12 +11,12 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Print(SYS_ConfigurationPrinters pPrinter)
+        public static void Print(sys_configurationprinters pPrinter)
         {
             try
             {
                 //Parameters
-                FIN_DocumentFinancePayment documentFinancePayment = (FIN_DocumentFinancePayment)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinancePayment), SettingsApp.XpoPrintFinanceDocumentPayment);
+                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancepayment), SettingsApp.XpoPrintFinanceDocumentPayment);
                 //Print Document
                 if (documentFinancePayment != null)
                 {

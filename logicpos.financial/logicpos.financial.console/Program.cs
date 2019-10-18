@@ -59,9 +59,11 @@ namespace logicpos.financial.console
                 //GlobalFramework.Settings = ConfigurationManager.AppSettings;
 
                 //CultureInfo/Localization
-                if (GlobalFramework.Settings["culture"] != null)
+                string culture = GlobalFramework.Settings["culture"];
+                if (!string.IsNullOrEmpty(culture))
                 {
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(GlobalFramework.Settings["culture"]);
+                    /* IN006018 and IN007009 */
+                    //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 }
                 GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
 
@@ -99,8 +101,8 @@ namespace logicpos.financial.console
                 GlobalFramework.LoggedTerminal = Utils.GetTerminal();
 
                 //SettingsApp
-                SettingsApp.ConfigurationSystemCountry = (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCountry), new Guid(GlobalFramework.Settings["xpoOidConfigurationCountrySystemCountry"]));
-                SettingsApp.ConfigurationSystemCurrency = (CFG_ConfigurationCurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCurrency), new Guid(GlobalFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]));
+                SettingsApp.ConfigurationSystemCountry = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid(GlobalFramework.Settings["xpoOidConfigurationCountrySystemCountry"]));
+                SettingsApp.ConfigurationSystemCurrency = (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcurrency), new Guid(GlobalFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]));
 
                 //PreferenceParameters
                 GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
@@ -142,13 +144,13 @@ namespace logicpos.financial.console
                 GlobalFramework.Path["assets"] = @"c:\SVN\logicpos\trunk\src\logicpos\Assets\";
                 GlobalFramework.Path["reports"] = @"c:\SVN\logicpos\trunk\src\logicpos\Resources\Reports\";
                 //Get Terminal from DB
-                GlobalFramework.LoggedUser = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(SYS_UserDetail), new Guid(GlobalFramework.Settings["xpoOidUserDetailDefaultLoggedUser"]));
+                GlobalFramework.LoggedUser = (sys_userdetail)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userdetail), new Guid(GlobalFramework.Settings["xpoOidUserDetailDefaultLoggedUser"]));
                 //Get Permissions
                 GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions();
                 //Override Terminal Printer (PDF)
-                //GlobalFramework.LoggedTerminal.Printer = (SYS_ConfigurationPrinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(SYS_ConfigurationPrinters), SettingsApp.LoggedTerminalPrinter);
-                GlobalApp.PrinterExportPDF = (SYS_ConfigurationPrinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(SYS_ConfigurationPrinters), SettingsApp.XpoOidPrinterExportPDF);
-                GlobalApp.PrinterThermal = (SYS_ConfigurationPrinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(SYS_ConfigurationPrinters), SettingsApp.XpoOidPrinterThermal);
+                //GlobalFramework.LoggedTerminal.Printer = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.LoggedTerminalPrinter);
+                GlobalApp.PrinterExportPDF = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.XpoOidPrinterExportPDF);
+                GlobalApp.PrinterThermal = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.XpoOidPrinterThermal);
 
                 if (GlobalFramework.LoggedTerminal == null) _log.Debug("Invalid Printer. Working Without Printer");
                 //Override Licence

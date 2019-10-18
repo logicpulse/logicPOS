@@ -73,7 +73,7 @@ namespace logicpos
 	        {	        
                 if (_tablePadUser.SelectedButtonOid != null) 
                 {
-                    _selectedUserDetail = (FrameworkUtils.GetXPGuidObject(typeof(SYS_UserDetail), _tablePadUser.SelectedButtonOid) as SYS_UserDetail);
+                    _selectedUserDetail = (FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), _tablePadUser.SelectedButtonOid) as sys_userdetail);
                     if (_selectedUserDetail != null)
                     {
                         //Change NumberPadPinMode Mode
@@ -82,8 +82,8 @@ namespace logicpos
                         if (_selectedUserDetail.PasswordReset)
                         {
                             //_log.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, Resx.global_information,
-                                string.Format(Resx.dialog_message_user_request_change_password, _selectedUserDetail.Name, SettingsApp.DefaultValueUserDetailAccessPin)
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                                string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), _selectedUserDetail.Name, SettingsApp.DefaultValueUserDetailAccessPin)
                             );
                         }
                     }
@@ -104,14 +104,14 @@ namespace logicpos
             LogOutUser(pShowStartup, GlobalFramework.LoggedUser);
         }
 
-        public void LogOutUser(bool pGotoStartupWindow, SYS_UserDetail pUserDetail)
+        public void LogOutUser(bool pGotoStartupWindow, sys_userdetail pUserDetail)
         {
             if (
                 GlobalFramework.SessionApp.LoggedUsers.ContainsKey(pUserDetail.Oid))
             {
                 GlobalFramework.SessionApp.LoggedUsers.Remove(pUserDetail.Oid);
                 GlobalFramework.SessionApp.Write();
-                FrameworkUtils.Audit("USER_LOGOUT", string.Format(Resx.audit_message_user_logout, pUserDetail.Name));
+                FrameworkUtils.Audit("USER_LOGOUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_logout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (GlobalFramework.LoggedUser.Equals(pUserDetail))
                 {

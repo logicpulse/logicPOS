@@ -24,7 +24,7 @@ namespace logicpos.financial.console.App
         //Formats
 
         //Dont change This, Required to use . in many things like SAF-T etc
-        public static string CultureNumberFormat = "en-US";
+        public static string CultureNumberFormat = "pt-PT";
         
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Add On Parameters to Console Test Project

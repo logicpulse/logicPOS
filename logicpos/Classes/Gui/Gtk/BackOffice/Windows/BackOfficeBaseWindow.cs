@@ -4,6 +4,9 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.IO;
+using logicpos.resources.Resources.Localization;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -19,18 +22,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         protected Label _labelActiveContent;
         protected Label _labelTerminalInfo;
         protected Label _labelClock;
+        protected Label _labelUpdate;
         protected HBox _hboxStatusBar;
         protected String _clockFormat;
         protected Image _imageLogo = new Image();
-        protected int _widthAccordion = 200;
+        protected Label _reseller;
+        public int _widthAccordion = 200;
+        public int _heightAccordion = 38;
+        
         //Store Active/Last BackOffice User, to keep state when we Change user in POS
-        protected SYS_UserDetail _activeUserDetail;
+        protected sys_userdetail _activeUserDetail;
         protected Accordion _accordion;
         public Accordion Accordion
         {
             get { return _accordion; }
             set { _accordion = value; }
         }
+        public TouchButtonIconWithText _dashboardButton;
+        public TouchButtonIconWithText _exitButton;
+        public TouchButtonIconWithText _backPOS;
+        public TouchButtonIconWithText _NewVersion;
+
+        public Dictionary<string, AccordionNode> _accordionChildDocumentsTemp = new Dictionary<string, AccordionNode>();
+        public Dictionary<string, AccordionNode> _accordionChildArticlesTemp = new Dictionary<string, AccordionNode>();
+        public Dictionary<string, AccordionNode> _accordionChildCostumersTemp = new Dictionary<string, AccordionNode>();
+        public Dictionary<string, AccordionNode> _accordionChildUsersTemp = new Dictionary<string, AccordionNode>();
+        public Dictionary<string, AccordionNode> _accordionChildOtherTablesTemp = new Dictionary<string, AccordionNode>();
 
         public BackOfficeBaseWindow()
             : base(WindowType.Toplevel)
@@ -39,8 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             SetPosition(WindowPosition.Center);
             Fullscreen();
             InitUI();
-            ShowAll();
-
+            ShowAll();            
             //Events
             DeleteEvent += BackOfficeMainWindow_DeleteEvent;
         }
@@ -48,10 +64,44 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void InitUI()
         {
             //Init Local Vars
+            GlobalApp.boScreenSize = Utils.GetScreenSize();
             uint borderWidth = 5;
+            System.Drawing.Size sizeIconDashboard = new System.Drawing.Size(30, 30);
+            System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
+            System.Drawing.Size sizeIconQuit = new System.Drawing.Size(20, 20);
+            System.Drawing.Size sizeButton = new System.Drawing.Size(20, 20);
+            String fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
+            String fontDescriptionParentLowRes = GlobalFramework.Settings["fontDescriptionParentLowRes"];
+            String fontDescription = GlobalFramework.Settings["fontDescriptionParentLowRes"];
             //Settings
-            _clockFormat = GlobalFramework.Settings["dateTimeFormatStatusBar"];
+            //Redimensionar Botões do accordion para 1024
+            fontDescription = fontPosBackOfficeParent;
+            if (GlobalApp.boScreenSize.Height <= 800)
+            {
+                _widthAccordion = 208;
+                sizeIcon = new System.Drawing.Size(20, 20);
+                sizeButton = new System.Drawing.Size(15, 15);
+                sizeIconQuit = new System.Drawing.Size(20, 20);
+                sizeIconDashboard = new System.Drawing.Size(20, 20);
+                _heightAccordion = 25;
+                fontDescription = fontDescriptionParentLowRes;
+            }            
+            //IN009296 BackOffice - Mudar a língua da aplicação 
+            try
+            {
+                string sql = string.Format("UPDATE cfg_configurationpreferenceparameter SET value = '{0}' WHERE token = 'CULTURE'", GlobalFramework.Settings["customCultureResourceDefinition"]);
+                GlobalFramework.SessionXpo.ExecuteScalar(sql);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+            /* IN006045 */
+            //_clockFormat = GlobalFramework.Settings["dateTimeFormatStatusBar"];
+            _clockFormat = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "backoffice_datetime_format_status_bar");
+
             string fontBackOfficeStatusBar = GlobalFramework.Settings["fontPosStatusBar"];
+            string fileImageBackOfficeLogoLong = FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logo_backoffice_long.png");
             string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]);
 
             //Colors
@@ -60,7 +110,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             System.Drawing.Color colorBackOfficeAccordionFixBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeAccordionFixBackground"]);
             System.Drawing.Color colorBackOfficeStatusBarFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeStatusBarFont"]);
             System.Drawing.Color colorBackOfficeStatusBarBottomBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeStatusBarBottomBackground"]);
-
+            System.Drawing.Color colorLabelReseller = System.Drawing.Color.White;
             ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeContentBackground));
 
             //Icon
@@ -74,12 +124,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             EventBox eventBoxStatusBar = new EventBox() { HeightRequest = 38 };
             eventBoxStatusBar.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeStatusBarBackground));
 
+            //Reseller
+            _reseller = new Label();
+            _reseller.Text = string.Format(" Brough by {0}", GlobalFramework.LicenceReseller);
+            _reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
+            _reseller.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
+            _reseller.Justify = Justification.Left;
+            
             //Logo
             try
             {
-                _imageLogo = new Image(fileImageBackOfficeLogo);
-                _imageLogo.WidthRequest = _widthAccordion + Convert.ToInt16(borderWidth) * 3;
-                _imageLogo.SetAlignment(0.0F, 0.5F);
+                if (GlobalFramework.LicenceReseller != "LogicPulse") _imageLogo = new Image(fileImageBackOfficeLogo);
+                else _imageLogo = new Image(fileImageBackOfficeLogoLong);
+                //_imageLogo.WidthRequest = _widthAccordion + Convert.ToInt16(borderWidth) * 3;
+                //_imageLogo.SetAlignment(0.0F, 0.5F);
+
             }
             catch (Exception ex)
             {
@@ -88,6 +147,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Style StatusBarFont
             Pango.FontDescription fontDescriptionStatusBar = Pango.FontDescription.FromString(fontBackOfficeStatusBar);
+            String _dashboardIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_dashboard.png");
+            String _updateIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_update.png");
+            String _exitIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png");
+            String _backPOSIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_front_office.png");
+            String _iconDashBoard = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
 
             //Active Content
             _labelActiveContent = new Label() { WidthRequest = 300 };
@@ -110,28 +174,45 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Pack HBox StatusBar
             _hboxStatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             _hboxStatusBar.PackStart(_imageLogo, false, false, 0);
+            if (GlobalFramework.LicenceReseller != "LogicPulse") _hboxStatusBar.PackStart(_reseller, false, false, 0);
             _hboxStatusBar.PackStart(_labelActiveContent, false, false, 0);
             _hboxStatusBar.PackStart(_labelTerminalInfo, true, true, 0);
 
+
             //TODO:THEME
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (GlobalApp.boScreenSize.Width < 1024 || GlobalApp.boScreenSize.Height < 768)
             {
                 _labelTerminalInfo.SetAlignment(1.0F, 0.5F);
             }
             else
             {
                 _hboxStatusBar.PackStart(_labelClock, false, false, 0);
+                
+            }
+
+            if (GlobalFramework.AppUseBackOfficeMode)
+            {
+                EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
+                eventBoxMinimize.ButtonReleaseEvent += delegate {
+                    Iconify();
+                };
+                _hboxStatusBar.PackStart(eventBoxMinimize, false, false, 0);
+                //fix.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
             }
 
             _imageLogo.Dispose();
-
+            _dashboardButton = new TouchButtonIconWithText("DASHBOARD_ICON", FrameworkUtils.StringToColor("168, 204, 79"), "Dashboard", fontDescription, FrameworkUtils.StringToColor("61, 61, 61"), _dashboardIcon, sizeIconDashboard, _widthAccordion, _heightAccordion, true);
+            _exitButton = new TouchButtonIconWithText("EXIT_BUTTON", FrameworkUtils.StringToColor("201, 102, 88"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quit"), fontDescription, FrameworkUtils.StringToColor("255, 255, 255"), _exitIcon, sizeButton, _widthAccordion, _heightAccordion, true);
+            _backPOS = new TouchButtonIconWithText("POS", FrameworkUtils.StringToColor("168, 204, 79"), "Logicpos", fontDescription, FrameworkUtils.StringToColor("61, 61, 61"), _backPOSIcon, sizeButton, _widthAccordion, _heightAccordion, true);
+            _NewVersion = new TouchButtonIconWithText("Update_Button", FrameworkUtils.StringToColor("168, 204, 79"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_update_pos"), fontDescription, FrameworkUtils.StringToColor("61, 61, 61"), _updateIcon, sizeButton, _widthAccordion, _heightAccordion, true);
+            _labelClock.ModifyFont(fontDescriptionStatusBar);
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //StatusBar
             //Fixed fixStatusBarBottom = new Fixed() { HasWindow = true, BorderWidth = borderWidth, HeightRequest = 38 };
             //fixStatusBarBottom.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeStatusBarBottomBackground));
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-            //Hbox Accordion + Content
+            //Hbox Accordion + Content           
             _hboxContent = new HBox(false, (int)borderWidth) { BorderWidth = borderWidth };
             //_accordion = new Accordion() { WidthRequest = _widthAccordion };
 
@@ -139,19 +220,130 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Accordion and HouseFix
             _fixAccordion = new Fixed() { HasWindow = true, BorderWidth = borderWidth };
             _fixAccordion.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeAccordionFixBackground));
-            //fixAccordion.Add(_accordion);
+            _fixAccordion.Put(_dashboardButton, 0, 0);
+            _fixAccordion.Add(_dashboardButton);
+                        
+            //Redimensionar Botões do Backoffice para 1024x768
+            if (!GlobalFramework.AppUseBackOfficeMode)
+            {
+                if (GlobalApp.boScreenSize.Height <= 800)
+                {
+                    _fixAccordion.Put(_backPOS, 0, GlobalApp.boScreenSize.Height - 112);
+                    _fixAccordion.Add(_backPOS);
+
+                }
+                else
+                {
+                    _fixAccordion.Put(_backPOS, 0, GlobalApp.boScreenSize.Height - 135);
+                    _fixAccordion.Add(_backPOS);
+                }                
+            }
+            //Redimensionar Botões do Backoffice para 1024x768
+            if (GlobalApp.boScreenSize.Height <= 800)
+            {
+                _fixAccordion.Put(_exitButton, 0, GlobalApp.boScreenSize.Height - 85);
+                _fixAccordion.Add(_exitButton);
+            }
+            else
+            {
+                _fixAccordion.Put(_exitButton, 0, GlobalApp.boScreenSize.Height - 95);
+                _fixAccordion.Add(_exitButton);
+            }
+			
+			//TK016248 - BackOffice - Check New Version 
+            string appVersion = FrameworkUtils.ProductVersion.Replace("v", ""); 
+
+            bool needToUpdate = false;
+            GlobalFramework.ServerVersion = "1.3.0000";
+            if (GlobalFramework.ServerVersion != null)
+            {
+                try
+                {
+                    string[] tmpNew = appVersion.Split('.');
+                    long tmpNewVer = int.Parse(tmpNew[0]) * 10000000 + int.Parse(tmpNew[1]) * 10000 + int.Parse(tmpNew[2]);
+
+                    string[] tmpOld = GlobalFramework.ServerVersion.ToString().Split('.');
+                    long tmpOldVer = int.Parse(tmpOld[0]) * 10000000 + int.Parse(tmpOld[1]) * 10000 + int.Parse(tmpOld[2]);
+
+                    if (tmpNewVer < tmpOldVer)
+                    {
+                        needToUpdate = true;
+                    }
+                }
+                catch /*(Exception ex)*/
+                {
+                    //log.Error(ex.Message, ex);
+                }
+
+                if (needToUpdate)
+                {
+                    if (GlobalFramework.AppUseBackOfficeMode)
+                    {
+                        if (GlobalApp.boScreenSize.Height <= 800)
+                        {
+                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
+                            _labelUpdate.ModifyFont(fontDescriptionStatusBar);
+                            _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
+                            _labelUpdate.SetAlignment(1.0F, 0.5F);
+                            _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 165);
+                            _fixAccordion.Add(_labelUpdate);
+                            _fixAccordion.Put(_NewVersion, 0, GlobalApp.boScreenSize.Height - 140);
+                            _fixAccordion.Add(_NewVersion);
+                        }
+                        else
+                        {
+                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
+                            _labelUpdate.ModifyFont(fontDescriptionStatusBar);
+                            _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
+                            _labelUpdate.SetAlignment(1.0F, 0.5F);
+                            _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 200);
+                            _fixAccordion.Add(_labelUpdate);
+                            _fixAccordion.Put(_NewVersion, 0, GlobalApp.boScreenSize.Height - 175);
+                            _fixAccordion.Add(_NewVersion);
+                        }
+                    }
+                    else
+                    {
+                        if (GlobalApp.boScreenSize.Height <= 800)
+                        {
+                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
+                            _labelUpdate.ModifyFont(fontDescriptionStatusBar);
+                            _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
+                            _labelUpdate.SetAlignment(1.0F, 0.5F);
+                            _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 165);
+                            _fixAccordion.Add(_labelUpdate);
+                            _fixAccordion.Put(_NewVersion, 0, GlobalApp.boScreenSize.Height - 140);
+                            _fixAccordion.Add(_NewVersion);
+                        }
+                        else
+                        {
+                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
+                            _labelUpdate.ModifyFont(fontDescriptionStatusBar);
+                            _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
+                            _labelUpdate.SetAlignment(1.0F, 0.5F);
+                            _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 200);
+                            _fixAccordion.Add(_labelUpdate);
+                            _fixAccordion.Put(_NewVersion, 0, GlobalApp.boScreenSize.Height - 175);
+                            _fixAccordion.Add(_NewVersion);
+                        }
+                        
+                    }
+                }
+            }
+			//TK016248 End 
 
             //Pack hboxContent
             _hboxContent.PackStart(_fixAccordion, false, false, 0);
-
             VBox vboxContent = new VBox(false, 0);
 
             eventBoxStatusBar.Add(_hboxStatusBar);
 
             vboxContent.PackStart(eventBoxStatusBar, false, false, 0);
-            vboxContent.PackStart(_hboxContent);
-            // vboxContent.PackStart(fixStatusBarBottom, false, false, 0);
 
+            vboxContent.PackStart(_hboxContent);
+            //vboxContent.PackStart(fixStatusBarBottom, false, false, 0);
+
+            this.HeightRequest = 50;
             //Final Pack
             Add(vboxContent);
 

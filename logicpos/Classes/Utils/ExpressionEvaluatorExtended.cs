@@ -10,6 +10,15 @@ namespace logicpos
 {
     public class ExpressionEvaluatorExtended
     {
+		//IN009257 Redimensionar botões para a resolução 1024 x 768
+        public static Size sizePosBaseButtonSizeDefault;
+        public static Size sizePosToolbarButtonSizeDefault;
+        public static Size sizePosTicketPadButtonSizeDefault;
+        public static Size sizePosTicketPadButtonDoubleWidthDefault;
+        public static Size sizePosToolbarButtonIconSizeDefault;
+        public static Size sizePosTicketPadButtonIconSizeDefault;
+        public static string fontDocumentsSizeDefault;
+
         public static void ExpressionEvaluator_EvaluateFunction(object sender, FunctionEvaluationEventArg e)
         {
             //Log4Net
@@ -106,10 +115,16 @@ namespace logicpos
             try
             {
                 // Config
-                string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+                /* IN008024 */
+                /* For  CustomAppOperationMode.RETAIL */
+                int intEventBoxPosTicketPadColumns = 4;
+                int intEventBoxPosTicketPadRows = 3;
 
-                int intEventBoxPosTicketPadColumns = appOperationModeToken.ToUpper().Equals("DEFAULT") ? 4 : 4;
-                int intEventBoxPosTicketPadRows = appOperationModeToken.ToUpper().Equals("DEFAULT") ? 5 : 3;
+                if (SettingsApp.IsDefaultTheme)
+                {
+                    //intEventBoxPosTicketPadColumns = 4;
+                    intEventBoxPosTicketPadRows = 5;
+                }
 
                 // Detect Dynamic Size
                 bool appThemeCalcDynamicSize = Convert.ToBoolean(GlobalFramework.Settings["appThemeCalcDynamicSize"]);
@@ -135,13 +150,14 @@ namespace logicpos
                         {
                             case ScreenSize.res800x600:
                                 sizePosBaseButtonSize = new Size(100, 75);
-                                sizePosToolbarButtonSize = new Size(64, 48);
+                                sizePosToolbarButtonSize = new Size(54, 38);
                                 sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
                                 sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
                                 sizePosToolbarButtonIconSize = new Size(22, 22);
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
                                 fontTicketListColumnTitle = "Bold 8";
                                 fontTicketListColumn = "8";
+                                fontDocumentsSizeDefault = "6";
                                 break;
                             case ScreenSize.res1024x600:
                             case ScreenSize.res1024x768:
@@ -153,6 +169,7 @@ namespace logicpos
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
                                 fontTicketListColumnTitle = "Bold 9";
                                 fontTicketListColumn = "9";
+                                fontDocumentsSizeDefault = "6";
                                 break;
                             case ScreenSize.res1152x864:
                             case ScreenSize.res1280x720:
@@ -172,6 +189,7 @@ namespace logicpos
                                 sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
                                 sizePosToolbarButtonIconSize = new Size(42, 42);
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
+                                fontDocumentsSizeDefault = "8";
                                 break;
                             case ScreenSize.res1680x1050:
                             case ScreenSize.res1920x1080:
@@ -189,6 +207,19 @@ namespace logicpos
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
                                 fontTicketListColumnTitle = "Bold 10";
                                 fontTicketListColumn = "10";
+                                fontDocumentsSizeDefault = "10";
+                                break;
+                            /* IN008023: apply "1024x768" settings as default */
+                            default:
+                                sizePosBaseButtonSize = new Size(120, 90);
+                                sizePosToolbarButtonSize = new Size(80, 60);
+                                sizePosTicketPadButtonSize = new Size(sizePosToolbarButtonSize.Width, sizePosToolbarButtonSize.Height);
+                                sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
+                                sizePosToolbarButtonIconSize = new Size(34, 34);
+                                sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
+                                fontTicketListColumnTitle = "Bold 9";
+                                fontTicketListColumn = "9";
+                                fontDocumentsSizeDefault = "6";
                                 break;
                         }
                     }
@@ -214,6 +245,15 @@ namespace logicpos
                 int posMainWindowEventBoxStatusBar1And2Height = Convert.ToInt16(GlobalFramework.Settings["intPosMainWindowEventBoxStatusBar1And2Height"]);
                 // Remove Margin, Column Price, Qnt, Total
                 int posMainWindowEventBoxPosTicketListColumnsDesignationWidth = posMainWindowEventBoxPosTicketListColumnWidth - 10 - 65 - 55 - 75;
+
+                //IN009257 Redimensionar botões para a resolução 1024 x 768.
+                sizePosBaseButtonSizeDefault = sizePosBaseButtonSize;
+                sizePosToolbarButtonSizeDefault = new Size((int)(sizePosToolbarButtonSize.Width / 1.4), (int)(sizePosToolbarButtonSize.Height / 1.4)); 
+                sizePosTicketPadButtonSizeDefault = sizePosTicketPadButtonSize;
+                sizePosTicketPadButtonDoubleWidthDefault = sizePosTicketPadButtonDoubleWidth;
+                sizePosToolbarButtonIconSizeDefault = new Size((int)(sizePosToolbarButtonIconSize.Width / 1.7), (int)(sizePosToolbarButtonIconSize.Height / 1.7));
+                sizePosTicketPadButtonIconSizeDefault = sizePosTicketPadButtonIconSize;
+                //IN009257 END
 
                 GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadColumns", intEventBoxPosTicketPadColumns);
                 GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadRows", intEventBoxPosTicketPadRows);

@@ -5,15 +5,15 @@ using logicpos.datalayer.App;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_UserPermissionGroup : XPGuidObject
+    public class sys_userpermissiongroup : XPGuidObject
     {
-        public SYS_UserPermissionGroup() : base() { }
-        public SYS_UserPermissionGroup(Session session) : base(session) { }
+        public sys_userpermissiongroup() : base() { }
+        public sys_userpermissiongroup(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserPermissionGroup), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserPermissionGroup), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_userpermissiongroup), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_userpermissiongroup), "Code");
         }
 
         UInt32 fOrd;
@@ -40,10 +40,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserPermissionGroup One <> Many UserPermissionItems
-        [Association(@"UserPermissionGroup-UserPermissionItem", typeof(SYS_UserPermissionItem))]
-        public XPCollection<SYS_UserPermissionItem> Groups
+        [Association(@"UserPermissionGroup-UserPermissionItem", typeof(sys_userpermissionitem))]
+        public XPCollection<sys_userpermissionitem> Groups
         {
-            get { return GetCollection<SYS_UserPermissionItem>("Groups"); }
+            get { return GetCollection<sys_userpermissionitem>("Groups"); }
         }
     }
 }

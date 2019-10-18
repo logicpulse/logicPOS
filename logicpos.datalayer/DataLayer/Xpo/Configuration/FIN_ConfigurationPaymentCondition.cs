@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ConfigurationPaymentCondition : XPGuidObject
+    public class fin_configurationpaymentcondition : XPGuidObject
     {
-        public FIN_ConfigurationPaymentCondition() : base() { }
-        public FIN_ConfigurationPaymentCondition(Session session) : base(session) { }
+        public fin_configurationpaymentcondition() : base() { }
+        public fin_configurationpaymentcondition(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationPaymentCondition), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationPaymentCondition), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpaymentcondition), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpaymentcondition), "Code");
         }
         
         UInt32 fOrd;
@@ -47,10 +47,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPaymentCondition One <> Many DocumentFinanceMaster
-        [Association(@"ConfigurationPaymentConditionReferencesDocumentFinanceMaster", typeof(FIN_DocumentFinanceMaster))]
-        public XPCollection<FIN_DocumentFinanceMaster> DocumentMaster
+        [Association(@"ConfigurationPaymentConditionReferencesDocumentFinanceMaster", typeof(fin_documentfinancemaster))]
+        public XPCollection<fin_documentfinancemaster> DocumentMaster
         {
-            get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentMaster"); }
+            get { return GetCollection<fin_documentfinancemaster>("DocumentMaster"); }
         }
     }
 }

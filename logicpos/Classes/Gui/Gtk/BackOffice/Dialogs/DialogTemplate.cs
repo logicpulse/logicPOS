@@ -13,7 +13,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogTemplate(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(Resx.window_title_edit_template);
+            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_template"));
             SetSizeRequest(400, 600);
 
             InitUI();
@@ -40,30 +40,30 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxLabel = new BOWidgetBox(Resx.global_record_order, entryOrd);
+                BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SettingsApp.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(Resx.global_record_code, entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SettingsApp.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
 
                 //Disabled
-                CheckButton checkButtonDisabled = new CheckButton(Resx.global_record_disabled);
+                CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = SettingsApp.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(Resx.global_record_main_detail));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -74,18 +74,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Notes
                 Entry entryNotes = new Entry();
-                BOWidgetBox boxNotes = new BOWidgetBox(Resx.global_notes, entryNotes);
+                BOWidgetBox boxNotes = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), entryNotes);
                 vboxTab2.PackStart(boxNotes, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxNotes, _dataSourceRow, "Notes", SettingsApp.RegexAlfa, false));
 
                 //CreatedAt
                 Entry entryCreatedAt = new Entry() { WidthRequest = 250 };
-                BOWidgetBox boxCreatedAt = new BOWidgetBox(Resx.global_date, entryCreatedAt);
+                BOWidgetBox boxCreatedAt = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), entryCreatedAt);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCreatedAt, _dataSourceRow, "CreatedAt", SettingsApp.RegexDateTime, false));
 
                 //UpdatedAt
                 Entry entryUpdatedAt = new Entry();
-                BOWidgetBox boxUpdatedAt = new BOWidgetBox(Resx.global_date, entryUpdatedAt);
+                BOWidgetBox boxUpdatedAt = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), entryUpdatedAt);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxUpdatedAt, _dataSourceRow, "UpdatedAt", SettingsApp.RegexDateTime, false));
 
                 //Hbox CreatedAt and UpdatedAt
@@ -95,13 +95,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxTab2.PackStart(hboxCreatedAtAndUpdatedAt, false, false, 0);
 
                 //CreatedBy
-                XPOComboBox xpoComboBoxCreatedBy = new XPOComboBox(DataSourceRow.Session, typeof(SYS_UserDetail), (DataSourceRow as FIN_ArticleClass).CreatedBy, "Name") { WidthRequest = 250 };
-                BOWidgetBox boxCreatedBy = new BOWidgetBox(Resx.global_user, xpoComboBoxCreatedBy);
+                XPOComboBox xpoComboBoxCreatedBy = new XPOComboBox(DataSourceRow.Session, typeof(sys_userdetail), (DataSourceRow as fin_articleclass).CreatedBy, "Name") { WidthRequest = 250 };
+                BOWidgetBox boxCreatedBy = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user, xpoComboBoxCreatedBy);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCreatedBy, DataSourceRow, "CreatedBy", SettingsApp.RegexGuid, true));
 
                 //CreatedWhere
-                XPOComboBox xpoComboBoxCreatedWhere = new XPOComboBox(DataSourceRow.Session, typeof(POS_ConfigurationPlaceTerminal), (DataSourceRow as FIN_ArticleClass).CreatedWhere, "Designation");
-                BOWidgetBox boxCreatedWhere = new BOWidgetBox(Resx.global_terminal, xpoComboBoxCreatedWhere);
+                XPOComboBox xpoComboBoxCreatedWhere = new XPOComboBox(DataSourceRow.Session, typeof(pos_configurationplaceterminal), (DataSourceRow as fin_articleclass).CreatedWhere, "Designation");
+                BOWidgetBox boxCreatedWhere = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_terminal, xpoComboBoxCreatedWhere);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCreatedWhere, DataSourceRow, "CreatedWhere", SettingsApp.RegexGuid, true));
                 
                 //Hbox CreatedBy and CreatedWhere
@@ -116,10 +116,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Frame fileChooserFrameImagePreviewButtonImage = new Frame();
                 fileChooserFrameImagePreviewButtonImage.ShadowType = ShadowType.None;
                 fileChooserFrameImagePreviewButtonImage.Add(fileChooserImagePreviewButtonImage);
-                fileChooserButtonImage.SetFilename(((FIN_ArticleFamily)DataSourceRow).ButtonImage);
+                fileChooserButtonImage.SetFilename(((fin_articlefamily)DataSourceRow).ButtonImage);
                 fileChooserButtonImage.Filter = Utils.GetFileFilterImages();
                 fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
-                BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(Resx.global_button_image, fileChooserButtonImage);
+                BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_image, fileChooserButtonImage);
                 HBox hboxfileChooserAndimagePreviewButtonImage = new HBox(false, _boxSpacing);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(boxfileChooserButtonImage, true, true, 0);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(fileChooserFrameImagePreviewButtonImage, false, false, 0);
@@ -128,13 +128,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Notes
                 EntryMultiline entryMultilineNotes = new EntryMultiline();
-                entryMultilineNotes.Value.Text = (DataSourceRow as FIN_Article).Notes;
-                Label labelMultilineNotes = new Label(Resx.global_notes);
+                entryMultilineNotes.Value.Text = (DataSourceRow as fin_article).Notes;
+                Label labelMultilineNotes = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes);
                 vboxTab4.PackStart(entryMultilineNotes, true, true, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryMultilineNotes, labelMultilineNotes, DataSourceRow, "Notes", SettingsApp.RegexAlfaNumericExtended, false));
                  
                 //Append Tab
-                _notebook.AppendPage(vboxTab2, new Label(Resx.global_notes));
+                _notebook.AppendPage(vboxTab2, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes));
                 */
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -162,7 +162,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _log.Debug(string.Format("FieldType: [{0}]", genericCRUDWidgetXPO.FieldType));
             _log.Debug(string.Format("Label.Text: [{0}]", genericCRUDWidgetXPO.Label.Text));
             _log.Debug(string.Format("Source: [{0}]", genericCRUDWidgetXPO.DataSourceRow));
-            _log.Debug(string.Format("Source.Designation: [{0}]", (genericCRUDWidgetXPO.DataSourceRow as FIN_ArticleFamily).Designation));
+            _log.Debug(string.Format("Source.Designation: [{0}]", (genericCRUDWidgetXPO.DataSourceRow as fin_articlefamily).Designation));
             _log.Debug(string.Format("Widget.Value: [{0}]", (genericCRUDWidgetXPO.Widget as Entry).Text));
         }
         */

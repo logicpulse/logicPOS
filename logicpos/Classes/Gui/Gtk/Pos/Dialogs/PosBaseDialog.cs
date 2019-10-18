@@ -17,11 +17,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Log4Net
         protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //Protected
-        protected string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+        /* IN008024 */
+        //protected string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
         protected string _windowTitle;
         protected string _windowIcon;
         protected System.Drawing.Size _windowSize;
         protected EventBox _eventboxCloseWindow;
+        protected EventBox _eventboxMinimizeWindow;
         private Widget _content;
         private Widget _actionAreaLeftContent;
         //Used to detect Confirmation Button for Enter Key
@@ -32,6 +34,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Assets
         protected String _fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
         private String _fileDefaultWindowIconClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png");
+        private String _fileDefaultWindowIconMinimize = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
         //Colors
         private System.Drawing.Color _colorBaseDialogTitleBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogTitleBackground"]);
         private System.Drawing.Color _colorBaseDialogWindowBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogWindowBackground"]);
@@ -39,11 +42,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Boolean _useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
         //Protected Members (Shared for Child Dialogs)
         protected int _dragOffsetX, _dragOffsetY;
-        protected Label _labelWindowTitle;
-        protected System.Drawing.Size _sizeBaseDialogDefaultButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButton"]);
-        protected System.Drawing.Size _sizeBaseDialogDefaultButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButtonIcon"]);
-        protected System.Drawing.Size _sizeBaseDialogActionAreaButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
-        protected System.Drawing.Size _sizeBaseDialogActionAreaButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
+        protected Label _labelWindowTitle;        
+        public System.Drawing.Size _sizeBasePaymentButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButton"]);
+        public System.Drawing.Size _sizeBasePaymentButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButtonIcon"]);
+        public System.Drawing.Size _sizeBaseDialogDefaultButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButton"]);
+        public System.Drawing.Size _sizeBaseDialogDefaultButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButtonIcon"]);
+
+        public System.Drawing.Size _sizeBaseDialogActionAreaButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
+        public System.Drawing.Size _sizeBaseDialogActionAreaButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
+        //IN009257 Ends
         protected System.Drawing.Color _colorBaseDialogDefaultButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogDefaultButtonFont"]);
         protected System.Drawing.Color _colorBaseDialogDefaultButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogDefaultButtonBackground"]);
         protected System.Drawing.Color _colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
@@ -53,6 +60,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         protected String _fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
         protected String _fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
         protected String _fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+        protected String _fileDemoData = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_demo.png");
+        //IN009223 IN009227
+		protected String _fileActionMore = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_nav_new.png");
 
         //Public Properties
         protected Window _sourceWindow;
@@ -88,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (value) { _eventboxCloseWindow.ShowAll(); } else { _eventboxCloseWindow.HideAll(); }
             }
         }
-
+        public PosBaseDialog() { }
         //Constructor
         public PosBaseDialog(Window pSourceWindow, DialogFlags pFlags, bool pCconfirmDialogOnEnter = true, bool pWindowTitleCloseButton = true)
             : base("Base Dialog Window", pSourceWindow, pFlags)
@@ -229,6 +239,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             hboxWindowTitleBar.PackStart(_labelWindowTitle, true, true, 2);
             eventboxWindowTitle.Add(hboxWindowTitleBar);
 
+           
+
+            //Add Minimize TitleBar Icon
+            Gdk.Pixbuf pixbufIconWindowMinimize = new Gdk.Pixbuf(_fileDefaultWindowIconMinimize);
+            Image gtkimageIconWindowMinimize = new Image(pixbufIconWindowMinimize);
+            _eventboxMinimizeWindow = new EventBox();
+            _eventboxMinimizeWindow.WidthRequest = pixbufIconWindowMinimize.Width;
+            _eventboxMinimizeWindow.Add(gtkimageIconWindowMinimize);
+            _eventboxMinimizeWindow.VisibleWindow = false;
+            //if (_windowTitleCloseButton) hboxWindowTitleBar.PackStart(_eventboxMinimizeWindow, false, false, 2);
+
             //Add Close TitleBar Icon
             Gdk.Pixbuf pixbufIconWindowClose = new Gdk.Pixbuf(_fileDefaultWindowIconClose);
             Image gtkimageIconWindowClose = new Image(pixbufIconWindowClose);
@@ -237,8 +258,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _eventboxCloseWindow.Add(gtkimageIconWindowClose);
             _eventboxCloseWindow.VisibleWindow = false;
             if (_windowTitleCloseButton) hboxWindowTitleBar.PackStart(_eventboxCloseWindow, false, false, 2);
+
             //ActionArea Buttons Default Buttons
-            //TouchButtonIconWithText buttonClose = new TouchButtonIconWithText("touchButtonClose_DialogActionArea", Color.Transparent, Resx.global_button_label_close, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionClose, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            //TouchButtonIconWithText buttonClose = new TouchButtonIconWithText("touchButtonClose_DialogActionArea", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_close, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionClose, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             //AddActionWidget(buttonClose, ResponseType.Close);
 
             //Dont Destroy Keyboard - Keep it in Memory
@@ -253,6 +275,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     Destroy();
                 }
+            };
+
+            //Minimize Window
+            _eventboxMinimizeWindow.ButtonReleaseEvent += delegate
+            {
+                
+                Respond(ResponseType.None);
             };
 
             //Window Content - Box for Content to Add Border Arround Content Widget
@@ -323,7 +352,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Reverse Index
                 pos = pActionAreaRightButtons.Count - 1 - i;
-                pActionAreaRightButtons[pos].Button.SetSizeRequest(_sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+                //pActionAreaRightButtons[pos].Button.SetSizeRequest(_sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
                 pActionAreaRightButtons[pos].Clicked += Button_Clicked;
                 hboxActionArea.PackStart(pActionAreaRightButtons[pos].Button, false, false, 0);
 
@@ -336,6 +365,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         case ResponseType.Apply:
                         case ResponseType.Ok:
                         case ResponseType.Yes:
+                        case ResponseType.Close:
+
                             _actionAreaConfirmButton = pActionAreaRightButtons[pos].Button;
                             break;
                     }
@@ -444,7 +475,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public static TouchButtonIconWithText FactoryGetDialogButtonType(PosBaseDialogButtonType pButtonType, string pButtonName, string pButtonLabel, string pButtonImage)
         {
-            System.Drawing.Size sizeBaseDialogDefaultButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButton"]);
+			System.Drawing.Size sizeBaseDialogDefaultButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButton"]); 
             System.Drawing.Size sizeBaseDialogDefaultButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButtonIcon"]);
             System.Drawing.Size sizeBaseDialogActionAreaButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
             System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
@@ -478,47 +509,47 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     buttonImage = fileActionDefault;
                     break;
                 case PosBaseDialogButtonType.Ok:
-                    buttonLabel = Resx.global_button_label_ok;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok");
                     buttonImage = fileActionOK;
                     break;
                 case PosBaseDialogButtonType.Cancel:
-                    buttonLabel = Resx.global_button_label_cancel;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel");
                     buttonImage = fileActionCancel;
                     break;
                 case PosBaseDialogButtonType.Yes:
-                    buttonLabel = Resx.global_button_label_yes;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_yes");
                     buttonImage = fileActionYes;
                     break;
                 case PosBaseDialogButtonType.No:
-                    buttonLabel = Resx.global_button_label_no;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_no");
                     buttonImage = fileActionNo;
                     break;
                 case PosBaseDialogButtonType.Close:
-                    buttonLabel = Resx.global_button_label_close;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_close");
                     buttonImage = fileActionClose;
                     break;
                 case PosBaseDialogButtonType.Print:
-                    buttonLabel = Resx.global_button_label_print;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_print");
                     buttonImage = fileActionPrint;
                     break;
                 case PosBaseDialogButtonType.PrintAs:
-                    buttonLabel = Resx.global_button_label_print_as;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_print_as");
                     buttonImage = fileActionPrintAs;
                     break;
                 case PosBaseDialogButtonType.Help:
-                    buttonLabel = Resx.global_button_label_help;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_help");
                     buttonImage = fileActionHelp;
                     break;
                 case PosBaseDialogButtonType.CloneDocument:
-                    buttonLabel = Resx.global_button_label_clone_document;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_clone_document");
                     buttonImage = fileActionCloneDocument;
                     break;
                 case PosBaseDialogButtonType.OpenDocument:
-                    buttonLabel = Resx.global_button_label_open_document;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_open_document");
                     buttonImage = fileActionOpenDocument;
                     break;
                 case PosBaseDialogButtonType.SendEmailDocument:
-                    buttonLabel = Resx.global_button_label_send_email_document;
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_send_email_document");
                     buttonImage = fileActionSendEmailDocument;
                     break;
                 default:
@@ -532,6 +563,107 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Result Button
             return new TouchButtonIconWithText(buttonName, System.Drawing.Color.Transparent, buttonLabel, fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, buttonImage, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
         }
+
+
+        //IN009257 Redimensionar botões para a resolução 1024 x 768.
+        public static TouchButtonIconWithText FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType pButtonType)
+        {
+            return FactoryGetDialogButtonTypeDocuments(pButtonType, string.Empty, string.Empty, string.Empty);
+        }
+        public static TouchButtonIconWithText FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType pButtonType, string pButtonName)
+        {
+            return FactoryGetDialogButtonTypeDocuments(pButtonType, pButtonName, string.Empty, string.Empty);
+        }
+        public static TouchButtonIconWithText FactoryGetDialogButtonTypeDocuments(string pButtonName, string pButtonLabel, string pButtonImage)
+        {
+            return FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType.Default, pButtonName, pButtonLabel, pButtonImage);
+        }
+
+        public static TouchButtonIconWithText FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType pButtonType, string pButtonName, string pButtonLabel, string pButtonImage)
+        {          
+            System.Drawing.Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);   
+            //Icons
+            string fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
+            string fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+            string fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+            string fileActionYes = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png");
+            string fileActionNo = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png");
+            string fileActionClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
+            string fileActionPrint = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
+            string fileActionPrintAs = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print_as.png");
+            string fileActionHelp = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png");
+            string fileActionCloneDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ");
+            string fileActionOpenDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png");
+            string fileActionSendEmailDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png");
+
+            //Assign ButtonType to Name, Override After Switch
+            string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());
+            string buttonLabel = string.Empty;
+            string buttonImage = string.Empty;
+
+            switch (pButtonType)
+            {
+                case PosBaseDialogButtonType.Default:
+                    //Required to be changed by Code
+                    buttonLabel = "Default";
+                    buttonImage = fileActionDefault;
+                    break;
+                case PosBaseDialogButtonType.Ok:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok");
+                    buttonImage = fileActionOK;
+                    break;
+                case PosBaseDialogButtonType.Cancel:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel");
+                    buttonImage = fileActionCancel;
+                    break;
+                case PosBaseDialogButtonType.Yes:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_yes");
+                    buttonImage = fileActionYes;
+                    break;
+                case PosBaseDialogButtonType.No:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_no");
+                    buttonImage = fileActionNo;
+                    break;
+                case PosBaseDialogButtonType.Close:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_close");
+                    buttonImage = fileActionClose;
+                    break;
+                case PosBaseDialogButtonType.Print:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_print");
+                    buttonImage = fileActionPrint;
+                    break;
+                case PosBaseDialogButtonType.PrintAs:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_print_as");
+                    buttonImage = fileActionPrintAs;
+                    break;
+                case PosBaseDialogButtonType.Help:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_help");
+                    buttonImage = fileActionHelp;
+                    break;
+                case PosBaseDialogButtonType.CloneDocument:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_clone_document");
+                    buttonImage = fileActionCloneDocument;
+                    break;
+                case PosBaseDialogButtonType.OpenDocument:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_open_document");
+                    buttonImage = fileActionOpenDocument;
+                    break;
+                case PosBaseDialogButtonType.SendEmailDocument:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_send_email_document");
+                    buttonImage = fileActionSendEmailDocument;
+                    break;
+                default:
+                    break;
+            }
+
+            //Overrride buttonName, buttonLabel, buttonImage if Defined form Parameters
+            if (pButtonLabel != string.Empty) buttonLabel = pButtonLabel;
+            if (pButtonImage != string.Empty) buttonImage = pButtonImage;
+
+            //Result Button
+            return new TouchButtonIconWithText(buttonName, System.Drawing.Color.Transparent, buttonLabel, ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, buttonImage, ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault, ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault.Width, ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault.Height);
+        }
+
     }
 
     //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

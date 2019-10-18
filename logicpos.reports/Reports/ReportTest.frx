@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReportInfo.Author="Acme acmepos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="01/08/2015 16:32:28" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.Copies="2" PrintSettings.CopyNames="Original&#13;&#10;Duplicado&#13;&#10;Triplicado&#13;&#10;Quadriplicado">
+  <Dictionary>
+    <BusinessObjectDataSource Name="ArticleFamily" ReferenceName="ArticleFamily" DataType="logicpos.Objects.Logic.Reports.BOs.FRBOGenericCollection1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticleFamily, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="Code" DataType="System.Int32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <BusinessObjectDataSource Name="BusinessObjectDataSource2" Alias="ArticleSubFamily" DataType="System.Collections.Generic.List1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticleSubFamily, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" PropName="ArticleSubFamily" Enabled="true">
+        <Column Name="Code" DataType="System.Int32"/>
+        <Column Name="Designation" DataType="System.String"/>
+        <BusinessObjectDataSource Name="Article" DataType="System.Collections.Generic.List1[[logicpos.Objects.Logic.Reports.BOs.FRBOArticle, logicpos, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+          <Column Name="Code" DataType="System.Int32"/>
+          <Column Name="Designation" DataType="System.String"/>
+          <Column Name="Price1" DataType="System.Decimal"/>
+          <Column Name="Oid" DataType="System.String"/>
+          <Column Name="Disabled" DataType="System.Boolean"/>
+          <Column Name="ButtonImage" DataType="System.String"/>
+          <Column Name="BarCode" DataType="System.String"/>
+        </BusinessObjectDataSource>
+        <Column Name="Oid" DataType="System.String"/>
+        <Column Name="Disabled" DataType="System.Boolean"/>
+      </BusinessObjectDataSource>
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Disabled" DataType="System.Boolean"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="ReportTitle1">
+      <inherited Name="Text1" Border.Lines="All" Fill.Color="DarkGray" Text="[Report Title]" Font="Arial, 9.75pt, style=Bold" TextFill.Color="Maroon" Style="NEW STYLE"/>
+      <inherited Name="Text6"/>
+      <inherited Name="Text7"/>
+      <inherited Name="Text8"/>
+    </inherited>
+    <inherited Name="PageHeader1">
+      <inherited Name="Text5"/>
+      <TextObject Name="Text18" ZOrder="1" Left="340.2" Width="75.6" Height="18.9" Text="[Pref(&quot;Company_Civil_Registration&quot;)]" TextFill.Color="Red"/>
+      <TextObject Name="Text15" ZOrder="2" Left="264.6" Width="75.6" Height="18.9" Text="[Var(&quot;CUSTOM_var_1&quot;)]" TextFill.Color="Green"/>
+      <TextObject Name="Text19" ZOrder="3" Left="113.4" Width="75.6" Height="18.9" Text="[Res(&quot;GLOBAL_price&quot;)]" TextFill.Color="DarkCyan"/>
+      <TextObject Name="Text10" ZOrder="4" Left="415.8" Width="75.6" Height="18.9" Text="[Log([ArticleFamily.Code])]" TextFill.Color="DarkViolet"/>
+      <TextObject Name="Text20" ZOrder="5" Left="491.4" Width="75.6" Height="18.9" Text="[Debug(&quot;FRDEBUG&quot;)]" TextFill.Color="DarkOrange"/>
+      <TextObject Name="Text22" ZOrder="6" Left="567" Width="75.6" Height="18.9" Text="[Report Title]" TextFill.Color="Tomato"/>
+      <TextObject Name="Text23" ZOrder="7" Left="642.6" Width="75.6" Height="18.9" Text="[CopyName#]/[PageN]" TextFill.Color="Sienna"/>
+      <TextObject Name="Text24" ZOrder="8" Left="189" Width="75.6" Height="18.9" Text="[App Name] [App Version]" TextFill.Color="Olive"/>
+    </inherited>
+    <inherited Name="Data1" Height="18.9" DataSource="ArticleFamily">
+      <TextObject Name="Text9" ZOrder="0" Width="151.2" Height="18.9" Text="[ArticleFamily.Code]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text21" ZOrder="1" Left="170.1" Width="548.1" Height="18.9" Text="[ArticleFamily.Designation]"/>
+      <DataBand Name="Data2" ZOrder="0" Top="97.05" Width="718.2" Height="18.9" DataSource="BusinessObjectDataSource2">
+        <TextObject Name="Text12" Left="18.9" Width="151.2" Height="18.9" Text="[ArticleFamily.ArticleSubFamily.Code]" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text13" Left="189" Width="529.2" Height="18.9" Text="[ArticleFamily.ArticleSubFamily.Designation]"/>
+        <DataBand Name="Data3" Top="119.95" Width="718.2" Height="18.9" DataSource="Article">
+          <TextObject Name="Text16" Left="28.35" Width="151.2" Height="18.9" Text="[ArticleFamily.ArticleSubFamily.Article.Code]" Font="Arial, 10pt, style=Bold"/>
+          <TextObject Name="Text17" Left="207.9" Width="292.95" Height="18.9" Text="[ArticleFamily.ArticleSubFamily.Article.Designation]"/>
+          <TextObject Name="Text14" Left="529.2" Width="189" Height="18.9" Text="[ArticleFamily.ArticleSubFamily.Article.Price1]" Format="Number" Format.UseLocale="true" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt, style=Bold" Trimming="EllipsisCharacter"/>
+        </DataBand>
+      </DataBand>
+    </inherited>
+    <inherited Name="PageFooter1" Top="142.85">
+      <inherited Name="Text2"/>
+      <inherited Name="Text3" Text="[PageN]/[TotalPages#]"/>
+      <inherited Name="Text4"/>
+    </inherited>
+  </inherited>
+</inherited>

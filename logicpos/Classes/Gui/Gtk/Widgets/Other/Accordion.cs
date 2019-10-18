@@ -25,15 +25,23 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     }
 
     public class AccordionParentButton : Button
-    {
+    {        
         public bool Active { get; set; }
         public VBox ChildBox { get; set; }
 
         public AccordionParentButton(String pLabel)
             : base(pLabel)
         {
+            //Redimensionar altura do botão Parent do accordion para 1024
+            if (GlobalApp.boScreenSize.Height <= 800)
+            {
+                HeightRequest = 25;
+            }
+            else
+            {
+                HeightRequest = 35;
+            }
 
-            HeightRequest = 35;
             ExposeEvent += delegate { SetAlignment(0.00F, 0.5F); };
             ChildBox = new VBox();
             ChildBox.ExposeEvent += delegate { if (!Active) ChildBox.Visible = false; };
@@ -42,7 +50,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public AccordionParentButton(Widget pHeader)
             : base(pHeader)
         {
-            HeightRequest = 35;
+            //Redimensionar altura do botão child do accordion para 1024
+            if (GlobalApp.boScreenSize.Height <= 800)
+            {
+                HeightRequest = 25;
+            }
+            else
+            {
+                HeightRequest = 35;
+            }
             //ExposeEvent += delegate { SetAlignment(0.00F, 0.5F); };
             ChildBox = new VBox();
             ChildBox.ExposeEvent += delegate { if (!Active) ChildBox.Visible = false; };
@@ -53,12 +69,35 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     {
         public Widget Content { get; set; }
         public string ExternalAppFileName { get; set; }
+        public VBox ChildbuttonBox { get; set; }
 
         public AccordionChildButton(String pLabel)
             : base(pLabel)
         {
-            HeightRequest = 25;
+            if (GlobalApp.boScreenSize.Height <= 800)
+            {
+                HeightRequest = 23;
+            }
+            else
+            {
+                HeightRequest = 25;
+            }
             ExposeEvent += delegate { SetAlignment(0.0F, 0.5F); };
+        }
+
+        public AccordionChildButton(Widget pHeader)
+            : base(pHeader)
+        {
+            if (GlobalApp.boScreenSize.Height <= 800)
+            {
+                HeightRequest = 23;
+            }
+            else
+            {
+                HeightRequest = 25;
+            }
+            ExposeEvent += delegate { SetAlignment(0.0F, 0.5F); };
+            ChildbuttonBox = new VBox();
         }
     }
 
@@ -67,6 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Log4Net
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private string _nodePrivilegesTokenFormat;
+        protected Label _label;
 
         //Declare public Event, to link to accordionChildButton_Clicked
         public event EventHandler Clicked;
@@ -94,6 +134,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         protected AccordionChildButton _currentChildButtonContent;
+
+
         public AccordionChildButton CurrentChildButtonContent
         {
             get { return _currentChildButtonContent; }
@@ -109,14 +151,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         protected void InitObject(Dictionary<string, AccordionNode> pAccordionDefinition, string pNodePrivilegesTokenFormat)
         {
-            String fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
-            String fontPosBackOfficeChild = GlobalFramework.Settings["fontPosBackOfficeChild"];
-
+            //get values of backoffice screen to set accordion font text size 
+            GlobalApp.boScreenSize = Utils.GetScreenSize();
+            _label = new Label();
+            
             //Parameters
             _accordionDefinition = pAccordionDefinition;
             //Local Vars
             bool isFirstButton = true;
             string currentNodePrivilegesToken;
+            string accordionType = "";
 
             VBox vboxOuter = new VBox(false, 2);
             AccordionParentButton accordionParentButton;
@@ -128,17 +172,32 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     if (parentLevel.Value.GroupIcon != null)
                     {
+                        //Redimensionar Icons dos Botões Parent do accordion para 1024
                         HBox hboxParent = new HBox(false, 0);
-                        hboxParent.PackStart(parentLevel.Value.GroupIcon, false, false, 3);
-                        Label label = new Label(parentLevel.Value.Label);
-
-                        //Pango.FontDescription tmpFont = new Pango.FontDescription();
-                        Pango.FontDescription fontDescriptionParent = Pango.FontDescription.FromString(fontPosBackOfficeParent);
+                        if (GlobalApp.boScreenSize.Height <= 800)
+                        {
+                            System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
+                            System.Drawing.Image imageIcon;
+                            imageIcon = System.Drawing.Image.FromFile(parentLevel.Value.GroupIcon.File.ToString());
+                            imageIcon = Utils.ResizeAndCrop(imageIcon, sizeIcon);
+                            Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(imageIcon);
+                            Image gtkimageButton = new Image(pixBuf);
+                            hboxParent.PackStart(gtkimageButton, false, false, 3);
+                            imageIcon.Dispose();
+                            pixBuf.Dispose();
+                        }
+                        else
+                        {
+                            hboxParent.PackStart(parentLevel.Value.GroupIcon, false, false, 3);
+                        }
+                        _label = new Label(parentLevel.Value.Label);
+                        //Pango.FontDescription tmpFont = new Pango.FontDescription();          
                         //tmpFont.Weight = Pango.Weight.Bold;
                         //tmpFont.Size = 2;
-                        label.ModifyFont(fontDescriptionParent);
-                        label.SetAlignment(0.0f, 0.5f);
-                        hboxParent.PackStart(label, true, true, 0);
+                        //Redimensionar Tamanho da Fonte dos Botões Parent do accordion para 1024
+                        accordionType = "Parent";
+                        ChangeFont(FrameworkUtils.StringToColor("61, 61, 61"), accordionType);
+                        hboxParent.PackStart(_label, true, true, 0);
                         accordionParentButton = new AccordionParentButton(hboxParent) { Name = parentLevel.Key };
                     }
                     else
@@ -155,24 +214,29 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (isFirstButton)
                     {
                         isFirstButton = false;
-                    }
+                    }                    
 
                     //Add a Button Widget Reference to NodeWidget AccordionDefinition
                     parentLevel.Value.NodeButton = accordionParentButton;
                     //Click Event
                     accordionParentButton.Clicked += accordionParentButton_Clicked;
-                    vboxOuter.PackStart(accordionParentButton, false, false, 0);
-
+                    vboxOuter.PackStart(accordionParentButton, false, false, 0);                    
                     //_log.Debug(string.Format("Accordion(): parentLevel.Value.Label [{0}]", parentLevel.Value.Label));
-                    if (parentLevel.Value.Childs.Count > 0)
+                    if (parentLevel.Value.Childs != null && parentLevel.Value.Childs.Count > 0)
                     {
                         foreach (var childLevel in parentLevel.Value.Childs)
                         {
+                            HBox hboxChild = new HBox(false, 0);
+                            _label = new Label(childLevel.Value.Label);
+                            accordionType = "Child";
+                            ChangeFont(FrameworkUtils.StringToColor("61, 61, 61"), accordionType);
+                            hboxChild.PackStart(_label, true, true, 0);
+                            
                             //Init ChildButton
-                            accordionChildButton = new AccordionChildButton(childLevel.Value.Label) { Name = childLevel.Key, Content = childLevel.Value.Content };
+                            accordionChildButton = new AccordionChildButton(hboxChild) { Name = childLevel.Key, Content = childLevel.Value.Content };
+                            //accordionChildButton = new AccordionChildButton(childLevel.Value.Label) { Name = childLevel.Key, Content = childLevel.Value.Content };
                             //Add a Button Widget Reference to NodeWidget AccordionDefinition
                             childLevel.Value.NodeButton = accordionChildButton;
-
                             //Privileges
                             currentNodePrivilegesToken = string.Format(pNodePrivilegesTokenFormat, childLevel.Key.ToUpper());
                             //_log.Debug(string.Format("currentNodePrivilegesToken: [{0}]", currentNodePrivilegesToken));
@@ -214,7 +278,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string currentNodePrivilegesToken;
 
             //Required to Reload Object before Get New Permissions
-            GlobalFramework.LoggedUser = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(SYS_UserDetail), GlobalFramework.LoggedUser.Oid);
+            GlobalFramework.LoggedUser = (sys_userdetail)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
             //Update Session Privileges
             GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions(GlobalFramework.LoggedUser);
 
@@ -280,6 +344,44 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 Clicked(sender, e);
             }
+        }
+       
+        public void ChangeFont(System.Drawing.Color pColorFont, string accordionType)
+        {          
+            //color
+            System.Drawing.Color colNormal = pColorFont;
+            System.Drawing.Color colPrelight = Utils.Lighten(colNormal);
+            System.Drawing.Color colActive = Utils.Lighten(colPrelight);
+            System.Drawing.Color colInsensitive = Utils.Darken(colNormal);
+            System.Drawing.Color colSelected = System.Drawing.Color.FromArgb(125, 0, 0);
+
+            String _fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
+            String _fontPosBackOfficeChild = GlobalFramework.Settings["fontPosBackOfficeChild"];
+            String _fontPosBackOfficeParentLowRes = GlobalFramework.Settings["fontPosBackOfficeParentLowRes"];
+            String _fontPosBackOfficeChildLowRes = GlobalFramework.Settings["fontPosBackOfficeChildLowRes"];
+
+            Pango.FontDescription fontPosBackOfficeparentLowRes = Pango.FontDescription.FromString(_fontPosBackOfficeParentLowRes);
+            Pango.FontDescription fontPosBackOfficeParent = Pango.FontDescription.FromString(_fontPosBackOfficeParent);
+            Pango.FontDescription fontPosBackOfficeChildLowRes = Pango.FontDescription.FromString(_fontPosBackOfficeChildLowRes);
+            Pango.FontDescription fontPosBackOfficeChild = Pango.FontDescription.FromString(_fontPosBackOfficeChild);
+
+            if(accordionType == "Parent")
+            {
+                if (GlobalApp.boScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeparentLowRes);
+                else _label.ModifyFont(fontPosBackOfficeParent);
+            }
+            else
+            {
+                if (GlobalApp.boScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
+                else _label.ModifyFont(fontPosBackOfficeChild);
+            }
+            _label.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colNormal));
+            _label.ModifyFg(StateType.Prelight, Utils.ColorToGdkColor(colPrelight));
+            _label.ModifyFg(StateType.Active, Utils.ColorToGdkColor(colActive));
+            _label.ModifyFg(StateType.Insensitive, Utils.ColorToGdkColor(colInsensitive));
+            _label.ModifyFg(StateType.Selected, Utils.ColorToGdkColor(colSelected));
+            
+            _label.SetAlignment(0.0f, 0.5f);
         }
     }
 }

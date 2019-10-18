@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_UserPermissionItem : XPGuidObject
+    public class sys_userpermissionitem : XPGuidObject
     {
-        public SYS_UserPermissionItem() : base() { }
-        public SYS_UserPermissionItem(Session session) : base(session) { }
+        public sys_userpermissionitem() : base() { }
+        public sys_userpermissionitem(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserPermissionItem), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserPermissionItem), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_userpermissionitem), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_userpermissionitem), "Code");
         }
 
         UInt32 fOrd;
@@ -50,19 +50,19 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserPermissionGroup One <> Many UserPermissionItems
-        SYS_UserPermissionGroup fPermissionGroup;
+        sys_userpermissiongroup fPermissionGroup;
         [Association(@"UserPermissionGroup-UserPermissionItem")]
-        public SYS_UserPermissionGroup PermissionGroup
+        public sys_userpermissiongroup PermissionGroup
         {
             get { return fPermissionGroup; }
-            set { SetPropertyValue<SYS_UserPermissionGroup>("PermissionGroup", ref fPermissionGroup, value); }
+            set { SetPropertyValue<sys_userpermissiongroup>("PermissionGroup", ref fPermissionGroup, value); }
         }
 
         //UserProfilePermissions One <> Many UserPermissionItems
-        [Association(@"UserPermissionProfile-UserPermissionItem", typeof(SYS_UserPermissionProfile))]
-        public XPCollection<SYS_UserPermissionProfile> PermissionProfiles
+        [Association(@"UserPermissionProfile-UserPermissionItem", typeof(sys_userpermissionprofile))]
+        public XPCollection<sys_userpermissionprofile> PermissionProfiles
         {
-            get { return GetCollection<SYS_UserPermissionProfile>("PermissionProfiles"); }
+            get { return GetCollection<sys_userpermissionprofile>("PermissionProfiles"); }
         }
     }
 }

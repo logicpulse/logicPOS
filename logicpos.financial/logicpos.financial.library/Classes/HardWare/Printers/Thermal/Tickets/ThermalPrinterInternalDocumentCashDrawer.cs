@@ -12,13 +12,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         private decimal _movementAmount = 0.0m;
         private string _movementDescription = string.Empty;
         
-        public ThermalPrinterInternalDocumentCashDrawer(SYS_ConfigurationPrinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer)
+        public ThermalPrinterInternalDocumentCashDrawer(sys_configurationprinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer)
             : this(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, 0.0m) { }
 
-        public ThermalPrinterInternalDocumentCashDrawer(SYS_ConfigurationPrinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer, decimal pMovementAmount)
+        public ThermalPrinterInternalDocumentCashDrawer(sys_configurationprinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer, decimal pMovementAmount)
             : this(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, pMovementAmount, string.Empty) { }
 
-        public ThermalPrinterInternalDocumentCashDrawer(SYS_ConfigurationPrinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer, decimal pMovementAmount, string pMovementDescription)
+        public ThermalPrinterInternalDocumentCashDrawer(sys_configurationprinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer, decimal pMovementAmount, string pMovementDescription)
             : base(pPrinter)
         {
             _ticketTitle = pTicketTitle;
@@ -54,18 +54,18 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
         private void PrintDocumentDetails()
         {
-            _thermalPrinterGeneric.WriteLine(Resx.global_total_cashdrawer);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_cashdrawer"));
             _thermalPrinterGeneric.WriteLine(FrameworkUtils.DecimalToString(_totalAmountInCashDrawer), WriteLineTextMode.Big);
             _thermalPrinterGeneric.LineFeed();
 
             if (_movementAmount < 0.0m || _movementAmount > 0.0m)  {
-                _thermalPrinterGeneric.WriteLine(Resx.global_movement_amount);
+                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_movement_amount"));
                 _thermalPrinterGeneric.WriteLine(FrameworkUtils.DecimalToString(_movementAmount), WriteLineTextMode.Big);
                 _thermalPrinterGeneric.LineFeed();
             }
 
             string description = (_movementDescription != string.Empty) ? _movementDescription : "________________________________";
-            _thermalPrinterGeneric.WriteLine(Resx.global_description);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_description"));
             _thermalPrinterGeneric.WriteLine(description);
         }
     }

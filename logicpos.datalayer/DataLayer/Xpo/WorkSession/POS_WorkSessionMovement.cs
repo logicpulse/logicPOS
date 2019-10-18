@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_WorkSessionMovement : XPGuidObject
+    public class pos_worksessionmovement : XPGuidObject
     {
-        public POS_WorkSessionMovement() : base() { }
-        public POS_WorkSessionMovement(Session session) : base(session) { }
+        public pos_worksessionmovement() : base() { }
+        public pos_worksessionmovement(Session session) : base(session) { }
 
         UInt32 fOrd;
         public UInt32 Ord
@@ -38,64 +38,64 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Description", ref fDescription, value); }
         }
 
-        SYS_UserDetail fUserDetail;
-        public SYS_UserDetail UserDetail
+        sys_userdetail fUserDetail;
+        public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
-            set { SetPropertyValue<SYS_UserDetail>("UserDetail", ref fUserDetail, value); }
+            set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminal;
-        public POS_ConfigurationPlaceTerminal Terminal
+        pos_configurationplaceterminal fTerminal;
+        public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
         }
 
-        FIN_DocumentFinanceMaster fDocumentFinanceMaster;
-        public FIN_DocumentFinanceMaster DocumentFinanceMaster
+        fin_documentfinancemaster fDocumentFinanceMaster;
+        public fin_documentfinancemaster DocumentFinanceMaster
         {
             get { return fDocumentFinanceMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
         }
 
-        FIN_DocumentFinancePayment fDocumentFinancePayment;
-        public FIN_DocumentFinancePayment DocumentFinancePayment
+        fin_documentfinancepayment fDocumentFinancePayment;
+        public fin_documentfinancepayment DocumentFinancePayment
         {
             get { return fDocumentFinancePayment; }
-            set { SetPropertyValue<FIN_DocumentFinancePayment>("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
+            set { SetPropertyValue<fin_documentfinancepayment>("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
         }
 
-        FIN_DocumentFinanceType fDocumentFinanceType;
-        public FIN_DocumentFinanceType DocumentFinanceType
+        fin_documentfinancetype fDocumentFinanceType;
+        public fin_documentfinancetype DocumentFinanceType
         {
             get { return fDocumentFinanceType; }
-            set { SetPropertyValue<FIN_DocumentFinanceType>("DocumentFinanceType", ref fDocumentFinanceType, value); }
+            set { SetPropertyValue<fin_documentfinancetype>("DocumentFinanceType", ref fDocumentFinanceType, value); }
         }
 
-        FIN_ConfigurationPaymentMethod fPaymentMethod;
-        public FIN_ConfigurationPaymentMethod PaymentMethod
+        fin_configurationpaymentmethod fPaymentMethod;
+        public fin_configurationpaymentmethod PaymentMethod
         {
             get { return fPaymentMethod; }
-            set { SetPropertyValue<FIN_ConfigurationPaymentMethod>("PaymentMethod", ref fPaymentMethod, value); }
+            set { SetPropertyValue<fin_configurationpaymentmethod>("PaymentMethod", ref fPaymentMethod, value); }
         }
 
         //WorkSessionPeriod One <> Many WorkSessionMovement
-        POS_WorkSessionPeriod fWorkSessionPeriod;
+        pos_worksessionperiod fWorkSessionPeriod;
         [Association(@"WorkSessionPeriodReferencesWorkSessionMovement")]
-        public POS_WorkSessionPeriod WorkSessionPeriod
+        public pos_worksessionperiod WorkSessionPeriod
         {
             get { return fWorkSessionPeriod; }
-            set { SetPropertyValue<POS_WorkSessionPeriod>("WorkSessionPeriod", ref fWorkSessionPeriod, value); }
+            set { SetPropertyValue<pos_worksessionperiod>("WorkSessionPeriod", ref fWorkSessionPeriod, value); }
         }
 
         //WorkSessionMovementType One <> Many WorkSessionMovement
-        POS_WorkSessionMovementType fWorkSessionMovementType;
+        pos_worksessionmovementtype fWorkSessionMovementType;
         [Association(@"WorkSessionMovementTypeReferencesWorkSessionMovement")]
-        public POS_WorkSessionMovementType WorkSessionMovementType
+        public pos_worksessionmovementtype WorkSessionMovementType
         {
             get { return fWorkSessionMovementType; }
-            set { SetPropertyValue<POS_WorkSessionMovementType>("WorkSessionMovementType", ref fWorkSessionMovementType, value); }
+            set { SetPropertyValue<pos_worksessionmovementtype>("WorkSessionMovementType", ref fWorkSessionMovementType, value); }
         }
     }
 }

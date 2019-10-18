@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_UserCommissionGroup : XPGuidObject
+    public class pos_usercommissiongroup : XPGuidObject
     {
-        public POS_UserCommissionGroup() : base() { }
-        public POS_UserCommissionGroup(Session session) : base(session) { }
+        public pos_usercommissiongroup() : base() { }
+        public pos_usercommissiongroup(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_UserCommissionGroup), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_UserCommissionGroup), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_usercommissiongroup), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_usercommissiongroup), "Code");
         }
 
         UInt32 fOrd;
@@ -47,31 +47,31 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
 //UserCommissionGroup One <> Many Family
-[Association(@"UserCommissionGroupReferencesFamily", typeof(FIN_ArticleFamily))]
-public XPCollection<FIN_ArticleFamily> Family
+[Association(@"UserCommissionGroupReferencesFamily", typeof(fin_articlefamily))]
+public XPCollection<fin_articlefamily> Family
 {
-    get { return GetCollection<FIN_ArticleFamily>("Family"); }
+    get { return GetCollection<fin_articlefamily>("Family"); }
 }
 
 //UserCommissionGroup One <> Many SubFamily
-[Association(@"UserCommissionGroupReferencesSubFamily", typeof(FIN_ArticleSubFamily))]
-public XPCollection<FIN_ArticleSubFamily> SubFamily
+[Association(@"UserCommissionGroupReferencesSubFamily", typeof(fin_articlesubfamily))]
+public XPCollection<fin_articlesubfamily> SubFamily
 {
-    get { return GetCollection<FIN_ArticleSubFamily>("SubFamily"); }
+    get { return GetCollection<fin_articlesubfamily>("SubFamily"); }
 }
 
 //UserCommissionGroup One <> Many Article
-[Association(@"UserCommissionGroupReferencesArticle", typeof(FIN_Article))]
-public XPCollection<FIN_Article> Article
+[Association(@"UserCommissionGroupReferencesArticle", typeof(fin_article))]
+public XPCollection<fin_article> Article
 {
-    get { return GetCollection<FIN_Article>("Article"); }
+    get { return GetCollection<fin_article>("Article"); }
 }
 
         //CommissionGroup One <> Many User
-        [Association(@"UserCommissionGroupReferencesUserDetail", typeof(SYS_UserDetail))]
-        public XPCollection<SYS_UserDetail> Users
+        [Association(@"UserCommissionGroupReferencesUserDetail", typeof(sys_userdetail))]
+        public XPCollection<sys_userdetail> Users
         {
-            get { return GetCollection<SYS_UserDetail>("Users"); }
+            get { return GetCollection<sys_userdetail>("Users"); }
         }
     }
 }

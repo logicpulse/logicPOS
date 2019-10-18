@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_SystemNotificationType : XPGuidObject
+    public class sys_systemnotificationtype : XPGuidObject
     {
-        public SYS_SystemNotificationType() : base() { }
-        public SYS_SystemNotificationType(Session session) : base(session) { }
+        public sys_systemnotificationtype() : base() { }
+        public sys_systemnotificationtype(Session session) : base(session) { }
 
         UInt32 fOrd;
         public UInt32 Ord
@@ -48,25 +48,25 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<int>("WarnDaysBefore", ref fWarnDaysBefore, value); }
         }
 
-        SYS_UserDetail fUserTarget;
-        public SYS_UserDetail UserTarget
+        sys_userdetail fUserTarget;
+        public sys_userdetail UserTarget
         {
             get { return fUserTarget; }
-            set { SetPropertyValue<SYS_UserDetail>("UserTarget", ref fUserTarget, value); }
+            set { SetPropertyValue<sys_userdetail>("UserTarget", ref fUserTarget, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminalTarget;
-        public POS_ConfigurationPlaceTerminal TerminalTarget
+        pos_configurationplaceterminal fTerminalTarget;
+        public pos_configurationplaceterminal TerminalTarget
         {
             get { return fTerminalTarget; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("TerminalTarget", ref fTerminalTarget, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("TerminalTarget", ref fTerminalTarget, value); }
         }
 
         //SystemNotificationType One <> Many SystemNotification
-        [Association(@"SystemNotificationTypeReferencesSystemNotification", typeof(SYS_SystemNotification))]
-        public XPCollection<SYS_SystemNotification> Notification
+        [Association(@"SystemNotificationTypeReferencesSystemNotification", typeof(sys_systemnotification))]
+        public XPCollection<sys_systemnotification> Notification
         {
-            get { return GetCollection<SYS_SystemNotification>("Notification"); }
+            get { return GetCollection<sys_systemnotification>("Notification"); }
         }
     }
 }

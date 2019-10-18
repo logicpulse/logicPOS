@@ -11,32 +11,32 @@ namespace logicpos.financial.library.Classes.WorkSession
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //No DocumentFinanceMaster|DocumentFinancePayment - With and Without Session
-        public static bool PersistWorkSessionMovement(POS_WorkSessionPeriod pWorkSessionPeriod, POS_WorkSessionMovementType pWorkSessionMovementType, SYS_UserDetail pUserDetail, POS_ConfigurationPlaceTerminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
+        public static bool PersistWorkSessionMovement(pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
             return PersistWorkSessionMovement(GlobalFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, null, null, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
         }
 
-        public static bool PersistWorkSessionMovement(Session pSession, POS_WorkSessionPeriod pWorkSessionPeriod, POS_WorkSessionMovementType pWorkSessionMovementType, SYS_UserDetail pUserDetail, POS_ConfigurationPlaceTerminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
+        public static bool PersistWorkSessionMovement(Session pSession, pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
             return PersistWorkSessionMovement(GlobalFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, null, null, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
         }
 
         //Main Method  - With and Without Session
-        public static bool PersistWorkSessionMovement(POS_WorkSessionPeriod pWorkSessionPeriod, POS_WorkSessionMovementType pWorkSessionMovementType, FIN_DocumentFinanceMaster pDocumentFinanceMaster, FIN_DocumentFinancePayment pDocumentFinancePayment, SYS_UserDetail pUserDetail, POS_ConfigurationPlaceTerminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
+        public static bool PersistWorkSessionMovement(pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
             return PersistWorkSessionMovement(GlobalFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, pDocumentFinanceMaster, pDocumentFinancePayment, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
         }
 
-        public static bool PersistWorkSessionMovement(Session pSession, POS_WorkSessionPeriod pWorkSessionPeriod, POS_WorkSessionMovementType pWorkSessionMovementType, FIN_DocumentFinanceMaster pDocumentFinanceMaster, FIN_DocumentFinancePayment pDocumentFinancePayment, SYS_UserDetail pUserDetail, POS_ConfigurationPlaceTerminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
+        public static bool PersistWorkSessionMovement(Session pSession, pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
             //Prevent Deleted Objects, Get Fresh Objects
-            SYS_UserDetail userDetail = pSession.GetObjectByKey<SYS_UserDetail>(GlobalFramework.LoggedUser.Oid);
-            POS_ConfigurationPlaceTerminal terminal = pSession.GetObjectByKey<POS_ConfigurationPlaceTerminal>(GlobalFramework.LoggedTerminal.Oid);
-            POS_WorkSessionMovementType workSessionMovementType = pSession.GetObjectByKey<POS_WorkSessionMovementType>(pWorkSessionMovementType.Oid);
+            sys_userdetail userDetail = pSession.GetObjectByKey<sys_userdetail>(GlobalFramework.LoggedUser.Oid);
+            pos_configurationplaceterminal terminal = pSession.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
+            pos_worksessionmovementtype workSessionMovementType = pSession.GetObjectByKey<pos_worksessionmovementtype>(pWorkSessionMovementType.Oid);
 
             try
             {
-                POS_WorkSessionMovement workSessionMovement = new POS_WorkSessionMovement(pSession)
+                pos_worksessionmovement workSessionMovement = new pos_worksessionmovement(pSession)
                 {
                     Ord = pOrd,
                     WorkSessionPeriod = pWorkSessionPeriod,

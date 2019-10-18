@@ -5,17 +5,17 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_ConfigurationPlaceTerminal : XPGuidObject
+    public class pos_configurationplaceterminal : XPGuidObject
     {
-        public POS_ConfigurationPlaceTerminal() : base() { }
-        public POS_ConfigurationPlaceTerminal(Session session) : base(session) { }
+        public pos_configurationplaceterminal() : base() { }
+        public pos_configurationplaceterminal(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceTerminal), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceTerminal), "Code");
-            TemplateTicket = this.Session.GetObjectByKey<SYS_ConfigurationPrintersTemplates>(SettingsApp.XpoOidConfigurationPrintersTemplateTicket);
-            TemplateTablesConsult = this.Session.GetObjectByKey<SYS_ConfigurationPrintersTemplates>(SettingsApp.XpoOidConfigurationPrintersTemplateTableConsult);
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
+            TemplateTicket = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(SettingsApp.XpoOidConfigurationPrintersTemplateTicket);
+            TemplateTablesConsult = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(SettingsApp.XpoOidConfigurationPrintersTemplateTableConsult);
             InputReaderTimerInterval = 200;
         }
 
@@ -58,82 +58,91 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlace One <> Many ConfigurationPlaceTerminal
-        POS_ConfigurationPlace fPlace;
+        pos_configurationplace fPlace;
         [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTerminal")]
-        public POS_ConfigurationPlace Place
+        public pos_configurationplace Place
         {
             get { return fPlace; }
-            set { SetPropertyValue<POS_ConfigurationPlace>("Place", ref fPlace, value); }
+            set { SetPropertyValue<pos_configurationplace>("Place", ref fPlace, value); }
         }
 
         //ConfigurationPrinters One <> Many ConfigurationPlaceTerminal
-        SYS_ConfigurationPrinters fPrinter;
+        sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesConfigurationPlaceTerminal")]
-        public SYS_ConfigurationPrinters Printer
+        public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<SYS_ConfigurationPrinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
+        }
+
+        //ConfigurationPrinters One <> Many ConfigurationPlaceTerminal
+        sys_configurationprinters fThermalPrinter;
+        [Association(@"ConfigurationThermalPrintersReferencesConfigurationPlaceTerminal")]
+        public sys_configurationprinters ThermalPrinter
+        {
+            get { return fThermalPrinter; }
+            set { SetPropertyValue<sys_configurationprinters>("ThermalPrinter", ref fThermalPrinter, value); }
         }
 
         //BarcodeReader One <> Many ConfigurationPlaceTerminal
-        SYS_ConfigurationInputReader fBarcodeReader;
+        sys_configurationinputreader fBarcodeReader;
         [Association(@"ConfigurationHardwareInputReader1ReferencesConfigurationPlaceTerminal")]
-        public SYS_ConfigurationInputReader BarcodeReader
+        public sys_configurationinputreader BarcodeReader
         {
             get { return fBarcodeReader; }
-            set { SetPropertyValue<SYS_ConfigurationInputReader>("BarcodeReader", ref fBarcodeReader, value); }
+            set { SetPropertyValue<sys_configurationinputreader>("BarcodeReader", ref fBarcodeReader, value); }
         }
 
         //ConfigurationInputReader One <> Many ConfigurationPlaceTerminal
-        SYS_ConfigurationInputReader fCardReader;
+        sys_configurationinputreader fCardReader;
         [Association(@"ConfigurationHardwareInputReader2ReferencesConfigurationPlaceTerminal")]
-        public SYS_ConfigurationInputReader CardReader
+        public sys_configurationinputreader CardReader
         {
             get { return fCardReader; }
-            set { SetPropertyValue<SYS_ConfigurationInputReader>("CardReader", ref fCardReader, value); }
+            set { SetPropertyValue<sys_configurationinputreader>("CardReader", ref fCardReader, value); }
         }
 
         //ConfigurationPoleDisplay One <> Many ConfigurationPlaceTerminal
-        SYS_ConfigurationPoleDisplay fPoleDisplay;
+        sys_configurationpoledisplay fPoleDisplay;
         [Association(@"ConfigurationHardwarePoleDisplayReferencesConfigurationPlaceTerminal")]
-        public SYS_ConfigurationPoleDisplay PoleDisplay
+        public sys_configurationpoledisplay PoleDisplay
         {
             get { return fPoleDisplay; }
-            set { SetPropertyValue<SYS_ConfigurationPoleDisplay>("PoleDisplay", ref fPoleDisplay, value); }
+            set { SetPropertyValue<sys_configurationpoledisplay>("PoleDisplay", ref fPoleDisplay, value); }
         }
 
         //ConfigurationWeighingMachine One <> Many ConfigurationPlaceTerminal
-        SYS_ConfigurationWeighingMachine fWeighingMachine;
+        sys_configurationweighingmachine fWeighingMachine;
         [Association(@"ConfigurationHardwareWeighingMachineReferencesConfigurationPlaceTerminal")]
-        public SYS_ConfigurationWeighingMachine WeighingMachine
+        public sys_configurationweighingmachine WeighingMachine
         {
             get { return fWeighingMachine; }
-            set { SetPropertyValue<SYS_ConfigurationWeighingMachine>("WeighingMachine", ref fWeighingMachine, value); }
+            set { SetPropertyValue<sys_configurationweighingmachine>("WeighingMachine", ref fWeighingMachine, value); }
         }
 
         //ConfigurationPlaceTerminal One <> Many DocumentFinanceYearSerieTerminal
-        [Association(@"ConfigurationPlaceTerminalReferencesDFYearSerieTerminal", typeof(FIN_DocumentFinanceYearSerieTerminal))]
-        public XPCollection<FIN_DocumentFinanceYearSerieTerminal> YearSerieTerminal
+        [Association(@"ConfigurationPlaceTerminalReferencesDFYearSerieTerminal", typeof(fin_documentfinanceyearserieterminal))]
+        public XPCollection<fin_documentfinanceyearserieterminal> YearSerieTerminal
         {
-            get { return GetCollection<FIN_DocumentFinanceYearSerieTerminal>("YearSerieTerminal"); }
+            get { return GetCollection<fin_documentfinanceyearserieterminal>("YearSerieTerminal"); }
         }
 
         //ConfigurationPrintersTemplates One <> Many ConfigurationPlaceTerminal
-        SYS_ConfigurationPrintersTemplates fTemplateTicket;
+        sys_configurationprinterstemplates fTemplateTicket;
         [Association(@"ConfigurationPrintersTemplatesTemplateTicketReferencesTerminal")]
-        public SYS_ConfigurationPrintersTemplates TemplateTicket
+        public sys_configurationprinterstemplates TemplateTicket
         {
             get { return fTemplateTicket; }
-            set { SetPropertyValue<SYS_ConfigurationPrintersTemplates>("TemplateTicket", ref fTemplateTicket, value); }
+            set { SetPropertyValue<sys_configurationprinterstemplates>("TemplateTicket", ref fTemplateTicket, value); }
         }
 
         //ConfigurationPrintersTemplates One <> Many ConfigurationPlaceTerminal
-        SYS_ConfigurationPrintersTemplates fTemplateTablesConsult;
+        sys_configurationprinterstemplates fTemplateTablesConsult;
         [Association(@"ConfigurationPrintersTemplatesTemplateTablesConsultReferencesTerminal")]
-        public SYS_ConfigurationPrintersTemplates TemplateTablesConsult
+        public sys_configurationprinterstemplates TemplateTablesConsult
         {
             get { return fTemplateTablesConsult; }
-            set { SetPropertyValue<SYS_ConfigurationPrintersTemplates>("TemplateTablesConsult", ref fTemplateTablesConsult, value); }
+            set { SetPropertyValue<sys_configurationprinterstemplates>("TemplateTablesConsult", ref fTemplateTablesConsult, value); }
         }
     }
 }

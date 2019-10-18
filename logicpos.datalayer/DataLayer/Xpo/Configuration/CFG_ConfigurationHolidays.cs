@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class CFG_ConfigurationHolidays : XPGuidObject
+    public class cfg_configurationholidays : XPGuidObject
     {
-        public CFG_ConfigurationHolidays() : base() { }
-        public CFG_ConfigurationHolidays(Session session) : base(session) { }
+        public cfg_configurationholidays() : base() { }
+        public cfg_configurationholidays(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationHolidays), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationHolidays), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationholidays), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationholidays), "Code");
         }
 
         UInt32 fOrd;

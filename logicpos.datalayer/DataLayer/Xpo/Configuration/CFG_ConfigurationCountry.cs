@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class CFG_ConfigurationCountry : XPGuidObject
+    public class cfg_configurationcountry : XPGuidObject
     {
-        public CFG_ConfigurationCountry() : base() { }
-        public CFG_ConfigurationCountry(Session session) : base(session) { }
+        public cfg_configurationcountry() : base() { }
+        public cfg_configurationcountry(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationCountry), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationCountry), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcountry), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcountry), "Code");
         }
 
         //This Can be Optional
@@ -107,10 +107,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationCountry One <> Many Customer
-        [Association(@"ConfigurationCountryReferencesCustomer", typeof(ERP_Customer))]
-        public XPCollection<ERP_Customer> Customer
+        [Association(@"ConfigurationCountryReferencesCustomer", typeof(erp_customer))]
+        public XPCollection<erp_customer> Customer
         {
-            get { return GetCollection<ERP_Customer>("Customer"); }
+            get { return GetCollection<erp_customer>("Customer"); }
         }
     }
 }

@@ -5,22 +5,22 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_UserDetail : XPGuidObject
+    public class sys_userdetail : XPGuidObject
     {
-        public SYS_UserDetail() : base() { }
-        public SYS_UserDetail(Session session) : base(session)
+        public sys_userdetail() : base() { }
+        public sys_userdetail(Session session) : base(session)
         {
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist
-            InitEncryptedAttributes<SYS_UserDetail>();
+            InitEncryptedAttributes<sys_userdetail>();
         }
 
         protected override void OnAfterConstruction()
         {
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
-            InitEncryptedAttributes<SYS_UserDetail>();
+            InitEncryptedAttributes<sys_userdetail>();
 
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserDetail), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_UserDetail), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_userdetail), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_userdetail), "Code");
             //Required for New Users
             AccessPin = CryptographyUtils.SaltedString.GenerateSaltedString(SettingsApp.DefaultValueUserDetailAccessPin);
             PasswordReset = true;
@@ -57,7 +57,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fName;
-[Size(512)]
+        [Size(512)]
         [XPGuidObject(Encrypted = true)]
         public string Name
         {
@@ -66,7 +66,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fResidence;
-[Size(512)]
+        [Size(512)]
         [XPGuidObject(Encrypted = true)]
         public string Residence
         {
@@ -75,7 +75,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fLocality;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Locality
         {
@@ -92,7 +92,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fCity;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string City
         {
@@ -109,7 +109,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fPhone;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Phone
         {
@@ -118,7 +118,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fMobilePhone;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string MobilePhone
         {
@@ -127,7 +127,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         string fEmail;
-[Size(255)]
+        [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Email
         {
@@ -240,21 +240,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserProfile One <> Many User
-        SYS_UserProfile fProfile;
+        sys_userprofile fProfile;
         [Association(@"UserProfileReferencesUserDetail")]
-        public SYS_UserProfile Profile
+        public sys_userprofile Profile
         {
             get { return fProfile; }
-            set { SetPropertyValue<SYS_UserProfile>("Profile", ref fProfile, value); }
+            set { SetPropertyValue<sys_userprofile>("Profile", ref fProfile, value); }
         }
 
         //CommissionGroup One <> Many User
-        POS_UserCommissionGroup fCommissionGroup;
+        pos_usercommissiongroup fCommissionGroup;
         [Association(@"UserCommissionGroupReferencesUserDetail")]
-        public POS_UserCommissionGroup CommissionGroup
+        public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<POS_UserCommissionGroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
         }
     }
 }

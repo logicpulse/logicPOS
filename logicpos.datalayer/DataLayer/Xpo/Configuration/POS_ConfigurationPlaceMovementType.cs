@@ -7,15 +7,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_ConfigurationPlaceMovementType : XPGuidObject
+    public class pos_configurationplacemovementtype : XPGuidObject
     {
-        public POS_ConfigurationPlaceMovementType() : base() { }
-        public POS_ConfigurationPlaceMovementType(Session session) : base(session) { }
+        public pos_configurationplacemovementtype() : base() { }
+        public pos_configurationplacemovementtype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceMovementType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationPlaceMovementType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
             //In Retail Mode VatDirectSelling is always true;
             if (SettingsApp.AppMode == AppOperationMode.Retail)
             {
@@ -55,10 +55,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlaceMovementType One <> Many ConfigurationPlace
-        [Association(@"ConfigurationPlaceMovementTypeReferencesConfigurationPlace", typeof(POS_ConfigurationPlace))]
-        public XPCollection<POS_ConfigurationPlace> Place
+        [Association(@"ConfigurationPlaceMovementTypeReferencesConfigurationPlace", typeof(pos_configurationplace))]
+        public XPCollection<pos_configurationplace> Place
         {
-            get { return GetCollection<POS_ConfigurationPlace>("Place"); }
+            get { return GetCollection<pos_configurationplace>("Place"); }
         }
     }
 }

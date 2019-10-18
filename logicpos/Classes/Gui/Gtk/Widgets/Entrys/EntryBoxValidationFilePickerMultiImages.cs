@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_fileList.Contains(_entryBoxAddFile.Value))
             {
-                Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_filepicker_existing_file_error);
+                Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
             }
             else
             {
@@ -109,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //if AddFileNameToList true, add the File to the list, else skip add, usefull when we Initialize List from Constructor pInitialFileList
         private void AddFileEntry(string pFileName, bool pAddFileNameToList)
         {
-            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(Resx.global_file_image, _fileList.Count + 1), KeyboardMode.None, SettingsApp.RegexAlfaNumericFilePath, true);
+            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file_image"), _fileList.Count + 1), KeyboardMode.None, SettingsApp.RegexAlfaNumericFilePath, true);
             entryBoxValidationButton.EntryValidation.Validate();
             entryBoxValidationButton.EntryValidation.Sensitive = false;
 
@@ -162,7 +162,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (_fileList.Contains(dialog.FilePicker.Filename))
                     {
-                        Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_filepicker_existing_file_error);
+                        Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
                     }
                     else
                     {

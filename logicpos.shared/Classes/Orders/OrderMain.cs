@@ -52,11 +52,11 @@ namespace logicpos.shared.Classes.Orders
             set { _dateStart = value; }
         }
 
-        private DateTime _UpdatedAt;
+        private DateTime _updatedAt;
         public DateTime UpdatedAt
         {
-            get { return _UpdatedAt; }
-            set { _UpdatedAt = value; }
+            get { return _updatedAt; }
+            set { _updatedAt = value; }
         }
 
         private Dictionary<int, OrderTicket> _orderTickets;
@@ -115,17 +115,17 @@ namespace logicpos.shared.Classes.Orders
             set { _globalTotalTickets = value; }
         }
 
-        private SYS_UserDetail _globalLastUser;
+        private sys_userdetail _globalLastUser;
         [JsonIgnore]
-        public SYS_UserDetail GlobalLastUser
+        public sys_userdetail GlobalLastUser
         {
             get { return _globalLastUser; }
             set { _globalLastUser = value; }
         }
 
-        private POS_ConfigurationPlaceTerminal _globalLastTerminal;
+        private pos_configurationplaceterminal _globalLastTerminal;
         [JsonIgnore]
-        public POS_ConfigurationPlaceTerminal GlobalLastTerminal
+        public pos_configurationplaceterminal GlobalLastTerminal
         {
             get { return _globalLastTerminal; }
             set { _globalLastTerminal = value; }
@@ -147,37 +147,37 @@ namespace logicpos.shared.Classes.Orders
         /// <summary>
         /// Finish Order, Clean Session OrderTicket and OrderDetails, Persist in Database
         /// </summary>
-        public FIN_DocumentOrderTicket FinishOrder(Session pSession)
+        public fin_documentorderticket FinishOrder(Session pSession)
         {
             return FinishOrder(pSession, true);
         }
 
-        public FIN_DocumentOrderTicket FinishOrder(Session pSession, bool pPrintTicket)
+        public fin_documentorderticket FinishOrder(Session pSession, bool pPrintTicket)
         {
             //Local Vars
             DateTime currentDateTime = DateTime.Now;
-            FIN_DocumentOrderMain xOrderMain;
+            fin_documentordermain xOrderMain;
             Session _sessionXpo = pSession;
             bool isInUOW = (_sessionXpo.GetType() == typeof(UnitOfWork));
             //Result
-            FIN_DocumentOrderTicket xOrderTicket = null;
+            fin_documentorderticket xOrderTicket = null;
 
             //Get current Working Order from SessionApp
             OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
             OrderTicket currentOrderTicket = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId];
 
             //Get Place Object to extract TaxSellType Normal|TakeWay
-            POS_ConfigurationPlace configurationPlace = (POS_ConfigurationPlace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(POS_ConfigurationPlace), currentOrderMain.Table.PlaceId);
+            pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
             //Use VatDirectSelling if in Retail or in TakeWay mode
             TaxSellType taxSellType = (configurationPlace.MovementType.VatDirectSelling || SettingsApp.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             //Open Table on First Finish OrderTicket
-            POS_ConfigurationPlaceTable xTable = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(POS_ConfigurationPlaceTable), _table.Oid);
+            pos_configurationplacetable xTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), _table.Oid);
             xTable.Reload();
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                FrameworkUtils.Audit("TABLE_OPEN", string.Format(Resx.audit_message_table_open, xTable.Designation));
+                FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), xTable.Designation));
                 xTable.DateTableOpen = FrameworkUtils.CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }
@@ -185,13 +185,13 @@ namespace logicpos.shared.Classes.Orders
             //Get Current _persistentOid and _from Database
             _persistentOid = GetOpenTableFieldValueGuid(_table.Oid, "Oid");
             _orderStatus = (OrderStatus)GetOpenTableFieldValue(_table.Oid, "OrderStatus");
-            _UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
+            _updatedAt = FrameworkUtils.CurrentDateTimeAtomic();
 
             //Insert
             if (_persistentOid == Guid.Empty)
             {
                 //OrderMain
-                xOrderMain = new FIN_DocumentOrderMain(_sessionXpo)
+                xOrderMain = new fin_documentordermain(_sessionXpo)
                 {
                     //Always assign New date to Persistent Date
                     DateStart = currentDateTime,//currentOrderMain.DateStart,
@@ -208,7 +208,7 @@ namespace logicpos.shared.Classes.Orders
             //Update
             else
             {
-                xOrderMain = (FIN_DocumentOrderMain)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(FIN_DocumentOrderMain), _persistentOid);
+                xOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
                 if (xOrderMain.PlaceTable != xTable) xOrderMain.PlaceTable = xTable;
                 //Force Changes in Record, else UpdatedAt dont Update
                 xOrderMain.UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
@@ -218,7 +218,7 @@ namespace logicpos.shared.Classes.Orders
             }
 
             //Create OrderTicket
-            xOrderTicket = new FIN_DocumentOrderTicket(_sessionXpo)
+            xOrderTicket = new fin_documentorderticket(_sessionXpo)
             {
                 TicketId = currentOrderMain.CurrentTicketId,
                 DateStart = currentOrderTicket.DateStart,
@@ -230,8 +230,8 @@ namespace logicpos.shared.Classes.Orders
             if (!isInUOW) xOrderTicket.Save();
 
             //Create OrderDetail
-            FIN_DocumentOrderDetail xOrderDetailLine;
-            FIN_Article xArticle;
+            fin_documentorderdetail xOrderDetailLine;
+            fin_article xArticle;
             uint itemOrd = 0;
             decimal priceTax = 0;
 
@@ -239,11 +239,11 @@ namespace logicpos.shared.Classes.Orders
             {
                 //Use Order in print tickets etc
                 itemOrd++;
-                xArticle = (FIN_Article)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(FIN_Article), line.ArticleOid);
+                xArticle = (fin_article)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_article), line.ArticleOid);
                 //Get PriceTax from TaxSellType
                 priceTax = (taxSellType == TaxSellType.Normal) ? xArticle.VatOnTable.Value : xArticle.VatDirectSelling.Value;
 
-                xOrderDetailLine = new FIN_DocumentOrderDetail(_sessionXpo)
+                xOrderDetailLine = new fin_documentorderdetail(_sessionXpo)
                 {
                     //Values
                     Ord = itemOrd,
@@ -325,7 +325,7 @@ namespace logicpos.shared.Classes.Orders
                 _globalTotalFinal = articleBag.TotalFinal;
                 _globalTotalQuantity = articleBag.TotalQuantity;
                 //Persist Final TotalOpen
-                POS_ConfigurationPlaceTable currentTable = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(typeof(POS_ConfigurationPlaceTable), _table.Oid);
+                pos_configurationplacetable currentTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), _table.Oid);
                 //Required Reload, after ProcessFinanceDocument uowSession, else we get cached object, and apply changes to old object, ex we get a OpenedTable vs a ClosedTable by uowSession
                 currentTable.Reload();
                 currentTable.TotalOpen = _globalTotalFinal;
@@ -554,6 +554,63 @@ namespace logicpos.shared.Classes.Orders
             _orderTickets = new Dictionary<int, OrderTicket>();
             _orderTickets.Add(_currentTicketId, new OrderTicket(this, _table.PriceType));
             GlobalFramework.SessionApp.Write();
+        }
+
+        /// <summary>
+        /// <para>
+        /// Method responsible for check all items from Current Order (from temp file).
+        /// </para>
+        /// For Parking Ticket purposes, it is not allowed to have 2 units of same article, 
+        /// therefore, after adding a new article in Current Order and finishing this order, 
+        /// all items from the same will be persisted in data base, merging temp order and database order.
+        /// <para>
+        /// It is necessary to check for duplicates, removing it from database order.
+        /// </para>
+        /// </summary>
+        /// <remarks>Please see TK013134 for further details</remarks>
+        /// <param name="session"></param>
+        public void CheckForDuplicatedArticleInArticleBag(Session session)
+        {
+            _log.Debug("OrderMain.CheckForDuplicatedArticleInArticleBag(Session session)");
+
+            Session _sessionXpo = session;
+            fin_documentordermain xOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
+
+            //Get current Working Order from SessionApp
+            OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+            OrderTicket currentOrderTicket = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId];
+
+            OrderDetailLine[] orderDetailsLines = currentOrderTicket.OrderDetails.Lines.ToArray();
+
+            if (xOrderMain != null)
+            {
+                /* iterates over current Order ticket list */
+                foreach (OrderDetailLine line in orderDetailsLines)
+                {
+                    string currentDesignation = line.Designation;
+
+                    /* iterates over main Order list */
+                    foreach (var xOrderMainTicket in xOrderMain.OrderTicket)
+                    {
+                        xOrderMainTicket.OrderDetail.Load();
+
+                        /* iterates over main Order ticket list */
+                        foreach (var xOrderMainTicketOrderDetail in xOrderMainTicket.OrderDetail)
+                        {
+                            {
+                                fin_documentorderdetail aa = xOrderMainTicket.OrderDetail[0];
+
+                                /* When order already has the parking ticket, remove and break */
+                                if (xOrderMainTicketOrderDetail.Designation.Equals(currentDesignation))
+                                {
+                                    currentOrderTicket.OrderDetails.Lines.Remove(line);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

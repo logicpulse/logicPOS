@@ -79,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
             decimal oldValuePrice = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
 
-            MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, Resx.window_title_dialog_moneypad_product_price, oldValuePrice);
+            MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), oldValuePrice);
             decimal newValuePrice = result.Value;
 
             if (result.Response == ResponseType.Ok && newValuePrice > 0)
@@ -113,13 +113,30 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //Call Framework FinishOrder
                 OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-                FIN_DocumentOrderTicket orderTicket = orderMain.FinishOrder(GlobalFramework.SessionXpo);
+
+                /* 
+                 * TK013134 
+                 * Parking Ticket Module: Checking for duplicates in Order Main after finishing order
+                 */
+                if (GlobalFramework.AppUseParkingTicketModule)
+                {
+                    orderMain.CheckForDuplicatedArticleInArticleBag(GlobalFramework.SessionXpo);
+                }
+
+                fin_documentorderticket orderTicket = orderMain.FinishOrder(GlobalFramework.SessionXpo);
 
                 // If OrderTicket and has a ThermalPrinter connected
-                if (orderTicket != null && GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.PrinterType.ThermalPrinter)
+                // Impressoras - Diferenciação entre Tipos [TK:016249]
+                GlobalFramework.UsingThermalPrinter = true;
+                if (orderTicket != null && GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter)
                 {
-                    //public static bool PrintOrderRequest(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, OrderMain pDocumentOrderMain, FIN_DocumentOrderTicket pOrderTicket)
-                    FrameworkCalls.PrintOrderRequest(_sourceWindow, GlobalFramework.LoggedTerminal.Printer, orderMain, orderTicket);
+                    //public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
+                    //IN009239 - This avoids orders being printed when in use of ParkingTicketModule
+                    if (!GlobalFramework.AppUseParkingTicketModule)
+                    {
+                        // TK016249 Impressoras - Diferenciação entre Tipos 
+                        FrameworkCalls.PrintOrderRequest(_sourceWindow, GlobalFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);                        
+                    }
                     FrameworkCalls.PrintArticleRequest(_sourceWindow, orderTicket);
                 }
 
@@ -149,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Request Finish Open Ticket
                 if (_listStoreModelTotalItemsTicketListMode > 0)
                 {
-                    ResponseType dialogResponse = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, Resx.window_title_dialog_message_dialog, Resx.dialog_message_request_close_open_ticket);
+                    ResponseType dialogResponse = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_close_open_ticket"));
                     if (dialogResponse != ResponseType.Ok)
                     {
                         return;
@@ -223,10 +240,37 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
-            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, Resx.global_barcode, string.Empty, SettingsApp.RegexInteger, true);
+            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode"), string.Empty, SettingsApp.RegexInteger, true);
+
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
-                InsertOrUpdate(dialogResponse.Text);
+                if (GlobalFramework.AppUseParkingTicketModule) /* IN009239 */
+                {
+                    GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
+                }
+                else
+                {
+                    InsertOrUpdate(dialogResponse.Text);
+                }
+            }
+        }
+
+        //IN009279 CardCode scanner
+        void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
+        {
+            string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png");
+            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SettingsApp.RegexInteger, true);
+
+            if (dialogResponse.ResponseType == ResponseType.Ok)
+            {
+                if (GlobalFramework.AppUseParkingTicketModule) /* IN009239 */
+                {
+                    GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
+                }
+                else
+                {
+                    InsertOrUpdate(dialogResponse.Text);
+                }
             }
         }
 
@@ -257,8 +301,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (response == ResponseType.Ok)
                 {
                     OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-                    POS_ConfigurationPlaceTable xOldTable = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(typeof(POS_ConfigurationPlaceTable), currentOrderMain.Table.Oid);
-                    POS_ConfigurationPlaceTable xNewTable = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(typeof(POS_ConfigurationPlaceTable), dialog.CurrentTableOid);
+                    pos_configurationplacetable xOldTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), currentOrderMain.Table.Oid);
+                    pos_configurationplacetable xNewTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), dialog.CurrentTableOid);
                     //Require to Prevent A first chance exception of type 'DevExpress.Xpo.DB.Exceptions.LockingException' occurred in DevExpress.Xpo.v13.2.dll when it is Changed in Diferent Session ex UnitOfWork
                     //TODO: Confirm working with Reload Commented
                     //xOldTable.Reload();
@@ -267,8 +311,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
                         Utils.ShowMessageTouch(
-                            GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, Resx.global_error,
-                            Resx.dialog_message_table_is_not_free
+                            GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_table_is_not_free")
                         );
                     }
                     else
@@ -276,16 +320,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Put Old table Status to Free
                         xOldTable.TableStatus = TableStatus.Free;
                         xOldTable.Save();
-                        FrameworkUtils.Audit("TABLE_OPEN", string.Format(Resx.audit_message_table_open, xOldTable.Designation));
+                        FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), xOldTable.Designation));
 
                         //Put New table Status to Open
                         xNewTable.TableStatus = TableStatus.Open;
                         xNewTable.Save();
-                        FrameworkUtils.Audit("TABLE_CLOSE", string.Format(Resx.audit_message_table_close, xNewTable.Designation));
+                        FrameworkUtils.Audit("TABLE_CLOSE", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_close"), xNewTable.Designation));
 
                         //Change DocumentOrderMain table, If OpenOrder Exists in That table
                         Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
-                        FIN_DocumentOrderMain xDocumentOrderMain = (FIN_DocumentOrderMain)FrameworkUtils.GetXPGuidObject(typeof(FIN_DocumentOrderMain), documentOrderMainOid);
+                        fin_documentordermain xDocumentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(typeof(fin_documentordermain), documentOrderMainOid);
                         if (xDocumentOrderMain != null)
                         {
                             xDocumentOrderMain.PlaceTable = xNewTable;
@@ -381,7 +425,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
               dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationVatExceptionReason>(
                 _sourceWindow,
                 DialogFlags.DestroyWithParent,
-                    Resx.global_vat_exemption_reason,
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"),
                 GlobalApp.MaxWindowSize,
                 null, //XpoDefaultValue
                 criteria,

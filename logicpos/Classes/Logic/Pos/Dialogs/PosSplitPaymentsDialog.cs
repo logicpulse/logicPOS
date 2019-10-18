@@ -105,9 +105,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (debug) _log.Debug(string.Format("\t[{0}],[{1}],[{2}]", item.Key.Designation, item.Value.Quantity, item.Value.TotalFinal));
                     }
 
-                    ERP_Customer customer = (ERP_Customer)FrameworkUtils.GetXPGuidObject(typeof(ERP_Customer), processFinanceDocumentParameter.Customer);
-                    FIN_ConfigurationPaymentMethod paymentMethod = (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(typeof(FIN_ConfigurationPaymentMethod), processFinanceDocumentParameter.PaymentMethod);
-                    CFG_ConfigurationCurrency currency = (CFG_ConfigurationCurrency)FrameworkUtils.GetXPGuidObject(typeof(CFG_ConfigurationCurrency), processFinanceDocumentParameter.Currency);
+                    erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), processFinanceDocumentParameter.Customer);
+                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), processFinanceDocumentParameter.PaymentMethod);
+                    cfg_configurationcurrency currency = (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(typeof(cfg_configurationcurrency), processFinanceDocumentParameter.Currency);
                     // Compose labelPaymentDetails
                     string totalFinal = FrameworkUtils.DecimalToStringCurrency(processFinanceDocumentParameter.ArticleBag.TotalFinal, currency.Acronym);
                     string totalDelivery = FrameworkUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalDelivery, currency.Acronym);
@@ -200,7 +200,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 // Init Object to Use priceTax on above Loop
                 //Get Place Objects to extract TaxSellType Normal|TakeWay, Place, Tables etc
                 OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-                POS_ConfigurationPlace configurationPlace = (POS_ConfigurationPlace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(POS_ConfigurationPlace), currentOrderMain.Table.PlaceId);
+                pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
 
                 // Loop articleBag, and Add the quantity for Each Split (Total Article Quantity / numberOfSplits)
                 foreach (var article in articleBag)
@@ -270,7 +270,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Only change ArticleBag
                     if (item.ProcessFinanceDocumentParameter != null)
                     {
-                        FIN_ConfigurationPaymentMethod paymentMethod = (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(typeof(FIN_ConfigurationPaymentMethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
+                        fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
                         decimal totalDelivery = (paymentMethod.Token.Equals("MONEY"))
                             ? item.ProcessFinanceDocumentParameter.TotalDelivery
                             : item.ArticleBag.TotalFinal;
@@ -292,8 +292,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     UpdateTouchButtonSplitPaymentLabels(item);
 
                     // Update Window Title
-                    //if (WindowTitle != null) WindowTitle = string.Format(Resx.window_title_dialog_split_payment, numberOfSplits, FrameworkUtils.DecimalToStringCurrency(totalFinal));
-                    if (WindowTitle != null) WindowTitle = string.Format(Resx.window_title_dialog_split_payment, numberOfSplits, FrameworkUtils.DecimalToStringCurrency(_totalPerSplit));
+                    //if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment, numberOfSplits, FrameworkUtils.DecimalToStringCurrency(totalFinal));
+                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment"), numberOfSplits, FrameworkUtils.DecimalToStringCurrency(_totalPerSplit));
                 }
             }
             catch (Exception ex)
@@ -338,7 +338,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Update Display
                         if (item.DocumentFinanceMaster != null)
                         {
-                            FIN_ConfigurationPaymentMethod paymentMethod = (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(typeof(FIN_ConfigurationPaymentMethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
+                            fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
                             if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowPayment(paymentMethod.Designation, item.ProcessFinanceDocumentParameter.TotalDelivery, item.ProcessFinanceDocumentParameter.TotalChange);
                         }
                     }
@@ -358,7 +358,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     OrderDetail currentOrderDetails = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].OrderDetails;
 
                     // Get configurationPlace to get Tax
-                    POS_ConfigurationPlace configurationPlace = (POS_ConfigurationPlace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(POS_ConfigurationPlace), currentOrderMain.Table.PlaceId);
+                    pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
                 }
 
                 return true;

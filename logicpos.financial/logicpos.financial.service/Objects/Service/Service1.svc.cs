@@ -5,7 +5,6 @@ using logicpos.financial.service.Objects.Modules.AT;
 using logicpos.shared;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -47,7 +46,7 @@ namespace logicpos.financial.servicewcf
 
             try
             {
-                FIN_DocumentFinanceMaster documentMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), pDocumentMaster);
+                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentMaster);
 
                 if (documentMaster != null)
                 {

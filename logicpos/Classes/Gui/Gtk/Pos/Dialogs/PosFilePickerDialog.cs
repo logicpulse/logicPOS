@@ -32,14 +32,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosFilePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, FileFilter pFileFilter, FileChooserAction pFileChooserAction)
+           : this(pSourceWindow, pDialogFlags, pFileFilter, FileChooserAction.Open, null)
+        {            
+        }
+
+
+        public PosFilePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, FileFilter pFileFilter, FileChooserAction pFileChooserAction, string windowName)
             : base(pSourceWindow, pDialogFlags)
         {
             //Parameters
             _fileFilter = pFileFilter;
             _fileChooserAction = pFileChooserAction;
-
+                      
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_filepicker;
+            string windowTitle = string.Format("{0} {1}",resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"), windowName);
             _windowSize = new Size(700, 473);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
 

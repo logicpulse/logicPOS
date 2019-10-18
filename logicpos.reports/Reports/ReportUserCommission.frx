@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="09/06/2018 11:08:50" ReportInfo.CreatorVersion="2014.1.8.0">
+  <Dictionary>
+    <BusinessObjectDataSource Name="UserCommission" ReferenceName="UserCommission" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Users.FRBOUserCommission, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="DateDay" DataType="System.String"/>
+      <Column Name="UserOrd" DataType="System.UInt32"/>
+      <Column Name="UserCode" DataType="System.UInt32"/>
+      <Column Name="UserName" DataType="System.String"/>
+      <Column Name="ArticleOid" DataType="System.String"/>
+      <Column Name="Code" DataType="System.String"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <Column Name="UnitMeasure" DataType="System.String"/>
+      <Column Name="Price" DataType="System.Decimal"/>
+      <Column Name="Vat" DataType="System.Decimal"/>
+      <Column Name="Discount" DataType="System.Decimal"/>
+      <Column Name="Quantity" DataType="System.Decimal"/>
+      <Column Name="Total" DataType="System.Decimal"/>
+      <Column Name="CommissionValue" DataType="System.Decimal"/>
+      <Column Name="TotalCommission" DataType="System.Decimal"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Total Name="RecordCountUser" TotalType="Count" Evaluator="Data" PrintOn="GroupFooterUser"/>
+    <Total Name="RecordCountDate" TotalType="Count" Evaluator="Data" PrintOn="GroupFooterDate"/>
+    <Total Name="TotalCommissionUser" Expression="[UserCommission.TotalCommission]" Evaluator="Data" PrintOn="GroupFooterUser"/>
+    <Total Name="TotalCommissionDay" Expression="[UserCommission.TotalCommission]" Evaluator="Data" PrintOn="GroupFooterDate"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
+      <inherited Name="PictureCompanyLogo"/>
+      <inherited Name="TextReportTitle" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
+    </inherited>
+    <GroupHeaderBand Name="GroupHeaderDate" ZOrder="0" Top="53" Width="718.2" Height="37.8" Border.Lines="Bottom" KeepWithData="true" Condition="[UserCommission.DateDay]">
+      <TextObject Name="Text2" Top="9.45" Width="718.2" Height="18.9" Text="[UserCommission.DateDay]" Font="Arial, 15.75pt" Style="DataLevel1Font"/>
+      <GroupHeaderBand Name="GroupHeaderUser" Top="94.8" Width="718.2" Height="37.8" Border.Lines="Bottom" KeepWithData="true" Condition="[UserCommission.UserName]">
+        <TextObject Name="Text3" Top="9.45" Width="718.2" Height="18.9" Text="[UserCommission.UserName] ([UserCommission.UserCode]) ([FormatNumber([UserCommission.CommissionValue],2)]%)" Font="Arial, 12pt" Style="DataLevel2Font"/>
+        <DataBand Name="Data" Top="168.95" Width="718.2" Height="18.9" CanGrow="true" EvenStyle="EvenRow" DataSource="UserCommission" KeepTogether="true">
+          <TextObject Name="Text16" Width="94.5" Height="18.9" CanGrow="true" Text="[UserCommission.Code]" VertAlign="Center" Style="DataFontBold"/>
+          <TextObject Name="Text17" Left="94.5" Width="274.05" Height="18.9" CanGrow="true" Text="[UserCommission.Designation]" VertAlign="Center" Style="DataFont"/>
+          <TextObject Name="Text14" Left="510.3" Width="56.7" Height="18.9" Text="[FormatNumber([UserCommission.Discount],2)] %" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+          <TextObject Name="Text33" Left="368.55" Width="85.05" Height="18.9" Text="[FormatNumber([UserCommission.Price],2)]" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+          <TextObject Name="Text34" Left="453.6" Width="56.7" Height="18.9" Text="[FormatNumber([UserCommission.Quantity],2)]" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+          <TextObject Name="Text35" Left="642.6" Width="75.6" Height="18.9" Text="[FormatNumber([UserCommission.TotalCommission],2)]&#13;&#10;" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+          <TextObject Name="Text37" Left="567" Width="75.6" Height="18.9" Text="[FormatNumber([UserCommission.Total],2)]&#13;&#10;" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+          <DataHeaderBand Name="DataHeader" Top="136.6" Width="718.2" Height="28.35" Border.Lines="Top">
+            <TextObject Name="Text24" Top="9.45" Width="94.5" Height="18.9" Text="[Res(&quot;global_record_code&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text25" Left="94.5" Top="9.45" Width="274.05" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text26" Left="510.3" Top="9.45" Width="56.7" Height="18.9" Text="[Res(&quot;global_discount_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text27" Left="368.55" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_price&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text36" Left="453.6" Top="9.45" Width="56.7" Height="18.9" Text="[Res(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text38" Left="567" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_total&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text39" Left="642.6" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_commission&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          </DataHeaderBand>
+        </DataBand>
+        <GroupFooterBand Name="GroupFooterUser" Top="191.85" Width="718.2" Height="47.25" Border.Lines="Bottom" KeepWithData="true">
+          <TextObject Name="Text31" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [RecordCountUser]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+          <TextObject Name="Text40" Top="18.9" Width="718.2" Height="18.9" Text="[Res(&quot;global_total_commission_user&quot;)] : [FormatNumber([TotalCommissionUser],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+        </GroupFooterBand>
+      </GroupHeaderBand>
+      <GroupFooterBand Name="GroupFooterDate" Top="243.1" Width="718.2" Height="47.25" KeepWithData="true">
+        <TextObject Name="Text32" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [RecordCountDate]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+        <TextObject Name="Text41" Top="18.9" Width="718.2" Height="18.9" Text="[Res(&quot;global_total_commission_day&quot;)] : [FormatNumber([TotalCommissionDay],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <inherited Name="PageFooter1" Top="294.35" Height="56.7">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>

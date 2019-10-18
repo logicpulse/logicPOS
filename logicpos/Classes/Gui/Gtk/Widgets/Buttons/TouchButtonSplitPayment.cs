@@ -23,8 +23,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         private ProcessFinanceDocumentParameter _processFinanceDocumentParameter;
         public ProcessFinanceDocumentParameter ProcessFinanceDocumentParameter { get => _processFinanceDocumentParameter; set => _processFinanceDocumentParameter = value; }
         //Store PersistFinanceDocument Result DocumentFinanceMaster Documents
-        private FIN_DocumentFinanceMaster _documentFinanceMaster;
-        public FIN_DocumentFinanceMaster DocumentFinanceMaster { get => _documentFinanceMaster; set => _documentFinanceMaster = value; }
+        private fin_documentfinancemaster _documentFinanceMaster;
+        public fin_documentfinancemaster DocumentFinanceMaster { get => _documentFinanceMaster; set => _documentFinanceMaster = value; }
         //PaymentMethodButton
         private string _selectedPaymentMethodButtonName;
         public string SelectedPaymentMethodButtonName { get => _selectedPaymentMethodButtonName; set => _selectedPaymentMethodButtonName = value; }

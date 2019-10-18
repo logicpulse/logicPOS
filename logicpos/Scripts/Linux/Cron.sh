@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 # Add to Cron with "crontab -e" in user user root (sudo -s)
-#*/1 * * * * /home/logicpos/logicpos/Scripts/Linux/Cron.sh
+#*/1 * * * * /home/logicpulse/logicpos/Scripts/Linux/Cron.sh
 
 # Optional only to test Cron
 #*/1 * * * * date "+\%Y-\%m-\%d \%T" >> /tmp/crontest.txt

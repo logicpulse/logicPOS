@@ -18,16 +18,16 @@ namespace logicpos.financial.console.Test.Classes
         //FinanceDocument
 
         //Used to trigger all Errors
-        public static FIN_DocumentFinanceMaster PersistFinanceDocumentMinimal(Guid pDocumentFinanceType)
+        public static fin_documentfinancemaster PersistFinanceDocumentMinimal(Guid pDocumentFinanceType)
         {
             //Store current Logged Details
-            SYS_UserDetail loggedUser = GlobalFramework.LoggedUser;
-            POS_ConfigurationPlaceTerminal loggedTerminal = GlobalFramework.LoggedTerminal;
+            sys_userdetail loggedUser = GlobalFramework.LoggedUser;
+            pos_configurationplaceterminal loggedTerminal = GlobalFramework.LoggedTerminal;
 
             //Reset Current Logged Details
             GlobalFramework.LoggedUser = null;
             GlobalFramework.LoggedTerminal = null;
-            FIN_DocumentFinanceMaster documentFinanceMaster = null;
+            fin_documentfinancemaster documentFinanceMaster = null;
 
             try
             {
@@ -50,14 +50,14 @@ namespace logicpos.financial.console.Test.Classes
             return documentFinanceMaster;
         }
 
-        public static FIN_DocumentFinanceMaster PersistFinanceDocumentBase(Guid pDocumentFinanceType, ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter)
+        public static fin_documentfinancemaster PersistFinanceDocumentBase(Guid pDocumentFinanceType, ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter)
         {
             ArticleBag articleBag = TestArticleBag.GetArticleBag(false);
 
             //Change default DocumentDateTime
             //processFinanceDocumentParameter.DocumentDateTime = FrameworkUtils.CurrentDateTimeAtomic().AddDays(-5);
 
-            FIN_DocumentFinanceMaster documentFinanceMaster = ProcessFinanceDocument.PersistFinanceDocument(pProcessFinanceDocumentParameter);
+            fin_documentfinancemaster documentFinanceMaster = ProcessFinanceDocument.PersistFinanceDocument(pProcessFinanceDocumentParameter);
             if (documentFinanceMaster != null)
             {
                 Console.WriteLine(string.Format("documentFinanceMaster.DocumentNumber: [{0}]", documentFinanceMaster.DocumentNumber));
@@ -68,7 +68,7 @@ namespace logicpos.financial.console.Test.Classes
         }
 
         //Default
-        public static FIN_DocumentFinanceMaster PersistFinanceDocument(Guid pDocumentFinanceType)
+        public static fin_documentfinancemaster PersistFinanceDocument(Guid pDocumentFinanceType)
         {
             ArticleBag articleBag = TestArticleBag.GetArticleBag(false);
 
@@ -87,11 +87,11 @@ namespace logicpos.financial.console.Test.Classes
         }
 
         //Credit Notes
-        public static FIN_DocumentFinanceMaster PersistFinanceDocumentCreditNote(Guid pDocumentFinanceType)
+        public static fin_documentfinancemaster PersistFinanceDocumentCreditNote(Guid pDocumentFinanceType)
         {
             //SourceDocument for CreditNote
             Guid xpoOidParentDocument = new Guid("316528f6-bf9b-4a6d-aa5b-530379aaa6ef");
-            FIN_DocumentFinanceMaster sourceDocument = (FIN_DocumentFinanceMaster) GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), xpoOidParentDocument);
+            fin_documentfinancemaster sourceDocument = (fin_documentfinancemaster) GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), xpoOidParentDocument);
 
             ArticleBag articleBag = TestArticleBag.GetArticleBag(false);
 
@@ -122,12 +122,12 @@ namespace logicpos.financial.console.Test.Classes
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //FinanceDocumentPayments
 
-        public static FIN_DocumentFinancePayment PersistFinanceDocumentPayment()
+        public static fin_documentfinancepayment PersistFinanceDocumentPayment()
         {
             //All Documents, usefull to Split into Invoices and CreditNotes
             List<Guid> listDocuments = new List<Guid>();
-            List<FIN_DocumentFinanceMaster> listInvoices = new List<FIN_DocumentFinanceMaster>();
-            List<FIN_DocumentFinanceMaster> listCreditNotes = new List<FIN_DocumentFinanceMaster>();
+            List<fin_documentfinancemaster> listInvoices = new List<fin_documentfinancemaster>();
+            List<fin_documentfinancemaster> listCreditNotes = new List<fin_documentfinancemaster>();
             //listDocuments.Add(new Guid("a067b55b-09b5-4a48-a386-e9d04777540b"));//NC NCCKOQ5R5012016S001/1 
             //listDocuments.Add(new Guid("92c5c809-0387-4d1f-93c6-afeb6f291149"));//FT FTCKOQ5R5012016S001/1
             //Used
@@ -151,7 +151,7 @@ namespace logicpos.financial.console.Test.Classes
             //Prepare listInvoices and listCreditNotes
             foreach (Guid item in listDocuments)
             {
-                FIN_DocumentFinanceMaster documentFinanceMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), item);
+                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), item);
 
                 if (documentFinanceMaster.DocumentType.Credit)
                 {
@@ -163,13 +163,14 @@ namespace logicpos.financial.console.Test.Classes
                 }
             }
 
-            FIN_DocumentFinancePayment documentFinancePayment = ProcessFinanceDocument.PersistFinanceDocumentPayment(listInvoices, listCreditNotes, SettingsApp.XpoOidDocumentCustomer, SettingsApp.XpoOidDocumentPaymentMethod, SettingsApp.XpoOidDocumentCurrency, paymentAmount, paymentNotes);
+            fin_documentfinancepayment documentFinancePayment = ProcessFinanceDocument.PersistFinanceDocumentPayment(listInvoices, listCreditNotes, SettingsApp.XpoOidDocumentCustomer, SettingsApp.XpoOidDocumentPaymentMethod, SettingsApp.XpoOidDocumentCurrency, paymentAmount, paymentNotes);
 
             if (documentFinancePayment != null)
             {
                 Console.WriteLine(string.Format("documentFinancePayment.PaymentRefNo: [{0}]", documentFinancePayment.PaymentRefNo));
-                SYS_ConfigurationPrintersTemplates template = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(GlobalFramework.SessionXpo, documentFinancePayment.DocumentType.Oid).Template;
-                PrintRouter.PrintFinanceDocumentPayment(GlobalFramework.LoggedTerminal.Printer, documentFinancePayment);
+                sys_configurationprinterstemplates template = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(GlobalFramework.SessionXpo, documentFinancePayment.DocumentType.Oid).Template;
+				//TK016249 - Impressoras - Diferenciação entre Tipos
+                PrintRouter.PrintFinanceDocumentPayment(GlobalFramework.LoggedTerminal.ThermalPrinter, documentFinancePayment);
             }
 
             return documentFinancePayment;

@@ -29,6 +29,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private TouchButtonIconWithText _buttonFinishOrder;
         private TouchButtonIconWithText _buttonPayments;
         private TouchButtonIconWithText _buttonBarCode;
+		//IN009279 Parking ticket Service - implementar Cartão cliente
+        private TouchButtonIconWithText _buttonCardCode;
+        //private TouchButtonIconWithText _buttonSendTicket;
         //Public Properties
         public Window SourceWindow { get; set; }
         //Public UI
@@ -194,6 +197,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Size buttonBarCodeSize = Utils.StringToSize(themeButtons.ButtonBarCode.Size);
             string buttonBarCodeImageFileName = themeButtons.ButtonBarCode.ImageFileName;
             bool buttonBarCodeVisible = Convert.ToBoolean(themeButtons.ButtonBarCode.Visible);
+			
+			//IN009279 Parking ticket Service - implementar Cartão cliente
+            //Buttons:ButtonCardCode
+            string buttonCardCodeName = themeButtons.ButtonCardCode.Name;
+            string buttonCardCodeText = themeButtons.ButtonCardCode.Text;
+            Position buttonCardCodePosition = Utils.StringToPosition(themeButtons.ButtonBarCode.Position);
+            Size buttonCardCodeSize = Utils.StringToSize(themeButtons.ButtonPayments.Size);
+            string buttonCardCodeImageFileName = themeButtons.ButtonCardCode.ImageFileName;
+            bool buttonCardCodeVisible = Convert.ToBoolean(themeButtons.ButtonCardCode.Visible);
+            
 
             //Local Func to Get Shared Buttons
             Func<string, string, Size, string, TouchButtonIconWithText> getButton = (pObjectName, pText, pSize, pImageFileName)
@@ -227,10 +240,31 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _buttonFinishOrder = getButton(buttonFinishOrderName, buttonFinishOrderText, buttonFinishOrderSize, buttonFinishOrderImageFileName);
             _buttonPayments = getButton(buttonPaymentsName, buttonPaymentsText, buttonPaymentsSize, buttonPaymentsImageFileName);
             _buttonBarCode = getButton(buttonBarCodeName, buttonBarCodeText, buttonBarCodeSize, buttonBarCodeImageFileName);
+            _buttonCardCode = getButton(buttonCardCodeName, buttonCardCodeText, buttonCardCodeSize, buttonCardCodeImageFileName);
             //Always Disabled Buttons until Implementation
             _buttonGifts.Sensitive = false;
             _buttonMessages.Sensitive = false;
             //_buttonSplitAccount.Sensitive = false;
+			
+			//IN009279 Parking ticket Service - implementar Cartão cliente
+            if (GlobalFramework.AppUseParkingTicketModule)
+            {
+                _buttonCardCode.Visible = true;
+                buttonCardCodeVisible = true;
+                _buttonWeight.Visible = false;
+                buttonWeightVisible = false;
+                _buttonBarCode.Visible = false;
+                buttonBarCodeVisible = false;
+            }
+            else
+            {
+                _buttonCardCode.Visible = false;
+                buttonCardCodeVisible = false;
+                _buttonWeight.Visible = true;
+                buttonWeightVisible = true;
+                _buttonBarCode.Visible = true;
+                buttonBarCodeVisible = true;
+            }
 
             //Put Buttons/Theme
             Fixed fix = new Fixed() { BorderWidth = 10 };
@@ -246,6 +280,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (buttonListModeVisible) fix.Put(_buttonListMode, buttonListModePosition.X, buttonListModePosition.Y);
             if (buttonListOrderVisible) fix.Put(_buttonListOrder, buttonListOrderPosition.X, buttonListOrderPosition.Y);
             if (buttonWeightVisible) fix.Put(_buttonWeight, buttonWeightPosition.X, buttonWeightPosition.Y);
+            if (buttonCardCodeVisible) fix.Put(_buttonCardCode, buttonCardCodePosition.X, buttonCardCodePosition.Y);
             if (buttonGiftsVisible) fix.Put(_buttonGifts, buttonGiftsPosition.X, buttonGiftsPosition.Y);
             if (buttonChangeTableVisible) fix.Put(_buttonChangeTable, buttonChangeTablePosition.X, buttonChangeTablePosition.Y);
             if (buttonFinishOrderVisible) fix.Put(_buttonFinishOrder, buttonFinishOrderPosition.X, buttonFinishOrderPosition.Y);
@@ -276,6 +311,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _ticketList.ButtonKeyFinishOrder = _buttonFinishOrder;
             _ticketList.ButtonKeyPayments = _buttonPayments;
             _ticketList.ButtonKeyBarCode = _buttonBarCode;
+            _ticketList.ButtonKeyCardCode = _buttonCardCode;
             //Miss: SplitAccount
             //Miss: Messages
         }

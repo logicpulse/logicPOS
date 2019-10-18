@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{319A2AEE-A900-476B-BF30-95C74E41B51B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Medsphere.Widgets</RootNamespace>
+    <AssemblyName>Medsphere.Widgets</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\atk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\gdk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\glade-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\glib-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\gtk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cairo, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\Mono.Cairo.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\Mono.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>dll\pango-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BoxCellRenderer.cs" />
+    <Compile Include="CairoHelper.cs" />
+    <Compile Include="CPaned.cs" />
+    <Compile Include="FBox.cs" />
+    <Compile Include="graph\AxisLocation.cs" />
+    <Compile Include="graph\AxisSizeGroup.cs" />
+    <Compile Include="graph\BaseTreeModelPlot.cs" />
+    <Compile Include="graph\DateTimeAxis.cs" />
+    <Compile Include="graph\EventPlot.cs" />
+    <Compile Include="graph\Graph.cs" />
+    <Compile Include="graph\Graph2D.cs" />
+    <Compile Include="graph\GtkStyleProvider.cs" />
+    <Compile Include="graph\HistogramPlot.cs" />
+    <Compile Include="graph\IAxis.cs" />
+    <Compile Include="graph\IPlot.cs" />
+    <Compile Include="graph\IStyleProvider.cs" />
+    <Compile Include="graph\ITreeModelPlot.cs" />
+    <Compile Include="graph\LabelAxis.cs" />
+    <Compile Include="graph\Legend.cs" />
+    <Compile Include="graph\LinearAxis.cs" />
+    <Compile Include="graph\LinePlot.cs" />
+    <Compile Include="graph\LinkedLinePlot.cs" />
+    <Compile Include="graph\PlotColor.cs" />
+    <Compile Include="graph\PointShape.cs" />
+    <Compile Include="graph\ReferenceRangePlot.cs" />
+    <Compile Include="GridView.cs" />
+    <Compile Include="ICairoCellRenderer.cs" />
+    <Compile Include="IconLayout.cs" />
+    <Compile Include="PixbufCellRenderer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextCellRenderer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

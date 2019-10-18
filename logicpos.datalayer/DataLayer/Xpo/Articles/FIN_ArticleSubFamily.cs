@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ArticleSubFamily : XPGuidObject
+    public class fin_articlesubfamily : XPGuidObject
     {
-        public FIN_ArticleSubFamily() : base() { }
-        public FIN_ArticleSubFamily(Session session) : base(session) { }
+        public fin_articlesubfamily() : base() { }
+        public fin_articlesubfamily(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ArticleSubFamily), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ArticleSubFamily), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_articlesubfamily), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_articlesubfamily), "Code");
         }
 
         UInt32 fOrd;
@@ -70,73 +70,73 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //SubFamily One <> Many Article
-        [Association(@"SubFamilyReferencesArticle", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> Article
+        [Association(@"SubFamilyReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> Article
         {
-            get { return GetCollection<FIN_Article>("Article"); }
+            get { return GetCollection<fin_article>("Article"); }
         }
 
         //Family One <> Many SubFamily
-        FIN_ArticleFamily fFamily;
+        fin_articlefamily fFamily;
         [Association(@"FamilyReferencesSubFamily")]
-        public FIN_ArticleFamily Family
+        public fin_articlefamily Family
         {
             get { return fFamily; }
-            set { SetPropertyValue<FIN_ArticleFamily>("Family", ref fFamily, value); }
+            set { SetPropertyValue<fin_articlefamily>("Family", ref fFamily, value); }
         }
 
         //UserCommissionGroup One <> Many SubFamily
-        POS_UserCommissionGroup fCommissionGroup;
+        pos_usercommissiongroup fCommissionGroup;
         [Association(@"UserCommissionGroupReferencesSubFamily")]
-        public POS_UserCommissionGroup CommissionGroup
+        public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<POS_UserCommissionGroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
         }
 
         //CustomerDiscountGroup One <> Many SubFamily
-        ERP_CustomerDiscountGroup fDiscountGroup;
+        erp_customerdiscountgroup fDiscountGroup;
         [Association(@"CustomerDiscountGroupReferencesSubFamily")]
-        public ERP_CustomerDiscountGroup DiscountGroup
+        public erp_customerdiscountgroup DiscountGroup
         {
             get { return fDiscountGroup; }
-            set { SetPropertyValue<ERP_CustomerDiscountGroup>("DiscountGroup", ref fDiscountGroup, value); }
+            set { SetPropertyValue<erp_customerdiscountgroup>("DiscountGroup", ref fDiscountGroup, value); }
         }
 
         //ConfigurationVatRate One <> Many SubFamily
-        FIN_ConfigurationVatRate fVatOnTable;
+        fin_configurationvatrate fVatOnTable;
         [Association(@"ConfigurationVatRateReferencesSubFamily_ForVatOnTable")]
-        public FIN_ConfigurationVatRate VatOnTable
+        public fin_configurationvatrate VatOnTable
         {
             get { return fVatOnTable; }
-            set { SetPropertyValue<FIN_ConfigurationVatRate>("VatOnTable", ref fVatOnTable, value); }
+            set { SetPropertyValue<fin_configurationvatrate>("VatOnTable", ref fVatOnTable, value); }
         }
 
         //ConfigurationVatRate One <> Many SubFamily
-        FIN_ConfigurationVatRate fVatDirectSelling;
+        fin_configurationvatrate fVatDirectSelling;
         [Association(@"ConfigurationVatRateReferencesSubFamily_ForVatDirectSelling")]
-        public FIN_ConfigurationVatRate VatDirectSelling
+        public fin_configurationvatrate VatDirectSelling
         {
             get { return fVatDirectSelling; }
-            set { SetPropertyValue<FIN_ConfigurationVatRate>("VatDirectSelling", ref fVatDirectSelling, value); }
+            set { SetPropertyValue<fin_configurationvatrate>("VatDirectSelling", ref fVatDirectSelling, value); }
         }
 
         //ConfigurationPrinters One <> Many SubFamily
-        SYS_ConfigurationPrinters fPrinter;
+        sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesArticleSubFamily")]
-        public SYS_ConfigurationPrinters Printer
+        public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<SYS_ConfigurationPrinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
         }
 
         //One ConfigurationPrintersTemplates <> Many SubFamily
-        SYS_ConfigurationPrintersTemplates fTemplate;
+        sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesArticleSubFamily")]
-        public SYS_ConfigurationPrintersTemplates Template
+        public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<SYS_ConfigurationPrintersTemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
         }
     }
 }

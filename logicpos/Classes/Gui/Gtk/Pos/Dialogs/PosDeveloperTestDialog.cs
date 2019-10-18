@@ -26,13 +26,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private VBox _vbox;
         private uint _padding = 0;
         private EntryBoxValidation _entryBoxValidationCustomButton1;
-        private XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer> _xPOEntryBoxSelectRecordValidationTextMode;
+        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _xPOEntryBoxSelectRecordValidationTextMode;
 
         public PosDeveloperTestDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_template;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_template");
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
             _windowSize = new Size(595, 740);
 
@@ -97,16 +97,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(entryBoxValidationButton, true, true, _padding);
 
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input
-            FIN_DocumentFinanceType defaultValueDocumentFinanceType = (FIN_DocumentFinanceType)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_DocumentFinanceType), SettingsApp.XpoOidDocumentFinanceTypeInvoice);
+            fin_documentfinancetype defaultValueDocumentFinanceType = (fin_documentfinancetype)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancetype), SettingsApp.XpoOidDocumentFinanceTypeInvoice);
             CriteriaOperator criteriaOperatorDocumentFinanceType = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceType, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<FIN_DocumentFinanceType, TreeViewDocumentFinanceType>(this, Resx.global_documentfinanceseries_documenttype, "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, SettingsApp.RegexGuid, true);
+            XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> entryBoxSelectDocumentFinanceType = new XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", "Oid", defaultValueDocumentFinanceType, criteriaOperatorDocumentFinanceType, SettingsApp.RegexGuid, true);
             //entryBoxSelectDocumentFinanceType.EntryValidation.IsEditable = false;
             entryBoxSelectDocumentFinanceType.ClosePopup += delegate { };
             _vbox.PackStart(entryBoxSelectDocumentFinanceType, true, true, _padding);
 
             //Test XPOEntryBoxSelectRecordValidation with KeyBoard Input
             CriteriaOperator criteriaOperatorXPOEntryBoxSelectRecordValidationTextMode = null;
-            _xPOEntryBoxSelectRecordValidationTextMode = new XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationTextMode", "Name", "Name", null, criteriaOperatorXPOEntryBoxSelectRecordValidationTextMode, KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
+            _xPOEntryBoxSelectRecordValidationTextMode = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationTextMode", "Name", "Name", null, criteriaOperatorXPOEntryBoxSelectRecordValidationTextMode, KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
             //_xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Sensitive = false;
             //Start Disabled
             //_xPOEntryBoxSelectRecordValidationTextMode.ButtonKeyBoard.Sensitive = false;
@@ -115,13 +115,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Test XPOEntryBoxSelectRecordValidation without KeyBoard Input / Guid
             CriteriaOperator criteriaOperatorXPOEntryBoxSelectRecordValidationGuidMode = null;
-            XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer> xPOEntryBoxSelectRecordValidationGuidMode = new XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationGuidMode", "Name", "Oid", null, criteriaOperatorXPOEntryBoxSelectRecordValidationGuidMode, KeyboardMode.None, SettingsApp.RegexGuid, true);
+            XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> xPOEntryBoxSelectRecordValidationGuidMode = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, "XPOEntryBoxSelectRecordValidationGuidMode", "Name", "Oid", null, criteriaOperatorXPOEntryBoxSelectRecordValidationGuidMode, KeyboardMode.None, SettingsApp.RegexGuid, true);
             _xPOEntryBoxSelectRecordValidationTextMode.ClosePopup += delegate { };
             _vbox.PackStart(xPOEntryBoxSelectRecordValidationGuidMode, true, true, _padding);
             
             //Test DateTime Picker
             DateTime initalDateTime = DateTime.Now;
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, Resx.global_ship_to_delivery_date, "dateFormat", DateTime.Now, SettingsApp.RegexDate, true, SettingsApp.DateFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), "dateFormat", DateTime.Now, SettingsApp.RegexDate, true, SettingsApp.DateFormat);
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
             entryBoxShipToDeliveryDate.EntryValidation.Text = initalDateTime.ToString(SettingsApp.DateFormat);
 
@@ -130,7 +130,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(entryBoxShipToDeliveryDate, true, true, _padding);
 
             //Test DateTime Picker with KeyBoard
-            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, Resx.global_ship_to_delivery_date, SettingsApp.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, SettingsApp.RegexDateTime, true, SettingsApp.DateTimeFormat);
+            EntryBoxValidationDatePickerDialog entryBoxShipToDeliveryDateKeyboard = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), SettingsApp.DateTimeFormat, DateTime.Now, KeyboardMode.AlfaNumeric, SettingsApp.RegexDateTime, true, SettingsApp.DateTimeFormat);
             entryBoxShipToDeliveryDateKeyboard.EntryValidation.Sensitive = false;
             entryBoxShipToDeliveryDateKeyboard.ButtonKeyBoard.Sensitive = false;
             //entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
@@ -168,11 +168,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent.Put(listRadioButtonTouch, 100, 320);
 
             string initialShipFromDeliveryDate = FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateFormat);
-            //EntryBoxValidationButton entryBoxDate = new EntryBoxValidationButton(this, Resx.global_ship_from_delivery_date, KeyboardModes.Alfa, regexDate, false);
+            //EntryBoxValidationButton entryBoxDate = new EntryBoxValidationButton(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_from_delivery_date, KeyboardModes.Alfa, regexDate, false);
             //entryBoxDate.EntryValidation.Text = initialShipFromDeliveryDate;
             //entryBoxDate.EntryValidation.Validate();
 
-            EntryBoxValidationDatePickerDialog entryBoxDate = new EntryBoxValidationDatePickerDialog(this, Resx.global_ship_from_delivery_date, SettingsApp.RegexDate, false);
+            EntryBoxValidationDatePickerDialog entryBoxDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_from_delivery_date, SettingsApp.RegexDate, false);
             entryBoxDate.EntryValidation.Text = initialShipFromDeliveryDate;
             entryBoxDate.EntryValidation.Validate();
             entryBoxDate.ClosePopup += delegate
@@ -210,7 +210,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             FileFilter fileFilter = Utils.GetFileFilterImages();
 
-            EntryBoxValidationFilePickerDialog entryFilePicker = new EntryBoxValidationFilePickerDialog(this, Resx.global_file_image, "", false, fileFilter);
+            EntryBoxValidationFilePickerDialog entryFilePicker = new EntryBoxValidationFilePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file_image"), "", false, fileFilter);
             entryFilePicker.ClosePopup += delegate
             {
                 _log.Debug(string.Format("entryFilePicker.Value: [{0}]", entryFilePicker.Value));
@@ -227,7 +227,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void InitUI2()
         {
-            EntryBoxValidationDatePickerMultiDates entryBoxValidationDatePickerMultiDates = new EntryBoxValidationDatePickerMultiDates(this, Resx.global_datepicker_add_date);
+            EntryBoxValidationDatePickerMultiDates entryBoxValidationDatePickerMultiDates = new EntryBoxValidationDatePickerMultiDates(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_datepicker_add_date"));
             entryBoxValidationDatePickerMultiDates.WidthRequest = 400;
             entryBoxValidationDatePickerMultiDates.HeightRequest = 400;
             _vbox.PackStart(entryBoxValidationDatePickerMultiDates, true, true, _padding);
@@ -245,7 +245,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         void buttonTestDocumentMasterCreatePDF_Clicked(object sender, EventArgs e)
         {
             Guid guidOid = new Guid("099EF525-FCEC-48D8-9EE8-FA0F34A34ED4");
-            FIN_DocumentFinanceMaster documentFinanceMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), guidOid);
+            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), guidOid);
             string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
             _log.Debug(string.Format("fileName: [{0}]", fileName));
         }

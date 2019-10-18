@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ArticleStock : XPGuidObject
+    public class fin_articlestock : XPGuidObject
     {
-        public FIN_ArticleStock() : base() { }
-        public FIN_ArticleStock(Session session) : base(session) { }
+        public fin_articlestock() : base() { }
+        public fin_articlestock(Session session) : base(session) { }
 
         UInt32 fOrd;
         public UInt32 Ord
@@ -23,11 +23,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DateTime>("Date", ref fDate, value); }
         }
 
-        ERP_Customer fCustomer;
-        public ERP_Customer Customer
+        erp_customer fCustomer;
+        public erp_customer Customer
         {
             get { return fCustomer; }
-            set { SetPropertyValue<ERP_Customer>("Customer", ref fCustomer, value); }
+            set { SetPropertyValue<erp_customer>("Customer", ref fCustomer, value); }
         }
 
         string fDocumentNumber;
@@ -39,11 +39,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentNumber", ref fDocumentNumber, value); }
         }
 
-        FIN_Article fArticle;
-        public FIN_Article Article
+        fin_article fArticle;
+        public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<FIN_Article>("Article", ref fArticle, value); }
+            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
         }
 
         Decimal fQuantity;
@@ -53,18 +53,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
         }
 
-        FIN_DocumentFinanceMaster fDocumentMaster;
-        public FIN_DocumentFinanceMaster DocumentMaster
+        fin_documentfinancemaster fDocumentMaster;
+        public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
         }
 
-        FIN_DocumentFinanceDetail fDocumentDetail;
-        public FIN_DocumentFinanceDetail DocumentDetail
+        fin_documentfinancedetail fDocumentDetail;
+        public fin_documentfinancedetail DocumentDetail
         {
             get { return fDocumentDetail; }
-            set { SetPropertyValue<FIN_DocumentFinanceDetail>("DocumentDetail", ref fDocumentDetail, value); }
+            set { SetPropertyValue<fin_documentfinancedetail>("DocumentDetail", ref fDocumentDetail, value); }
         }
     }
 }

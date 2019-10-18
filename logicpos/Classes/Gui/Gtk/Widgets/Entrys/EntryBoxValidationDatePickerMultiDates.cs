@@ -116,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_datesList.Contains(_entryBoxAddDate.Value))
             {
-                Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_datepicker_existing_date_error);
+                Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error"));
             }
             else
             {
@@ -137,8 +137,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Failled: Invalid Date Range
                 else
                 {
-                    Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, 
-                        string.Format(Resx.dialog_message_datepicker_existing_date_error_outside_range, 
+                    Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
+                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error_outside_range"), 
                             _allowedPeriodBegin.ToString(SettingsApp.DateFormat),
                             _allowedPeriodEnd.ToString(SettingsApp.DateFormat)
                         )
@@ -150,7 +150,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void AddDateTimeEntry(DateTime pDateTime, bool pAddDateTimeToList)
         {
             string iconFileName = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
-            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(Resx.global_date, _datesList.Count + 1), KeyboardMode.None, SettingsApp.RegexDate, true, iconFileName);
+            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), _datesList.Count + 1), KeyboardMode.None, SettingsApp.RegexDate, true, iconFileName);
             entryBoxValidation.EntryValidation.Validate();
             entryBoxValidation.EntryValidation.Sensitive = false;
             //Remove Event

@@ -7,7 +7,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
     public abstract class ThermalPrinterBaseInternalTemplate : ThermalPrinterBaseTemplate
     {
-        public ThermalPrinterBaseInternalTemplate(SYS_ConfigurationPrinters pPrinter)
+        public ThermalPrinterBaseInternalTemplate(sys_configurationprinters pPrinter)
             : base(pPrinter, SettingsApp.PrinterThermalImageCompanyLogo)
         {
         }
@@ -20,7 +20,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 //Call Base Template PrintHeader
-                base.PrintHeader();
+                base.PrintHeader(true); /* IN009055 - when is Order, true */
 
                 //Call Child Content (Overrided)
                 PrintContent();
@@ -49,10 +49,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             //Extended Footer Text
-            _thermalPrinterGeneric.WriteLine(Resx.global_internal_document_footer1);
-            _thermalPrinterGeneric.WriteLine(Resx.global_internal_document_footer2);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer2"));
             _thermalPrinterGeneric.LineFeed();
-            _thermalPrinterGeneric.WriteLine(Resx.global_internal_document_footer3);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer3"));
 
             //Reset to Left
             _thermalPrinterGeneric.SetAlignLeft();

@@ -22,19 +22,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         //Private UI
         private TouchButtonIconWithText _buttonOk;
+        private TouchButtonIconWithText _buttonDataDemo;
         private ScrolledWindow _scrolledWindow;
         private EntryBoxValidation _entryBoxFiscalNumber;
         private EntryBoxValidation _entryBoxZipCode;
-        private XPOEntryBoxSelectRecordValidation<CFG_ConfigurationCountry, TreeViewConfigurationCountry> _entryBoxSelectSystemCountry;
-        private XPOEntryBoxSelectRecordValidation<CFG_ConfigurationCurrency, TreeViewConfigurationCurrency> _entryBoxSelectSystemCurrency;
+        private XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectSystemCountry;
+        private XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency> _entryBoxSelectSystemCurrency;
         //Non UI
-        private Dictionary<CFG_ConfigurationPreferenceParameter, EntryBoxValidation> _dictionaryObjectBag;
+        private Dictionary<cfg_configurationpreferenceparameter, EntryBoxValidation> _dictionaryObjectBag;
 
-        public PosEditCompanyDetails(Window pSourceWindow, DialogFlags pDialogFlags)
+        public PosEditCompanyDetails(Window pSourceWindow, DialogFlags pDialogFlags, bool useDataDemo)
             : base(pSourceWindow, pDialogFlags, true, false)
         {
             //Init Local Vars
-            String windowTitle = Resx.window_title_edit_configurationpreferenceparameter;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter");
             Size windowSize = new Size(600, 600);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
 
@@ -42,14 +43,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _sourceWindow = pSourceWindow;
 
             //ActionArea Buttons
-            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, Resx.global_button_label_ok, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonDataDemo = new TouchButtonIconWithText("touchButtonDataDemo_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, "Demo", _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileDemoData, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = true };
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
+            actionAreaButtons.Add(new ActionAreaButton(_buttonDataDemo, ResponseType.Apply));
             actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
 
             //Init Content
-            InitUI();
+            InitUI(useDataDemo);
 
             //Start Validated
             Validate();
@@ -61,12 +64,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //this.GrabFocus();
         }
 
-        private void InitUI()
+        private void InitUI(bool useDataDemo)
         {
             //Get Values from Config
             Guid systemCountry;
             Guid systemCurrency;
-            bool debug = false;
+            //bool debug = false;
             bool useDatabaseDataDemo = Convert.ToBoolean(GlobalFramework.Settings["useDatabaseDataDemo"]);
 
             if (GlobalFramework.Settings["xpoOidConfigurationCountrySystemCountry"] != string.Empty)
@@ -88,20 +91,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Init Inital Values
-            CFG_ConfigurationCountry intialValueConfigurationCountry = (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(typeof(CFG_ConfigurationCountry), systemCountry);
-            CFG_ConfigurationCurrency intialValueConfigurationCurrency = (CFG_ConfigurationCurrency)FrameworkUtils.GetXPGuidObject(typeof(CFG_ConfigurationCurrency), systemCurrency);
+            cfg_configurationcountry intialValueConfigurationCountry = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(typeof(cfg_configurationcountry), systemCountry);
+            cfg_configurationcurrency intialValueConfigurationCurrency = (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(typeof(cfg_configurationcurrency), systemCurrency);
 
             try
             {
                 //Init dictionary for Parameters + Widgets
-                _dictionaryObjectBag = new Dictionary<CFG_ConfigurationPreferenceParameter, EntryBoxValidation>();
+                _dictionaryObjectBag = new Dictionary<cfg_configurationpreferenceparameter, EntryBoxValidation>();
 
                 //Pack VBOX
                 VBox vbox = new VBox(true, 2) { WidthRequest = 300 };
 
                 //Country
                 CriteriaOperator criteriaOperatorSystemCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1) AND (RegExFiscalNumber IS NOT NULL)");
-                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<CFG_ConfigurationCountry, TreeViewConfigurationCountry>(this, Resx.global_country, "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, SettingsApp.RegexGuid, true);
+                _entryBoxSelectSystemCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", intialValueConfigurationCountry, criteriaOperatorSystemCountry, SettingsApp.RegexGuid, true);
                 _entryBoxSelectSystemCountry.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCountry.EntryValidation.Validate(_entryBoxSelectSystemCountry.Value.Oid.ToString());
                 //Disabled, Now Country and Currency are disabled
@@ -126,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Currency
                 CriteriaOperator criteriaOperatorSystemCurrency = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<CFG_ConfigurationCurrency, TreeViewConfigurationCurrency>(this, Resx.global_currency, "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, SettingsApp.RegexGuid, true);
+                _entryBoxSelectSystemCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorSystemCurrency, SettingsApp.RegexGuid, true);
                 _entryBoxSelectSystemCurrency.EntryValidation.IsEditable = false;
                 _entryBoxSelectSystemCurrency.EntryValidation.Validate(_entryBoxSelectSystemCurrency.Value.Oid.ToString());
 
@@ -147,7 +150,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse("(Disabled = 0 OR Disabled is NULL) AND (FormType = 1 AND FormPageNo = 1)");
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("Ord", SortingDirection.Ascending);
-                XPCollection xpCollection = new XPCollection(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationPreferenceParameter), criteriaOperator, sortProperty);
+                XPCollection xpCollection = new XPCollection(GlobalFramework.SessionXpo, typeof(cfg_configurationpreferenceparameter), criteriaOperator, sortProperty);
                 if (xpCollection.Count > 0)
                 {
                     string label = string.Empty;
@@ -155,10 +158,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     object regExObj = null;
                     bool required = false;
 
-                    foreach (CFG_ConfigurationPreferenceParameter item in xpCollection)
+                    foreach (cfg_configurationpreferenceparameter item in xpCollection)
                     {
-                        label = (item.ResourceString != null && Resx.ResourceManager.GetString(item.ResourceString) != null) 
-                            ? Resx.ResourceManager.GetString(item.ResourceString)
+                        label = (item.ResourceString != null && resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], item.ResourceString) != null)
+                            ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], item.ResourceString)
                             : string.Empty;
                         regExObj = FrameworkUtils.GetFieldValueFromType(typeof(SettingsApp), item.RegEx);
                         regEx = (regExObj != null) ? regExObj.ToString() : string.Empty;
@@ -167,7 +170,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Override Db Regex
                         if (item.Token == "COMPANY_POSTALCODE") regEx = _entryBoxSelectSystemCountry.Value.RegExZipCode;
                         if (item.Token == "COMPANY_FISCALNUMBER") regEx = _entryBoxSelectSystemCountry.Value.RegExFiscalNumber;
-
+                        //IN009295 Start POS - Capital Social com valor por defeito
+                        if (item.Token == "COMPANY_STOCK_CAPITAL") item.Value = "1";
                         //Debug
                         //_log.Debug(string.Format("Label: [{0}], RegEx: [{1}], Required: [{2}]", label, regEx, required));
 
@@ -177,14 +181,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             KeyboardMode.AlfaNumeric,
                             regEx,
                             required
-                        ) { Name = item.Token };
+                        )
+                        { Name = item.Token };
 
-                        //Only Assign Value if Debugger Attached : Now the value for normal user is cleaned in Init Database, we keep this code here, may be usefull
-                        if (Debugger.IsAttached == true || useDatabaseDataDemo) { entryBoxValidation.EntryValidation.Text = item.Value; }
-                        if (Debugger.IsAttached == true)
+                        //Use demo data to fill values
+                        if (useDataDemo)
                         {
-                            if (debug) _log.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true,useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
+                            if (item.Token == "COMPANY_NAME") { entryBoxValidation.EntryValidation.Text = "Acme"; }
+                            if (item.Token == "COMPANY_BUSINESS_NAME") { entryBoxValidation.EntryValidation.Text = "Technologies, Ltda"; }
+                            if (item.Token == "COMPANY_ADDRESS") { entryBoxValidation.EntryValidation.Text = "22 Acacia Ave"; }
+                            if (item.Token == "COMPANY_CITY") { entryBoxValidation.EntryValidation.Text = "Acme City"; }
+                            if (item.Token == "COMPANY_POSTALCODE") { entryBoxValidation.EntryValidation.Text = "1000-280"; }
+                            if (item.Token == "COMPANY_COUNTRY") { entryBoxValidation.EntryValidation.Text = "United States"; }
+                            if (item.Token == "COMPANY_FISCALNUMBER") {entryBoxValidation.EntryValidation.Text = "999999990"; }
+                            if (item.Token == "COMPANY_STOCK_CAPITAL") { entryBoxValidation.EntryValidation.Text = "1000"; }
+                            if (item.Token == "COMPANY_EMAIL") { entryBoxValidation.EntryValidation.Text = "mail@acme.com"; }
+                            if (item.Token == "COMPANY_WEBSITE") { entryBoxValidation.EntryValidation.Text = "www.acme.com"; }
                         }
+
+                        //Only Assign Value if Debugger Attached: Now the value for normal user is cleaned in Init Database, we keep this code here, may be usefull
+                        //if (Debugger.IsAttached == true || useDatabaseDataDemo && !useDataDemo) { entryBoxValidation.EntryValidation.Text = item.Value; }
+                        //if (Debugger.IsAttached == true)
+                        //{
+                        //    if (debug) _log.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true, useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
+                        //}
 
                         //Assign shared Event
                         entryBoxValidation.EntryValidation.Changed += EntryValidation_Changed;
@@ -201,7 +221,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             _entryBoxFiscalNumber = entryBoxValidation;
                             _entryBoxFiscalNumber.EntryValidation.Rule = _entryBoxSelectSystemCountry.Value.RegExFiscalNumber;
                         }
-                        
+
                         if (item.Token == "COMPANY_TAX_ENTITY") entryBoxValidation.EntryValidation.Text = "Global";
 
                         //Call Validate
@@ -288,23 +308,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     //entryBoxSelect: COMPANY_COUNTRY
                     //Assign and Save Country and Country Code 2 From entryBoxSelectCustomerCountry
-                    CFG_ConfigurationPreferenceParameter configurationPreferenceParameterCompanyCountry = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as CFG_ConfigurationPreferenceParameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountry = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountry.Value = _entryBoxSelectSystemCountry.Value.Designation;
                     configurationPreferenceParameterCompanyCountry.Save();
                     //entryBoxSelect: COMPANY_COUNTRY_CODE2
-                    CFG_ConfigurationPreferenceParameter configurationPreferenceParameterCompanyCountryCode2 = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as CFG_ConfigurationPreferenceParameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountryCode2.Value = _entryBoxSelectSystemCountry.Value.Code2;
                     configurationPreferenceParameterCompanyCountryCode2.Save();
                     //entryBoxSelect: SYSTEM_CURRENCY
-                    CFG_ConfigurationPreferenceParameter configurationPreferenceParameterSystemCurrency = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY")) as CFG_ConfigurationPreferenceParameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrency = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterSystemCurrency.Value = _entryBoxSelectSystemCurrency.Value.Acronym;
                     configurationPreferenceParameterSystemCurrency.Save();
                     //entryBoxSelect: COMPANY_COUNTRY_OID
-                    CFG_ConfigurationPreferenceParameter configurationPreferenceParameterCompanyCountryOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as CFG_ConfigurationPreferenceParameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterCompanyCountryOid.Value = _entryBoxSelectSystemCountry.Value.Oid.ToString();
                     configurationPreferenceParameterCompanyCountryOid.Save();
                     //entryBoxSelect: SYSTEM_CURRENCY_OID
-                    CFG_ConfigurationPreferenceParameter configurationPreferenceParameterSystemCurrencyOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(CFG_ConfigurationPreferenceParameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as CFG_ConfigurationPreferenceParameter);
+                    cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
                     configurationPreferenceParameterSystemCurrencyOid.Value = _entryBoxSelectSystemCurrency.Value.Oid.ToString();
                     configurationPreferenceParameterSystemCurrencyOid.Save();
 
@@ -332,6 +352,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //UNDER CONSTRUCTION
                     //Call SaveSystemProtection() Here
                     //Utils.SaveSystemProtection();
+                }
+                else if (pResponse == ResponseType.Apply)
+                {
+                    this.Destroy();
+                    PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, true);
+                    ResponseType response = (ResponseType)dialog.Run();
+                    dialog.Destroy();
                 }
                 else
                 {

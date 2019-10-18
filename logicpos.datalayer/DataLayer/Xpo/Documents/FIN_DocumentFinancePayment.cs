@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinancePayment : XPGuidObject
+    public class fin_documentfinancepayment : XPGuidObject
     {
-        public FIN_DocumentFinancePayment() : base() { }
-        public FIN_DocumentFinancePayment(Session session) : base(session) { }
+        public fin_documentfinancepayment() : base() { }
+        public fin_documentfinancepayment(Session session) : base(session) { }
 
         // BOF SAFT-T PT
 
@@ -248,53 +248,53 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many DocumentFinancePayment
-        FIN_DocumentFinanceType fDocumentType;
+        fin_documentfinancetype fDocumentType;
         [Association(@"DocumentFinanceTypeReferencesDocumentFinancePayment")]
-        public FIN_DocumentFinanceType DocumentType
+        public fin_documentfinancetype DocumentType
         {
             get { return fDocumentType; }
-            set { SetPropertyValue<FIN_DocumentFinanceType>("DocumentType", ref fDocumentType, value); }
+            set { SetPropertyValue<fin_documentfinancetype>("DocumentType", ref fDocumentType, value); }
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinancePayment
-        FIN_DocumentFinanceSeries fDocumentSerie;
+        fin_documentfinanceseries fDocumentSerie;
         [Association(@"DocumentFinanceSeriesReferencesDocumentFinancePayment")]
-        public FIN_DocumentFinanceSeries DocumentSerie
+        public fin_documentfinanceseries DocumentSerie
         {
             get { return fDocumentSerie; }
-            set { SetPropertyValue<FIN_DocumentFinanceSeries>("DocumentSerie", ref fDocumentSerie, value); }
+            set { SetPropertyValue<fin_documentfinanceseries>("DocumentSerie", ref fDocumentSerie, value); }
         }
 
         //ConfigurationPaymentMethod One <> Many DocumentFinancePayment
-        FIN_ConfigurationPaymentMethod fPaymentMethod;
+        fin_configurationpaymentmethod fPaymentMethod;
         [Association(@"ConfigurationPaymentMethodReferencesDocumentFinancePayment")]
-        public FIN_ConfigurationPaymentMethod PaymentMethod
+        public fin_configurationpaymentmethod PaymentMethod
         {
             get { return fPaymentMethod; }
-            set { SetPropertyValue<FIN_ConfigurationPaymentMethod>("PaymentMethod", ref fPaymentMethod, value); }
+            set { SetPropertyValue<fin_configurationpaymentmethod>("PaymentMethod", ref fPaymentMethod, value); }
         }
 
         //ConfigurationCurrency One <> Many DocumentFinancePayment
-        CFG_ConfigurationCurrency fCurrency;
+        cfg_configurationcurrency fCurrency;
         [Association(@"ConfigurationCurrencyReferencesDocumentFinancePayment")]
-        public CFG_ConfigurationCurrency Currency
+        public cfg_configurationcurrency Currency
         {
             get { return fCurrency; }
-            set { SetPropertyValue<CFG_ConfigurationCurrency>("Currency", ref fCurrency, value); }
+            set { SetPropertyValue<cfg_configurationcurrency>("Currency", ref fCurrency, value); }
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinancePayment
-        [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinancePayment", typeof(FIN_DocumentFinanceMasterPayment))]
-        public XPCollection<FIN_DocumentFinanceMasterPayment> DocumentPayment
+        [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinancePayment", typeof(fin_documentfinancemasterpayment))]
+        public XPCollection<fin_documentfinancemasterpayment> DocumentPayment
         {
-            get { return GetCollection<FIN_DocumentFinanceMasterPayment>("DocumentPayment"); }
+            get { return GetCollection<fin_documentfinancemasterpayment>("DocumentPayment"); }
         }
 
         //DocumentFinancePayment One <> Many SystemPrint
-        [Association(@"DocumentFinancePaymentReferencesSystemPrint", typeof(SYS_SystemPrint))]
-        public XPCollection<SYS_SystemPrint> SystemPrint
+        [Association(@"DocumentFinancePaymentReferencesSystemPrint", typeof(sys_systemprint))]
+        public XPCollection<sys_systemprint> SystemPrint
         {
-            get { return GetCollection<SYS_SystemPrint>("SystemPrint"); }
+            get { return GetCollection<sys_systemprint>("SystemPrint"); }
         }
     }
 }

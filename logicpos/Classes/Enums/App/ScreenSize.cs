@@ -2,6 +2,7 @@
 {
     public enum ScreenSize
     {
+        resDefault,
         res800x600,
         res1024x600,
         res1024x768,
@@ -17,6 +18,7 @@
         res1600x900,
         res1680x1050,
         res1920x1080,
+        res1920x1280,
         res1920x1200,
         res2560x1080,
         res2160x1440,

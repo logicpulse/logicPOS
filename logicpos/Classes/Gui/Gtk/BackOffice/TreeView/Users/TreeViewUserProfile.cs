@@ -22,16 +22,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //XpoMode
         public TreeViewUserProfile(Window pSourceWindow, XPGuidObject defaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
-            Type xpoGuidObjectType = typeof(SYS_UserProfile);
+            Type xpoGuidObjectType = typeof(sys_userprofile);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            SYS_UserProfile xpoDefaultValue = (defaultValue != null) ? defaultValue as SYS_UserProfile : null;
+            sys_userprofile xpoDefaultValue = (defaultValue != null) ? defaultValue as sys_userprofile : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogUserProfile);
 
             // XPO column properties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_profile, Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_profile"), Expand = true });
 
             //configure criteria/xpcollection/model
             CriteriaOperator criteria = pXpoCriteria;

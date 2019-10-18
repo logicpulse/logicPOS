@@ -5,24 +5,24 @@ namespace logicpos.datalayer.DataLayer.Xpo
 {
     //Todo : Change File to Work with Encrypted Attributed
     // 1. change string fEntityCountry; > to [Size(50)] / EntityCountry varchar(50) DEFAULT NULL (All Dbs)
-    // 2. uncomment InitEncryptedAttributes<FIN_DocumentFinanceMaster>(); in Constructor and OnAfterConstruction
+    // 2. uncomment InitEncryptedAttributes<fin_documentfinancemaster>(); in Constructor and OnAfterConstruction
     // 3. uncomment //[XPGuidObject(Encrypted = true)]
     // 4. saft and print documents are with encrypted values from db, require extra work
 
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceMaster : XPGuidObject
+    public class fin_documentfinancemaster : XPGuidObject
     {
-        public FIN_DocumentFinanceMaster() : base() { }
-        public FIN_DocumentFinanceMaster(Session session) : base(session)
+        public fin_documentfinancemaster() : base() { }
+        public fin_documentfinancemaster(Session session) : base(session)
         {
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist
-            InitEncryptedAttributes<FIN_DocumentFinanceMaster>();
+            InitEncryptedAttributes<fin_documentfinancemaster>();
         }
 
         protected override void OnAfterConstruction()
         {
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
-            InitEncryptedAttributes<FIN_DocumentFinanceMaster>();
+            InitEncryptedAttributes<fin_documentfinancemaster>();
         }
 
         DateTime fDate;
@@ -551,25 +551,25 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<Boolean>("Printed", ref fPrinted, value); }
         }
 
-        FIN_DocumentOrderMain fSourceOrderMain;
-        public FIN_DocumentOrderMain SourceOrderMain
+        fin_documentordermain fSourceOrderMain;
+        public fin_documentordermain SourceOrderMain
         {
             get { return fSourceOrderMain; }
-            set { SetPropertyValue<FIN_DocumentOrderMain>("SourceOrderMain", ref fSourceOrderMain, value); }
+            set { SetPropertyValue<fin_documentordermain>("SourceOrderMain", ref fSourceOrderMain, value); }
         }
 
-        FIN_DocumentFinanceMaster fDocumentParent;
-        public FIN_DocumentFinanceMaster DocumentParent
+        fin_documentfinancemaster fDocumentParent;
+        public fin_documentfinancemaster DocumentParent
         {
             get { return fDocumentParent; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentParent", ref fDocumentParent, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentParent", ref fDocumentParent, value); }
         }
 
-        FIN_DocumentFinanceMaster fDocumentChild;
-        public FIN_DocumentFinanceMaster DocumentChild
+        fin_documentfinancemaster fDocumentChild;
+        public fin_documentfinancemaster DocumentChild
         {
             get { return fDocumentChild; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentChild", ref fDocumentChild, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentChild", ref fDocumentChild, value); }
         }
 
         //WayBill Code
@@ -582,11 +582,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //AT WebServices
-        SYS_SystemAuditAT fATValidAuditResult;
-        public SYS_SystemAuditAT ATValidAuditResult
+        sys_systemauditat fATValidAuditResult;
+        public sys_systemauditat ATValidAuditResult
         {
             get { return fATValidAuditResult; }
-            set { SetPropertyValue<SYS_SystemAuditAT>("ATValidAuditResult", ref fATValidAuditResult, value); }
+            set { SetPropertyValue<sys_systemauditat>("ATValidAuditResult", ref fATValidAuditResult, value); }
         }
 
         Boolean fATResendDocument;
@@ -597,113 +597,113 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many SystemAuditATWS
-        [Association(@"DocumentFinanceMasterReferencesSystemAuditAT", typeof(SYS_SystemAuditAT))]
-        public XPCollection<SYS_SystemAuditAT> ATAudit
+        [Association(@"DocumentFinanceMasterReferencesSystemAuditAT", typeof(sys_systemauditat))]
+        public XPCollection<sys_systemauditat> ATAudit
         {
-            get { return GetCollection<SYS_SystemAuditAT>("ATAudit"); }
+            get { return GetCollection<sys_systemauditat>("ATAudit"); }
         }
 
         //DocumentFinanceMaster One <> Many DocumentFinanceDetail
-        [Association(@"DocumentFinanceMasterReferencesDocumentFinanceDetail", typeof(FIN_DocumentFinanceDetail))]
-        public XPCollection<FIN_DocumentFinanceDetail> DocumentDetail
+        [Association(@"DocumentFinanceMasterReferencesDocumentFinanceDetail", typeof(fin_documentfinancedetail))]
+        public XPCollection<fin_documentfinancedetail> DocumentDetail
         {
-            get { return GetCollection<FIN_DocumentFinanceDetail>("DocumentDetail"); }
+            get { return GetCollection<fin_documentfinancedetail>("DocumentDetail"); }
         }
 
         //DocumentFinanceMaster One <> Many DocumentFinanceMasterTotal
-        [Association(@"DocumentFinanceMasterReferencesDocumentFinanceMasterTotal", typeof(FIN_DocumentFinanceMasterTotal))]
-        public XPCollection<FIN_DocumentFinanceMasterTotal> Totals
+        [Association(@"DocumentFinanceMasterReferencesDocumentFinanceMasterTotal", typeof(fin_documentfinancemastertotal))]
+        public XPCollection<fin_documentfinancemastertotal> Totals
         {
-            get { return GetCollection<FIN_DocumentFinanceMasterTotal>("Totals"); }
+            get { return GetCollection<fin_documentfinancemastertotal>("Totals"); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceMaster
-        FIN_DocumentFinanceType fDocumentType;
+        fin_documentfinancetype fDocumentType;
         [Association(@"DocumentFinanceTypeReferencesDocumentFinanceMaster")]
-        public FIN_DocumentFinanceType DocumentType
+        public fin_documentfinancetype DocumentType
         {
             get { return fDocumentType; }
-            set { SetPropertyValue<FIN_DocumentFinanceType>("DocumentType", ref fDocumentType, value); }
+            set { SetPropertyValue<fin_documentfinancetype>("DocumentType", ref fDocumentType, value); }
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinanceMaster
-        FIN_DocumentFinanceSeries fDocumentSerie;
+        fin_documentfinanceseries fDocumentSerie;
         [Association(@"DocumentFinanceSeriesReferencesDocumentFinanceMaster")]
-        public FIN_DocumentFinanceSeries DocumentSerie
+        public fin_documentfinanceseries DocumentSerie
         {
             get { return fDocumentSerie; }
-            set { SetPropertyValue<FIN_DocumentFinanceSeries>("DocumentSerie", ref fDocumentSerie, value); }
+            set { SetPropertyValue<fin_documentfinanceseries>("DocumentSerie", ref fDocumentSerie, value); }
         }
 
         //ConfigurationPaymentMethod One <> Many DocumentFinanceMaster
-        FIN_ConfigurationPaymentMethod fPaymentMethod;
+        fin_configurationpaymentmethod fPaymentMethod;
         [Association(@"ConfigurationPaymentMethodReferencesDocumentFinanceMaster")]
-        public FIN_ConfigurationPaymentMethod PaymentMethod
+        public fin_configurationpaymentmethod PaymentMethod
         {
             get { return fPaymentMethod; }
-            set { SetPropertyValue<FIN_ConfigurationPaymentMethod>("PaymentMethod", ref fPaymentMethod, value); }
+            set { SetPropertyValue<fin_configurationpaymentmethod>("PaymentMethod", ref fPaymentMethod, value); }
         }
 
         //ConfigurationPaymentCondition One <> Many DocumentFinanceMaster
-        FIN_ConfigurationPaymentCondition fPaymentCondition;
+        fin_configurationpaymentcondition fPaymentCondition;
         [Association(@"ConfigurationPaymentConditionReferencesDocumentFinanceMaster")]
-        public FIN_ConfigurationPaymentCondition PaymentCondition
+        public fin_configurationpaymentcondition PaymentCondition
         {
             get { return fPaymentCondition; }
-            set { SetPropertyValue<FIN_ConfigurationPaymentCondition>("PaymentCondition", ref fPaymentCondition, value); }
+            set { SetPropertyValue<fin_configurationpaymentcondition>("PaymentCondition", ref fPaymentCondition, value); }
         }
 
         //ConfigurationCurrency One <> Many DocumentFinanceMaster
-        CFG_ConfigurationCurrency fCurrency;
+        cfg_configurationcurrency fCurrency;
         [Association(@"ConfigurationCurrencyReferencesDocumentFinanceMaster")]
-        public CFG_ConfigurationCurrency Currency
+        public cfg_configurationcurrency Currency
         {
             get { return fCurrency; }
-            set { SetPropertyValue<CFG_ConfigurationCurrency>("Currency", ref fCurrency, value); }
+            set { SetPropertyValue<cfg_configurationcurrency>("Currency", ref fCurrency, value); }
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinanceMaster
-        [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinanceMaster", typeof(FIN_DocumentFinanceMasterPayment))]
-        public XPCollection<FIN_DocumentFinanceMasterPayment> DocumentPayment
+        [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinanceMaster", typeof(fin_documentfinancemasterpayment))]
+        public XPCollection<fin_documentfinancemasterpayment> DocumentPayment
         {
-            get { return GetCollection<FIN_DocumentFinanceMasterPayment>("DocumentPayment"); }
+            get { return GetCollection<fin_documentfinancemasterpayment>("DocumentPayment"); }
         }
 
         //DocumentFinanceMaster One <> Many SystemPrint
-        [Association(@"DocumentFinanceMasterReferencesSystemPrint", typeof(SYS_SystemPrint))]
-        public XPCollection<SYS_SystemPrint> SystemPrint
+        [Association(@"DocumentFinanceMasterReferencesSystemPrint", typeof(sys_systemprint))]
+        public XPCollection<sys_systemprint> SystemPrint
         {
-            get { return GetCollection<SYS_SystemPrint>("SystemPrint"); }
+            get { return GetCollection<sys_systemprint>("SystemPrint"); }
         }
 
 ////SystemNotification One <> Many DocumentFinanceMaster
-//SYS_SystemNotification fNotification;
+//sys_systemnotification fNotification;
 //[Association(@"SystemNotificationReferencesDocumentFinanceMaster")]
-//public SYS_SystemNotification Notification
+//public sys_systemnotification Notification
 //{
 //    get { return fNotification; }
-//    set { SetPropertyValue<SYS_SystemNotification>("Notification", ref fNotification, value); }
+//    set { SetPropertyValue<sys_systemnotification>("Notification", ref fNotification, value); }
 //}
 
 ////SystemNotification One <> Many DocumentFinanceMaster
-//[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(SYS_SystemNotification))]
-//public XPCollection<SYS_SystemNotification> Notification
+//[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(sys_systemnotification))]
+//public XPCollection<sys_systemnotification> Notification
 //{
-//    get { return GetCollection<SYS_SystemNotification>("Notification"); }
+//    get { return GetCollection<sys_systemnotification>("Notification"); }
 //}
 
 ////DocumentFinanceMaster Many <> Many SystemNotification
-//[Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(SYS_SystemNotification))]
-//public XPCollection<SYS_SystemNotification> Notification
+//[Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(sys_systemnotification))]
+//public XPCollection<sys_systemnotification> Notification
 //{
-//    get { return GetCollection<SYS_SystemNotification>("Notification"); }
+//    get { return GetCollection<sys_systemnotification>("Notification"); }
 //}
 
         //SystemNotification One <> Many DocumentFinanceMaster
-        [Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(SYS_SystemNotificationDocumentMaster))]
-        public XPCollection<SYS_SystemNotificationDocumentMaster> Notifications
+        [Association(@"DocumentFinanceMasterReferenceSystemNotification", typeof(sys_systemnotificationdocumentmaster))]
+        public XPCollection<sys_systemnotificationdocumentmaster> Notifications
         {
-            get { return GetCollection<SYS_SystemNotificationDocumentMaster>("Notifications"); }
+            get { return GetCollection<sys_systemnotificationdocumentmaster>("Notifications"); }
         }
     }
 }

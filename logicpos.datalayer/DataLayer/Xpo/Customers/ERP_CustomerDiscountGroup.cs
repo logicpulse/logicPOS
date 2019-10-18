@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class ERP_CustomerDiscountGroup : XPGuidObject
+    public class erp_customerdiscountgroup : XPGuidObject
     {
-        public ERP_CustomerDiscountGroup() : base() { }
-        public ERP_CustomerDiscountGroup(Session session) : base(session) { }
+        public erp_customerdiscountgroup() : base() { }
+        public erp_customerdiscountgroup(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(ERP_CustomerDiscountGroup), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(ERP_CustomerDiscountGroup), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(erp_customerdiscountgroup), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(erp_customerdiscountgroup), "Code");
         }
 
         UInt32 fOrd;
@@ -40,31 +40,31 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
 //CustomerDiscountGroup One <> Many Family
-[Association(@"CustomerDiscountGroupReferencesFamily", typeof(FIN_ArticleFamily))]
-public XPCollection<FIN_ArticleFamily> Family
+[Association(@"CustomerDiscountGroupReferencesFamily", typeof(fin_articlefamily))]
+public XPCollection<fin_articlefamily> Family
 {
-    get { return GetCollection<FIN_ArticleFamily>("Family"); }
+    get { return GetCollection<fin_articlefamily>("Family"); }
 }
 
 //CustomerDiscountGroup One <> Many SubFamily
-[Association(@"CustomerDiscountGroupReferencesSubFamily", typeof(FIN_ArticleSubFamily))]
-public XPCollection<FIN_ArticleSubFamily> SubFamily
+[Association(@"CustomerDiscountGroupReferencesSubFamily", typeof(fin_articlesubfamily))]
+public XPCollection<fin_articlesubfamily> SubFamily
 {
-    get { return GetCollection<FIN_ArticleSubFamily>("SubFamily"); }
+    get { return GetCollection<fin_articlesubfamily>("SubFamily"); }
 }
 
 //CustomerDiscountGroup One <> Many Article
-[Association(@"CustomerDiscountGroupReferencesArticle", typeof(FIN_Article))]
-public XPCollection<FIN_Article> Article
+[Association(@"CustomerDiscountGroupReferencesArticle", typeof(fin_article))]
+public XPCollection<fin_article> Article
 {
-    get { return GetCollection<FIN_Article>("Article"); }
+    get { return GetCollection<fin_article>("Article"); }
 }
 
         //CustomerDiscountGroup One <> Many Customer
-        [Association(@"CustomerDiscountGroupReferencesCustomer", typeof(ERP_Customer))]
-        public XPCollection<ERP_Customer> Customer
+        [Association(@"CustomerDiscountGroupReferencesCustomer", typeof(erp_customer))]
+        public XPCollection<erp_customer> Customer
         {
-            get { return GetCollection<ERP_Customer>("Customer"); }
+            get { return GetCollection<erp_customer>("Customer"); }
         }
     }
 }

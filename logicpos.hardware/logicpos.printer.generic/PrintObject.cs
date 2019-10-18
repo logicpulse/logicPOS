@@ -511,7 +511,7 @@ namespace logicpos.printer.generic
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _log.Error("void OpenDoor(string pDriver, string pPrinterName, int m, int t1, int t2) :: " + ex.Message, ex);
             }
         }
     }

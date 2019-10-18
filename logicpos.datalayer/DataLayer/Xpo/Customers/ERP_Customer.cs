@@ -5,26 +5,26 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class ERP_Customer : XPGuidObject
+    public class erp_customer : XPGuidObject
     {
         //Log4Net
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public ERP_Customer() : base() { }
-        public ERP_Customer(Session session) : base(session)
+        public erp_customer() : base() { }
+        public erp_customer(Session session) : base(session)
         {
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist
-            InitEncryptedAttributes<ERP_Customer>();
+            InitEncryptedAttributes<erp_customer>();
         }
 
         protected override void OnAfterConstruction()
         {
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
-            InitEncryptedAttributes<ERP_Customer>();
+            InitEncryptedAttributes<erp_customer>();
 
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(ERP_Customer), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(ERP_Customer), "Code");
-            Country = this.Session.GetObjectByKey<CFG_ConfigurationCountry>(SettingsApp.ConfigurationSystemCountry.Oid);
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(erp_customer), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(erp_customer), "Code");
+            Country = this.Session.GetObjectByKey<cfg_configurationcountry>(SettingsApp.ConfigurationSystemCountry.Oid);
         }
 
         protected override void OnNewRecordSaving()
@@ -244,39 +244,39 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //CustomerType One <> Many Customer
-        ERP_CustomerType fCustomerType;
+        erp_customertype fCustomerType;
         [Association(@"CustomerTypeReferencesCustomer")]
-        public ERP_CustomerType CustomerType
+        public erp_customertype CustomerType
         {
             get { return fCustomerType; }
-            set { SetPropertyValue<ERP_CustomerType>("CustomerType", ref fCustomerType, value); }
+            set { SetPropertyValue<erp_customertype>("CustomerType", ref fCustomerType, value); }
         }
 
         //CustomerDiscountGroup One <> Many Customer
-        ERP_CustomerDiscountGroup fDiscountGroup;
+        erp_customerdiscountgroup fDiscountGroup;
         [Association(@"CustomerDiscountGroupReferencesCustomer")]
-        public ERP_CustomerDiscountGroup DiscountGroup
+        public erp_customerdiscountgroup DiscountGroup
         {
             get { return fDiscountGroup; }
-            set { SetPropertyValue<ERP_CustomerDiscountGroup>("DiscountGroup", ref fDiscountGroup, value); }
+            set { SetPropertyValue<erp_customerdiscountgroup>("DiscountGroup", ref fDiscountGroup, value); }
         }
 
         //ConfigurationPriceType One <> Many Customer
-        FIN_ConfigurationPriceType fPriceType;
+        fin_configurationpricetype fPriceType;
         [Association(@"ConfigurationPriceTypeReferencesCustomer")]
-        public FIN_ConfigurationPriceType PriceType
+        public fin_configurationpricetype PriceType
         {
             get { return fPriceType; }
-            set { SetPropertyValue<FIN_ConfigurationPriceType>("PriceType", ref fPriceType, value); }
+            set { SetPropertyValue<fin_configurationpricetype>("PriceType", ref fPriceType, value); }
         }
 
         //ConfigurationCountry One <> Many Customer
-        CFG_ConfigurationCountry fCountry;
+        cfg_configurationcountry fCountry;
         [Association(@"ConfigurationCountryReferencesCustomer")]
-        public CFG_ConfigurationCountry Country
+        public cfg_configurationcountry Country
         {
             get { return fCountry; }
-            set { SetPropertyValue<CFG_ConfigurationCountry>("Country", ref fCountry, value); }
+            set { SetPropertyValue<cfg_configurationcountry>("Country", ref fCountry, value); }
         }
     }
 }

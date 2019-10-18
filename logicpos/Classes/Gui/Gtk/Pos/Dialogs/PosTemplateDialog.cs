@@ -27,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_template;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_template");
             Size windowSize = new Size(600, 340);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
 

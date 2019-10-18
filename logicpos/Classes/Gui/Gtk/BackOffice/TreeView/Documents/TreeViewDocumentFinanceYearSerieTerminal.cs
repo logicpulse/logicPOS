@@ -24,20 +24,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewDocumentFinanceYearSerieTerminal(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(FIN_DocumentFinanceYearSerieTerminal);
+            Type xpoGuidObjectType = typeof(fin_documentfinanceyearserieterminal);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            FIN_DocumentFinanceYearSerieTerminal defaultValue = (pDefaultValue != null) ? pDefaultValue as FIN_DocumentFinanceYearSerieTerminal : null;
+            fin_documentfinanceyearserieterminal defaultValue = (pDefaultValue != null) ? pDefaultValue as fin_documentfinanceyearserieterminal : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogDocumentFinanceYearSerieTerminal);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalYear") { Title = Resx.global_fiscal_year, ChildName = "Designation" });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("DocumentType") { Title = Resx.global_documentfinanceseries_documenttype, ChildName = "Designation" });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Serie") { Title = Resx.global_documentfinance_series, ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Terminal") { Title = Resx.global_configurationplaceterminal, ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalYear") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), ChildName = "Designation" });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("DocumentType") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype, ChildName = "Designation" });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("Serie") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_series, ChildName = "Designation" });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Terminal") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_configurationplaceterminal"), ChildName = "Designation" });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model : Use Default Filter
             CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null)) ? CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)") : pXpoCriteria;

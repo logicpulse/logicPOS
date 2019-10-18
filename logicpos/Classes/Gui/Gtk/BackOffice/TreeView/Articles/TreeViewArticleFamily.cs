@@ -23,18 +23,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewArticleFamily(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(FIN_ArticleFamily);
+            Type xpoGuidObjectType = typeof(fin_articlefamily);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            FIN_ArticleFamily defaultValue = (pDefaultValue != null) ? pDefaultValue as FIN_ArticleFamily : null;
+            fin_articlefamily defaultValue = (pDefaultValue != null) ? pDefaultValue as fin_articlefamily : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogArticleFamily);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Printer") { Title = Resx.global_device_printer, ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Printer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_device_printer"), ChildName = "Designation" });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="08/24/2018 15:09:43" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+  <Dictionary>
+    <BusinessObjectDataSource Name="ArticleStockMovement" ReferenceName="ArticleStockMovement" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Articles.FRBOArticleStockMovementView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="ArticleFamilyOrd" DataType="System.UInt32"/>
+      <Column Name="ArticleFamilyCode" DataType="System.UInt32"/>
+      <Column Name="ArticleFamilyDesignation" DataType="System.String"/>
+      <Column Name="ArticleSubFamily" DataType="System.String"/>
+      <Column Name="ArticleSubFamilyOrd" DataType="System.UInt32"/>
+      <Column Name="ArticleSubFamilyCode" DataType="System.UInt32"/>
+      <Column Name="ArticleSubFamilyDesignation" DataType="System.String"/>
+      <Column Name="Article" DataType="System.String"/>
+      <Column Name="ArticleOrd" DataType="System.UInt32"/>
+      <Column Name="ArticleCode" DataType="System.String"/>
+      <Column Name="ArticleCodeDealer" DataType="System.String"/>
+      <Column Name="ArticleDesignation" DataType="System.String"/>
+      <Column Name="ArticleStock" DataType="System.String"/>
+      <Column Name="ArticleStockDate" DataType="System.DateTime"/>
+      <Column Name="ArticleStockDateDay" DataType="System.String"/>
+      <Column Name="ArticleStockDocumentNumber" DataType="System.String"/>
+      <Column Name="ArticleStockQuantity" DataType="System.Decimal"/>
+      <Column Name="ConfigurationUnitMeasureaumAcronym" DataType="System.String"/>
+      <Column Name="ConfigurationUnitMeasureDesignation" DataType="System.String"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Total Name="DataSum" TotalType="Count" Evaluator="Data2"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
+      <inherited Name="PictureCompanyLogo"/>
+      <inherited Name="TextReportTitle" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
+    </inherited>
+    <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="53" Width="718.2" Height="37.8" Condition="[ArticleStockMovement.ArticleStockDateDay]">
+      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" Text="[ArticleStockMovement.ArticleStockDateDay]" VertAlign="Center" Style="DataLevel1Font"/>
+      <DataBand Name="Data2" Top="127.15" Width="718.2" Height="18.9" CanGrow="true" EvenStyle="EvenRow" DataSource="ArticleStockMovement">
+        <TextObject Name="Text17" Width="170.1" Height="18.9" Text="[ArticleStockMovement.ArticleStockDocumentNumber]" VertAlign="Center" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text14" Left="292.95" Width="85.05" Height="18.9" CanGrow="true" Text="[ArticleStockMovement.ArticleCode]" Format="Custom" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text28" Left="614.25" Width="103.95" Height="18.9" Text="[FormatNumber([ArticleStockMovement.ArticleStockQuantity],2)] [ArticleStockMovement.ConfigurationUnitMeasureaumAcronym]" HorzAlign="Right" VertAlign="Center" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text31" Left="378" Width="236.25" Height="18.9" CanGrow="true" Text="[ArticleStockMovement.ArticleDesignation]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <TextObject Name="Text32" Left="170.1" Width="122.85" Height="18.9" Text="[ArticleStockMovement.ArticleStockDate]" Format="Custom" Format.Format="" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <DataHeaderBand Name="DataHeader1" Top="94.8" Width="718.2" Height="28.35" Border.Lines="Top">
+          <TextObject Name="Text25" Top="9.45" Width="170.1" Height="18.9" Text="[Res(&quot;global_document_number&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text26" Left="292.95" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text27" Left="614.25" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text30" Left="378" Top="9.45" Width="236.25" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text33" Left="170.1" Top="9.45" Width="122.85" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+        </DataHeaderBand>
+        <Sort>
+          <Sort Expression="[ArticleStockMovement.ArticleStockDate]"/>
+        </Sort>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="150.05" Width="718.2" Height="18.9">
+        <TextObject Name="Text29" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [DataSum]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <inherited Name="PageFooter1" Top="172.95" Height="56.7">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>

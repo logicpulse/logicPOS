@@ -1,10 +1,13 @@
-﻿using Gtk;
+﻿using DevExpress.Xpo;
+using DevExpress.Xpo.DB;
+using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Hardware;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Hardware.Printers;
@@ -19,6 +22,7 @@ namespace logicpos
     {
         //Log4Net
         private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private Guid pTableOid = Guid.Empty;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: Window
@@ -167,7 +171,7 @@ namespace logicpos
 
         void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)
         {
-            PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(this, Gtk.DialogFlags.DestroyWithParent);
+            PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(this, Gtk.DialogFlags.DestroyWithParent, 0);
             ResponseType response = (ResponseType)dialog.Run();
             dialog.Destroy();
         }
@@ -189,10 +193,10 @@ namespace logicpos
                     //Already logged
                     if (GlobalFramework.SessionApp.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
                     {
-                        GlobalFramework.LoggedUser = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(typeof(SYS_UserDetail), dialogChangeUser.UserDetail.Oid);
+                        GlobalFramework.LoggedUser = (sys_userdetail)FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                         GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions();
                         _ticketList.UpdateTicketListButtons();
-                        FrameworkUtils.Audit("USER_CHANGE", string.Format(Resx.audit_message_user_change, GlobalFramework.LoggedUser.Name));
+                        FrameworkUtils.Audit("USER_CHANGE", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_change"), GlobalFramework.LoggedUser.Name));
                         terminalInfo = string.Format("{0} : {1}", GlobalFramework.LoggedTerminal.Designation, GlobalFramework.LoggedUser.Name);
                         if (_labelTerminalInfo.Text != terminalInfo) _labelTerminalInfo.Text = terminalInfo;
                     }
@@ -207,10 +211,10 @@ namespace logicpos
                             {
                                 GlobalFramework.SessionApp.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, FrameworkUtils.CurrentDateTimeAtomic());
                                 GlobalFramework.SessionApp.Write();
-                                GlobalFramework.LoggedUser = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(typeof(SYS_UserDetail), dialogChangeUser.UserDetail.Oid);
+                                GlobalFramework.LoggedUser = (sys_userdetail)FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions();
                                 _ticketList.UpdateTicketListButtons();
-                                FrameworkUtils.Audit("USER_LOGIN", string.Format(Resx.audit_message_user_login, GlobalFramework.LoggedUser.Name));
+                                FrameworkUtils.Audit("USER_LOGIN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_login"), GlobalFramework.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", GlobalFramework.LoggedTerminal.Designation, GlobalFramework.LoggedUser.Name);
                                 if (_labelTerminalInfo.Text != terminalInfo) _labelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
@@ -255,9 +259,24 @@ namespace logicpos
             _tablePadFamily.SelectedButtonOid = button.CurrentButtonOid;
             //SubFamily Filter
             _tablePadSubFamily.Filter = string.Format(" AND (Family = '{0}')", button.CurrentButtonOid);
-            //Article Filter : When Change Family always change Article too
-            TablePadArticle.Filter = " AND (SubFamily = '" + _tablePadSubFamily.SelectedButtonOid + "')";
 
+            //IN009277
+            string getFirstSubFamily = "0";
+            if (GlobalFramework.DatabaseType.ToString() == "MySql" || GlobalFramework.DatabaseType.ToString() == "SQLite")
+            {
+                string mysql = string.Format("SELECT Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc LIMIT 1", _tablePadFamily.SelectedButtonOid);
+                getFirstSubFamily = GlobalFramework.SessionXpo.ExecuteScalar(mysql).ToString();
+            }
+            else if (GlobalFramework.DatabaseType.ToString() == "MSSqlServer")
+            {
+                string mssqlServer = string.Format("SELECT TOP 1 Oid FROM fin_articlesubfamily WHERE Family = '{0}' Order by CODE Asc", _tablePadFamily.SelectedButtonOid);
+                getFirstSubFamily = GlobalFramework.SessionXpo.ExecuteScalar(mssqlServer).ToString();
+            }
+
+            //Article Filter : When Change Family always change Article too
+            TablePadArticle.Filter = " AND (SubFamily = '" + getFirstSubFamily + "')";
+            //IN009277ENDS
+          
             //Debug
             //_log.Debug(string.Format("_tablePadFamily_Clicked(): F:CurrentId: [{0}], Name: [{1}]", button.CurrentId, button.Name));
             //_log.Debug(string.Format("_tablePadFamily_Clicked(): SubFamily.Sql:[{0}{1}{2}]", _tablePadSubFamily.Sql, _tablePadSubFamily.Filter, _tablePadSubFamily.Order));
@@ -321,18 +340,35 @@ namespace logicpos
         private void HWBarCodeReader_Captured(object sender, EventArgs e)
         {
             //_log.Debug(String.Format("Window: [{0}] Device: [{1}] Captured: [{2}] Length: [{3}]", GlobalApp.HWBarCodeReader.Window, GlobalApp.HWBarCodeReader.Device, GlobalApp.HWBarCodeReader.Buffer, GlobalApp.HWBarCodeReader.Buffer.Length));
-
-            switch (GlobalApp.BarCodeReader.Device)
+            /* 
+             * TK013134 - Parking Ticket 
+             * Check for cases that a table has not been opened yet
+             */
+            if (GlobalApp.WindowPos.TicketList.CurrentOrderDetails != null)
             {
-                case InputReaderDevice.None:
-                    break;
-                case InputReaderDevice.BarCodeReader:
-                    TicketList.InsertOrUpdate(GlobalApp.BarCodeReader.Buffer);
-                    break;
-                case InputReaderDevice.CardReader:
-                    break;
-                default:
-                    break;
+                    switch (GlobalApp.BarCodeReader.Device)
+                {
+                    case InputReaderDevice.None:
+                        break;
+                    case InputReaderDevice.BarCodeReader:
+                    case InputReaderDevice.CardReader:
+                        /* TK013134 - Parking Ticket */
+                        // TODO implement a message dialog for UX purposes informing user that needs to select a table before scan a barcode
+                        if (GlobalFramework.AppUseParkingTicketModule)
+                        {
+                            GlobalApp.ParkingTicket.GetTicketDetailFromWS(GlobalApp.BarCodeReader.Buffer);
+                            //TicketList.InsertOrUpdate(GlobalApp.BarCodeReader.Buffer);
+                        }
+                        // Default Mode : Articles
+                        else
+                        {
+                            TicketList.InsertOrUpdate(GlobalApp.BarCodeReader.Buffer);
+                        }
+                        break;
+                    
+                    default:
+                        break;
+                }
             }
         }
 
@@ -352,28 +388,84 @@ namespace logicpos
 
         public void UpdateWorkSessionUI()
         {
+            //_log.Debug("void UpdateWorkSessionUI() :: Starting..."); /* IN009008 */
+
             //Update Toolbar UI Buttons After ToolBox and ToolBar
             if (GlobalFramework.WorkSessionPeriodDay != null)
             {
                 //With Valid WorkSessionPeriodDay
                 if (GlobalFramework.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
-                    //if (_touchButtonPosToolbarCashDrawer.LabelText != Resx.global_worksession_close_day)
-                    //  _touchButtonPosToolbarCashDrawer.LabelText = Resx.global_worksession_close_day;
+                    //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_close_day)
+                    //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_close_day;
                     //if (!_touchButtonPosToolbarCashDrawer.Sensitive == true)
                     //  _touchButtonPosToolbarCashDrawer.Sensitive = true;
 
                     //With Valid WorkSessionPeriodTerminal
                     if (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
                     {
-                        if (GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid)
-                          && GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].Table != null)
+                        bool isTableOpened = GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid)
+                          && GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].Table != null;
+                        //IN009231
+                        //Abrir ordem na abertura
+                        SelectedData xpoSelectedData = null;
+                        if (GlobalFramework.DatabaseType.ToString() == "MySql" || GlobalFramework.DatabaseType.ToString() == "SQLite")
+                        {
+                            String sqlQuery = @"SELECT Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc LIMIT 1";
+
+                            xpoSelectedData = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(sqlQuery);
+                        }
+                        else if (GlobalFramework.DatabaseType.ToString() == "MSSqlServer")
+                        {
+                            String sqlQuery = @"SELECT TOP 1 Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc";
+                            xpoSelectedData = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(sqlQuery);
+                        }
+
+                        SelectStatementResultRow[] selectStatementResultMeta = xpoSelectedData.ResultSet[0].Rows;
+                        SelectStatementResultRow[] selectStatementResultData = xpoSelectedData.ResultSet[1].Rows;
+                        if (!isTableOpened && !GlobalFramework.AppUseBackOfficeMode)                        
+                        {                         
+
+                            Guid currentTableOid = Guid.Parse(selectStatementResultData[0].Values[0].ToString());
+
+                            //Table TableOID = null;
+                            OrderMain currentOrderMain = null;
+
+                            //string filterCriteria = string.Format("Oid = '{0}'", SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
+
+                            Guid newOrderMainOid = Guid.NewGuid();
+                            GlobalFramework.SessionApp.OrdersMain.Add(newOrderMainOid, new OrderMain(newOrderMainOid, currentTableOid));
+                            OrderMain newOrderMain = GlobalFramework.SessionApp.OrdersMain[newOrderMainOid];
+                            OrderTicket orderTicket = new OrderTicket(newOrderMain, (PriceType)newOrderMain.Table.PriceType);
+                            //Create Reference to SessionApp OrderMain with Open Ticket, Ready to Add Details
+                            newOrderMain.OrderTickets.Add(1, orderTicket);
+                            //Create Reference to be used in Shared Code
+                            currentOrderMain = newOrderMain;
+
+                            _ticketList.UpdateArticleBag();
+                            _ticketList.UpdateTicketListOrderButtons();
+                            _ticketList.UpdateOrderStatusBar();
+
+                            //ALWAYS Update current PersistentOid and Status from database
+                            currentOrderMain.PersistentOid = currentOrderMain.GetOpenTableFieldValueGuid(pTableOid, "Oid");
+                            currentOrderMain.OrderStatus = (OrderStatus)currentOrderMain.GetOpenTableFieldValue(pTableOid, "OrderStatus");
+
+                            //Shared Code
+                            GlobalFramework.SessionApp.CurrentOrderMainOid = currentOrderMain.Table.OrderMainOid;
+                            GlobalFramework.SessionApp.Write();
+                            _ticketList.UpdateModel();
+
+                            //GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].Table.OrderMainOid = currentTableOid;
+                            _ticketPad.Sensitive = true;
+                        }
+                        if (!GlobalFramework.AppUseBackOfficeMode)
                             _tablePadArticle.Sensitive = true;
-                        if (!_ticketPad.Sensitive == true)
+
+                        if (!_ticketPad.Sensitive == true && !GlobalFramework.AppUseBackOfficeMode)
                             _ticketPad.Sensitive = true;
                     }
                     //With No WorkSessionPeriodTerminal
-                    else
+                    else if (!GlobalFramework.AppUseBackOfficeMode)
                     {
                         if (!_ticketPad.Sensitive == false)
                             _ticketPad.Sensitive = false;
@@ -383,10 +475,10 @@ namespace logicpos
                 }
             }
             //No WorkSessionPeriodDay
-            else
+            else if (!GlobalFramework.AppUseBackOfficeMode)
             {
-                //if (_touchButtonPosToolbarCashDrawer.LabelText != Resx.global_worksession_open_day)
-                //  _touchButtonPosToolbarCashDrawer.LabelText = Resx.global_worksession_open_day;
+                //if (_touchButtonPosToolbarCashDrawer.LabelText != resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_open_day)
+                //  _touchButtonPosToolbarCashDrawer.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_open_day;
                 //if (!_touchButtonPosToolbarCashDrawer.Sensitive == false)
                 //  _touchButtonPosToolbarCashDrawer.Sensitive = false;
                 if (!_ticketPad.Sensitive == false)
@@ -421,7 +513,7 @@ namespace logicpos
                 if (GlobalFramework.WorkSessionPeriodTerminal == null
                   || (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
                 {
-                    POS_WorkSessionPeriod workSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
+                    pos_worksessionperiod workSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
 
                     if (workSessionPeriodDay == null)
                     {

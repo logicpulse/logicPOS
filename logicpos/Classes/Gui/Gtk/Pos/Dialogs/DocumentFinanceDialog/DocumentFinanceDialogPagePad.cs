@@ -23,8 +23,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             set { _session = value; }
         }
 
-        private ERP_Customer _customer;
-        public ERP_Customer Customer
+        private erp_customer _customer;
+        public erp_customer Customer
         {
             get { return _customer; }
             set { _customer = value; }

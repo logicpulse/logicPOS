@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_ConfigurationKeyboard : XPGuidObject
+    public class pos_configurationkeyboard : XPGuidObject
     {
-        public POS_ConfigurationKeyboard() : base() { }
-        public POS_ConfigurationKeyboard(Session session) : base(session) { }
+        public pos_configurationkeyboard() : base() { }
+        public pos_configurationkeyboard(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationKeyboard), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationKeyboard), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationkeyboard), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationkeyboard), "Code");
         }
 
         UInt32 fOrd;

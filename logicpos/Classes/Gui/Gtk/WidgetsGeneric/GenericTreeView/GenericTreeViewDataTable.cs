@@ -189,7 +189,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     if (fieldValue.GetType() == typeof(bool))
                     {
                         bool boolValue = Convert.ToBoolean(fieldValue);
-                        fieldValue = (boolValue) ? Resx.global_treeview_true : Resx.global_treeview_false;
+                        fieldValue = (boolValue) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
                     }
                     else
                     {

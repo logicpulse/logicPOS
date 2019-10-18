@@ -16,8 +16,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         private string _line = string.Empty;
         private char _lineChar = '-';
         //Public
-        private SYS_ConfigurationPrinters _printer;
-        public SYS_ConfigurationPrinters Printer
+        private sys_configurationprinters _printer;
+        public sys_configurationprinters Printer
         {
             get { return _printer; }
             set { _printer = value; }
@@ -41,23 +41,24 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             set { _maxCharsPerLineSmall = value; }
         }
 
-        public ThermalPrinterGeneric(SYS_ConfigurationPrinters pPrinter)
+        public ThermalPrinterGeneric(sys_configurationprinters pPrinter)
             : this(pPrinter, SettingsApp.PrinterThermalEncoding)
         {
         }
 
-        public ThermalPrinterGeneric(SYS_ConfigurationPrinters pPrinter, string pEncoding)
+        public ThermalPrinterGeneric(sys_configurationprinters pPrinter, string pEncoding)
             // Old HardCoded Method Settings
+			//TK016249 - Impressoras - Diferenciação entre Tipos
             //: this(pPrinter, pEncoding, SettingsApp.PrinterThermalMaxCharsPerLineNormal, SettingsApp.PrinterThermalMaxCharsPerLineNormalBold, SettingsApp.PrinterThermalMaxCharsPerLineSmall)
             : this(pPrinter, pEncoding,
-                  (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineNormal > 0) ? GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineNormal : SettingsApp.PrinterThermalMaxCharsPerLineNormal,
-                  (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineNormalBold > 0) ? GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineNormalBold : SettingsApp.PrinterThermalMaxCharsPerLineNormalBold,
-                  (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineSmall > 0) ? GlobalFramework.LoggedTerminal.Printer.ThermalMaxCharsPerLineSmall : SettingsApp.PrinterThermalMaxCharsPerLineSmall
+                  (GlobalFramework.LoggedTerminal.ThermalPrinter != null && GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal > 0) ? GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal : SettingsApp.PrinterThermalMaxCharsPerLineNormal,
+                  (GlobalFramework.LoggedTerminal.ThermalPrinter != null && GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold > 0) ? GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold : SettingsApp.PrinterThermalMaxCharsPerLineNormalBold,
+                  (GlobalFramework.LoggedTerminal.ThermalPrinter != null && GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall > 0) ? GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall : SettingsApp.PrinterThermalMaxCharsPerLineSmall
                   )
         {
         }
 
-        public ThermalPrinterGeneric(SYS_ConfigurationPrinters pPrinter, string pEncoding, int pMaxCharsPerLineNormal, int pMaxCharsPerLineNormalBold, int pMaxCharsPerLineSmall)
+        public ThermalPrinterGeneric(sys_configurationprinters pPrinter, string pEncoding, int pMaxCharsPerLineNormal, int pMaxCharsPerLineNormalBold, int pMaxCharsPerLineSmall)
             : base(pEncoding)
         {
             //Parameters
@@ -72,20 +73,28 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
         public void PrintBuffer()
         {
-            switch (_printer.PrinterType.Token)
+            try
             {
-                case "THERMAL_PRINTER_WINDOWS":
-                    printer.genericwindows.Print.WindowsPrint(_printer.NetworkName, getByteArray());
-                    break;
-                case "THERMAL_PRINTER_LINUX":
-                    printer.genericlinux.Print.LinuxPrint(_printer.NetworkName, getByteArray());
-                    break;
-                case "THERMAL_PRINTER_SOCKET":
-                    printer.genericsocket.Print.SocketPrint(_printer.NetworkName, getByteArray());
-                    break;
-                case "THERMAL_PRINTER_USB":
-                    printer.genericusb.Print.USBPrint(_printer.NetworkName, getByteArray());
-                    break;
+                switch (_printer.PrinterType.Token)
+                {
+                    case "THERMAL_PRINTER_WINDOWS":
+                        printer.genericwindows.Print.WindowsPrint(_printer.NetworkName, getByteArray());
+                        break;
+                    case "THERMAL_PRINTER_LINUX":
+                        printer.genericlinux.Print.LinuxPrint(_printer.NetworkName, getByteArray());
+                        break;
+                    case "THERMAL_PRINTER_SOCKET":
+                        printer.genericsocket.Print.SocketPrint(_printer.NetworkName, getByteArray());
+                        break;
+                    case "THERMAL_PRINTER_USB":
+                        printer.genericusb.Print.USBPrint(_printer.NetworkName, getByteArray());
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("void PrintBuffer() :: " + ex.Message, ex);
+                throw ex;
             }
         }
 
@@ -98,9 +107,15 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             }
         }
 
+        /// <summary>
+        /// Prints the line when value is not empty or even the value is empty when "pPrintIfValueIsEmpty" is set to true.
+        /// </summary>
+        /// <param name="pLine"></param>
+        /// <param name="pPrintIfValueIsEmpty"></param>
         public void WriteLine(string pLine, bool pPrintIfValueIsEmpty)
         {
-            if (!string.IsNullOrEmpty(pLine) || (!string.IsNullOrEmpty(pLine) && pPrintIfValueIsEmpty == true))
+            /* IN009055 */
+            if (!string.IsNullOrEmpty(pLine) || pPrintIfValueIsEmpty)
             {
                 base.WriteLine(pLine);
             }
@@ -111,7 +126,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         {
             if (!string.IsNullOrEmpty(pLabel) && (!string.IsNullOrEmpty(pValue) || pPrintIfValueIsEmpty))
             {
-                base.WriteLine(string.Format("{0} : {1}", pLabel, pValue));
+                base.WriteLine(string.Format("{0}: {1}", pLabel, pValue)); /* IN009055 */
             }
         }
 

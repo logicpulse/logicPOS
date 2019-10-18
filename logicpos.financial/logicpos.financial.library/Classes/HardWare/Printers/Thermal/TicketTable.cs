@@ -289,6 +289,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             }
             catch (Exception ex)
             {
+                _log.Debug("string GetLine(DataRow pDataRow) :: " + ex.Message, ex);
                 throw ex;
             }
 
@@ -310,6 +311,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             }
             catch (Exception ex)
             {
+                _log.Debug("List<string> GetTable() :: " + ex.Message, ex);
                 throw ex;
             }
 
@@ -363,6 +365,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             }
             catch (Exception ex)
             {
+                _log.Debug("void Print(ThermalPrinterGeneric pThermalPrinterGeneric, WriteLineTextMode pTextMode, bool pIgnoreFirstRow, string pLineFormat) :: " + ex.Message, ex);
                 throw ex;
             }
         }

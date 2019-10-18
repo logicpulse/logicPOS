@@ -33,9 +33,9 @@ namespace logicpos.financial.library.Classes.Finance
         private static string _decimalFormat = SettingsApp.DecimalFormatSAFTPT;
         private static string _decimalFormatTotals = SettingsApp.DecimalFormatGrossTotalSAFTPT;
         //Default Customer
-        private static ERP_Customer _defaultCustomer = (ERP_Customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(ERP_Customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+        private static erp_customer _defaultCustomer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
         //Default Currency
-        private static CFG_ConfigurationCurrency _defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
+        private static cfg_configurationcurrency _defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
 
         public static string ExportSaftPt()
         {
@@ -100,7 +100,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Audit
-                FrameworkUtils.Audit("EXPORT_SAF-T", string.Format(Resx.audit_message_export_saft, fileName, _documentDateStart.ToString(SettingsApp.DateFormat), _documentDateEnd.ToString(SettingsApp.DateFormat)));
+                FrameworkUtils.Audit("EXPORT_SAF-T", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_export_saft"), fileName, _documentDateStart.ToString(SettingsApp.DateFormat), _documentDateEnd.ToString(SettingsApp.DateFormat)));
 
                 return fileName;
             }
@@ -362,15 +362,15 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         WriteElement("CustomerID", _defaultCustomer.CodeInternal);
                     }
-                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], Resx.saft_value_unknown);
-                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), Resx.saft_value_unknown);
-                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), Resx.saft_value_unknown);
+                    WriteElement("AccountID", row.Values[xPSelectData.GetFieldIndex("AccountID")], resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("CustomerTaxID", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CustomerTaxID")]), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("CompanyName", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("CompanyName")]), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
                     //<BillingAddress>
                     _xmlWriter.WriteStartElement("BillingAddress");
-                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), Resx.saft_value_unknown);
-                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), Resx.saft_value_unknown);
-                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), Resx.saft_value_unknown);
-                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], Resx.saft_value_unknown);
+                    WriteElement("AddressDetail", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("AddressDetail")]), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("City", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("City")]), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("PostalCode", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("PostalCode")]), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+                    WriteElement("Country", row.Values[xPSelectData.GetFieldIndex("Country")], resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
                     _xmlWriter.WriteEndElement();
                     //</BillingAddress>
                     WriteElement("Telephone", XPGuidObject.DecryptIfNeeded(row.Values[xPSelectData.GetFieldIndex("Telephone")]));
@@ -416,15 +416,15 @@ namespace logicpos.financial.library.Classes.Finance
             //<Customer>
             _xmlWriter.WriteStartElement("Customer");
             WriteElement("CustomerID", _defaultCustomer.CodeInternal);
-            WriteElement("AccountID", Resx.saft_value_unknown);
+            WriteElement("AccountID", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
             WriteElement("CustomerTaxID", _defaultCustomer.FiscalNumber);
-            WriteElement("CompanyName", _defaultCustomer.Name, Resx.saft_value_unknown);
+            WriteElement("CompanyName", _defaultCustomer.Name, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
             //<BillingAddress>
             _xmlWriter.WriteStartElement("BillingAddress");
-            WriteElement("AddressDetail", _defaultCustomer.Address, Resx.saft_value_unknown);
-            WriteElement("City", _defaultCustomer.City, Resx.saft_value_unknown);
-            WriteElement("PostalCode", _defaultCustomer.ZipCode, Resx.saft_value_unknown);
-            WriteElement("Country", _defaultCustomer.Country.Code2, Resx.saft_value_unknown);
+            WriteElement("AddressDetail", _defaultCustomer.Address, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("City", _defaultCustomer.City, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("PostalCode", _defaultCustomer.ZipCode, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
+            WriteElement("Country", _defaultCustomer.Country.Code2, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"));
             _xmlWriter.WriteEndElement();
             //</BillingAddress>
             WriteElement("SelfBillingIndicator", 0);
@@ -690,9 +690,10 @@ namespace logicpos.financial.library.Classes.Finance
 
                         WriteElement("NumberOfEntries", numberOfEntries);
 
+                        //alteração de fdTotalGross -> fdTotalNet para contabilização dos descontos na soma do total de créditos
                         string sqlTotalDebitTotalCredit = string.Format(@"
                             SELECT 
-                                SUM(fdTotalGross) AS Total
+                                SUM(fdTotalNet) AS Total
                             FROM 
                                 view_documentfinance
                             WHERE 
@@ -1348,7 +1349,7 @@ namespace logicpos.financial.library.Classes.Finance
             //</Line>
 
             //Protection to skip Export <OrderReferences> when Document Type is CreditNote
-            FIN_DocumentFinanceDetail documentFinanceDetail = (FIN_DocumentFinanceDetail)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceDetail), pDocumentMasterDetail);
+            fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
             if (documentFinanceDetail.DocumentMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
             {
                 try
@@ -1403,7 +1404,7 @@ namespace logicpos.financial.library.Classes.Finance
             //</Line>	
 
             //Protection to skip Export <References> when Document Type is NOT CreditNote
-            FIN_DocumentFinanceDetail documentFinanceDetail = (FIN_DocumentFinanceDetail)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceDetail), pDocumentMasterDetail);
+            fin_documentfinancedetail documentFinanceDetail = (fin_documentfinancedetail)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancedetail), pDocumentMasterDetail);
             if (documentFinanceDetail.DocumentMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
             {
                 try

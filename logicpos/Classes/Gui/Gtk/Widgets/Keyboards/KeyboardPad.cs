@@ -144,7 +144,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_field_validation_error_keyboardpad);
+                    Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                 }
             }
         }
@@ -373,7 +373,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_field_validation_error_keyboardpad);
+                        Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                     };
                     break;
                 //Show/Hide Number Lock

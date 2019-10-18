@@ -9,9 +9,16 @@ namespace logicpos.datalayer.App
     {
         // Application Mode
         public static AppOperationMode AppMode = FrameworkUtils.GetAppMode();
+        /* IN008024 */
+        public static CustomAppOperationMode CustomAppOperationMode = FrameworkUtils.GetCustomAppOperationMode();
+        public static bool IsDefaultTheme = FrameworkUtils.IsDefaultAppOperationTheme();
+        /* IN008024: It has been opted to remove old themes (based on database properties "cfg_configurationpreferenceparameter.APP_THEME") implementation 
+         *  GlobalFramework.PreferenceParameters["APP_THEME"] >>> The only option here was "Default" because we don't had other themes available.
+         */
+        public static string AppTheme = "Default";
 
         //Used in Application : Assigned on InitPlataformParameters()
-        public static CFG_ConfigurationCountry ConfigurationSystemCountry = null;
+        public static cfg_configurationcountry ConfigurationSystemCountry = null;
 
         //Default Xpo Values
 

@@ -32,12 +32,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             String regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
 
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_readcard;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_readcard");
             Size windowSize = new Size(462, 320);//400 With Other Payments
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_read_card.png");
 
             //EntryDescription
-            _entryBoxMovementDescription = new EntryBoxValidation(this, Resx.global_read_card, KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
+            _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
             //_entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
             //VBox
             VBox vbox = new VBox(true, 0);

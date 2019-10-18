@@ -81,11 +81,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     break;
                 case TableStatus.Open:
                     _labelTotalOrStatus.Text = FrameworkUtils.DecimalToStringCurrency(pTotal);
-                    if (pDateOpen != null) labelDateTableOpenOrClosed.Text = string.Format(Resx.pos_button_label_table_open_at, pDateOpen.ToString(SettingsApp.DateTimeFormatHour));
+                    if (pDateOpen != null) labelDateTableOpenOrClosed.Text = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_table_open_at"), pDateOpen.ToString(SettingsApp.DateTimeFormatHour));
                     SetBackgroundColor(_colorPosTablePadTableTableStatusOpenButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Reserved:
-                    _labelTotalOrStatus.Text = Resx.global_reserved_table;
+                    _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reserved_table");
                     SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 default:
@@ -97,16 +97,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         public void ChangeTableStatus(Guid pTableOid, TableStatus pTableStatus)
         {
             //Get Target Table
-            POS_ConfigurationPlaceTable xTable = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(typeof(POS_ConfigurationPlaceTable), pTableOid);
+            pos_configurationplacetable xTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
             //_log.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
 
             if (pTableStatus == TableStatus.Reserved)
             {
-                _labelTotalOrStatus.Text = Resx.global_reserved_table;
+                _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reserved_table");
                 _eventBoxTotalOrStatus.VisibleWindow = true;
                 SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Reserved;
-                FrameworkUtils.Audit("TABLE_RESERVED", string.Format(Resx.audit_message_table_reserved, xTable.Designation));
+                FrameworkUtils.Audit("TABLE_RESERVED", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_reserved"), xTable.Designation));
             }
             else
             {
@@ -114,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 _eventBoxTotalOrStatus.VisibleWindow = false;
                 SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Free;
-                FrameworkUtils.Audit("TABLE_UNRESERVED", string.Format(Resx.audit_message_table_unreserved, xTable.Designation));
+                FrameworkUtils.Audit("TABLE_UNRESERVED", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_unreserved"), xTable.Designation));
             }
             //_log.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
             //Update Status State  

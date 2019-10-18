@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             String _fileToolbarCashDrawer = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png");
 
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_cash;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cash");
             Size windowSize = new Size(428, 205);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
 
@@ -30,8 +30,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Buttons
-            _touchButtonStartStopWorkSessionPeriodDay = new TouchButtonIconWithText("touchButtonStartStopWorkSessionPeriodDay_Green", _colorBaseDialogDefaultButtonBackground, Resx.global_worksession_open_day, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarStartStopWorkSessionPeriodDay, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonCashDrawer = new TouchButtonIconWithText("touchButtonCashDrawer_Green", _colorBaseDialogDefaultButtonBackground, Resx.pos_button_label_cashdrawer, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarCashDrawer, sizeIcon, buttonWidth, buttonHeight) { Sensitive = false };
+            _touchButtonStartStopWorkSessionPeriodDay = new TouchButtonIconWithText("touchButtonStartStopWorkSessionPeriodDay_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_open_day"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarStartStopWorkSessionPeriodDay, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonCashDrawer = new TouchButtonIconWithText("touchButtonCashDrawer_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_cashdrawer"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileToolbarCashDrawer, sizeIcon, buttonWidth, buttonHeight) { Sensitive = false };
 
             //Table
             Table table = new Table(1, 1, true);

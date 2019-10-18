@@ -17,7 +17,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private TouchButtonIconWithText _touchButtonPosToolbarWorkSessionPeriods;
         private TouchButtonIconWithText _touchButtonPosToolbarMerchandiseEntry;
 
-        public PosDocumentFinanceSelectRecordDialog(Window pSourceWindow, DialogFlags pDialogFlags)
+        public PosDocumentFinanceSelectRecordDialog(Window pSourceWindow, DialogFlags pDialogFlags, int docChoice)
             : base(pSourceWindow, pDialogFlags)
         {
             //Parameters
@@ -38,17 +38,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             int windowSizeHeight = (buttonHeight + Convert.ToInt16(tablePadding)) * 2 + 90;
 
             //Init Local Vars
-            string windowTitle = Resx.window_title_dialog_document_finance;
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance");
             Size windowSize = new Size(windowSizeWidth, windowSizeHeight);
             string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_documents.png");
 
             //Buttons
-            _touchButtonPosToolbarFinanceDocuments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_button_label_select_record_finance_documents, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "ALL" };
-            _toolbarFinanceDocumentsInvoicesUnpayed = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_button_label_select_finance_documents_ft_unpaid, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "FT_UNPAYED" };
-            _toolbarFinanceDocumentsPayments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsPayments_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_button_label_select_payments, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonPosToolbarCurrentAccountDocuments = new TouchButtonIconWithText("touchButtonPosToolbarCurrentAccountDocuments_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_button_label_select_finance_documents_cc, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListCurrentAccountDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "CC" };
-            _touchButtonPosToolbarWorkSessionPeriods = new TouchButtonIconWithText("touchButtonPosToolbarWorkSessionPeriods_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_button_label_select_worksession_period, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListWorksessionPeriods, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonPosToolbarMerchandiseEntry = new TouchButtonIconWithText("touchButtonPosToolbarMerchandiseEntry_Green", _colorBaseDialogDefaultButtonBackground, Resx.dialog_button_label_select_merchandise_entry, _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListMerchandiseEntry, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonPosToolbarFinanceDocuments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_record_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "ALL" };
+            _toolbarFinanceDocumentsInvoicesUnpayed = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_ft_unpaid"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "FT_UNPAYED" };
+            _toolbarFinanceDocumentsPayments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsPayments_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonPosToolbarCurrentAccountDocuments = new TouchButtonIconWithText("touchButtonPosToolbarCurrentAccountDocuments_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_cc"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListCurrentAccountDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "CC" };
+            _touchButtonPosToolbarWorkSessionPeriods = new TouchButtonIconWithText("touchButtonPosToolbarWorkSessionPeriods_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_worksession_period"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListWorksessionPeriods, sizeIcon, buttonWidth, buttonHeight);
+            _touchButtonPosToolbarMerchandiseEntry = new TouchButtonIconWithText("touchButtonPosToolbarMerchandiseEntry_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_merchandise_entry"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListMerchandiseEntry, sizeIcon, buttonWidth, buttonHeight);
             //Permission
             _touchButtonPosToolbarMerchandiseEntry.Sensitive = FrameworkUtils.HasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
 
@@ -64,20 +64,46 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             table.Attach(_touchButtonPosToolbarWorkSessionPeriods, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
             table.Attach(_touchButtonPosToolbarMerchandiseEntry, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
 
-            //Init Object
-            this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, table, null);
+            //TK016235 BackOffice - Mode
+            //numero da escolha vem do accordion do BackOfficeMainWindow, e passa por Utils
+            switch (docChoice)
+            {
+                case 1:
+                    touchButtonPosToolbarFinanceDocuments_Clicked(_touchButtonPosToolbarFinanceDocuments, null);
+                    break;
+                case 2:
+                    touchButtonPosToolbarFinanceDocuments_Clicked(_toolbarFinanceDocumentsInvoicesUnpayed, null);
+                    break;
+                case 3:
+                    _toolbarFinanceDocumentsPayments_Clicked(_toolbarFinanceDocumentsPayments, null);
+                    break;
+                case 4:
+                    touchButtonPosToolbarFinanceDocuments_Clicked(_touchButtonPosToolbarCurrentAccountDocuments, null);
+                    break;
+                case 5:
+                    _touchButtonPosToolbarWorkSessionPeriods_Clicked(_touchButtonPosToolbarWorkSessionPeriods, null);
+                    break;
+                case 6:
+                    _touchButtonPosToolbarMerchandiseEntry_Clicked(_touchButtonPosToolbarMerchandiseEntry, null);
+                    break;
+                case 0:
 
-            //Shared Events 
-            _touchButtonPosToolbarFinanceDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
-            _toolbarFinanceDocumentsInvoicesUnpayed.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
-            _touchButtonPosToolbarCurrentAccountDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
-            //Non Shared Events
-            _toolbarFinanceDocumentsPayments.Clicked += _toolbarFinanceDocumentsPayments_Clicked;
-            _touchButtonPosToolbarWorkSessionPeriods.Clicked += _touchButtonPosToolbarWorkSessionPeriods_Clicked;
-            _touchButtonPosToolbarMerchandiseEntry.Clicked += _touchButtonPosToolbarMerchandiseEntry_Clicked;
+                    //Init Object
+                    this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, table, null);
 
-            //Reference Objects
-            _printerGeneric = (SYS_ConfigurationPrinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(SYS_ConfigurationPrinters), SettingsApp.XpoOidConfigurationPrinterGeneric);
+                    //Shared Events 
+                    _touchButtonPosToolbarFinanceDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
+                    _toolbarFinanceDocumentsInvoicesUnpayed.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
+                    _touchButtonPosToolbarCurrentAccountDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
+                    //Non Shared Events
+                    _toolbarFinanceDocumentsPayments.Clicked += _toolbarFinanceDocumentsPayments_Clicked;
+                    _touchButtonPosToolbarWorkSessionPeriods.Clicked += _touchButtonPosToolbarWorkSessionPeriods_Clicked;
+                    _touchButtonPosToolbarMerchandiseEntry.Clicked += _touchButtonPosToolbarMerchandiseEntry_Clicked;
+
+                    //Reference Objects
+                    _printerGeneric = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.XpoOidConfigurationPrinterGeneric);
+                    break;
+            }
         }
     }
 }

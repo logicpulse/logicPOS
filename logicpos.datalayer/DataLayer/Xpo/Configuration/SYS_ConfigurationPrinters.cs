@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_ConfigurationPrinters : XPGuidObject
+    public class sys_configurationprinters : XPGuidObject
     {
-        public SYS_ConfigurationPrinters() : base() { }
-        public SYS_ConfigurationPrinters(Session session) : base(session) { }
+        public sys_configurationprinters() : base() { }
+        public sys_configurationprinters(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrinters), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrinters), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinters), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinters), "Code");
             ShowInDialog = true;
         }
 
@@ -124,54 +124,62 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPrintersType One <> Many ConfigurationPlace
-        SYS_ConfigurationPrintersType fPrinterType;
+        sys_configurationprinterstype fPrinterType;
         [Association(@"ConfigurationPrintersTypeConfigurationPrinters")]
-        public SYS_ConfigurationPrintersType PrinterType
+        public sys_configurationprinterstype PrinterType
         {
             get { return fPrinterType; }
-            set { SetPropertyValue<SYS_ConfigurationPrintersType>("PrinterType", ref fPrinterType, value); }
+            set { SetPropertyValue<sys_configurationprinterstype>("PrinterType", ref fPrinterType, value); }
         }
 
+        // Impressoras - Diferenciação entre Tipos TK016249
         //ConfigurationPrinters One <> Many CConfigurationPlaceTerminal
-        [Association(@"ConfigurationPrintersReferencesConfigurationPlaceTerminal", typeof(POS_ConfigurationPlaceTerminal))]
-        public XPCollection<POS_ConfigurationPlaceTerminal> Terminals
+        [Association(@"ConfigurationPrintersReferencesConfigurationPlaceTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> Terminals
         {
-            get { return GetCollection<POS_ConfigurationPlaceTerminal>("Terminals"); }
+            get { return GetCollection<pos_configurationplaceterminal>("Terminals"); }
+        }
+		
+        //ConfigurationPrinters One <> Many CConfigurationPlaceTerminal
+        [Association(@"ConfigurationThermalPrintersReferencesConfigurationPlaceTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> ThermalPrinter
+        {
+            get { return GetCollection<pos_configurationplaceterminal>("ThermalPrinter"); }
         }
 
         //ConfigurationPrinters One <> Many DocumentFinanceYearSerieTerminal
-        [Association(@"ConfigurationPrintersTerminalReferencesDFYearSerieTerminal", typeof(FIN_DocumentFinanceYearSerieTerminal))]
-        public XPCollection<FIN_DocumentFinanceYearSerieTerminal> YearSerieTerminal
+        [Association(@"ConfigurationPrintersTerminalReferencesDFYearSerieTerminal", typeof(fin_documentfinanceyearserieterminal))]
+        public XPCollection<fin_documentfinanceyearserieterminal> YearSerieTerminal
         {
-            get { return GetCollection<FIN_DocumentFinanceYearSerieTerminal>("YearSerieTerminal"); }
+            get { return GetCollection<fin_documentfinanceyearserieterminal>("YearSerieTerminal"); }
         }
 
         //ConfigurationPrinters One <> Many Article
-        [Association(@"ConfigurationPrintersReferencesArticle", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> Article
+        [Association(@"ConfigurationPrintersReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> Article
         {
-            get { return GetCollection<FIN_Article>("Article"); }
+            get { return GetCollection<fin_article>("Article"); }
         }
 
         //ConfigurationPrinters One <> Many ArticleFamily
-        [Association(@"ConfigurationPrintersReferencesArticleFamily", typeof(FIN_ArticleFamily))]
-        public XPCollection<FIN_ArticleFamily> ArticleFamily
+        [Association(@"ConfigurationPrintersReferencesArticleFamily", typeof(fin_articlefamily))]
+        public XPCollection<fin_articlefamily> ArticleFamily
         {
-            get { return GetCollection<FIN_ArticleFamily>("ArticleFamily"); }
+            get { return GetCollection<fin_articlefamily>("ArticleFamily"); }
         }
 
         //ConfigurationPrinters One <> Many ArticleSubFamily
-        [Association(@"ConfigurationPrintersReferencesArticleSubFamily", typeof(FIN_ArticleSubFamily))]
-        public XPCollection<FIN_ArticleSubFamily> ArticleSubFamily
+        [Association(@"ConfigurationPrintersReferencesArticleSubFamily", typeof(fin_articlesubfamily))]
+        public XPCollection<fin_articlesubfamily> ArticleSubFamily
         {
-            get { return GetCollection<FIN_ArticleSubFamily>("ArticleSubFamily"); }
+            get { return GetCollection<fin_articlesubfamily>("ArticleSubFamily"); }
         }
 
         //ConfigurationPrinters One <> Many CConfigurationPlaceTerminal
-        [Association(@"ConfigurationPrintersReferencesDocumentFinanceType", typeof(FIN_DocumentFinanceType))]
-        public XPCollection<FIN_DocumentFinanceType> DocumentType
+        [Association(@"ConfigurationPrintersReferencesDocumentFinanceType", typeof(fin_documentfinancetype))]
+        public XPCollection<fin_documentfinancetype> DocumentType
         {
-            get { return GetCollection<FIN_DocumentFinanceType>("DocumentType"); }
+            get { return GetCollection<fin_documentfinancetype>("DocumentType"); }
         }
     }
 }

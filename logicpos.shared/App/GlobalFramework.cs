@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
+using logicpos.shared.Classes.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,6 +28,10 @@ namespace logicpos.shared.App
         public static String LicenceEmail;
         public static String LicenceTelephone;
         public static String LicenceHardwareId;
+        public static String LicenceReseller;
+        public static DateTime LicenceUpdateDate;
+        //TK016248 - BackOffice - Check New Version 
+        public static String ServerVersion;
         //AT - Only Used in logicerp.Modules.FINANCIAL | LogicposHelper
         public static Hashtable AT;
         //Database
@@ -35,8 +40,8 @@ namespace logicpos.shared.App
         public static String DatabaseUser;
         public static String DatabasePassword;
         //WorkSession
-        public static POS_WorkSessionPeriod WorkSessionPeriodDay;
-        public static POS_WorkSessionPeriod WorkSessionPeriodTerminal;
+        public static pos_worksessionperiod WorkSessionPeriodDay;
+        public static pos_worksessionperiod WorkSessionPeriodTerminal;
         //Session
         public static GlobalFrameworkSession SessionApp;
         // Plugins
@@ -51,6 +56,17 @@ namespace logicpos.shared.App
         //FastReport
         public static Dictionary<string, string> FastReportSystemVars;
         public static Dictionary<string, string> FastReportCustomVars;
+        //TK013134: HardCoded Modules
+        public static bool AppUseParkingTicketModule = false;
+		//TK016235 BackOffice - Mode
+        public static bool AppUseBackOfficeMode = false;
+        public static Dictionary<string,Guid> PendentPayedParkingTickets = new Dictionary<string, Guid>();
+        public static Dictionary<string,Guid> PendentPayedParkingCards = new Dictionary<string, Guid>();
+		//TK016249 - Impressoras - Diferenciação entre Tipos
+        public static bool UsingThermalPrinter;
+
+        //Get Screen Size to use in shared
+        public static System.Drawing.Size screenSize;
 
         public static string AppRootFolder
         {

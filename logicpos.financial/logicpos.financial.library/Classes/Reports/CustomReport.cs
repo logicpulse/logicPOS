@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using logicpos.documentviewer;
 
 namespace logicpos.financial.library.Classes.Reports
 {
@@ -170,6 +171,7 @@ namespace logicpos.financial.library.Classes.Reports
                 case CustomReportDisplayMode.Print:
                 case CustomReportDisplayMode.ExportPDF:
                 case CustomReportDisplayMode.ExportPDFSilent:
+                case CustomReportDisplayMode.ExportXls:
                     //Get Object Reference to Change CopyName
                     TextObject textCopyName = (TextObject)this.FindObject("TextCopyName");
                     //Get Object Reference to Change SecondPrint Label for DocumentFinanceDocuments
@@ -184,7 +186,7 @@ namespace logicpos.financial.library.Classes.Reports
                         }
                         if (textSecondPrint != null)
                         {
-                            textSecondPrint.Text = (_secondCopy && i < 1) ? Resx.global_print_second_print : String.Empty;
+                            textSecondPrint.Text = (_secondCopy && i < 1) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_second_print") : String.Empty;
                         }
                         //Store PreparedFiles in Custom SystemVariable, Required to PageNo in Reports ex "[ToInt32([PreparedPages]) + [Page]]"
                         //Else Page start aways in 1, when we call prepare, and we cannot have a usefull Page Counter working with .Prepare
@@ -212,11 +214,14 @@ namespace logicpos.financial.library.Classes.Reports
                     break;
                 case CustomReportDisplayMode.ExportPDF:
                 case CustomReportDisplayMode.ExportPDFSilent:
+                case CustomReportDisplayMode.ExportXls:
                     //Prepare FileName
                     string fileName = String.Empty;
+                    string fileNameExport = String.Empty;
                     if (pDestinationFileName != String.Empty)
                     {
                         fileName = pDestinationFileName;
+                        fileNameExport = pDestinationFileName;
                     }
                     //Default Filename
                     else
@@ -224,34 +229,84 @@ namespace logicpos.financial.library.Classes.Reports
                         string dateTimeFileFormat = SettingsApp.FileFormatDateTime;
                         string dateTime = FrameworkUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
                         string reportName = (this.ReportInfo.Name != String.Empty) ? string.Format("_{0}", this.ReportInfo.Name) : String.Empty;
-                        fileName = string.Format("print_{0}{1}{2}", dateTime, reportName, ".pdf");
-                        fileName = fileName.Replace('/', '-').Replace(' ', '_');
-                        //2015-06-12 apmuga
-                        fileName = FrameworkUtils.OSSlash(string.Format(@"{0}{1}", GlobalFramework.Path["temp"], fileName));
+
+                        if (pViewMode == CustomReportDisplayMode.ExportXls || FrameworkUtils.OSVersion() == "windows")
+                        {
+                            fileNameExport = string.Format("print_{0}{1}{2}", dateTime, reportName, ".xlsx");
+                            fileNameExport = fileNameExport.Replace('/', '-').Replace(' ', '_');
+                            fileNameExport = FrameworkUtils.OSSlash(string.Format(@"{0}{1}", GlobalFramework.Path["temp"], fileNameExport));
+                        }
+                       
+                            fileName = string.Format("print_{0}{1}{2}", dateTime, reportName, ".pdf");
+                            fileName = fileName.Replace('/', '-').Replace(' ', '_');
+                            //2015-06-12 apmuga
+                            fileName = FrameworkUtils.OSSlash(string.Format(@"{0}{1}", GlobalFramework.Path["temp"], fileName));
+                        
                         //Mario
                         //fileName = (GlobalFramework.Settings["AppEnvironment"].ToUpper() == "web".ToUpper()) 
                         //    ? FrameworkUtils.OSSlash(string.Format(@"{0}{1}", GlobalFramework.Path["temp"], fileName))
                         //    : FrameworkUtils.OSSlash(string.Format(@"{0}\{1}{2}", Environment.CurrentDirectory, GlobalFramework.Path["temp"], fileName))
                         //;
                     }
-                    FastReport.Export.Pdf.PDFExport export = new FastReport.Export.Pdf.PDFExport();
-                    //if (export.ShowDialog()) report.Export(export, fileName);
-                    try
+
+                    //TK016206 Reports - Exportação para Xls/pdf
+					//TK016249 - Impressoras - Diferenciação entre Tipos
+                    if ((pViewMode == CustomReportDisplayMode.ExportXls) || FrameworkUtils.OSVersion() == "windows" || !GlobalFramework.UsingThermalPrinter)
                     {
-                        this.Export(export, fileName);
+                        var exportXlsx = new FastReport.Export.OoXML.Excel2007Export();
+                        //if (exportXlsx.ShowDialog())
+                        //{
+                            this.Export(exportXlsx, fileNameExport);
+                        //}
+                        if (FrameworkUtils.OSVersion() != "windows")
+                        {
+                            System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileNameExport)));
+                        }
+                        
                     }
-                    catch (Exception ex)
-                    {
-                        _log.Error(ex.Message, ex);
+
+                    //if (export.ShowDialog()) this.Export(export, fileName);
+                    //TK016206 Reports - Exportação para Xls/pdf
+					//TK016249 - Impressoras - Diferenciação entre Tipos
+                    if ((pViewMode == CustomReportDisplayMode.ExportPDFSilent) || (pViewMode == CustomReportDisplayMode.ExportPDF) || !GlobalFramework.UsingThermalPrinter)
+					{
+                        FastReport.Export.Pdf.PDFExport export = new FastReport.Export.Pdf.PDFExport();
+                        try
+                        {
+                            this.Export(export, fileName);
+                        }
+                        catch (Exception ex)
+                        {
+                            _log.Error("string Process(CustomReportDisplayMode pViewMode, string pDestinationFileName) :: fileName [ " + fileName + " ]: " + ex.Message, ex);
+                        }
                     }
 
                     //Show Pdf 
-                    if (pViewMode == CustomReportDisplayMode.ExportPDF && File.Exists(fileName))
+                    if ((pViewMode == CustomReportDisplayMode.ExportPDF) && File.Exists(fileName))
                     {
                         if (GlobalFramework.CanOpenFiles)
                         {
+                            //IN009240 Usar o PDF Viewer do POS                                                      
+                            string sql = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'USE_POS_PDF_VIEWER';");
+                            string sqlresult = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                            if (sqlresult == "True")
+                            {
+                                string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
+                                var ScreenSizePDF = GlobalFramework.screenSize;
+                                int widthPDF = ScreenSizePDF.Width;
+                                int heightPDF = ScreenSizePDF.Height;
+                                bool exportXls = true;
+
+                                if (!GlobalFramework.UsingThermalPrinter) exportXls = false;
+
+                                System.Windows.Forms.Application.Run(new startDocumentViewer(docPath, widthPDF-50, heightPDF-20, exportXls));
+                            }
+                            else
+                            {
+                                System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName)));
+                            }
                             //Use full Path, keep untoutched fileName for result
-                            System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName)));
+                            //System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName)));
                         }
                     }
                     result = fileName;
@@ -259,7 +314,6 @@ namespace logicpos.financial.library.Classes.Reports
                 default:
                     break;
             }
-
             return result;
         }
 
@@ -276,31 +330,76 @@ namespace logicpos.financial.library.Classes.Reports
             //textObjectOverlaySoftwareCertification.Bounds = new RectangleF(Units.Centimeters, 0, Units.Centimeters * 10, Units.Centimeters * 1);
 
             //All Finance Documents use Processed, else Payments that use Emmited 
-            string prefix = (_reportFileName.EndsWith("ReportDocumentFinancePayment.frx"))
-                ? Resx.global_report_overlay_software_certification_emitted
-                : Resx.global_report_overlay_software_certification_processed
-            ;
 
-            //Processed|Emitted with certified Software Nº {0}/AT - Copyright {1} - Licenced to a {2} - Used only if System Country is Portugal
-            if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal &&
-                (
-                    _reportFileName.Contains("ReportDocumentFinance.frx") ||
-                    _reportFileName.Contains("ReportDocumentFinancePayment.frx") ||
-                    _reportFileName.Contains("ReportDocumentFinanceWayBill.frx")
-                )
-            )
+            /// <summary>
+            ///     This change refers to "ENH201810#04".
+            /// </summary>
+            /// <remarks>
+            ///     <para>DESCRIPTION: This code change covers MZ and AO invoice layout enhancement, based on "CurrentCulture" settings.</para>
+            ///     <para>ISSUE: all prices greater than million were being cut on invoice.</para>
+            ///     <para>CAUSE: there was no proper locale based invoice files.</para>
+            ///     <para>SOLUTION: It was created a file for each of those specific locale settings, based on original files. 
+            ///     For example: based on "ReportDocumentFinance.frx" it was created "ReportDocumentFinance_pt-MZ.frx".
+            ///     </para>
+            /// </remarks>
+            /// <example>
+            ///     "Preço" value: 35 000 000,00
+            ///     Shows the value:  000 000,00
+            /// </example>
+            /// 
+            string currentCulture = GlobalFramework.CurrentCulture.Name;
+
+            List<string> financeDocumentsList = new List<string>
             {
-                textObjectOverlaySoftwareCertification.Text = string.Format(
-                    Resx.global_report_overlay_software_certification,
-                    prefix,
-                    SettingsApp.SaftSoftwareCertificateNumber,
-                    SettingsApp.SaftProductID,
-                    GlobalFramework.LicenceCompany);
-
-                //Add Hash Validation if Defined (In DocumentFinance Only)
-                if (_hash4Chars != String.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", _hash4Chars, textObjectOverlaySoftwareCertification.Text);
+                "ReportDocumentFinance_"        + currentCulture,
+                "ReportDocumentFinancePayment_" + currentCulture,
+                "ReportDocumentFinanceWayBill_" + currentCulture
             };
 
+            /* IN005975: This is covering the scenario of "_reportFileName" does have a temp file path (noticed when not in debug mode)
+             * Debug: Resources/Reports/UserReports/ReportDocumentFinance_pt-MZ.frx
+             * Release: Temp/Q1bSDxUR.ReportDocumentFinance_pt-MZ.frx
+             */
+            string documentFileName = Path.GetFileNameWithoutExtension(_reportFileName);
+            bool isFinanceDocument = financeDocumentsList.Contains(documentFileName.Substring(documentFileName.LastIndexOf(".") + 1)); // "Resources/Reports/UserReports/ReportDocumentFinance_pt-MZ.frx"
+
+            if (isFinanceDocument)
+            {
+                //Processed|Emitted with certified Software Nº {0}/AT - Copyright {1} - Licenced to a {2} - Used only if System Country is Portugal
+                if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal)
+                {
+
+                    string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
+                    string prefix = (_reportFileName.EndsWith(fileName))
+                        ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted")
+                        : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
+                    ;
+
+                    textObjectOverlaySoftwareCertification.Text = string.Format(
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
+                        prefix,
+                        SettingsApp.SaftSoftwareCertificateNumber,
+                        SettingsApp.SaftProductID,
+                        GlobalFramework.LicenceCompany);
+
+                    //Add Hash Validation if Defined (In DocumentFinance Only)
+                    if (_hash4Chars != String.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", _hash4Chars, textObjectOverlaySoftwareCertification.Text);
+
+                } /* IN005975 and IN005979 for Mozambique deployment */
+                else if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryMozambique)
+                {
+                    /* 
+                     * IN006047
+                     * {Processado por computador} || Autorização da Autoridade Tributária: {DAFM1 - 0198 / 2018}
+                     */
+                    textObjectOverlaySoftwareCertification.Text = string.Format(
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"),
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_moz_tax_authority_cert_number")
+                    );
+                }
+            }
+            
             //Finnally Add Overlay
             textObjectOverlaySoftwareCertification.ZOrder = 1;
             textObjectOverlaySoftwareCertification.Left = 0.0f;
@@ -331,10 +430,27 @@ namespace logicpos.financial.library.Classes.Reports
                 //TODO: Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
 
                 //Get DocumentFinanceMaster
-                FIN_DocumentFinanceMaster documentMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), pDocumentFinanceMasterOid);
+                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
 
+
+                /// <summary>
+                ///     This change refers to "ENH201810#04".
+                /// </summary>
+                /// <remarks>
+                ///     <para>DESCRIPTION: This code change covers MZ and AO invoice layout enhancement, based on "CurrentCulture" settings.</para>
+                ///     <para>ISSUE: all prices greater than million were being cut on invoice.</para>
+				///     <para>CAUSE: there was no proper locale based invoice files.</para>
+                ///     <para>SOLUTION: It was created a file for each of those specific locale settings, based on original files. 
+                ///     For example: based on "ReportDocumentFinance.frx" it was created "ReportDocumentFinance_pt-MZ.frx".
+                ///     </para>
+                /// </remarks>
+                /// <example>
+                ///     "Preço" value: 35 000 000,00
+                ///     Shows the value:  000 000,00
+                /// </example>
                 // Build Final Filename Report
-                string fileName = (documentMaster.DocumentType.WayBill) ? "ReportDocumentFinanceWayBill.frx" : "ReportDocumentFinance.frx";
+                string currentCulture = GlobalFramework.CurrentCulture.Name;
+                string fileName = (documentMaster.DocumentType.WayBill) ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
                 string fileUserReportDocumentFinance = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", fileName));
 
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, pCopyNames);
@@ -350,6 +466,22 @@ namespace logicpos.financial.library.Classes.Reports
 
                 //Prepare and Enable DataSources
                 customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
+
+                /* IN005976 for Mozambique deployment */
+                if (SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryMozambique))
+                {
+                    //if (GlobalFramework.CurrentCulture.Name.Equals("pt-MZ")){
+                    cfg_configurationcurrency defaultCurrencyForExchangeRate = 
+                        (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(
+                            GlobalFramework.SessionXpo,
+                            typeof(cfg_configurationcurrency),
+                            SettingsApp.XpoOidConfigurationCurrencyUSDollar);
+
+                    customReport.SetParameterValue("DefaultCurrencyForExchangeRateAcronym", defaultCurrencyForExchangeRate.Acronym);
+                    customReport.SetParameterValue("DefaultCurrencyForExchangeRateTotal", defaultCurrencyForExchangeRate.ExchangeRate);
+                    //}
+                }
+
                 if (customReport.GetDataSource("DocumentFinanceMaster") != null) customReport.GetDataSource("DocumentFinanceMaster").Enabled = true;
                 if (customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceDetail") != null) customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceDetail").Enabled = true;
                 if (customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal") != null) customReport.GetDataSource("DocumentFinanceMaster.DocumentFinanceMasterTotal").Enabled = true;
@@ -439,7 +571,7 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportArticleList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", Resx.report_list_family_subfamily_articles);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_family_subfamily_articles"));
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -489,7 +621,7 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportCustomerList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", Resx.report_list_customers);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_customers"));
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -553,7 +685,7 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportArticleStockMovementList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", Resx.report_list_stock_movements);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_movements"));
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -582,11 +714,11 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportSystemAuditList.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", Resx.report_list_audit_table);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_audit_table"));
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
-                FRBOGenericCollection<FRBOSystemAuditView> gcSystemAudit = new FRBOGenericCollection<FRBOSystemAuditView>(filter);
+                FRBOGenericCollection<FRBOSystemAuditView> gcSystemAudit = new FRBOGenericCollection<FRBOSystemAuditView>(filter, String.Empty, "SauDate");
 
                 // Decrypt Phase
                 if (GlobalFramework.PluginSoftwareVendor != null)
@@ -613,7 +745,12 @@ namespace logicpos.financial.library.Classes.Reports
                 _log.Error(ex.Message, ex);
             }
         }
-
+        /// <summary>
+        /// Calls the report flow for Customer Current Account details.
+        /// </summary>
+        /// <param name="pViewMode"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterHumanReadable"></param>
         public static void ProcessReportDocumentFinanceCurrentAccount(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
             try
@@ -623,8 +760,9 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportDocumentFinanceCurrentAccount.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", Resx.report_list_current_account);
-                //customReport.SetParameterValue("Factura No", 280);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_current_account"));
+				/* IN006004 */
+                if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
                 //Prepare and Declare FRBOGenericCollections
                 FRBOGenericCollection<FRBODocumentFinanceCurrentAccount> gcCurrentAccount = new FRBOGenericCollection<FRBODocumentFinanceCurrentAccount>(filter);
@@ -653,6 +791,181 @@ namespace logicpos.financial.library.Classes.Reports
             }
         }
 
+        /// <summary>
+        /// This method calls the report flow for Customer Balance Details.
+        /// Pleasee see #IN008018# for further details.
+        /// </summary>
+        /// <param name="pViewMode"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterHumanReadable"></param>
+        public static void ProcessReportCustomerBalanceDetails(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportDocumentFinanceCustomerBalanceDetails.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_details"));
+
+                if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
+
+                //Prepare and Declare FRBOGenericCollections
+                FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails> gcCustomerBalanceDetails = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails>(filter);
+                FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceSummary> gcCustomerBalanceSummary = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceSummary>();
+
+                // Decrypt Phase
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    foreach (var item in gcCustomerBalanceDetails)
+                    {
+                        if (item.EntityName != null) item.EntityName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityName);
+                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+
+                        foreach (var summary in gcCustomerBalanceSummary)
+                        {
+                            if (summary.Oid.Equals(item.EntityOid))
+                            {
+                                item.Balance = summary.Balance;
+                                item.CustomerSinceDate = summary.CustomerSinceDate;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcCustomerBalanceDetails, "CustomerBalanceDetails");
+                if (customReport.GetDataSource("CustomerBalanceDetails") != null) customReport.GetDataSource("CustomerBalanceDetails").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// This method calls the Company Billing report flow.
+        /// Please see #IN009204# for further details.
+        /// </summary>
+        /// <param name="pViewMode"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterHumanReadable"></param>
+        public static void ProcessReportCompanyBilling(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                string reportFile = GetReportFilePath("ReportDocumentFinanceCompanyBilling.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_company_billing"));
+
+                if (!string.IsNullOrEmpty(filterHumanReadable))
+                {
+                    customReport.SetParameterValue("Report Filter", filterHumanReadable);
+                }
+
+                //Prepare and Declare FRBOGenericCollections
+                FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails> gcCustomerBalanceDetails = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails>(filter);
+
+                /* Decrypt phase */
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    foreach (var item in gcCustomerBalanceDetails)
+                    {
+                        if (item.EntityName != null) item.EntityName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityName);
+                        if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                    }
+                }
+
+                /* Enabling data sources */
+                customReport.RegisterData(gcCustomerBalanceDetails, "CustomerBalanceDetails");
+                if (customReport.GetDataSource("CustomerBalanceDetails") != null)
+                {
+                    customReport.GetDataSource("CustomerBalanceDetails").Enabled = true;
+                }
+
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error("void ProcessReportCompanyBilling(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable) :: Company Billing report: " + ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// This method calls the report flow for Customer Balance Summary.
+        /// Pleasee see #IN009010# for further details.
+        /// </summary>
+        /// <param name="pViewMode"></param>
+        /// <param name="filter"></param>
+        /// <param name="filterHumanReadable"></param>
+        public static void ProcessReportCustomerBalanceSummary(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                string reportFile = GetReportFilePath("ReportDocumentFinanceCustomerBalanceSummary.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_summary"));
+
+                if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
+
+                FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceSummary> gcCustomerBalanceSummary = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceSummary>(filter);
+                FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails> gcCustomerBalanceDetails = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails>(filter.Replace("CustomerSinceDate", "Date"));
+
+                // Decrypt Phase
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    foreach (var customerBalance in gcCustomerBalanceDetails)
+                    {
+                        erp_customer customer = null;
+                        if (customerBalance.EntityName != null) customerBalance.EntityName = GlobalFramework.PluginSoftwareVendor.Decrypt(customerBalance.EntityName);
+                        if (customerBalance.EntityFiscalNumber != null) customerBalance.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(customerBalance.EntityFiscalNumber);
+
+                        foreach (var summary in gcCustomerBalanceSummary)
+                        {
+                            if (summary.Oid.Equals(customerBalance.EntityOid))
+                            {
+                                if (!string.IsNullOrEmpty(customerBalance.EntityOid))
+                                {
+                                    customer = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), new Guid(customerBalance.EntityOid));
+                                    summary.EntityName = customer.Name;
+                                    summary.EntityFiscalNumber = customer.FiscalNumber;
+                                }
+                                else
+                                {
+                                    summary.EntityName = "No data";
+                                    summary.EntityFiscalNumber = "No data";
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcCustomerBalanceSummary, "CustomerBalanceSummary");
+                if (customReport.GetDataSource("CustomerBalanceSummary") != null)
+                {
+                    customReport.GetDataSource("CustomerBalanceSummary").Enabled = true;
+                }
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
         public static void ProcessReportUserCommission(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
             try
@@ -662,7 +975,7 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportFile = GetReportFilePath("ReportUserCommission.frx");
                 CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", Resx.report_list_user_commission);
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_user_commission"));
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
@@ -727,6 +1040,55 @@ namespace logicpos.financial.library.Classes.Reports
                 //Prepare and Declare FRBOGenericCollections
                 FRBOGenericCollection<FRBODocumentFinanceMaster> gcDocumentFinanceMaster = new FRBOGenericCollection<FRBODocumentFinanceMaster>(filter);
 
+                /* IN009077 - # TO DO (IN009078, IN009079, IN009080) */
+                DevExpress.Xpo.UnitOfWork uowSession = new DevExpress.Xpo.UnitOfWork();
+                foreach (var item in gcDocumentFinanceMaster)
+                {
+                    /* Decrypt phase - see IN009078, IN009079 and IN009080 */
+                    if (GlobalFramework.PluginSoftwareVendor != null)
+                    {
+						/* IN009076 */
+                        item.EntityName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityName);
+                        /* IN009075 */
+                        item.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                    }
+
+                    /* If "Nota de Crédito" (NC) */
+                    if (SettingsApp.XpoOidDocumentFinanceTypeCreditNote.Equals(item.DocumentType.Oid))
+                    {
+                        item.PaymentMethod = new fin_configurationpaymentmethod { Designation = item.DocumentType.Designation, Ord = 999, Code = 999 }; /* Setting to 999 to avoid NC being grouped with other Payment Method created */
+                        item.PaymentCondition = new fin_configurationpaymentcondition { Designation = item.DocumentType.Designation, Ord = 999, Code = 999 }; /* Sets the same as above in order to keep the pattern */
+
+                        /* IN009084 - Make total values negative when NC (see IN009066) */
+                        item.TotalFinalRound  *= -1;
+                        item.TotalFinal *= -1;
+                        item.TotalDiscount *= -1;
+                        item.TotalDelivery *= -1;
+                        item.TotalTax *= -1;
+                        item.TotalNet *= -1;
+                        item.TotalGross *= -1;
+
+                    } else {
+                        /* Case FS */
+                        if (item.PaymentCondition == null)
+                        {
+                            item.PaymentCondition = (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), SettingsApp.XpoOidConfigurationPaymentMethodInstantPayment); /* Sets "Pronto Pagamento" to FS */
+                        }
+                        /* Case FT */
+                        if (item.PaymentMethod == null)
+                        {
+                            if (!item.Payed)
+                            {
+                                item.PaymentMethod = new fin_configurationpaymentmethod();
+                                item.PaymentMethod.Designation = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_detailed_grouped_pending_payment");
+
+                            } else {
+                                item.PaymentMethod = new fin_configurationpaymentmethod { Designation = item.DocumentType.Designation, Ord = 998, Code = 998 }; /* Setting to 998 to avoid Payed FT being grouped with other Payment Method created */
+                            }
+                        }
+                    }
+                }
+
                 //Prepare and Enable DataSources
                 customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
                 if (customReport.GetDataSource("DocumentFinanceMaster") != null) customReport.GetDataSource("DocumentFinanceMaster").Enabled = true;
@@ -787,12 +1149,86 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     // Using view_documentfinance
                     FRBOGenericCollection<FRBODocumentFinanceMasterDetailView> gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailView>(filter);
+                    /* IN009085 - FastReport throws error when there is no register */
+                    if (gcDocumentFinanceMasterDetail.List.Count == 0)
+                    {
+                        gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailView>();
+                    }
                     // Decrypt Phase
                     if (GlobalFramework.PluginSoftwareVendor != null)
                     {
+                        /* IN009077 - # TO DO (IN009078, IN009079, IN009080) */
+                        DevExpress.Xpo.UnitOfWork uowSession = new DevExpress.Xpo.UnitOfWork();
+
                         foreach (var item in gcDocumentFinanceMasterDetail)
                         {
                             item.UserDetailName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.UserDetailName);
+                            /* IN009075 */
+                            item.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+                            /* IN009072 - this is used on reports to subtract the below values from totals when financial document is "NC" (see IN009066) */
+                            if (SettingsApp.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
+                            {
+                                item.ArticleQuantity *= -1;
+                                item.ArticleTotalFinal *= -1;
+                                item.ArticleTotalNet *= -1;
+                                item.ArticleTotalTax *= -1;
+
+                                /* IN009077 - # TO DO (IN009078, IN009079, IN009080) and implement this for Detailed/Grouped Reports */
+                                item.PaymentMethod = item.DocumentTypeDesignation;
+                                /* Setting to 999 to avoid NC being grouped with other Payment Method created */
+                                item.PaymentMethodOrd = 999;
+                                item.PaymentMethodCode = 999;
+
+                                item.PaymentCondition = item.DocumentTypeDesignation;
+                                /* Setting to 999 to avoid NC being grouped with other Condition Method created */
+                                item.PaymentConditionOrd = 999;
+                                item.PaymentConditionCode = 999;
+                                /* IN009077 - end */
+
+                           } else { /* IN009077 - # TO DO (IN009078, IN009079, IN009080) */
+
+                                /* Case FS */
+                                if (item.PaymentCondition == null)
+                                {
+                                    /* Sets "Pronto Pagamento" to FS */
+                                    fin_configurationpaymentcondition paymentCondition =  (fin_configurationpaymentcondition)uowSession.GetObjectByKey(typeof(fin_configurationpaymentcondition), SettingsApp.XpoOidConfigurationPaymentMethodInstantPayment);
+                                    item.PaymentCondition = paymentCondition.Designation;
+                                }
+                                /* Case FT */
+                                if (item.PaymentMethod == null)
+                                {
+                                    if (!item.Payed)
+                                    {
+                                        item.PaymentMethod = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_detailed_grouped_pending_payment");
+                                    }
+                                    else
+                                    {
+                                        /* IN009077 - # TO DO (IN009078, IN009079, IN009080) */
+                                        item.PaymentMethod = item.DocumentTypeDesignation;
+                                        /* Setting to 998 to avoid Payed FT being grouped with other Payment Method created */
+                                        item.PaymentMethodOrd = 998;
+                                        item.PaymentMethodCode = 998;
+                                    }
+                                }
+                            }
+
+                            /* IN009086 - when document has no area */
+                            //if (string.IsNullOrEmpty(item.PlaceCode))
+                            if (item.PlaceCode == 0)
+                                {
+                                item.PlaceOrd = 999;
+                                item.PlaceCode = 999;
+                                item.PlaceDesignation = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_others");
+                            }
+
+                            /* IN009086 - when document has no order/table */
+                            //if (string.IsNullOrEmpty(item.PlaceTableCode))
+                            if (item.PlaceTableCode == 0)
+                                {
+                                item.PlaceTableOrd = 999;
+                                item.PlaceTableCode = 999;
+                                item.PlaceTableDesignation = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_others"); 
+                            }
                         }
                     }
                     //Prepare and Enable DataSources
@@ -801,19 +1237,35 @@ namespace logicpos.financial.library.Classes.Reports
                 else
                 {
                     // Add Common GroupFields (Required for SQLServer Grouping)
-                    string queryGroupFields = string.Format("fdArticle, fdCode, fdDesignation,fdUnitMeasure, {0}", groupField);
+                    string queryGroupFields = string.Format("fdArticle, fdCode, fdDesignation, fdUnitMeasure, {0}", groupField);
                     // Add Common Select Fields (Required for SQLServer Grouping) : Must use same FieldNames has Detail
                     string queryFields = string.Format("{0}, fdArticle AS ArticleOid, fdCode AS ArticleCode, fdDesignation AS ArticleDesignation, AVG((fdPrice - ((fdPrice * fdDiscount) / 100))) AS ArticlePriceWithDiscount, SUM(fdQuantity) AS ArticleQuantity, fdUnitMeasure AS ArticleUnitMeasure, SUM(fdTotalDiscount) AS ArticleTotalDiscount, SUM(fdTotalNet) AS ArticleTotalNet, SUM(fdTotalTax) AS ArticleTotalTax, SUM(fdTotalFinal) AS ArticleTotalFinal,COUNT(*) AS GroupCount", groupSelectFields);
 
                     // Using view_documentfinancesellgroup
                     FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView> gcDocumentFinanceMasterDetail = new FRBOGenericCollection<FRBODocumentFinanceMasterDetailGroupView>(filter, queryGroupFields, string.Empty, queryFields);
+
                     // Decrypt Phase
-                    if (GlobalFramework.PluginSoftwareVendor != null && decryptGroupField)
+                    if (GlobalFramework.PluginSoftwareVendor != null) /* IN009072 */
                     {
                         //gcDocumentFinanceMasterDetail.Get(0).GroupDesignation                    
                         foreach (var item in gcDocumentFinanceMasterDetail)
                         {
-                            item.GroupDesignation = GlobalFramework.PluginSoftwareVendor.Decrypt(item.GroupDesignation);
+                            /* IN009075 - #TODO if necessary (test it), uncomment this when detailed/grouped reports available */
+                            // item.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
+
+                            if (decryptGroupField)
+                            {
+                                item.GroupDesignation = GlobalFramework.PluginSoftwareVendor.Decrypt(item.GroupDesignation);
+                            }
+                            
+                            /* IN009072 - "NCs" must have their values subtracted from totals (see IN009066) */
+                            if (SettingsApp.XpoOidDocumentFinanceTypeCreditNote.Equals(new Guid(item.DocumentType)))
+                            {
+                                item.ArticleQuantity *= -1;
+                                item.ArticleTotalNet *= -1;
+                                item.ArticleTotalTax *= -1;
+                                item.ArticleTotalFinal *= -1;
+                            }
                         }
                     }
                     //Prepare and Enable DataSources
@@ -835,20 +1287,20 @@ namespace logicpos.financial.library.Classes.Reports
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Generate DocumentMaster PDFs
 
-        public static string DocumentMasterCreatePDF(FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static string DocumentMasterCreatePDF(fin_documentfinancemaster pDocumentFinanceMaster)
         {
             //return DocumentMasterCreatePDF(pDocumentFinanceMaster, String.Empty, CustomReportDisplayMode.ExportPDFSilent);
             return DocumentMasterCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinanceMaster, String.Empty);
         }
 
-        public static string DocumentMasterCreatePDF(FIN_DocumentFinanceMaster pDocumentFinanceMaster, string pDestinationFileName)
+        public static string DocumentMasterCreatePDF(fin_documentfinancemaster pDocumentFinanceMaster, string pDestinationFileName)
         {
             //return DocumentMasterCreatePDF(pDocumentFinanceMaster, pDestinationFileName, CustomReportDisplayMode.ExportPDFSilent);
             return DocumentMasterCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinanceMaster, pDestinationFileName);
         }
 
         //public static string DocumentMasterCreatePDF(DocumentFinanceMaster pDocumentFinanceMaster, string pDestinationFileName, CustomReportDisplayMode pCustomReportDisplayMode)
-        public static string DocumentMasterCreatePDF(CustomReportDisplayMode pDisplayMode, FIN_DocumentFinanceMaster pDocumentFinanceMaster, string pDestinationFileName)
+        public static string DocumentMasterCreatePDF(CustomReportDisplayMode pDisplayMode, fin_documentfinancemaster pDocumentFinanceMaster, string pDestinationFileName)
         {
             string result = String.Empty;
             try
@@ -868,17 +1320,17 @@ namespace logicpos.financial.library.Classes.Reports
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Generate FinanceDocumentPayment PDFs
 
-        public static string DocumentPaymentCreatePDF(FIN_DocumentFinancePayment pDocumentFinancePayment)
+        public static string DocumentPaymentCreatePDF(fin_documentfinancepayment pDocumentFinancePayment)
         {
             return DocumentPaymentCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinancePayment, String.Empty);
         }
 
-        public static string DocumentPaymentCreatePDF(FIN_DocumentFinancePayment pDocumentFinancePayment, string pDestinationFileName)
+        public static string DocumentPaymentCreatePDF(fin_documentfinancepayment pDocumentFinancePayment, string pDestinationFileName)
         {
             return DocumentPaymentCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinancePayment, pDestinationFileName);
         }
 
-        public static string DocumentPaymentCreatePDF(CustomReportDisplayMode pDisplayMode, FIN_DocumentFinancePayment pDocumentFinancePayment, string pDestinationFileName)
+        public static string DocumentPaymentCreatePDF(CustomReportDisplayMode pDisplayMode, fin_documentfinancepayment pDocumentFinancePayment, string pDestinationFileName)
         {
             string result = String.Empty;
             try
@@ -903,7 +1355,7 @@ namespace logicpos.financial.library.Classes.Reports
             string[] result = new string[pCopyNames.Count];
             for (int i = 0; i < pCopyNames.Count; i++)
             {
-                result[i] = Resx.ResourceManager.GetString(string.Format("global_print_copy_title{0}", pCopyNames[i] + 1));
+                result[i] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_print_copy_title{0}", pCopyNames[i] + 1));
             }
             return result;
         }
@@ -972,14 +1424,14 @@ namespace logicpos.financial.library.Classes.Reports
                 {//be first
                  // Remove extra chars from token to re use default resx
                     resourceString = reportResourceString.Replace("report_sales_detail_group_", "report_sales_");
-                    resourceStringPostfix = string.Format(" {0}", Resx.report_sales_detail_group_postfix);
+                    resourceStringPostfix = string.Format(" {0}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_group_postfix"));
                 }
                 // Detail
                 else if (reportResourceString.StartsWith("report_sales_detail_"))
                 {
                     // Remove extra chars from token to re use default resx
                     resourceString = reportResourceString.Replace("report_sales_detail_", "report_sales_");
-                    resourceStringPostfix = string.Format(" {0}", Resx.report_sales_detail_postfix);
+                    resourceStringPostfix = string.Format(" {0}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix"));
                 }
                 // Default
                 else
@@ -994,9 +1446,9 @@ namespace logicpos.financial.library.Classes.Reports
             }
 
             // Get Resource Content for all modes
-            if ((!string.IsNullOrEmpty(Resx.ResourceManager.GetString(resourceString))))
+            if ((!string.IsNullOrEmpty(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], resourceString))))
             {
-                resourceString = Resx.ResourceManager.GetString(resourceString);
+                resourceString = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], resourceString);
             }
             else
             {

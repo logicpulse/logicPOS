@@ -5,8 +5,8 @@ namespace logicpos.financial.library.Classes.Stocks
 {
     public class ProcessArticleStockParameter
     {
-        private ERP_Customer _customer;
-        public ERP_Customer Customer
+        private erp_customer _customer;
+        public erp_customer Customer
         {
             get { return _customer; }
         }
@@ -20,8 +20,8 @@ namespace logicpos.financial.library.Classes.Stocks
         {
             get { return _documentNumber; }
         }
-        private FIN_Article _article;
-        public FIN_Article Article
+        private fin_article _article;
+        public fin_article Article
         {
             get { return _article; }
         }
@@ -37,7 +37,7 @@ namespace logicpos.financial.library.Classes.Stocks
         }
 
         public ProcessArticleStockParameter()  { }
-        public ProcessArticleStockParameter(ERP_Customer pCustomer, DateTime pDocumentDate, string pDocumentNumber, FIN_Article pArticle, decimal pQuantity, string pNotes)
+        public ProcessArticleStockParameter(erp_customer pCustomer, DateTime pDocumentDate, string pDocumentNumber, fin_article pArticle, decimal pQuantity, string pNotes)
         {
             _customer = pCustomer;
             _documentDate = pDocumentDate;

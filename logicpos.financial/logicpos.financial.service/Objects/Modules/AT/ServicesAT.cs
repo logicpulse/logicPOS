@@ -5,6 +5,7 @@ using logicpos.financial.service.App;
 using System;
 using System.IO;
 using System.Net;
+using System.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -61,7 +62,7 @@ private string _pathSaveSoapResultError;
         //Sample Document Details : Shared for Documents and DocumentWayBill
         private string _sampleXXCustomerTaxID = "508278155";//299999998 | 111111111
         //XPObjects
-        private FIN_DocumentFinanceMaster _documentMaster;
+        private fin_documentfinancemaster _documentMaster;
 
         //Response
         private ServicesATSoapResult _soapResult = null;
@@ -72,7 +73,7 @@ private string _pathSaveSoapResultError;
         }
 
         //Constructor
-        public ServicesAT(FIN_DocumentFinanceMaster pFinanceMaster)
+        public ServicesAT(fin_documentfinancemaster pFinanceMaster)
         {
             //Parameters
             _documentMaster = pFinanceMaster;
@@ -310,8 +311,15 @@ private string _pathSaveSoapResultError;
 
         private string GenerateXmlStringDC()
         {
+            _log.Debug($"string ServiceAT.GenerateXmlStringDC() :: {_documentMaster.DocumentNumber}");
+
+            /* IN009150 (IN009075) */
+            string entityFiscalNumber = "";
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            /* IN009150 - end */
+
             //Init Local Vars
-            string customerTaxID = FiscalNumber.ExtractFiscalNumber(_documentMaster.EntityFiscalNumber);
+            string customerTaxID = FiscalNumber.ExtractFiscalNumber(entityFiscalNumber);
             string sbContentCustomerTax = string.Empty;
             string sbContentLinesAndDocumentTotals = string.Empty;
 
@@ -366,7 +374,6 @@ private string _pathSaveSoapResultError;
             sb.Append("  </S:Body>");
             sb.Append("</S:Envelope>");
 
-            XmlDocument xc = new XmlDocument();
             TextReader textReader = new StringReader(sb.ToString());
             XDocument xmlDocument = XDocument.Load(textReader);
 
@@ -378,8 +385,34 @@ private string _pathSaveSoapResultError;
 
         private string GenerateXmlStringWB()
         {
+            /* IN007016 - escaping the following list of chars using "System.Security.SecurityElement.Escape()" method:
+             * 
+             *      "   &quot;
+             *      '   &apos;
+             *      <   &lt;
+             *      >   &gt;
+             *      &   &amp;
+             */
+            _log.Debug($"string ServicesAT.GenerateXmlStringWB() :: {_documentMaster.DocumentNumber}");
+
+            /* IN009150 (IN009075) - Decrypt phase */
+            string entityName           = "";
+            string entityAddress        = "";
+            string entityZipCode        = "";
+            string entityCity           = "";
+            // string entityCountry        = "";
+            string entityFiscalNumber   = "";
+
+            if (!string.IsNullOrEmpty(_documentMaster.EntityName))          { entityName = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
+            // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            /* IN009150 - end */
+
             //Init Local Vars
-            string customerTaxID = FiscalNumber.ExtractFiscalNumber(_documentMaster.EntityFiscalNumber);
+            string customerTaxID = FiscalNumber.ExtractFiscalNumber(entityFiscalNumber);
             string sbContentLines = string.Empty;
             //MovementStartTime equal/greater system DateTime to prevent -100 error (Override _documentMaster.MovementStartTime)
             _movementStartTime = DateTime.Now;
@@ -408,41 +441,45 @@ private string _pathSaveSoapResultError;
             sb.Append("  <S:Body>");
             sb.Append("		<ns2:envioDocumentoTransporteRequestElem xmlns:ns2=\"https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/\">");
             sb.Append("       <TaxRegistrationNumber>" + _atTaxRegistrationNumber + "</TaxRegistrationNumber>");
-            sb.Append("       <CompanyName>" + _documentMaster.EntityName + "</CompanyName>");
+            sb.Append("       <CompanyName>" + SecurityElement.Escape(entityName) + "</CompanyName>");
             sb.Append("       <CompanyAddress>");
             //Change "AddressDetail" to "Addressdetail" else error: complex-type 2.4: in element CompanyAddress of type
             //Only sent is not empty Addressdetail,City,PostalCode,Country
-            sb.Append("         <Addressdetail>" + _documentMaster.EntityAddress + "</Addressdetail>");
-            sb.Append("         <City>" + _documentMaster.EntityCity + "</City>");
-            sb.Append("         <PostalCode>" + _documentMaster.EntityZipCode + "</PostalCode>");
+            sb.Append("         <Addressdetail>" + SecurityElement.Escape(entityAddress) + "</Addressdetail>");
+            sb.Append("         <City>" + entityCity + "</City>");
+            sb.Append("         <PostalCode>" + entityZipCode + "</PostalCode>");
             sb.Append("         <Country>" + _documentMaster.EntityCountry + "</Country>");
             sb.Append("       </CompanyAddress>");
             sb.Append("       <DocumentNumber>" + _documentMaster.DocumentNumber + "</DocumentNumber>");
             //WIP: CancellWayBills : Find "//WIP: CancellWayBills : " to continue in Uncomment in PosDocumentFinanceSelectRecordDialog.cs
             //Used to Cancel Documents, ex After we have it in DB, resulted from a Sent WB
             //Currently disabled Problems :"Não pode ser alterado um Documento de Transporte quando a Data de Início já decorreu."
-            //if (! string.IsNullOrEmpty(_documentMaster.ATDocCodeID)) sb.Append("       <ATDocCodeID>" + _documentMaster.ATDocCodeID + "</ATDocCodeID>");
+            if (!string.IsNullOrEmpty(_documentMaster.ATDocCodeID))
+            {
+                /* IN009083 - only Transportation Documents  have "ATDocCodeID" when successfully sent to AT */
+                sb.Append("       <ATDocCodeID>" + _documentMaster.ATDocCodeID + "</ATDocCodeID>");
+            }
             sb.Append("       <MovementStatus>" + _documentMaster.DocumentStatusStatus + "</MovementStatus>");
             sb.Append("       <MovementDate>" + _documentMaster.DocumentDate + "</MovementDate>");
             sb.Append("       <MovementType>" + _documentMaster.DocumentType.Acronym + "</MovementType>");
             sb.Append("       <CustomerTaxID>" + customerTaxID + "</CustomerTaxID>");
             sb.Append("       <CustomerAddress>");
             //Only sent is not empty Addressdetail,City,PostalCode,Country
-            sb.Append("         <Addressdetail>" + _documentMaster.EntityAddress + "</Addressdetail>");
-            sb.Append("         <City>" + _documentMaster.EntityCity + "</City>");
-            sb.Append("         <PostalCode>" + _documentMaster.EntityZipCode + "</PostalCode>");
+            sb.Append("         <Addressdetail>" + SecurityElement.Escape(entityAddress) + "</Addressdetail>");
+            sb.Append("         <City>" + entityCity + "</City>");
+            sb.Append("         <PostalCode>" + entityZipCode + "</PostalCode>");
             sb.Append("         <Country>" + _documentMaster.EntityCountry + "</Country>");
             sb.Append("       </CustomerAddress>");
             //Required to be after <CustomerAddress>
-            sb.Append("       <CustomerName>" + _documentMaster.EntityName + "</CustomerName>");
+            sb.Append("       <CustomerName>" + SecurityElement.Escape(entityName) + "</CustomerName>");
             sb.Append("       <AddressTo>");
-            sb.Append("         <Addressdetail>" + _documentMaster.ShipToAddressDetail + "</Addressdetail>");
+            sb.Append("         <Addressdetail>" + SecurityElement.Escape(_documentMaster.ShipToAddressDetail) + "</Addressdetail>");
             sb.Append("         <City>" + _documentMaster.ShipToCity + "</City>");
             sb.Append("         <PostalCode>" + _documentMaster.ShipToPostalCode + "</PostalCode>");
             sb.Append("         <Country>" + _documentMaster.ShipToCountry + "</Country>");
             sb.Append("       </AddressTo>");
             sb.Append("       <AddressFrom>");
-            sb.Append("         <Addressdetail>" + _documentMaster.ShipFromAddressDetail + "</Addressdetail>");
+            sb.Append("         <Addressdetail>" + SecurityElement.Escape(_documentMaster.ShipFromAddressDetail) + "</Addressdetail>");
             sb.Append("         <City>" + _documentMaster.ShipFromCity + "</City>");
             sb.Append("         <PostalCode>" + _documentMaster.ShipFromPostalCode + "</PostalCode>");
             sb.Append("         <Country>" + _documentMaster.ShipFromCountry + "</Country>");
@@ -459,7 +496,6 @@ private string _pathSaveSoapResultError;
             sb.Append("  </S:Body>");
             sb.Append("</S:Envelope>");
 
-            XmlDocument xc = new XmlDocument();
             TextReader textReader = new StringReader(sb.ToString());
             XDocument xmlDocument = XDocument.Load(textReader);
 
@@ -560,6 +596,7 @@ private string _pathSaveSoapResultError;
                     ? (_useMockSampleData) ? GenerateXmlStringDCSample() : GenerateXmlStringDC()
                     : (_useMockSampleData) ? GenerateXmlStringWBSample() : GenerateXmlStringWB()
                 ;
+
                 _postData = oRequest;
                 byte[] byteArray = Encoding.UTF8.GetBytes(_postData);
                 request.ContentLength = byteArray.Length;
@@ -689,9 +726,9 @@ private string _pathSaveSoapResultError;
 
             try
             {
-                //Always Add to SYS_SystemAuditAT Log
+                //Always Add to sys_systemauditat Log
                 SystemAuditATWSType systemAuditATWSType = (!_wayBillMode) ? SystemAuditATWSType.Document : SystemAuditATWSType.DocumentWayBill;
-                var systemAuditATWS = new SYS_SystemAuditAT(GlobalFramework.SessionXpo)
+                var systemAuditATWS = new sys_systemauditat(GlobalFramework.SessionXpo)
                 {
                     Date = DateTime.Now,
                     Type = systemAuditATWSType,
@@ -705,7 +742,7 @@ private string _pathSaveSoapResultError;
                 };
                 systemAuditATWS.Save();
 
-                //Always Add to FIN_DocumentFinanceMaster ATAudit
+                //Always Add to fin_documentfinancemaster ATAudit
                 _documentMaster.ATAudit.Add(systemAuditATWS);
                 _documentMaster.Save();
 

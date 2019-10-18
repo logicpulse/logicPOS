@@ -59,7 +59,7 @@ namespace logicpos.Classes.Logic.Hardware
                 {
                     message = string.Format("UsbDisplayDevice: Device Not Found VID:{0} PID:{1}", pVid, pPid);
                     _log.Error(message);
-                    //throw new Exception(message);
+                    throw new Exception("UsbDisplayDevice(int pVid, int pPid, WriteEndpointID pWriteEndpointID) :: " + message);
                 }
                 else
                 {
@@ -489,7 +489,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message, ex);
+                log.Error("UsbDisplayDevice InitDisplay() :: " + ex.Message, ex);
             }
 
             return result;
@@ -528,7 +528,7 @@ namespace logicpos.Classes.Logic.Hardware
             //string price = string.Format("{0}", FrameworkUtils.DecimalToString(pPrice));
             //string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
             Write(article, 1);
-            WriteJustified(Resx.global_total, FrameworkUtils.DecimalToString(pTotal), 2);
+            WriteJustified(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total"), FrameworkUtils.DecimalToString(pTotal), 2);
             EnableStandBy();
         }
 

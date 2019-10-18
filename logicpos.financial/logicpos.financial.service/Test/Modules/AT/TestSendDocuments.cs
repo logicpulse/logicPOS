@@ -17,11 +17,11 @@ namespace logicpos.financial.service.Test.Modules.AT
             Guid forceDocument = new Guid("99f614c9-93fc-4480-ba98-0f61b42516b5");
             string sql = Utils.GetDocumentsQuery(false, forceDocument);
             object lastDocumentMaster = GlobalFramework.SessionXpo.ExecuteScalar(sql);
-            FIN_DocumentFinanceMaster documentMaster = null;
+            fin_documentfinancemaster documentMaster = null;
 
             if (lastDocumentMaster != null)
             {
-                documentMaster = (FIN_DocumentFinanceMaster) GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), new Guid(lastDocumentMaster.ToString()));
+                documentMaster = (fin_documentfinancemaster) GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(lastDocumentMaster.ToString()));
                 if (documentMaster != null)
                 {
                     Utils.SendDocument(documentMaster);
@@ -40,11 +40,11 @@ namespace logicpos.financial.service.Test.Modules.AT
             Guid forceDocument = new Guid("afbcf434-672c-4b63-817f-021484f834bd");
             string sql = Utils.GetDocumentsQuery(true, forceDocument);
             object lastDocumentMaster = GlobalFramework.SessionXpo.ExecuteScalar(sql);
-            FIN_DocumentFinanceMaster documentMaster = null;
+            fin_documentfinancemaster documentMaster = null;
 
             if (lastDocumentMaster != null)
             {
-                documentMaster = (FIN_DocumentFinanceMaster) GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), new Guid(lastDocumentMaster.ToString()));
+                documentMaster = (fin_documentfinancemaster) GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(lastDocumentMaster.ToString()));
                 if (documentMaster != null)
                 {
                     Utils.SendDocument(documentMaster);

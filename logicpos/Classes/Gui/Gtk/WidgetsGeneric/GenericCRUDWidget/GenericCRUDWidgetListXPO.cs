@@ -18,6 +18,21 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _session = pSession;
         }
 
+        ////Getting values inside string
+        public static string getBetween(string strSource, string strStart, string strEnd)
+        {
+            int Start, End;
+            if (strSource.Contains(strStart) && strSource.Contains(strEnd))
+            {
+                Start = strSource.IndexOf(strStart, 0) + strStart.Length;
+                End = strSource.IndexOf(strEnd, Start);
+                return strSource.Substring(Start, End - Start);
+            }
+            else
+            {
+                return "";
+            }
+        }
         public override bool Save()
         {
             bool debug = (Debugger.IsAttached) ? true : false;
@@ -37,8 +52,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     // Now we can Trigger Save on XPGuidObject
                     item.Key.Save();
 
-                    // Catch CFG_ConfigurationPreferenceParameter : Usefull to Debug some Types
-                    //if (item.Key.GetType().Equals(typeof(CFG_ConfigurationPreferenceParameter)))
+                    // Catch cfg_configurationpreferenceparameter : Usefull to Debug some Types
+                    //if (item.Key.GetType().Equals(typeof(cfg_configurationpreferenceparameter)))
                     //{
                     //    _log.Debug("GenericCRUDWidgetListXPO: Catched#1");
                     //}
@@ -51,15 +66,25 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
-                ResponseType response = Utils.ShowMessageTouch(
-                    GlobalApp.WindowBackOffice,
-                    DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                    MessageType.Warning, ButtonsType.Close,
-                    Resx.window_title_dialog_exception_error,
-                    (ex.InnerException.Message != null) ? ex.InnerException.Message : ex.Message
-                    );
-
+                //IN009220 Inserir novo artigo - Código repetido - Mensagem de erro não existe
+                if (ex.InnerException.HResult == -2146232060)
+                {
+                    string data = getBetween(ex.InnerException.Message, "(", ")");
+                    String message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_duplicated_key"), data);
+                    Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), message);
+                }
+                //END IN009220
+                else
+                {
+                    _log.Error(ex.Message, ex);
+                    ResponseType response = Utils.ShowMessageTouch(
+                        GlobalApp.WindowBackOffice,
+                        DialogFlags.DestroyWithParent | DialogFlags.Modal,
+                        MessageType.Warning, ButtonsType.Close,
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"),
+                        (ex.InnerException.Message != null) ? ex.InnerException.Message : ex.Message
+                        );
+                }                
                 //RollbackTransaction
                 //_log.Debug("UpdateRecord(): RollbackTransaction");
                 try

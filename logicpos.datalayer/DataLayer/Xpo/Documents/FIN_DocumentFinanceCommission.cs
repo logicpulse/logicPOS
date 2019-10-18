@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceCommission : XPGuidObject
+    public class fin_documentfinancecommission : XPGuidObject
     {
-        public FIN_DocumentFinanceCommission() : base() { }
-        public FIN_DocumentFinanceCommission(Session session) : base(session) { }
+        public fin_documentfinancecommission() : base() { }
+        public fin_documentfinancecommission(Session session) : base(session) { }
 
         UInt32 fOrd;
         public UInt32 Ord
@@ -37,39 +37,39 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<decimal>("Total", ref fTotal, value); }
         }
 
-        POS_UserCommissionGroup fCommissionGroup;
-        public POS_UserCommissionGroup CommissionGroup
+        pos_usercommissiongroup fCommissionGroup;
+        public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<POS_UserCommissionGroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
         }
 
-        FIN_DocumentFinanceMaster fFinanceMaster;
-        public FIN_DocumentFinanceMaster FinanceMaster
+        fin_documentfinancemaster fFinanceMaster;
+        public fin_documentfinancemaster FinanceMaster
         {
             get { return fFinanceMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("FinanceMaster", ref fFinanceMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("FinanceMaster", ref fFinanceMaster, value); }
         }
 
-        FIN_DocumentFinanceDetail fFinanceDetail;
-        public FIN_DocumentFinanceDetail FinanceDetail
+        fin_documentfinancedetail fFinanceDetail;
+        public fin_documentfinancedetail FinanceDetail
         {
             get { return fFinanceDetail; }
-            set { SetPropertyValue<FIN_DocumentFinanceDetail>("FinanceDetail", ref fFinanceDetail, value); }
+            set { SetPropertyValue<fin_documentfinancedetail>("FinanceDetail", ref fFinanceDetail, value); }
         }
 
-        SYS_UserDetail fUserDetail;
-        public SYS_UserDetail UserDetail
+        sys_userdetail fUserDetail;
+        public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
-            set { SetPropertyValue<SYS_UserDetail>("UserDetail", ref fUserDetail, value); }
+            set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminal;
-        public POS_ConfigurationPlaceTerminal Terminal
+        pos_configurationplaceterminal fTerminal;
+        public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
         }
     }
 }

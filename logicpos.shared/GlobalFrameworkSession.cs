@@ -121,8 +121,8 @@ namespace logicpos.shared
             {
                 foreach (Guid item in GlobalFramework.SessionApp.LoggedUsers.Keys)
                 {
-                    SYS_UserDetail user = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(typeof(SYS_UserDetail), item);
-                    FrameworkUtils.Audit("USER_LOGOUT", string.Format(Resx.audit_message_used_forced_logout, user.Name));
+                    sys_userdetail user = (sys_userdetail)FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), item);
+                    FrameworkUtils.Audit("USER_LOGOUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_used_forced_logout"), user.Name));
                 }
                 GlobalFramework.SessionApp.LoggedUsers.Clear();
             }

@@ -24,24 +24,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewCustomer(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(ERP_Customer);
+            Type xpoGuidObjectType = typeof(erp_customer);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            ERP_Customer defaultValue = (pDefaultValue != null) ? pDefaultValue as ERP_Customer : null;
+            erp_customer defaultValue = (pDefaultValue != null) ? pDefaultValue as erp_customer : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogCustomer);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Name") { Title = Resx.global_name, MinWidth = 200, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = Resx.global_fiscal_number, MinWidth = 150 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("CardNumber") { Title = Resx.global_card_number, MinWidth = 150 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Name") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_name"), MinWidth = 200, Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), MinWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("CardNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_card_number"), MinWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
             CriteriaOperator criteria = pXpoCriteria;
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
+            /* IN009162 - customer sorting changes when "PosDocumentFinanceDialog" window */
+            string sortedColumn = "Ord"; // Default one
+            if ("PosDocumentFinanceDialog".Equals(pSourceWindow.GetType().Name))
+            {
+                sortedColumn = "UpdatedAt";
+            }
+
+            SortProperty sortPropertyForCustomer = new SortProperty(sortedColumn, DevExpress.Xpo.DB.SortingDirection.Descending);
+            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria, sortPropertyForCustomer);
 
             //Custom Events
             //WIP: this.CursorChanged += TreeViewCustomer_CursorChanged;

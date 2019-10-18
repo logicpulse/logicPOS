@@ -64,8 +64,8 @@ namespace logicpos.financial.library.Classes.Reports
         private static void RegisterSystemVars()
         {
             RegisterSystemVars(String.Empty);
-        }        
-        
+        }
+
         private static void RegisterSystemVars(string pAppName)
         {
             if (GlobalFramework.FastReportSystemVars == null)
@@ -73,7 +73,7 @@ namespace logicpos.financial.library.Classes.Reports
                 Dictionary<string, string> systemVars = new Dictionary<string, string>();
                 systemVars.Add("PreparedPages", "0");
                 GlobalFramework.FastReportSystemVars = systemVars;
-            } 
+            }
         }
 
         /// <summary>
@@ -101,6 +101,7 @@ namespace logicpos.financial.library.Classes.Reports
             customVars.Add("LICENCE_ADDRESS", GlobalFramework.LicenceAddress);
             customVars.Add("LICENCE_EMAIL", GlobalFramework.LicenceEmail);
             customVars.Add("LICENCE_TELEPHONE", GlobalFramework.LicenceTelephone);
+            customVars.Add("LICENCE_RESELLER", GlobalFramework.LicenceReseller);
             //PreferencesParameters
             customVars.Add("COMPANY_NAME", Pref("COMPANY_NAME"));
             customVars.Add("COMPANY_BUSINESS_NAME", Pref("COMPANY_BUSINESS_NAME"));
@@ -153,7 +154,7 @@ namespace logicpos.financial.library.Classes.Reports
             try
             {
                 string result = string.Format("UNDEFINED [{0}]", pKey);
-                if(GlobalFramework.FastReportCustomVars.ContainsKey(pKey.ToUpper()))
+                if (GlobalFramework.FastReportCustomVars.ContainsKey(pKey.ToUpper()))
                 {
                     result = GlobalFramework.FastReportCustomVars[pKey.ToUpper()];
                 }
@@ -183,6 +184,21 @@ namespace logicpos.financial.library.Classes.Reports
                 string result = (_resourceManager.GetString(resourceName) != null)
                   ? _resourceManager.GetString(resourceName)
                   : string.Format("UNDEFINED [{0}]", resourceName);
+
+                //_log.Debug(string.Format("Message: [{0}]", resourceName));
+
+                // Override default values - Non Default Country Replaceables
+                /* IN005993 */
+                /*if (!SettingsApp.ConfigurationSystemCountry.Equals(SettingsApp.XpoOidConfigurationCountryPortugal))
+                    if (resourceName.Equals("global_documentfinance_type_report_invoice_footer_at"))
+                    {
+                        if (GlobalFramework.CurrentCulture.Name.Equals("pt-PT"))
+                            result = result.Replace(" - Alinea f) do n.5 do art. 36 do CIVA", string.Empty);
+                        else if (GlobalFramework.CurrentCulture.Name.Equals("fr-FR"))
+                            result = result.Replace(" - Alinea f) n.5 de l´art. 36 du Code de la IVA", string.Empty);
+                        else 
+                            result = result.Replace(" - paragraph f) n.5 of art. 36 of the Vat Code", string.Empty);
+                    }*/
 
                 return result;
             }

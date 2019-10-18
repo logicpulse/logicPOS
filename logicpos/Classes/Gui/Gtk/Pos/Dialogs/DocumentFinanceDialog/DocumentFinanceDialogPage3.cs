@@ -84,7 +84,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _treeViewArticles.RecordAfterInsert += delegate
             {
                 //FORCE Assign FriendlyId to Designation
-                FIN_Article article = (_treeViewArticles.DataSourceRow["Article.Code"] as FIN_Article);
+                fin_article article = (_treeViewArticles.DataSourceRow["Article.Code"] as fin_article);
                 treeViewArticlesRecordAfterChange();
             };
             _treeViewArticles.RecordAfterDelete += delegate { treeViewArticlesRecordAfterChange(); };
@@ -101,6 +101,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _pagePad2.UpdateCustomerEditMode();
             //Validate this PagePad
             Validate();
+			//TK016236 FrontOffice - Salvar sessão para novo documento 
+            //GlobalFramework.SessionApp.CurrentOrderMainOid = currentOrderMain.Table.OrderMainOid;
+            //GlobalFramework.SessionApp.Write();
         }
 
         //Override Base Validate
@@ -177,7 +180,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             {
                 if (_treeViewArticles.DataSource.Rows.Count > 0)
                 {
-                    FIN_Article article;
+                    fin_article article;
                     //Get Discount from Select Customer
                     decimal discountGlobal = FrameworkUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
                     decimal exchangeRate = _pagePad1.EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
@@ -185,7 +188,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     //Update DataTable Rows
                     foreach (DataRow item in _treeViewArticles.DataSource.Rows)
                     {
-                        article = (FIN_Article)FrameworkUtils.GetXPGuidObject(typeof(FIN_Article), new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
+                        article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
 
                         //Calc PriceProperties
                         PriceProperties priceProperties = PriceProperties.GetPriceProperties(
@@ -195,7 +198,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                             Convert.ToDecimal(item.ItemArray[item.Table.Columns["Quantity"].Ordinal]),  //Quantity
                             Convert.ToDecimal(item.ItemArray[item.Table.Columns["Discount"].Ordinal]),  //Discount
                             discountGlobal,
-                            (item.ItemArray[item.Table.Columns["ConfigurationVatRate.Value"].Ordinal] as FIN_ConfigurationVatRate).Value //VatValue
+                            (item.ItemArray[item.Table.Columns["ConfigurationVatRate.Value"].Ordinal] as fin_configurationvatrate).Value //VatValue
                         );
 
                         //Finnally Update DataSourceRow Value with calculated PriceProperties

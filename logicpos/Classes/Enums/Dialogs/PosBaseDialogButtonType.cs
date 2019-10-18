@@ -2,6 +2,6 @@
 {
     public enum PosBaseDialogButtonType
     {
-        Default, Ok, Cancel, Yes, No, Close, Print, PrintAs, Help, CloneDocument, OpenDocument, SendEmailDocument
+        Default, Ok, Cancel, Yes, No, Close, Print, PrintAs, Help, CloneDocument, OpenDocument, SendEmailDocument, More, Filter, CleanFilter, ExportPdf, ExportXls
     }
 }

@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using DevExpress.Data.Filtering;
+using logicpos.resources;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -199,6 +201,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 _readOnly = value;
             }
         }
+
+        protected int _currentPageNumber = 1;
+
+        public int CurrentPageNumber
+        {
+            get { return _currentPageNumber; }
+            set { _currentPageNumber = value; }
+        }
         //Public EventHandlers
         public event EventHandler CursorChanged;
         public event EventHandler CheckBoxToggled;
@@ -288,7 +298,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if (_showStatusBar)
             {
                 _statusbar = new Statusbar() { HasResizeGrip = false };
-                _statusbar.Push(0, Resx.global_statusbar);
+                _statusbar.Push(0, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_statusbar"));
             };
 
             //1) Add Model to TreeModelFilter
@@ -341,6 +351,39 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             };
             _treeView.Vadjustment.ValueChanged += delegate { UpdatePages(); };
             _treeView.Vadjustment.Changed += delegate { UpdatePages(); };
+        }
+
+        protected void InitUiDashBoard()
+        {
+            //Tree Containers
+            ScrolledWindow scrolledWindow = new ScrolledWindow();
+            scrolledWindow.ShadowType = ShadowType.EtchedIn;
+            scrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+            Viewport viewport = new Viewport() { ShadowType = ShadowType.None };
+            VBox vbox = new VBox(false, 1);
+
+
+            //StatusBar
+            if (_showStatusBar)
+            {
+                _statusbar = new Statusbar() { HasResizeGrip = false };
+                _statusbar.Push(0, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_statusbar"));
+            };
+
+            //Navigator
+            _navigator = new GenericTreeViewNavigator<T1, T2>(_sourceWindow, this, _navigatorMode);
+
+            //Pack components
+            viewport.Add(_treeView);
+            scrolledWindow.Add(viewport);
+            //Pack VBox
+            vbox.PackStart(scrolledWindow, true, true, 0);
+            if (_navigatorMode == GenericTreeViewNavigatorMode.Default) vbox.PackStart(_navigator, false, false, 0);
+            if (_showStatusBar) vbox.PackStart(_statusbar, false, false, 0);
+
+            //Final Pack      
+            PackStart(vbox);
+            
         }
 
         /// <summary>
@@ -641,13 +684,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         //Fire Event 
                         OnRecordAfterInsert();
 
-                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, Resx.global_information, "***Record Inserted***");
+                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Inserted***");
                     };
                 }
                 catch (Exception ex)
                 {
                     _log.Error(ex.Message, ex);
-                    //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, "***Cant Insert Record***");
+                    //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Insert Record***");
                 }
             }
         }
@@ -698,12 +741,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (pDialogMode == DialogMode.Insert) OnRecordAfterInsert();
                         if (pDialogMode == DialogMode.View) OnRecordAfterView();
 
-                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, Resx.global_information, "***Record Updated***");
+                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Updated***");
                     }
                     catch (Exception ex)
                     {
                         _log.Error(ex.Message, ex);
-                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, "***Cant Update Record ***");
+                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
                     }
                 }
             }
@@ -711,6 +754,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
         public void Delete()
         {
+            /* IN009250, IN009217, IN009216 */
+            bool itemHasReferences = CheckItemForReferences();
+
+            if (itemHasReferences) { return; }
+
             //Fire Event
             OnRecordBeforeDelete();
 
@@ -721,8 +769,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       MessageType.Question,
                       ButtonsType.YesNo,
-                      Resx.window_title_dialog_delete_record,
-                      Resx.dialog_message_delete_record)
+                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_delete_record"),
+                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"))
                     ;
 
                 if (response == ResponseType.Yes)
@@ -741,15 +789,81 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         //Fire Event
                         OnRecordAfterDelete();
 
-                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, Resx.global_information, "***Record Deleted***");
+                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Deleted***");
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
-                        Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, Resx.dialog_message_delete_record_constraint_violation_exception);
+                        _log.Error("void Delete() :: Class '" + _dataSourceRow.GetType().Name + "' : " + ex.Message, ex);
+                        String message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
+                        Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                     }
                 }
             }
+        }
+        /// <summary>
+        /// Checks for database dependencies, based on types:
+        /// - erp_customer
+        /// - fin_articlefamily
+        /// - fin_articlesubfamily
+        /// - fin_article
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckItemForReferences()
+        {
+            bool registerHasReferences = false;
+
+            String className = _dataSourceRow.GetType().Name;
+            Guid oid = Guid.Empty;
+            String code = String.Empty;
+            int countResult = 0;
+
+            switch (className)
+            {
+                case "erp_customer":
+                    /* erp_customer has Documents */
+                    logicpos.datalayer.DataLayer.Xpo.erp_customer customer = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.erp_customer);
+                    oid = customer.Oid;
+                    code = customer.Code.ToString();
+                    countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[EntityOid] = ?", oid));
+                    break;
+
+                case "fin_articlefamily":
+                    /* Family has subfamily */
+                    logicpos.datalayer.DataLayer.Xpo.fin_articlefamily articleFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlefamily);
+                    oid = articleFamily.Oid;
+                    code = articleFamily.Code.ToString();
+                    countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Family] = ?", oid));
+                    break;
+
+                case "fin_articlesubfamily":
+                    /* Subfamily has article */
+                    logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily articleSubFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily);
+                    oid = articleSubFamily.Oid;
+                    code = articleSubFamily.Code.ToString();
+                    countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[SubFamily] = ?", oid));
+                    break;
+
+                case "fin_article":
+                    /* Has an article an invoice issued for it? */
+                    logicpos.datalayer.DataLayer.Xpo.fin_article article = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_article);
+                    oid = article.Oid;
+                    code = article.Code;
+                    countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancedetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                    break;
+
+                default:
+                    break;
+            }
+
+            if ((int)countResult > 0)
+            {
+                registerHasReferences = true;
+
+                _log.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"));
+                Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_referenced_record_message"), className, code));
+            }
+
+            return registerHasReferences;
         }
 
         public virtual bool ShowDialog<T>(T pDataObject, Enums.Dialogs.DialogMode pDialogMode)
@@ -807,11 +921,31 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 // Reflection : Get Property from Column.Name and Update its Value with reflection propertyInfo
                                 // This is the Trick to update Column display ResourceString after we Change/Update records
                                 string columnValue = pDataObject.GetType().GetProperty(column.Name).GetValue(pDataObject).ToString();
-                                pDataObject.GetType().GetProperty(column.Name).SetValue(pDataObject, Resx.ResourceManager.GetString(columnValue).ToString());
+                                pDataObject.GetType().GetProperty(column.Name).SetValue(pDataObject, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], columnValue).ToString());
                                 if (Debugger.IsAttached)
                                 {
                                     _log.Debug($"GenericTreeView: Replaced ResourceString column name [{column.Name}] with value [{columnValue}] after Update Record...");
                                 }
+                                //IN009296 BackOffice - Mudar o idioma da aplicação
+                                if (columnValue == "prefparam_culture")
+                                {
+                                    string getCultureFromDB;
+                                    try
+                                    {
+                                        string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                                        getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                                    }
+                                    catch
+                                    {
+                                        getCultureFromDB = GlobalFramework.Settings["customCultureResourceDefinition"];
+                                    }
+                                    GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                                    GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
+                                    CustomResources.UpdateLanguage(getCultureFromDB);
+                                    Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), getCultureFromDB));
+
+                                }
+                                //IN009296 ENDS
                             }
                         }
 
@@ -1095,7 +1229,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             TreeSelection selection = treeView.Selection;
             TreeModel model;
             String output = string.Empty;
-
+                        
             // The _treeIter will point to the selected row
             if (selection.GetSelected(out model, out _treeIter))
             {
@@ -1130,7 +1264,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //_log.Debug(string.Format("_listStoreModel CurrentValue(3): [{0}]", _listStoreModel.GetValue(_treeIterModel, 3)));
             //_log.Debug(string.Empty);
 
-            //Use fire/share event handler only if is used (!= null), else do nothing
+            //Use fire/share event handler only if is used (!= null), else do nothing            
             if (CursorChanged != null) CursorChanged(this, e);
         }
 

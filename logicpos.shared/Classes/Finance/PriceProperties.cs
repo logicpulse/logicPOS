@@ -111,6 +111,30 @@ namespace logicpos.shared.Classes.Finance
             set { _priceWithDiscount = value; }
         }
 
+        decimal _totalNetBeforeDiscountGlobal;
+        /// <summary>
+        /// Represents the total net after applying Customer Discount and before Global Discount (discount registered for customer).
+        /// Used when showing price details from item level.
+		/// See #IN009235 for further details.
+        /// </summary>
+        public decimal TotalNetBeforeDiscountGlobal
+        {
+            get { return _totalNetBeforeDiscountGlobal; }
+            set { _totalNetBeforeDiscountGlobal = value; }
+        }
+
+        decimal _totalFinalBeforeDiscountGlobal;
+        /// <summary>
+        /// Represents the total final after applying Customer Discount and before Global Discount (discount registered for customer).
+        /// Used when showing price details from item level.
+		/// See #IN009235 for further details.
+        /// </summary>
+        public decimal TotalFinalBeforeDiscountGlobal
+        {
+            get { return _totalFinalBeforeDiscountGlobal; }
+            set { _totalFinalBeforeDiscountGlobal = value; }
+        }
+
         decimal _priceWithDiscountGlobal;
         public decimal PriceWithDiscountGlobal
         {
@@ -218,12 +242,22 @@ namespace logicpos.shared.Classes.Finance
                     _totalGross = _quantity * _priceNet;
                     //=Quantity*PriceWithDiscountGlobal
                     _totalNet = _quantity * _priceWithDiscountGlobal;
+
+                    /* IN009235 - Total Net before applying Discount Global (discount registered for customer) */
+                    _totalNetBeforeDiscountGlobal = _quantity * _priceWithDiscount;
+
                     //=TotalGross-TotalNet
                     _totalDiscount = _totalGross - _totalNet;
                     //=(TotalNet*(Vat/100+1))-TotalNet
                     _totalTax = (_totalNet * (_vat / 100 + 1)) - _totalNet;
                     //=TotalGross-TotalDiscount+TotalTax
                     _totalFinal = _totalGross - _totalDiscount + _totalTax;
+
+                    /* IN009235 - Total Final before applying Discount Global (discount registered for customer) */
+                    decimal totalTaxBeforeDiscountGlobal = _totalNetBeforeDiscountGlobal * (_vat / 100);
+                    decimal totalDiscountBeforeDiscountGlobal = _totalGross - _totalNetBeforeDiscountGlobal;
+                    _totalFinalBeforeDiscountGlobal = _totalGross - totalDiscountBeforeDiscountGlobal + totalTaxBeforeDiscountGlobal;
+
                     break;
                 case PricePropertiesSourceMode.FromTotalFinal:
                     //=TotalFinal-(TotalFinal/(Vat/100+1))

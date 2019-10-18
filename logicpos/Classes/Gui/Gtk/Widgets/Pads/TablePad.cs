@@ -170,12 +170,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    }
 
                 // Detect Encrypted Model
-                if (GlobalFramework.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(SYS_UserDetail).ToLower()))
+                if (GlobalFramework.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(sys_userdetail).ToLower()))
                 {
                     // Inject nonPropertyFields that are outside of attributes Scope and are required to exists to be decrypted
                     string[] nonPropertyFields = { "label" };
                     // Unencrypt selectStatementResultData encrypted properties
-                    selectStatementResultData = XPGuidObject.DecryptSelectStatementResults(typeof(SYS_UserDetail), selectStatementResultMeta, selectStatementResultData, nonPropertyFields);
+                    selectStatementResultData = XPGuidObject.DecryptSelectStatementResults(typeof(sys_userdetail), selectStatementResultMeta, selectStatementResultData, nonPropertyFields);
                 }
 
                 //Create a FieldIndex to Get Values From FieldNames
@@ -268,7 +268,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, Resx.global_error, "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
+                        Utils.ShowMessageTouch(GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
                     };
                 }
                 else

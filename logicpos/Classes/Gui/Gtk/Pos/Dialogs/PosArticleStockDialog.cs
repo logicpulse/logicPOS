@@ -27,19 +27,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         TouchButtonIconWithText _buttonOk;
         TouchButtonIconWithText _buttonCancel;
         //UI Components Form
-        private XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer> _entryBoxSelectSupplier;
+        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectSupplier;
         private EntryBoxValidationDatePickerDialog _entryBoxDocumentDate;
         private EntryBoxValidation _entryBoxDocumentNumber;
-        private XPOEntryBoxSelectRecordValidation<FIN_Article, TreeViewArticle> _entryBoxSelectArticle;
+        private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle;
         private EntryBoxValidation _entryBoxQuantity;
         private EntryBoxValidation _entryBoxNotes;
         //InitialValues
-        private ERP_Customer _initialSupplier = null;
+        private erp_customer _initialSupplier = null;
         private DateTime _initialDocumentDate;
         private string _initialDocumentNumber;
 
         //Public Methods
-        public ERP_Customer Customer
+        public erp_customer Customer
         {
             get { return _entryBoxSelectSupplier.Value; }
         }
@@ -51,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             get { return _entryBoxDocumentNumber.EntryValidation.Text; }
         }
-        public FIN_Article Article
+        public fin_article Article
         {
             get { return _entryBoxSelectArticle.Value; }
         }
@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_article_stock;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
             Size windowSize = new Size(500, 480);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png");
 
@@ -100,12 +100,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Disabled = 0 OR Disabled is NULL) AND (Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<ERP_Customer, TreeViewCustomer>(this, Resx.global_supplier, "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, SettingsApp.RegexGuid, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, SettingsApp.RegexGuid, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = false;
                 _entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, Resx.global_date, Resx.global_date, _initialDocumentDate, SettingsApp.RegexDate, true, SettingsApp.DateFormat);
+                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), _initialDocumentDate, SettingsApp.RegexDate, true, SettingsApp.DateFormat);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
                 _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(SettingsApp.DateFormat);
                 _entryBoxDocumentDate.EntryValidation.Validate();
@@ -113,22 +113,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
 
                 //DocumentNumber
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, Resx.global_document_number, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
                 _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //SelectArticle
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
-                _entryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<FIN_Article, TreeViewArticle>(this, Resx.global_article, "Designation", "Oid", null, criteriaOperatorSelectArticle, SettingsApp.RegexGuid, true);
+                _entryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, SettingsApp.RegexGuid, true);
                 _entryBoxSelectArticle.EntryValidation.IsEditable = false;
                 _entryBoxSelectArticle.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Quantity
-                _entryBoxQuantity = new EntryBoxValidation(this, Resx.global_quantity, KeyboardMode.Numeric, SettingsApp.RegexDecimalPositiveAndNegative, true);
+                _entryBoxQuantity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"), KeyboardMode.Numeric, SettingsApp.RegexDecimalPositiveAndNegative, true);
                 _entryBoxQuantity.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Notes
-                _entryBoxNotes = new EntryBoxValidation(this, Resx.global_notes, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
                 _entryBoxNotes.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Final Pack
@@ -166,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign if Valid
             try
             {
-                if (supplier != null) _initialSupplier = (ERP_Customer) GlobalFramework.SessionXpo.GetObjectByKey(typeof(ERP_Customer), new Guid(supplier.ToString()));
+                if (supplier != null) _initialSupplier = (erp_customer) GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
             }
             catch (Exception ex)
             {

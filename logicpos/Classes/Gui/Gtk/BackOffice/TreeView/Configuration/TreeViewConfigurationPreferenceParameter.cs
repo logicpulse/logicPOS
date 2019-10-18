@@ -23,17 +23,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewConfigurationPreferenceParameter(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(CFG_ConfigurationPreferenceParameter);
+            Type xpoGuidObjectType = typeof(cfg_configurationpreferenceparameter);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            CFG_ConfigurationPreferenceParameter defaultValue = (pDefaultValue != null) ? pDefaultValue as CFG_ConfigurationPreferenceParameter : null;
+            cfg_configurationpreferenceparameter defaultValue = (pDefaultValue != null) ? pDefaultValue as cfg_configurationpreferenceparameter : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationPreferenceParameter);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("ResourceString") { Title = Resx.global_designation, Expand = true, ResourceString = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Value") { Title = Resx.global_value, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("ResourceString") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, ResourceString = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Value") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_value"), Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model : pXpoCriteria Parameter sent by BO
             CriteriaOperator criteria = pXpoCriteria;
@@ -56,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void TreeViewConfigurationPreferenceParameter_RecordAfterUpdate(object sender, EventArgs e)
         {
             // Get ConfigurationPreferenceParameter Reference
-            CFG_ConfigurationPreferenceParameter configurationPreferenceParameter = (_dataSourceRow as CFG_ConfigurationPreferenceParameter);
+            cfg_configurationpreferenceparameter configurationPreferenceParameter = (_dataSourceRow as cfg_configurationpreferenceparameter);
 
             try
             {

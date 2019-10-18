@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_UserPermissionProfile : XPGuidObject
+    public class sys_userpermissionprofile : XPGuidObject
     {
-        public SYS_UserPermissionProfile() : base() { }
-        public SYS_UserPermissionProfile(Session session) : base(session) { }
+        public sys_userpermissionprofile() : base() { }
+        public sys_userpermissionprofile(Session session) : base(session) { }
 
         private bool _granted = false;
         public bool Granted
@@ -23,21 +23,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserProfile One <> Many UserProfilePermissions
-        SYS_UserProfile fUserProfile;
+        sys_userprofile fUserProfile;
         [Association(@"UserProfile-UserPermissionProfile")]
-        public SYS_UserProfile UserProfile
+        public sys_userprofile UserProfile
         {
             get { return fUserProfile; }
-            set { SetPropertyValue<SYS_UserProfile>("UserProfile", ref fUserProfile, value); }
+            set { SetPropertyValue<sys_userprofile>("UserProfile", ref fUserProfile, value); }
         }
 
         //UserPermissionProfile One <> Many UserPermissionItem 
-        SYS_UserPermissionItem fPermissionItem;
+        sys_userpermissionitem fPermissionItem;
         [Association(@"UserPermissionProfile-UserPermissionItem")]
-        public SYS_UserPermissionItem PermissionItem
+        public sys_userpermissionitem PermissionItem
         {
             get { return fPermissionItem; }
-            set { SetPropertyValue<SYS_UserPermissionItem>("PermissionItem", ref fPermissionItem, value); }
+            set { SetPropertyValue<sys_userpermissionitem>("PermissionItem", ref fPermissionItem, value); }
         }
     }
 }

@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ConfigurationVatExemptionReason : XPGuidObject
+    public class fin_configurationvatexemptionreason : XPGuidObject
     {
-        public FIN_ConfigurationVatExemptionReason() : base() { }
-        public FIN_ConfigurationVatExemptionReason(Session session) : base(session) { }
+        public fin_configurationvatexemptionreason() : base() { }
+        public fin_configurationvatexemptionreason(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationVatExemptionReason), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationVatExemptionReason), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationvatexemptionreason), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationvatexemptionreason), "Code");
         }
 
         //This Can be Optional
@@ -58,17 +58,17 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationVatExemptionReason One <> Many DocumentOrderDetail
-        [Association(@"ConfigurationVatExemptionReasonReferencesDocumentDocumentFinanceDetail", typeof(FIN_DocumentFinanceDetail))]
-        public XPCollection<FIN_DocumentFinanceDetail> DocumentFinanceDetail
+        [Association(@"ConfigurationVatExemptionReasonReferencesDocumentDocumentFinanceDetail", typeof(fin_documentfinancedetail))]
+        public XPCollection<fin_documentfinancedetail> DocumentFinanceDetail
         {
-            get { return GetCollection<FIN_DocumentFinanceDetail>("DocumentFinanceDetail"); }
+            get { return GetCollection<fin_documentfinancedetail>("DocumentFinanceDetail"); }
         }
 
         //ConfigurationVatExemptionReason One <> Many Article
-        [Association(@"ConfigurationVatExemptionReasonReferencesArticle", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> Article
+        [Association(@"ConfigurationVatExemptionReasonReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> Article
         {
-            get { return GetCollection<FIN_Article>("Article"); }
+            get { return GetCollection<fin_article>("Article"); }
         }
     }
 }

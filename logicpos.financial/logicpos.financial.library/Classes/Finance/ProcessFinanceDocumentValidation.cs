@@ -160,7 +160,8 @@ namespace logicpos.financial.library.Classes.Finance
         ERROR_RULE_DOCUMENT_FINANCE_TYPE_CREDIT_NOTE_PAYED_DETECTED,
         //Valid documents for Customer (Includes Invoices, CreditNotes etc)
         ERROR_RULE_DOCUMENT_FINANCE_INVOICE_DOCUMENTS_DETECTED,
-        ERROR_RULE_DOCUMENT_FINANCE_CREDIT_NOTE_DOCUMENTS_DETECTED
+        ERROR_RULE_DOCUMENT_FINANCE_CREDIT_NOTE_DOCUMENTS_DETECTED,
+        ERROR_FIELD_SHIPFROM_DELIVERYDATE_BEFORE_SHIPPINGDATE
     }
 
     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -238,7 +239,7 @@ namespace logicpos.financial.library.Classes.Finance
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 #if (DEBUG)
-        private static bool _debug = false;
+        private static bool _debug = true;
 #else
         private static bool _debug = false;
 #endif
@@ -281,29 +282,29 @@ namespace logicpos.financial.library.Classes.Finance
             try
             {
                 //Get XPGuidObjects from Parameters
-                FIN_DocumentFinanceType documentType = (pParameters.DocumentType != null && pParameters.DocumentType != Guid.Empty)
-                    ? (FIN_DocumentFinanceType)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_DocumentFinanceType), pParameters.DocumentType)
+                fin_documentfinancetype documentType = (pParameters.DocumentType != null && pParameters.DocumentType != Guid.Empty)
+                    ? (fin_documentfinancetype)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancetype), pParameters.DocumentType)
                     : null;
-                ERP_Customer customer = (pParameters.Customer != null && pParameters.Customer != Guid.Empty)
-                    ? (ERP_Customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(ERP_Customer), pParameters.Customer)
+                erp_customer customer = (pParameters.Customer != null && pParameters.Customer != Guid.Empty)
+                    ? (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), pParameters.Customer)
                     : null;
-                FIN_DocumentFinanceMaster documentParent = (pParameters.DocumentParent != null && pParameters.DocumentParent != Guid.Empty)
-                    ? (FIN_DocumentFinanceMaster)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_DocumentFinanceMaster), pParameters.DocumentParent)
+                fin_documentfinancemaster documentParent = (pParameters.DocumentParent != null && pParameters.DocumentParent != Guid.Empty)
+                    ? (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancemaster), pParameters.DocumentParent)
                     : null;
-                ERP_Customer customerParentDocument = (documentParent != null && documentParent.EntityOid != Guid.Empty)
-                    ? (ERP_Customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(ERP_Customer), documentParent.EntityOid)
+                erp_customer customerParentDocument = (documentParent != null && documentParent.EntityOid != Guid.Empty)
+                    ? (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), documentParent.EntityOid)
                     : null;
-                CFG_ConfigurationCurrency configurationCurrency = (pParameters.Currency != null && pParameters.Currency != Guid.Empty)
-                    ? (CFG_ConfigurationCurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCurrency), pParameters.Currency)
+                cfg_configurationcurrency configurationCurrency = (pParameters.Currency != null && pParameters.Currency != Guid.Empty)
+                    ? (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcurrency), pParameters.Currency)
                     : null;
-                CFG_ConfigurationCountry countryShipTo = (pParameters.ShipTo != null && pParameters.ShipTo.CountryGuid != Guid.Empty)
-                    ? (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCountry), pParameters.ShipTo.CountryGuid)
+                cfg_configurationcountry countryShipTo = (pParameters.ShipTo != null && pParameters.ShipTo.CountryGuid != Guid.Empty)
+                    ? (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), pParameters.ShipTo.CountryGuid)
                     : null;
-                CFG_ConfigurationCountry countryShipFrom = (pParameters.ShipFrom != null && pParameters.ShipFrom.CountryGuid != Guid.Empty)
-                    ? (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCountry), pParameters.ShipFrom.CountryGuid)
+                cfg_configurationcountry countryShipFrom = (pParameters.ShipFrom != null && pParameters.ShipFrom.CountryGuid != Guid.Empty)
+                    ? (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), pParameters.ShipFrom.CountryGuid)
                     : null;
-                FIN_ConfigurationPaymentMethod configurationPaymentMethod = (pParameters.PaymentMethod != null && pParameters.PaymentMethod != Guid.Empty)
-                    ? (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_ConfigurationPaymentMethod), pParameters.PaymentMethod)
+                fin_configurationpaymentmethod configurationPaymentMethod = (pParameters.PaymentMethod != null && pParameters.PaymentMethod != Guid.Empty)
+                    ? (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod)
                     : null;
                 //Helper Variables
                 if (customer != null) _countryCode2 = customer.Country.Code2;
@@ -480,6 +481,19 @@ namespace logicpos.financial.library.Classes.Finance
                     );
                 }
 
+                /* IN009109 - treatment for Transport Documents */
+                if (requiredWayBillModeFields)
+                {
+                    DateTime shippingDate = pParameters.ShipFrom.DeliveryDate;
+                    DateTime deliveryDate = pParameters.ShipTo.DeliveryDate;
+
+                    if (deliveryDate < shippingDate)
+                    {
+                        _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYDATE_BEFORE_SHIPPINGDATE,
+                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", string.Empty, SettingsApp.RegexDateTime, true));
+                    }
+                }
+
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 // Process Article Field Validation 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -534,7 +548,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Required a Valid LoggedTerminal
 
-                FIN_DocumentFinanceSeries documentFinanceSerie = null;
+                fin_documentfinanceseries documentFinanceSerie = null;
                 if (GlobalFramework.LoggedTerminal != null)
                 {
                     documentFinanceSerie = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType).Serie;
@@ -712,7 +726,7 @@ namespace logicpos.financial.library.Classes.Finance
                                     hasArticlesWithoutReference = true;
                                 }
                                 //Chedcfk if has articles without required Reason
-                                if (item.Value.Reason == null || item.Value.Reason == string.Empty)
+                                if (String.IsNullOrEmpty(item.Value.Reason))
                                 {
                                     hasArticlesWithoutReason = true;
                                 }
@@ -822,7 +836,7 @@ namespace logicpos.financial.library.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Process Payments/Recibos
 
-        public static SortedDictionary<FinanceValidationError, object> ValidatePersistFinanceDocumentPayment(List<FIN_DocumentFinanceMaster> pInvoices, List<FIN_DocumentFinanceMaster> pCreditNotes, Guid pCustomer, Guid pPaymentMethod, Guid pConfigurationCurrency, decimal pPaymentAmount, string pPaymentNotes = "")
+        public static SortedDictionary<FinanceValidationError, object> ValidatePersistFinanceDocumentPayment(List<fin_documentfinancemaster> pInvoices, List<fin_documentfinancemaster> pCreditNotes, Guid pCustomer, Guid pPaymentMethod, Guid pConfigurationCurrency, decimal pPaymentAmount, string pPaymentNotes = "")
         {
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Init Common Variables
@@ -836,14 +850,14 @@ namespace logicpos.financial.library.Classes.Finance
             try
             {
                 //Get XPGuidObjects from Parameters
-                ERP_Customer customer = (pCustomer != null && pCustomer != Guid.Empty)
-                    ? (ERP_Customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(ERP_Customer), pCustomer)
+                erp_customer customer = (pCustomer != null && pCustomer != Guid.Empty)
+                    ? (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), pCustomer)
                     : null;
-                FIN_ConfigurationPaymentMethod paymentMethod = (pPaymentMethod != null && pPaymentMethod != Guid.Empty)
-                    ? (FIN_ConfigurationPaymentMethod)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_ConfigurationPaymentMethod), pPaymentMethod)
+                fin_configurationpaymentmethod paymentMethod = (pPaymentMethod != null && pPaymentMethod != Guid.Empty)
+                    ? (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_configurationpaymentmethod), pPaymentMethod)
                     : null;
-                CFG_ConfigurationCurrency currency = (pConfigurationCurrency != null && pConfigurationCurrency != Guid.Empty)
-                    ? (CFG_ConfigurationCurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCurrency), pConfigurationCurrency)
+                cfg_configurationcurrency currency = (pConfigurationCurrency != null && pConfigurationCurrency != Guid.Empty)
+                    ? (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcurrency), pConfigurationCurrency)
                     : null;
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1064,7 +1078,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
         }
 
-        private static void GetFieldArticleErrors(FIN_DocumentFinanceType pDocumentType, ArticleBag pArticleBag)
+        private static void GetFieldArticleErrors(fin_documentfinancetype pDocumentType, ArticleBag pArticleBag)
         {
             //Field Validation
             bool hasArticlesWithInvalidOid = false;

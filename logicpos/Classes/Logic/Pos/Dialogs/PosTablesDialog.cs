@@ -163,7 +163,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             switch (_currentViewMode)
             {
                 case TableViewMode.Orders:
-                    _labelWindowTitle.Text = Resx.ResourceManager.GetString(string.Format("window_title_dialog_tables_appmode_{0}", _appOperationModeToken).ToLower());
+                    /* IN008024 */
+                    _labelWindowTitle.Text = resources.CustomResources.GetCustomResources("", string.Format("window_title_dialog_tables_appmode_{0}", logicpos.App.SettingsApp.CustomAppOperationMode.AppOperationTheme).ToLower());
                     //Tables
                     _currentViewMode = TableViewMode.Tables;
                     _buttonTableViewOrders.Visible = true;
@@ -183,7 +184,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _tablePadPlace.Sql = _sqlPlaceBaseTable;
                     break;
                 case TableViewMode.Tables:
-                    _labelWindowTitle.Text = Resx.window_title_dialog_orders;
+                    _labelWindowTitle.Text = resources.CustomResources.GetCustomResources("", "window_title_dialog_orders");
                     //Orders
                     _currentViewMode = TableViewMode.Orders;
                     _buttonTableViewOrders.Visible = false;

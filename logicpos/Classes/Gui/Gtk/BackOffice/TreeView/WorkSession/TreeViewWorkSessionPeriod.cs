@@ -24,17 +24,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewWorkSessionPeriod(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(POS_WorkSessionPeriod);
+            Type xpoGuidObjectType = typeof(pos_worksessionperiod);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            POS_WorkSessionPeriod defaultValue = (pDefaultValue != null) ? pDefaultValue as POS_WorkSessionPeriod : null;
+            pos_worksessionperiod defaultValue = (pDefaultValue != null) ? pDefaultValue as pos_worksessionperiod : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation});
-            columnProperties.Add(new GenericTreeViewColumnProperty("DateStart") { Type = typeof(DateTime), Title = Resx.global_date_start });
-            columnProperties.Add(new GenericTreeViewColumnProperty("DateEnd") { Type = typeof(DateTime), Title = Resx.global_date_end });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation") });
+            columnProperties.Add(new GenericTreeViewColumnProperty("DateStart") { Type = typeof(DateTime), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start") });
+            columnProperties.Add(new GenericTreeViewColumnProperty("DateEnd") { Type = typeof(DateTime), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end") });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

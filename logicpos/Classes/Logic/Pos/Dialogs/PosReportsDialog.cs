@@ -1,8 +1,10 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Reports;
 using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
@@ -18,11 +20,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
     partial class PosReportsDialog
     {
+        public static CustomReportDisplayMode exportType;
         // Test Document Report
         void TestDocumentReport()
         {
             Guid docOid = new Guid("6d44b0a8-6450-4245-b4ee-a6e971f4bcec");
-            FIN_DocumentFinanceMaster documentFinanceMaster = (FIN_DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceMaster), docOid);
+            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), docOid);
             if (documentFinanceMaster != null)
             {
                 //Generate Default CopyNames from DocumentType
@@ -34,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             else
             {
-                _log.Debug(String.Format("Null Document Found for documentType: [{0}]", nameof(FIN_DocumentFinanceMaster), docOid.ToString()));
+                _log.Debug(String.Format("Null Document Found for documentType: [{0}]", nameof(fin_documentfinancemaster), docOid.ToString()));
             }
         }
 
@@ -53,8 +56,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string statusField = string.Empty;
             bool filterSellDocuments = false;
             string extraFilter = string.Empty;
-
-            if (response == ResponseType.Ok)
+            //Added Response for Export to excel, in this point both Ok and export to Excel are the same
+            if (response == ResponseType.Ok || response == (ResponseType)DialogResponseType.ExportXls || response == (ResponseType)DialogResponseType.ExportPdf)
             {
                 // Filter SellDocuments
                 if (pReportsQueryDialogMode.Equals(ReportsQueryDialogMode.FINANCIAL))
@@ -73,13 +76,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 // Add extraFilter for SellDocuments
                 if (filterSellDocuments == true)
                 {
+					/* IN009066 - FS and NC added to reports */
                     extraFilter = $@" AND ({statusField} <> 'A') AND (
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice}' OR 
-{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeDebitNote}'
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeDebitNote}' OR 
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCreditNote}' OR 
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypePayment}' 
+OR 
+{filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput}'
 )".Replace(Environment.NewLine, string.Empty);
+                    /* IN009089 - # TO DO: above, we need to check with business this condition:  {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput}' */
                 }
 
                 // Assign Dialog FilterValue to Method Result Value
@@ -96,26 +105,41 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             return result;
         }
-
-        private void PrintReportRouter(object sender, EventArgs e)
+        public Type senderType;
+        public void PrintReportRouter(object sender, EventArgs e)
         {
-            CustomReportDisplayMode displayMode = (Debugger.IsAttached)
-                ? CustomReportDisplayMode.Design
-                : CustomReportDisplayMode.ExportPDF;
-            // Override Default Development Mode
-            displayMode = CustomReportDisplayMode.ExportPDF;
+            //CustomReportDisplayMode displayMode = (Debugger.IsAttached)
+            //    ? CustomReportDisplayMode.Design
+            //    : CustomReportDisplayMode.ExportPDF;
+            CustomReportDisplayMode displayMode = exportType;
 
+            // Override Default Development Mode
             // Local Variables
             string reportFilter = string.Empty;
             string reportFilterHumanReadable = string.Empty;
             string databaseSourceObject = string.Empty;
 
-            AccordionChildButton button = (sender as AccordionChildButton);
+            dynamic button;
+
+            senderType = sender.GetType();
+
+            if(senderType.Name == "AccordionChildButton")
+            {
+                button = (sender as AccordionChildButton);
+            }
+            else
+            {
+                button = (sender as TouchButtonIconWithText);
+            }
+            //TouchButtonIconWithText buttonIcon = (sender as TouchButtonIconWithText);
+            //AccordionChildButton button = (sender as AccordionChildButton);
             //_log.Debug(String.Format("Button.Name: [{0}], Button.label: [{1}]", button.Name, button.Label));
 
             // Get Token From buttonName
             ReportsTypeToken token = (ReportsTypeToken)Enum.Parse(typeof(ReportsTypeToken), button.Name, true);
-
+            _log.Debug("void PrintReportRouter(object sender, EventArgs e) :: ReportsTypeToken: " + token.ToString());
+			//TK016249 - Impressoras - Diferenciação entre Tipos
+            GlobalFramework.UsingThermalPrinter = true;
             // Prepare ReportsQueryDialogMode
             ReportsQueryDialogMode reportsQueryDialogMode = ReportsQueryDialogMode.UNDEFINED;
             // Catch REPORT_SALES_DETAIL_* and REPORT_SALES_DETAIL_GROUP_* use same View
@@ -143,6 +167,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 reportsQueryDialogMode = ReportsQueryDialogMode.CURRENT_ACCOUNT;
                 databaseSourceObject = "view_documentfinancecurrentaccount";
+            }
+            /* IN008018 */
+            else if (token.ToString().Equals("REPORT_CUSTOMER_BALANCE_DETAILS"))
+            {
+                reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_DETAILS;
+                databaseSourceObject = "view_documentfinancecustomerbalancedetails";
+            }
+            /* IN009010 */
+            else if (token.ToString().Equals("REPORT_CUSTOMER_BALANCE_SUMMARY"))
+            {
+                reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY;
+                databaseSourceObject = "view_documentfinancecustomerbalancesummary";
+            }
+            /* IN009204 - based on CUSTOMER_BALANCE_DETAILS report */
+            else if (token.ToString().Equals("REPORT_COMPANY_BILLING"))
+            {
+                reportsQueryDialogMode = ReportsQueryDialogMode.COMPANY_BILLING;
+                databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
             else if (token.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
             {
@@ -172,20 +214,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //if (reportFilter != null || !financialViewMode)
             if (reportFilter != null/* || reportsQueryDialogMode != ReportsQueryDialogMode.UNDEFINED*/)
             {
+            	// Now we have two types of export according the Button response
+                displayMode = exportType;
                 switch (token)
                 {
                     case ReportsTypeToken.REPORT_SALES_PER_FINANCE_DOCUMENT:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceMaster.DocumentType.Ord]"
-                            , "[DocumentFinanceMaster.DocumentType.Designation] ([DocumentFinanceMaster.DocumentType.Code])",
+                            , "([DocumentFinanceMaster.DocumentType.Code]) [DocumentFinanceMaster.DocumentType.Designation]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_DATE:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceMaster.DocumentDate]"
                             , "[DocumentFinanceMaster.DocumentDate]",
                             reportFilter,
@@ -194,64 +238,73 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_USER:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceMaster.CreatedBy.Ord]"
-                            , "[DocumentFinanceMaster.CreatedBy.Name] ([DocumentFinanceMaster.CreatedBy.Code])",
+                            , "([DocumentFinanceMaster.CreatedBy.Code]) [DocumentFinanceMaster.CreatedBy.Name]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_TERMINAL:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceMaster.CreatedWhere.Ord]"
-                            , "[DocumentFinanceMaster.CreatedWhere.Designation] ([DocumentFinanceMaster.CreatedWhere.Code])",
+                            , "([DocumentFinanceMaster.CreatedWhere.Code]) [DocumentFinanceMaster.CreatedWhere.Designation]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_CUSTOMER:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceMaster.EntityFiscalNumber]"
-                            , "[DocumentFinanceMaster.EntityName] ([DocumentFinanceMaster.EntityFiscalNumber])",
+                            , "[DocumentFinanceMaster.EntityFiscalNumber] / [DocumentFinanceMaster.EntityName]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_METHOD:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
-                            , "[DocumentFinanceMaster.PaymentCondition.Ord]"
-                            , "[DocumentFinanceMaster.PaymentCondition.Designation] ([DocumentFinanceMaster.PaymentCondition.Code])",
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
+                            , "[DocumentFinanceMaster.PaymentMethod.Ord]"
+                            , "([DocumentFinanceMaster.PaymentMethod.Code]) [DocumentFinanceMaster.PaymentMethod.Designation]",/* IN009066 - Duplicate of REPORT_SALES_PER_PAYMENT_CONDITION */
+                            /* IN009066 - Faturas and Notas de Crédito were not in this report, because they have no Payment Method. Now the issue is fixed */
                             // Required to Exclude Documents without PaymentMethod else Errors Occur
-                            (string.IsNullOrEmpty(reportFilter)) ? "PaymentMethod IS NOT NULL" : string.Format("{0} AND PaymentMethod IS NOT NULL", reportFilter),
+                            reportFilter,
+                            //(string.IsNullOrEmpty(reportFilter)) ? "PaymentMethod IS NOT NULL" : string.Format("{0} AND PaymentMethod IS NOT NULL", reportFilter),
+                            /* IN009066 - end */
                             reportFilterHumanReadable
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_PAYMENT_CONDITION:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceMaster.PaymentCondition.Ord]"
-                            , "[DocumentFinanceMaster.PaymentCondition.Designation] ([DocumentFinanceMaster.PaymentCondition.Code])",
+                            , "([DocumentFinanceMaster.PaymentCondition.Code]) [DocumentFinanceMaster.PaymentCondition.Designation]",/* IN009066 */
+                            /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
                             // Required to Exclude Documents without PaymentCondition else Errors Occur
-                            (string.IsNullOrEmpty(reportFilter)) ? "PaymentCondition IS NOT NULL" : string.Format("{0} AND PaymentCondition IS NOT NULL", reportFilter),
+                            reportFilter,
+                            //(string.IsNullOrEmpty(reportFilter)) ? "PaymentCondition IS NOT NULL" : string.Format("{0} AND PaymentCondition IS NOT NULL", reportFilter),
+                            /* IN009066 - end */
                             reportFilterHumanReadable
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_CURRENCY:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceMaster.Currency.Ord]"
-                            , "[DocumentFinanceMaster.Currency.Designation] ([DocumentFinanceMaster.Currency.Code])",
+                            , "([DocumentFinanceMaster.Currency.Code]) [DocumentFinanceMaster.Currency.Designation]",/* IN009066 */
+                            /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+                            reportFilter,
                             // Required to Exclude Documents without PaymentCondition else Errors Occur
-                            (string.IsNullOrEmpty(reportFilter)) ? "PaymentCondition IS NOT NULL" : string.Format("{0} AND PaymentCondition IS NOT NULL", reportFilter),
+                            //(string.IsNullOrEmpty(reportFilter)) ? "PaymentCondition IS NOT NULL" : string.Format("{0} AND PaymentCondition IS NOT NULL", reportFilter),
+                            /* IN009066 - end */
                             reportFilterHumanReadable
                             );
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_COUNTRY:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceMaster.EntityCountry]"
                             , "[DocumentFinanceMaster.EntityCountry]",
                             reportFilter,
@@ -266,7 +319,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.DocumentTypeOrd]"
-                            , "[DocumentFinanceDetail.DocumentTypeDesignation] ([DocumentFinanceDetail.DocumentTypeCode])",
+                            , "([DocumentFinanceDetail.DocumentTypeCode]) [DocumentFinanceDetail.DocumentTypeDesignation]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
@@ -284,7 +337,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.UserDetailOrd]"
-                            , "[DocumentFinanceDetail.UserDetailName] ([DocumentFinanceDetail.UserDetailCode])",
+                            , "([DocumentFinanceDetail.UserDetailCode]) [DocumentFinanceDetail.UserDetailName]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
@@ -293,7 +346,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.TerminalOrd]"
-                            , "[DocumentFinanceDetail.TerminalDesignation] ([DocumentFinanceDetail.TerminalCode])",
+                            , "([DocumentFinanceDetail.TerminalCode]) [DocumentFinanceDetail.TerminalDesignation]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
@@ -302,7 +355,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.EntityFiscalNumber]"
-                            , "[DocumentFinanceDetail.EntityName] ([DocumentFinanceDetail.EntityFiscalNumber])",
+                            , "[DocumentFinanceDetail.EntityFiscalNumber] / [DocumentFinanceDetail.EntityName]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
@@ -311,8 +364,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.PaymentMethodOrd]"
-                            , "[DocumentFinanceDetail.PaymentMethodDesignation] ([DocumentFinanceDetail.PaymentMethodCode])",
-                            (string.IsNullOrEmpty(reportFilter)) ? "fmPaymentMethod IS NOT NULL" : string.Format("{0} AND fmPaymentMethod IS NOT NULL", reportFilter),
+                            , "([DocumentFinanceDetail.PaymentMethodCode]) [DocumentFinanceDetail.PaymentMethodDesignation]",/* IN009066 */
+                            /* IN009066 - Faturas and Notas de Crédito were not in this report, because they have no Payment Method. Now the issue is fixed */
+                            reportFilter,
+                            //(string.IsNullOrEmpty(reportFilter)) ? "fmPaymentMethod IS NOT NULL" : string.Format("{0} AND fmPaymentMethod IS NOT NULL", reportFilter),
+                            /* IN009066 - end */
                             reportFilterHumanReadable
                             );
                         break;
@@ -320,8 +376,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.PaymentConditionOrd]"
-                            , "[DocumentFinanceDetail.PaymentConditionDesignation] ([DocumentFinanceDetail.PaymentConditionCode])",
-                            (string.IsNullOrEmpty(reportFilter)) ? "fmPaymentCondition IS NOT NULL" : string.Format("{0} AND fmPaymentCondition IS NOT NULL", reportFilter),
+                            /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+                            , "([DocumentFinanceDetail.PaymentConditionCode]) [DocumentFinanceDetail.PaymentConditionDesignation]",
+                            reportFilter,
+                            //(string.IsNullOrEmpty(reportFilter)) ? "fmPaymentCondition IS NOT NULL" : string.Format("{0} AND fmPaymentCondition IS NOT NULL", reportFilter),
+                            /* IN009066 - end */
                             reportFilterHumanReadable
                             );
                         break;
@@ -329,7 +388,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.CurrencyOrd]"
-                            , "[DocumentFinanceDetail.CurrencyDesignation] ([DocumentFinanceDetail.CurrencyCode])",
+                            , "([DocumentFinanceDetail.CurrencyCode]) [DocumentFinanceDetail.CurrencyDesignation]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
@@ -338,7 +397,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.CountryOrd]"
-                            , "[DocumentFinanceDetail.CountryDesignation] ([DocumentFinanceDetail.EntityCountryCode2])",
+                            , "([DocumentFinanceDetail.EntityCountryCode2]) [DocumentFinanceDetail.CountryDesignation]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
@@ -347,7 +406,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.ArticleFamilyOrd]"
-                            , "[DocumentFinanceDetail.ArticleFamilyDesignation] ([DocumentFinanceDetail.ArticleFamilyCode])",
+                            , "([DocumentFinanceDetail.ArticleFamilyCode]) [DocumentFinanceDetail.ArticleFamilyDesignation]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
@@ -356,7 +415,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.ArticleSubFamilyOrd]"
-                            , "[DocumentFinanceDetail.ArticleFamilyDesignation] ([DocumentFinanceDetail.ArticleFamilyCode]) / [DocumentFinanceDetail.ArticleSubFamilyDesignation] ([DocumentFinanceDetail.ArticleSubFamilyCode])",
+                            , "([DocumentFinanceDetail.ArticleFamilyCode]) [DocumentFinanceDetail.ArticleFamilyDesignation] / ([DocumentFinanceDetail.ArticleSubFamilyCode]) [DocumentFinanceDetail.ArticleSubFamilyDesignation]",/* IN009066 */
                             reportFilter,
                             reportFilterHumanReadable
                             );
@@ -365,9 +424,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.PlaceOrd]"
-                            , "[DocumentFinanceDetail.PlaceDesignation] ([DocumentFinanceDetail.PlaceCode])",
+                            , "([DocumentFinanceDetail.PlaceCode]) [DocumentFinanceDetail.PlaceDesignation]",/* IN009066 */
+                            /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+                            reportFilter,
                             // Required to Exclude Documents without Place
-                            (string.IsNullOrEmpty(reportFilter)) ? "cpPlace IS NOT NULL" : string.Format("{0} AND cpPlace IS NOT NULL", reportFilter),
+                            //(string.IsNullOrEmpty(reportFilter)) ? "cpPlace IS NOT NULL" : string.Format("{0} AND cpPlace IS NOT NULL", reportFilter),
+                            /* IN009066 - end */
                             reportFilterHumanReadable
                             );
                         break;
@@ -375,9 +437,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         CustomReport.ProcessReportDocumentDetail(displayMode
                             , token.ToString().ToLower()
                             , "[DocumentFinanceDetail.PlaceTableOrd]"
-                            , "[DocumentFinanceDetail.PlaceDesignation] ([DocumentFinanceDetail.PlaceCode]) / [DocumentFinanceDetail.PlaceTableDesignation] ([DocumentFinanceDetail.PlaceTableCode])",
+                            , "([DocumentFinanceDetail.PlaceCode]) [DocumentFinanceDetail.PlaceDesignation] / ([DocumentFinanceDetail.PlaceTableCode]) [DocumentFinanceDetail.PlaceTableDesignation]",/* IN009066 */
+                            /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+                            reportFilter,
                             // Required to Exclude Documents without PlaceTable
-                            (string.IsNullOrEmpty(reportFilter)) ? "dmPlaceTable IS NOT NULL" : string.Format("{0} AND dmPlaceTable IS NOT NULL", reportFilter),
+                            //(string.IsNullOrEmpty(reportFilter)) ? "dmPlaceTable IS NOT NULL" : string.Format("{0} AND dmPlaceTable IS NOT NULL", reportFilter),
+                            /* IN009066 - end */
                             reportFilterHumanReadable
                             );
                         break;
@@ -391,7 +456,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "ftOid, ftDocumentTypeOrd, ftDocumentTypeCode, ftDocumentTypeDesignation"
                             , "ftOid AS GroupOid, ftDocumentTypeOrd AS GroupOrd, ftDocumentTypeCode AS GroupCode, ftDocumentTypeDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
                             , reportFilter
                             , reportFilterHumanReadable
                             , true
@@ -415,7 +480,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "udUserDetail, udUserDetailOrd, udUserDetailCode, udUserDetailName"
                             , "udUserDetail AS GroupOid, udUserDetailOrd AS GroupOrd, udUserDetailCode AS GroupCode, udUserDetailName AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
                             , reportFilter
                             , reportFilterHumanReadable
                             , true
@@ -428,7 +493,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "trTerminal, trTerminalOrd, trTerminalCode, trTerminalDesignation"
                             , "trTerminal AS GroupOid, trTerminalOrd AS GroupOrd, trTerminalCode AS GroupCode, trTerminalDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
                             , reportFilter
                             , reportFilterHumanReadable
                             , true
@@ -440,7 +505,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "fmEntity, cuEntityOrd, cuEntityCode, fmEntityName"
                             , "fmEntity AS GroupOid, cuEntityOrd AS GroupOrd, cuEntityCode AS GroupCode, fmEntityName AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
                             , reportFilter
                             , reportFilterHumanReadable
                             , true
@@ -452,8 +517,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "fmPaymentMethod, pmPaymentMethodOrd, pmPaymentMethodCode, pmPaymentMethodDesignation"
                             , "fmPaymentMethod AS GroupOid, pmPaymentMethodOrd AS GroupOrd, pmPaymentMethodCode AS GroupCode, pmPaymentMethodDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
-                            , (string.IsNullOrEmpty(reportFilter)) ? "fmPaymentMethod IS NOT NULL" : string.Format("{0} AND fmPaymentMethod IS NOT NULL", reportFilter)
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
+                            /* IN009066 - Faturas and Notas de Crédito were not in this report, because they have no Payment Method. Now the issue is fixed */
+                            , reportFilter
+                            //, (string.IsNullOrEmpty(reportFilter)) ? "fmPaymentMethod IS NOT NULL" : string.Format("{0} AND fmPaymentMethod IS NOT NULL", reportFilter)
                             , reportFilterHumanReadable
                             , true
                         );
@@ -464,8 +531,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "fmPaymentCondition, pcPaymentConditionOrd, pcPaymentConditionCode, pcPaymentConditionDesignation"
                             , "fmPaymentCondition AS GroupOid, pcPaymentConditionOrd AS GroupOrd, pcPaymentConditionCode AS GroupCode, pcPaymentConditionDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
-                            , (string.IsNullOrEmpty(reportFilter)) ? "fmPaymentCondition IS NOT NULL" : string.Format("{0} AND fmPaymentCondition IS NOT NULL", reportFilter)
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
+                            /* IN009066 - Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+                            , reportFilter
+                            //, (string.IsNullOrEmpty(reportFilter)) ? "fmPaymentCondition IS NOT NULL" : string.Format("{0} AND fmPaymentCondition IS NOT NULL", reportFilter)
                             , reportFilterHumanReadable
                             , true
                         );
@@ -476,7 +545,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "fmCurrency, crCurrencyOrd, crCurrencyCode, crCurrencyDesignation"
                             , "fmCurrency AS GroupOid, crCurrencyOrd AS GroupOrd, crCurrencyCode AS GroupCode, crCurrencyDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
                             , reportFilter
                             , reportFilterHumanReadable
                             , true
@@ -488,7 +557,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "ccCountry, ccCountryOrd, ccCountryCode, ccCountryDesignation"
                             , "ccCountry AS GroupOid, ccCountryOrd AS GroupOrd, ccCountryCode AS GroupCode, ccCountryDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
                             , reportFilter
                             , reportFilterHumanReadable
                             , true
@@ -500,7 +569,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "afFamily, afFamilyOrd, afFamilyCode, afFamilyDesignation"
                             , "afFamily AS GroupOid, afFamilyOrd AS GroupOrd, afFamilyCode AS GroupCode, afFamilyDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
                             , reportFilter
                             , reportFilterHumanReadable
                             , true
@@ -512,7 +581,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "sfSubFamily, sfSubFamilyOrd, sfSubFamilyCode, sfSubFamilyDesignation"
                             , "sfSubFamily AS GroupOid, sfSubFamilyOrd AS GroupOrd, sfSubFamilyCode AS GroupCode, sfSubFamilyDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]" /* IN009066 */
                             , reportFilter
                             , reportFilterHumanReadable
                             , true
@@ -524,8 +593,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "cpPlace, cpPlaceOrd, cpPlaceCode, cpPlaceDesignation"
                             , "cpPlace AS GroupOid, cpPlaceOrd AS GroupOrd, cpPlaceCode AS GroupCode, cpPlaceDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
-                            , (string.IsNullOrEmpty(reportFilter)) ? "cpPlace IS NOT NULL" : string.Format("{0} AND cpPlace IS NOT NULL", reportFilter)
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]"
+                            /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+                            , reportFilter
+                            //, (string.IsNullOrEmpty(reportFilter)) ? "cpPlace IS NOT NULL" : string.Format("{0} AND cpPlace IS NOT NULL", reportFilter)
                             , reportFilterHumanReadable
                             , true
                         );
@@ -536,8 +607,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             , "dmPlaceTable, ctPlaceTableOrd, ctPlaceTableCode, ctPlaceTableDesignation"
                             , "dmPlaceTable AS GroupOid, ctPlaceTableOrd AS GroupOrd, ctPlaceTableCode AS GroupCode, ctPlaceTableDesignation AS GroupDesignation"
                             , "[DocumentFinanceDetail.GroupOid]"
-                            , "[DocumentFinanceDetail.GroupDesignation] ([DocumentFinanceDetail.GroupCode])"
-                            , (string.IsNullOrEmpty(reportFilter)) ? "dmPlaceTable IS NOT NULL" : string.Format("{0} AND dmPlaceTable IS NOT NULL", reportFilter)
+                            , "([DocumentFinanceDetail.GroupCode]) [DocumentFinanceDetail.GroupDesignation]"
+                            /* IN009066 - Faturas, Faturas Simplificadas and Notas de Crédito were not in this report, because they have no Payment Condition. Now the issue is fixed */
+                            , reportFilter
+                            //, (string.IsNullOrEmpty(reportFilter)) ? "dmPlaceTable IS NOT NULL" : string.Format("{0} AND dmPlaceTable IS NOT NULL", reportFilter)
                             , reportFilterHumanReadable
                             , true
                         );
@@ -549,7 +622,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     /*
                     case ReportsTypeToken.REPORT_SALES_PER_FAMILY_AND_SUBFAMILY:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceDetail.ArticleFamilyCode]"
                             , "[DocumentFinanceDetail.ArticleFamilyDesignation] ([DocumentFinanceDetail.ArticleFamilyCode])"
                             , false
@@ -558,7 +631,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Where it is Called?
                     case ReportsTypeToken.REPORT_SALES_PER_ZONE_TABLE:
                         CustomReport.ProcessReportDocumentDetail(displayMode
-                            , Resx.ResourceManager.GetString(token.ToString().ToLower())
+                            , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
                             , "[DocumentFinanceDetail.ArticleFamilyCode]"
                             , "[DocumentFinanceDetail.ArticleFamilyDesignation] ([DocumentFinanceDetail.ArticleFamilyCode])"
                             , true
@@ -572,10 +645,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Auxiliar Tables
                     case ReportsTypeToken.REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES:
                         // Where it is Called?
-                        CustomReport.ProcessReportArticle(displayMode);
+                        CustomReport.ProcessReportArticle(CustomReportDisplayMode.ExportPDF);
                         break;
                     case ReportsTypeToken.REPORT_LIST_CUSTOMERS:
-                        CustomReport.ProcessReportCustomer(displayMode);
+                        CustomReport.ProcessReportCustomer(CustomReportDisplayMode.ExportPDF);
                         break;
 
                     // Other Reports
@@ -587,6 +660,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         break;
                     case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
                         CustomReport.ProcessReportDocumentFinanceCurrentAccount(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    /* IN008018 */
+                    case ReportsTypeToken.REPORT_CUSTOMER_BALANCE_DETAILS:
+                        CustomReport.ProcessReportCustomerBalanceDetails(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    /* IN009010 */
+                    case ReportsTypeToken.REPORT_CUSTOMER_BALANCE_SUMMARY:
+                        CustomReport.ProcessReportCustomerBalanceSummary(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    /* IN009204 */
+                    case ReportsTypeToken.REPORT_COMPANY_BILLING:
+                        CustomReport.ProcessReportCompanyBilling(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
                         CustomReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);

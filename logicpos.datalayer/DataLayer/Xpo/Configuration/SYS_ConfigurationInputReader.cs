@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_ConfigurationInputReader : XPGuidObject
+    public class sys_configurationinputreader : XPGuidObject
     {
-        public SYS_ConfigurationInputReader() : base() { }
-        public SYS_ConfigurationInputReader(Session session) : base(session) { }
+        public sys_configurationinputreader() : base() { }
+        public sys_configurationinputreader(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationInputReader), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationInputReader), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationinputreader), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationinputreader), "Code");
         }
 
         UInt32 fOrd;
@@ -46,16 +46,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationHardwareInputReader One <> Many CConfigurationPlaceTerminal
-        [Association(@"ConfigurationHardwareInputReader1ReferencesConfigurationPlaceTerminal", typeof(POS_ConfigurationPlaceTerminal))]
-        public XPCollection<POS_ConfigurationPlaceTerminal> TerminalsInputReader1
+        [Association(@"ConfigurationHardwareInputReader1ReferencesConfigurationPlaceTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> TerminalsInputReader1
         {
-            get { return GetCollection<POS_ConfigurationPlaceTerminal>("TerminalsInputReader1"); }
+            get { return GetCollection<pos_configurationplaceterminal>("TerminalsInputReader1"); }
         }
 
-        [Association(@"ConfigurationHardwareInputReader2ReferencesConfigurationPlaceTerminal", typeof(POS_ConfigurationPlaceTerminal))]
-        public XPCollection<POS_ConfigurationPlaceTerminal> TerminalsInputReader2
+        [Association(@"ConfigurationHardwareInputReader2ReferencesConfigurationPlaceTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> TerminalsInputReader2
         {
-            get { return GetCollection<POS_ConfigurationPlaceTerminal>("TerminalsInputReader2"); }
+            get { return GetCollection<pos_configurationplaceterminal>("TerminalsInputReader2"); }
         }
     }
 }

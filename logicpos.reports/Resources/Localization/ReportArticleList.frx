@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="09/05/2018 15:15:15" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+  <Dictionary>
+    <BusinessObjectDataSource Name="ArticleFamily" ReferenceName="ArticleFamily" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Articles.FRBOArticleFamily, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="Code" DataType="System.UInt32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <BusinessObjectDataSource Name="BusinessObjectDataSource2" Alias="ArticleSubFamily" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Articles.FRBOArticleSubFamily, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" PropName="ArticleSubFamily" Enabled="true">
+        <Column Name="Code" DataType="System.UInt32"/>
+        <Column Name="Designation" DataType="System.String"/>
+        <BusinessObjectDataSource Name="Article" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Articles.FRBOArticle, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+          <Column Name="Code" DataType="System.String"/>
+          <Column Name="Designation" DataType="System.String"/>
+          <Column Name="Price1" DataType="System.Decimal"/>
+          <Column Name="Oid" DataType="System.String"/>
+          <Column Name="ButtonImage" DataType="System.String"/>
+          <Column Name="BarCode" DataType="System.String"/>
+          <Column Name="Discount" DataType="System.Decimal"/>
+          <Column Name="Ord" DataType="System.UInt32"/>
+          <Column Name="CodeDealer" DataType="System.String"/>
+          <Column Name="ButtonLabel" DataType="System.String"/>
+          <Column Name="ButtonLabelHide" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="ButtonIcon" DataType="System.String"/>
+          <Column Name="Price2" DataType="System.Decimal"/>
+          <Column Name="Price3" DataType="System.Decimal"/>
+          <Column Name="Price4" DataType="System.Decimal"/>
+          <Column Name="Price5" DataType="System.Decimal"/>
+          <Column Name="Price1Promotion" DataType="System.Decimal"/>
+          <Column Name="Price2Promotion" DataType="System.Decimal"/>
+          <Column Name="Price3Promotion" DataType="System.Decimal"/>
+          <Column Name="Price4Promotion" DataType="System.Decimal"/>
+          <Column Name="Price5Promotion" DataType="System.Decimal"/>
+          <Column Name="Price1UsePromotionPrice" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="Price2UsePromotionPrice" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="Price3UsePromotionPrice" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="Price4UsePromotionPrice" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="Price5UsePromotionPrice" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="PriceWithVat" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="DefaultQuantity" DataType="System.Decimal"/>
+          <Column Name="Accounting" DataType="System.Decimal"/>
+          <Column Name="Tare" DataType="System.Decimal"/>
+          <Column Name="Weight" DataType="System.Decimal"/>
+          <Column Name="PVPVariable" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="Favorite" DataType="System.Boolean" BindableControl="CheckBox"/>
+          <Column Name="Token1" DataType="System.String"/>
+          <Column Name="Token2" DataType="System.String"/>
+        </BusinessObjectDataSource>
+        <Column Name="Oid" DataType="System.String"/>
+        <Column Name="Ord" DataType="System.UInt32"/>
+        <Column Name="ButtonLabel" DataType="System.String"/>
+        <Column Name="ButtonLabelHide" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="ButtonImage" DataType="System.String"/>
+        <Column Name="ButtonIcon" DataType="System.String"/>
+      </BusinessObjectDataSource>
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="Ord" DataType="System.UInt32"/>
+      <Column Name="ButtonLabel" DataType="System.String"/>
+      <Column Name="ButtonLabelHide" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="ButtonImage" DataType="System.String"/>
+      <Column Name="ButtonIcon" DataType="System.String"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Total Name="FamilyArticleSum" Evaluator="Data1"/>
+    <Total Name="ArticleSum" TotalType="Count" Evaluator="Data3"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
+      <inherited Name="PictureCompanyLogo"/>
+      <inherited Name="TextReportTitle" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
+    </inherited>
+    <DataBand Name="Data1" ZOrder="0" Top="53" Width="718.2" Height="37.8" Border.Lines="Bottom" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" DataSource="ArticleFamily" KeepTogether="true">
+      <TextObject Name="Text21" Top="9.45" Width="718.2" Height="18.9" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Text="[ArticleFamily.Designation] ([ArticleFamily.Code])" VertAlign="Center" Style="DataLevel1Font"/>
+      <DataBand Name="Data2" Top="94.8" Width="718.2" Height="37.8" Border.Lines="Bottom" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" DataSource="BusinessObjectDataSource2" KeepTogether="true">
+        <TextObject Name="Text22" Top="9.45" Width="718.2" Height="18.9" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Text="[ArticleFamily.ArticleSubFamily.Designation] ([ArticleFamily.ArticleSubFamily.Code])" VertAlign="Center" Style="DataLevel2Font"/>
+        <DataBand Name="Data3" Top="168.95" Width="718.2" Height="18.9" CanGrow="true" EvenStyle="EvenRow" DataSource="Article" KeepTogether="true">
+          <TextObject Name="Text16" Width="103.95" Height="18.9" CanGrow="true" Text="[ArticleFamily.ArticleSubFamily.Article.Code]" VertAlign="Center" Style="DataFontBold"/>
+          <TextObject Name="Text17" Left="103.95" Width="425.25" Height="18.9" CanGrow="true" Text="[ArticleFamily.ArticleSubFamily.Article.Designation]" VertAlign="Center" Style="DataFont"/>
+          <TextObject Name="Text14" Left="529.2" Width="85.05" Height="18.9" Text="[FormatNumber([ArticleFamily.ArticleSubFamily.Article.Discount],2)] %&#13;&#10;" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+          <TextObject Name="Text28" Left="614.25" Width="103.95" Height="18.9" Text="[FormatNumber([ArticleFamily.ArticleSubFamily.Article.Price1],2)]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+          <DataHeaderBand Name="DataHeader1" Top="136.6" Width="718.2" Height="28.35" Border.Lines="Top">
+            <TextObject Name="Text24" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;global_record_code&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text25" Left="103.95" Top="9.45" Width="425.25" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text26" Left="529.2" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_discount&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+            <TextObject Name="Text27" Left="614.25" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;article_price1&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          </DataHeaderBand>
+          <DataFooterBand Name="Data3Footer" Top="191.85" Width="718.2" Height="28.35">
+            <TextObject Name="Text30" Width="718.2" Height="18.9" Text="[Res(&quot;global_record_count&quot;)] : [FormatNumber([ArticleSum],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+          </DataFooterBand>
+        </DataBand>
+      </DataBand>
+    </DataBand>
+    <inherited Name="PageFooter1" Top="224.2" Height="56.7">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>

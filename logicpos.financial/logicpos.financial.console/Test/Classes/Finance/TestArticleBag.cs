@@ -46,7 +46,7 @@ namespace logicpos.financial.console.Test.Classes
 
             foreach (var item in mockArticles)
             {
-                FIN_Article article = (FIN_Article)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(FIN_Article), item.Key);
+                fin_article article = (fin_article)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_article), item.Key);
 
                 articleBagKey = new ArticleBagKey(
                   article.Oid,

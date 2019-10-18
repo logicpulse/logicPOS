@@ -172,7 +172,8 @@ namespace logicpos.financial.service
                 string culture = GlobalFramework.PreferenceParameters["CULTURE"];
                 if (!string.IsNullOrEmpty(culture))
                 {
-                    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
+                    /* IN006018 and IN007009 */
+                    //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 }
                 GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
                 //Always use en-US NumberFormat because of MySql Requirements
@@ -181,8 +182,8 @@ namespace logicpos.financial.service
                 //SettingsApp
                 string companyCountryOid = GlobalFramework.PreferenceParameters["COMPANY_COUNTRY_OID"];
                 string systemCurrencyOid = GlobalFramework.PreferenceParameters["SYSTEM_CURRENCY_OID"];
-                SettingsApp.ConfigurationSystemCountry = (CFG_ConfigurationCountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCountry), new Guid(companyCountryOid));
-                SettingsApp.ConfigurationSystemCurrency = (CFG_ConfigurationCurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(CFG_ConfigurationCurrency), new Guid(systemCurrencyOid));
+                SettingsApp.ConfigurationSystemCountry = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid(companyCountryOid));
+                SettingsApp.ConfigurationSystemCurrency = (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcurrency), new Guid(systemCurrencyOid));
 
                 //After Construct Settings (ex Required path["certificates"])
                 Utils.Log(string.Format("BootStrap {0}....", SettingsApp.AppName));

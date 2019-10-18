@@ -23,20 +23,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //XpoMode
         public TreeViewUser(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
-            Type xpoGuidObjectType = typeof(SYS_UserDetail);
+            Type xpoGuidObjectType = typeof(sys_userdetail);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            SYS_UserDetail defaultValue = (pDefaultValue != null) ? pDefaultValue as SYS_UserDetail : null;
+            sys_userdetail defaultValue = (pDefaultValue != null) ? pDefaultValue as sys_userdetail : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogUserDetail);
 
             // XPO column properties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Name") { Title = Resx.global_users, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Profile") { Title = Resx.global_profile, ChildName = "Designation", MinWidth = 160 });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = Resx.global_mobile_phone });
-            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = Resx.global_fiscal_number, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Name") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_users"), Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Profile") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_profile"), ChildName = "Designation", MinWidth = 160 });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_mobile_phone });
+            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //configure criteria/xpcollection/model
             CriteriaOperator criteria = pXpoCriteria;
@@ -60,7 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //LogOff User Before Delete
         void TreeView_RecordBeforeDelete(object sender, EventArgs e)
         {
-            SYS_UserDetail userDetail = (_dataSourceRow as SYS_UserDetail);
+            sys_userdetail userDetail = (_dataSourceRow as sys_userdetail);
             //If User deleted Force Logout in Sytem
             GlobalApp.WindowStartup.LogOutUser(false, userDetail);
         }

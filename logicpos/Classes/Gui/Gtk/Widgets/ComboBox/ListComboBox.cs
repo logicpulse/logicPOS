@@ -65,9 +65,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Aways Default to UNDEFINED Value - even if Collection is Empty, and if Used
             if (pAddUndefinedValue)
             {
-                tempItemIter = _comboBoxListStore.AppendValues(0, Resx.widget_combobox_undefined);
+                tempItemIter = _comboBoxListStore.AppendValues(0, resources.CustomResources.GetCustomResources("", "widget_combobox_undefined"));
                 _treeInterDictionary.Add(0, tempItemIter);
-                initialValueDefault = Resx.widget_combobox_undefined;
+                initialValueDefault = resources.CustomResources.GetCustomResources("", "widget_combobox_undefined");
                 positionOffset = 1;
             }
             else

@@ -54,7 +54,7 @@ namespace logicpos.shared.Classes.Orders
             _oid = pTableOid;
             try
             {
-                POS_ConfigurationPlaceTable table = (POS_ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObject(typeof(POS_ConfigurationPlaceTable), pTableOid);
+                pos_configurationplacetable table = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
                 _name = table.Designation;
                 //Enum is not Zero Indexed
                 _priceType = (PriceType)table.Place.PriceType.EnumValue;

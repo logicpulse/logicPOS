@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentOrderDetail : XPGuidObject
+    public class fin_documentorderdetail : XPGuidObject
     {
-        public FIN_DocumentOrderDetail() : base() { }
-        public FIN_DocumentOrderDetail(Session session) : base(session) { }
+        public fin_documentorderdetail() : base() { }
+        public fin_documentorderdetail(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceYearSerieTerminal), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceYearSerieTerminal), "Code").ToString();
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyearserieterminal), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyearserieterminal), "Code").ToString();
         }
 
         UInt32 fOrd;
@@ -133,21 +133,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentOrderTicket One <> Many DocumentOrderDetail
-        FIN_DocumentOrderTicket fOrderTicket;
+        fin_documentorderticket fOrderTicket;
         [Association(@"DocumentOrderTicketReferencesDocumentOrderDetail")]
-        public FIN_DocumentOrderTicket OrderTicket
+        public fin_documentorderticket OrderTicket
         {
             get { return fOrderTicket; }
-            set { SetPropertyValue<FIN_DocumentOrderTicket>("OrderTicket", ref fOrderTicket, value); }
+            set { SetPropertyValue<fin_documentorderticket>("OrderTicket", ref fOrderTicket, value); }
         }
 
         //Article One <> Many DocumentOrderDetail
-        FIN_Article fArticle;
+        fin_article fArticle;
         [Association(@"ArticleReferencesDocumentOrderDetail")]
-        public FIN_Article Article
+        public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<FIN_Article>("Article", ref fArticle, value); }
+            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
         }
     }
 }

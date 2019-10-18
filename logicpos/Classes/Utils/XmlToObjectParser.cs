@@ -155,7 +155,7 @@ namespace logicpos
                     break;
                 case ReplaceType.Resource:
                     patternPrefix = "Resx";
-                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => Resx.ResourceManager.GetString(x);
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], x);
                     break;
                 case ReplaceType.Evaluation:
                     patternPrefix = "Eval";

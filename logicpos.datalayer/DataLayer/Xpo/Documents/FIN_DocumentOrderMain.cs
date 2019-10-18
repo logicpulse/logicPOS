@@ -5,10 +5,10 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentOrderMain : XPGuidObject
+    public class fin_documentordermain : XPGuidObject
     {
-        public FIN_DocumentOrderMain() : base() { }
-        public FIN_DocumentOrderMain(Session session) : base(session) { }
+        public fin_documentordermain() : base() { }
+        public fin_documentordermain(Session session) : base(session) { }
 
         DateTime fDateStart;
         public DateTime DateStart
@@ -25,19 +25,19 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentOrderMain One <> Many DocumentOrderTicket
-        [Association(@"DocumentOrderMainReferencesDocumentOrderTicket", typeof(FIN_DocumentOrderTicket))]
-        public XPCollection<FIN_DocumentOrderTicket> OrderTicket
+        [Association(@"DocumentOrderMainReferencesDocumentOrderTicket", typeof(fin_documentorderticket))]
+        public XPCollection<fin_documentorderticket> OrderTicket
         {
-            get { return GetCollection<FIN_DocumentOrderTicket>("OrderTicket"); }
+            get { return GetCollection<fin_documentorderticket>("OrderTicket"); }
         }
 
         //ConfigurationPlaceTable One <> Many DocumentOrderMain
-        POS_ConfigurationPlaceTable fPlaceTable;
+        pos_configurationplacetable fPlaceTable;
         [Association(@"ConfigurationPlaceTableReferencesDocumentOrderMain")]
-        public POS_ConfigurationPlaceTable PlaceTable
+        public pos_configurationplacetable PlaceTable
         {
             get { return fPlaceTable; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTable>("PlaceTable", ref fPlaceTable, value); }
+            set { SetPropertyValue<pos_configurationplacetable>("PlaceTable", ref fPlaceTable, value); }
         }
     }
 }

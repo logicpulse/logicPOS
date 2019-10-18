@@ -2,6 +2,6 @@
 {
     public enum CustomReportDisplayMode
     {
-        Preview, Print, Design, ExportPDF, ExportPDFSilent
+        Preview, Print, Design, ExportPDF, ExportPDFSilent, ExportXls
     }
 }

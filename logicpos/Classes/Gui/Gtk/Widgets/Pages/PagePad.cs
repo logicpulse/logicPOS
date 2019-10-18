@@ -74,8 +74,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _pages = pPages;
 
             HBox navigatorButtons = new HBox(true, 0);
-            _buttonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, Resx.pos_button_label_prev_pages_toolbar, fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
-            _buttonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, Resx.pos_button_label_next_pages_toolbar, fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
+            _buttonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
+            _buttonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
 
             //Events
             _buttonPrev.Clicked += buttonPrev_Clicked;

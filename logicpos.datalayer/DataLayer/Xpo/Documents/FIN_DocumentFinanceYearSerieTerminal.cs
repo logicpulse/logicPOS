@@ -5,15 +5,15 @@ using logicpos.datalayer.App;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceYearSerieTerminal : XPGuidObject
+    public class fin_documentfinanceyearserieterminal : XPGuidObject
     {
-        public FIN_DocumentFinanceYearSerieTerminal() : base() { }
-        public FIN_DocumentFinanceYearSerieTerminal(Session session) : base(session) { }
+        public fin_documentfinanceyearserieterminal() : base() { }
+        public fin_documentfinanceyearserieterminal(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceYearSerieTerminal), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_DocumentFinanceYearSerieTerminal), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyearserieterminal), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyearserieterminal), "Code");
         }
 
         UInt32 fOrd;
@@ -39,61 +39,61 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceYears One <> Many DocumentFinanceYearSerieTerminal
-        FIN_DocumentFinanceYears fFiscalYear;
+        fin_documentfinanceyears fFiscalYear;
         [Association(@"DocumentFinanceYearsReferencesDocumentFinanceYearSerieTerminal")]
-        public FIN_DocumentFinanceYears FiscalYear
+        public fin_documentfinanceyears FiscalYear
         {
             get { return fFiscalYear; }
-            set { SetPropertyValue<FIN_DocumentFinanceYears>("FiscalYear", ref fFiscalYear, value); }
+            set { SetPropertyValue<fin_documentfinanceyears>("FiscalYear", ref fFiscalYear, value); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceYearSerieTerminal
-        FIN_DocumentFinanceType fDocumentType;
+        fin_documentfinancetype fDocumentType;
         [Association(@"DocumentFinanceTypeReferencesDocumentFinanceYearSerieTerminal")]
-        public FIN_DocumentFinanceType DocumentType
+        public fin_documentfinancetype DocumentType
         {
             get { return fDocumentType; }
-            set { SetPropertyValue<FIN_DocumentFinanceType>("DocumentType", ref fDocumentType, value); }
+            set { SetPropertyValue<fin_documentfinancetype>("DocumentType", ref fDocumentType, value); }
         }
 
 
         //DocumentFinanceSeries One <> Many DocumentFinanceYearSerieTerminal
-        FIN_DocumentFinanceSeries fDocumentSerie;
+        fin_documentfinanceseries fDocumentSerie;
         [Association(@"DocumentFinanceSeriesReferencesDFYearSerieTerminal")]
-        public FIN_DocumentFinanceSeries Serie
+        public fin_documentfinanceseries Serie
         {
             get { return fDocumentSerie; }
-            set { SetPropertyValue<FIN_DocumentFinanceSeries>("Serie", ref fDocumentSerie, value); }
+            set { SetPropertyValue<fin_documentfinanceseries>("Serie", ref fDocumentSerie, value); }
         }
 
 
         //DocumentFinanceType One <> Many DocumentFinanceYearSerieTerminal
-        POS_ConfigurationPlaceTerminal fTerminal;
+        pos_configurationplaceterminal fTerminal;
         [Association(@"ConfigurationPlaceTerminalReferencesDFYearSerieTerminal")]
-        public POS_ConfigurationPlaceTerminal Terminal
+        public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
         }
 
 
         //ConfigurationPrinters One <> Many DocumentFinanceYearSerieTerminal
-        SYS_ConfigurationPrinters fPrinter;
+        sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersTerminalReferencesDFYearSerieTerminal")]
-        public SYS_ConfigurationPrinters Printer
+        public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<SYS_ConfigurationPrinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
         }
 
 
         //ConfigurationPrintersTemplates One <> Many DocumentFinanceYearSerieTerminal
-        SYS_ConfigurationPrintersTemplates fTemplate;
+        sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesDFYearSerieTerminal")]
-        public SYS_ConfigurationPrintersTemplates Template
+        public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<SYS_ConfigurationPrintersTemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
         }
     }
 }

@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_SystemPrint : XPGuidObject
+    public class sys_systemprint : XPGuidObject
     {
-        public SYS_SystemPrint() : base() { }
-        public SYS_SystemPrint(Session session) : base(session) { }
+        public sys_systemprint() : base() { }
+        public sys_systemprint(Session session) : base(session) { }
 
         DateTime fDate;
         public DateTime Date
@@ -55,36 +55,36 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<bool>("SecondPrint", ref fSecondPrint, value); }
         }
         
-        SYS_UserDetail fUserDetail;
-        public SYS_UserDetail UserDetail
+        sys_userdetail fUserDetail;
+        public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
-            set { SetPropertyValue<SYS_UserDetail>("UserDetail", ref fUserDetail, value); }
+            set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminal;
-        public POS_ConfigurationPlaceTerminal Terminal
+        pos_configurationplaceterminal fTerminal;
+        public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
         }
 
         //DocumentFinanceMaster One <> Many SystemPrint
-        FIN_DocumentFinanceMaster fDocumentMaster;
+        fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesSystemPrint")]
-        public FIN_DocumentFinanceMaster DocumentMaster
+        public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
         }
 
         //DocumentFinancePayment One <> Many SystemPrint
-        FIN_DocumentFinancePayment fDocumentPayment;
+        fin_documentfinancepayment fDocumentPayment;
         [Association(@"DocumentFinancePaymentReferencesSystemPrint")]
-        public FIN_DocumentFinancePayment DocumentPayment
+        public fin_documentfinancepayment DocumentPayment
         {
             get { return fDocumentPayment; }
-            set { SetPropertyValue<FIN_DocumentFinancePayment>("DocumentPayment", ref fDocumentPayment, value); }
+            set { SetPropertyValue<fin_documentfinancepayment>("DocumentPayment", ref fDocumentPayment, value); }
         }
     }
 }

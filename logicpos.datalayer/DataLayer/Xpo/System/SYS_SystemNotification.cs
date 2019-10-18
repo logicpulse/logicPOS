@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_SystemNotification : XPGuidObject
+    public class sys_systemnotification : XPGuidObject
     {
-        public SYS_SystemNotification() : base() { }
-        public SYS_SystemNotification(Session session) : base(session) { }
+        public sys_systemnotification() : base() { }
+        public sys_systemnotification(Session session) : base(session) { }
 
         UInt32 fOrd;
         public UInt32 Ord
@@ -38,64 +38,64 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DateTime>("DateRead", ref fDateRead, value); }
         }
 
-        SYS_UserDetail fUserTarget;
-        public SYS_UserDetail UserTarget
+        sys_userdetail fUserTarget;
+        public sys_userdetail UserTarget
         {
             get { return fUserTarget; }
-            set { SetPropertyValue<SYS_UserDetail>("UserTarget", ref fUserTarget, value); }
+            set { SetPropertyValue<sys_userdetail>("UserTarget", ref fUserTarget, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminalTarget;
-        public POS_ConfigurationPlaceTerminal TerminalTarget
+        pos_configurationplaceterminal fTerminalTarget;
+        public pos_configurationplaceterminal TerminalTarget
         {
             get { return fTerminalTarget; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("TerminalTarget", ref fTerminalTarget, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("TerminalTarget", ref fTerminalTarget, value); }
         }
 
-        SYS_UserDetail fUserLastRead;
-        public SYS_UserDetail UserLastRead
+        sys_userdetail fUserLastRead;
+        public sys_userdetail UserLastRead
         {
             get { return fUserLastRead; }
-            set { SetPropertyValue<SYS_UserDetail>("UserLastRead", ref fUserLastRead, value); }
+            set { SetPropertyValue<sys_userdetail>("UserLastRead", ref fUserLastRead, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminalLastRead;
-        public POS_ConfigurationPlaceTerminal TerminalLastRead
+        pos_configurationplaceterminal fTerminalLastRead;
+        public pos_configurationplaceterminal TerminalLastRead
         {
             get { return fTerminalLastRead; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("TerminalLastRead", ref fTerminalLastRead, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("TerminalLastRead", ref fTerminalLastRead, value); }
         }
 
         //SystemNotificationType One <> Many SystemNotification
-        SYS_SystemNotificationType fNotificationType;
+        sys_systemnotificationtype fNotificationType;
         [Association(@"SystemNotificationTypeReferencesSystemNotification")]
-        public SYS_SystemNotificationType NotificationType
+        public sys_systemnotificationtype NotificationType
         {
             get { return fNotificationType; }
-            set { SetPropertyValue<SYS_SystemNotificationType>("NotificationType", ref fNotificationType, value); }
+            set { SetPropertyValue<sys_systemnotificationtype>("NotificationType", ref fNotificationType, value); }
         }
 
 ////SystemNotification Many <> Many DocumentFinanceMaster
-//[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(FIN_DocumentFinanceMaster))]
-//public XPCollection<FIN_DocumentFinanceMaster> DocumentMaster
+//[Association(@"SystemNotificationReferencesDocumentFinanceMaster", typeof(fin_documentfinancemaster))]
+//public XPCollection<fin_documentfinancemaster> DocumentMaster
 //{
-//    get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentMaster"); }
+//    get { return GetCollection<fin_documentfinancemaster>("DocumentMaster"); }
 //}
 
 ////SystemNotification One <> Many DocumentFinanceMaster
-//SYS_SystemNotification fNotification;
+//sys_systemnotification fNotification;
 //[Association(@"SystemNotificationReferencesDocumentFinanceMaster")]
-//public SYS_SystemNotification Notification
+//public sys_systemnotification Notification
 //{
 //    get { return fNotification; }
-//    set { SetPropertyValue<SYS_SystemNotification>("Notification", ref fNotification, value); }
+//    set { SetPropertyValue<sys_systemnotification>("Notification", ref fNotification, value); }
 //}
 
         //SystemNotification One <> Many DocumentFinanceMaster
-        [Association(@"SystemNotificationReferenceDocumentFinanceMaster", typeof(SYS_SystemNotificationDocumentMaster))]
-        public XPCollection<SYS_SystemNotificationDocumentMaster> Notifications
+        [Association(@"SystemNotificationReferenceDocumentFinanceMaster", typeof(sys_systemnotificationdocumentmaster))]
+        public XPCollection<sys_systemnotificationdocumentmaster> Notifications
         {
-            get { return GetCollection<SYS_SystemNotificationDocumentMaster>("Notifications"); }
+            get { return GetCollection<sys_systemnotificationdocumentmaster>("Notifications"); }
         }
     }
 }

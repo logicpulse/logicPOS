@@ -319,7 +319,7 @@ namespace acme.softwarevendor.plugin
 
                 try
                 {
-                    // Try Get Resource
+                    // Try Get Resource                    
                     stream = GetType().Module.Assembly.GetManifestResourceStream(resourceLocation);
                     if (stream == null)
                     {

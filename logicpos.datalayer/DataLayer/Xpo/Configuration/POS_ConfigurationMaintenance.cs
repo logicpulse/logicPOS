@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_ConfigurationMaintenance : XPGuidObject
+    public class pos_configurationmaintenance : XPGuidObject
     {
-        public POS_ConfigurationMaintenance() : base() { }
-        public POS_ConfigurationMaintenance(Session session) : base(session) { }
+        public pos_configurationmaintenance() : base() { }
+        public pos_configurationmaintenance(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationMaintenance), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationMaintenance), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationmaintenance), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationmaintenance), "Code");
         }
 
         UInt32 fOrd;

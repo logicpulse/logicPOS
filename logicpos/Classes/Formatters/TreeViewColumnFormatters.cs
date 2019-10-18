@@ -117,11 +117,45 @@ namespace logicpos.Classes.Formatters
             try
             {
                 decimal quantity = Convert.ToDecimal(arg);
-                result = (quantity > 0) ? Resx.global_stock_movement_in : Resx.global_stock_movement_out;
+                result = (quantity > 0) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movement_in") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movement_out");
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
+            }
+            return result;
+        }
+
+        public object GetFormat(Type formatType)
+        {
+            return (formatType == typeof(ICustomFormatter)) ? this : null;
+        }
+    }
+
+    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    
+	/// <summary>
+    /// This formatter is an option to "DecryptValue = true" from "GenericTreeViewColumnProperty", where the same demands a query call to get the proper attribute values
+    /// </summary>
+    public class FormatterDecrypt : IFormatProvider, ICustomFormatter
+    {
+        //Log4Net
+        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public string Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            string result = string.Empty; ;
+
+            try
+            {
+                if (arg != null)
+                {
+                    result = GlobalFramework.PluginSoftwareVendor.Decrypt((arg).ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("string Format(string format, object arg, IFormatProvider formatProvider) :: " + ex.Message, ex);
             }
             return result;
         }

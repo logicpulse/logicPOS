@@ -1,0 +1,1 @@
+-- VAT Rate Script for PT;

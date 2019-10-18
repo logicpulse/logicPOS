@@ -19,7 +19,7 @@ namespace logicpos.resources.Resources.Localization {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resx {
@@ -62,7 +62,7 @@ namespace logicpos.resources.Resources.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to {0}
-        ///
+        ///    
         ///Application not licensed.
         /// </summary>
         public static string app_error_application_unlicenced_function_disabled {
@@ -82,7 +82,7 @@ namespace logicpos.resources.Resources.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Application Error! Error rending theme:
-        ///
+        ///    
         ///{0}
         ///
         ///{1}.
@@ -94,9 +94,10 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unsupported Screen Resolution {0}x{1}!
+        ///   Looks up a localized string similar to Screen Resolution &apos;{0}x{1}&apos; Not Supported!
+        ///Redefine it through LogicPOS settings file, key [appScreenSize], and try again.
         ///
-        ///Define manually the screen resolution in config file settings parameter [appScreenSize] and try again!.
+        ///Or select &apos;{2}&apos; to start POS on default &apos;1024x768&apos; mode..
         /// </summary>
         public static string app_error_unsupported_resolution_detected {
             get {
@@ -142,7 +143,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Normal Price.
+        ///   Looks up a localized string similar to Regular Price.
         /// </summary>
         public static string article_normal_price {
             get {
@@ -250,7 +251,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cash Drawer In : {0} - {1}.
+        ///   Looks up a localized string similar to Cash Drawer In: {0} - {1}.
         /// </summary>
         public static string audit_message_cashdrawer_in {
             get {
@@ -268,7 +269,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cash Drawer Out : {0} - {1}.
+        ///   Looks up a localized string similar to Cash Drawer Out: {0} - {1}.
         /// </summary>
         public static string audit_message_cashdrawer_out {
             get {
@@ -277,7 +278,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Database Backup : {0}.
+        ///   Looks up a localized string similar to Database Backup: {0}.
         /// </summary>
         public static string audit_message_database_backup {
             get {
@@ -376,7 +377,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application Closed, Forced Logout User: {0}.
+        ///   Looks up a localized string similar to Application Closed, Forced Logout of User: {0}.
         /// </summary>
         public static string audit_message_used_forced_logout {
             get {
@@ -426,6 +427,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string audit_message_user_logout {
             get {
                 return ResourceManager.GetString("audit_message_user_logout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dddd, dd MMMM yyyy&apos; || &apos;HH:mm:ss tt.
+        /// </summary>
+        public static string backoffice_datetime_format_status_bar {
+            get {
+                return ResourceManager.GetString("backoffice_datetime_format_status_bar", resourceCulture);
             }
         }
         
@@ -538,7 +548,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit cash registers.
+        ///   Looks up a localized string similar to Cash Register.
         /// </summary>
         public static string dialog_edit_ConfigurationCashRegister_tab1_label {
             get {
@@ -547,7 +557,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit currency.
+        ///   Looks up a localized string similar to Currency.
         /// </summary>
         public static string dialog_edit_ConfigurationCurrency_tab1_label {
             get {
@@ -556,7 +566,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit devices.
+        ///   Looks up a localized string similar to Devices.
         /// </summary>
         public static string dialog_edit_ConfigurationDevice_tab1_label {
             get {
@@ -565,7 +575,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit keyboards.
+        ///   Looks up a localized string similar to Keyboards.
         /// </summary>
         public static string dialog_edit_ConfigurationKeyboard_tab1_label {
             get {
@@ -574,7 +584,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage maintenance.
+        ///   Looks up a localized string similar to Manage Maintenance.
         /// </summary>
         public static string dialog_edit_ConfigurationMaintenance_tab1_label {
             get {
@@ -583,7 +593,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit payment conditions.
+        ///   Looks up a localized string similar to Payment Conditions.
         /// </summary>
         public static string dialog_edit_ConfigurationPaymentCondition_tab1_label {
             get {
@@ -592,7 +602,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit payment methods.
+        ///   Looks up a localized string similar to Payment Methods.
         /// </summary>
         public static string dialog_edit_ConfigurationPaymentMethod_tab1_label {
             get {
@@ -601,7 +611,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit types of movements.
+        ///   Looks up a localized string similar to Types of Service.
         /// </summary>
         public static string dialog_edit_ConfigurationPlaceMovementType_tab1_label {
             get {
@@ -610,7 +620,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit tables.
+        ///   Looks up a localized string similar to Tables.
         /// </summary>
         public static string dialog_edit_ConfigurationPlaceTable_tab1_label {
             get {
@@ -619,7 +629,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit terminals.
+        ///   Looks up a localized string similar to Terminals.
         /// </summary>
         public static string dialog_edit_ConfigurationPlaceTerminal_tab1_label {
             get {
@@ -628,7 +638,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit type of price.
+        ///   Looks up a localized string similar to Type of Price.
         /// </summary>
         public static string dialog_edit_ConfigurationPriceType_tab1_label {
             get {
@@ -637,7 +647,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit units of measure.
+        ///   Looks up a localized string similar to Units of Measure.
         /// </summary>
         public static string dialog_edit_ConfigurationUnitMeasure_tab1_label {
             get {
@@ -646,7 +656,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit units of measure.
+        ///   Looks up a localized string similar to Units of Size.
         /// </summary>
         public static string dialog_edit_ConfigurationUnitSize_tab1_label {
             get {
@@ -655,7 +665,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit Vat rate.
+        ///   Looks up a localized string similar to Tax Rate.
         /// </summary>
         public static string dialog_edit_configurationvatrate_tab1_label {
             get {
@@ -664,7 +674,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit discounts.
+        ///   Looks up a localized string similar to Discount Groups.
         /// </summary>
         public static string dialog_edit_CustomerDiscountGroup_tab1_label {
             get {
@@ -673,7 +683,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit clients.
+        ///   Looks up a localized string similar to Customer.
         /// </summary>
         public static string dialog_edit_CustomerType_tab1_label {
             get {
@@ -682,7 +692,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit printer.
+        ///   Looks up a localized string similar to Printer.
         /// </summary>
         public static string dialog_edit_DialogConfigurationPrinters_tab1_label {
             get {
@@ -691,7 +701,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit type of printer.
+        ///   Looks up a localized string similar to Type of Printer.
         /// </summary>
         public static string dialog_edit_DialogConfigurationPrintersType_tab1_label {
             get {
@@ -700,11 +710,29 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit serie.
+        ///   Looks up a localized string similar to Financial Document Series.
         /// </summary>
         public static string dialog_edit_DocumentFinanceSeries_tab1_label {
             get {
                 return ResourceManager.GetString("dialog_edit_DocumentFinanceSeries_tab1_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The ticket you are trying to pay has already been paid and has left..
+        /// </summary>
+        public static string dialog_message_article_already_exited {
+            get {
+                return ResourceManager.GetString("dialog_message_article_already_exited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The ticket you are trying to pay has already been paid..
+        /// </summary>
+        public static string dialog_message_article_already_paid {
+            get {
+                return ResourceManager.GetString("dialog_message_article_already_paid", resourceCulture);
             }
         }
         
@@ -718,7 +746,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cant create current account documents with final consumer or without a customer with name and fiscal number!
+        ///   Looks up a localized string similar to Can&apos;t create current account documents with final consumer or without a customer with name and fiscal number!
         ///Please use a valid customer and try again..
         /// </summary>
         public static string dialog_message_cant_create_cc_document_with_default_entity {
@@ -728,8 +756,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can not remove the entered value [{0}] out of the cashdrawer, 
-        ///it is superior to the amount[{1}] in cashdrawer! 
+        ///   Looks up a localized string similar to Can not remove the entered value [{0}] out of the cashdrawer, it is superior to the amount[{1}] in cashdrawer! 
         ///Please enter a valid amount..
         /// </summary>
         public static string dialog_message_cashdrawer_money_out_error {
@@ -739,7 +766,8 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Total entered did not match the total in the cashdrawer, check the existing amount again. To procced you can enter the total displayed above (Total CashDrawer) , but dont forget to make a cash flow (input/output) corresponding to the difference after open CashDrawer for the next time.
+        ///   Looks up a localized string similar to The Total entered did not match the total in the cashdrawer, check the existing amount again. 
+        ///To procced you can enter the total displayed above (Total CashDrawer), but dont forget to make a cash flow (input/output) corresponding to the difference after open CashDrawer for the next time.
         ///
         ///Total CashDrawer: {0}
         ///Total Entered: {1}
@@ -753,11 +781,39 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CashDrawer successfully opened!.
+        ///   Looks up a localized string similar to Cash Drawer successfully opened!.
         /// </summary>
         public static string dialog_message_cashdrawer_open_successfully {
             get {
                 return ResourceManager.GetString("dialog_message_cashdrawer_open_successfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code already registered in the system! Please enter another number and try again..
+        /// </summary>
+        public static string dialog_message_code_number_exists {
+            get {
+                return ResourceManager.GetString("dialog_message_code_number_exists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application language changed to {0}, please restart POS to confirm changes.
+        /// </summary>
+        public static string dialog_message_culture_change {
+            get {
+                return ResourceManager.GetString("dialog_message_culture_change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fiscal Number already registered in the system!
+        ///Please enter another number and try again..
+        /// </summary>
+        public static string dialog_message_customer_fiscal_number_exists {
+            get {
+                return ResourceManager.GetString("dialog_message_customer_fiscal_number_exists", resourceCulture);
             }
         }
         
@@ -773,8 +829,8 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error Backup DataBase
-        ///{0}!.
+        ///   Looks up a localized string similar to Error when backing up the Database:
+        ///&apos;{0}&apos;.
         /// </summary>
         public static string dialog_message_database_backup_error {
             get {
@@ -783,9 +839,17 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DataBase Backup
-        ///{0}
-        ///done successfully!.
+        ///   Looks up a localized string similar to Database Backup: &apos;{0}&apos; has completed successfully, but it has failed when compacting the file..
+        /// </summary>
+        public static string dialog_message_database_backup_error_when_secure_compacting {
+            get {
+                return ResourceManager.GetString("dialog_message_database_backup_error_when_secure_compacting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database Backup: &apos;{0}&apos;
+        ///Completed successfully!.
         /// </summary>
         public static string dialog_message_database_backup_successfully {
             get {
@@ -815,7 +879,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cant find Backup File!
+        ///   Looks up a localized string similar to Can&apos;t find Backup File!
         ///Please, confirm that backup file exists
         ///{0}.
         /// </summary>
@@ -848,7 +912,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid date! Valid date are in the range of {0} to {1}.
+        ///   Looks up a localized string similar to Invalid date! Valid dates are in the range of {0} to {1}.
         /// </summary>
         public static string dialog_message_datepicker_existing_date_error_outside_range {
             get {
@@ -866,7 +930,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error can&apos;t delete record! Referential integrity Violation!.
+        ///   Looks up a localized string similar to This record has references in the database and cannot be removed..
         /// </summary>
         public static string dialog_message_delete_record_constraint_violation_exception {
             get {
@@ -875,7 +939,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cant delete the selected record!
+        ///   Looks up a localized string similar to Can&apos;t delete the selected record!
         ///This record is necessary for the proper functioning of the application!.
         /// </summary>
         public static string dialog_message_delete_record_show_protected_record {
@@ -885,7 +949,16 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error cant create directory
+        ///   Looks up a localized string similar to This record has references in the database and cannot be removed ({0}: {1})..
+        /// </summary>
+        public static string dialog_message_delete_record_show_referenced_record_message {
+            get {
+                return ResourceManager.GetString("dialog_message_delete_record_show_referenced_record_message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error can&apos;t create directory
         ///{0}.
         /// </summary>
         public static string dialog_message_error_create_directory {
@@ -895,10 +968,10 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error cant create backup directory
+        ///   Looks up a localized string similar to Error! Can&apos;t create backup directory:
         ///{0}
         ///
-        ///Backups disable, continue?.
+        ///Backups disabled, continue?.
         /// </summary>
         public static string dialog_message_error_create_directory_backups {
             get {
@@ -920,7 +993,8 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Bad Document Hash Detected!
         ///
-        ///Cant get 4Chars from Document Hash, this Error occurs when the FinanceDocument is not Signed with a valid SoftwareVendor Plugin! 
+        ///Can&apos;t extract the 4 print chars from Document Hash.
+        ///This error occurs when the FinanceDocument is not Signed with a valid SoftwareVendor Plugin! 
         ///
         ///Please Install a SoftwareVendor Plugin!.
         /// </summary>
@@ -931,7 +1005,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Commit/Persist document problem..
+        ///   Looks up a localized string similar to Issues when persisting document..
         /// </summary>
         public static string dialog_message_error_creating_financial_document_commit_session {
             get {
@@ -961,6 +1035,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The registry key you are trying to enter ({0}) already exists in the database. Please change..
+        /// </summary>
+        public static string dialog_message_error_duplicated_key {
+            get {
+                return ResourceManager.GetString("dialog_message_error_duplicated_key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error communicating with ATWebService!
         ///
         ///ReturnCode: {0}
@@ -971,6 +1054,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string dialog_message_error_in_at_webservice {
             get {
                 return ResourceManager.GetString("dialog_message_error_in_at_webservice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WS call failed.
+        /// </summary>
+        public static string dialog_message_error_in_at_ws_call_status {
+            get {
+                return ResourceManager.GetString("dialog_message_error_in_at_ws_call_status", resourceCulture);
             }
         }
         
@@ -989,7 +1081,7 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Required plugin type SoftwareVendor is missing or have a wrong secretkey!
         ///
-        ///This plugin is required, some features are disable without it!
+        ///This plugin is required, some features are disabled without it!
         ///
         ///Please install a valid SoftwareVendor Plugin that work with registered LogicposFinantialLibrary!.
         /// </summary>
@@ -1014,7 +1106,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error! Detected missed, corrupted or changes application files.
+        ///   Looks up a localized string similar to Error! Missed, corrupted or modified application files were detected:
         ///
         ///{0}.
         /// </summary>
@@ -1025,8 +1117,8 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fiscal document [{0}] processed but the print of document is ignored.
-        ///Re-print document later!.
+        ///   Looks up a localized string similar to Fiscal document [{0}] processed but the print of document was ignored.
+        ///Please, re-print the document later!.
         /// </summary>
         public static string dialog_message_error_protected_files_invalid_files_detected_print_document_ignored {
             get {
@@ -1036,8 +1128,8 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cant create a new Terminal with HardwareId: [{0}].
-        ///Please check if Terminal with same Hardware Id is not previously created, or is created, and is not disabled!.
+        ///   Looks up a localized string similar to Can&apos;t create a new Terminal with HardwareId: [{0}].
+        ///Please check if Terminal is not disabled or a Terminal with same Hardware Id has not been created previously..
         /// </summary>
         public static string dialog_message_error_register_new_terminal {
             get {
@@ -1046,8 +1138,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error! You are trying to credit an article(s) that exceeds the amount issued in the original document,
-        ///or the sum of all credited items in related credit notes exceeds the amount of the original document!
+        ///   Looks up a localized string similar to Error! You are trying to credit an article(s) that exceeds the amount issued in the original document, or the sum of all credited items in related credit notes exceeds the amount of the original document!
         ///
         ///Quantity: {0}
         ///Valid Quantity: {1}.
@@ -1056,6 +1147,24 @@ namespace logicpos.resources.Resources.Localization {
             get {
                 return ResourceManager.GetString("dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article" +
                         "_quantities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in Exporting.
+        /// </summary>
+        public static string dialog_message_export_error {
+            get {
+                return ResourceManager.GetString("dialog_message_export_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Successfully.
+        /// </summary>
+        public static string dialog_message_exported_successfully {
+            get {
+                return ResourceManager.GetString("dialog_message_exported_successfully", resourceCulture);
             }
         }
         
@@ -1072,8 +1181,8 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error! Invalid Input
-        ///Please correct your input and try again!.
+        ///   Looks up a localized string similar to Error! Invalid input!
+        ///Please correct it and try again..
         /// </summary>
         public static string dialog_message_field_validation_error_keyboardpad {
             get {
@@ -1082,7 +1191,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error! This file already exist!.
+        ///   Looks up a localized string similar to Error! This file already exists!.
         /// </summary>
         public static string dialog_message_filepicker_existing_file_error {
             get {
@@ -1091,7 +1200,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to continue and lost current document?.
+        ///   Looks up a localized string similar to Do you want to continue and lose the current document?.
         /// </summary>
         public static string dialog_message_finance_dialog_confirm_cancel {
             get {
@@ -1100,9 +1209,27 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can´t issue a credit note in this Document!
-        ///All articles from this document was already credited in above credit notes:
-        ///{0}.
+        ///   Looks up a localized string similar to Error in Importing!.
+        /// </summary>
+        public static string dialog_message_import_error {
+            get {
+                return ResourceManager.GetString("dialog_message_import_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Imported Successfully!.
+        /// </summary>
+        public static string dialog_message_import_successfully {
+            get {
+                return ResourceManager.GetString("dialog_message_import_successfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t issue &quot;{0}&quot; for this {1}!
+        ///All articles from the same were already credited in the below documents list:
+        ///{2}.
         /// </summary>
         public static string dialog_message_info_all_lines_from_this_document_was_already_credited {
             get {
@@ -1194,7 +1321,9 @@ namespace logicpos.resources.Resources.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Error! Low resolution detected!
-        ///This Application only runs on monitors with resolutions of {0} x {1} or above!.
+        ///
+        ///This Application only runs on monitors with resolutions of {0} x {1} or above!
+        ///POS will be closed..
         /// </summary>
         public static string dialog_message_low_resolution_detected {
             get {
@@ -1212,11 +1341,38 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no notifications for the last {0} days..
+        /// </summary>
+        public static string dialog_message_no_notification {
+            get {
+                return ResourceManager.GetString("dialog_message_no_notification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation successfully!.
         /// </summary>
         public static string dialog_message_operation_successfully {
             get {
                 return ResourceManager.GetString("dialog_message_operation_successfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File was Partial Imported.
+        /// </summary>
+        public static string dialog_message_partial_import {
+            get {
+                return ResourceManager.GetString("dialog_message_partial_import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another POS instance is already running!.
+        /// </summary>
+        public static string dialog_message_pos_instance_already_running {
+            get {
+                return ResourceManager.GetString("dialog_message_pos_instance_already_running", resourceCulture);
             }
         }
         
@@ -1240,6 +1396,7 @@ namespace logicpos.resources.Resources.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to There are currently an Open Ticket!
+        ///
         ///Do you want to close it and proceed?.
         /// </summary>
         public static string dialog_message_request_close_open_ticket {
@@ -1249,7 +1406,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to print finance document?.
+        ///   Looks up a localized string similar to Do you want to print document?.
         /// </summary>
         public static string dialog_message_request_print_document_confirmation {
             get {
@@ -1296,10 +1453,10 @@ namespace logicpos.resources.Resources.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Do you want to continue and create new finance series?
+        ///
         ///All the series related to selected terminals will be deleted and new ones created!
         ///
-        ///By accepting the conditions you are responsible for creating the series. 
-        ///We recall that under applicable law may not use series that have been used in the past..
+        ///By accepting the conditions you are responsible for creating the series. We recall that under applicable law may not use series that have been used in the past..
         /// </summary>
         public static string dialog_message_series_create_confirmation_text {
             get {
@@ -1358,7 +1515,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cant print document &quot;{0}&quot;!
+        ///   Looks up a localized string similar to Can&apos;t print document {0}!
         ///
         ///Current terminal dont have associated printer.
         ///
@@ -1384,7 +1541,7 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Looks up a localized string similar to The system date is smaller than the date of the last fiscal document issued!
         ///
-        ///You cant issue finance documents with dates smaller than system date!.
+        ///You can&apos;t issue finance documents with dates smaller than system date!.
         /// </summary>
         public static string dialog_message_systementry_is_less_than_last_finance_document_series {
             get {
@@ -1411,7 +1568,8 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cant update the selected record!
+        ///   Looks up a localized string similar to Can&apos;t update the selected record!
+        ///
         ///This record is necessary for the proper functioning of the application!.
         /// </summary>
         public static string dialog_message_update_record_show_protected_record {
@@ -1443,7 +1601,9 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please validate all fields before proceed!.
+        ///   Looks up a localized string similar to Required fields not filled in.
+        ///
+        ///Please validate all fields before proceed!.
         /// </summary>
         public static string dialog_message_validate_all_fields_to_proceed {
             get {
@@ -1452,10 +1612,11 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid customer card ot the card dont have credit to pay this amount, please add credit to card and try again.
+        ///   Looks up a localized string similar to Customer Card is invalid or has no sufficient credit for this operation.
+        ///Add credit and try again.
         ///
-        ///Current Card Credit: {0}
-        ///Movement Amount: {1}.
+        ///Current Credit: {0}
+        ///Movement: {1}.
         /// </summary>
         public static string dialog_message_value_exceed_customer_card_credit {
             get {
@@ -1523,7 +1684,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning! You have {0} Open Order(s)! Before proceed please close open Order(s) in Table(s) : {1}.
+        ///   Looks up a localized string similar to Warning! You have {0} Open Order(s)! Before proceed please close open Order(s) in Table(s): {1}.
         /// </summary>
         public static string dialog_message_worksession_period_warning_open_orders_tables {
             get {
@@ -1622,6 +1783,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string dialog_orders_button_label_view_tables {
             get {
                 return ResourceManager.GetString("dialog_orders_button_label_view_tables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to dddd, dd MMMM yyyy&apos; || &apos;HH:mm:ss tt.
+        /// </summary>
+        public static string frontoffice_datetime_format_status_bar {
+            get {
+                return ResourceManager.GetString("frontoffice_datetime_format_status_bar", resourceCulture);
             }
         }
         
@@ -1986,11 +2156,47 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to E_xport XML.
+        ///   Looks up a localized string similar to Export XML.
         /// </summary>
         public static string global_button_label_export {
             get {
                 return ResourceManager.GetString("global_button_label_export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Pdf.
+        /// </summary>
+        public static string global_button_label_export_pdf {
+            get {
+                return ResourceManager.GetString("global_button_label_export_pdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Xls.
+        /// </summary>
+        public static string global_button_label_export_xls {
+            get {
+                return ResourceManager.GetString("global_button_label_export_xls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Filter.
+        /// </summary>
+        public static string global_button_label_filter {
+            get {
+                return ResourceManager.GetString("global_button_label_filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Clear.
+        /// </summary>
+        public static string global_button_label_filter_clear {
+            get {
+                return ResourceManager.GetString("global_button_label_filter_clear", resourceCulture);
             }
         }
         
@@ -2000,6 +2206,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_button_label_help {
             get {
                 return ResourceManager.GetString("global_button_label_help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Show More.
+        /// </summary>
+        public static string global_button_label_more {
+            get {
+                return ResourceManager.GetString("global_button_label_more", resourceCulture);
             }
         }
         
@@ -2175,7 +2390,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Card number.
+        ///   Looks up a localized string similar to Customer Card Number.
         /// </summary>
         public static string global_card_number {
             get {
@@ -2184,7 +2399,16 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cash registers.
+        ///   Looks up a localized string similar to Ticket/Card Code.
+        /// </summary>
+        public static string global_cardcode_small {
+            get {
+                return ResourceManager.GetString("global_cardcode_small", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cash Registers.
         /// </summary>
         public static string global_cash_registers {
             get {
@@ -2481,7 +2705,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Movement type.
+        ///   Looks up a localized string similar to Service Type.
         /// </summary>
         public static string global_ConfigurationPlace_MovementType {
             get {
@@ -2643,6 +2867,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copyright.
+        /// </summary>
+        public static string global_copyright {
+            get {
+                return ResourceManager.GetString("global_copyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Country.
         /// </summary>
         public static string global_country {
@@ -2706,6 +2939,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Acronym.
+        /// </summary>
+        public static string global_currency_acronym {
+            get {
+                return ResourceManager.GetString("global_currency_acronym", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Currency Code.
         /// </summary>
         public static string global_currency_code {
@@ -2715,7 +2957,16 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Account.
+        ///   Looks up a localized string similar to Values expressed in:.
+        /// </summary>
+        public static string global_currency_field {
+            get {
+                return ResourceManager.GetString("global_currency_field", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account Balance.
         /// </summary>
         public static string global_current_account {
             get {
@@ -2958,7 +3209,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Birthdate.
+        ///   Looks up a localized string similar to Date of Birth (&quot;yyyy/mm/dd&quot;).
         /// </summary>
         public static string global_dob {
             get {
@@ -3008,6 +3259,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_document_number_acronym {
             get {
                 return ResourceManager.GetString("global_document_number_acronym", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payed.
+        /// </summary>
+        public static string global_document_payed {
+            get {
+                return ResourceManager.GetString("global_document_payed", resourceCulture);
             }
         }
         
@@ -3075,6 +3335,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total of Discounts.
+        /// </summary>
+        public static string global_documentfinance_total_discount {
+            get {
+                return ResourceManager.GetString("global_documentfinance_total_discount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total Gross.
         /// </summary>
         public static string global_documentfinance_totalfinal {
@@ -3084,7 +3353,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total Net.
+        ///   Looks up a localized string similar to Total Gross.
         /// </summary>
         public static string global_documentfinance_totalgross {
             get {
@@ -3098,6 +3367,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_documentfinance_totaltax {
             get {
                 return ResourceManager.GetString("global_documentfinance_totaltax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Tax.
+        /// </summary>
+        public static string global_documentfinance_totaltax_acronym {
+            get {
+                return ResourceManager.GetString("global_documentfinance_totaltax_acronym", resourceCulture);
             }
         }
         
@@ -3129,7 +3407,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Account Input.
+        ///   Looks up a localized string similar to Payment on Credit.
         /// </summary>
         public static string global_documentfinance_type_title_cc {
             get {
@@ -3138,7 +3416,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paper Conference.
+        ///   Looks up a localized string similar to Bill.
         /// </summary>
         public static string global_documentfinance_type_title_dc {
             get {
@@ -3147,7 +3425,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invoice Consignment.
+        ///   Looks up a localized string similar to Consignment Invoice.
         /// </summary>
         public static string global_documentfinance_type_title_fc {
             get {
@@ -3156,7 +3434,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Proforma invoice.
+        ///   Looks up a localized string similar to Proforma Invoice.
         /// </summary>
         public static string global_documentfinance_type_title_fp {
             get {
@@ -3165,7 +3443,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invoice-Receipt .
+        ///   Looks up a localized string similar to Receipt.
         /// </summary>
         public static string global_documentfinance_type_title_fr {
             get {
@@ -3174,7 +3452,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Simplified Invoice.
+        ///   Looks up a localized string similar to Receipt (simplified).
         /// </summary>
         public static string global_documentfinance_type_title_fs {
             get {
@@ -3192,7 +3470,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fixed Assets movement Guide.
+        ///   Looks up a localized string similar to Management of Fixed Assets.
         /// </summary>
         public static string global_documentfinance_type_title_ga {
             get {
@@ -3201,7 +3479,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Guide Consignment.
+        ///   Looks up a localized string similar to Consignment Form.
         /// </summary>
         public static string global_documentfinance_type_title_gc {
             get {
@@ -3210,7 +3488,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Guide or Return Note.
+        ///   Looks up a localized string similar to Return Slip.
         /// </summary>
         public static string global_documentfinance_type_title_gd {
             get {
@@ -3228,7 +3506,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Transportation Guide.
+        ///   Looks up a localized string similar to Transport Document.
         /// </summary>
         public static string global_documentfinance_type_title_gt {
             get {
@@ -3237,7 +3515,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Credit Note.
+        ///   Looks up a localized string similar to Credit Slip.
         /// </summary>
         public static string global_documentfinance_type_title_nc {
             get {
@@ -3246,7 +3524,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Debit Note.
+        ///   Looks up a localized string similar to Direct Debit Letter.
         /// </summary>
         public static string global_documentfinance_type_title_nd {
             get {
@@ -3255,7 +3533,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Budget.
+        ///   Looks up a localized string similar to Request for Quotation/Proposal.
         /// </summary>
         public static string global_documentfinance_type_title_or {
             get {
@@ -3264,7 +3542,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Payment.
+        ///   Looks up a localized string similar to Sales Slip.
         /// </summary>
         public static string global_documentfinance_type_title_rc {
             get {
@@ -3341,6 +3619,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_documentfinance_years {
             get {
                 return ResourceManager.GetString("global_documentfinance_years", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open. fiscal year.
+        /// </summary>
+        public static string global_documentfinance_years_short {
+            get {
+                return ResourceManager.GetString("global_documentfinance_years_short", resourceCulture);
             }
         }
         
@@ -3431,6 +3718,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_documentticket_type_title_cs {
             get {
                 return ResourceManager.GetString("global_documentticket_type_title_cs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CashDrawer In/Out.
+        /// </summary>
+        public static string global_documentticket_type_title_cs_short {
+            get {
+                return ResourceManager.GetString("global_documentticket_type_title_cs_short", resourceCulture);
             }
         }
         
@@ -3543,6 +3839,24 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export Articles.
+        /// </summary>
+        public static string global_export_articles {
+            get {
+                return ResourceManager.GetString("global_export_articles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export Costumers.
+        /// </summary>
+        public static string global_export_costumers {
+            get {
+                return ResourceManager.GetString("global_export_costumers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export SAF-T PT.
         /// </summary>
         public static string global_export_saftpt {
@@ -3588,7 +3902,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Familia.
+        ///   Looks up a localized string similar to Family.
         /// </summary>
         public static string global_family {
             get {
@@ -3615,7 +3929,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fax:.
+        ///   Looks up a localized string similar to Fax.
         /// </summary>
         public static string global_fax {
             get {
@@ -3665,6 +3979,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_filter {
             get {
                 return ResourceManager.GetString("global_filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Final Consumer.
+        /// </summary>
+        public static string global_final_consumer {
+            get {
+                return ResourceManager.GetString("global_final_consumer", resourceCulture);
             }
         }
         
@@ -3813,6 +4136,33 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string global_import {
+            get {
+                return ResourceManager.GetString("global_import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Articles.
+        /// </summary>
+        public static string global_import_articles {
+            get {
+                return ResourceManager.GetString("global_import_articles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import Costumers.
+        /// </summary>
+        public static string global_import_costumers {
+            get {
+                return ResourceManager.GetString("global_import_costumers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In progress....
         /// </summary>
         public static string global_in_progress {
@@ -3867,6 +4217,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert Articles.
+        /// </summary>
+        public static string global_insert_articles {
+            get {
+                return ResourceManager.GetString("global_insert_articles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal document - Solely for the purpose of establishing.
         /// </summary>
         public static string global_internal_document_footer1 {
@@ -3885,7 +4244,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This document cant be used has Invoice.
+        ///   Looks up a localized string similar to This document can&apos;t be used has Invoice.
         /// </summary>
         public static string global_internal_document_footer3 {
             get {
@@ -3935,6 +4294,24 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_licensed_to {
             get {
                 return ResourceManager.GetString("global_licensed_to", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading POS....
+        /// </summary>
+        public static string global_load {
+            get {
+                return ResourceManager.GetString("global_load", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating POS Database....
+        /// </summary>
+        public static string global_load_first_time {
+            get {
+                return ResourceManager.GetString("global_load_first_time", resourceCulture);
             }
         }
         
@@ -4029,7 +4406,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Movement type.
+        ///   Looks up a localized string similar to Service Type.
         /// </summary>
         public static string global_movement_type {
             get {
@@ -4052,6 +4429,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_networkname {
             get {
                 return ResourceManager.GetString("global_networkname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Version: {0}.
+        /// </summary>
+        public static string global_new_version {
+            get {
+                return ResourceManager.GetString("global_new_version", resourceCulture);
             }
         }
         
@@ -4137,6 +4523,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Payment Date.
+        /// </summary>
+        public static string global_payment_date {
+            get {
+                return ResourceManager.GetString("global_payment_date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment Document.
         /// </summary>
         public static string global_payment_document {
@@ -4146,11 +4541,29 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invoice Number.
+        /// </summary>
+        public static string global_payment_document_info {
+            get {
+                return ResourceManager.GetString("global_payment_document_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Payment method.
         /// </summary>
         public static string global_payment_method {
             get {
                 return ResourceManager.GetString("global_payment_method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment method:.
+        /// </summary>
+        public static string global_payment_method_field {
+            get {
+                return ResourceManager.GetString("global_payment_method_field", resourceCulture);
             }
         }
         
@@ -4218,7 +4631,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Movement type.
+        ///   Looks up a localized string similar to Service Type.
         /// </summary>
         public static string global_places_movement_type {
             get {
@@ -4254,7 +4667,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Movement type.
+        ///   Looks up a localized string similar to Service Type.
         /// </summary>
         public static string global_placetable_MovementType {
             get {
@@ -4371,7 +4784,16 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Postal code.
+        ///   Looks up a localized string similar to Do you want to update the POS? it will be automatically terminated in the upgrade process!.
+        /// </summary>
+        public static string global_pos_update {
+            get {
+                return ResourceManager.GetString("global_pos_update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Postal Code.
         /// </summary>
         public static string global_postal_code {
             get {
@@ -4587,7 +5009,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max Chars per Line Normal Bold Font.
+        ///   Looks up a localized string similar to Max Characters per Line Letter Bold.
         /// </summary>
         public static string global_printer_thermal_max_chars_per_line_normal_bold {
             get {
@@ -4596,7 +5018,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max Chars per Line Small Font.
+        ///   Looks up a localized string similar to Max Characters per Line Small.
         /// </summary>
         public static string global_printer_thermal_max_chars_per_line_small {
             get {
@@ -4646,6 +5068,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_printer_thermal_printer {
             get {
                 return ResourceManager.GetString("global_printer_thermal_printer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total in {0}.
+        /// </summary>
+        public static string global_printer_thermal_total_default_currency {
+            get {
+                return ResourceManager.GetString("global_printer_thermal_total_default_currency", resourceCulture);
             }
         }
         
@@ -4731,7 +5162,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quit application.
+        ///   Looks up a localized string similar to Quit Application.
         /// </summary>
         public static string global_quit {
             get {
@@ -4794,7 +5225,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total Record[s].
+        ///   Looks up a localized string similar to Total of Records.
         /// </summary>
         public static string global_record_count {
             get {
@@ -4803,7 +5234,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Created.
+        ///   Looks up a localized string similar to Created at:.
         /// </summary>
         public static string global_record_date_created {
             get {
@@ -4812,11 +5243,20 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Updated.
+        ///   Looks up a localized string similar to Updated at.
         /// </summary>
         public static string global_record_date_updated {
             get {
                 return ResourceManager.GetString("global_record_date_updated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updated at:.
+        /// </summary>
+        public static string global_record_date_updated_for_base_dialog {
+            get {
+                return ResourceManager.GetString("global_record_date_updated_for_base_dialog", resourceCulture);
             }
         }
         
@@ -4875,7 +5315,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User.
+        ///   Looks up a localized string similar to Last updated by:.
         /// </summary>
         public static string global_record_user_update {
             get {
@@ -4974,7 +5414,16 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Processed.
+        ///   Looks up a localized string similar to DAFM1 - 0198/2018.
+        /// </summary>
+        public static string global_report_overlay_software_certification_moz_tax_authority_cert_number {
+            get {
+                return ResourceManager.GetString("global_report_overlay_software_certification_moz_tax_authority_cert_number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Document processed by computer.
         /// </summary>
         public static string global_report_overlay_software_certification_processed {
             get {
@@ -4983,11 +5432,29 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pag.:.
+        ///   Looks up a localized string similar to Authorization of Tax Authority: {0}.
+        /// </summary>
+        public static string global_report_overlay_software_certification_short {
+            get {
+                return ResourceManager.GetString("global_report_overlay_software_certification_short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page.
         /// </summary>
         public static string global_report_page {
             get {
                 return ResourceManager.GetString("global_report_page", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page.
+        /// </summary>
+        public static string global_report_page_acronym {
+            get {
+                return ResourceManager.GetString("global_report_page_acronym", resourceCulture);
             }
         }
         
@@ -5073,7 +5540,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delivery Identifier / Plate Name.
+        ///   Looks up a localized string similar to Plate Name.
         /// </summary>
         public static string global_ship_from_delivery_id {
             get {
@@ -5316,7 +5783,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SubFamilia.
+        ///   Looks up a localized string similar to Subfamily.
         /// </summary>
         public static string global_subfamily {
             get {
@@ -5424,11 +5891,20 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total.
+        ///   Looks up a localized string similar to Total Gross.
         /// </summary>
         public static string global_total {
             get {
                 return ResourceManager.GetString("global_total", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string global_total_article_tab {
+            get {
+                return ResourceManager.GetString("global_total_article_tab", resourceCulture);
             }
         }
         
@@ -5505,11 +5981,20 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Total deliver.
+        ///   Looks up a localized string similar to Total Delivered.
         /// </summary>
         public static string global_total_deliver {
             get {
                 return ResourceManager.GetString("global_total_deliver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to T.Disc..
+        /// </summary>
+        public static string global_total_discount_acronym {
+            get {
+                return ResourceManager.GetString("global_total_discount_acronym", resourceCulture);
             }
         }
         
@@ -5523,11 +6008,38 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Total Final.
+        /// </summary>
+        public static string global_total_final {
+            get {
+                return ResourceManager.GetString("global_total_final", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total Payed.
         /// </summary>
         public static string global_total_payed_acronym {
             get {
                 return ResourceManager.GetString("global_total_payed_acronym", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string global_total_per_item {
+            get {
+                return ResourceManager.GetString("global_total_per_item", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total w/ Tax.
+        /// </summary>
+        public static string global_total_per_item_vat {
+            get {
+                return ResourceManager.GetString("global_total_per_item_vat", resourceCulture);
             }
         }
         
@@ -5690,6 +6202,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_units_size {
             get {
                 return ResourceManager.GetString("global_units_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update POS.
+        /// </summary>
+        public static string global_update_pos {
+            get {
+                return ResourceManager.GetString("global_update_pos", resourceCulture);
             }
         }
         
@@ -5865,7 +6386,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Postal code.
+        ///   Looks up a localized string similar to Zip Code.
         /// </summary>
         public static string global_user_postal_code {
             get {
@@ -6054,6 +6575,24 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t open.
+        /// </summary>
+        public static string global_warning_cant_open_title {
+            get {
+                return ResourceManager.GetString("global_warning_cant_open_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For using POS properly, please start fiscal year in BackOffice.
+        /// </summary>
+        public static string global_warning_open_fiscal_year {
+            get {
+                return ResourceManager.GetString("global_warning_open_fiscal_year", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to WebSite.
         /// </summary>
         public static string global_website {
@@ -6203,6 +6742,420 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_zipcode {
             get {
                 return ResourceManager.GetString("global_zipcode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One.
+        /// </summary>
+        public static string numbers_to_words_1 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ten.
+        /// </summary>
+        public static string numbers_to_words_10 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hundred.
+        /// </summary>
+        public static string numbers_to_words_100 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eleven.
+        /// </summary>
+        public static string numbers_to_words_11 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twelve.
+        /// </summary>
+        public static string numbers_to_words_12 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thirteen.
+        /// </summary>
+        public static string numbers_to_words_13 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fourteen.
+        /// </summary>
+        public static string numbers_to_words_14 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_14", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fifteen.
+        /// </summary>
+        public static string numbers_to_words_15 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_15", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sixteen.
+        /// </summary>
+        public static string numbers_to_words_16 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_16", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seventeen.
+        /// </summary>
+        public static string numbers_to_words_17 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_17", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eighteen.
+        /// </summary>
+        public static string numbers_to_words_18 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_18", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nineteen.
+        /// </summary>
+        public static string numbers_to_words_19 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_19", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two.
+        /// </summary>
+        public static string numbers_to_words_2 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twenty.
+        /// </summary>
+        public static string numbers_to_words_20 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_20", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Two hundred.
+        /// </summary>
+        public static string numbers_to_words_200 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_200", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Three.
+        /// </summary>
+        public static string numbers_to_words_3 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thirty.
+        /// </summary>
+        public static string numbers_to_words_30 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_30", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Three hundred.
+        /// </summary>
+        public static string numbers_to_words_300 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_300", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Four.
+        /// </summary>
+        public static string numbers_to_words_4 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forty.
+        /// </summary>
+        public static string numbers_to_words_40 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_40", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Four hundred.
+        /// </summary>
+        public static string numbers_to_words_400 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_400", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Five.
+        /// </summary>
+        public static string numbers_to_words_5 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fifty.
+        /// </summary>
+        public static string numbers_to_words_50 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_50", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Five hundred.
+        /// </summary>
+        public static string numbers_to_words_500 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_500", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Six.
+        /// </summary>
+        public static string numbers_to_words_6 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sixty.
+        /// </summary>
+        public static string numbers_to_words_60 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_60", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Six hundred.
+        /// </summary>
+        public static string numbers_to_words_600 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_600", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seven.
+        /// </summary>
+        public static string numbers_to_words_7 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seventy.
+        /// </summary>
+        public static string numbers_to_words_70 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_70", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seven hundred.
+        /// </summary>
+        public static string numbers_to_words_700 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_700", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eight.
+        /// </summary>
+        public static string numbers_to_words_8 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eighty.
+        /// </summary>
+        public static string numbers_to_words_80 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_80", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eight hundred.
+        /// </summary>
+        public static string numbers_to_words_800 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_800", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nine.
+        /// </summary>
+        public static string numbers_to_words_9 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ninety.
+        /// </summary>
+        public static string numbers_to_words_90 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_90", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nine hundred.
+        /// </summary>
+        public static string numbers_to_words_900 {
+            get {
+                return ResourceManager.GetString("numbers_to_words_900", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Penny.
+        /// </summary>
+        public static string numbers_to_words_cent {
+            get {
+                return ResourceManager.GetString("numbers_to_words_cent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cents.
+        /// </summary>
+        public static string numbers_to_words_cents {
+            get {
+                return ResourceManager.GetString("numbers_to_words_cents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  and.
+        /// </summary>
+        public static string numbers_to_words_space_and {
+            get {
+                return ResourceManager.GetString("numbers_to_words_space_and", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  and .
+        /// </summary>
+        public static string numbers_to_words_space_and_space {
+            get {
+                return ResourceManager.GetString("numbers_to_words_space_and_space", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Billion and.
+        /// </summary>
+        public static string numbers_to_words_space_billion_and {
+            get {
+                return ResourceManager.GetString("numbers_to_words_space_billion_and", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  Billion and.
+        /// </summary>
+        public static string numbers_to_words_space_billions_and {
+            get {
+                return ResourceManager.GetString("numbers_to_words_space_billions_and", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  hundred and .
+        /// </summary>
+        public static string numbers_to_words_space_hundred_and_space {
+            get {
+                return ResourceManager.GetString("numbers_to_words_space_hundred_and_space", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Million.
+        /// </summary>
+        public static string numbers_to_words_space_million {
+            get {
+                return ResourceManager.GetString("numbers_to_words_space_million", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Million.
+        /// </summary>
+        public static string numbers_to_words_space_millions {
+            get {
+                return ResourceManager.GetString("numbers_to_words_space_millions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thousand.
+        /// </summary>
+        public static string numbers_to_words_space_thousand {
+            get {
+                return ResourceManager.GetString("numbers_to_words_space_thousand", resourceCulture);
             }
         }
         
@@ -6423,7 +7376,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bank check.
+        ///   Looks up a localized string similar to Bank Check.
         /// </summary>
         public static string pos_button_label_payment_type_bank_check {
             get {
@@ -6450,7 +7403,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Account.
+        ///   Looks up a localized string similar to Pay on Credit.
         /// </summary>
         public static string pos_button_label_payment_type_current_account {
             get {
@@ -6459,11 +7412,20 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Client Card.
+        ///   Looks up a localized string similar to Customer Card.
         /// </summary>
         public static string pos_button_label_payment_type_customer_card {
             get {
                 return ResourceManager.GetString("pos_button_label_payment_type_customer_card", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debit Card.
+        /// </summary>
+        public static string pos_button_label_payment_type_debit_card {
+            get {
+                return ResourceManager.GetString("pos_button_label_payment_type_debit_card", resourceCulture);
             }
         }
         
@@ -6793,7 +7755,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applicação : Resolução do Ecrã.
+        ///   Looks up a localized string similar to Application :: Screen Resolution.
         /// </summary>
         public static string prefparam_app_screen_size {
             get {
@@ -6802,7 +7764,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applicação : Tema.
+        ///   Looks up a localized string similar to Application :: Theme [ Default | Retail ].
         /// </summary>
         public static string prefparam_app_theme {
             get {
@@ -6820,7 +7782,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Business Name (Slogan).
+        ///   Looks up a localized string similar to Business Name (slogan).
         /// </summary>
         public static string prefparam_company_business_name {
             get {
@@ -6829,7 +7791,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Company CAE.
+        ///   Looks up a localized string similar to Business Activity Code.
         /// </summary>
         public static string prefparam_company_cae {
             get {
@@ -6847,7 +7809,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Civil Registration.
+        ///   Looks up a localized string similar to Registry Office.
         /// </summary>
         public static string prefparam_company_civil_registration {
             get {
@@ -6856,7 +7818,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Civil Registration Number.
+        ///   Looks up a localized string similar to Registration Number.
         /// </summary>
         public static string prefparam_company_civil_registration_id {
             get {
@@ -6883,7 +7845,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email.
+        ///   Looks up a localized string similar to E-Mail.
         /// </summary>
         public static string prefparam_company_email {
             get {
@@ -6982,7 +7944,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application : Country Culture.
+        ///   Looks up a localized string similar to Application :: Language.
         /// </summary>
         public static string prefparam_culture {
             get {
@@ -6991,7 +7953,16 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Database : Backup Time Span Range End.
+        ///   Looks up a localized string similar to Database :: Automatic Backup Enabled.
+        /// </summary>
+        public static string prefparam_database_backup_automatic_enabled {
+            get {
+                return ResourceManager.GetString("prefparam_database_backup_automatic_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Database :: Backup Time Span Range End.
         /// </summary>
         public static string prefparam_database_backup_time_span_range_end {
             get {
@@ -7000,7 +7971,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Database : Backup Time Span Range Start.
+        ///   Looks up a localized string similar to Database :: Backup Time Span Range Start.
         /// </summary>
         public static string prefparam_database_backup_time_span_range_start {
             get {
@@ -7009,7 +7980,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Database : Backup Timespan.
+        ///   Looks up a localized string similar to Database :: Backup Timespan.
         /// </summary>
         public static string prefparam_database_backup_timespan {
             get {
@@ -7018,106 +7989,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay : Number of Characters per Line.
-        /// </summary>
-        public static string prefparam_hardware_display_characters_per_line {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_characters_per_line", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay : CodeTable.
-        /// </summary>
-        public static string prefparam_hardware_display_codetable {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_codetable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay : Enabled.
-        /// </summary>
-        public static string prefparam_hardware_display_enabled {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_enabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay : EndPoint.
-        /// </summary>
-        public static string prefparam_hardware_display_endpoint {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_endpoint", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay : Goto Stand by in Seconds.
-        /// </summary>
-        public static string prefparam_hardware_display_goto_stand_by_in_seconds {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_goto_stand_by_in_seconds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay  : PID (ProductID).
-        /// </summary>
-        public static string prefparam_hardware_display_pid {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_pid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay : Stand By Line 1.
-        /// </summary>
-        public static string prefparam_hardware_display_stand_by_line_1 {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_stand_by_line_1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay : Stand By Line 2.
-        /// </summary>
-        public static string prefparam_hardware_display_stand_by_line_2 {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_stand_by_line_2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : PoleDisplay : VID (VendorID).
-        /// </summary>
-        public static string prefparam_hardware_display_vid {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_display_vid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : Input Reader : CardReader : Valid Reader Sizes.
-        /// </summary>
-        public static string prefparam_hardware_input_reader_card_reader_sizes {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_input_reader_card_reader_sizes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hardware : Input Reader : CardReader : Reader Timr Interval.
-        /// </summary>
-        public static string prefparam_hardware_input_reader_timer_interval {
-            get {
-                return ResourceManager.GetString("prefparam_hardware_input_reader_timer_interval", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Notifications : Documents to Invoice : Ignore notifications after has been notificated a determined number of times.
+        ///   Looks up a localized string similar to Notifications :: Documents to Invoice :: Ignore notifications after has been notificated a determined number of times.
         /// </summary>
         public static string prefparam_notification_documents_to_invoice_ignore_after_show_number_of_times {
             get {
@@ -7126,7 +7998,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path : Backups.
+        ///   Looks up a localized string similar to Path :: Backups.
         /// </summary>
         public static string prefparam_path_backups {
             get {
@@ -7135,7 +8007,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path : Saft-PT Export.
+        ///   Looks up a localized string similar to Path :: Saft-PT Export.
         /// </summary>
         public static string prefparam_path_saftpt {
             get {
@@ -7144,7 +8016,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Logo FileName.
+        ///   Looks up a localized string similar to Report :: Logo FileName.
         /// </summary>
         public static string prefparam_report_filename_logo {
             get {
@@ -7153,7 +8025,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Logo FileName Small.
+        ///   Looks up a localized string similar to Report :: Logo FileName Small.
         /// </summary>
         public static string prefparam_report_filename_logo_small {
             get {
@@ -7162,7 +8034,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Footer Line 1.
+        ///   Looks up a localized string similar to Report :: Footer Line 1.
         /// </summary>
         public static string prefparam_report_footer_line1 {
             get {
@@ -7171,7 +8043,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Footer Line 2.
+        ///   Looks up a localized string similar to Report :: Footer Line 2.
         /// </summary>
         public static string prefparam_report_footer_line2 {
             get {
@@ -7180,7 +8052,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Footer Line 3.
+        ///   Looks up a localized string similar to Report :: Footer Line 3.
         /// </summary>
         public static string prefparam_report_footer_line3 {
             get {
@@ -7189,7 +8061,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Footer Line 4.
+        ///   Looks up a localized string similar to Report :: Footer Line 4.
         /// </summary>
         public static string prefparam_report_footer_line4 {
             get {
@@ -7198,7 +8070,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Footer Line 5.
+        ///   Looks up a localized string similar to Report :: Footer Line 5.
         /// </summary>
         public static string prefparam_report_footer_line5 {
             get {
@@ -7207,7 +8079,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Footer Line 6.
+        ///   Looks up a localized string similar to Report :: Footer Line 6.
         /// </summary>
         public static string prefparam_report_footer_line6 {
             get {
@@ -7216,7 +8088,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Body.
+        ///   Looks up a localized string similar to E-Mail :: Body.
         /// </summary>
         public static string prefparam_send_mail_finance_documents_body {
             get {
@@ -7225,7 +8097,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Html Body.
+        ///   Looks up a localized string similar to E-Mail :: HTML Body.
         /// </summary>
         public static string prefparam_send_mail_finance_documents_html_body {
             get {
@@ -7234,7 +8106,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subject.
+        ///   Looks up a localized string similar to E-Mail :: Subject.
         /// </summary>
         public static string prefparam_send_mail_finance_documents_subject {
             get {
@@ -7243,7 +8115,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SMTP SSL Enabled.
+        ///   Looks up a localized string similar to E-Mail :: SMTP :: SSL Enabled.
         /// </summary>
         public static string prefparam_send_mail_smtp_enable_ssl {
             get {
@@ -7252,7 +8124,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SMTP Password.
+        ///   Looks up a localized string similar to E-Mail :: SMTP :: Password.
         /// </summary>
         public static string prefparam_send_mail_smtp_password {
             get {
@@ -7261,7 +8133,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SMTP Port.
+        ///   Looks up a localized string similar to E-Mail :: SMTP :: Port.
         /// </summary>
         public static string prefparam_send_mail_smtp_port {
             get {
@@ -7270,7 +8142,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SMTP Server.
+        ///   Looks up a localized string similar to E-Mail :: SMTP :: Server.
         /// </summary>
         public static string prefparam_send_mail_smtp_server {
             get {
@@ -7279,7 +8151,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SMTP Username.
+        ///   Looks up a localized string similar to E-Mail :: SMTP :: Username.
         /// </summary>
         public static string prefparam_send_mail_smtp_username {
             get {
@@ -7288,7 +8160,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autoridade Tributária Service : Account Fiscal Number.
+        ///   Looks up a localized string similar to Tax Authority Service :: Account Fiscal Number.
         /// </summary>
         public static string prefparam_service_at_production_account_fiscal_number {
             get {
@@ -7297,7 +8169,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autoridade Tributária Service : Account Password.
+        ///   Looks up a localized string similar to Tax Authority Service :: Account Password.
         /// </summary>
         public static string prefparam_service_at_production_account_password {
             get {
@@ -7306,7 +8178,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autoridade Tributária Service : Production Mode Enabled.
+        ///   Looks up a localized string similar to Tax Authority Service :: Production Mode Enabled.
         /// </summary>
         public static string prefparam_service_at_production_mode_enabled {
             get {
@@ -7315,7 +8187,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autoridade Tributária Service : Sent Financial Documents.
+        ///   Looks up a localized string similar to Tax Authority Service :: Sent Financial Documents.
         /// </summary>
         public static string prefparam_service_at_send_documents {
             get {
@@ -7324,7 +8196,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autoridade Tributária Service : Sent Financial WayBills.
+        ///   Looks up a localized string similar to Tax Authority Service :: Sent Financial WayBills.
         /// </summary>
         public static string prefparam_service_at_send_documents_waybill {
             get {
@@ -7333,7 +8205,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autoridade Tributária Service : Financial WayBills in Agricultural mode Enabled.
+        ///   Looks up a localized string similar to Tax Authority Service :: Financial WayBills in Agricultural mode Enabled.
         /// </summary>
         public static string prefparam_service_at_waybill_agricultural_mode_enabled {
             get {
@@ -7342,7 +8214,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Split Account : Maximum number Split Clients.
+        ///   Looks up a localized string similar to Split Account :: Maximum number Split Clients.
         /// </summary>
         public static string prefparam_split_payment_max_clients {
             get {
@@ -7351,7 +8223,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Split Account : Minimum number Split Clients.
+        ///   Looks up a localized string similar to Split Account :: Minimum number Split Clients.
         /// </summary>
         public static string prefparam_split_payment_min_clients {
             get {
@@ -7360,7 +8232,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Split Account : Start num of Split Clients.
+        ///   Looks up a localized string similar to Split Account :: Start num of Split Clients.
         /// </summary>
         public static string prefparam_split_payment_start_clients {
             get {
@@ -7369,7 +8241,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to System Currency.
+        ///   Looks up a localized string similar to Currency :: System Currency.
         /// </summary>
         public static string prefparam_system_currency {
             get {
@@ -7378,7 +8250,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ticket Logo FileName.
+        ///   Looks up a localized string similar to Ticket :: Logo FileName.
         /// </summary>
         public static string prefparam_ticket_filename_logo {
             get {
@@ -7387,7 +8259,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ticket Footer Line 1.
+        ///   Looks up a localized string similar to Ticket :: Footer Line 1.
         /// </summary>
         public static string prefparam_ticket_footer_line1 {
             get {
@@ -7396,7 +8268,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ticket Footer Line 2.
+        ///   Looks up a localized string similar to Ticket :: Footer Line 2.
         /// </summary>
         public static string prefparam_ticket_footer_line2 {
             get {
@@ -7405,7 +8277,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application : Use Cached Images.
+        ///   Looks up a localized string similar to Application :: Use Cached Images.
         /// </summary>
         public static string prefparam_use_cached_images {
             get {
@@ -7414,7 +8286,34 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account balance.
+        ///   Looks up a localized string similar to Ticket :: Print Current Account Details in Daily or Session movements ticket.
+        /// </summary>
+        public static string prefparam_use_ccdailyticket {
+            get {
+                return ResourceManager.GetString("prefparam_use_ccdailyticket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application :: Use POS PDF Viewer to open PDF Files.
+        /// </summary>
+        public static string prefparam_use_pdfviewer {
+            get {
+                return ResourceManager.GetString("prefparam_use_pdfviewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application :: Use Vat to Auto-complete fields.
+        /// </summary>
+        public static string prefparam_use_vat_autocomplete {
+            get {
+                return ResourceManager.GetString("prefparam_use_vat_autocomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account Balance.
         /// </summary>
         public static string report_account_balance {
             get {
@@ -7468,11 +8367,146 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Company Billing Report.
+        /// </summary>
+        public static string report_company_billing {
+            get {
+                return ResourceManager.GetString("report_company_billing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billed Amount.
+        /// </summary>
+        public static string report_company_billing_column_billing {
+            get {
+                return ResourceManager.GetString("report_company_billing_column_billing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Associated Document.
+        /// </summary>
+        public static string report_company_billing_column_doc_associated {
+            get {
+                return ResourceManager.GetString("report_company_billing_column_doc_associated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taxes.
+        /// </summary>
+        public static string report_company_billing_column_tax {
+            get {
+                return ResourceManager.GetString("report_company_billing_column_tax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Billed Total of the Period.
+        /// </summary>
+        public static string report_company_billing_label_total_billing {
+            get {
+                return ResourceManager.GetString("report_company_billing_label_total_billing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net Value for the Period.
+        /// </summary>
+        public static string report_company_billing_label_total_net {
+            get {
+                return ResourceManager.GetString("report_company_billing_label_total_net", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taxes Total for the Period.
+        /// </summary>
+        public static string report_company_billing_label_total_tax {
+            get {
+                return ResourceManager.GetString("report_company_billing_label_total_tax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Comp. Billing Rep..
+        /// </summary>
+        public static string report_company_billing_short {
+            get {
+                return ResourceManager.GetString("report_company_billing_short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Courier Deliver.
         /// </summary>
         public static string report_courier_deliver {
             get {
                 return ResourceManager.GetString("report_courier_deliver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer Account Balance Details.
+        /// </summary>
+        public static string report_customer_balance_details {
+            get {
+                return ResourceManager.GetString("report_customer_balance_details", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Consolidated Balance.
+        /// </summary>
+        public static string report_customer_balance_details_consolidated_balance {
+            get {
+                return ResourceManager.GetString("report_customer_balance_details_consolidated_balance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client Since.
+        /// </summary>
+        public static string report_customer_balance_details_customer_since {
+            get {
+                return ResourceManager.GetString("report_customer_balance_details_customer_since", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reference Document Number.
+        /// </summary>
+        public static string report_customer_balance_details_reference_document {
+            get {
+                return ResourceManager.GetString("report_customer_balance_details_reference_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cust. Acc. Details.
+        /// </summary>
+        public static string report_customer_balance_details_short {
+            get {
+                return ResourceManager.GetString("report_customer_balance_details_short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customer Balance Summary.
+        /// </summary>
+        public static string report_customer_balance_summary {
+            get {
+                return ResourceManager.GetString("report_customer_balance_summary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending Payment.
+        /// </summary>
+        public static string report_detailed_grouped_pending_payment {
+            get {
+                return ResourceManager.GetString("report_detailed_grouped_pending_payment", resourceCulture);
             }
         }
         
@@ -7495,11 +8529,47 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  - - - - .
+        /// </summary>
+        public static string report_empty_value {
+            get {
+                return ResourceManager.GetString("report_empty_value", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Final Balance on Period.
+        /// </summary>
+        public static string report_final_balance {
+            get {
+                return ResourceManager.GetString("report_final_balance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inventory.
         /// </summary>
         public static string report_inventory {
             get {
                 return ResourceManager.GetString("report_inventory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Totals.
+        /// </summary>
+        public static string report_label_totals {
+            get {
+                return ResourceManager.GetString("report_label_totals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subtotal.
+        /// </summary>
+        public static string report_label_totals_sub {
+            get {
+                return ResourceManager.GetString("report_label_totals_sub", resourceCulture);
             }
         }
         
@@ -7531,7 +8601,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Current Account.
+        ///   Looks up a localized string similar to Sales on Credit.
         /// </summary>
         public static string report_list_current_account {
             get {
@@ -7617,6 +8687,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string report_sales_detail_per_family_and_subfamily {
             get {
                 return ResourceManager.GetString("report_sales_detail_per_family_and_subfamily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detailed Sales per Zone/Order.
+        /// </summary>
+        public static string report_sales_detail_per_place_order {
+            get {
+                return ResourceManager.GetString("report_sales_detail_per_place_order", resourceCulture);
             }
         }
         
@@ -7729,6 +8808,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sales per Zone/Order.
+        /// </summary>
+        public static string report_sales_per_place_order {
+            get {
+                return ResourceManager.GetString("report_sales_per_place_order", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sales per zone/table.
         /// </summary>
         public static string report_sales_per_place_table {
@@ -7792,11 +8880,38 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Credit Balance on Period.
+        /// </summary>
+        public static string report_total_credit {
+            get {
+                return ResourceManager.GetString("report_total_credit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debit Balance on Period.
+        /// </summary>
+        public static string report_total_debit {
+            get {
+                return ResourceManager.GetString("report_total_debit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Total per terminal.
         /// </summary>
         public static string report_total_per_terminal {
             get {
                 return ResourceManager.GetString("report_total_per_terminal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Records Count on Period.
+        /// </summary>
+        public static string report_total_record_count {
+            get {
+                return ResourceManager.GetString("report_total_record_count", resourceCulture);
             }
         }
         
@@ -7972,7 +9087,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to --- Undefined ---.
+        ///   Looks up a localized string similar to -- Select --.
         /// </summary>
         public static string widget_combobox_undefined {
             get {
@@ -8031,6 +9146,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string widget_generictreeviewnavigator_page_prev {
             get {
                 return ResourceManager.GetString("widget_generictreeviewnavigator_page_prev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview.
+        /// </summary>
+        public static string widget_generictreeviewnavigator_preview {
+            get {
+                return ResourceManager.GetString("widget_generictreeviewnavigator_preview", resourceCulture);
             }
         }
         
@@ -8125,8 +9249,18 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Through this form, you have the ability to register the software. 
-        ///The entries will be kept confidential and not released to third parties for advertising..
+        ///   Looks up a localized string similar to The document {0} you are trying to open has been issued in the ticket printer, cannot be opened!
+        ///
+        ///Note: You can only open documents issued on A4 printer or Export to PDF.
+        /// </summary>
+        public static string window_dialog_cant_open_document {
+            get {
+                return ResourceManager.GetString("window_dialog_cant_open_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Through this form, you have the ability to register the software. The entries will be kept confidential and not released to third parties for advertising..
         /// </summary>
         public static string window_license_label_info {
             get {
@@ -8189,6 +9323,24 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Article exited.
+        /// </summary>
+        public static string window_title_dialog_already_exited {
+            get {
+                return ResourceManager.GetString("window_title_dialog_already_exited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Article paid.
+        /// </summary>
+        public static string window_title_dialog_already_paid {
+            get {
+                return ResourceManager.GetString("window_title_dialog_already_paid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stocks.
         /// </summary>
         public static string window_title_dialog_article_stock {
@@ -8207,7 +9359,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CashDrawer : Total in CashDrawer: {0}.
+        ///   Looks up a localized string similar to Cash Drawer :: Total in Cash Drawer: {0}.
         /// </summary>
         public static string window_title_dialog_cashdrawer {
             get {
@@ -8234,7 +9386,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This process cant be undone! Confirm clone folloing documents?
+        ///   Looks up a localized string similar to This process can&apos;t be undone! Confirm clone folloing documents?
         ///
         ///{0}.
         /// </summary>
@@ -8281,6 +9433,24 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Associated Documents.
+        /// </summary>
+        public static string window_title_dialog_document_finance_column_related_doc {
+            get {
+                return ResourceManager.GetString("window_title_dialog_document_finance_column_related_doc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Credit Value.
+        /// </summary>
+        public static string window_title_dialog_document_finance_column_total_credit_rc_nc_based {
+            get {
+                return ResourceManager.GetString("window_title_dialog_document_finance_column_total_credit_rc_nc_based", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Document.
         /// </summary>
         public static string window_title_dialog_document_finance_page1 {
@@ -8308,7 +9478,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to WayBill : Ship To.
+        ///   Looks up a localized string similar to WayBill: Ship To.
         /// </summary>
         public static string window_title_dialog_document_finance_page4 {
             get {
@@ -8317,7 +9487,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to WayBill : Ship From.
+        ///   Looks up a localized string similar to WayBill: Ship From.
         /// </summary>
         public static string window_title_dialog_document_finance_page5 {
             get {
@@ -8331,6 +9501,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string window_title_dialog_document_finance_page6 {
             get {
                 return ResourceManager.GetString("window_title_dialog_document_finance_page6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment Documents.
+        /// </summary>
+        public static string window_title_dialog_document_finance_payment {
+            get {
+                return ResourceManager.GetString("window_title_dialog_document_finance_payment", resourceCulture);
             }
         }
         
@@ -8380,6 +9559,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Documents Filter.
+        /// </summary>
+        public static string window_title_dialog_filter {
+            get {
+                return ResourceManager.GetString("window_title_dialog_filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm.
         /// </summary>
         public static string window_title_dialog_message_dialog {
@@ -8407,6 +9595,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Document.
+        /// </summary>
+        public static string window_title_dialog_new_document {
+            get {
+                return ResourceManager.GetString("window_title_dialog_new_document", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Finance Document.
         /// </summary>
         public static string window_title_dialog_new_finance_document {
@@ -8416,7 +9613,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Notification.
+        ///   Looks up a localized string similar to Notifications.
         /// </summary>
         public static string window_title_dialog_notification {
             get {
@@ -8506,7 +9703,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Split Payment : Amount per Customer: [{0} x {1}].
+        ///   Looks up a localized string similar to Split Payment: Amount per Customer: [{0} x {1}].
         /// </summary>
         public static string window_title_dialog_split_payment {
             get {
@@ -8547,6 +9744,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string window_title_dialog_template {
             get {
                 return ResourceManager.GetString("window_title_dialog_template", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update POS to version: {0}.
+        /// </summary>
+        public static string window_title_dialog_update_POS {
+            get {
+                return ResourceManager.GetString("window_title_dialog_update_POS", resourceCulture);
             }
         }
         
@@ -8704,7 +9910,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Edit movement type.
+        ///   Looks up a localized string similar to Service Type.
         /// </summary>
         public static string window_title_edit_configurationplacemovementtype {
             get {
@@ -8848,7 +10054,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Token.
+        ///   Looks up a localized string similar to Printers.
         /// </summary>
         public static string window_title_edit_dialogconfigurationprinters {
             get {
@@ -8911,7 +10117,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to LogicPulse : Licensing Mechanism.
+        ///   Looks up a localized string similar to LogicPulse: Licensing Mechanism.
         /// </summary>
         public static string window_title_license {
             get {
@@ -9042,6 +10248,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string window_title_series_fiscal_year_close_current {
             get {
                 return ResourceManager.GetString("window_title_series_fiscal_year_close_current", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Showing {0} results from {1}.
+        /// </summary>
+        public static string window_title_show_results {
+            get {
+                return ResourceManager.GetString("window_title_show_results", resourceCulture);
             }
         }
         

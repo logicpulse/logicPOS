@@ -23,7 +23,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : this(pSourceWindow, pDialogFlags, Resx.window_title_dialog_datepicker, FrameworkUtils.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), FrameworkUtils.CurrentDateTimeAtomic())
         {
         }
 
@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, DateTime pDateTime)
-            : this(pSourceWindow, pDialogFlags, Resx.window_title_dialog_datepicker, pDateTime)
+            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), pDateTime)
         {
         }
 

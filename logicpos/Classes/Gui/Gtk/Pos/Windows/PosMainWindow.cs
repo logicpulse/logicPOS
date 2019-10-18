@@ -1,3 +1,5 @@
+using DevExpress.Data.Filtering;
+using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
@@ -6,6 +8,7 @@ using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
 using System;
+using System.Collections;
 using System.Drawing;
 using System.Threading;
 
@@ -13,9 +16,14 @@ namespace logicpos
 {
     public partial class PosMainWindow : PosBaseWindow
     {
+     
         //Files
         private string _fileBaseButtonOverlay = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_overlay.png");
-        private string _clockFormat = GlobalFramework.Settings["dateTimeFormatStatusBar"];
+        
+		/* IN006045 */
+        //private string _clockFormat = GlobalFramework.Settings["dateTimeFormatStatusBar"];
+        private string _clockFormat = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
+
         private Color _colorPosNumberPadLeftButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosNumberPadLeftButtonBackground"]);
         private Color _colorPosNumberRightButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosNumberRightButtonBackground"]);
         private Color _colorPosHelperBoxsBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosHelperBoxsBackground"]);
@@ -102,16 +110,22 @@ namespace logicpos
         {
             try
             {
+				/* IN009005 */
+                //GlobalApp.DialogThreadNotify.WakeupMain();
+
                 _fixedWindow = new Fixed();
 
                 //New Thread InitUI 
-                Thread thread = new Thread(new ThreadStart(InitUI));
-                GlobalApp.DialogThreadNotify = new ThreadNotify (new ReadyEvent (Utils.ThreadDialogReadyEvent));
-                thread.Start();
+				/* IN009005 */
+				//Thread thread = new Thread(new ThreadStart(InitUI));
+                //GlobalApp.DialogThreadNotify = new ThreadNotify (new ReadyEvent (Utils.ThreadDialogReadyEvent));
+				//thread.Start();
+				InitUI();
 
                 //Use Startup Window, not this Window, because it is not visible, it is in construction mode
-                GlobalApp.DialogThreadWork = Utils.GetThreadDialog(GlobalApp.WindowStartup);
-                GlobalApp.DialogThreadWork.Run();
+				/* IN009005 */
+				//GlobalApp.DialogThreadWork = Utils.GetThreadDialog(GlobalApp.WindowStartup);
+				//GlobalApp.DialogThreadWork.Run();
 
                 //Call - To Update start _labelCurrentTable.Text
                 _ticketList.UpdateOrderStatusBar();
@@ -153,7 +167,9 @@ namespace logicpos
                 if (GlobalFramework.LoggedTerminal.BarcodeReader != null || GlobalFramework.LoggedTerminal.CardReader != null)
                 {
                     GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
-                }
+                }                
+
+                _log.Debug("PosMainWindow(String pBackgroundImage) :: Completed!"); /* IN009008 */
             }
             catch (Exception ex)
             {
@@ -163,8 +179,11 @@ namespace logicpos
 
         private void InitUI()
         {
+
+            _log.Debug("void InitUI() :: Initializing UI for POS Main Window..."); /* IN009008 */
+
             //Init Theme Object
-            Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
+            Predicate <dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
             dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
             //Shared error Message
@@ -189,8 +208,19 @@ namespace logicpos
                     //After InitUIEventBoxPosTicketList, require _ticketList initialized
                     InitUiEventboxToolbar(themeWindow);
 
+                    _log.Debug("void InitUI() :: POS Main Window theme rendering completed!"); /* IN009008 */
                     //Notify Thread End
-                   GlobalApp.DialogThreadNotify.WakeupMain();
+                    GlobalApp.DialogThreadNotify.WakeupMain();
+                    
+                    //Check if fiscal year was created
+                    SortingCollection sortCollection = new SortingCollection();
+                    sortCollection.Add(new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending));
+                    CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
+                    ICollection collectionDocumentFinanceSeries = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
+                    if (collectionDocumentFinanceSeries.Count == 0)
+                    {
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -206,6 +236,7 @@ namespace logicpos
 
         private void InitUIEventBoxImageLogo(dynamic pThemeWindow)
         {
+            _log.Debug("void InitUIEventBoxImageLogo(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -229,6 +260,7 @@ namespace logicpos
 
         private void InitUIEventBoxStatusBar1(dynamic pThemeWindow)
         {
+            _log.Debug("void InitUIEventBoxStatusBar1(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -280,6 +312,7 @@ namespace logicpos
 
         private void InitUIEventBoxStatusBar2(dynamic pThemeWindow)
         {
+            _log.Debug("void InitUIEventBoxStatusBar2(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -320,7 +353,7 @@ namespace logicpos
             eventBoxStatusBar2.ModifyBg(Gtk.StateType.Normal, eventBoxStatusBar2BackgroundColor);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTableLabel
-            string global_table = Resx.ResourceManager.GetString(string.Format("global_table_appmode_{0}", _appOperationModeToken).ToLower());
+            string global_table = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", SettingsApp.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
             Label labelCurrentTableLabel = new Label(global_table);
             labelCurrentTableLabel.ModifyFont(labelCurrentTableLabelFont);
             labelCurrentTableLabel.ModifyFg(StateType.Normal, labelCurrentTableLabelFontColor);
@@ -338,7 +371,7 @@ namespace logicpos
             vboxCurrentTable.PackStart(_labelCurrentTable);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
-            Label labelTotalTableLabel = new Label(Resx.global_total_price_to_pay);
+            Label labelTotalTableLabel = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_price_to_pay"));
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);
@@ -365,6 +398,7 @@ namespace logicpos
 
         private void InitUIButtonFavorites(dynamic pThemeWindow)
         {
+            _log.Debug("void InitUIButtonFavorites(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -389,6 +423,7 @@ namespace logicpos
 
         private void InitUITablePads(dynamic pThemeWindow)
         {
+            _log.Debug("void InitUITablePads(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -576,6 +611,7 @@ namespace logicpos
 
         private void InitUiEventboxToolbar(dynamic pThemeWindow)
         {
+            _log.Debug("void InitUiEventboxToolbar(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventboxToolbar
@@ -725,6 +761,7 @@ namespace logicpos
 
         private void InitUIEventBoxPosTicketPad(dynamic pThemeWindow)
         {
+            _log.Debug("void InitUIEventBoxPosTicketPad(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventBoxPosTicketPad
@@ -751,8 +788,7 @@ namespace logicpos
 
         private void InitUIEventBoxPosTicketList(dynamic pThemeWindow)
         {
-            _log.Debug("Start InitUIEventBoxPosTicketList");
-
+            _log.Debug("void InitUIEventBoxPosTicketList(dynamic pThemeWindow) :: Starting...");
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventBoxPosTicketList

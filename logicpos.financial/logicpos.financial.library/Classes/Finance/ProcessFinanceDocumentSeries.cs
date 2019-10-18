@@ -21,22 +21,22 @@ namespace logicpos.financial.library.Classes.Finance
         //GetDocumentFinanceYearSerieTerminal
 
         //Get DocumentFinanceYearSerieTerminal for Logged Terminal
-        public static FIN_DocumentFinanceYearSerieTerminal GetDocumentFinanceYearSerieTerminal(Guid pDocumentType)
+        public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Guid pDocumentType)
         {
             return GetDocumentFinanceYearSerieTerminal(GlobalFramework.SessionXpo, pDocumentType, GlobalFramework.LoggedTerminal.Oid);
         }
 
-        public static FIN_DocumentFinanceYearSerieTerminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType)
+        public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType)
         {
             return GetDocumentFinanceYearSerieTerminal(pSession, pDocumentType, GlobalFramework.LoggedTerminal.Oid);
         }
 
         //Get DocumentFinanceYearSerieTerminal for Terminal
-        public static FIN_DocumentFinanceYearSerieTerminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType, Guid pLoggedTerminal)
+        public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType, Guid pLoggedTerminal)
         {
             DateTime currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
-            FIN_DocumentFinanceYearSerieTerminal documentFinanceYearSerieTerminal = null;
-            FIN_DocumentFinanceType documentFinanceType = (FIN_DocumentFinanceType)FrameworkUtils.GetXPGuidObject(pSession, typeof(FIN_DocumentFinanceType), pDocumentType);
+            fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
+            fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)FrameworkUtils.GetXPGuidObject(pSession, typeof(fin_documentfinancetype), pDocumentType);
 
             //If DocumentTypeInvoiceWayBill Replace/Override Helper Document Type InvoiceWayBill with InvoiceWay to get Invoice Serie, 
             //this way we have Invoice Serie but DocumentMaster keeps DocumentFinanceType has DocumentFinanceTypeInvoiceWayBill
@@ -50,9 +50,9 @@ namespace logicpos.financial.library.Classes.Finance
             SortingCollection sortCollection = new SortingCollection();
             sortCollection.Add(new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending));
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND DocumentType == '{0}'", documentFinanceTypeSerieGuid.ToString()));
-            ICollection collectionDocumentFinanceSeries = pSession.GetObjects(pSession.GetClassInfo(typeof(FIN_DocumentFinanceYearSerieTerminal)), criteria, sortCollection, int.MaxValue, false, true);
+            ICollection collectionDocumentFinanceSeries = pSession.GetObjects(pSession.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
 
-            foreach (FIN_DocumentFinanceYearSerieTerminal item in collectionDocumentFinanceSeries)
+            foreach (fin_documentfinanceyearserieterminal item in collectionDocumentFinanceSeries)
             {
                 if (currentDateTime.Year >= item.FiscalYear.FiscalYear)
                 {
@@ -69,15 +69,15 @@ namespace logicpos.financial.library.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Get Current Active FinanceYear
 
-        public static FIN_DocumentFinanceYears GetCurrentDocumentFinanceYear()
+        public static fin_documentfinanceyears GetCurrentDocumentFinanceYear()
         {
-            FIN_DocumentFinanceYears result = null;
+            fin_documentfinanceyears result = null;
 
             string sql = @"SELECT Oid FROM fin_documentfinanceyears WHERE (Disabled = 0 OR Disabled IS NULL);";
             var sqlResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
             if (sqlResult != null)
             {
-                result = (FIN_DocumentFinanceYears)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentFinanceYears), new Guid(sqlResult.ToString()));
+                result = (fin_documentfinanceyears)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinanceyears), new Guid(sqlResult.ToString()));
             }
 
             return result;
@@ -106,13 +106,13 @@ namespace logicpos.financial.library.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Helper for Disable All Year Related Series and Series Terminal
 
-        public static bool DisableActiveYearSeriesAndTerminalSeries(FIN_DocumentFinanceYears pDocumentFinanceYears)
+        public static bool DisableActiveYearSeriesAndTerminalSeries(fin_documentfinanceyears pDocumentFinanceYears)
         {
             bool result = false;
             //Used to add DocumentFinanceYearSerieTerminal list to disable outside of Loop
-            List<FIN_DocumentFinanceSeries> listDisableSeries = new List<FIN_DocumentFinanceSeries>();
+            List<fin_documentfinanceseries> listDisableSeries = new List<fin_documentfinanceseries>();
             //Used to add DocumentFinanceYearSerieTerminal to list to delete outside of Loop
-            List<FIN_DocumentFinanceYearSerieTerminal> listDeleteSerieTerminal = new List<FIN_DocumentFinanceYearSerieTerminal>();
+            List<fin_documentfinanceyearserieterminal> listDeleteSerieTerminal = new List<fin_documentfinanceyearserieterminal>();
 
             //Start UnitOfWork
             using (UnitOfWork uowSession = new UnitOfWork())
@@ -120,31 +120,31 @@ namespace logicpos.financial.library.Classes.Finance
                 try
                 {
                     //Get Object in UOW Session
-                    FIN_DocumentFinanceYears documentFinanceYears = (FIN_DocumentFinanceYears)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_DocumentFinanceYears), pDocumentFinanceYears.Oid);
+                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
 
                     //Protection, used when user Restore DB without DocumentFinanceYears Created
                     if (documentFinanceYears != null)
                     {
-                        foreach (FIN_DocumentFinanceSeries documentFinanceSeries in documentFinanceYears.Series)
+                        foreach (fin_documentfinanceseries documentFinanceSeries in documentFinanceYears.Series)
                         {
                             if (!documentFinanceSeries.Disabled)
                             {
                                 listDisableSeries.Add(documentFinanceSeries);
                             }
-                            foreach (FIN_DocumentFinanceYearSerieTerminal documentFinanceYearSerieTerminal in documentFinanceSeries.YearSerieTerminal)
+                            foreach (fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal in documentFinanceSeries.YearSerieTerminal)
                             {
                                 listDeleteSerieTerminal.Add(documentFinanceYearSerieTerminal);
                             }
                         }
 
                         //Now we can disable, Outside of Loop
-                        foreach (FIN_DocumentFinanceSeries disableSerie in listDisableSeries)
+                        foreach (fin_documentfinanceseries disableSerie in listDisableSeries)
                         {
                             if (_debug) _log.Debug(string.Format("  {0} : Disabled:[{1}]", disableSerie.Designation, disableSerie.Disabled));
                             disableSerie.Disabled = true;
                         }
                         //Now we can delete, Outside of Loop
-                        foreach (FIN_DocumentFinanceYearSerieTerminal deleteSerieTerminal in listDeleteSerieTerminal)
+                        foreach (fin_documentfinanceyearserieterminal deleteSerieTerminal in listDeleteSerieTerminal)
                         {
                             if (_debug) _log.Debug(string.Format("    {0} : Deleted:[{1}]", deleteSerieTerminal.Designation, deleteSerieTerminal.Disabled));
                             deleteSerieTerminal.Delete();
@@ -170,7 +170,7 @@ namespace logicpos.financial.library.Classes.Finance
         //Helper for Create DocumentFinanceSeries & DocumentFinanceYearSerieTerminal
         //Used to generate Series Preview, or to Process Series in Database
 
-        public static FrameworkCallsResult CreateDocumentFinanceYearSeriesTerminal(FIN_DocumentFinanceYears pDocumentFinanceYears, DataTable pTerminals, string pAcronym, bool pPreviewMode)
+        public static FrameworkCallsResult CreateDocumentFinanceYearSeriesTerminal(fin_documentfinanceyears pDocumentFinanceYears, DataTable pTerminals, string pAcronym, bool pPreviewMode)
         {
             FrameworkCallsResult result = new FrameworkCallsResult();
             uint ordAndCode = 10;
@@ -178,9 +178,9 @@ namespace logicpos.financial.library.Classes.Finance
             int terminalInc = 1;
             string acronymPrefix = String.Empty, acronym, designation, output = String.Empty, acronymAudit;
             Dictionary<string,string> acronymPrefixCreatedSeries = new Dictionary<string,string>();
-            FIN_DocumentFinanceSeries documentFinanceSeries = null;
+            fin_documentfinanceseries documentFinanceSeries = null;
             //Used to add DocumentFinanceYearSerieTerminal to list to delete outside of Loop
-            List<FIN_DocumentFinanceYearSerieTerminal> listDeleteSerieTerminal = new List<FIN_DocumentFinanceYearSerieTerminal>();
+            List<fin_documentfinanceyearserieterminal> listDeleteSerieTerminal = new List<fin_documentfinanceyearserieterminal>();
 
             //Start UnitOfWork
             using (UnitOfWork uowSession = new UnitOfWork())
@@ -188,14 +188,14 @@ namespace logicpos.financial.library.Classes.Finance
                 try
                 {
                     //Get Object in UOW Session
-                    FIN_DocumentFinanceYears documentFinanceYears = (FIN_DocumentFinanceYears)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_DocumentFinanceYears), pDocumentFinanceYears.Oid);
+                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
 
                     //Initialize DocumentFinanceType Collection : Criteria/XPCollection/Model : Use Default Filter
                     CriteriaOperator criteria = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
                     //Configure SortProperty
                     SortProperty sortProperty = new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending);
                     //Init Collection
-                    XPCollection xpDocumentFinanceType = new XPCollection(uowSession, typeof(FIN_DocumentFinanceType), criteria, sortProperty);
+                    XPCollection xpDocumentFinanceType = new XPCollection(uowSession, typeof(fin_documentfinancetype), criteria, sortProperty);
 
                     //Loop Terminals
                     foreach (DataRow terminal in pTerminals.Rows)
@@ -206,10 +206,10 @@ namespace logicpos.financial.library.Classes.Finance
                             //Initialize DocumentFinanceYearSerieTerminal Collection : Criteria/XPCollection/Model : Use Default Filter + Terminal
                             criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND (Terminal = '{0}')", terminal["Oid"]));
                             //Init Collection
-                            XPCollection xpDocumentFinanceYearSerieTerminal = new XPCollection(uowSession, typeof(FIN_DocumentFinanceYearSerieTerminal), criteria);
+                            XPCollection xpDocumentFinanceYearSerieTerminal = new XPCollection(uowSession, typeof(fin_documentfinanceyearserieterminal), criteria);
 
                             //Loop DocumentFinanceYearSerieTerminal and Parent DocumentFinanceYearSerie and Delete 
-                            foreach (FIN_DocumentFinanceYearSerieTerminal documentFinanceYearSerieTerminal in xpDocumentFinanceYearSerieTerminal)
+                            foreach (fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal in xpDocumentFinanceYearSerieTerminal)
                             {
                                 if (_debug) _log.Debug(string.Format("Disabled documentFinanceYearSerie: [{0}]", documentFinanceYearSerieTerminal.Serie.Designation));
                                 documentFinanceYearSerieTerminal.Serie.Disabled = true;
@@ -219,7 +219,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                             //Now we can delete, Outside of Loop
-                            foreach (FIN_DocumentFinanceYearSerieTerminal deleteSerieTerminal in listDeleteSerieTerminal)
+                            foreach (fin_documentfinanceyearserieterminal deleteSerieTerminal in listDeleteSerieTerminal)
                             {
                                 if (_debug) _log.Debug(string.Format("Deleted documentFinanceYearSerieTerminal: [{0}]", deleteSerieTerminal.Designation));
                                 deleteSerieTerminal.Delete();
@@ -230,7 +230,7 @@ namespace logicpos.financial.library.Classes.Finance
                         if (pPreviewMode) output += string.Format("{0}{1}", terminal["Designation"], Environment.NewLine);
 
                         //Get Current Terminal Object
-                        POS_ConfigurationPlaceTerminal configurationPlaceTerminal = (POS_ConfigurationPlaceTerminal)uowSession.GetObjectByKey(typeof(POS_ConfigurationPlaceTerminal), new Guid(terminal["Oid"].ToString()));
+                        pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)uowSession.GetObjectByKey(typeof(pos_configurationplaceterminal), new Guid(terminal["Oid"].ToString()));
 
                         //Create DocumentFinanceSeries Acronym From Date
                         DateTime now = FrameworkUtils.CurrentDateTimeAtomic();
@@ -244,13 +244,13 @@ namespace logicpos.financial.library.Classes.Finance
                         else
                         {
                             //Get acronymPrefix in first DocumentFinanceType, not in every Document, this way we have uniform series
-                            acronymPrefix = (xpDocumentFinanceType[0] as FIN_DocumentFinanceType).AcronymLastSerie.ToString(SettingsApp.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat);
+                            acronymPrefix = (xpDocumentFinanceType[0] as fin_documentfinancetype).AcronymLastSerie.ToString(SettingsApp.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat);
                         }
 
                         //Add to Created List
                         acronymPrefixCreatedSeries.Add(acronymPrefix, configurationPlaceTerminal.Designation);
 
-                        foreach (FIN_DocumentFinanceType documentFinanceType in xpDocumentFinanceType)
+                        foreach (fin_documentfinancetype documentFinanceType in xpDocumentFinanceType)
                         {
                             //Ignored DocumentTypes (DocumentFinanceTypeInvoiceWayBill, this DocumentType use DocumentFinanceTypeInvoice Serie)
                             if (documentFinanceType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill)
@@ -263,7 +263,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 designation = string.Format("{0} {1}", documentFinanceType.Designation, acronym);
                                 if (!pPreviewMode)
                                 {
-                                    documentFinanceSeries = new FIN_DocumentFinanceSeries(uowSession)
+                                    documentFinanceSeries = new fin_documentfinanceseries(uowSession)
                                     {
                                         Ord = ordAndCode,
                                         Code = ordAndCode,
@@ -284,7 +284,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 designation = string.Format("{0} {1}", designation, configurationPlaceTerminal.Designation);
                                 if (!pPreviewMode)
                                 {
-                                    FIN_DocumentFinanceYearSerieTerminal documentFinanceYearSerieTerminal = new FIN_DocumentFinanceYearSerieTerminal(uowSession)
+                                    fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = new fin_documentfinanceyearserieterminal(uowSession)
                                     {
                                         Ord = ordAndCode,
                                         Code = ordAndCode,
@@ -328,7 +328,7 @@ namespace logicpos.financial.library.Classes.Finance
                         {
                             //Audit FINANCE_SERIES_CREATED
                             acronymAudit = string.Format("{0}{1}{2}{3}", "xx", item.Key, 0.ToString("00"), pAcronym);
-                            FrameworkUtils.Audit("FINANCE_SERIES_CREATED", string.Format(Resx.audit_message_finance_series_created, acronymAudit, item.Value, GlobalFramework.LoggedUser.Name));
+                            FrameworkUtils.Audit("FINANCE_SERIES_CREATED", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_finance_series_created"), acronymAudit, item.Value, GlobalFramework.LoggedUser.Name));
                         }
                     }
                 }

@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_WorkSessionMovementType : XPGuidObject
+    public class pos_worksessionmovementtype : XPGuidObject
     {
-        public POS_WorkSessionMovementType() : base() { }
-        public POS_WorkSessionMovementType(Session session) : base(session) { }
+        public pos_worksessionmovementtype() : base() { }
+        public pos_worksessionmovementtype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_WorkSessionMovementType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_WorkSessionMovementType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_worksessionmovementtype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_worksessionmovementtype), "Code");
         }
 
         UInt32 fOrd;
@@ -72,10 +72,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //WorkSessionMovementType One <> Many WorkSessionMovement
-        [Association(@"WorkSessionMovementTypeReferencesWorkSessionMovement", typeof(POS_WorkSessionMovement))]
-        public XPCollection<POS_WorkSessionMovement> Movement
+        [Association(@"WorkSessionMovementTypeReferencesWorkSessionMovement", typeof(pos_worksessionmovement))]
+        public XPCollection<pos_worksessionmovement> Movement
         {
-            get { return GetCollection<POS_WorkSessionMovement>("Movement"); }
+            get { return GetCollection<pos_worksessionmovement>("Movement"); }
         }
     }
 }

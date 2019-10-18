@@ -6,15 +6,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class CFG_ConfigurationPreferenceParameter : XPGuidObject
+    public class cfg_configurationpreferenceparameter : XPGuidObject
     {
-        public CFG_ConfigurationPreferenceParameter() : base() { }
-        public CFG_ConfigurationPreferenceParameter(Session session) : base(session) { }
+        public cfg_configurationpreferenceparameter() : base() { }
+        public cfg_configurationpreferenceparameter(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationPreferenceParameter), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationPreferenceParameter), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Code");
         }
 
         UInt32 fOrd;
@@ -107,5 +107,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             get { return fInputType; }
             set { SetPropertyValue<PreferenceParameterInputType>("InputType", ref fInputType, value); }
         }
+        //IN:009268 Use Euro VAT Info 
+        public static object GetCountryCode2
+        {
+            get {
+                string sql = "SELECT Value FROM cfg_configurationpreferenceparameter WHERE (Disabled IS NULL OR Disabled  <> 1) AND (Token = 'COMPANY_COUNTRY_CODE2')";
+                var getCountryCode2 = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                return getCountryCode2;
+            }
+        }//IN:009268 ENDS
     }
 }

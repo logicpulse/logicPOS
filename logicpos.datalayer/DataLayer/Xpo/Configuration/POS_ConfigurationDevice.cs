@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class POS_ConfigurationDevice : XPGuidObject
+    public class pos_configurationdevice : XPGuidObject
     {
-        public POS_ConfigurationDevice() : base() { }
-        public POS_ConfigurationDevice(Session session) : base(session) { }
+        public pos_configurationdevice() : base() { }
+        public pos_configurationdevice(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationDevice), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(POS_ConfigurationDevice), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationdevice), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationdevice), "Code");
         }
 
         UInt32 fOrd;
@@ -55,12 +55,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlaceTerminal <> Many ConfigurationDevice
-        POS_ConfigurationPlaceTerminal fPlaceTerminal;
+        pos_configurationplaceterminal fPlaceTerminal;
         [Association(@"ConfigurationPlaceTerminalReferencesConfigurationDevice")]
-        public POS_ConfigurationPlaceTerminal PlaceTerminal
+        public pos_configurationplaceterminal PlaceTerminal
         {
             get { return fPlaceTerminal; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("Terminal", ref fPlaceTerminal, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fPlaceTerminal, value); }
         }
     }
 }

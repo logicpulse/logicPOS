@@ -31,7 +31,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, String pTextEntry, String pValidationRule): base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_virtual_keyboard;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(906, 358);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_keyboard.png");
             String fileKeyboardXML = FrameworkUtils.OSSlash(GlobalFramework.Path["keyboards"] + @"163.xml");

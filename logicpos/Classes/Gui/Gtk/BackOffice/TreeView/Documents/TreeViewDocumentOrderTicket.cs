@@ -24,18 +24,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewDocumentOrderTicket(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(FIN_DocumentOrderTicket);
+            Type xpoGuidObjectType = typeof(fin_documentorderticket);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            FIN_DocumentOrderTicket defaultValue = (pDefaultValue != null) ? pDefaultValue as FIN_DocumentOrderTicket : null;
+            fin_documentorderticket defaultValue = (pDefaultValue != null) ? pDefaultValue as fin_documentorderticket : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("TicketId") { Title = Resx.global_ticket_number, MinWidth = 50 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("DateStart") { Title = Resx.global_date, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedBy") { Title = Resx.global_user_name, ChildName = "Name", MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedWhere") { Title = Resx.global_terminal_name, ChildName = "Designation", MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ticket_number"), MinWidth = 50 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_name"), ChildName = "Name", MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_terminal_name"), ChildName = "Designation", MinWidth = 100 });
 
             //Sort Order
             SortProperty[] sortProperty = new SortProperty[1];

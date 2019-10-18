@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Text.RegularExpressions;
+using logicpos.resources.Resources.Localization;
 
 namespace logicpos.financial.library.Classes.Finance
 {
@@ -25,12 +26,16 @@ namespace logicpos.financial.library.Classes.Finance
         /// string extended = extendValue.Extenso_Valor(1772737377.33m);
         public string GetExtendedValue(decimal pValue, string pAcronym)
         {
-            //string moedaSingular = "Euro";//Real  
+            //string moedaSingular = "Euro";//Real
             //string moedaPlural = "Euros";//Reais
-            string moedaSingular = pAcronym;//Real  
-            string moedaPlural = string.Format("{0}s", pAcronym);//Reais
-            string moedaDecimalSingular = "Centimo";//Centavo
-            string moedaDecimalPlural = "Centimos";//Centavos
+            string moedaSingular = pAcronym;//Real
+
+            /* IN009185 */
+            string moedaPlural = ApplyPluralizationForCurrency(pAcronym);
+
+            /* IN009018 */
+            string moedaDecimalSingular = resources.CustomResources.GetCustomResources("", "numbers_to_words_cent");//Centavo
+            string moedaDecimalPlural = resources.CustomResources.GetCustomResources("", "numbers_to_words_cents");//Centavos
 
             string strValorExtenso = ""; //Variável que irá armazenar o valor por extenso do número informado
             string strNumero = "";       //Irá armazenar o número para exibir por extenso 
@@ -233,7 +238,8 @@ namespace logicpos.financial.library.Classes.Finance
                     else if (dblCentavos > 0.1M && dblCentavos < 0.2M)
                     {
                         strNumero = Right(((Decimal.Round(dblCentavos, 2) - (decimal)0.1).ToString().Trim()), 1);
-                        strValorExtenso = strValorExtenso + ((dblCentavos > 0) ? " " : " e ")
+                        /* IN009185 */
+                        strValorExtenso = strValorExtenso + ((dblCentavos > 0) ? " e " : " ")
                         + fcn_Numero_Dezena0(strNumero) + " " + moedaDecimalPlural + " ";
                     }
                     else
@@ -283,6 +289,37 @@ namespace logicpos.financial.library.Classes.Finance
             strValorExtenso = Regex.Replace(strValorExtenso.Trim(), @"\s+", " ");
 
             return strValorExtenso.Trim();
+        }
+
+        /// <summary>
+        /// Generates the plural form of currency.
+        /// Now implemented for the ones that are not variables and the variables with 'L' at the end.
+		/// Please see #IN009185 for more details.
+        /// </summary>
+        /// <param name="pCurrency"></param>
+        /// <returns></returns>
+        private static string ApplyPluralizationForCurrency(string pCurrency)
+        {
+            string currency = pCurrency;
+
+            if (!string.IsNullOrEmpty(currency))
+            {
+				/* #TODO: Improve this block of code */
+                if (currency.ToUpper().EndsWith("L")) /* Real, Metical, ... */
+                {
+                    int place = currency.LastIndexOf("l");
+
+                    if (place != -1)
+                    {
+                        currency = currency.Remove(place, "l".Length).Insert(place, "is");
+                    }
+                }
+                else
+                {
+                    currency = string.Format("{0}s", currency);/* Euros, ... */
+                }
+            }
+            return currency;
         }
 
         private string fcn_Numero_Dezena0(string pstrDezena0)

@@ -24,9 +24,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewArticle(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(FIN_Article);
+            Type xpoGuidObjectType = typeof(fin_article);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            FIN_Article defaultValue = (pDefaultValue != null) ? pDefaultValue as FIN_Article : null;
+            fin_article defaultValue = (pDefaultValue != null) ? pDefaultValue as fin_article : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogArticle);
 
@@ -35,16 +35,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
             //To Test XPGuidObject InitialValue (InitialValue = xArticleFamily) : ArticleFamily xArticleFamily = (ArticleFamily)FrameworkUtils.GetXPGuidObjectFromSession(GlobalFramework.SessionXpoBackoffice, typeof(ArticleFamily), new Guid("471d8c1e-45c1-4dbe-8526-349c20bd53ef"));
-            columnProperties.Add(new GenericTreeViewColumnProperty("Family") { Title = Resx.global_article_family, ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("SubFamily") { Title = Resx.global_article_subfamily, ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Type") { Title = Resx.global_article_type, ChildName = "Designation" });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Family") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_family"), ChildName = "Designation" });
+            columnProperties.Add(new GenericTreeViewColumnProperty("SubFamily") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_subfamily"), ChildName = "Designation" });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Type") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_type"), ChildName = "Designation" });
             columnProperties.Add(new GenericTreeViewColumnProperty("TotalStock")
             {
                 Query = "SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;",
-                Title = Resx.global_total_stock,
+                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimal(),
@@ -55,7 +55,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //    Xalign = 1.0F
                 //}
             });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //Default Criteria with XpoOidUndefinedRecord

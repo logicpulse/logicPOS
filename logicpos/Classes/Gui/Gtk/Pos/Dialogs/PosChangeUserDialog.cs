@@ -28,8 +28,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //TouchButtonIconWithText _buttonOk;
         TouchButtonIconWithText _buttonCancel;
         //Public Properties
-        private SYS_UserDetail _selectedUserDetail;
-        public SYS_UserDetail UserDetail
+        private sys_userdetail _selectedUserDetail;
+        public sys_userdetail UserDetail
         {
             get { return _selectedUserDetail; }
             set { _selectedUserDetail = value; }
@@ -39,7 +39,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = Resx.window_title_dialog_change_user;
+            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_user");
             Size windowSize = new Size(559, 562);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
 
@@ -110,13 +110,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
             _tablePadUsers.SelectedButtonOid = button.CurrentButtonOid;
             //To be Used in Dialog Result
-            _selectedUserDetail = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(typeof(SYS_UserDetail), button.CurrentButtonOid);
+            _selectedUserDetail = (sys_userdetail)FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), button.CurrentButtonOid);
 
             if (_selectedUserDetail.PasswordReset)
             {
                 //_log.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, Resx.global_information,
-                    string.Format(Resx.dialog_message_user_request_change_password, _selectedUserDetail.Name, SettingsApp.DefaultValueUserDetailAccessPin)
+                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), _selectedUserDetail.Name, SettingsApp.DefaultValueUserDetailAccessPin)
                 );
             }
 

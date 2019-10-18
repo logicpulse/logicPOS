@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class CFG_ConfigurationUnitMeasure : XPGuidObject
+    public class cfg_configurationunitmeasure : XPGuidObject
     {
-        public CFG_ConfigurationUnitMeasure() : base() { }
-        public CFG_ConfigurationUnitMeasure(Session session) : base(session) { }
+        public cfg_configurationunitmeasure() : base() { }
+        public cfg_configurationunitmeasure(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationUnitMeasure), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(CFG_ConfigurationUnitMeasure), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationunitmeasure), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationunitmeasure), "Code");
         }
 
         UInt32 fOrd;
@@ -48,10 +48,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //configurationUnitMeasure One <> Many Article
-        [Association(@"ConfigurationUnitMeasureReferencesArticle", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> Article
+        [Association(@"ConfigurationUnitMeasureReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> Article
         {
-            get { return GetCollection<FIN_Article>("Article"); }
+            get { return GetCollection<fin_article>("Article"); }
         }
     }
 }

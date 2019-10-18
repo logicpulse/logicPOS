@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_ConfigurationPrintersType : XPGuidObject
+    public class sys_configurationprinterstype : XPGuidObject
     {
-        public SYS_ConfigurationPrintersType() : base() { }
-        public SYS_ConfigurationPrintersType(Session session) : base(session) { }
+        public sys_configurationprinterstype() : base() { }
+        public sys_configurationprinterstype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrintersType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPrintersType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinterstype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinterstype), "Code");
         }
         
         UInt32 fOrd;
@@ -55,10 +55,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPrintersType One <> Many Article
-        [Association(@"ConfigurationPrintersTypeConfigurationPrinters", typeof(SYS_ConfigurationPrinters))]
-        public XPCollection<SYS_ConfigurationPrinters> Printers
+        [Association(@"ConfigurationPrintersTypeConfigurationPrinters", typeof(sys_configurationprinters))]
+        public XPCollection<sys_configurationprinters> Printers
         {
-            get { return GetCollection<SYS_ConfigurationPrinters>("Printers"); }
+            get { return GetCollection<sys_configurationprinters>("Printers"); }
         }
     }
 }

@@ -63,7 +63,7 @@ namespace logicpos.shared.Classes.Orders
 
         public void Insert(Guid pArticleId, decimal pQuantity, TaxSellType pTaxSellType)
         {
-            FIN_Article article = (FIN_Article)FrameworkUtils.GetXPGuidObject(typeof(FIN_Article), pArticleId);
+            fin_article article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), pArticleId);
             PriceProperties priceProperties = FrameworkUtils.GetArticlePrice(article, pTaxSellType);
             priceProperties.Quantity = pQuantity;
             Insert(article.Oid, article.Designation, priceProperties);

@@ -16,9 +16,9 @@ namespace logicpos.financial.console.Objects
 
         //Duplicate method from logicpos.Utils
 
-        public static POS_ConfigurationPlaceTerminal GetTerminal()
+        public static pos_configurationplaceterminal GetTerminal()
         {
-            POS_ConfigurationPlaceTerminal configurationPlaceTerminal = null;
+            pos_configurationplaceterminal configurationPlaceTerminal = null;
 
             //Debug Directive disabled by Mario, if enabled we cant force Hardware id in Release, if we want to ignore appHardwareId from config we just delete it
             //If assigned in Config use it, else does nothing and use default ####-####-####-####-####-####
@@ -30,7 +30,7 @@ namespace logicpos.financial.console.Objects
             try
             {
                 //Try TerminalID from Database
-                configurationPlaceTerminal = (POS_ConfigurationPlaceTerminal)FrameworkUtils.GetXPGuidObjectFromField(typeof(POS_ConfigurationPlaceTerminal), "HardwareId", GlobalFramework.LicenceHardwareId);
+                configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", GlobalFramework.LicenceHardwareId);
             }
             catch (Exception ex)
             {
@@ -43,11 +43,11 @@ namespace logicpos.financial.console.Objects
                 try
                 {
                     //Persist Terminal in DB
-                    configurationPlaceTerminal = new POS_ConfigurationPlaceTerminal(GlobalFramework.SessionXpo)
+                    configurationPlaceTerminal = new pos_configurationplaceterminal(GlobalFramework.SessionXpo)
                     {
-                        Ord = FrameworkUtils.GetNextTableFieldID("POS_ConfigurationPlaceterminal", "Ord"),
-                        Code = FrameworkUtils.GetNextTableFieldID("POS_ConfigurationPlaceterminal", "Code"),
-                        Designation = "Terminal #" + FrameworkUtils.GetNextTableFieldID("POS_ConfigurationPlaceterminal", "Code"),
+                        Ord = FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
+                        Code = FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+                        Designation = "Terminal #" + FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
                         HardwareId = GlobalFramework.LicenceHardwareId
                         //Fqdn = GetFQDN()
                     };

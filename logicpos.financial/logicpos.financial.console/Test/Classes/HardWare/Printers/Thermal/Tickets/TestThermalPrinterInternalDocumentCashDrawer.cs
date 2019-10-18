@@ -9,7 +9,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Print(SYS_ConfigurationPrinters pPrinter)
+        public static void Print(sys_configurationprinters pPrinter)
         {
             try
             {

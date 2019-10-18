@@ -99,6 +99,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 // If STOP Here in this BreakPoint, maybe you are working on Internal Solution with a Opensource ACME Plugin/Database or ViceVersa
+                // If so, delete AcmeSoftwareVendorPlugin.* plugins and Debug Again
                 log.Error(ex.Message, ex);
             }
 

@@ -11,5 +11,8 @@ namespace logicpos.plugin.contracts
         bool IsLicensed();
         bool ConnectToWS();
         byte[] ActivateLicense(string name, string company, string fiscalNumber, string address, string email, string phone, string hardwareId, string assemblyVersion);
+        //TK016248 - BackOffice - Check New Version 
+		string GetCurrentVersion();
+
     }
 }

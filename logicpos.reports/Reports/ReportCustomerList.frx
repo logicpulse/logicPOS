@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="03/05/2018 11:17:03" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+  <Dictionary>
+    <BusinessObjectDataSource Name="CustomerType" ReferenceName="CustomerType" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection1[[logicpos.financial.library.Classes.Reports.BOs.Customers.FRBOCustomerType, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="Ord" DataType="System.UInt32"/>
+      <Column Name="Code" DataType="System.UInt32"/>
+      <Column Name="Designation" DataType="System.String"/>
+      <BusinessObjectDataSource Name="Customer" DataType="System.Collections.Generic.List1[[logicpos.financial.library.Classes.Reports.BOs.Customers.FRBOCustomer, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+        <Column Name="Ord" DataType="System.UInt32"/>
+        <Column Name="Code" DataType="System.UInt32"/>
+        <Column Name="CodeInternal" DataType="System.String"/>
+        <Column Name="Name" DataType="System.String"/>
+        <Column Name="Address" DataType="System.String"/>
+        <Column Name="Locality" DataType="System.String"/>
+        <Column Name="ZipCode" DataType="System.String"/>
+        <Column Name="City" DataType="System.String"/>
+        <Column Name="DateOfBirth" DataType="System.String"/>
+        <Column Name="Phone" DataType="System.String"/>
+        <Column Name="Fax" DataType="System.String"/>
+        <Column Name="MobilePhone" DataType="System.String"/>
+        <Column Name="Email" DataType="System.String"/>
+        <Column Name="WebSite" DataType="System.String"/>
+        <Column Name="FiscalNumber" DataType="System.String"/>
+        <Column Name="CardNumber" DataType="System.String"/>
+        <Column Name="DiscountType" DataType="System.String"/>
+        <Column Name="Discount" DataType="System.Decimal"/>
+        <Column Name="CardCredit" DataType="System.Decimal"/>
+        <Column Name="TotalDebt" DataType="System.Decimal"/>
+        <Column Name="TotalCredit" DataType="System.Decimal"/>
+        <Column Name="CurrentBalance" DataType="System.Decimal"/>
+        <Column Name="CreditLine" DataType="System.String"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="Supplier" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Hidden" DataType="System.Boolean" BindableControl="CheckBox"/>
+        <Column Name="Oid" DataType="System.String"/>
+      </BusinessObjectDataSource>
+      <Column Name="Oid" DataType="System.String"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Total Name="DataSum" TotalType="Count" Evaluator="Data2"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
+      <inherited Name="PictureCompanyLogo"/>
+      <inherited Name="TextReportTitle" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
+    </inherited>
+    <DataBand Name="Data1" ZOrder="0" Top="52.6" Width="718.2" Height="37.8" Border.Lines="Top" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" DataSource="CustomerType">
+      <TextObject Name="Text21" Top="9.45" Width="718.2" Height="18.9" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Text="[CustomerType.Designation] ([CustomerType.Code])" VertAlign="Center" Style="DataLevel1Font"/>
+      <DataBand Name="Data2" Top="126.75" Width="718.2" Height="18.9" EvenStyle="EvenRow" DataSource="Customer">
+        <TextObject Name="Text16" Width="75.6" Height="18.9" Text="[CustomerType.Customer.Code]" VertAlign="Center" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <TextObject Name="Text17" Left="75.6" Width="349.65" Height="18.9" Text="[CustomerType.Customer.Name]" VertAlign="Center" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <TextObject Name="Text14" Left="425.25" Width="85.05" Height="18.9" Text="[FormatNumber([CustomerType.Customer.Discount],2)] %" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <TextObject Name="Text28" Left="614.25" Width="103.95" Height="18.9" Text="[CustomerType.Customer.FiscalNumber]" HorzAlign="Right" VertAlign="Center" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <TextObject Name="Text31" Left="510.3" Width="103.95" Height="18.9" Text="[CustomerType.Customer.Phone]" Format="Number" Format.UseLocale="true" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <DataHeaderBand Name="DataHeader1" Top="94.4" Width="718.2" Height="28.35" Border.Lines="Top">
+          <TextObject Name="Text24" Top="9.45" Width="75.6" Height="18.9" Text="[Res(&quot;global_record_code&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text25" Left="75.6" Top="9.45" Width="349.65" Height="18.9" Text="[Res(&quot;global_name&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text26" Left="425.25" Top="9.45" Width="85.05" Height="18.9" Text="[Res(&quot;global_discount&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text27" Left="614.25" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;global_fiscal_number&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text30" Left="510.3" Top="9.45" Width="103.95" Height="18.9" Text="[Res(&quot;global_phone&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+        </DataHeaderBand>
+        <DataFooterBand Name="Data2Footer" Top="149.65" Width="718.2" Height="28.35">
+          <TextObject Name="Text29" Width="614.25" Height="18.9" Text="[Res(&quot;global_record_count&quot;)]&#13;&#10;" HorzAlign="Right" VertAlign="Center" Style="DataFontBold"/>
+          <TextObject Name="Text32" Left="614.25" Width="103.95" Height="18.9" Text="[DataSum]" HorzAlign="Right" VertAlign="Center" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        </DataFooterBand>
+      </DataBand>
+    </DataBand>
+    <inherited Name="PageFooter1" Top="182">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>

@@ -70,9 +70,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //ActionArea Buttons
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-            _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", Resx.global_button_label_payment_dialog_clear_client, fileIconClearCustomer);
+            _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
 
-            _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", Resx.global_total, fileActionPreview);
+            _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_preview"), fileActionPreview); /* IN009111 */
             _buttonOk.Sensitive = false;
 
             //ActionArea
@@ -109,12 +109,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string icon4 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png");
             string icon5 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png");
 
-            _pagePad1 = new DocumentFinanceDialogPage1(this, Resx.window_title_dialog_document_finance_page1, icon1, null);
-            _pagePad2 = new DocumentFinanceDialogPage2(this, Resx.window_title_dialog_document_finance_page2, icon2, null);
-            _pagePad3 = new DocumentFinanceDialogPage3(this, Resx.window_title_dialog_document_finance_page3, icon3, null);
+            _pagePad1 = new DocumentFinanceDialogPage1(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page1"), icon1, null);
+            _pagePad2 = new DocumentFinanceDialogPage2(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page2"), icon2, null);
+            _pagePad3 = new DocumentFinanceDialogPage3(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3"), icon3, null);
             //Start in Invoice : Start Disabled
-            _pagePad4 = new DocumentFinanceDialogPage4(this, Resx.window_title_dialog_document_finance_page4, icon4, null, false);
-            _pagePad5 = new DocumentFinanceDialogPage5(this, Resx.window_title_dialog_document_finance_page5, icon5, null, false);
+            _pagePad4 = new DocumentFinanceDialogPage4(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page4"), icon4, null, false);
+            _pagePad5 = new DocumentFinanceDialogPage5(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page5"), icon5, null, false);
             //Assign Reference Here, After Construction
             //PagePad
             _pagePad1.PagePad2 = _pagePad2;
@@ -176,9 +176,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             string result = string.Empty;
 
-            result = string.Format("{0} : {1}",
-              Resx.window_title_dialog_new_finance_document,
-              Resx.ResourceManager.GetString(string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
+            result = string.Format("{0} :: {1}",
+              resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_finance_document"),
+              resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
             );
 
             //Enable/Disable ClearCustomer
@@ -188,7 +188,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_pagePad3 != null && _pagePad3.ArticleBag != null)
             {
                 //Reference
-                CFG_ConfigurationCurrency configurationCurrency = _pagePad1.EntryBoxSelectConfigurationCurrency.Value;
+                cfg_configurationcurrency configurationCurrency = _pagePad1.EntryBoxSelectConfigurationCurrency.Value;
 
                 //Always Update Totals before Show Title
                 _pagePad3.ArticleBag.DiscountGlobal = FrameworkUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);

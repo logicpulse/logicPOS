@@ -27,12 +27,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private EntryBoxValidation _entryBoxLocality;
         private EntryBoxValidation _entryBoxZipCode;
         private EntryBoxValidation _entryBoxCity;
-        private XPOEntryBoxSelectRecord<CFG_ConfigurationCountry, TreeViewConfigurationCountry> _entryBoxSelectCountry;
-        private XPOEntryBoxSelectRecordValidation<CFG_ConfigurationCountry, TreeViewConfigurationCountry> _entryBoxSelectCountryValidation;
+        private XPOEntryBoxSelectRecord<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCountry;
+        private XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCountryValidation;
         private EntryBoxValidation _entryBoxNotes;
         //Public
-        private ERP_Customer _valueCustomer;
-        public ERP_Customer ValueCustomer
+        private erp_customer _valueCustomer;
+        public erp_customer ValueCustomer
         {
             get { return _valueCustomer; }
             set { _valueCustomer = value; }
@@ -53,40 +53,40 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Guid customerGuid = new Guid("0cf40622-578b-417d-b50f-e945fefb5d68");//Consumidor Final|0.0
             Guid customerGuid = new Guid("765859cc-29c2-4925-be89-0486d03684f2");//Carlos Fernandes|5.0
             //Guid customerGuid = new Guid("78c08879-6d08-4146-9cc9-914f427926c6");//Cristina Janeiro|12.5
-            _valueCustomer = (ERP_Customer)FrameworkUtils.GetXPGuidObject(_session, typeof(ERP_Customer), customerGuid);
+            _valueCustomer = (erp_customer)FrameworkUtils.GetXPGuidObject(_session, typeof(erp_customer), customerGuid);
 
             //Client (Used in _crudWidgetList)
-            _entryBoxClient = new EntryBoxValidation(_sourceWindow, string.Format("{0}/WL", Resx.global_customer), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, true);
+            _entryBoxClient = new EntryBoxValidation(_sourceWindow, string.Format("{0}/WL", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer")), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, true);
             _entryBoxClient.EntryValidation.Changed += delegate { Validate(); };
-            _entryBoxClientValidation = new EntryBoxValidation(_sourceWindow, Resx.global_customer, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, true);
+            _entryBoxClientValidation = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, true);
             _entryBoxClientValidation.EntryValidation.Changed += delegate { Validate(); };
             //FiscalNumber
-            _entryBoxFiscalNumber = new EntryBoxValidation(_sourceWindow, Resx.global_fiscal_number, KeyboardMode.Alfa, _valueCustomer.Country.RegExFiscalNumber, true);
+            _entryBoxFiscalNumber = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), KeyboardMode.Alfa, _valueCustomer.Country.RegExFiscalNumber, true);
             _entryBoxFiscalNumber.EntryValidation.Changed += delegate { /*ValidateFiscalNumber();*/ Validate(); };
             //Address
-            _entryBoxAddress = new EntryBoxValidation(_sourceWindow, Resx.global_address, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxAddress = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
             //_entryBoxAddress.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxAddress.EntryValidation.Changed += delegate { Validate(); };
             //Locality
-            _entryBoxLocality = new EntryBoxValidation(_sourceWindow, Resx.global_locality, KeyboardMode.Alfa, SettingsApp.RegexAlfa, false);
+            _entryBoxLocality = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_locality"), KeyboardMode.Alfa, SettingsApp.RegexAlfa, false);
             //_entryBoxLocality.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxLocality.EntryValidation.Changed += delegate { Validate(); };
             //ZipCode
-            _entryBoxZipCode = new EntryBoxValidation(_sourceWindow, Resx.global_zipcode, KeyboardMode.Alfa, _valueCustomer.Country.RegExZipCode, false);
+            _entryBoxZipCode = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_zipcode"), KeyboardMode.Alfa, _valueCustomer.Country.RegExZipCode, false);
             _entryBoxZipCode.WidthRequest = 200;
             _entryBoxZipCode.EntryValidation.Changed += delegate { Validate(); };
             //City
-            _entryBoxCity = new EntryBoxValidation(_sourceWindow, Resx.global_city, KeyboardMode.Alfa, SettingsApp.RegexAlfa, false);
+            _entryBoxCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SettingsApp.RegexAlfa, false);
             //_entryBoxCity.WidthRequest = _pagePad.EntryBoxMaxWidth - 200;
             _entryBoxCity.EntryValidation.Changed += delegate { Validate(); };
 
             //Country (Used in _crudWidgetList)
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse("CurrencyCode = 'EUR'");
-            _entryBoxSelectCountry = new XPOEntryBoxSelectRecord<CFG_ConfigurationCountry, TreeViewConfigurationCountry>(_sourceWindow, string.Format("{0}/WL", Resx.global_country), "Designation", "Oid", _valueCustomer.Country, criteriaOperator);
+            _entryBoxSelectCountry = new XPOEntryBoxSelectRecord<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, string.Format("{0}/WL", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_country")), "Designation", "Oid", _valueCustomer.Country, criteriaOperator);
             //_entryBoxSelectCountry.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxSelectCountry.Entry.IsEditable = false;
             //CountryValidation
-            _entryBoxSelectCountryValidation = new XPOEntryBoxSelectRecordValidation<CFG_ConfigurationCountry, TreeViewConfigurationCountry>(_sourceWindow, Resx.global_country, "Designation", "Oid", _valueCustomer.Country, criteriaOperator, SettingsApp.RegexGuid, true);
+            _entryBoxSelectCountryValidation = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _valueCustomer.Country, criteriaOperator, SettingsApp.RegexGuid, true);
             //_entryBoxSelectCountryValidation.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxSelectCountryValidation.EntryValidation.IsEditable = false;
             //Test _selectedXPGuidObject :)
@@ -95,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //};
 
             //Notes
-            _entryBoxNotes = new EntryBoxValidation(_sourceWindow, Resx.global_notes, KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
             //_entryBoxNotes.WidthRequest = _pagePad.EntryBoxMaxWidth;
             _entryBoxNotes.EntryValidation.Changed += delegate { Validate(); };
 

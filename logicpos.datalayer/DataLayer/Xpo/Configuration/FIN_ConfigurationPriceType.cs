@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ConfigurationPriceType : XPGuidObject
+    public class fin_configurationpricetype : XPGuidObject
     {
-        public FIN_ConfigurationPriceType() : base() { }
-        public FIN_ConfigurationPriceType(Session session) : base(session) { }
+        public fin_configurationpricetype() : base() { }
+        public fin_configurationpricetype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationPriceType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationPriceType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpricetype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpricetype), "Code");
         }
 
         UInt32 fOrd;
@@ -48,17 +48,17 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPriceType One <> Many ConfigurationPlace
-        [Association(@"ConfigurationPriceTypeReferencesConfigurationPlace", typeof(POS_ConfigurationPlace))]
-        public XPCollection<POS_ConfigurationPlace> Place
+        [Association(@"ConfigurationPriceTypeReferencesConfigurationPlace", typeof(pos_configurationplace))]
+        public XPCollection<pos_configurationplace> Place
         {
-            get { return GetCollection<POS_ConfigurationPlace>("Place"); }
+            get { return GetCollection<pos_configurationplace>("Place"); }
         }
 
         //ConfigurationPriceType One <> Many Customer
-        [Association(@"ConfigurationPriceTypeReferencesCustomer", typeof(ERP_Customer))]
-        public XPCollection<ERP_Customer> Customer
+        [Association(@"ConfigurationPriceTypeReferencesCustomer", typeof(erp_customer))]
+        public XPCollection<erp_customer> Customer
         {
-            get { return GetCollection<ERP_Customer>("Customer"); }
+            get { return GetCollection<erp_customer>("Customer"); }
         }
     }
 }

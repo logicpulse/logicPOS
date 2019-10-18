@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBase.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT 2018A16/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="07/02/2019 13:27:58" ReportInfo.CreatorVersion="2018.1.4.0" PrintSettings.CopyNames="Original">
+  <ScriptText>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Windows.Forms;
+    using System.Drawing;
+    using System.Data;
+    using FastReport;
+    using FastReport.Data;
+    using FastReport.Dialog;
+    using FastReport.Barcode;
+    using FastReport.Table;
+    using FastReport.Utils;
+
+    namespace FastReport
+    {
+      public class ReportScript
+      {
+        private int _pageNo;
+        private int _dataBandRec = 1;
+        private int _dataBandMaxRecs = 10;
+        private DataSourceBase _ds;
+
+        private void PageHeader1_AfterPrint(object sender, EventArgs e)
+        {
+          _pageNo++;
+        }
+
+        private void PageHeader1_BeforePrint(object sender, EventArgs e)
+        {
+          //Reset dataBandRec
+          _dataBandRec = 1;
+
+          //Get data source
+          _ds = Report.GetDataSource(&quot;DocumentFinanceMaster.DocumentFinanceDetail&quot;);
+          // initialize dataSource
+          //_ds.Init();
+        }
+
+        private void Data1_BeforePrint(object sender, EventArgs e)
+        {
+          TextRecordCount.Text = &quot;&quot;;
+          // Display Helper
+          //TextRecordCount.Text = _pageNo.ToString() + ':' + _dataBandRec.ToString() + ':' + _ds.RowCount.ToString() 
+          //  + ':' + (_dataBandRec == _dataBandMaxRecs &amp;&amp; _dataBandRec != _ds.RowCount).ToString()
+          ////+ ':' + dataBand.StartNewPage;
+          //;
+        }
+
+        private void Data1_AfterPrint(object sender, EventArgs e)
+        {
+          DataBand dataBand = (DataBand) sender;
+
+          if (_dataBandRec == _dataBandMaxRecs &amp;&amp; _dataBandRec != _ds.RowCount) { 
+            _dataBandRec = 1;
+            dataBand.StartNewPage = true;
+          }
+          else
+          {
+            _dataBandRec++;
+            dataBand.StartNewPage = false;
+          };
+        }
+      }
+    }
+  </ScriptText>
+  <Dictionary>
+    <BusinessObjectDataSource Name="DocumentFinanceMaster" ReferenceName="DocumentFinanceMaster" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="DocumentNumber" DataType="System.String"/>
+      <Column Name="DocumentDate" DataType="System.String"/>
+      <Column Name="SystemEntryDate" DataType="System.String"/>
+      <Column Name="DocumentCreatorUser" DataType="System.String"/>
+      <Column Name="TotalNet" DataType="System.Decimal"/>
+      <Column Name="TotalGross" DataType="System.Decimal"/>
+      <Column Name="TotalDiscount" DataType="System.Decimal"/>
+      <Column Name="TotalTax" DataType="System.Decimal"/>
+      <Column Name="TotalFinal" DataType="System.Decimal"/>
+      <Column Name="TotalFinalRound" DataType="System.Decimal"/>
+      <Column Name="TotalDelivery" DataType="System.Decimal"/>
+      <Column Name="TotalChange" DataType="System.Decimal"/>
+      <Column Name="Discount" DataType="System.Decimal"/>
+      <Column Name="DiscountFinancial" DataType="System.Decimal"/>
+      <Column Name="ExchangeRate" DataType="System.Decimal"/>
+      <Column Name="EntityCode" DataType="System.UInt32"/>
+      <Column Name="EntityInternalCode" DataType="System.String"/>
+      <Column Name="EntityName" DataType="System.String"/>
+      <Column Name="EntityAddress" DataType="System.String"/>
+      <Column Name="EntityZipCode" DataType="System.String"/>
+      <Column Name="EntityCity" DataType="System.String"/>
+      <Column Name="EntityCountry" DataType="System.String"/>
+      <Column Name="EntityFiscalNumber" DataType="System.String"/>
+      <Column Name="DocumentStatusStatus" DataType="System.String"/>
+      <Column Name="TransactionID" DataType="System.String"/>
+      <Column Name="ShipToDeliveryID" DataType="System.String"/>
+      <Column Name="ShipToDeliveryDate" DataType="System.DateTime"/>
+      <Column Name="ShipToWarehouseID" DataType="System.String"/>
+      <Column Name="ShipToLocationID" DataType="System.String"/>
+      <Column Name="ShipToAddressDetail" DataType="System.String"/>
+      <Column Name="ShipToCity" DataType="System.String"/>
+      <Column Name="ShipToPostalCode" DataType="System.String"/>
+      <Column Name="ShipToRegion" DataType="System.String"/>
+      <Column Name="ShipToCountry" DataType="System.String"/>
+      <Column Name="ShipFromDeliveryID" DataType="System.String"/>
+      <Column Name="ShipFromDeliveryDate" DataType="System.DateTime"/>
+      <Column Name="ShipFromWarehouseID" DataType="System.String"/>
+      <Column Name="ShipFromLocationID" DataType="System.String"/>
+      <Column Name="ShipFromAddressDetail" DataType="System.String"/>
+      <Column Name="ShipFromCity" DataType="System.String"/>
+      <Column Name="ShipFromPostalCode" DataType="System.String"/>
+      <Column Name="ShipFromRegion" DataType="System.String"/>
+      <Column Name="ShipFromCountry" DataType="System.String"/>
+      <Column Name="MovementStartTime" DataType="System.DateTime"/>
+      <Column Name="MovementEndTime" DataType="System.DateTime"/>
+      <Column Name="Notes" DataType="System.String"/>
+      <Column Name="DocumentType" DataType="System.String"/>
+      <Column Name="DocumentTypeResourceString" DataType="System.String"/>
+      <Column Name="DocumentTypeResourceStringReport" DataType="System.String"/>
+      <Column Name="Payed" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="PayedDate" DataType="System.DateTime"/>
+      <Column Name="PaymentMethodCode" DataType="System.UInt32"/>
+      <Column Name="PaymentMethodDesignation" DataType="System.String"/>
+      <Column Name="PaymentConditionCode" DataType="System.UInt32"/>
+      <Column Name="PaymentConditionDesignation" DataType="System.String"/>
+      <Column Name="PaymentConditionAcronym" DataType="System.String"/>
+      <Column Name="CurrencyDesignation" DataType="System.String"/>
+      <Column Name="CurrencyAcronym" DataType="System.String"/>
+      <BusinessObjectDataSource Name="DocumentFinanceDetail" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceDetail, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+        <Column Name="Code" DataType="System.String"/>
+        <Column Name="Designation" DataType="System.String"/>
+        <Column Name="Quantity" DataType="System.Decimal"/>
+        <Column Name="UnitMeasure" DataType="System.String"/>
+        <Column Name="Price" DataType="System.Decimal"/>
+        <Column Name="Vat" DataType="System.Decimal"/>
+        <Column Name="Discount" DataType="System.Decimal"/>
+        <Column Name="TotalNet" DataType="System.Decimal"/>
+        <Column Name="TotalGross" DataType="System.Decimal"/>
+        <Column Name="TotalFinal" DataType="System.Decimal"/>
+        <Column Name="VatExemptionReasonDesignation" DataType="System.String"/>
+        <Column Name="Oid" DataType="System.String"/>
+        <Column Name="Notes" DataType="System.String"/>
+        <Column Name="ArticlePriceWithDiscount" DataType="System.Decimal"/>
+        <Column Name="ArticlePriceAfterTax" DataType="System.Decimal"/>
+      </BusinessObjectDataSource>
+      <BusinessObjectDataSource Name="DocumentFinanceMasterTotal" DataType="System.Collections.Generic.List`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceMasterTotalView, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+        <Column Name="Oid" DataType="System.String"/>
+        <Column Name="DocumentMaster" DataType="System.String"/>
+        <Column Name="Designation" DataType="System.String"/>
+        <Column Name="TaxCode" DataType="System.String"/>
+        <Column Name="TaxCountryRegion" DataType="System.String"/>
+        <Column Name="Value" DataType="System.Decimal"/>
+        <Column Name="Total" DataType="System.Decimal"/>
+        <Column Name="TotalBase" DataType="System.Decimal"/>
+        <Column Name="TotalType" DataType="logicpos.datalayer.DataLayer.Xpo.FinanceMasterTotalType, LogicposDatalayer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"/>
+      </BusinessObjectDataSource>
+      <Column Name="DocumentTypeWayBill" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="PaymentMethodToken" DataType="System.String"/>
+      <Column Name="EntityOid" DataType="System.String"/>
+      <Column Name="EntityHidden" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="DocumentTypeOrd" DataType="System.UInt32"/>
+      <Column Name="DocumentTypeCode" DataType="System.UInt32"/>
+      <Column Name="DocumentTypeDesignation" DataType="System.String"/>
+      <Column Name="DocumentTypeAcronym" DataType="System.String"/>
+      <Column Name="Date" DataType="System.DateTime"/>
+      <Column Name="EntityCountryCode2" DataType="System.String"/>
+      <Column Name="ATDocCodeID" DataType="System.String"/>
+      <Column Name="PaymentMethod" DataType="System.String"/>
+      <Column Name="PaymentMethodOrd" DataType="System.UInt32"/>
+      <Column Name="PaymentCondition" DataType="System.String"/>
+      <Column Name="PaymentConditionOrd" DataType="System.UInt32"/>
+      <Column Name="Country" DataType="System.String"/>
+      <Column Name="CountryOrd" DataType="System.UInt32"/>
+      <Column Name="CountryCode" DataType="System.UInt32"/>
+      <Column Name="CountryDesignation" DataType="System.String"/>
+      <Column Name="Currency" DataType="System.String"/>
+      <Column Name="CurrencyOrd" DataType="System.UInt32"/>
+      <Column Name="CurrencyCode" DataType="System.UInt32"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Invoice Noº" DataType="System.Int32"/>
+    <Parameter Name="DefaultCurrencyForExchangeRateAcronym" DataType="System.String"/>
+    <Parameter Name="DefaultCurrencyForExchangeRateTotal" DataType="System.Decimal"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Height="264.6" BeforePrintEvent="PageHeader1_BeforePrint">
+      <inherited Name="PictureCompanyLogo"/>
+      <inherited Name="TextLicenceName"/>
+      <inherited Name="TextCompanyAddress"/>
+      <inherited Name="TextCompanyPostalcode"/>
+      <inherited Name="TextCompanyEmail"/>
+      <inherited Name="TextCompanyTelephone"/>
+      <inherited Name="TextCompanyWebsite"/>
+      <TextObject Name="TextReportTitle" ZOrder="7" Left="198.45" Width="519.75" Height="18.9" Text="[Res([DocumentFinanceMaster.DocumentTypeResourceString])] Nº [DocumentFinanceMaster.DocumentNumber]" HorzAlign="Right" WordWrap="false" Font="Arial, 12pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentDateHeader" ZOrder="8" Left="349.65" Top="18.9" Width="368.55" Height="18.9" Text="[DocumentFinanceMaster.DocumentDate]" HorzAlign="Right" WordWrap="false" Wysiwyg="true"/>
+      <TextObject Name="TextCopyName" ZOrder="13" Left="349.65" Top="37.8" Width="368.55" Height="18.9" Text="[CopyName#]" HorzAlign="Right" WordWrap="false" Wysiwyg="true"/>
+      <TableObject Name="Table1" ZOrder="14" Top="207.9" Width="718.2" Height="37.8" Border.Lines="All" Border.Color="Silver" ShiftMode="Never">
+        <TableColumn Name="Column1" Width="77.49"/>
+        <TableColumn Name="Column2" Width="105.84"/>
+        <TableColumn Name="Column3" Width="171.99"/>
+        <TableColumn Name="Column4" Width="275.94"/>
+        <TableColumn Name="Column5" Width="86.94"/>
+        <TableRow Name="Row1">
+          <TableCell Name="CellCustomerCodeHeader" Border.Lines="Right, Bottom" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_customer_code&quot;)]" HorzAlign="Center" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+          <TableCell Name="CellCustomerFiscalNumberHeader" Border.Lines="Right, Bottom" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_customer_fiscal_number&quot;)]" HorzAlign="Center" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+          <TableCell Name="CellCustomerPaymentConditionsHeader" Border.Lines="Right, Bottom" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_payment_conditions&quot;)]" HorzAlign="Center" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+          <TableCell Name="CellCustomerPaymentMethodHeader" Border.Lines="Right, Bottom" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_payment_method&quot;)]" HorzAlign="Center" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+          <TableCell Name="CellCurrencyHeader" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_currency&quot;)]" HorzAlign="Center" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+        </TableRow>
+        <TableRow Name="Row2">
+          <TableCell Name="CellCustomerCode" Border.Lines="Right" Border.Color="Gainsboro" Text="[DocumentFinanceMaster.EntityCode]" HorzAlign="Center" Font="Arial, 9pt" Wysiwyg="true"/>
+          <TableCell Name="CellCustomerFiscalNumber" Border.Lines="Right" Border.Color="Gainsboro" Text="[DocumentFinanceMaster.EntityFiscalNumber]" HorzAlign="Center" Font="Arial, 9pt" Wysiwyg="true"/>
+          <TableCell Name="CellCustomerPaymentConditions" Border.Lines="Right" Border.Color="Gainsboro" Text="[DocumentFinanceMaster.PaymentConditionDesignation]" HorzAlign="Center" Font="Arial, 9pt" Wysiwyg="true"/>
+          <TableCell Name="CellCustomerPaymentMethod" Border.Lines="Right" Border.Color="Gainsboro" Text="[DocumentFinanceMaster.PaymentMethodDesignation]" HorzAlign="Center" Font="Arial, 9pt" Wysiwyg="true"/>
+          <TableCell Name="CellCurrency" Text="[DocumentFinanceMaster.CurrencyAcronym]" HorzAlign="Center" Font="Arial, 9pt" Wysiwyg="true"/>
+        </TableRow>
+      </TableObject>
+      <TextObject Name="TextSecondPrint" ZOrder="15" Left="349.65" Top="56.7" Width="368.55" Height="18.9" Text="SecondPrintLabel - Assigned OnTheFly" HorzAlign="Right" WordWrap="false" Wysiwyg="true"/>
+      <TableObject Name="TableEntity" ZOrder="11" Left="359.1" Top="85.05" Width="359.1" Height="109.6" ShiftMode="WhenOverlapped">
+        <TableColumn Name="TableEntityColumn1" Width="359.1"/>
+        <TableRow Name="RowTextEntityName" Height="18.9" MaxHeight="37.8" AutoSize="true">
+          <TableCell Name="TextEntityName" Text="[DocumentFinanceMaster.EntityName]" Font="Arial, 10pt, style=Bold"/>
+        </TableRow>
+        <TableRow Name="RowTextEntityAddress" Height="18.9" MaxHeight="37.8" AutoSize="true">
+          <TableCell Name="TextEntityAddress" Text="[DocumentFinanceMaster.EntityAddress]" Font="Arial, 9pt"/>
+        </TableRow>
+        <TableRow Name="RowTextEntityZipCodeCity" Height="18.9" MinHeight="0.00" MaxHeight="37.8" AutoSize="true">
+          <TableCell Name="TextEntityZipCodeCity" Text="[IIf([DocumentFinanceMaster.EntityZipCode] != &quot;&quot;, [DocumentFinanceMaster.EntityZipCode]+&quot; &quot;+[DocumentFinanceMaster.EntityCity], [DocumentFinanceMaster.EntityCity])]" Font="Arial, 9pt"/>
+        </TableRow>
+        <TableRow Name="RowTextEntityCountry" Height="18.9">
+          <TableCell Name="TextEntityCountry" Text="[DocumentFinanceMaster.EntityCountry]" Font="Arial, 9pt"/>
+        </TableRow>
+      </TableObject>
+    </inherited>
+    <ColumnHeaderBand Name="ColumnHeader1" ZOrder="-1" Top="266.56" Width="718.2" Height="18.9" Border.Lines="All" Border.Color="Silver" Fill.Color="Gainsboro" ShiftMode="Never">
+      <TextObject Name="LabelCode" Width="74.5" Height="18.9" Border.Lines="Right" Border.Color="Silver" Text="[Res(&quot;global_article_code&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="LabelDesignation" Left="74.5" Width="236.25" Height="18.9" Border.Lines="Right" Border.Color="Silver" Text="[Res(&quot;global_designation&quot;)]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="LabelQuantity" Left="310.75" Width="47.25" Height="18.9" Border.Lines="Right" Border.Color="Silver" Text="[Res(&quot;global_quantity_acronym&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="LabelUnitMeasure" Left="358" Width="28.35" Height="18.9" Border.Lines="Right" Border.Color="Silver" Text="[Res(&quot;global_unit_measure_acronym&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="LabelPrice" Left="386.35" Width="76.7" Height="18.9" Border.Lines="Right" Border.Color="Silver" Text="[Res(&quot;global_price&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="LabelVat" Left="463.05" Width="47.25" Height="18.9" Border.Lines="Right" Border.Color="Silver" Text="[Res(&quot;global_vat_rate&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="LabelDiscount" Left="510.3" Width="47.25" Height="18.9" Border.Lines="Right" Border.Color="Silver" Text="[Res(&quot;global_discount_acronym&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Center" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="LabelArticlePriceWithDiscount" Left="557.55" Width="75.6" Height="18.9" Border.Lines="Right" Border.Color="Silver" Text="[Res(&quot;global_total_per_item&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="LabelArticlePriceAfterTax" Left="633.15" Width="85.05" Height="18.9" Text="[Res(&quot;global_total_per_item_vat&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+    </ColumnHeaderBand>
+    <inherited Name="Data1" Top="287.97" Height="38.25" Border.Lines="All" Border.Color="Silver" EvenStyle="BackgroundColor1" BeforePrintEvent="Data1_BeforePrint" AfterPrintEvent="Data1_AfterPrint" DataSource="DocumentFinanceDetail">
+      <TextObject Name="TextCode" ZOrder="0" Top="-0.94" Width="74.5" Height="28.35" Text="[DocumentFinanceMaster.DocumentFinanceDetail.Code]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 8pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextDesignation" ZOrder="1" Left="74.5" Top="-0.94" Width="236.25" Height="28.35" Text="[DocumentFinanceMaster.DocumentFinanceDetail.Designation]" Padding="2, 2, 2, 2" Font="Arial, 8pt" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+      <TextObject Name="TextQuantity" ZOrder="2" Left="310.75" Top="-0.94" Width="47.25" Height="18.9" Text="[DocumentFinanceMaster.DocumentFinanceDetail.Quantity]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Wysiwyg="true"/>
+      <TextObject Name="TextUnitMeasure" ZOrder="3" Left="358" Top="-0.94" Width="28.35" Height="18.9" Text="[DocumentFinanceMaster.DocumentFinanceDetail.UnitMeasure]" Padding="2, 2, 2, 2" HorzAlign="Center" WordWrap="false" Font="Arial, 8pt" Wysiwyg="true"/>
+      <TextObject Name="TextPrice" ZOrder="4" Left="386.35" Top="-0.94" Width="76.7" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.DocumentFinanceDetail.Price])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Wysiwyg="true"/>
+      <TextObject Name="TextVat" ZOrder="5" Left="463.05" Top="-0.94" Width="47.25" Height="18.9" Text="[DocumentFinanceMaster.DocumentFinanceDetail.Vat]%" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Wysiwyg="true"/>
+      <TextObject Name="TextDiscount" ZOrder="6" Left="510.3" Top="-0.94" Width="47.25" Height="18.9" Text="[DocumentFinanceMaster.DocumentFinanceDetail.Discount]%" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Wysiwyg="true"/>
+      <TextObject Name="TextArticlePriceWithDiscount" ZOrder="7" Left="557.55" Top="-0.94" Width="75.6" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*([DocumentFinanceMaster.DocumentFinanceDetail.ArticlePriceWithDiscount]))]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Wysiwyg="true"/>
+      <TextObject Name="TextArticlePriceAfterTax" ZOrder="8" Left="633.15" Top="-0.94" Width="85.05" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.DocumentFinanceDetail.ArticlePriceAfterTax])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextNotes" ZOrder="9" Left="75.6" Top="23.35" Width="642.05" Height="14.9" Text="[DocumentFinanceMaster.DocumentFinanceDetail.Notes]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 7pt" Wysiwyg="True" Trimming="EllipsisCharacter"/>
+      <TextObject Name="TextVatExemptionReason" ZOrder="10" Left="463.05" Top="13.91" Width="255.15" Height="14.9" Text="[DocumentFinanceMaster.DocumentFinanceDetail.VatExemptionReasonDesignation]" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 7pt" Wysiwyg="True" Trimming="EllipsisCharacter"/>
+      <TextObject Name="TextRecordCount" ZOrder="11" Top="13.91" Width="94.5" Height="13.91" Text="RecordCounter" Padding="2, 2, 2, 2" WordWrap="false" Font="Arial, 7pt" Wysiwyg="true"/>
+    </inherited>
+    <ReportSummaryBand Name="ReportSummary1" ZOrder="-1" Top="328.45" Width="718.2" Height="289.95" PrintOnBottom="true">
+      <ShapeObject Name="ShapeFooterTotalResume" Left="364.01" Top="9.45" Width="355.32" Height="144.02" Border.Color="Silver" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true"/>
+      <ShapeObject Name="ShapeFooterTotalTax" Left="0.05" Top="9.45" Width="355.32" Height="144.02" Border.Color="Silver"/>
+      <ShapeObject Name="Shape3" Top="162.16" Width="718.2" Height="111.89" Border.Color="Silver"/>
+      <TextObject Name="TextDocumentTotalNetLabel" Left="368.55" Top="52.7" Width="236.25" Height="18.9" Text="[Res(&quot;global_totalnet&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentTotalTaxLabel" Left="368.55" Top="71.6" Width="236.25" Height="18.9" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentTotalNet" Left="604.8" Top="52.7" Width="103.95" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.TotalNet])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentTotalTax" Left="604.8" Top="71.6" Width="103.95" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.TotalTax])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentTotalFinalLabel" Left="368.55" Top="90.5" Width="236.25" Height="18.9" Text="[Res(&quot;global_documentfinance_totalfinal&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentTotalFinal" Left="604.8" Top="90.5" Width="103.95" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.TotalFinal])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextGlobalDocumentFinanceTypeReportFooterAt" Top="274.05" Width="718.2" Height="15.9" Text="[IIf([DocumentFinanceMaster.DocumentTypeResourceStringReport] != &quot;&quot;, Res([DocumentFinanceMaster.DocumentTypeResourceStringReport]), &quot;&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Center" Font="Arial, 8pt" Wysiwyg="true"/>
+      <SubreportObject Name="Subreport1" Left="4.54" Top="15.9" Width="345" Height="111.4" Border.Lines="All" Fill.Color="Transparent" ReportPage="ReportPageReportDocumentFinance" PrintOnParent="true"/>
+      <TextObject Name="TextDocumentComments" Left="4.54" Top="176.53" Width="708.3" Height="94.12" Text="[DocumentFinanceMaster.Notes]" Padding="2, 2, 2, 2" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentDiscountTotalLabel" Left="368.55" Top="33.8" Width="236.25" Height="18.9" Text="[Res(&quot;global_documentfinance_total_discount&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentDiscountTotal" Left="604.8" Top="33.8" Width="103.95" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.TotalDiscount])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <!--
+      <TextObject Name="TextDocumentDiscountPaymentConditionsLabel" Left="368.55" Top="33.8" Width="236.25" Height="18.9" Text="[Res(&quot;global_documentfinance_discount_payment_conditions&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentDiscountPaymentConditions" Left="604.8" Top="33.8" Width="103.95" Height="18.9" Text="0,00" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      -->
+      <TextObject Name="TextDocumentDiscountCustomer" Left="604.8" Top="14.9" Width="103.95" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.Discount])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentDiscountCustomerLabel" Left="368.55" Top="14.9" Width="236.25" Height="18.9" Text="[Res(&quot;global_documentfinance_discount_customer&quot;)] (%)" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt" Wysiwyg="true"/>
+      <TextObject Name="TextDocumentCommentsLabel" Left="4.54" Top="164.05" Width="708.3" Height="11.9" Text="[Res(&quot;global_notes&quot;)]" WordWrap="false" Font="Arial, 7pt, style=Bold"/>
+      <TextObject Name="TextDefaultCurrencyForExchangeRate" Left="368.55" Top="128.14" Width="236.25" Height="18.9" Text="Total do Documento em [DefaultCurrencyForExchangeRateAcronym]" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+      <TextObject Name="ValueDefaultCurrencyForExchangeRate" Left="604.8" Top="128.14" Width="103.95" Height="18.9" Text="[ToDecimal([DefaultCurrencyForExchangeRateTotal]*[DocumentFinanceMaster.TotalFinal])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
+    </ReportSummaryBand>
+    <inherited Name="PageFooter1" Top="620.64" Border.Color="Silver">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="TextFooter2"/>
+      <inherited Name="TextFooter3" Font="Arial, 7pt"/>
+      <inherited Name="TextFooter4" Font="Arial, 7pt"/>
+    </inherited>
+    <OverlayBand Name="Overlay1" ZOrder="-1" Top="695.75" Width="718.2" Height="1122.66" BeforePrintEvent="Overlay1_BeforePrint">
+      <TextObject Name="TextOverlay" Left="21.37" Top="176.6" Width="675.45" Height="769.45" Text="[IIf([DocumentFinanceMaster.DocumentStatusStatus] == &quot;A&quot;,Res(&quot;global_documentfinance_canceled_document&quot;),&quot;&quot;)]" HorzAlign="Center" VertAlign="Center" Angle="-45" Font="Arial, 75pt" TextFill.Color="Gainsboro"/>
+    </OverlayBand>
+  </inherited>
+  <ReportPage Name="ReportPageReportDocumentFinance" ZOrder="1">
+    <DataBand Name="DataBandReportDocumentFinance" Top="22.9" Width="345" Height="18.9" DataSource="DocumentFinanceMasterTotal">
+      <TextObject Name="TextTotalDesignationValue" Width="78.95" Height="18.9" Text="[DocumentFinanceMaster.DocumentFinanceMasterTotal.Designation]" Padding="2, 2, 2, 2" Format="Currency" Format.UseLocale="true" HorzAlign="Left" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+      <TextObject Name="TextTotalTaxValue" Left="78.95" Width="56.7" Height="18.9" Text="[DocumentFinanceMaster.DocumentFinanceMasterTotal.Value]%" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="true" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+      <TextObject Name="TextTotalTaxBaseValue" Left="135.65" Width="110.05" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.DocumentFinanceMasterTotal.TotalBase])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="true" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+      <TextObject Name="TextTotalTaxAcronymValue" Left="245.7" Width="100.05" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.DocumentFinanceMasterTotal.Total])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="true" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+      <DataHeaderBand Name="DataHeaderReportDocumentFinance" Width="345" Height="18.9">
+        <TextObject Name="LabelTotalDesignation" Width="78.95" Height="18.9" Border.Lines="All" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_designation&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Center" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+        <TextObject Name="LabelTotalTaxValue" Left="78.95" Width="56.7" Height="18.9" Border.Lines="All" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_tax&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Center" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+        <TextObject Name="LabelTotalTaxBase" Left="135.65" Width="110.05" Height="18.9" Border.Lines="All" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_total_tax_base&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+        <TextObject Name="LabelTotalTaxAcronym" Left="245.7" Width="100.05" Height="18.9" Border.Lines="All" Border.Color="Silver" Fill.Color="Gainsboro" Text="[Res(&quot;global_documentfinance_totaltax_acronym&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Trimming="EllipsisCharacter" Wysiwyg="true"/>
+      </DataHeaderBand>
+    </DataBand>
+  </ReportPage>
+</inherited>

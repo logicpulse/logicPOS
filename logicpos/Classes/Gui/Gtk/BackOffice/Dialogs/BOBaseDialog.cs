@@ -113,8 +113,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
             String tmpFileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
             String tmpFileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-            System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
-            System.Drawing.Size sizeBaseDialogActionAreaButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
+            System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);  
+            System.Drawing.Size sizeBaseDialogActionAreaButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]); 
             System.Drawing.Color colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"]);
             System.Drawing.Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
 
@@ -126,8 +126,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 sizeBaseDialogActionAreaButtonIcon.Height -= 10;
             };
 
-            TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, Resx.global_button_label_ok, fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, tmpFileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, Resx.global_button_label_cancel, fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, tmpFileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, tmpFileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, tmpFileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
 
             //If DialogMode in View Mode, dont Show Ok Button
             if (_dialogMode != DialogMode.View)
@@ -164,12 +164,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Remove ShadowType and Border
             //entryMultiline.ScrolledWindow.ShadowType = ShadowType.None;
             entryMultiline.ScrolledWindow.BorderWidth = 0;
-            Label labelMultiline = new Label(Resx.global_notes);
+            Label labelMultiline = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"));
             vbox.PackStart(entryMultiline, true, true, 0);
             _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryMultiline, labelMultiline, DataSourceRow, "Notes", SettingsApp.RegexAlfaNumericExtended, false));
 
             //Append Tab
-            _notebook.AppendPage(vbox, new Label(Resx.global_notes));
+            _notebook.AppendPage(vbox, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes")));
         }
 
         protected override void OnResponse(ResponseType pResponse)
@@ -184,7 +184,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //UpdatedBy
             VBox vboxUpdatedBy = new VBox(true, 0);
-            Label labelUpdatedBy = new Label(Resx.global_record_user_update);
+            Label labelUpdatedBy = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_user_update"));
             Label labelUpdatedByValue = new Label(string.Empty);
             labelUpdatedBy.SetAlignment(0.0F, 0.5F);
             labelUpdatedByValue.SetAlignment(0.0F, 0.5F);
@@ -195,7 +195,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //CreatedAt
             VBox vboxCreatedAt = new VBox(true, 0);
-            Label labelCreatedAt = new Label(Resx.global_record_date_created);
+            Label labelCreatedAt = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_created"));
             Label labelCreatedAtValue = new Label(string.Empty);
             //labelCreatedAt.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
             //labelCreatedAtValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
@@ -206,7 +206,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //UpdatedAt
             VBox vboxUpdatedAt = new VBox(true, 0);
-            Label labelUpdatedAt = new Label(Resx.global_record_date_updated);
+            Label labelUpdatedAt = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated_for_base_dialog"));
             Label labelUpdatedAtValue = new Label(string.Empty);
             //labelUpdatedAt.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
             //labelUpdatedAtValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));

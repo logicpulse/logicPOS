@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_ConfigurationPoleDisplay : XPGuidObject
+    public class sys_configurationpoledisplay : XPGuidObject
     {
-        public SYS_ConfigurationPoleDisplay() : base() { }
-        public SYS_ConfigurationPoleDisplay(Session session) : base(session) { }
+        public sys_configurationpoledisplay() : base() { }
+        public sys_configurationpoledisplay(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPoleDisplay), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(SYS_ConfigurationPoleDisplay), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Code");
             VID = "0x0000";
             PID = "0x0000";
             EndPoint = "Ep01";
@@ -101,10 +101,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationHardwarePoleDisplay One <> Many CConfigurationPlaceTerminal
-        [Association(@"ConfigurationHardwarePoleDisplayReferencesConfigurationPlaceTerminal", typeof(POS_ConfigurationPlaceTerminal))]
-        public XPCollection<POS_ConfigurationPlaceTerminal> Terminals
+        [Association(@"ConfigurationHardwarePoleDisplayReferencesConfigurationPlaceTerminal", typeof(pos_configurationplaceterminal))]
+        public XPCollection<pos_configurationplaceterminal> Terminals
         {
-            get { return GetCollection<POS_ConfigurationPlaceTerminal>("Terminals"); }
+            get { return GetCollection<pos_configurationplaceterminal>("Terminals"); }
         }
     }
 }

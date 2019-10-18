@@ -2,7 +2,6 @@
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.shared;
 using logicpos.datalayer.Enums;
 using logicpos.shared.Classes.Orders;
 using System;

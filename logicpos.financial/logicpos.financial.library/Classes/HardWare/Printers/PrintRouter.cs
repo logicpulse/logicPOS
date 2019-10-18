@@ -10,6 +10,8 @@ using logicpos.shared.Enums;
 using logicpos.shared.Enums.ThermalPrinter;
 using System;
 using System.Collections.Generic;
+using logicpos.shared.Classes.Utils;
+
 
 namespace logicpos.financial.library.Classes.Hardware.Printers
 {
@@ -38,30 +40,30 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
         //System Print Helper Method
 
         //OverLoads DocumentFinanceMaster
-        private static bool SystemPrintInsert(FIN_DocumentFinanceMaster pDocumentFinanceMaster, string PrinterDesignation)
+        private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string PrinterDesignation)
         {
             List<int> copyNames = CustomReport.CopyNames(pDocumentFinanceMaster.DocumentType.PrintCopies);
             return SystemPrintInsert(pDocumentFinanceMaster, null, PrinterDesignation, 1, copyNames, false, String.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
         }
 
-        private static bool SystemPrintInsert(FIN_DocumentFinanceMaster pDocumentFinanceMaster, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive)
+        private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive)
         {
             return SystemPrintInsert(pDocumentFinanceMaster, null, pPrinterDesignation, pPrintCopies, pCopyNames, pSecondPrint, pPrintMotive, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
         }
 
         //OverLoads DocumentFinancePayment
-        private static bool SystemPrintInsert(FIN_DocumentFinancePayment pDocumentFinancePayment, string PrinterDesignation)
+        private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string PrinterDesignation)
         {
             List<int> copyNames = CustomReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
             return SystemPrintInsert(null, pDocumentFinancePayment, PrinterDesignation, 1, copyNames, false, String.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
         }
 
-        private static bool SystemPrintInsert(FIN_DocumentFinancePayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames)
+        private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames)
         {
             return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, String.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
         }
 
-        private static bool SystemPrintInsert(FIN_DocumentFinanceMaster pDocumentFinanceMaster, FIN_DocumentFinancePayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive, SYS_UserDetail pUserDetail, POS_ConfigurationPlaceTerminal pConfigurationPlaceTerminal)
+        private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive, sys_userdetail pUserDetail, pos_configurationplaceterminal pConfigurationPlaceTerminal)
         {
             bool result = false;
 
@@ -72,14 +74,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 {
                     string designation = String.Empty;
                     //Get Objects into Current UOW Session
-                    SYS_UserDetail userDetail = (SYS_UserDetail)FrameworkUtils.GetXPGuidObject(uowSession, typeof(SYS_UserDetail), pUserDetail.Oid);
-                    POS_ConfigurationPlaceTerminal configurationPlaceTerminal = (POS_ConfigurationPlaceTerminal)FrameworkUtils.GetXPGuidObject(uowSession, typeof(POS_ConfigurationPlaceTerminal), pConfigurationPlaceTerminal.Oid);
+                    sys_userdetail userDetail = (sys_userdetail)FrameworkUtils.GetXPGuidObject(uowSession, typeof(sys_userdetail), pUserDetail.Oid);
+                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
 
                     //Convert CopyNames List to Comma Delimited String
                     string copyNamesCommaDelimited = CustomReport.CopyNamesCommaDelimited(pCopyNames);
 
                     //SystemPrint
-                    SYS_SystemPrint systemPrint = new SYS_SystemPrint(uowSession)
+                    sys_systemprint systemPrint = new sys_systemprint(uowSession)
                     {
                         Date = FrameworkUtils.CurrentDateTimeAtomic(),
                         Designation = designation,
@@ -94,18 +96,18 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     //Mode: DocumentFinanceMaster
                     if (pDocumentFinanceMaster != null)
                     {
-                        FIN_DocumentFinanceMaster documentFinanceMaster = (FIN_DocumentFinanceMaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_DocumentFinanceMaster), pDocumentFinanceMaster.Oid);
+                        fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
                         systemPrint.DocumentMaster = documentFinanceMaster;
-                        designation = string.Format("{0} {1} : {2}", Resx.global_printed, documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
+                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                         //Update DocumentFinanceMaster
                         if (!documentFinanceMaster.Printed) documentFinanceMaster.Printed = true;
                     }
                     //Mode: DocumentFinancePayment
                     if (pDocumentFinancePayment != null)
                     {
-                        FIN_DocumentFinancePayment documentFinancePayment = (FIN_DocumentFinancePayment)FrameworkUtils.GetXPGuidObject(uowSession, typeof(FIN_DocumentFinancePayment), pDocumentFinancePayment.Oid);
+                        fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
                         systemPrint.DocumentPayment = documentFinancePayment;
-                        designation = string.Format("{0} {1} : {2}", Resx.global_printed, documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                     }
                     systemPrint.Designation = designation;
 
@@ -133,7 +135,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-        public static bool PrintFinanceDocument(SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinanceMaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
+        public static bool PrintFinanceDocument(sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
         {
             bool result = false;
 
@@ -188,12 +190,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Quick function to get Printer and Template and Send to Base PrintFinanceDocument, and Open Drawer if Has a Valid Payment Method
 
-        public static bool PrintFinanceDocument(FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(fin_documentfinancemaster pDocumentFinanceMaster)
         {
             return PrintFinanceDocument(GlobalFramework.SessionXpo, pDocumentFinanceMaster);
         }
 
-        public static bool PrintFinanceDocument(Session pSession, FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             List<int> printCopies = new List<int>();
             for (int i = 0; i < pDocumentFinanceMaster.DocumentType.PrintCopies; i++)
@@ -204,14 +206,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             return PrintFinanceDocument(pSession, pDocumentFinanceMaster, printCopies, false, String.Empty);
         }
 
-        public static bool PrintFinanceDocument(Session pSession, FIN_DocumentFinanceMaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
+        public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
         {
             bool result = false;
 
             try
             {
                 //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
-                FIN_DocumentFinanceYearSerieTerminal xDocumentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
+                fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
                 PrintFinanceDocument(GlobalFramework.LoggedTerminal.Printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
 
                 //Open Door if Has Valid Payment
@@ -231,7 +233,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-        public static bool PrintFinanceDocumentPayment(SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinancePayment pDocumentFinancePayment)
+        public static bool PrintFinanceDocumentPayment(sys_configurationprinters pPrinter, fin_documentfinancepayment pDocumentFinancePayment)
         {
             bool result = false;
 
@@ -284,7 +286,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-        public static bool PrintWorkSessionMovement(SYS_ConfigurationPrinters pPrinter, POS_WorkSessionPeriod pWorkSessionPeriod)
+        public static bool PrintWorkSessionMovement(sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
 
@@ -306,8 +308,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             ThermalPrinterInternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.NonCurrentAcount);
                             thermalPrinterInternalDocumentWorkSession.Print();
                             //CurrentAcount
-                            thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
-                            thermalPrinterInternalDocumentWorkSession.Print();
+                            //Use Config to print this
+                            if(Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_CC_DAILY_TICKET"]))
+                            {
+                                thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
+                                thermalPrinterInternalDocumentWorkSession.Print();
+                            }                            
                             break;
                         case "GENERIC_PRINTER_WINDOWS":
                             break;
@@ -327,15 +333,15 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-        public static bool PrintArticleRequest(FIN_DocumentOrderTicket pOrderTicket)
+        public static bool PrintArticleRequest(fin_documentorderticket pOrderTicket)
         {
             bool result = false;
 
             try
             {
                 //Initialize printerArticleQueue to Store Articles > Printer Queue
-                List<SYS_ConfigurationPrinters> printerArticles = new List<SYS_ConfigurationPrinters>();
-                foreach (FIN_DocumentOrderDetail item in pOrderTicket.OrderDetail)
+                List<sys_configurationprinters> printerArticles = new List<sys_configurationprinters>();
+                foreach (fin_documentorderdetail item in pOrderTicket.OrderDetail)
                 {
                     if (item.Article.Printer != null && item.Article.Printer.PrinterType.ThermalPrinter)
                     {
@@ -347,7 +353,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 //Print Tickets for Article Printers
                 if (printerArticles.Count > 0)
                 {
-                    foreach (SYS_ConfigurationPrinters item in printerArticles)
+                    foreach (sys_configurationprinters item in printerArticles)
                     {
                         ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(item, pOrderTicket, true);
                         thermalPrinterInternalDocumentOrderRequest.Print();
@@ -367,7 +373,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Used for Money Movements and Open/Close Terminal/Day Sessions
 
-        public static bool PrintCashDrawerOpenAndMoneyInOut(SYS_ConfigurationPrinters pPrinter, String pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
+        public static bool PrintCashDrawerOpenAndMoneyInOut(sys_configurationprinters pPrinter, String pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {
             bool result = false;
 
@@ -402,7 +408,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-        public static bool OpenDoor(SYS_ConfigurationPrinters pPrinter)
+        public static bool OpenDoor(sys_configurationprinters pPrinter)
         {
             bool result = false;
             bool hasPermission = FrameworkUtils.HasPermissionTo("HARDWARE_DRAWER_OPEN");
@@ -427,12 +433,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             //int t1 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT1"]);
                             //int t2 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT2"]);
                             // Open Drawer
-                            int m = GlobalFramework.LoggedTerminal.Printer.ThermalOpenDrawerValueM;
-                            int t1 = GlobalFramework.LoggedTerminal.Printer.ThermalOpenDrawerValueT1;
-                            int t2 = GlobalFramework.LoggedTerminal.Printer.ThermalOpenDrawerValueT2;
+							//TK016249 - Impressoras - Diferenciação entre Tipos
+                            int m = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
+                            int t1 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
+                            int t2 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
                             printObjectSINOCAN.OpenDoor(pPrinter.PrinterType.Token, pPrinter.NetworkName, m, t1, t2);
                             //Audit
-                            FrameworkUtils.Audit("CASHDRAWER_OPEN", Resx.audit_message_cashdrawer_open);
+                            FrameworkUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
 
                             break;
                     }

@@ -11,11 +11,11 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Print(SYS_ConfigurationPrinters pPrinter)
+        public static void Print(sys_configurationprinters pPrinter)
         {
             try
             {
-                FIN_DocumentOrderTicket orderTicket = (FIN_DocumentOrderTicket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(FIN_DocumentOrderTicket), SettingsApp.XpoPrintDocumentOrderTicket);
+                fin_documentorderticket orderTicket = (fin_documentorderticket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), SettingsApp.XpoPrintDocumentOrderTicket);
 
                 //Print Document
                 if (orderTicket != null)
@@ -39,11 +39,11 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
             }
         }
 
-        private static void PrintArticlePrinters(FIN_DocumentOrderTicket pOrderTicket)
+        private static void PrintArticlePrinters(fin_documentorderticket pOrderTicket)
         {
             //Initialize printerArticleQueue to Store Articles > Printer Queue
-            List<SYS_ConfigurationPrinters> printerArticles = new List<SYS_ConfigurationPrinters>();
-            foreach (FIN_DocumentOrderDetail item in pOrderTicket.OrderDetail)
+            List<sys_configurationprinters> printerArticles = new List<sys_configurationprinters>();
+            foreach (fin_documentorderdetail item in pOrderTicket.OrderDetail)
             {
                 if (item.Article.Printer != null && item.Article.Printer.PrinterType.ThermalPrinter)
                 {
@@ -54,7 +54,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
             //Print Tickets for Article Printers
             if (printerArticles.Count > 0)
             {
-                foreach (SYS_ConfigurationPrinters item in printerArticles)
+                foreach (sys_configurationprinters item in printerArticles)
                 {
                     ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(item, pOrderTicket, true);
                     thermalPrinterInternalDocumentOrderRequest.Print();

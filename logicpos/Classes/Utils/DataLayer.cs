@@ -3,7 +3,6 @@ using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
 using logicpos.datalayer.Enums;
-using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,9 +42,13 @@ namespace logicpos
             Dictionary<string, string> replace = GetReplaceables(pDatabaseType);
 
             string sqlDatabaseSchema = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchema, databaseTypeString));
-            string sqlDatabaseOtherDatabaseType = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString));
+            string sqlDatabaseSchemaLinux = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchemaLinux, databaseTypeString));
+            string sqlDatabaseUpdate = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseUpdate, databaseTypeString));
+            string sqlDatabaseUpdateLinux = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseUpdateLinux, databaseTypeString));
+            //string sqlDatabaseOtherDatabaseType = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString)); /* IN009045: Not in use */
             string sqlDatabaseOtherCommon = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommon);
-            string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), GlobalFramework.Settings["appOperationModeToken"].ToLower());
+            /* IN008024 and after IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
+            // string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), SettingsApp.CustomAppOperationMode.AppOperationTheme.ToLower());
             string sqlDatabaseOtherCommonPluginsSoftwareVendor = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
             string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
             string sqlDatabaseData = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseData);
@@ -53,11 +56,20 @@ namespace logicpos
             string sqlDatabaseViews = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseViews);
             bool useDatabaseDataDemo = Convert.ToBoolean(GlobalFramework.Settings["useDatabaseDataDemo"]);
 
+            string version = FrameworkUtils.ProductVersion.Replace("v", "");
+            //string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            string osVersion = FrameworkUtils.OSVersion();
             switch (databaseType)
             {
                 case DatabaseType.SQLite:
                 case DatabaseType.MonoLite:
                     //connectionstring = string.Format(GlobalFramework.Settings["xpoConnectionString"], databaseName);
+                    commands.Add("check_version", string.Format(@"SELECT name FROM sqlite_master WHERE type='table' AND name='sys_databaseversion';"));
+                    commands.Add("create_version", string.Format(@"CREATE TABLE [sys_databaseversion] ([Version] [varchar](20)); INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
+                    commands.Add("select_version", string.Format(@"SELECT version FROM sys_databaseversion;"));
+                    commands.Add("insert_version", string.Format(@"INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
+                    commands.Add("update_version", string.Format(@"UPDATE sys_databaseversion SET version = '{0}';", version));
                     break;
                 case DatabaseType.MSSqlServer:
                     //Required to Remove DataBase Name From Connection String
@@ -66,6 +78,12 @@ namespace logicpos
                     commands.Add("create_database", string.Format(@"IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = '{0}') CREATE DATABASE {0};", databaseName));
                     commands.Add("use_database", string.Format(@"USE {0};", databaseName));
                     commands.Add("drop_database", string.Format(@"USE master; IF EXISTS(SELECT name FROM sys.databases WHERE name = '{0}') DROP DATABASE {0};", databaseName));
+
+                    commands.Add("check_version", string.Format(@"USE {0}; SELECT name FROM sys.objects WHERE object_id = OBJECT_ID(N'[sys_databaseversion]') AND type in (N'U');", databaseName));
+                    commands.Add("create_version", string.Format(@"USE {0}; CREATE TABLE [sys_databaseversion] ([Version] [varchar](20) NOT NULL) ON [PRIMARY]; INSERT INTO sys_databaseversion (version) VALUES ('{1}');", databaseName, version));
+                    commands.Add("select_version", string.Format(@"USE {0}; SELECT version FROM sys_databaseversion;", databaseName));
+                    commands.Add("insert_version", string.Format(@"USE {0}; INSERT INTO sys_databaseversion (version) VALUES ('{1}');", databaseName, version));
+                    commands.Add("update_version", string.Format(@"USE {0}; UPDATE sys_databaseversion SET version = '{1}';", databaseName, version));
                     //ByPass Default commandSeparator ;
                     commandSeparator = "GO";
                     break;
@@ -76,6 +94,12 @@ namespace logicpos
                     commands.Add("create_database", string.Format(@"CREATE DATABASE IF NOT EXISTS {0} CHARACTER SET utf8 COLLATE utf8_bin /*!40100 DEFAULT CHARACTER SET utf8*/;", databaseName));
                     commands.Add("use_database", string.Format(@"USE {0};", databaseName));
                     commands.Add("drop_database", string.Format(@"DROP DATABASE IF EXISTS {0};", databaseName));
+
+                    commands.Add("check_version", string.Format(@"USE {0}; SELECT table_name FROM information_schema.tables WHERE table_name = 'sys_databaseversion' LIMIT 1;", databaseName));
+                    commands.Add("create_version", string.Format(@"USE {0}; CREATE TABLE sys_databaseversion (Version varchar(10) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8; INSERT INTO sys_databaseversion (Version) VALUES ('{1}');", databaseName, version));
+                    commands.Add("select_version", string.Format(@"USE {0}; SELECT version FROM sys_databaseversion;", databaseName));
+                    commands.Add("insert_version", string.Format(@"USE {0}; INSERT INTO sys_databaseversion (Version) VALUES ('{1}');", databaseName, version));
+                    commands.Add("update_version", string.Format(@"USE {0}; UPDATE sys_databaseversion SET Version = '{1}' WHERE Version = 'OLD_VERSION';", databaseName, version));
                     break;
             }
 
@@ -115,6 +139,8 @@ namespace logicpos
                         log.Debug(string.Format("DatabaseExists:[{0}] [{1}]", databaseName, databaseExists));
                         break;
                 }
+                //FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(CurrentAppFileName);
+                //CurrentAppVersion = fvi.FileVersion;
 
                 //Create Database and Data
                 if (!databaseExists)
@@ -122,17 +148,20 @@ namespace logicpos
                     log.Debug(string.Format("Creating {0} Database: [{1}]", databaseType, databaseName));
 
                     //Always Delete Old appsession.json file when Create new Database
-                    if (File.Exists(Utils.GetSessionFileName())) File.Delete(Utils.GetSessionFileName());
+                    if (File.Exists(Utils.GetSessionFileName()))
+                    {
+                        File.Delete(Utils.GetSessionFileName());
+                    }
 
                     if (pDatabaseType != DatabaseType.SQLite && pDatabaseType != DatabaseType.MonoLite)
                     {
                         sql = commands["create_database"].ToString();
-                        log.Debug(string.Format("ExecuteScalar: [{0}]", sql));
+                        log.Debug(string.Format("ExecuteScalar create_database: [{0}]", sql));
                         resultCmd = xpoSession.ExecuteScalar(sql);
                         log.Debug(string.Format("Create Database resultCmd: [{0}]", resultCmd));
 
                         sql = commands["use_database"].ToString();
-                        log.Debug(string.Format("ExecuteScalar: [{0}]", sql));
+                        log.Debug(string.Format("ExecuteScalar use_database: [{0}]", sql));
                         resultCmd = xpoSession.ExecuteScalar(sql);
                         log.Debug(string.Format("Use Database resultCmd: [{0}]", resultCmd));
                     }
@@ -163,14 +192,15 @@ namespace logicpos
                     }
                     //Directory Scripts
                     //Process Other Files: DatabaseOtherDatabaseType
-                    if (result)
+                    /* IN009045: not in use */
+                    /*if (result)
                     {
-                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherDatabaseType, commandSeparator, replace);
-                    }
+                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherDatabaseType, ";", replace);//commandSeparator
+                    }*/
                     //Process Other Files: DatabaseOtherCommon
                     if (result)
                     {
-                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommon, commandSeparator, replace);
+                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommon, ";", replace); /* IN009045 */
                     }
                     ////Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
                     //if (result)
@@ -178,10 +208,11 @@ namespace logicpos
                     //    result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, commandSeparator, replace);
                     //}
                     //Process Other Files: DatabaseOtherCommonAppMode
-                    if (result)
+                    /* IN009045 and IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
+                    /*if (result)
                     {
-                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonAppMode, commandSeparator, replace);
-                    }
+                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonAppMode, ";", replace);
+                    }*/
 
                     //Clean ConfigurationPreferenceParameter
                     string sqlConfigurationPreferenceParameter = @"UPDATE cfg_configurationpreferenceparameter SET Value = NULL WHERE (Token = 'COMPANY_COUNTRY' OR Token = 'COMPANY_COUNTRY_CODE2' OR Token = 'SYSTEM_CURRENCY' OR Token = 'COMPANY_COUNTRY_OID' OR Token = 'SYSTEM_CURRENCY_OID')";
@@ -194,9 +225,125 @@ namespace logicpos
                         sqlConfigurationPreferenceParameter = string.Format("{0} {1}", sqlConfigurationPreferenceParameter, "OR (FormPageNo = 1 AND FormType = 1 AND Token <> 'COMPANY_TAX_ENTITY')");
                         xpoSession.ExecuteScalar(sqlConfigurationPreferenceParameter);
                     }
+
+                    sql = commands["check_version"].ToString();
+                    log.Debug(string.Format("ExecuteScalar check_version: [{0}]", sql));
+                    resultCmd = xpoSession.ExecuteScalar(sql);
+                    log.Debug(string.Format("check_version resultCmd: [{0}]", resultCmd));
+
+                    //Se cria tabela database_version, faz update
+                    if (resultCmd == null)
+                    {
+                        sql = commands["create_version"].ToString();
+                        log.Debug(string.Format("ExecuteScalar create_version: [{0}]", sql));
+                        resultCmd = xpoSession.ExecuteScalar(sql);
+                        log.Debug(string.Format("create_version resultCmd: [{0}]", resultCmd));
+
+                        if (osVersion == "unix")
+                        {
+                            result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
+                        }
+                        else
+                        {
+                            result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
+                        }
+
+                        if (result)
+                        {
+                            sql = commands["update_version"].ToString().Replace("OLD_VERSION", resultCmd.ToString());
+                            log.Debug(string.Format("ExecuteScalar update_version: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteScalar(sql);
+                            log.Debug(string.Format("update_version resultCmd: [{0}]", resultCmd));
+                        }
+                    }
+
+                    else
+                    {
+                        sql = commands["insert_version"].ToString();
+                        log.Debug(string.Format("ExecuteScalar insert_version: [{0}]", sql));
+                        resultCmd = xpoSession.ExecuteScalar(sql);
+                        log.Debug(string.Format("insert_version resultCmd: [{0}]", resultCmd));
+                    }
                 }
                 else
                 {
+                    sql = commands["check_version"].ToString();
+                    log.Debug(string.Format("ExecuteScalar check_version: [{0}]", sql));
+                    resultCmd = xpoSession.ExecuteScalar(sql);
+                    log.Debug(string.Format("check_version resultCmd: [{0}]", resultCmd));
+
+                    if (resultCmd == null)
+                    {
+                        sql = commands["create_version"].ToString();
+                        log.Debug(string.Format("ExecuteScalar create_version: [{0}]", sql));
+                        resultCmd = xpoSession.ExecuteQuery(sql);
+                        log.Debug(string.Format("create_version resultCmd: [{0}]", resultCmd));
+
+                        if (osVersion == "unix")
+                        {
+                            result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
+                        }
+                        else
+                        {
+                            result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
+                        }
+
+                        if (result)
+                        {
+                            sql = commands["update_version"].ToString().Replace("OLD_VERSION", resultCmd.ToString());
+                            log.Debug(string.Format("ExecuteScalar update_version: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteScalar(sql);
+                            log.Debug(string.Format("update_version resultCmd: [{0}]", resultCmd));
+                        }
+                    }
+                    else
+                    {
+                        sql = commands["select_version"].ToString();
+                        log.Debug(string.Format("ExecuteScalar select_version: [{0}]", sql));
+                        resultCmd = xpoSession.ExecuteScalar(sql);
+                        log.Debug(string.Format("select_version resultCmd: [{0}]", resultCmd));
+
+                        bool needToUpdate = false;
+                        try
+                        {
+                            string[] tmpNew = version.Split('.');
+                            long tmpNewVer = int.Parse(tmpNew[0]) * 10000000 + int.Parse(tmpNew[1]) * 10000 + int.Parse(tmpNew[2]);
+
+                            string[] tmpOld = resultCmd.ToString().Split('.');
+                            long tmpOldVer = int.Parse(tmpOld[0]) * 10000000 + int.Parse(tmpOld[1]) * 10000 + int.Parse(tmpOld[2]);
+
+                            if (tmpNewVer > tmpOldVer)
+                            {
+                                needToUpdate = true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            log.Error(ex.Message, ex);
+                        }
+
+                        if (needToUpdate || osVersion == "unix")
+                        {      //update                           
+
+                            if (osVersion == "unix")
+                            {
+                                result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
+                            }
+                            else
+                            {
+                                result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
+                            }
+
+                            if (result)
+                            {
+                                sql = commands["update_version"].ToString().Replace("OLD_VERSION", resultCmd.ToString());
+                                log.Debug(string.Format("ExecuteScalar update_version: [{0}]", sql));
+                                resultCmd = xpoSession.ExecuteScalar(sql);
+                                log.Debug(string.Format("update_version resultCmd: [{0}]", resultCmd));
+                            }
+                        }
+                    }
+
                     log.Debug(string.Format("{0} Database: [{1}] Already Exist! Skip Creating Database", databaseType, databaseName));
                     result = false;
                     return false;
@@ -213,9 +360,9 @@ namespace logicpos
             {
                 //Drop Database 
                 sql = commands["drop_database"].ToString();
-                log.Debug(string.Format("ExecuteScalar: [{0}]", sql));
+                log.Debug(string.Format("ExecuteScalar drop_database: [{0}]", sql));
                 resultCmd = xpoSession.ExecuteScalar(sql);
-                log.Debug(string.Format("Create Database resultCmd: [{0}]", resultCmd));
+                log.Debug(string.Format("drop_database resultCmd: [{0}]", resultCmd));
             }
 
             return result;
@@ -262,6 +409,11 @@ namespace logicpos
                 switch (pDataBaseType)
                 {
                     case DatabaseType.MySql:
+                        /* IN009024 */
+                        result.Add(@"\w", @"\\w");
+                        result.Add(@"\d", @"\\d");
+                        //result.Add(@"GETDATE()", @"'2018-10-01 23:16:18'");
+                        //result.Add(@"\s", @"\\s");
                         break;
                     case DatabaseType.MonoLite:
                     case DatabaseType.SQLite:
@@ -271,10 +423,14 @@ namespace logicpos
                         //result.Add("dt.Table", "dt.[Table]");
                         result.Add(@"\\", @"\");
                         result.Add("\\n", "' || CHAR(13) || '");
-                        // view_articlestockmovement
+                        //view_articlestockmovement
                         result.Add("DATE_FORMAT(stk.Date, '%Y-%m-%d') AS stkDateDay,", "strftime('%Y-%m-%d', stk.Date) AS stkDateDay,");
-                        // view_systemaudit
+                        //view_systemaudit
                         result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "strftime('%Y-%m-%d', sau.Date) AS sauDateDay,");
+                        //view_systemaudit
+                        result.Add("DATE_FORMAT(dmDateStart, '%Y-%m-%d') AS DateDay,", "strftime('%Y-%m-%d', dmDateStart) AS DateDay,");
+                        //view_usercommission
+                        result.Add("DATE_FORMAT(fmDate, '%Y-%m-%d') AS DateDay,", "strftime('%Y-%m-%d', fmDate) AS DateDay,");
                         break;
                     case DatabaseType.MSSqlServer:
                         //Replace content
@@ -290,6 +446,10 @@ namespace logicpos
                         //result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "FORMAT(sau.Date, 'yyyy-MM-dd', 'en-us') AS sauDateDay,");
                         // Lower SQLServer2008
                         result.Add("DATE_FORMAT(sau.Date, '%Y-%m-%d') AS sauDateDay,", "CONVERT(VARCHAR(19), sau.Date, 23) AS sauDateDay,");
+                        //view_documentfinance
+                        result.Add("DATE_FORMAT(dmDateStart, '%Y-%m-%d') AS DateDay,", "CONVERT(VARCHAR(19), dmDateStart, 23) AS DateDay,");
+                        //view_usercommission
+                        result.Add("DATE_FORMAT(fmDate, '%Y-%m-%d') AS DateDay,", "CONVERT(VARCHAR(19), fmDate, 23) AS DateDay,");
                         //ByPass Default commandSeparator ;
                         commandSeparator = "GO";
                         break;
@@ -316,7 +476,7 @@ namespace logicpos
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-            log.Debug(string.Format("ProcessDump Filename: [{0}]", pFilename));
+            log.Debug(string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: ProcessDump Filename: [{0}]", pFilename));
 
             if (File.Exists(pFilename))
             {
@@ -371,9 +531,12 @@ namespace logicpos
                         }
                         catch (Exception ex)
                         {
-                            string errorMessage = string.Format("Error executing Sql Command:[{0}]{1}Exception:[{2}]", executeCommand, Environment.NewLine, ex.Message);
-                            Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, Resx.global_error, errorMessage);
+                            /* IN009021 */
+                            //pXpoSession.RollbackTransaction();
+
+                            string errorMessage = string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: Error executing Sql Command: [{0}]{1}Exception: [{2}]", executeCommand, Environment.NewLine, ex.Message);
                             log.Error(string.Format("{0} : {1}", errorMessage, ex.Message), ex);
+                            Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
 
                             return false;
                         };
@@ -439,6 +602,197 @@ namespace logicpos
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Creates the SQL query for when retrieving linked documents.
+        /// The parameter defines financial documents or payment documents.
+        /// </summary>
+        /// <param name="isPaymentDoc"></param>
+        /// <returns></returns>
+        public static string GenerateRelatedDocumentsQuery(bool isPaymentDoc = false)
+        {
+            string relatedDocumentsQuery = string.Empty;
+
+            switch (GlobalFramework.DatabaseType)
+            {
+                case datalayer.Enums.DatabaseType.MySql:
+                case datalayer.Enums.DatabaseType.SQLite:
+                case datalayer.Enums.DatabaseType.MonoLite:
+                    if (isPaymentDoc)
+                    {
+                        relatedDocumentsQuery = @"
+SELECT 
+    GROUP_CONCAT(DISTINCT DocFinMaster.DocumentNumber) AS ResultConcat
+FROM 
+	fin_documentfinancemasterpayment AS DocFinMasterPay
+LEFT JOIN 
+	fin_documentfinancemaster AS DocFinMaster 
+        ON (DocFinMasterPay.DocumentFinanceMaster = DocFinMaster.Oid)
+WHERE
+    DocFinMasterPay.DocumentFinancePayment = '{0}'
+GROUP BY
+    DocFinMasterPay.DocumentFinancePayment;
+";
+                    }
+                    else
+                    {
+                        /*  
+                         SELECT 
+    GROUP_CONCAT(DISTINCT DocumentNumber) AS ResultConcat
+FROM
+    view_documentfinancerelateddocumentlist
+WHERE 
+    DocumentParent = '{0}'
+    OR
+        DocumentChild = '{0}'
+GROUP BY
+    DocumentParent, DocumentChild
+ORDER BY
+    Date ASC;
+                         
+                         */
+                        /* IN009157 */
+                        relatedDocumentsQuery = @"
+SELECT 
+    GROUP_CONCAT(DISTINCT RelatedDocument.DocumentNumber) AS ResultConcat
+FROM(
+	SELECT
+		DocFinMaster.DocumentNumber AS DocumentNumber,
+		DocFinMaster.Date AS Date,
+		DocFinMaster.DocumentParent AS DocumentParent,
+		DocFinMaster.DocumentChild AS DocumentChild
+	FROM
+		fin_documentfinancemaster AS DocFinMaster
+	WHERE
+		DocFinMaster.DocumentStatusStatus <> 'A'
+		AND (
+			DocFinMaster.DocumentParent = '{0}'
+			OR
+				DocFinMaster.DocumentChild = '{0}'
+				OR 
+					DocFinMaster.Oid IN (
+						SELECT 
+							(SELECT B.Oid FROM fin_documentfinancemaster B WHERE B.Oid =  A.DocumentParent) AS DocumentParent
+						FROM 
+							fin_documentfinancemaster AS A
+						WHERE
+							A.Oid = '{0}'
+					)
+		)
+	UNION
+	SELECT
+		DocFinPay.PaymentRefNo AS DocumentNumber,
+		DocFinPay.DocumentDate AS Date,
+		DocFinMasterPay.DocumentFinanceMaster AS DocumentParent,
+		NULL AS DocumentChild
+	FROM
+		fin_documentfinancepayment AS DocFinPay
+	LEFT JOIN fin_documentfinancemasterpayment DocFinMasterPay ON (DocFinPay.Oid = DocFinMasterPay.DocumentFinancePayment)
+	WHERE
+		DocFinPay.PaymentStatus <> 'A'
+		AND
+			DocFinMasterPay.DocumentFinanceMaster = '{0}'
+) AS RelatedDocument;
+";
+                    }
+                    break;
+                case datalayer.Enums.DatabaseType.MSSqlServer:
+                    if (isPaymentDoc)
+                    {
+                        relatedDocumentsQuery = @"
+DECLARE @RelatedToPayDocuments VARCHAR(MAX);
+SELECT
+	@RelatedToPayDocuments = COALESCE(@RelatedToPayDocuments + ', ', '') + DocFinMaster.DocumentNumber
+FROM 
+	fin_documentfinancemasterpayment AS DocFinMasterPay
+LEFT JOIN 
+	fin_documentfinancemaster AS DocFinMaster 
+        ON (DocFinMasterPay.DocumentFinanceMaster = DocFinMaster.Oid)
+WHERE
+    DocFinMasterPay.DocumentFinancePayment = '{0}'
+ORDER BY
+	DocFinMaster.Date ASC;
+SELECT 
+    @RelatedToPayDocuments;
+";
+                    }
+                    else
+                    {
+                        /*
+                                                relatedDocumentsQuery = @"
+                        DECLARE @RelatedDocuments VARCHAR(MAX);
+                        SELECT
+                            @RelatedDocuments = COALESCE(@RelatedDocuments + ', ', '') + DocumentNumber
+                        FROM
+                            view_documentfinancerelateddocumentlist
+                        WHERE
+                            DocumentParent = '{0}'
+                            OR
+                                DocumentChild = '{0}'
+                        ORDER BY 
+                            Date ASC;
+                        SELECT 
+                            @RelatedDocuments;";
+                        */
+                        /* IN009157 - removing "view_documentfinancerelateddocumentlist" call and 
+                         * implementing a new flow to retrieve all the children of a parent that has more than 1 child. 
+                         * fin_documentfinancemaster.DocumentChild stores the last child only...
+                         */
+                        relatedDocumentsQuery = @"
+DECLARE @RelatedDocuments VARCHAR(MAX);
+SELECT
+    @RelatedDocuments = COALESCE(@RelatedDocuments + ', ', '') + RelatedDocument.DocumentNumber
+FROM(
+	SELECT
+		DocFinMaster.DocumentNumber AS DocumentNumber,
+		DocFinMaster.Date AS Date,
+		DocFinMaster.DocumentParent AS DocumentParent,
+		DocFinMaster.DocumentChild AS DocumentChild
+	FROM
+		fin_documentfinancemaster AS DocFinMaster
+	WHERE
+		DocFinMaster.DocumentStatusStatus <> 'A'
+		AND (
+			DocFinMaster.DocumentParent = '{0}'
+			OR
+				DocFinMaster.DocumentChild = '{0}'
+				OR 
+					DocFinMaster.Oid IN (
+						SELECT 
+							(SELECT B.Oid FROM fin_documentfinancemaster B WHERE B.Oid =  A.DocumentParent) AS DocumentParent
+						FROM 
+							fin_documentfinancemaster AS A
+						WHERE
+							A.Oid = '{0}'
+					)
+		)
+	UNION
+	SELECT
+		DocFinPay.PaymentRefNo AS DocumentNumber,
+		DocFinPay.DocumentDate AS Date,
+		DocFinMasterPay.DocumentFinanceMaster AS DocumentParent,
+		NULL AS DocumentChild
+	FROM
+		fin_documentfinancepayment AS DocFinPay
+	LEFT JOIN fin_documentfinancemasterpayment DocFinMasterPay ON (DocFinPay.Oid = DocFinMasterPay.DocumentFinancePayment)
+	WHERE
+		DocFinPay.PaymentStatus <> 'A'
+		AND
+			DocFinMasterPay.DocumentFinanceMaster = '{0}'
+) AS RelatedDocument
+
+ORDER BY 
+    RelatedDocument.Date ASC;
+SELECT 
+    @RelatedDocuments;
+";
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return relatedDocumentsQuery;
         }
     }
 }

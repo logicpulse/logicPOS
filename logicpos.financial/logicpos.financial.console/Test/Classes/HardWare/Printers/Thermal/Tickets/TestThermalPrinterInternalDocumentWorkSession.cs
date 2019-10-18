@@ -11,12 +11,12 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Print(SYS_ConfigurationPrinters pPrinter)
+        public static void Print(sys_configurationprinters pPrinter)
         {
             try
             {
                 //Parameters
-                POS_WorkSessionPeriod workSessionPeriod = (POS_WorkSessionPeriod)GlobalFramework.SessionXpo.GetObjectByKey(typeof(POS_WorkSessionPeriod), SettingsApp.XpoPrintWorkSessionPeriod);
+                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_worksessionperiod), SettingsApp.XpoPrintWorkSessionPeriod);
 
                 //Print WorkSession
                 if (workSessionPeriod != null)

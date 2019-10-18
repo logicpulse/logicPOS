@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>logicpos.financial.library</RootNamespace>
     <AssemblyName>LogicposFinancialLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,13 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v14.1, Version=14.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\xpo_14_1_5\DevExpress.Data.v14.1.dll</HintPath>
+    <Reference Include="DevExpress.Data.v18.1, Version=18.1.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DevExpress.Data.18.1.9\lib\net40\DevExpress.Data.v18.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpo.v14.1, Version=14.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\xpo_14_1_5\DevExpress.Xpo.v14.1.dll</HintPath>
+    <Reference Include="DevExpress.Xpo.v18.1, Version=18.1.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DevExpress.Xpo.18.1.9\lib\net40\DevExpress.Xpo.v18.1.dll</HintPath>
     </Reference>
     <Reference Include="FastReport.Mono, Version=2014.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -101,6 +100,8 @@
     <Compile Include="Classes\Reports\BOs\Customers\FRBOCustomer.cs" />
     <Compile Include="Classes\Reports\BOs\Customers\FRBOCustomerType.cs" />
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceCurrentAccount.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceCustomerBalanceDetails.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceCustomerBalanceSummary.cs" />
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceDetail.cs" />
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMaster.cs" />
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterDetailGroupView.cs" />
@@ -134,6 +135,14 @@
     <ProjectReference Include="..\..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.documentviewer\logicpos.documentviewer.source\logicpos.documentviewer.source.csproj">
+      <Project>{1c688b96-9fcc-465a-9347-1f933c703e21}</Project>
+      <Name>logicpos.documentviewer.source</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.documentviewer\logicpos.documentviewer\logicpos.documentviewer.csproj">
+      <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
+      <Name>logicpos.documentviewer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericlinux\logicpos.printer.genericlinux.csproj">
       <Project>{07ef0127-5b26-431d-aa4e-3a9507d86893}</Project>
@@ -171,7 +180,9 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

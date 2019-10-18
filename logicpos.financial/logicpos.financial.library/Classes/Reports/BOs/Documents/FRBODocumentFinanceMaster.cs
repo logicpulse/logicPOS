@@ -74,12 +74,12 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
         public DateTime PayedDate { get; set; }
         public Boolean Printed { get; set; }
         // Navigation Properties
-        public FIN_DocumentOrderMain SourceOrderMain { get; set; }
-        public FIN_DocumentFinanceType DocumentType { get; set; }
-        public FIN_ConfigurationPaymentMethod PaymentMethod { get; set; }
-        public FIN_ConfigurationPaymentCondition PaymentCondition { get; set; }
-        public CFG_ConfigurationCurrency Currency { get; set; }
-        public SYS_UserDetail CreatedBy { get; set; }
-        public POS_ConfigurationPlaceTerminal CreatedWhere { get; set; }
+        public fin_documentordermain SourceOrderMain { get; set; }
+        public fin_documentfinancetype DocumentType { get; set; }
+        public fin_configurationpaymentmethod PaymentMethod { get; set; }
+        public fin_configurationpaymentcondition PaymentCondition { get; set; }
+        public cfg_configurationcurrency Currency { get; set; }
+        public sys_userdetail CreatedBy { get; set; }
+        public pos_configurationplaceterminal CreatedWhere { get; set; }
     }
 }

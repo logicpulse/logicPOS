@@ -29,10 +29,10 @@ namespace logicpos
         //ProcessFinanceDocument
         //Use: DocumentFinanceMaster resultDocument = FrameworkCalls.ProcessFinanceDocument(SourceWindow, processFinanceDocumentParameter);
 
-        public static FIN_DocumentFinanceMaster PersistFinanceDocument(Window pSourceWindow, ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter)
+        public static fin_documentfinancemaster PersistFinanceDocument(Window pSourceWindow, ProcessFinanceDocumentParameter pProcessFinanceDocumentParameter)
         {
             bool printDocument = true;
-            FIN_DocumentFinanceMaster result = null;
+            fin_documentfinancemaster result = null;
 
             try
             {
@@ -40,8 +40,8 @@ namespace logicpos
                 ResponseType responseType = Utils.ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(pSourceWindow, pProcessFinanceDocumentParameter);
                 if (responseType != ResponseType.Yes) return result;
 
-                FIN_DocumentFinanceMaster documentFinanceMaster = ProcessFinanceDocument.PersistFinanceDocument(pProcessFinanceDocumentParameter, true);
-
+                fin_documentfinancemaster documentFinanceMaster = ProcessFinanceDocument.PersistFinanceDocument(pProcessFinanceDocumentParameter, true);
+                fin_documentfinancedetailorderreference fin_documentfinancedetailorderreference = new fin_documentfinancedetailorderreference();
                 if (documentFinanceMaster != null)
                 {
                     //ATWS : SendDocumentToATWSDialog
@@ -49,9 +49,63 @@ namespace logicpos
                     {
                         SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
                     }
+                    /* TK013134 - Parking Ticket Module */
+                    foreach (var item in GlobalFramework.PendentPayedParkingTickets)
+                    {
+                        _log.Debug("[PARKING TICKET] Informing Access.Track that the parking ticket has been payed...");
+                        AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
+
+                        bool isTicketPayedInformed = accessTrackParkingTicketService.payTicket(item.Key);
+
+
+                        _log.Debug($"[PARKING TICKET] Barcode '{item.Key}' sent to Access.Track: Guid '{item.Value}'");
+
+                        if (!isTicketPayedInformed)
+                        {
+                            _log.Debug($"[PARKING TICKET] Barcode '{item.Key}' not identified by Access.Track: Guid '{item.Value}'");
+                        }
+                        else if (accessTrackParkingTicketService.isTicketValid(item.Key))
+                        {
+                            _log.Debug($"[PARKING TICKET] Barcode '{item.Key}' payed successfully");
+                        }
+                        else
+                        {
+                            _log.Error($"[PARKING TICKET] Barcode '{item.Key}' payment has not been recognized by Access.Track!");
+                        }
+
+                    }
+                    //IN009279 Parking ticket Service - implementar Cartão cliente 
+                    int i = 0;
+                    foreach (var item in GlobalFramework.PendentPayedParkingCards)
+                    {
+                        _log.Debug("[PARKING TICKET] Informing Access.Track that the parking card has been payed...");
+                        AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
+
+                        //Number of months paid is passed by document notes
+                        string sql = string.Format("SELECT Notes FROM fin_documentfinancemaster where SourceOrderMain = '{0}'", item.Value);
+                        var sqlResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                        string sqlResultquantity = sqlResult.ToString();
+
+                        string[] quantity = sqlResultquantity.Trim().Split(' ');
+                        int splitCount = quantity.Length;
+
+                        int[] number = new int[splitCount];
+                        if (quantity[i].Contains(","))
+                            number[i] = int.Parse(quantity[i].Substring(0, quantity[i].IndexOf(','))); //Contains decimal separator
+                        else
+                            number[i] = int.Parse(quantity[i]); //Contains only numbers, no decimal separator.
+
+                        DateTime localDate = DateTime.Now;
+                        DateTime endDate = localDate.AddMonths(Convert.ToInt32(number[i]));
+                        string dateNow = localDate.ToString();
+                        string dateEnd = endDate.ToString();
+                        accessTrackParkingTicketService.payCard(item.Key, dateNow, dateEnd);
+                        i++;
+                    }//IN009279 ENDS
 
                     //Always Send back the Valid Document
                     result = documentFinanceMaster;
+
 
                     if (documentFinanceMaster.DocumentType.PrintRequestConfirmation)
                     {
@@ -60,8 +114,8 @@ namespace logicpos
                             DialogFlags.Modal,
                             MessageType.Question,
                             ButtonsType.YesNo,
-                            Resx.window_title_dialog_document_finance,
-                            Resx.dialog_message_request_print_document_confirmation
+                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance"),
+                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation")
                         );
 
                         if (responseType == ResponseType.No) printDocument = false;
@@ -78,17 +132,17 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, Resx.dialog_message_error_creating_financial_document_missing_series);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_INVALID_DOCUMENT_NUMBER":
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, Resx.dialog_message_error_creating_financial_document_invalid_documentnumber);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_invalid_documentnumber"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT":
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, Resx.dialog_message_error_creating_financial_document_commit_session);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_commit_session"));
                         break;
                     //TODO: NEW CLASS FinanceDocumentValidate : IMPLEMENT HERE THE RESULT EXCEPTION FOR VALIDATE_SIMPLIFIED_INVOICE
                     default:
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -97,7 +151,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  Resx.global_error,
+                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                   errorMessage
                 );
             }
@@ -106,7 +160,7 @@ namespace logicpos
         }
 
         //ATWS: Check if Document is a Valid Document to send to ATWebServices
-        public static bool SendDocumentToATWSEnabled(FIN_DocumentFinanceMaster documentFinanceMaster)
+        public static bool SendDocumentToATWSEnabled(fin_documentfinancemaster documentFinanceMaster)
         {
             bool result = false;
 
@@ -133,11 +187,13 @@ namespace logicpos
         }
 
         //ATWS: Send Document to AT WebWebService : UI Part, With Retry Dialog, Calling above SendDocumentToATWS
-        public static void SendDocumentToATWSDialog(Window pSourceWindow, FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static bool SendDocumentToATWSDialog(Window pSourceWindow, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             //Send Document to AT WebServices - With Retry to notify user and force user to skip
             ServicesATSoapResult sendDocumentResult = new ServicesATSoapResult();
             ResponseType dialogResponse = ResponseType.Yes;
+            /* IN009083 - returns true when WS call fails and user opts to do not retry */
+            bool isCanceledByUser = false;
             while (sendDocumentResult.ReturnCode != "0" && dialogResponse == ResponseType.Yes)
             {
                 //Call SendDocumentToATWS and Receive Result
@@ -145,15 +201,21 @@ namespace logicpos
 
                 if (sendDocumentResult == null || sendDocumentResult.ReturnCode != "0")
                 {
-                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, Resx.global_error,
-                        string.Format(Resx.dialog_message_error_in_at_webservice, sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
+                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
                     );
+                    /* IN009083 - returns true when WS call fails and user opts to do not retry */
+                    if (ResponseType.No.Equals(dialogResponse))
+                    {
+                        isCanceledByUser = true;
+                    }
                 }
             }
+            return isCanceledByUser;
         }
 
         //ATWS: Send Document to AT WebWebService
-        public static ServicesATSoapResult SendDocumentToATWS(FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static ServicesATSoapResult SendDocumentToATWS(fin_documentfinancemaster pDocumentFinanceMaster)
         {
             ServicesATSoapResult result = new ServicesATSoapResult();
 
@@ -207,13 +269,13 @@ namespace logicpos
         //ProcessFinanceDocument
         //Use: DocumentFinanceMaster resultDocument = FrameworkCalls.ProcessFinanceDocument(SourceWindow, Invoices, CreditNotes, Customer, PaymentMethod, pPaymentAmount, pPaymentNotes);
 
-        public static FIN_DocumentFinancePayment PersistFinanceDocumentPayment(Window pSourceWindow, List<FIN_DocumentFinanceMaster> pInvoices, List<FIN_DocumentFinanceMaster> pCreditNotes, Guid pCustomer, Guid pPaymentMethod, Guid pConfigurationCurrency, decimal pPaymentAmount, string pPaymentNotes = "")
+        public static fin_documentfinancepayment PersistFinanceDocumentPayment(Window pSourceWindow, List<fin_documentfinancemaster> pInvoices, List<fin_documentfinancemaster> pCreditNotes, Guid pCustomer, Guid pPaymentMethod, Guid pConfigurationCurrency, decimal pPaymentAmount, string pPaymentNotes = "")
         {
-            FIN_DocumentFinancePayment result = null;
+            fin_documentfinancepayment result = null;
 
             try
             {
-                FIN_DocumentFinancePayment documentFinancePayment = ProcessFinanceDocument.PersistFinanceDocumentPayment(pInvoices, pCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
+                fin_documentfinancepayment documentFinancePayment = ProcessFinanceDocument.PersistFinanceDocumentPayment(pInvoices, pCreditNotes, pCustomer, pPaymentMethod, pConfigurationCurrency, pPaymentAmount, pPaymentNotes);
                 if (documentFinancePayment != null)
                 {
                     //Always send back the Valid Document
@@ -230,11 +292,11 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, Resx.dialog_message_error_creating_financial_document_missing_series);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                     default:
-                        errorMessage = string.Format(Resx.dialog_message_error_creating_financial_document, ex.Exception.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Exception.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -243,7 +305,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  Resx.global_error,
+                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                   errorMessage
                 );
             }
@@ -259,28 +321,40 @@ namespace logicpos
             DateTime dateCurrent = FrameworkUtils.CurrentDateTimeAtomic();
             DateTime dateStart, dateEnd;
 
-            switch (pExportSaftPtMode)
+            // Plugin Errors Messages
+            if (GlobalFramework.PluginSoftwareVendor == null || !GlobalFramework.PluginSoftwareVendor.IsValidSecretKey(SettingsApp.SecretKey))
             {
-                case ExportSaftPtMode.WholeYear:
-                    dateStart = new DateTime(dateCurrent.Year, 1, 1);
-                    dateEnd = new DateTime(dateCurrent.Year, 12, 31);
-                    result = ExportSaftPt(pSourceWindow, dateStart, dateEnd);
-                    break;
-                case ExportSaftPtMode.LastMonth:
-                    dateStart = dateCurrent.AddMonths(-1);
-                    dateStart = new DateTime(dateStart.Year, dateStart.Month, 1);
-                    dateEnd = dateStart.AddMonths(1).AddDays(-1);
-                    result = ExportSaftPt(pSourceWindow, dateStart, dateEnd);
-                    break;
-                case ExportSaftPtMode.Custom:
-                    PosDatePickerStartEndDateDialog dialog = new PosDatePickerStartEndDateDialog(pSourceWindow, Gtk.DialogFlags.DestroyWithParent);
-                    ResponseType response = (ResponseType)dialog.Run();
-                    if (response == ResponseType.Ok)
-                    {
-                        result = ExportSaftPt(pSourceWindow, dialog.DateStart, dialog.DateEnd);
-                    }
-                    dialog.Destroy();
-                    break;
+                /* IN009034 */
+                GlobalApp.DialogThreadNotify.WakeupMain();
+
+                _log.Debug(String.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
+                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_plugin_softwarevendor_not_registered"));
+            }
+            else
+            {
+                switch (pExportSaftPtMode)
+                {
+                    case ExportSaftPtMode.WholeYear:
+                        dateStart = new DateTime(dateCurrent.Year, 1, 1);
+                        dateEnd = new DateTime(dateCurrent.Year, 12, 31);
+                        result = ExportSaftPt(pSourceWindow, dateStart, dateEnd);
+                        break;
+                    case ExportSaftPtMode.LastMonth:
+                        dateStart = dateCurrent.AddMonths(-1);
+                        dateStart = new DateTime(dateStart.Year, dateStart.Month, 1);
+                        dateEnd = dateStart.AddMonths(1).AddDays(-1);
+                        result = ExportSaftPt(pSourceWindow, dateStart, dateEnd);
+                        break;
+                    case ExportSaftPtMode.Custom:
+                        PosDatePickerStartEndDateDialog dialog = new PosDatePickerStartEndDateDialog(pSourceWindow, Gtk.DialogFlags.DestroyWithParent);
+                        ResponseType response = (ResponseType)dialog.Run();
+                        if (response == ResponseType.Ok)
+                        {
+                            result = ExportSaftPt(pSourceWindow, dialog.DateStart, dialog.DateEnd);
+                        }
+                        dialog.Destroy();
+                        break;
+                }
             }
 
             return result;
@@ -310,8 +384,8 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Info,
                   ButtonsType.Close,
-                  Resx.global_information,
-                  string.Format(Resx.dialog_message_saftpt_exported_successfully, result)
+                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                  string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_successfully"), result)
                 );
             }
             catch (Exception ex)
@@ -322,8 +396,8 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  Resx.global_error,
-                  Resx.dialog_message_saftpt_exported_error
+                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_error")
                 );
                 _log.Error(ex.Message, ex);
             }
@@ -334,12 +408,12 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintFinanceDocument
 
-        public static bool PrintFinanceDocument(Window pSourceWindow, FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(Window pSourceWindow, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             return PrintFinanceDocument(pSourceWindow, null, pDocumentFinanceMaster);
         }
 
-        public static bool PrintFinanceDocument(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinanceMaster pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(Window pSourceWindow, sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             bool result = false;
             bool openDrawer = false;
@@ -347,21 +421,27 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, Resx.global_printing_function_disabled);
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                 return false;
             }
-
-            //Both printer can be the same, if not Defined in DocumentType
-
-            //Printer for Drawer and Document, if not defined in DocumentType
-            SYS_ConfigurationPrinters printer = (pPrinter != null)
-              ? pPrinter :
-              GlobalFramework.LoggedTerminal.Printer;
-
-            //Printer for Document : Override default Printer is DocumentType has a Printer Defined
-            SYS_ConfigurationPrinters printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null)
-                ? pDocumentFinanceMaster.DocumentType.Printer
-                : printer;
+			//TK016249 - Impressoras - Diferenciação entre Tipos
+            //Deteta janela de origem de forma a escolher qual impressora usar - TicketList -> ThermalPrinter | PosDocumentFinanceDialog -> Printer
+            sys_configurationprinters printer;
+            sys_configurationprinters printerDoc;            
+            if (GlobalFramework.UsingThermalPrinter)
+            {
+                //Both printer can be the same, if not Defined in DocumentType
+                //Printer for Drawer and Document, if not defined in DocumentType
+                printer = (pPrinter != null) ? pPrinter : GlobalFramework.LoggedTerminal.ThermalPrinter;
+                printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
+            }
+            else
+            {
+                //Both printer can be the same, if not Defined in DocumentType
+                //Printer for Drawer and Document, if not defined in DocumentType
+                printer = (pPrinter != null) ? pPrinter : GlobalFramework.LoggedTerminal.Printer;
+                printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
+            }
 
             try
             {
@@ -371,7 +451,7 @@ namespace logicpos
                     //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                     if (printerDoc == null)
                     {
-                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, Resx.ResourceManager.GetString(pDocumentFinanceMaster.DocumentType.ResourceString));
+                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], pDocumentFinanceMaster.DocumentType.ResourceString));
                     }
                     else
                     {
@@ -383,7 +463,7 @@ namespace logicpos
                 else
                 {
                     bool validFiles = true;
-                    string extraMessage = string.Format(Resx.dialog_message_error_protected_files_invalid_files_detected_print_document_ignored, pDocumentFinanceMaster.DocumentNumber);
+                    string extraMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
 
                     //Printer Drawer : Set openDrawer
                     switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
@@ -447,22 +527,22 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintFinanceDocumentPayment
 
-        public static bool PrintFinanceDocumentPayment(Window pSourceWindow, FIN_DocumentFinancePayment pDocumentFinancePayment)
+        public static bool PrintFinanceDocumentPayment(Window pSourceWindow, fin_documentfinancepayment pDocumentFinancePayment)
         {
             return PrintFinanceDocumentPayment(pSourceWindow, null, pDocumentFinancePayment);
         }
 
-        public static bool PrintFinanceDocumentPayment(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, FIN_DocumentFinancePayment pDocumentFinancePayment)
+        public static bool PrintFinanceDocumentPayment(Window pSourceWindow, sys_configurationprinters pPrinter, fin_documentfinancepayment pDocumentFinancePayment)
         {
             bool result = false;
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, Resx.global_printing_function_disabled);
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                 return false;
             }
 
-            SYS_ConfigurationPrinters printer = (pPrinter != null)
+            sys_configurationprinters printer = (pPrinter != null)
               ? pPrinter :
               GlobalFramework.LoggedTerminal.Printer;
 
@@ -471,13 +551,13 @@ namespace logicpos
                 //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                 if (printer == null)
                 {
-                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, Resx.global_documentfinance_type_title_rc);
+                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc"));
                 }
                 else
                 {
                     //ProtectedFiles Protection
                     bool validFiles = true;
-                    string extraMessage = string.Format(Resx.dialog_message_error_protected_files_invalid_files_detected_print_document_ignored, pDocumentFinancePayment.PaymentRefNo);
+                    string extraMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
                     switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
@@ -512,13 +592,13 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         //Shared Method to call all other PrintTicketMethods to Check Licence and other Protections
-        public static bool SharedPrintTicket(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, TicketType pTicketType)
+        public static bool SharedPrintTicket(Window pSourceWindow, sys_configurationprinters pPrinter, TicketType pTicketType)
         {
             bool result = false;
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, Resx.global_printing_function_disabled);
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
             }
             else
             {
@@ -531,16 +611,16 @@ namespace logicpos
                         switch (pTicketType)
                         {
                             case TicketType.TableOrder:
-                                ticketTitle = Resx.global_documentticket_type_title_tt;
+                                ticketTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_tt");
                                 break;
                             case TicketType.ArticleOrder:
-                                ticketTitle = Resx.global_documentticket_type_title_ar;
+                                ticketTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_ar");
                                 break;
                             case TicketType.WorkSession:
-                                ticketTitle = Resx.global_documentticket_type_title_ws;
+                                ticketTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_ws");
                                 break;
                             case TicketType.CashDrawer:
-                                ticketTitle = Resx.global_documentticket_type_title_cs;
+                                ticketTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs");
                                 break;
                             default:
                                 break;
@@ -563,7 +643,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintTableTicket
 
-        public static bool PrintOrderRequest(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, OrderMain pDocumentOrderMain, FIN_DocumentOrderTicket pOrderTicket)
+        public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
         {
             bool result = false;
 
@@ -586,7 +666,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintArticleRequest
 
-        public static bool PrintArticleRequest(Window pSourceWindow, FIN_DocumentOrderTicket pOrderTicket)
+        public static bool PrintArticleRequest(Window pSourceWindow, fin_documentorderticket pOrderTicket)
         {
             bool result = false;
 
@@ -609,10 +689,10 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintWorkSessionMovement
 
-        public static bool PrintWorkSessionMovement(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, POS_WorkSessionPeriod pWorkSessionPeriod)
+        public static bool PrintWorkSessionMovement(Window pSourceWindow, sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
-            SYS_ConfigurationPrintersTemplates template = (SYS_ConfigurationPrintersTemplates)FrameworkUtils.GetXPGuidObject(typeof(SYS_ConfigurationPrintersTemplates), SettingsApp.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)FrameworkUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SettingsApp.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
 
             try
             {
@@ -633,10 +713,10 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintCashDrawerOpenAndMoneyInOut
 
-        public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, SYS_ConfigurationPrinters pPrinter, String pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
+        public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, String pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {
             bool result = false;
-            SYS_ConfigurationPrintersTemplates template = (SYS_ConfigurationPrintersTemplates)FrameworkUtils.GetXPGuidObject(typeof(SYS_ConfigurationPrintersTemplates), SettingsApp.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)FrameworkUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SettingsApp.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
 
             try
             {
@@ -665,7 +745,7 @@ namespace logicpos
         public static bool IsValidProtectedFile(string pFilePath, string pExtraMessage)
         {
             //Always valid if ProtectedFilesUse not Enabled and ProtectedFilesIgnoreProtection equal to true, this skip Validation
-            if (! SettingsApp.ProtectedFilesUse && SettingsApp.ProtectedFilesIgnoreProtection) return true;
+            if (!SettingsApp.ProtectedFilesUse && SettingsApp.ProtectedFilesIgnoreProtection) return true;
 
             bool result = true;
 
@@ -677,9 +757,9 @@ namespace logicpos
 
             if (!result)
             {
-                string message = string.Format(Resx.dialog_message_error_protected_files_invalid_files_detected, pFilePath);
+                string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
                 if (pExtraMessage != string.Empty) message = string.Format("{1}{0}{0}{2}", Environment.NewLine, message, pExtraMessage);
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, Resx.global_error, message);
+                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
             }
 
             return result;

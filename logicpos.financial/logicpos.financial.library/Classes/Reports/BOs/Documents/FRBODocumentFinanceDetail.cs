@@ -16,11 +16,34 @@
         public decimal TotalFinal { get; set; }
         public string Notes { get; set; }
         public string VatExemptionReasonDesignation { get; set; }
+
+		/* IN009206 block */
+        //[FRBO(Field = "fdPriceWithDiscount")]   // AVG((fdPrice - ((fdPrice * fdDiscount) / 100))) AS ArticlePriceWithDiscount
+        // fdPriceWithDiscount
+        [FRBO(Hide = true)]
+        public decimal ArticlePriceWithDiscount {
+            get{
+                decimal totalDiscount = (this.TotalGross * this.Discount) / 100;
+                return this.TotalGross - totalDiscount;
+            }
+            set { }
+        } // TotalGross - Discount
+        [FRBO(Hide = true)]
+        public decimal ArticlePriceAfterTax
+        {
+            get
+            {
+                decimal totalTax = (this.ArticlePriceWithDiscount * this.Vat) / 100;
+                return this.ArticlePriceWithDiscount + totalTax;
+            }
+            set { }
+        }
+
         //// Enums
         //public PriceType PriceType { get; set; }
         //// Navigation Properties
-        //public FIN_DocumentFinanceMaster DocumentMaster { get; set; }
-        //public FIN_Article Article { get; set; }
-        //public FIN_ConfigurationVatRate VatRate { get; set; }
+        //public fin_documentfinancemaster DocumentMaster { get; set; }
+        //public fin_article Article { get; set; }
+        //public fin_configurationvatrate VatRate { get; set; }
     }
 }

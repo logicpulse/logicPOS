@@ -43,8 +43,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             /*01*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Article.Code")
             {
-                Type = typeof(FIN_Article),
-                Title = Resx.global_record_code,
+                Type = typeof(fin_article),
+                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"),
                 ChildName = "Code",
                 MinWidth = 60,
                 MaxWidth = 150,
@@ -52,12 +52,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, ForegroundGdk = new Gdk.Color(255, 0, 0) }
             });
             /*02*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article.Designation") { Type = typeof(FIN_Article), Title = Resx.global_designation, ChildName = "Designation", MinWidth = 170, MaxWidth = 170 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Article.Designation") { Type = typeof(fin_article), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), ChildName = "Designation", MinWidth = 170, MaxWidth = 170 });
             /*03*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Quantity")
             {
                 Type = typeof(Decimal),
-                Title = Resx.global_quantity_acronym,
+                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"),
                 MinWidth = 70,
                 MaxWidth = 100,
                 Alignment = 1.0F,
@@ -65,15 +65,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
             });
             /*04: Used to store DefaultCurrency price, Set visible = true to show it, Default is Hidden */
-            columnProperties.Add(new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Title = string.Format("{0}{1}", Resx.global_price, "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Title = string.Format("{0}{1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false });
             /*05: Visible Display Value, In Current Selected Currency*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(Decimal), Title = Resx.global_price, MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
-            /*06*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
+            /*06 IN009206*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
+            /*07 IN009206*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("VatExemptionReason.Acronym") { Type = typeof(fin_configurationvatexemptionreason), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason_acronym"), ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false });
+            /*08*/
             columnProperties.Add(new GenericTreeViewColumnProperty("ConfigurationVatRate.Value")
             {
-                Type = typeof(FIN_ConfigurationVatRate),
+                Type = typeof(fin_configurationvatrate),
                 ChildName = "Value",
-                Title = Resx.global_vat_rate,
+                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"),
                 MinWidth = 60,
                 MaxWidth = 60,
                 Alignment = 1.0F,
@@ -81,14 +85,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 FormatProvider = new FormatterDecimal(),
                 CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
             });
-            /*07*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("VatExemptionReason.Acronym") { Type = typeof(FIN_ConfigurationVatExemptionReason), Title = Resx.global_vat_exemption_reason_acronym, ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false });
-            /*08*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = Resx.global_discount, MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
             /*09*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("TotalNet") { Type = typeof(Decimal), Title = Resx.global_totalnet_acronym, MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
-            /*10*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("TotalFinal") { Type = typeof(Decimal), Title = Resx.global_totalfinal_acronym, MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
+            columnProperties.Add(new GenericTreeViewColumnProperty("TotalNet") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
+            /*10*/ /* IN009206 */
+            columnProperties.Add(new GenericTreeViewColumnProperty("TotalFinal") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
             //Other Invisible Fields
             /*11*/
             columnProperties.Add(new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Visible = false });
@@ -128,8 +128,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid))
                 {
                     //Init Local Vars
-                    FIN_Article article;
-                    FIN_ConfigurationVatRate configurationVatRate;
+                    fin_article article;
+                    fin_configurationvatrate configurationVatRate;
                     //WIP: ConfigurationUnitMeasure configurationUnitMeasure;
                     OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
                     ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
@@ -141,8 +141,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     foreach (var item in articleBag)
                     {
                         //Get XPGuidObjects to Assign to Columns
-                        article = (FIN_Article)FrameworkUtils.GetXPGuidObject(typeof(FIN_Article), item.Key.ArticleOid);
-                        configurationVatRate = (FIN_ConfigurationVatRate)FrameworkUtils.GetXPGuidObject(typeof(FIN_ConfigurationVatRate),
+                        article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
+                        configurationVatRate = (fin_configurationvatrate)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationvatrate),
                           FrameworkUtils.GetGuidFromQuery(string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE (Disabled IS NULL OR Disabled  <> 1) AND Value = '{0}';", item.Key.Vat))
                         );
                         //WIP: configurationUnitMeasure = (ConfigurationUnitMeasure)FrameworkUtils.GetXPGuidObjectFromSession(typeof(ConfigurationUnitMeasure), 

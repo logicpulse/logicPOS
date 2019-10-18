@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class ERP_CustomerType : XPGuidObject
+    public class erp_customertype : XPGuidObject
     {
-        public ERP_CustomerType() : base() { }
-        public ERP_CustomerType(Session session) : base(session) { }
+        public erp_customertype() : base() { }
+        public erp_customertype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(ERP_CustomerType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(ERP_CustomerType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(erp_customertype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(erp_customertype), "Code");
         }
 
         UInt32 fOrd;
@@ -40,10 +40,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //CustomerType One <> Many Customer
-        [Association(@"CustomerTypeReferencesCustomer", typeof(ERP_Customer))]
-        public XPCollection<ERP_Customer> Customer
+        [Association(@"CustomerTypeReferencesCustomer", typeof(erp_customer))]
+        public XPCollection<erp_customer> Customer
         {
-            get { return GetCollection<ERP_Customer>("Customer"); }
+            get { return GetCollection<erp_customer>("Customer"); }
         }
     }
 }

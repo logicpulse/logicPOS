@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class RPT_ReportType : XPGuidObject
+    public class rpt_reporttype : XPGuidObject
     {
-        public RPT_ReportType() : base() { }
-        public RPT_ReportType(Session session) : base(session) { }
+        public rpt_reporttype() : base() { }
+        public rpt_reporttype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(RPT_ReportType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(RPT_ReportType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(rpt_reporttype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(rpt_reporttype), "Code");
         }
 
         UInt32 fOrd;
@@ -55,10 +55,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ReportType One <> Many Report
-        [Association(@"ReportTypeReferencesReport", typeof(RPT_Report))]
-        public XPCollection<RPT_Report> Report
+        [Association(@"ReportTypeReferencesReport", typeof(rpt_report))]
+        public XPCollection<rpt_report> Report
         {
-            get { return GetCollection<RPT_Report>("Report"); }
+            get { return GetCollection<rpt_report>("Report"); }
         }
     }
 }

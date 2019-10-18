@@ -5,10 +5,10 @@ using logicpos.datalayer.Enums;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_SystemBackup : XPGuidObject
+    public class sys_systembackup : XPGuidObject
     {
-        public SYS_SystemBackup() : base() { }
-        public SYS_SystemBackup(Session session) : base(session) { }
+        public sys_systembackup() : base() { }
+        public sys_systembackup(Session session) : base(session) { }
 
         DatabaseType fDataBaseType;
         public DatabaseType DataBaseType
@@ -55,18 +55,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FileHash", ref fFileHash, value); }
         }
 
-        SYS_UserDetail fUser;
-        public SYS_UserDetail User
+        sys_userdetail fUser;
+        public sys_userdetail User
         {
             get { return fUser; }
-            set { SetPropertyValue<SYS_UserDetail>("User", ref fUser, value); }
+            set { SetPropertyValue<sys_userdetail>("User", ref fUser, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminal;
-        public POS_ConfigurationPlaceTerminal Terminal
+        pos_configurationplaceterminal fTerminal;
+        public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
         }
     }
 }

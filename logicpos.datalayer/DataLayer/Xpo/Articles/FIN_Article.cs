@@ -5,20 +5,17 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_Article : XPGuidObject
+    public class fin_article : XPGuidObject
     {
-        public FIN_Article() : base() { }
-        public FIN_Article(Session session) : base(session) { }
+        public fin_article() : base() { }
+        public fin_article(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_Article), "Ord");
-            //Disable now using AlfaNumeric Code, not Integer
-            //Code = FrameworkUtils.GetNextTableFieldID("FIN_Article", "Code").ToString();
-            Type = this.Session.GetObjectByKey<FIN_ArticleType>(SettingsApp.XpoOidArticleDefaultType);
-            Class = this.Session.GetObjectByKey<FIN_ArticleClass>(SettingsApp.XpoOidArticleDefaultClass);
-            //VatOnTable = this.Session.GetObjectByKey<FIN_ConfigurationVatRate>(SettingsApp.XpoOidArticleDefaultVatOnTable);
-            //VatDirectSelling = this.Session.GetObjectByKey<FIN_ConfigurationVatRate>(SettingsApp.XpoOidArticleDefaultVatDirectSelling);
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_article), "Ord");
+            Type = this.Session.GetObjectByKey<fin_articletype>(SettingsApp.XpoOidArticleDefaultType);
+            Class = this.Session.GetObjectByKey<fin_articleclass>(SettingsApp.XpoOidArticleDefaultClass);
+
             if (SettingsApp.AppMode == AppOperationMode.Default)
             {
                 //Force users to choose Tax for both modes Normal and TakeAway
@@ -28,12 +25,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
             else
             {
                 VatOnTable = null;
-                VatDirectSelling = this.Session.GetObjectByKey<FIN_ConfigurationVatRate>(SettingsApp.XpoOidArticleDefaultVatDirectSelling);
+                VatDirectSelling = this.Session.GetObjectByKey<fin_configurationvatrate>(SettingsApp.XpoOidArticleDefaultVatDirectSelling);
             }
 
-            UnitMeasure = this.Session.GetObjectByKey<CFG_ConfigurationUnitMeasure>(SettingsApp.XpoOidArticleDefaultUnitMeasure);
-            UnitSize = this.Session.GetObjectByKey<CFG_ConfigurationUnitSize>(SettingsApp.XpoOidArticleDefaultUnitSize);
-            Template = this.Session.GetObjectByKey<SYS_ConfigurationPrintersTemplates>(SettingsApp.XpoOidArticleDefaultTemplate);
+            UnitMeasure = this.Session.GetObjectByKey<cfg_configurationunitmeasure>(SettingsApp.XpoOidArticleDefaultUnitMeasure);
+            UnitSize = this.Session.GetObjectByKey<cfg_configurationunitsize>(SettingsApp.XpoOidArticleDefaultUnitSize);
+            Template = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(SettingsApp.XpoOidArticleDefaultTemplate);
         }
 
         UInt32 fOrd;
@@ -291,135 +288,143 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Token2", ref fToken2, value); }
         }
 
+//string fToken3;
+//[Size(255)]
+//public string Token3
+//{
+//    get { return fToken3; }
+//    set { SetPropertyValue<string>("Token3", ref fToken3, value); }
+//}
+
         //Article One <> Many DocumentOrderDetail
-        [Association(@"ArticleReferencesDocumentOrderDetail", typeof(FIN_DocumentOrderDetail))]
-        public XPCollection<FIN_DocumentOrderDetail> DocumentOrderDetail
+        [Association(@"ArticleReferencesDocumentOrderDetail", typeof(fin_documentorderdetail))]
+        public XPCollection<fin_documentorderdetail> DocumentOrderDetail
         {
-            get { return GetCollection<FIN_DocumentOrderDetail>("DocumentOrderDetail"); }
+            get { return GetCollection<fin_documentorderdetail>("DocumentOrderDetail"); }
         }
 
         //Article One <> Many DocumentFinanceDetail
-        [Association(@"ArticleReferencesDocumentDocumentFinanceDetail", typeof(FIN_DocumentFinanceDetail))]
-        public XPCollection<FIN_DocumentFinanceDetail> DocumentFinanceDetail
+        [Association(@"ArticleReferencesDocumentDocumentFinanceDetail", typeof(fin_documentfinancedetail))]
+        public XPCollection<fin_documentfinancedetail> DocumentFinanceDetail
         {
-            get { return GetCollection<FIN_DocumentFinanceDetail>("DocumentFinanceDetail"); }
+            get { return GetCollection<fin_documentfinancedetail>("DocumentFinanceDetail"); }
         }
 
         //Family One <> Many Article
-        FIN_ArticleFamily fFamily;
+        fin_articlefamily fFamily;
         [Association(@"FamilyReferencesArticle")]
-        public FIN_ArticleFamily Family
+        public fin_articlefamily Family
         {
             get { return fFamily; }
-            set { SetPropertyValue<FIN_ArticleFamily>("Family", ref fFamily, value); }
+            set { SetPropertyValue<fin_articlefamily>("Family", ref fFamily, value); }
         }
 
         //SubFamily One <> Many Article
-        FIN_ArticleSubFamily fSubFamily;
+        fin_articlesubfamily fSubFamily;
         [Association(@"SubFamilyReferencesArticle")]
-        public FIN_ArticleSubFamily SubFamily
+        public fin_articlesubfamily SubFamily
         {
             get { return fSubFamily; }
-            set { SetPropertyValue<FIN_ArticleSubFamily>("SubFamily", ref fSubFamily, value); }
+            set { SetPropertyValue<fin_articlesubfamily>("SubFamily", ref fSubFamily, value); }
         }
 
         //ArticleType One <> Many Article
-        FIN_ArticleType fType;
+        fin_articletype fType;
         [Association(@"ArticleTypeReferencesArticle")]
-        public FIN_ArticleType Type
+        public fin_articletype Type
         {
             get { return fType; }
-            set { SetPropertyValue<FIN_ArticleType>("Type", ref fType, value); }
+            set { SetPropertyValue<fin_articletype>("Type", ref fType, value); }
         }
 
         //ArticleClass One <> Many Article
-        FIN_ArticleClass fClass;
+        fin_articleclass fClass;
         [Association(@"ArticleClassReferencesArticle")]
-        public FIN_ArticleClass Class
+        public fin_articleclass Class
         {
             get { return fClass; }
-            set { SetPropertyValue<FIN_ArticleClass>("Class", ref fClass, value); }
+            set { SetPropertyValue<fin_articleclass>("Class", ref fClass, value); }
         }
 
         //configurationUnitMeasure One <> Many Article
-        CFG_ConfigurationUnitMeasure fUnitMeasure;
+        cfg_configurationunitmeasure fUnitMeasure;
         [Association(@"ConfigurationUnitMeasureReferencesArticle")]
-        public CFG_ConfigurationUnitMeasure UnitMeasure
+        public cfg_configurationunitmeasure UnitMeasure
         {
             get { return fUnitMeasure; }
-            set { SetPropertyValue<CFG_ConfigurationUnitMeasure>("UnitMeasure", ref fUnitMeasure, value); }
+            set { SetPropertyValue<cfg_configurationunitmeasure>("UnitMeasure", ref fUnitMeasure, value); }
         }
 
         //ConfigurationUnitSize One <> Many Article
-        CFG_ConfigurationUnitSize fUnitSize;
+        cfg_configurationunitsize fUnitSize;
         [Association(@"ConfigurationUnitSizeReferencesArticle")]
-        public CFG_ConfigurationUnitSize UnitSize
+        public cfg_configurationunitsize UnitSize
         {
             get { return fUnitSize; }
-            set { SetPropertyValue<CFG_ConfigurationUnitSize>("UnitSize", ref fUnitSize, value); }
+            set { SetPropertyValue<cfg_configurationunitsize>("UnitSize", ref fUnitSize, value); }
         }
 
         //UserCommissionGroup One <> Many Article
-        POS_UserCommissionGroup fCommissionGroup;
+        pos_usercommissiongroup fCommissionGroup;
         [Association(@"UserCommissionGroupReferencesArticle")]
-        public POS_UserCommissionGroup CommissionGroup
+        public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<POS_UserCommissionGroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
         }
 
         //CustomerDiscountGroup One <> Many Article
-        ERP_CustomerDiscountGroup fDiscountGroup;
+        erp_customerdiscountgroup fDiscountGroup;
         [Association(@"CustomerDiscountGroupReferencesArticle")]
-        public ERP_CustomerDiscountGroup DiscountGroup
+        public erp_customerdiscountgroup DiscountGroup
         {
             get { return fDiscountGroup; }
-            set { SetPropertyValue<ERP_CustomerDiscountGroup>("DiscountGroup", ref fDiscountGroup, value); }
+            set { SetPropertyValue<erp_customerdiscountgroup>("DiscountGroup", ref fDiscountGroup, value); }
         }
 
         //ConfigurationVatRate One <> Many Article
-        FIN_ConfigurationVatRate fVatOnTable;
+        fin_configurationvatrate fVatOnTable;
         [Association(@"ConfigurationVatRateReferencesArticle_ForVatOnTable")]
-        public FIN_ConfigurationVatRate VatOnTable
+        public fin_configurationvatrate VatOnTable
         {
             get { return fVatOnTable; }
-            set { SetPropertyValue<FIN_ConfigurationVatRate>("VatTOnTable", ref fVatOnTable, value); }
+            set { SetPropertyValue<fin_configurationvatrate>("VatTOnTable", ref fVatOnTable, value); }
         }
 
         //ConfigurationVatRate One <> Many Article
-        FIN_ConfigurationVatRate fVatDirectSelling;
+        fin_configurationvatrate fVatDirectSelling;
         [Association(@"ConfigurationVatRateReferencesArticle_ForVatDirectSelling")]
-        public FIN_ConfigurationVatRate VatDirectSelling
+        public fin_configurationvatrate VatDirectSelling
         {
             get { return fVatDirectSelling; }
-            set { SetPropertyValue<FIN_ConfigurationVatRate>("VatDirectSelling", ref fVatDirectSelling, value); }
+            set { SetPropertyValue<fin_configurationvatrate>("VatDirectSelling", ref fVatDirectSelling, value); }
         }
 
         //ConfigurationVatExemptionReason One <> Many Article
-        FIN_ConfigurationVatExemptionReason fVatExemptionReason;
+        fin_configurationvatexemptionreason fVatExemptionReason;
         [Association(@"ConfigurationVatExemptionReasonReferencesArticle")]
-        public FIN_ConfigurationVatExemptionReason VatExemptionReason
+        public fin_configurationvatexemptionreason VatExemptionReason
         {
             get { return fVatExemptionReason; }
-            set { SetPropertyValue<FIN_ConfigurationVatExemptionReason>("VatExemptionReason", ref fVatExemptionReason, value); }
+            set { SetPropertyValue<fin_configurationvatexemptionreason>("VatExemptionReason", ref fVatExemptionReason, value); }
         }
 
         //ConfigurationDevice One <> Many Article
-        SYS_ConfigurationPrinters fPrinter;
+        sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesArticle")]
-        public SYS_ConfigurationPrinters Printer
+        public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<SYS_ConfigurationPrinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
         }
 
         //DocumentFinanceType One <> Many ConfigurationPrintersTemplates
-        SYS_ConfigurationPrintersTemplates fTemplate;
+        sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesArticle")]
-        public SYS_ConfigurationPrintersTemplates Template
+        public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<SYS_ConfigurationPrintersTemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
         }
     }
 }

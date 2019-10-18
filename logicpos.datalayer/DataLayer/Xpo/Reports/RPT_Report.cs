@@ -10,15 +10,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
     }
 
     [DeferredDeletion(false)]
-    public class RPT_Report : XPGuidObject
+    public class rpt_report : XPGuidObject
     {
-        public RPT_Report() : base() { }
-        public RPT_Report(Session session) : base(session) { }
+        public rpt_report() : base() { }
+        public rpt_report(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(RPT_Report), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(RPT_Report), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(rpt_report), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(rpt_report), "Code");
         }
 
         UInt32 fOrd;
@@ -82,12 +82,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ReportType One <> Many Report
-        RPT_ReportType fReportType;
+        rpt_reporttype fReportType;
         [Association(@"ReportTypeReferencesReport")]
-        public RPT_ReportType ReportType
+        public rpt_reporttype ReportType
         {
             get { return fReportType; }
-            set { SetPropertyValue<RPT_ReportType>("ReportType", ref fReportType, value); }
+            set { SetPropertyValue<rpt_reporttype>("ReportType", ref fReportType, value); }
         }
     }
 }

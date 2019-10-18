@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceSeries : XPGuidObject
+    public class fin_documentfinanceseries : XPGuidObject
     {
-        public FIN_DocumentFinanceSeries() : base() { }
-        public FIN_DocumentFinanceSeries(Session session) : base(session) { }
+        public fin_documentfinanceseries() : base() { }
+        public fin_documentfinanceseries(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID("FIN_DocumentFinanceSeries", "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID("FIN_DocumentFinanceSeries", "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID("fin_documentfinanceseries", "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID("fin_documentfinanceseries", "Code");
         }
 
         UInt32 fOrd;
@@ -68,42 +68,42 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceSeries
-        FIN_DocumentFinanceType fDocumentType;
+        fin_documentfinancetype fDocumentType;
         [Association(@"DocumentFinanceTypeReferencesDocumentFinanceSeries")]
-        public FIN_DocumentFinanceType DocumentType
+        public fin_documentfinancetype DocumentType
         {
             get { return fDocumentType; }
-            set { SetPropertyValue<FIN_DocumentFinanceType>("DocumentType", ref fDocumentType, value); }
+            set { SetPropertyValue<fin_documentfinancetype>("DocumentType", ref fDocumentType, value); }
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceSeries
-        FIN_DocumentFinanceYears fFiscalYear;
+        fin_documentfinanceyears fFiscalYear;
         [Association(@"DocumentFinanceYearsReferencesDocumentFinanceSeries")]
-        public FIN_DocumentFinanceYears FiscalYear
+        public fin_documentfinanceyears FiscalYear
         {
             get { return fFiscalYear; }
-            set { SetPropertyValue<FIN_DocumentFinanceYears>("FiscalYear", ref fFiscalYear, value); }
+            set { SetPropertyValue<fin_documentfinanceyears>("FiscalYear", ref fFiscalYear, value); }
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinanceYearSerieTerminal
-        [Association(@"DocumentFinanceSeriesReferencesDFYearSerieTerminal", typeof(FIN_DocumentFinanceYearSerieTerminal))]
-        public XPCollection<FIN_DocumentFinanceYearSerieTerminal> YearSerieTerminal
+        [Association(@"DocumentFinanceSeriesReferencesDFYearSerieTerminal", typeof(fin_documentfinanceyearserieterminal))]
+        public XPCollection<fin_documentfinanceyearserieterminal> YearSerieTerminal
         {
-            get { return GetCollection<FIN_DocumentFinanceYearSerieTerminal>("YearSerieTerminal"); }
+            get { return GetCollection<fin_documentfinanceyearserieterminal>("YearSerieTerminal"); }
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinanceMaster
-        [Association(@"DocumentFinanceSeriesReferencesDocumentFinanceMaster", typeof(FIN_DocumentFinanceMaster))]
-        public XPCollection<FIN_DocumentFinanceMaster> DocumentMaster
+        [Association(@"DocumentFinanceSeriesReferencesDocumentFinanceMaster", typeof(fin_documentfinancemaster))]
+        public XPCollection<fin_documentfinancemaster> DocumentMaster
         {
-            get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentMaster"); }
+            get { return GetCollection<fin_documentfinancemaster>("DocumentMaster"); }
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinancePayment
-        [Association(@"DocumentFinanceSeriesReferencesDocumentFinancePayment", typeof(FIN_DocumentFinancePayment))]
-        public XPCollection<FIN_DocumentFinanceMaster> DocumentPayment
+        [Association(@"DocumentFinanceSeriesReferencesDocumentFinancePayment", typeof(fin_documentfinancepayment))]
+        public XPCollection<fin_documentfinancemaster> DocumentPayment
         {
-            get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentPayment"); }
+            get { return GetCollection<fin_documentfinancemaster>("DocumentPayment"); }
         }
     }
 }

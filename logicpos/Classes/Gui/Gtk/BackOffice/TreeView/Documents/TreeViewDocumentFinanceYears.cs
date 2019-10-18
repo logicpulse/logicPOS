@@ -25,17 +25,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewDocumentFinanceYears(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(FIN_DocumentFinanceYears);
+            Type xpoGuidObjectType = typeof(fin_documentfinanceyears);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            FIN_DocumentFinanceYears defaultValue = (pDefaultValue != null) ? pDefaultValue as FIN_DocumentFinanceYears : null;
+            fin_documentfinanceyears defaultValue = (pDefaultValue != null) ? pDefaultValue as fin_documentfinanceyears : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogDocumentFinanceYears);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalYear") { Title = Resx.global_fiscal_year });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalYear") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year") });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model : Use Default Filter
             CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null)) ? CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)") : pXpoCriteria;
@@ -62,7 +62,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 //Get Current Active FinanceYear
-                FIN_DocumentFinanceYears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
+                fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
 
                 //If has Active FiscalYear, Show Warning Request to Close/Open
                 if (currentDocumentFinanceYear != null)
@@ -73,8 +73,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         new Size(600, 400),
                         MessageType.Question,
                         ButtonsType.YesNo,
-                        Resx.window_title_series_fiscal_year_close_current,
-                        string.Format(Resx.dialog_message_series_fiscal_year_close_current, currentDocumentFinanceYear.Designation)
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_series_fiscal_year_close_current"),
+                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_fiscal_year_close_current"), currentDocumentFinanceYear.Designation)
                     );
 
                     //Override Insert CRUD ShowDialog using SkipRecordInsert, this prevent create Record
@@ -125,14 +125,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     new Size(600, 400),
                     MessageType.Question,
                     ButtonsType.YesNo,
-                    Resx.window_title_series_create_series,
-                    Resx.dialog_message_series_create_document_type_series
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_document_type_series")
                 );
 
                 if (responseType == ResponseType.Yes)
                 {
                     //Get Current Active FinanceYear
-                    FIN_DocumentFinanceYears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
+                    fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
                     bool result = TreeViewDocumentFinanceSeries.UICreateDocumentFinanceYearSeriesTerminal(_sourceWindow, currentDocumentFinanceYear);
                 }
             }

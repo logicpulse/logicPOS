@@ -30,11 +30,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             /*00*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false });
             /*01*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Type = typeof(UInt32), Title = Resx.global_record_code });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Type = typeof(UInt32), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") });
             /*02*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = Resx.global_designation, Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
             /*03*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("HardwareId") { Type = typeof(String), Title = Resx.global_hardware_id, MinWidth = 200 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("HardwareId") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), MinWidth = 200 });
 
             //init DataTable
             DataTable dataTable = GetDataTable(columnProperties);

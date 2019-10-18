@@ -24,18 +24,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private Entry _entryThermalOpenDrawerValueT1;
         private Entry _entryThermalOpenDrawerValueT2;
 
-        private SYS_ConfigurationPrinters _configurationPrinter;
+        private sys_configurationprinters _configurationPrinter;
 
         public DialogConfigurationPrinters(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(Resx.window_title_edit_dialogconfigurationprinters);
+            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinters"));
             SetSizeRequest(500, 448);
             InitUI();
             InitNotes();
             ShowAll();
             //Tab Visibility Require to be after ShowAll, else always is Visible
-            _configurationPrinter = (_dataSourceRow as SYS_ConfigurationPrinters);
+            _configurationPrinter = (_dataSourceRow as sys_configurationprinters);
             _vboxTab2.Visible = (_configurationPrinter.PrinterType != null && _configurationPrinter.PrinterType.ThermalPrinter);
         }
 
@@ -52,31 +52,31 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxLabel = new BOWidgetBox(Resx.global_record_order, entryOrd);
+                BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SettingsApp.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(Resx.global_record_code, entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SettingsApp.RegexIntegerGreaterThanZero, true));
 
                 //PrinterType
-                _xpoComboBoxPrinterType = new XPOComboBox(DataSourceRow.Session, typeof(SYS_ConfigurationPrintersType), (DataSourceRow as SYS_ConfigurationPrinters).PrinterType, "Designation");
-                BOWidgetBox boxPrinterType = new BOWidgetBox(Resx.global_printer_type, _xpoComboBoxPrinterType);
+                _xpoComboBoxPrinterType = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstype), (DataSourceRow as sys_configurationprinters).PrinterType, "Designation", null);
+                BOWidgetBox boxPrinterType = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_type"), _xpoComboBoxPrinterType);
                 vboxTab1.PackStart(boxPrinterType, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinterType, DataSourceRow, "PrinterType", SettingsApp.RegexGuid, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(Resx.global_designation, entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
 
                 //NetworkName
                 Entry entryNetworkName = new Entry();
-                BOWidgetBox boxNetworkName = new BOWidgetBox(Resx.global_networkname, entryNetworkName);
+                BOWidgetBox boxNetworkName = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_networkname"), entryNetworkName);
                 vboxTab1.PackStart(boxNetworkName, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxNetworkName, _dataSourceRow, "NetworkName", SettingsApp.RegexHardwarePrinterNetworkNameAndUsbEndpoint, false));
 
@@ -85,32 +85,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //ThermalMaxCharsPerLineNormal
                 _entryThermalMaxCharsPerLineNormal = new Entry();
-                BOWidgetBox boxThermalMaxCharsPerLineNormal = new BOWidgetBox(Resx.global_printer_thermal_max_chars_per_line_normal, _entryThermalMaxCharsPerLineNormal);
+                BOWidgetBox boxThermalMaxCharsPerLineNormal = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_max_chars_per_line_normal"), _entryThermalMaxCharsPerLineNormal);
                 _vboxTab2.PackStart(boxThermalMaxCharsPerLineNormal, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineNormal, _dataSourceRow, "ThermalMaxCharsPerLineNormal", SettingsApp.RegexInteger, true));
 
                 //ThermalMaxCharsPerLineNormalBold
                 _entryThermalMaxCharsPerLineNormalBold = new Entry();
-                BOWidgetBox boxThermalMaxCharsPerLineNormalBold = new BOWidgetBox(Resx.global_printer_thermal_max_chars_per_line_normal_bold, _entryThermalMaxCharsPerLineNormalBold);
+                BOWidgetBox boxThermalMaxCharsPerLineNormalBold = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_max_chars_per_line_normal_bold"), _entryThermalMaxCharsPerLineNormalBold);
                 _vboxTab2.PackStart(boxThermalMaxCharsPerLineNormalBold, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineNormalBold, _dataSourceRow, "ThermalMaxCharsPerLineNormalBold", SettingsApp.RegexInteger, true));
 
                 //ThermalMaxCharsPerLineSmall
                 _entryThermalMaxCharsPerLineSmall = new Entry();
-                BOWidgetBox boxThermalMaxCharsPerLineSmall = new BOWidgetBox(Resx.global_printer_thermal_max_chars_per_line_small, _entryThermalMaxCharsPerLineSmall);
+                BOWidgetBox boxThermalMaxCharsPerLineSmall = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_max_chars_per_line_small"), _entryThermalMaxCharsPerLineSmall);
                 _vboxTab2.PackStart(boxThermalMaxCharsPerLineSmall, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalMaxCharsPerLineSmall, _dataSourceRow, "ThermalMaxCharsPerLineSmall", SettingsApp.RegexInteger, true));
 
                 //ThermalEncoding
                 _entryThermalEncoding = new Entry();
-                BOWidgetBox boxThermalEncoding = new BOWidgetBox(Resx.global_printer_thermal_encoding, _entryThermalEncoding);
+                BOWidgetBox boxThermalEncoding = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_encoding"), _entryThermalEncoding);
                 //_vboxTab2.PackStart(boxThermalEncoding, false, false, 0);
                 hbox1.PackStart(boxThermalEncoding, true, true, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalEncoding, _dataSourceRow, "ThermalEncoding", SettingsApp.RegexAlfaNumeric, false));
 
                 //ThermalCutCommand
                 _entryThermalCutCommand = new Entry();
-                BOWidgetBox boxThermalCutCommand = new BOWidgetBox(Resx.global_printer_thermal_cut_command, _entryThermalCutCommand);
+                BOWidgetBox boxThermalCutCommand = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_cut_command"), _entryThermalCutCommand);
                 //_vboxTab2.PackStart(boxThermalCutCommand, false, false, 0);
                 hbox1.PackStart(boxThermalCutCommand, true, true, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalCutCommand, _dataSourceRow, "ThermalCutCommand", SettingsApp.RegexAlfaNumericExtended, false));
@@ -120,21 +120,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //ThermalOpenDrawerValueM
                 _entryThermalOpenDrawerValueM = new Entry();
-                BOWidgetBox boxThermalOpenDrawerValueM = new BOWidgetBox(Resx.global_printer_thermal_open_drawer_value_m, _entryThermalOpenDrawerValueM);
+                BOWidgetBox boxThermalOpenDrawerValueM = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_open_drawer_value_m"), _entryThermalOpenDrawerValueM);
                 //_vboxTab2.PackStart(boxThermalOpenDrawerValueM, false, false, 0);
                 hbox2.PackStart(boxThermalOpenDrawerValueM, true, true, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueM, _dataSourceRow, "ThermalOpenDrawerValueM", SettingsApp.RegexAlfaNumericExtended, false));
 
                 //ThermalOpenDrawerValueT1
                 _entryThermalOpenDrawerValueT1 = new Entry();
-                BOWidgetBox boxThermalOpenDrawerValueT1 = new BOWidgetBox(Resx.global_printer_thermal_open_drawer_value_t1, _entryThermalOpenDrawerValueT1);
+                BOWidgetBox boxThermalOpenDrawerValueT1 = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_open_drawer_value_t1"), _entryThermalOpenDrawerValueT1);
                 //_vboxTab2.PackStart(boxThermalOpenDrawerValueT1, false, false, 0);
                 hbox2.PackStart(boxThermalOpenDrawerValueT1, true, true, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueT1, _dataSourceRow, "ThermalOpenDrawerValueT1", SettingsApp.RegexAlfaNumericExtended, false));
 
                 //ThermalOpenDrawerValueT2
                 _entryThermalOpenDrawerValueT2 = new Entry();
-                BOWidgetBox boxThermalOpenDrawerValueT2 = new BOWidgetBox(Resx.global_printer_thermal_open_drawer_value_t2, _entryThermalOpenDrawerValueT2);
+                BOWidgetBox boxThermalOpenDrawerValueT2 = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_open_drawer_value_t2"), _entryThermalOpenDrawerValueT2);
                 //_vboxTab2.PackStart(boxThermalOpenDrawerValueT2, false, false, 0);
                 hbox2.PackStart(boxThermalOpenDrawerValueT2, true, true, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalOpenDrawerValueT2, _dataSourceRow, "ThermalOpenDrawerValueT2", SettingsApp.RegexAlfaNumericExtended, false));
@@ -144,12 +144,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //ThermalPrintLogo
                 _entryThermalImageCompanyLogo = new Entry();
-                BOWidgetBox boxThermalImageCompanyLogo = new BOWidgetBox(Resx.global_printer_thermal_image_company_logo, _entryThermalImageCompanyLogo);
+                BOWidgetBox boxThermalImageCompanyLogo = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_image_company_logo"), _entryThermalImageCompanyLogo);
                 _vboxTab2.PackStart(boxThermalImageCompanyLogo, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalImageCompanyLogo, _dataSourceRow, "ThermalImageCompanyLogo", SettingsApp.RegexAlfaNumericFilePath, false));
 
                 //ThermalPrintLogo
-                CheckButton checkButtonThermalPrintLogo = new CheckButton(Resx.global_printer_thermal_print_logo);
+                CheckButton checkButtonThermalPrintLogo = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_print_logo"));
                 _vboxTab2.PackStart(checkButtonThermalPrintLogo, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonThermalPrintLogo, _dataSourceRow, "ThermalPrintLogo"));
 
@@ -157,14 +157,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _xpoComboBoxPrinterType.Changed += XpoComboBoxPrinterType_Changed;
 
                 //Disabled
-                CheckButton checkButtonDisabled = new CheckButton(Resx.global_record_disabled);
+                CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));
                 if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = SettingsApp.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(Resx.global_record_main_detail));
-                _notebook.AppendPage(_vboxTab2, new Label(Resx.global_record_main_properties));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
+                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_properties")));
             }
             catch (System.Exception ex)
             {
@@ -179,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _log.Debug(string.Format("Message: [{0}]", _xpoComboBoxPrinterType.Value));
 
                 //Tab Visibility
-                _vboxTab2.Visible = (_xpoComboBoxPrinterType.Value != null && (_xpoComboBoxPrinterType.Value as SYS_ConfigurationPrintersType).ThermalPrinter);
+                _vboxTab2.Visible = (_xpoComboBoxPrinterType.Value != null && (_xpoComboBoxPrinterType.Value as sys_configurationprinterstype).ThermalPrinter);
 
                 // If Working in ThermalPrinter assign Defaults From Config
                 if (_vboxTab2.Visible)

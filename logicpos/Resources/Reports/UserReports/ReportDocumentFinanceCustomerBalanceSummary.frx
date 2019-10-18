@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="09/07/2018 10:24:01" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+  <Dictionary>
+    <BusinessObjectDataSource Name="CustomerBalanceSummary" ReferenceName="CustomerBalanceSummary" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Documents.FRBODocumentFinanceCustomerBalanceDetails, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="DocumentTypeOrd" DataType="System.UInt32"/>
+      <Column Name="DocumentTypeCode" DataType="System.UInt32"/>
+      <Column Name="DocumentType" DataType="System.String"/>
+      <Column Name="EntityOid" DataType="System.String"/>
+      <Column Name="EntityName" DataType="System.String"/>
+      <Column Name="EntityFiscalNumber" DataType="System.String"/>
+      <Column Name="DocumentDate" DataType="System.DateTime"/>
+      <Column Name="Date" DataType="System.DateTime"/>
+      <Column Name="DocumentNumber" DataType="System.String"/>
+      <Column Name="DocumentAmount" DataType="System.Decimal"/>
+      <Column Name="DocumentStatus" DataType="System.String"/>
+      <Column Name="Credit" DataType="System.Decimal"/>
+      <Column Name="Debit" DataType="System.Decimal"/>
+      <Column Name="PaymentDocumentReference" DataType="System.String"/>
+      <Column Name="Balance" DataType="System.Decimal"/>
+      <Column Name="CustomerSinceDate" DataType="System.DateTime"/>
+      <Column Name="ConsolidatedCredit" DataType="System.Decimal"/>
+      <Column Name="ConsolidatedDebit" DataType="System.Decimal"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title"      DataType="System.String"/>
+    <Parameter Name="Report SubTitle"   DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Parameter Name="Report Filter"     DataType="System.String"/>
+
+    <Total Name="RecordCountFinal" Evaluator="Data" PrintOn="CustomerBalanceDetailsReportSummary" ResetAfterPrint="false" TotalType="Count"/>
+    <Total Name="TotalCreditFinal" Evaluator="Data" PrintOn="CustomerBalanceDetailsReportSummary" ResetAfterPrint="false" Expression="[CustomerBalanceSummary.TotalCredit]" />
+    <Total Name="TotalDebitFinal"  Evaluator="Data" PrintOn="CustomerBalanceDetailsReportSummary" ResetAfterPrint="false" Expression="[CustomerBalanceSummary.TotalDebit]"  />
+  </Dictionary>
+  
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
+      <inherited  Name="PictureCompanyLogo"/>
+      <inherited  Name="TextReportTitle" Height="28.35" Text="[Report Title]"  VertAlign="Center"/>
+      <TextObject Name="TextReportFilter" ZOrder="2" Left="198.45" Top="28.35" Width="519.75" Height="18.90" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt" Wysiwyg="true"/>
+    </inherited>
+
+      <DataBand Name="Data" Top="127.15" Width="718.2" Height="18.9" CanGrow="true" EvenStyle="EvenRow" DataSource="CustomerBalanceSummary" KeepTogether="true">
+        <DataHeaderBand Name="DataHeader" Top="94.8" Width="718.20" Height="28.35" Border.Lines="Top">
+          <TextObject   Name="LabelGlobalDate"                    Top="9.45" Width="080.60" Height="18.90" Text="[Res(&quot;report_customer_balance_details_customer_since&quot;)]" HorzAlign="Center" VertAlign="Bottom" Wysiwyg="true" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject   Name="LabelEntityFiscalNum" Left="080.60" Top="9.45" Width="105.95" Height="18.90" Text="[Res(&quot;global_fiscal_number&quot;)]"   HorzAlign="Center" VertAlign="Bottom" Wysiwyg="true" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject   Name="LabelEntityName"      Left="186.55" Top="9.45" Width="204.80" Height="18.90" Text="[Res(&quot;global_name&quot;)]"            HorzAlign="Center" VertAlign="Bottom" Wysiwyg="true" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject   Name="LabelGlobalCredit"    Left="391.35" Top="9.45" Width="108.95" Height="18.90" Text="[Res(&quot;global_credit&quot;)]"          HorzAlign="Center" VertAlign="Bottom" Wysiwyg="true" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject   Name="LabelGlobalDebit"     Left="500.30" Top="9.45" Width="108.95" Height="18.90" Text="[Res(&quot;global_debit&quot;)]"           HorzAlign="Center" VertAlign="Bottom" Wysiwyg="true" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+          <TextObject   Name="LabelFinalBalance"    Left="609.25" Top="9.45" Width="108.95" Height="18.90" Text="[Res(&quot;report_account_balance&quot;)]" HorzAlign="Center" VertAlign="Bottom" Wysiwyg="true" Style="DataFontBold" Border.Lines="Bottom" Border.Color="Silver" Fill.Color="WhiteSmoke"/>
+        </DataHeaderBand>
+
+        <TextObject     Name="ValueGlobalDate"                     Width="080.60"  Height="18.9" Text="[FormatDateTime([CustomerBalanceSummary.CustomerSinceDate], &quot;Short Date&quot;)]" HorzAlign="Center" VertAlign="Center" Wysiwyg="false" Style="DataFont"/>
+        <TextObject     Name="ValueEntityFiscalNum" Left="080.60"  Width="105.95"  Height="18.9" Text="[CustomerBalanceSummary.EntityFiscalNumber]"            HorzAlign="Center" VertAlign="Center" Wysiwyg="false" Style="DataFont"/>
+        <TextObject     Name="ValueEntityName"      Left="186.55"  Width="204.80"  Height="18.9" Text="[CustomerBalanceSummary.EntityName]"                    HorzAlign="Left"   VertAlign="Center" Wysiwyg="false" Style="DataFont" Trimming="EllipsisCharacter" WordWrap="false"/>
+        <TextObject     Name="ValueGlobalCredit"    Left="391.35"  Width="108.95"  Height="18.9" Text="[FormatNumber([CustomerBalanceSummary.TotalCredit],2)]" HorzAlign="Right"  VertAlign="Center" Wysiwyg="false" Style="DataFont"/>
+        <TextObject     Name="ValueGlobalDebit"     Left="500.30"  Width="108.95"  Height="18.9" Text="[FormatNumber([CustomerBalanceSummary.TotalDebit],2)]"  HorzAlign="Right"  VertAlign="Center" Wysiwyg="false" Style="DataFont"/>
+        <TextObject     Name="ValueFinalBalance"    Left="609.25"  Width="108.95"  Height="18.9" Text="[Format(&quot;{0:#,##0.00;(#,##0.00);'0,00'}&quot;,ToDouble(ToDouble([CustomerBalanceSummary.TotalCredit]) - ToDouble([CustomerBalanceSummary.TotalDebit])))]" HorzAlign="Right" VertAlign="Center" Wysiwyg="false" Style="DataFont"  Padding="1px,10px,1px,1px">
+          <Highlight>
+            <Condition Expression="ToDouble(ToDouble([CustomerBalanceSummary.TotalCredit]) - ToDouble([CustomerBalanceSummary.TotalDebit])) &lt; 0"/>
+          </Highlight>
+        </TextObject>
+      </DataBand>
+    
+    <ReportSummaryBand Name="CompanyBalanceDetailsReportSummary"                     Width="718.20" Height="94.5" ZOrder="-1" Bottom="250.82">
+      <TextObject      Name="LabelGlobalRecordCountFinal"                 Top="18.9" Width="609.25" Height="18.9" Text="[Res(&quot;report_total_record_count&quot;)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject      Name="LabelGlobalTotalCreditFinal"                 Top="37.8" Width="609.25" Height="18.9" Text="[Res(&quot;report_total_credit&quot;)]"       HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject      Name="LabelGlobalTotalDebitFinal"                  Top="56.7" Width="609.25" Height="18.9" Text="[Res(&quot;report_total_debit&quot;)]"        HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+      <TextObject      Name="LabelGlobalCustomerBalanceDetailsTotalFinal" Top="75.6" Width="609.25" Height="18.9" Text="[Res(&quot;report_final_balance&quot;)]"      HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFontBold"/>
+
+      <TextObject      Name="ValueGlobalRecordCountFinal"                 Left="609.25" Top="18.9" Width="108.95" Height="18.9" Text="[RecordCountFinal]"                   HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont"/>
+      <TextObject      Name="ValueGlobalTotalCreditFinal"                 Left="609.25" Top="37.8" Width="108.95" Height="18.9" Text="[FormatNumber([TotalCreditFinal],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont"/>
+      <TextObject      Name="ValueGlobalTotalDebitFinal"                  Left="609.25" Top="56.7" Width="108.95" Height="18.9" Text="[FormatNumber([TotalDebitFinal],2)]"  HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont"/>
+      <TextObject      Name="ValueGlobalCustomerBalanceDetailsTotalFinal" Left="609.25" Top="75.6" Width="108.95" Height="18.9" Text="[Format(&quot;{0:#,##0.00;(#,##0.00);'0,00'}&quot;,ToDouble([TotalCreditFinal]-[TotalDebitFinal]))]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont" UseLocale="false">
+        <Highlight>
+          <Condition Expression="ToDouble([TotalCreditFinal]-[TotalDebitFinal]) &lt; 0"/>
+        </Highlight>
+      </TextObject>
+    </ReportSummaryBand>
+  
+    <inherited Name="PageFooter1" Top="229.65" Height="56.7">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>

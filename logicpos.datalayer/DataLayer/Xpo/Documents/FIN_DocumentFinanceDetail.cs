@@ -5,10 +5,10 @@ using logicpos.datalayer.Enums;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_DocumentFinanceDetail : XPGuidObject
+    public class fin_documentfinancedetail : XPGuidObject
     {
-        public FIN_DocumentFinanceDetail() : base() { }
-        public FIN_DocumentFinanceDetail(Session session) : base(session) { }
+        public fin_documentfinancedetail() : base() { }
+        public fin_documentfinancedetail(Session session) : base(session) { }
 
         UInt32 fOrd;
         public UInt32 Ord
@@ -146,53 +146,53 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many DocumentFinanceDetail
-        FIN_DocumentFinanceMaster fDocumentMaster;
+        fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesDocumentFinanceDetail")]
-        public FIN_DocumentFinanceMaster DocumentMaster
+        public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
-            set { SetPropertyValue<FIN_DocumentFinanceMaster>("DocumentMaster", ref fDocumentMaster, value); }
+            set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
         }
 
         //Article One <> Many DocumentOrderDetail
-        FIN_Article fArticle;
+        fin_article fArticle;
         [Association(@"ArticleReferencesDocumentDocumentFinanceDetail")]
-        public FIN_Article Article
+        public fin_article Article
         {
             get { return fArticle; }
-            set { SetPropertyValue<FIN_Article>("Article", ref fArticle, value); }
+            set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
         }
 
         //ConfigurationVatRate One <> Many DocumentOrderDetail
-        FIN_ConfigurationVatRate fVatRate;
+        fin_configurationvatrate fVatRate;
         [Association(@"ConfigurationVatRateReferencesDocumentDocumentFinanceDetail")]
-        public FIN_ConfigurationVatRate VatRate
+        public fin_configurationvatrate VatRate
         {
             get { return fVatRate; }
-            set { SetPropertyValue<FIN_ConfigurationVatRate>("VatRate", ref fVatRate, value); }
+            set { SetPropertyValue<fin_configurationvatrate>("VatRate", ref fVatRate, value); }
         }
 
         //ConfigurationVatExemptionReason One <> Many DocumentOrderDetail
-        FIN_ConfigurationVatExemptionReason fVatExemptionReason;
+        fin_configurationvatexemptionreason fVatExemptionReason;
         [Association(@"ConfigurationVatExemptionReasonReferencesDocumentDocumentFinanceDetail")]
-        public FIN_ConfigurationVatExemptionReason VatExemptionReason
+        public fin_configurationvatexemptionreason VatExemptionReason
         {
             get { return fVatExemptionReason; }
-            set { SetPropertyValue<FIN_ConfigurationVatExemptionReason>("VatExemptionReason", ref fVatExemptionReason, value); }
+            set { SetPropertyValue<fin_configurationvatexemptionreason>("VatExemptionReason", ref fVatExemptionReason, value); }
         }
 
         //DocumentFinanceDetail One <> Many DocumentFinanceDetailReferencesDocumentFinanceDetailOrderReference
-        [Association(@"DocumentFinanceDetailReferencesDocumentFinanceDetailOrderReference", typeof(FIN_DocumentFinanceDetailOrderReference))]
-        public XPCollection<FIN_DocumentFinanceDetailOrderReference> OrderReferences
+        [Association(@"DocumentFinanceDetailReferencesDocumentFinanceDetailOrderReference", typeof(fin_documentfinancedetailorderreference))]
+        public XPCollection<fin_documentfinancedetailorderreference> OrderReferences
         {
-            get { return GetCollection<FIN_DocumentFinanceDetailOrderReference>("OrderReferences"); }
+            get { return GetCollection<fin_documentfinancedetailorderreference>("OrderReferences"); }
         }
 
         //DocumentFinanceDetail One <> Many DocumentFinanceDetailReference
-        [Association(@"DocumentFinanceDetailReferencesDocumentFinanceDetailReference", typeof(FIN_DocumentFinanceDetailReference))]
-        public XPCollection<FIN_DocumentFinanceDetailReference> References
+        [Association(@"DocumentFinanceDetailReferencesDocumentFinanceDetailReference", typeof(fin_documentfinancedetailreference))]
+        public XPCollection<fin_documentfinancedetailreference> References
         {
-            get { return GetCollection<FIN_DocumentFinanceDetailReference>("References"); }
+            get { return GetCollection<fin_documentfinancedetailreference>("References"); }
         }
     }
 }

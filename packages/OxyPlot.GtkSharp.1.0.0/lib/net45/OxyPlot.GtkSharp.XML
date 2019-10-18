@@ -1,0 +1,552 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OxyPlot.GtkSharp</name>
+    </assembly>
+    <members>
+        <member name="T:OxyPlot.GtkSharp.PlotView">
+            <summary>
+            Represents a control that displays a <see cref="T:OxyPlot.PlotModel" />.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.OxyPlotCategory">
+            <summary>
+            The category for the properties of this control.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.invalidateLock">
+            <summary>
+            The invalidate lock.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.modelLock">
+            <summary>
+            The model lock.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.renderingLock">
+            <summary>
+            The rendering lock.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.renderContext">
+            <summary>
+            The render context.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.trackerLabel">
+            <summary>
+            The tracker label
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.currentModel">
+            <summary>
+            The current model (holding a reference to this plot view).
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.isModelInvalidated">
+            <summary>
+            The is model invalidated.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.model">
+            <summary>
+            The model.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.updateDataFlag">
+            <summary>
+            The update data flag.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.zoomRectangle">
+            <summary>
+            The zoom rectangle.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.PlotView.defaultController">
+            <summary>
+            The default controller
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:OxyPlot.GtkSharp.PlotView" /> class.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.Model">
+            <summary>
+            Gets or sets the model.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.OxyPlot#IView#ActualModel">
+            <summary>
+            Gets the actual <see cref="T:OxyPlot.Model" /> of the control.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.ActualModel">
+            <summary>
+            Gets the actual <see cref="T:OxyPlot.PlotModel" /> of the control.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.OxyPlot#IView#ActualController">
+            <summary>
+            Gets the actual controller.
+            </summary>
+            <value>
+            The actual <see cref="T:OxyPlot.IController" />.
+            </value>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.ClientArea">
+            <summary>
+            Gets the coordinates of the client area of the view.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.ActualController">
+            <summary>
+            Gets the actual plot controller.
+            </summary>
+            <value>The actual plot controller.</value>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.Controller">
+            <summary>
+            Gets or sets the plot controller.
+            </summary>
+            <value>The controller.</value>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.PanCursor">
+            <summary>
+            Gets or sets the pan cursor.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.ZoomHorizontalCursor">
+            <summary>
+            Gets or sets the horizontal zoom cursor.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.ZoomRectangleCursor">
+            <summary>
+            Gets or sets the rectangle zoom cursor.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PlotView.ZoomVerticalCursor">
+            <summary>
+            Gets or sets the vertical zoom cursor.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.HideTracker">
+            <summary>
+            Hides the tracker.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.HideZoomRectangle">
+            <summary>
+            Hides the zoom rectangle.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.InvalidatePlot(System.Boolean)">
+            <summary>
+            Invalidates the plot (not blocking the UI thread)
+            </summary>
+            <param name="updateData">if set to <c>true</c>, all data collections will be updated.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnModelChanged">
+            <summary>
+            Called when the Model property has been changed.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.ShowTracker(OxyPlot.TrackerHitResult)">
+            <summary>
+            Shows the tracker.
+            </summary>
+            <param name="data">The data.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.ShowZoomRectangle(OxyPlot.OxyRect)">
+            <summary>
+            Shows the zoom rectangle.
+            </summary>
+            <param name="rectangle">The rectangle.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.SetClipboardText(System.String)">
+            <summary>
+            Sets the clipboard text.
+            </summary>
+            <param name="text">The text.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnButtonPressEvent(Gdk.EventButton)">
+            <summary>
+            Called when the mouse button is pressed.
+            </summary>
+            <param name="e">An instance that contains the event data.</param>
+            <returns><c>true</c> if the event was handled.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnMotionNotifyEvent(Gdk.EventMotion)">
+            <summary>
+            Called on mouse move events.
+            </summary>
+            <param name="e">An instance that contains the event data.</param>
+            <returns><c>true</c> if the event was handled.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnButtonReleaseEvent(Gdk.EventButton)">
+            <summary>
+            Called when the mouse button is released.
+            </summary>
+            <param name="e">An instance that contains the event data.</param>
+            <returns><c>true</c> if the event was handled.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnScrollEvent(Gdk.EventScroll)">
+            <summary>
+            Called when the mouse wheel is scrolled.
+            </summary>
+            <param name="e">An instance that contains the event data.</param>
+            <returns><c>true</c> if the event was handled.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnEnterNotifyEvent(Gdk.EventCrossing)">
+            <summary>
+            Called when the mouse enters the widget.
+            </summary>
+            <param name="e">An instance that contains the event data.</param>
+            <returns><c>true</c> if the event was handled.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnLeaveNotifyEvent(Gdk.EventCrossing)">
+            <summary>
+            Called when the mouse leaves the widget.
+            </summary>
+            <param name="e">An instance that contains the event data.</param>
+            <returns><c>true</c> if the event was handled.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnKeyPressEvent(Gdk.EventKey)">
+            <summary>
+            Called on KeyPress event.
+            </summary>
+            <param name="e">An instance that contains the event data.</param>
+            <returns>True if event was handled?</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.DrawPlot(Cairo.Context)">
+            <summary>
+            Draws the plot to a cairo context within the specified bounds.
+            </summary>
+            <param name="cr">The cairo context to use for drawing.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.SetCursorType(OxyPlot.CursorType)">
+            <summary>
+            Sets the cursor type.
+            </summary>
+            <param name="cursorType">The cursor type.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotView.OnExposeEvent(Gdk.EventExpose)">
+            <summary>
+            Called when the plot view is exposed.
+            </summary>
+            <param name="evnt">The event data.</param>
+            <returns><c>true</c> if the event was handled, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="T:OxyPlot.GtkSharp.ConverterExtensions">
+            <summary>
+            Extension method used to convert to/from Windows/Windows.Media classes.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToLineJoin(OxyPlot.LineJoin)">
+            <summary>
+            Converts an <see cref="T:OxyPlot.LineJoin" /> to a <see cref="T:Cairo.LineJoin" />.
+            </summary>
+            <param name="lineJoin">The <see cref="T:OxyPlot.LineJoin" /> to convert.</param>
+            <returns>The converted value.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.SetSourceColor(Cairo.Context,OxyPlot.OxyColor)">
+            <summary>
+            Sets the source color for the Cairo context.
+            </summary>
+            <param name="g">The Cairo context.</param>
+            <param name="c">The color.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToPointD(OxyPlot.ScreenPoint,System.Boolean)">
+            <summary>
+            Converts a <see cref="T:OxyPlot.ScreenPoint" /> to a Cairo <see cref="T:Cairo.PointD" />.
+            </summary>
+            <param name="pt">The point to convert.</param>
+            <param name="aliased">Alias if set to <c>true</c>.</param>
+            <returns>The converted point.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToRect(OxyPlot.OxyRect,System.Boolean)">
+            <summary>
+            Converts an <see cref="T:OxyPlot.OxyRect" /> to a <see cref="T:Cairo.Rectangle" />.
+            </summary>
+            <param name="r">The rectangle.</param>
+            <param name="aliased">Use pixel alignment if set to <c>true</c>.</param>
+            <returns>The converted rectangle.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToOxyRect(Gdk.Rectangle,System.Boolean)">
+            <summary>
+            Converts an <see cref="T:Gdk.Rectangle" /> to a <see cref="T:OxyPlot.OxyRect" />.
+            </summary>
+            <param name="r">The rectangle.</param>
+            <param name="aliased">Use pixel alignment if set to <c>true</c>.</param>
+            <returns>The converted rectangle.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToScreenPoint(Cairo.Point)">
+            <summary>
+            Converts a point to a ScreenPoint.
+            </summary>
+            <param name="pt">The point.</param>
+            <returns>A screen point.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToMouseDownEventArgs(Gdk.EventButton)">
+            <summary>
+            Creates the mouse down event arguments.
+            </summary>
+            <param name="e">The instance containing the event data.</param>
+            <returns>Mouse event arguments.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToMouseUpEventArgs(Gdk.EventButton)">
+            <summary>
+            Creates the mouse up event arguments.
+            </summary>
+            <param name="e">The instance containing the event data.</param>
+            <returns>Mouse event arguments.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToMouseEventArgs(Gdk.EventMotion)">
+            <summary>
+            Creates the mouse event arguments.
+            </summary>
+            <param name="e">The motion event args.</param>
+            <returns>Mouse event arguments.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToMouseEventArgs(Gdk.EventCrossing)">
+            <summary>
+            Creates the mouse event arguments for an enter/leave event.
+            </summary>
+            <param name="e">The event crossing args.</param>
+            <returns>Mouse event arguments.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToMouseWheelEventArgs(Gdk.EventScroll)">
+            <summary>
+            Creates the mouse wheel event arguments.
+            </summary>
+            <param name="e">The scroll event args.</param>
+            <returns>Mouse event arguments.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ToKeyEventArgs(Gdk.EventKey)">
+            <summary>
+            Creates the key event arguments.
+            </summary>
+            <param name="e">The key event args.</param>
+            <returns>Key event arguments.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.Convert(Gdk.Key)">
+            <summary>
+            Converts the specified key.
+            </summary>
+            <param name="k">The key to convert.</param>
+            <returns>The converted key.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.ConvertButton(Gdk.EventButton)">
+            <summary>
+            Converts the changed button.
+            </summary>
+            <param name="e">The instance containing the event data.</param>
+            <returns>The mouse button.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.ConverterExtensions.GetModifiers(Gdk.ModifierType)">
+            <summary>
+            Converts a <see cref="T:Gdk.ModifierType" /> to a <see cref="T:OxyPlot.OxyModifierKeys" />.
+            </summary>
+            <param name="state">The state.</param>
+            <returns>The modifier keys.</returns>
+        </member>
+        <member name="T:OxyPlot.GtkSharp.GraphicsRenderContext">
+            <summary>
+            The graphics render context.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.GraphicsRenderContext.imageCache">
+            <summary>
+            The image cache.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.GraphicsRenderContext.imagesInUse">
+            <summary>
+            The images in use.
+            </summary>
+        </member>
+        <member name="F:OxyPlot.GtkSharp.GraphicsRenderContext.g">
+            <summary>
+            The GDI+ drawing surface.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.SetGraphicsTarget(Cairo.Context)">
+            <summary>
+            Sets the graphics target.
+            </summary>
+            <param name="graphics">The graphics surface.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.DrawEllipse(OxyPlot.OxyRect,OxyPlot.OxyColor,OxyPlot.OxyColor,System.Double)">
+            <summary>
+            Draws an ellipse.
+            </summary>
+            <param name="rect">The rectangle.</param>
+            <param name="fill">The fill color.</param>
+            <param name="stroke">The stroke color.</param>
+            <param name="thickness">The thickness.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.DrawLine(System.Collections.Generic.IList{OxyPlot.ScreenPoint},OxyPlot.OxyColor,System.Double,System.Double[],OxyPlot.LineJoin,System.Boolean)">
+            <summary>
+            Draws the line.
+            </summary>
+            <param name="points">The points.</param>
+            <param name="stroke">The stroke.</param>
+            <param name="thickness">The thickness.</param>
+            <param name="dashArray">The dash array.</param>
+            <param name="lineJoin">The line join.</param>
+            <param name="aliased">if set to <c>true</c> [aliased].</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.DrawPolygon(System.Collections.Generic.IList{OxyPlot.ScreenPoint},OxyPlot.OxyColor,OxyPlot.OxyColor,System.Double,System.Double[],OxyPlot.LineJoin,System.Boolean)">
+            <summary>
+            Draws the polygon.
+            </summary>
+            <param name="points">The points.</param>
+            <param name="fill">The fill.</param>
+            <param name="stroke">The stroke.</param>
+            <param name="thickness">The thickness.</param>
+            <param name="dashArray">The dash array.</param>
+            <param name="lineJoin">The line join.</param>
+            <param name="aliased">if set to <c>true</c> [aliased].</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.DrawRectangle(OxyPlot.OxyRect,OxyPlot.OxyColor,OxyPlot.OxyColor,System.Double)">
+            <summary>
+            Draws the rectangle.
+            </summary>
+            <param name="rect">The rectangle.</param>
+            <param name="fill">The fill color.</param>
+            <param name="stroke">The stroke color.</param>
+            <param name="thickness">The stroke thickness.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.DrawText(OxyPlot.ScreenPoint,System.String,OxyPlot.OxyColor,System.String,System.Double,System.Double,System.Double,OxyPlot.HorizontalAlignment,OxyPlot.VerticalAlignment,System.Nullable{OxyPlot.OxySize})">
+            <summary>
+            Draws the text.
+            </summary>
+            <param name="p">The p.</param>
+            <param name="text">The text.</param>
+            <param name="fill">The fill color.</param>
+            <param name="fontFamily">The font family.</param>
+            <param name="fontSize">Size of the font.</param>
+            <param name="fontWeight">The font weight.</param>
+            <param name="rotate">The rotation angle.</param>
+            <param name="halign">The horizontal alignment.</param>
+            <param name="valign">The vertical alignment.</param>
+            <param name="maxSize">The maximum size of the text.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.MeasureText(System.String,System.String,System.Double,System.Double)">
+            <summary>
+            The measure text.
+            </summary>
+            <param name="text">The text.</param>
+            <param name="fontFamily">The font family.</param>
+            <param name="fontSize">The font size.</param>
+            <param name="fontWeight">The font weight.</param>
+            <returns>The size of the text.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.CleanUp">
+            <summary>
+            The clean up.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.DrawImage(OxyPlot.OxyImage,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>
+            Draws the image.
+            </summary>
+            <param name="source">The source.</param>
+            <param name="srcX">The source executable.</param>
+            <param name="srcY">The source asynchronous.</param>
+            <param name="srcWidth">Width of the source.</param>
+            <param name="srcHeight">Height of the source.</param>
+            <param name="x">The executable.</param>
+            <param name="y">The asynchronous.</param>
+            <param name="w">The forward.</param>
+            <param name="h">The authentication.</param>
+            <param name="opacity">The opacity.</param>
+            <param name="interpolate">Interpolate if set to <c>true</c>.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.SetClip(OxyPlot.OxyRect)">
+            <summary>
+            Sets the clip rectangle.
+            </summary>
+            <param name="rect">The clip rectangle.</param>
+            <returns>True if the clip rectangle was set.</returns>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.ResetClip">
+            <summary>
+            Resets the clip rectangle.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.GraphicsRenderContext.GetImage(OxyPlot.OxyImage)">
+            <summary>
+            Gets the cached <see cref="T:Gdk.Pixbuf" /> of the specified <see cref="T:OxyPlot.OxyImage" />.
+            </summary>
+            <param name="source">The source image.</param>
+            <returns>The <see cref="T:Gdk.Pixbuf" />.</returns>
+        </member>
+        <member name="T:OxyPlot.GtkSharp.NamespaceDoc">
+            <summary>
+            The OxyPlot.GtkSharp namespace contains controls for GTK# and a png exporter.
+            </summary>
+        </member>
+        <member name="T:OxyPlot.GtkSharp.PlotModelExtensions">
+            <summary>
+            Provides extension methods to the <see cref="T:OxyPlot.PlotModel" />.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PlotModelExtensions.ToSvg(OxyPlot.PlotModel,System.Double,System.Double,System.Boolean)">
+            <summary>
+            Creates an SVG string.
+            </summary>
+            <param name="model">The model.</param>
+            <param name="width">The width (points).</param>
+            <param name="height">The height (points).</param>
+            <param name="isDocument">if set to <c>true</c>, the xml headers will be included (?xml and !DOCTYPE).</param>
+            <returns>A <see cref="T:System.String" />.</returns>
+        </member>
+        <member name="T:OxyPlot.GtkSharp.PngExporter">
+            <summary>
+            Provides a png exporter based on GTK#.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PngExporter.Width">
+            <summary>
+            Gets or sets the width of the output image.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PngExporter.Height">
+            <summary>
+            Gets or sets the height of the output image.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PngExporter.Resolution">
+            <summary>
+            Gets or sets the resolution of the output image.
+            </summary>
+        </member>
+        <member name="P:OxyPlot.GtkSharp.PngExporter.Background">
+            <summary>
+            Gets or sets the background color.
+            </summary>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PngExporter.Export(OxyPlot.IPlotModel,System.String,System.Int32,System.Int32,Cairo.Pattern)">
+            <summary>
+            Exports the specified <see cref="T:OxyPlot.PlotModel" /> to a png file.
+            </summary>
+            <param name="model">The model.</param>
+            <param name="fileName">Name of the output file.</param>
+            <param name="width">The width.</param>
+            <param name="height">The height.</param>
+            <param name="background">The background color.</param>
+        </member>
+        <member name="M:OxyPlot.GtkSharp.PngExporter.Export(OxyPlot.IPlotModel,System.IO.Stream)">
+            <summary>
+            Exports the specified <see cref="T:OxyPlot.PlotModel" /> to the specified <see cref="T:System.IO.Stream" />.
+            </summary>
+            <param name="model">The model.</param>
+            <param name="stream">The output stream.</param>
+        </member>
+    </members>
+</doc>

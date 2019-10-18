@@ -38,17 +38,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             /*00*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false });
             /*01*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Type = typeof(String), Title = Resx.global_record_code });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") });
             /*02*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = Resx.global_designation, Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
             /*03*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Title = Resx.global_price, MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency });
+            columnProperties.Add(new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency });
             /*04*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Vat") { Type = typeof(Decimal), Title = Resx.global_vat_rate, MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Vat") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
             /*05*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = Resx.global_discount, MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
             /*06*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Place") { Type = typeof(String), Title = Resx.global_placetable_place });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Place") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_placetable_place") });
             //Other Invisible Fields
             /*07*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Visible = false });
@@ -92,10 +92,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Init Local Vars
             DataTable resultDataTable = new DataTable();
             Type dataTableColumnType;
-            FIN_Article article;
+            fin_article article;
             OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
             ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
-            POS_ConfigurationPlace configurationPlace;
+            pos_configurationplace configurationPlace;
 
             //Add Columns with specific Types From Column Properties
             foreach (GenericTreeViewColumnProperty column in pColumnProperties)
@@ -110,10 +110,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Start Loop
             foreach (var item in articleBag)
             {
-                article = (FIN_Article)FrameworkUtils.GetXPGuidObject(typeof(FIN_Article), item.Key.ArticleOid);
+                article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
                 if (article.Type.HavePrice)
                 {
-                    configurationPlace = (POS_ConfigurationPlace)FrameworkUtils.GetXPGuidObject(typeof(POS_ConfigurationPlace), item.Value.PlaceOid);
+                    configurationPlace = (pos_configurationplace)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplace), item.Value.PlaceOid);
 
                     for (int i = 0; i < item.Value.Quantity; i++)
                     {

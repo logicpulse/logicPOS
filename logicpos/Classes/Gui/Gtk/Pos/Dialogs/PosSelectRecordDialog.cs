@@ -12,6 +12,7 @@ using System.Data;
 using System.Drawing;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -26,6 +27,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //UI
         private TouchButtonIconWithText _buttonOk;
         private TouchButtonIconWithText _buttonCancel;
+        //Add button more for default dialog windows
+        //private ResponseType _responseTypeLoadMoreDocuments = (ResponseType)80;
+        //private ResponseType _responseTypeFilter = (ResponseType)81;
+
         //Public
         //Store GerericTreeView Type
         private T3 _genericTreeView;
@@ -68,12 +73,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //We can use InitObject Here because we dont have pColumnProperties, pDataSource and pDialogType
                 //We must create instance with Activator to use Generic parameter constructors, and Send it to InitObject
-                _genericTreeView = (T3)Activator.CreateInstance(typeof(T3), new object[] { 
-                    pSourceWindow, 
-                    pDefaultValue, 
+                _genericTreeView = (T3)Activator.CreateInstance(typeof(T3), new object[] {
+                    pSourceWindow,
+                    pDefaultValue,
                     pXpoCriteria,
                     null,          //DialogType
-                    pGenericTreeViewMode, 
+                    pGenericTreeViewMode,
                     GenericTreeViewNavigatorMode.HideToolBar
                 });
 
@@ -105,13 +110,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //We must create instance with Activator to use Generic parameter constructors, and Send it to InitObject
             try
             {
-                _genericTreeView = (T3)Activator.CreateInstance(typeof(T3), new object[] 
-                { 
-                    pSourceWindow, 
+                _genericTreeView = (T3)Activator.CreateInstance(typeof(T3), new object[]
+                {
+                    pSourceWindow,
                     pDefaultValue, 
                     //null,         //Not Used in DataTable
                     null,           //DialogType
-                    pGenericTreeViewMode, 
+                    pGenericTreeViewMode,
                     GenericTreeViewNavigatorMode.HideToolBar
                 });
 
@@ -141,7 +146,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Size windowSize = pSize;// new Size(900, 700);
             _genericTreeView = pGenericTreeView;
             _genericTreeViewMode = pGenericTreeViewMode;
-            _actionAreaButtons = (pActionAreaButtons != null) ? pActionAreaButtons : GetDefaultActionAreaButtons();
+            //_actionAreaButtons = (pActionAreaButtons != null) ? pActionAreaButtons : GetDefaultActionAreaButtons();
+            _actionAreaButtons = pActionAreaButtons;
 
             //Init Local Vars
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
@@ -152,6 +158,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _genericTreeView.AllowRecordUpdate = false;
             //Format Columns FontSizes for Touch
             _genericTreeView.FormatColumnPropertiesForTouch();
+
 
             //Init Content
             Fixed fixedContent = new Fixed();
@@ -170,15 +177,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public ActionAreaButtons GetDefaultActionAreaButtons()
         {
+            //string fileActionMore = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_more.png");
+            //string fileActionFilter = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_filter.png");
+            //TouchButtonIconWithText _buttonMore = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.More, "touchButtonMore_Grey", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_more, SettingsApp.PaginationRowsPerPage), fileActionMore);
+            //TouchButtonIconWithText _buttonFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Filter, "touchButtonMore_Green", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter, SettingsApp.PaginationRowsPerPage), fileActionFilter);
+            //_buttonMore.Clicked += _genericTreeView_ButtonMoreClicked;
+            
             //Default ActionArea Buttons
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-			_buttonOk.Sensitive = false;
+            _buttonOk.Sensitive = false;
+
             //ActionArea Buttons
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
+            //actionAreaButtons.Add(new ActionAreaButton(_buttonMore, _responseTypeLoadMoreDocuments));
+            //actionAreaButtons.Add(new ActionAreaButton(_buttonFilter, _responseTypeFilter));
             actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
-
             return actionAreaButtons;
         }
 
@@ -186,9 +201,33 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (CursorChanged != null) CursorChanged(sender, e);
 
+            //If button more clicked
+            if (_genericTreeView.Navigator.TreeViewSearch.Button_MoreResponse())
+            {
+                _genericTreeView.Navigator.TreeViewSearch.flagMore = false;
+                _genericTreeView.Navigator.TreeViewSearch.Button_FilterResponse();
+                GenericTreeView.CurrentPageNumber++;
+                Respond((int)DialogResponseType.LoadMore);
+            }
+
+            //If filter more clicked
+            if (_genericTreeView.Navigator.TreeViewSearch.Button_FilterResponse())
+            {
+                _genericTreeView.Navigator.TreeViewSearch.flagFilter = false;
+                _genericTreeView.Navigator.TreeViewSearch.Button_FilterResponse();
+                Respond((int)DialogResponseType.Filter);
+            }
+
             //if Default Action Area Buttons with buttonOk, else we catch event outside and enable buttons outside
             if (_buttonOk != null && _genericTreeView.DataSourceRow != null) _buttonOk.Sensitive = true;
         }
+
+        //public void _genericTreeView_ButtonMoreClicked(object sender, EventArgs e)
+        //{
+        //    GenericTreeView.CurrentPageNumber++;
+        //    GenericTreeView.DataSource.TopReturnedObjects = (SettingsApp.PaginationRowsPerPage * _currentPage);
+        //    GenericTreeView.Refresh();
+        //}
 
         void _genericTreeView_CheckBoxToggled(object sender, EventArgs e)
         {
@@ -237,7 +276,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               new PosSelectRecordDialog<T1, T2, T3>(
                 pSourceWindow,
                 DialogFlags.DestroyWithParent,
-                Resx.window_title_dialog_select_record,
+                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
                 GlobalApp.MaxWindowSize,
                 null, //pDefaultValue : Require to Send a DataRow
                 GenericTreeViewMode.CheckBox,
@@ -266,8 +305,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //string designation = (string)(_dialogSelectRecord.GenericTreeView.DataSourceRow as DataRow).ItemArray[indexColumnDesignation];
                     //_dialogSelectRecord.WindowTitle = 
                     //    (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0) 
-                    //    ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", Resx.window_title_dialog_select_record, _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation) 
-                    //    : Resx.window_title_dialog_select_record
+                    //    ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record, _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation) 
+                    //    : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record
                     //;
                 }
             };
@@ -300,7 +339,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //Init _resultDataTable, Clone Structure from _dialogSelectRecord.GenericTreeView.DataSource
                     _resultDataTable = (_dialogSelectRecord.GenericTreeView.DataSource as DataTable).Clone();
-                    
+
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
                     if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)
                     {

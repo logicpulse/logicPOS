@@ -19,7 +19,7 @@ gsettings set org.gnome.desktop.session idle-delay 0
 
 while true; 
 do 
-	cd /home/logicpos/logicpos/;
-	./logicpos.exe; 
+	cd /home/logicpulse/logicpos/;
+	sudo mono ./logicpos.exe; 
 	sleep 5s; 
 done

@@ -1,11 +1,14 @@
-﻿using Gtk;
+﻿using DevExpress.Data.Filtering;
+using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.resources;
 using logicpos.resources.Resources.Localization;
 using System;
 
@@ -20,8 +23,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationPreferenceParameter(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(Resx.window_title_edit_configurationpreferenceparameter);
-            CFG_ConfigurationPreferenceParameter dataSourceRow = (CFG_ConfigurationPreferenceParameter)_dataSourceRow;
+            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
+            cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)_dataSourceRow;
             // Default windowHeight, InputTypes can Override this in Switch 
             _windowHeight = _windowHeightForTextComponent;
             InitUI();
@@ -33,14 +36,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void InitUI()
         {
             BOWidgetBox boxValue = null;
+            BOWidgetBox ComboboxValue = null;
 
             try
             {
-                CFG_ConfigurationPreferenceParameter dataSourceRow = (CFG_ConfigurationPreferenceParameter)_dataSourceRow;
+                cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)_dataSourceRow;
 
                 //Define Label for Value
-                string valueLabel = (Resx.ResourceManager.GetString(dataSourceRow.ResourceString) != null)
-                    ? Resx.ResourceManager.GetString(dataSourceRow.ResourceString)
+                string valueLabel = (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], dataSourceRow.ResourceString) != null)
+                    ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], dataSourceRow.ResourceString)
                     : "LABEL NOT DEFINED IN Field  [ResourceString]";
 
                 //Define RegEx for Value
@@ -66,19 +70,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxLabel = new BOWidgetBox(Resx.global_record_order, entryOrd);
+                BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SettingsApp.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(Resx.global_record_code, entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SettingsApp.RegexIntegerGreaterThanZero, true));
 
                 //Token
                 Entry entryToken = new Entry();
-                BOWidgetBox boxToken = new BOWidgetBox(Resx.global_token, entryToken);
+                BOWidgetBox boxToken = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_token"), entryToken);
                 vboxTab1.PackStart(boxToken, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxToken, _dataSourceRow, "Token", SettingsApp.RegexAlfaNumericExtended, true));
 
@@ -100,7 +104,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         // ValueTip
                         if (!string.IsNullOrEmpty(dataSourceRow.ValueTip))
                         {
-                            entryValue.TooltipText = string.Format(Resx.global_prefparam_value_tip_format, dataSourceRow.ValueTip);
+                            entryValue.TooltipText = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_prefparam_value_tip_format"), dataSourceRow.ValueTip);
                         }
                         break;
                     case PreferenceParameterInputType.Multiline:
@@ -108,7 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         entryMultiline.Value.Text = dataSourceRow.Value;
                         entryMultiline.ScrolledWindow.BorderWidth = 1;
                         entryMultiline.HeightRequest = 122;
-                        Label labelMultiline = new Label(Resx.global_notes);
+                        Label labelMultiline = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"));
                         boxValue = new BOWidgetBox(valueLabel, entryMultiline);
                         vboxTab1.PackStart(boxValue, false, false, 0);
                         _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", valueRegEx, valueRequired));
@@ -122,7 +126,80 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         // Override Default Window Height
                         _windowHeight = _windowHeightForTextComponent - 20;
                         break;
+                    //Mudar a lingua da Aplicação - Não é genérico
+                    //IN009296 BackOffice - Mudar a língua da aplicação
                     case PreferenceParameterInputType.ComboBox:
+                        string getCultureFromDB;
+                        try
+                        {
+                            string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                            getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                        }
+                        catch
+                        {
+                            getCultureFromDB = GlobalFramework.Settings["customCultureResourceDefinition"];
+                        }
+
+                        string[] getCulturesValues = new string[8];
+                        getCulturesValues[0] = "pt-PT";
+                        getCulturesValues[1] = "pt-AO";
+                        getCulturesValues[2] = "pt-BR";
+                        getCulturesValues[3] = "pt-MZ";
+                        getCulturesValues[4] = "en-GB";
+                        getCulturesValues[5] = "en-US";
+                        getCulturesValues[6] = "fr-FR";
+                        getCulturesValues[7] = "es-ES";
+
+                        string[] getCulturesLabels = new string[8];
+                        getCulturesLabels[0] = "Português(Portugal)";
+                        getCulturesLabels[1] = "Português(Angola)";
+                        getCulturesLabels[2] = "Português(Brasil)";
+                        getCulturesLabels[3] = "Português(Moçambique)";
+                        getCulturesLabels[4] = "English(GB)";
+                        getCulturesLabels[5] = "English(USA)";
+                        getCulturesLabels[6] = "Françes";
+                        getCulturesLabels[7] = "Espanol";
+
+                        TreeIter iter;
+                        TreeStore store = new TreeStore(typeof(string), typeof(string));
+                        for (int i = 0; i < getCulturesLabels.Length; i++)
+                        {
+                            iter = store.AppendValues(getCulturesValues.GetValue(i), getCulturesLabels.GetValue(i));
+                        }
+
+                        ComboBox xpoComboBoxInputType = new ComboBox(getCulturesLabels);
+                        
+                        xpoComboBoxInputType.Model.GetIterFirst(out iter);
+                        int cbox = 0;
+                        do
+                        {
+                            GLib.Value thisRow = new GLib.Value();
+                            xpoComboBoxInputType.Model.GetValue(iter, 0, ref thisRow);
+                            //if ((thisRow.Val as string).Equals(getCultureFromDB))
+                            if (getCulturesValues[cbox] == getCultureFromDB)
+                            {
+                                xpoComboBoxInputType.SetActiveIter(iter);
+                                break;
+                            }
+                            cbox++;  
+                        } while (xpoComboBoxInputType.Model.IterNext(ref iter));
+
+                        ComboboxValue = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), xpoComboBoxInputType);
+                        vboxTab1.PackStart(ComboboxValue, false, false, 0);
+
+                        entryValue.Text = getCulturesValues[xpoComboBoxInputType.Active];
+                        entryValue.Visibility = false;
+
+                        xpoComboBoxInputType.Changed += delegate
+                        {
+                            entryValue.Text = getCulturesValues[xpoComboBoxInputType.Active];
+                            //GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCulturesValues[xpoComboBoxInputType.Active]);
+                            //GlobalFramework.Settings["customCultureResourceDefinition"] = getCulturesValues[xpoComboBoxInputType.Active];
+                            //CustomResources.UpdateLanguage(getCulturesValues[xpoComboBoxInputType.Active]);
+                            //_crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));
+                        };
+                        boxValue = new BOWidgetBox(valueLabel, entryValue);         
+                        _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));             
                         break;
                     case PreferenceParameterInputType.FilePicker:
                     case PreferenceParameterInputType.DirPicker:
@@ -147,7 +224,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(Resx.global_record_main_detail));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -155,7 +232,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 entryToken.Sensitive = false;
 
                 //Protect PreferenceParameterInputType : Disable if is COMPANY_FISCALNUMBER or Other Sensitive Data
-                CFG_ConfigurationPreferenceParameter parameter = (_dataSourceRow as CFG_ConfigurationPreferenceParameter);
+                cfg_configurationpreferenceparameter parameter = (_dataSourceRow as cfg_configurationpreferenceparameter);
                 if (entryValue != null) entryValue.Sensitive = (
                     parameter.Token != "COMPANY_NAME"
                     && parameter.Token != "COMPANY_BUSINESS_NAME"

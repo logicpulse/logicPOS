@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             set { _value = value; }
         }
 
-        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria = null)
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria);
         }
@@ -43,7 +43,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty);
         }
 
-        public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria = null, SortProperty[] pSortProperty = null)
+        //IN:009261 Overload for default value selected
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0)
+        {
+            InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty, active);
+        }
+
+        public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0)
         {
             //Required to Force Combo to be same Height has Entrys
             HeightRequest = 23;
@@ -52,6 +58,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _xpoSession = pXpoSession;
             _xpoObjectType = pXPGuidObjectType;
             _fieldLabel = pFieldLabel;
+
+            
 
             // Override Criteria with hide Undefined Records Criteria
             // Tip : Leave == null here and ignore warnings/suggestions, else it wont work as expected
@@ -75,6 +83,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
             //Events
             Changed += XPOComboBox_Changed;
+
+            //IN:009261 Set Default selected item
+            if (active != 0) Active = active;
         }
 
         public void UpdateModel(CriteriaOperator pCriteria)
@@ -108,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _comboBoxListStore = new ListStore(typeof(string), typeof(XPGuidObject));
 
             //Aways Default to Null Value - Undefined, even if Collection is Empty
-            tempItemIter = _comboBoxListStore.AppendValues(Resx.widget_combobox_undefined, null);
+            tempItemIter = _comboBoxListStore.AppendValues(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_combobox_undefined"), null);
             _treeInterDictionary.Add(new Guid(), tempItemIter);
             //Default Selected
             currentItemIter = tempItemIter;

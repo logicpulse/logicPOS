@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ConfigurationPaymentMethod : XPGuidObject
+    public class fin_configurationpaymentmethod : XPGuidObject
     {
-        public FIN_ConfigurationPaymentMethod() : base() { }
-        public FIN_ConfigurationPaymentMethod(Session session) : base(session) { }
+        public fin_configurationpaymentmethod() : base() { }
+        public fin_configurationpaymentmethod(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationPaymentMethod), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ConfigurationPaymentMethod), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpaymentmethod), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpaymentmethod), "Code");
         }
 
         UInt32 fOrd;
@@ -86,17 +86,17 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPaymentMethod One <> Many DocumentFinanceMaster
-        [Association(@"ConfigurationPaymentMethodReferencesDocumentFinanceMaster", typeof(FIN_DocumentFinanceMaster))]
-        public XPCollection<FIN_DocumentFinanceMaster> DocumentMaster
+        [Association(@"ConfigurationPaymentMethodReferencesDocumentFinanceMaster", typeof(fin_documentfinancemaster))]
+        public XPCollection<fin_documentfinancemaster> DocumentMaster
         {
-            get { return GetCollection<FIN_DocumentFinanceMaster>("DocumentMaster"); }
+            get { return GetCollection<fin_documentfinancemaster>("DocumentMaster"); }
         }
 
         //ConfigurationPaymentMethod One <> Many DocumentFinancePayment
-        [Association(@"ConfigurationPaymentMethodReferencesDocumentFinancePayment", typeof(FIN_DocumentFinancePayment))]
-        public XPCollection<FIN_DocumentFinancePayment> DocumentPayment
+        [Association(@"ConfigurationPaymentMethodReferencesDocumentFinancePayment", typeof(fin_documentfinancepayment))]
+        public XPCollection<fin_documentfinancepayment> DocumentPayment
         {
-            get { return GetCollection<FIN_DocumentFinancePayment>("DocumentPayment"); }
+            get { return GetCollection<fin_documentfinancepayment>("DocumentPayment"); }
         }
     }
 }

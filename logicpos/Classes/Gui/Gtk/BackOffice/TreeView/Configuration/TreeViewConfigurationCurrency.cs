@@ -23,9 +23,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public TreeViewConfigurationCurrency(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
             //Init Vars
-            Type xpoGuidObjectType = typeof(CFG_ConfigurationCurrency);
+            Type xpoGuidObjectType = typeof(cfg_configurationcurrency);
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
-            CFG_ConfigurationCurrency defaultValue = (pDefaultValue != null) ? pDefaultValue as CFG_ConfigurationCurrency : null;
+            cfg_configurationcurrency defaultValue = (pDefaultValue != null) ? pDefaultValue as cfg_configurationcurrency : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationCurrency);
 
@@ -34,18 +34,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = Resx.global_record_code, MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = Resx.global_designation, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Acronym") { Title = Resx.global_ConfigurationCurrency_Acronym });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Acronym") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCurrency_Acronym") });
             //columnProperties.Add(new GenericTreeViewColumnProperty("ExchangeRate") { 
-            //    Title = Resx.global_exchangerate, 
+            //    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_exchangerate, 
             //    Type = typeof(Decimal), 
             //    Alignment = 1.0F
             //    //WIP
             //    //FontDesc = new Pango.FontDescription() { Size = 11 }, // Removed, this will make Trees that use it has diferent row Sizes
             //    //,CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F }
             //});
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = Resx.global_record_date_updated, MinWidth = 150, MaxWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");

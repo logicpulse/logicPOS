@@ -4,10 +4,10 @@ using DevExpress.Xpo;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class SYS_SystemAudit : XPGuidObject
+    public class sys_systemaudit : XPGuidObject
     {
-        public SYS_SystemAudit() : base() { }
-        public SYS_SystemAudit(Session session) : base(session) { }
+        public sys_systemaudit() : base() { }
+        public sys_systemaudit(Session session) : base(session) { }
 
         DateTime fDate;
         public DateTime Date
@@ -24,27 +24,27 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Description", ref fDescription, value); }
         }
 
-        SYS_UserDetail fUserDetail;
-        public SYS_UserDetail UserDetail
+        sys_userdetail fUserDetail;
+        public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
-            set { SetPropertyValue<SYS_UserDetail>("UserDetail", ref fUserDetail, value); }
+            set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
         }
 
-        POS_ConfigurationPlaceTerminal fTerminal;
-        public POS_ConfigurationPlaceTerminal Terminal
+        pos_configurationplaceterminal fTerminal;
+        public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
-            set { SetPropertyValue<POS_ConfigurationPlaceTerminal>("Terminal", ref fTerminal, value); }
+            set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
         }
 
         //SystemAuditType One <> Many SystemAudit
-        SYS_SystemAuditType fAuditType;
+        sys_systemaudittype fAuditType;
         [Association(@"SystemAuditTypeReferencesSystemAudit")]
-        public SYS_SystemAuditType AuditType
+        public sys_systemaudittype AuditType
         {
             get { return fAuditType; }
-            set { SetPropertyValue<SYS_SystemAuditType>("AuditType", ref fAuditType, value); }
+            set { SetPropertyValue<sys_systemaudittype>("AuditType", ref fAuditType, value); }
         }
     }
 }

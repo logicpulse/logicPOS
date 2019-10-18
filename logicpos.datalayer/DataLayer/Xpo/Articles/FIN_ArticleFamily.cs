@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ArticleFamily : XPGuidObject
+    public class fin_articlefamily : XPGuidObject
     {
-        public FIN_ArticleFamily() : base() { }
-        public FIN_ArticleFamily(Session session) : base(session) { }
+        public fin_articlefamily() : base() { }
+        public fin_articlefamily(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ArticleFamily), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ArticleFamily), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_articlefamily), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_articlefamily), "Code");
         }
 
         UInt32 fOrd;
@@ -71,53 +71,53 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserCommissionGroup One <> Many Family
-        POS_UserCommissionGroup fCommissionGroup;
+        pos_usercommissiongroup fCommissionGroup;
         [Association(@"UserCommissionGroupReferencesFamily")]
-        public POS_UserCommissionGroup CommissionGroup
+        public pos_usercommissiongroup CommissionGroup
         {
             get { return fCommissionGroup; }
-            set { SetPropertyValue<POS_UserCommissionGroup>("CommissionGroup", ref fCommissionGroup, value); }
+            set { SetPropertyValue<pos_usercommissiongroup>("CommissionGroup", ref fCommissionGroup, value); }
         }
 
         //CustomerDiscountGroup One <> Many SubFamily
-        ERP_CustomerDiscountGroup fDiscountGroup;
+        erp_customerdiscountgroup fDiscountGroup;
         [Association(@"CustomerDiscountGroupReferencesFamily")]
-        public ERP_CustomerDiscountGroup DiscountGroup
+        public erp_customerdiscountgroup DiscountGroup
         {
             get { return fDiscountGroup; }
-            set { SetPropertyValue<ERP_CustomerDiscountGroup>("DiscountGroup", ref fDiscountGroup, value); }
+            set { SetPropertyValue<erp_customerdiscountgroup>("DiscountGroup", ref fDiscountGroup, value); }
         }
 
         //ConfigurationPrinters One <> Many ArticleFamily
-        SYS_ConfigurationPrinters fPrinter;
+        sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesArticleFamily")]
-        public SYS_ConfigurationPrinters Printer
+        public sys_configurationprinters Printer
         {
             get { return fPrinter; }
-            set { SetPropertyValue<SYS_ConfigurationPrinters>("Printer", ref fPrinter, value); }
+            set { SetPropertyValue<sys_configurationprinters>("Printer", ref fPrinter, value); }
         }
 
         //ArticleFamily One <> Many ConfigurationPrintersTemplates
-        SYS_ConfigurationPrintersTemplates fTemplate;
+        sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesArticleFamily")]
-        public SYS_ConfigurationPrintersTemplates Template
+        public sys_configurationprinterstemplates Template
         {
             get { return fTemplate; }
-            set { SetPropertyValue<SYS_ConfigurationPrintersTemplates>("Template", ref fTemplate, value); }
+            set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
         }
 
         //Family One <> Many Article
-        [Association(@"FamilyReferencesArticle", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> Article
+        [Association(@"FamilyReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> Article
         {
-            get { return GetCollection<FIN_Article>("Article"); }
+            get { return GetCollection<fin_article>("Article"); }
         }
 
         //Family One <> Many SubFamily
-        [Association(@"FamilyReferencesSubFamily", typeof(FIN_ArticleSubFamily))]
-        public XPCollection<FIN_ArticleSubFamily> SubFamily
+        [Association(@"FamilyReferencesSubFamily", typeof(fin_articlesubfamily))]
+        public XPCollection<fin_articlesubfamily> SubFamily
         {
-            get { return GetCollection<FIN_ArticleSubFamily>("SubFamily"); }
+            get { return GetCollection<fin_articlesubfamily>("SubFamily"); }
         }
     }
 }

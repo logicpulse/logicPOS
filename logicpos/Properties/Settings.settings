@@ -5,5 +5,14 @@
     <Setting Name="logicpos_WSIntellilock_ActivationService" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://licence.logicpulse.pt/ws/ActivationService.asmx</Value>
     </Setting>
+    <Setting Name="logicpos_ParkingTicketService_TimeService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://192.168.1.86/POS/service.asmx</Value>
+    </Setting>
+    <Setting Name="logicpos_ParkingTicketService1_TimeService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://192.168.1.86/POS/service.asmx</Value>
+    </Setting>
+    <Setting Name="logicpos_AccessTrackParkingTicketService_TimeService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://192.168.1.86/POS/service.asmx</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

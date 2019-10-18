@@ -5,15 +5,15 @@ using System;
 namespace logicpos.datalayer.DataLayer.Xpo
 {
     [DeferredDeletion(false)]
-    public class FIN_ArticleType : XPGuidObject
+    public class fin_articletype : XPGuidObject
     {
-        public FIN_ArticleType() : base() { }
-        public FIN_ArticleType(Session session) : base(session) { }
+        public fin_articletype() : base() { }
+        public fin_articletype(Session session) : base(session) { }
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ArticleType), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(FIN_ArticleType), "Code");
+            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_articletype), "Ord");
+            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_articletype), "Code");
             HavePrice = true;
         }
 
@@ -48,10 +48,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ArticleType One <> Many Article
-        [Association(@"ArticleTypeReferencesArticle", typeof(FIN_Article))]
-        public XPCollection<FIN_Article> Article
+        [Association(@"ArticleTypeReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> Article
         {
-            get { return GetCollection<FIN_Article>("Article"); }
+            get { return GetCollection<fin_article>("Article"); }
         }
     }
 }

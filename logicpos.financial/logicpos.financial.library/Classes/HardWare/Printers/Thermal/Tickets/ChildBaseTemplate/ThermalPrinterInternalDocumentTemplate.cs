@@ -7,7 +7,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
     public class ThermalPrinterInternalDocumentTemplate : ThermalPrinterBaseInternalTemplate
     {
-        public ThermalPrinterInternalDocumentTemplate(SYS_ConfigurationPrinters pPrinter)
+        public ThermalPrinterInternalDocumentTemplate(sys_configurationprinters pPrinter)
             : base(pPrinter)
         {
             _ticketTitle = "DYNAMIC TITLE";
