@@ -8,6 +8,10 @@ Open source Point of Sale Solution
 - [Portuguese](http://help.logic-pos.com/)
 - [English](http://help.logic-pos.com/en/)
 
+### PDF 
+[Portuguese](https://bit.ly/2WcF1wN)
+[English](https://bit.ly/348hxvz)
+
 ## TechStack
 
 - [.NET C#](https://docs.microsoft.com/en-us/dotnet/csharp/)
