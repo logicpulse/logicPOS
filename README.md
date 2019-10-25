@@ -1,7 +1,8 @@
 # LogicPOS OpenSource
 
 Open source Point of Sale Solution
-[Website](www.logic-pos.com(https://logic-pos.com/)
+
+[Website](https://logic-pos.com/)
 
 ## Manuals
 
