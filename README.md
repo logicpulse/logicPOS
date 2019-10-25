@@ -1,11 +1,9 @@
-# [LogicPOS OpenSource](https://logic-pos.com/{:target="_blank"})
-
-[link](https://logic-pos.com/){:target="_blank"}
+# [LogicPOS OpenSource](https://logic-pos.com/)
 
 Open source Point of Sale Solution
 
 
-## Manuals
+## Manual
 
 - [Portuguese](http://help.logic-pos.com/)
 - [English](http://help.logic-pos.com/en/)
