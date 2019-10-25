@@ -1,4 +1,4 @@
-(# [LogicPOS OpenSource](https://logic-pos.com/){:target="_blank"})
+# ([LogicPOS OpenSource](https://logic-pos.com/){:target="_blank"})
 
 Open source Point of Sale Solution
 
