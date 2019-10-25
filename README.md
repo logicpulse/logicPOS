@@ -1,5 +1,7 @@
 # [LogicPOS OpenSource](https://logic-pos.com/{:target="_blank"})
 
+[link](https://logic-pos.com/){:target="_blank"}
+
 Open source Point of Sale Solution
 
 
