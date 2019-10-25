@@ -10,6 +10,7 @@ Open source Point of Sale Solution
 
 ### PDF 
 [Portuguese](https://bit.ly/2WcF1wN)
+
 [English](https://bit.ly/348hxvz)
 
 ## TechStack
