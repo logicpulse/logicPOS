@@ -203,7 +203,7 @@ O seleccione '{2}' para iniciar POS en el modo predeterminado '1024x768'.</value
     <value>Restaurar la base de datos: {0}</value>
   </data>
   <data name="audit_message_export_saft" xml:space="preserve">
-    <value>SAF-T (PT) Exportado: {0} desde {1} to {2}</value>
+    <value>SAF-T Exportado: {0} desde {1} to {2}</value>
   </data>
   <data name="audit_message_finance_series_created" xml:space="preserve">
     <value>Serie de finanzas [{0}] para terminal: [{1}] Creado por el usuario: {2}</value>
@@ -640,7 +640,7 @@ POS se cerrará.</value>
     <value>Error Exportando the SAF-T (PT) File!</value>
   </data>
   <data name="dialog_message_saftpt_exported_successfully" xml:space="preserve">
-    <value>SAF-T (PT) Exportado a 
+    <value>SAF-T Exportado a 
 {0}</value>
   </data>
   <data name="dialog_message_series_create_confirmation_text" xml:space="preserve">
@@ -1494,16 +1494,16 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
     <value>Exportar Clientes</value>
   </data>
   <data name="global_export_saftpt" xml:space="preserve">
-    <value>Exportar SAF-T (PT)</value>
+    <value>Exportar SAF-T</value>
   </data>
   <data name="global_export_saftpt_custom" xml:space="preserve">
-    <value>SAF-T (PT) Personalizado</value>
+    <value>SAF-T Personalizado</value>
   </data>
   <data name="global_export_saftpt_last_month" xml:space="preserve">
-    <value>SAF-T (PT) El mes pasado</value>
+    <value>SAF-T El mes pasado</value>
   </data>
   <data name="global_export_saftpt_whole_year" xml:space="preserve">
-    <value>SAF-T (PT) Año completo</value>
+    <value>SAF-T Año completo</value>
   </data>
   <data name="global_families" xml:space="preserve">
     <value>Familias</value>
@@ -2947,7 +2947,7 @@ Para proceder debes cambiar la contraseña anterior!</value>
     <value>Ruta :: Copias de seguridad</value>
   </data>
   <data name="prefparam_path_saftpt" xml:space="preserve">
-    <value>Ruta :: SAF-T (PT) Exportar</value>
+    <value>Ruta :: SAF-T Exportar</value>
   </data>
   <data name="prefparam_report_filename_logo" xml:space="preserve">
     <value>Reportes :: Archivo del Logotipo del Informe</value>
@@ -3758,5 +3758,11 @@ Por favor, ingrese otro número e intente nuevamente.</value>
   </data>
   <data name="prefparam_use_ccdailyticket" xml:space="preserve">
     <value>Ticket :: Imprimir detalles de cuenta corriente en ticket de movimientos diarios o de sesión</value>
+  </data>
+  <data name="global_report_overlay_software_certification_ao" xml:space="preserve">
+    <value>{0} por programa validado Nº {1}/AGT/{3}</value>
+  </data>
+  <data name="dialog_button_label_new_client" xml:space="preserve">
+    <value>Nuevo Cli.</value>
   </data>
 </root>

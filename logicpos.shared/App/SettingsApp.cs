@@ -113,7 +113,7 @@ namespace logicpos.shared.App
         //filename_countrycode_version_date.extension
         //Overrided by SoftwareVendor Plugin - ex: "saf-t_{0}_{1}_{2}.xml"
         public static string FileFormatSaftPT;
-
+        public static string FileFormatSaftAO;
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //DataBase Backup System
 
@@ -193,6 +193,71 @@ namespace logicpos.shared.App
         public static int FinanceRuleSimplifiedInvoiceMaxTotalServices { get { return GetFinanceRuleSimplifiedInvoiceMaxTotalServices(); } }
         //This rule is to force fill Customer details if total document value is Greater or Equal to
         public static int FinanceRuleRequiredCustomerDetailsAboveValue { get { return GetFinanceRuleRequiredCustomerDetailsAboveValue(); } }
+
+
+        //SAF-T AO
+
+        //SAF-T(AO) : Formats 
+        //Overrided by SoftwareVendor Plugin - ex: 6
+        public static int DocumentsPadLengthAO;
+        //SAF-T(AO) : DateTime Formats 
+        //Overrided by SoftwareVendor Plugin - ex: "yyyy-MM-dd"
+        //Leave Default Here, in case we dont have Plugin Registered
+        public static string DateTimeFormatDocumentDateAO = "yyyy-MM-dd";
+        //Overrided by SoftwareVendor Plugin - ex: "yyyy-MM-ddTHH:mm:ss"
+        //Leave Default Here, in case we dont have Plugin Registered
+        public static string DateTimeFormatCombinedDateTimeAO = "yyyy-MM-ddTHH:mm:ss";
+        //Overrided by SoftwareVendor Plugin - ex: "999999990"
+        public static string FinanceFinalConsumerFiscalNumberAO;
+        //Overrided by SoftwareVendor Plugin - ex: "---------"
+        public static string FinanceFinalConsumerFiscalNumberDisplayAO;
+        //SAF-T(PT) : Decimal Format
+        //Overrided by SoftwareVendor Plugin - ex: "0.00000000"
+        public static string DecimalFormatSAFTAO;
+        //Overrided by SoftwareVendor Plugin - ex: "0.00"
+        public static string DecimalFormatGrossTotalSAFTAO;
+        //Used to Compare, Round first, Compare After
+        //Overrided by SoftwareVendor Plugin - ex: 2
+        public static int DecimalRoundToAO;
+        //RSA Private Key :Sign Finance Documents used in SHA1SignMessage()
+        //Overrided by SoftwareVendor Plugin - ex: 
+        //@"<RSAKeyValue>
+        //    <Modulus>PLACE VALUE HERE</Modulus>
+        //    <Exponent>PLACE VALUE HERE</Exponent>
+        //    <P>PLACE VALUE HERE</P>
+        //    <Q>PLACE VALUE HERE</Q>
+        //    <DP>PLACE VALUE HERE</DP>
+        //    <DQ>PLACE VALUE HERE</DQ>
+        //    <InverseQ>PLACE VALUE HERE</InverseQ>
+        //    <D>PLACE VALUE HERE</D>
+        //</RSAKeyValue>"
+        public static string RsaPrivateKeyAO;
+        //SAFT-T XML Export Header
+        public static string SaftProductIDAO { get { return GetSaftProductID(); } }
+        //Overrided by SoftwareVendor Plugin - ex: "000000000" : Your Company FiscalNumber;
+        public static string SaftProductCompanyTaxIDAO;
+        //Overrided by SoftwareVendor Plugin - ex: "0000" : Your Company CertificateNumber;
+        public static string SaftSoftwareCertificateNumberAO;
+        //Overrided by SoftwareVendor Plugin - ex: "PT"
+        public static string SaftVersionPrefixAO;
+        //Overrided by SoftwareVendor Plugin - ex: "1.04_01"
+        public static string SaftVersionAO;
+        //Versão da Chave Privada utilizada na criação da Assinatura 
+        //Overrided by SoftwareVendor Plugin - ex: 1
+        public static int HashControlAO;
+        //C — Contabilidade;
+        //E — Faturação emitida por terceiros;
+        //F — Faturação;
+        //I — Contabilidade integrada com a faturação;
+        //P — Faturação parcial;
+        //R — Recibos (a);
+        //S — Autofaturação;
+        //T — Documentos de transporte (a).	
+        //Overrided by SoftwareVendor Plugin - ex: "F"
+        public static string TaxAccountingBasisAO;
+        //Currency Code
+        //Overrided by SoftwareVendor Plugin - ex: "EUR"
+        public static string SaftCurrencyCodeAO;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Series
@@ -463,6 +528,7 @@ namespace logicpos.shared.App
 
             FileFormatDateTime = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FileFormatDateTime), debug);
             FileFormatSaftPT = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT), debug);
+            FileFormatSaftAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftAO), debug);
 
             DocumentsPadLength = FrameworkUtils.GetSoftwareVendorValueAsInt(nameof(DocumentsPadLength), debug);
             DateTimeFormatDocumentDate = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DateTimeFormatDocumentDate), debug);
@@ -470,15 +536,20 @@ namespace logicpos.shared.App
             FinanceFinalConsumerFiscalNumber = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumber), debug);
             FinanceFinalConsumerFiscalNumberDisplay = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumberDisplay), debug);
             DecimalFormatSAFTPT = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTPT), debug);
+            DecimalFormatSAFTAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTAO), debug);
             DecimalFormatGrossTotalSAFTPT = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatGrossTotalSAFTPT), debug);
             DecimalRoundTo = FrameworkUtils.GetSoftwareVendorValueAsInt(nameof(DecimalRoundTo), debug);
             SaftProductCompanyTaxID = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftProductCompanyTaxID), debug);
             SaftSoftwareCertificateNumber = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumber), debug);
+            SaftSoftwareCertificateNumberAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumberAO), debug);
             SaftVersionPrefix = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefix), debug);
+            SaftVersionPrefixAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefixAO), debug);
             SaftVersion = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftVersion), debug);
+            SaftVersionAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionAO), debug);
             HashControl = FrameworkUtils.GetSoftwareVendorValueAsInt(nameof(HashControl), debug);
             TaxAccountingBasis = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(TaxAccountingBasis), debug);
             SaftCurrencyCode = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode), debug);
+            SaftCurrencyCodeAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO), debug);
 
             DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = FrameworkUtils.GetSoftwareVendorValueAsBool(nameof(DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix), debug);
             DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat), debug);

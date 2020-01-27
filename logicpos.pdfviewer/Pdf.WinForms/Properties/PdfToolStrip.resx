@@ -1,0 +1,390 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnActualSize16Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewActualSize16.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnActualSizeImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewActualSize.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnActualSizeText" xml:space="preserve">
+    <value>Actual
+Size</value>
+  </data>
+  <data name="btnActualSizeToolTipText" xml:space="preserve">
+    <value>Set the zoom level to the page's actual size</value>
+  </data>
+  <data name="btnCopyImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\textCopy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnCopyText" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="btnCopyToolTipText" xml:space="preserve">
+    <value>Copy the selection to the clipboard</value>
+  </data>
+  <data name="btnFirstPageImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toBegin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnFirstPageText" xml:space="preserve">
+    <value>First
+Page</value>
+  </data>
+  <data name="btnFirstPageToolTipText" xml:space="preserve">
+    <value>View the first page of the file</value>
+  </data>
+  <data name="btnFitHeight16Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewFitHeight16.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnFitHeightImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewFitHeight.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnFitHeightText" xml:space="preserve">
+    <value>Fit
+Height</value>
+  </data>
+  <data name="btnFitHeightToolTipText" xml:space="preserve">
+    <value>Set the zoom level so the page height fits the window height</value>
+  </data>
+  <data name="btnFitPage16Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewFitPage16.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnFitPageImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewFitPage.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnFitPageText" xml:space="preserve">
+    <value>Fit
+Page</value>
+  </data>
+  <data name="btnFitPageToolTipText" xml:space="preserve">
+    <value>Set the zoom level so one full page fits in the window</value>
+  </data>
+  <data name="btnFitWidth16Image" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewFitWidth16.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnFitWidthImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\viewFitWidth.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnFitWidthText" xml:space="preserve">
+    <value>Fit
+Width</value>
+  </data>
+  <data name="btnFitWidthToolTipText" xml:space="preserve">
+    <value>Set the zoom level so the page width fits the window width</value>
+  </data>
+  <data name="btnLastPageImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toEnd.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnLastPageText" xml:space="preserve">
+    <value>Last
+Page</value>
+  </data>
+  <data name="btnLastPageToolTipText" xml:space="preserve">
+    <value>View the last page of the file</value>
+  </data>
+  <data name="btnModeHorizontalImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\modeHorizontal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnModeHorizontalText" xml:space="preserve">
+    <value>Continuous
+Horizontal</value>
+  </data>
+  <data name="btnModeHorizontalToolTipText" xml:space="preserve">
+    <value>View pages continuously with horizontal scrolling enabled</value>
+  </data>
+  <data name="btnModeSingleImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\modeSingle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnModeSingleText" xml:space="preserve">
+    <value>Single
+Page</value>
+  </data>
+  <data name="btnModeSingleToolTipText" xml:space="preserve">
+    <value>View one page at time</value>
+  </data>
+  <data name="btnModeTilesImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\modeTiles.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnModeTilesText" xml:space="preserve">
+    <value>Continuous
+Facing</value>
+  </data>
+  <data name="btnModeTilesToolTipText" xml:space="preserve">
+    <value>View pages side-by-side with continuous scrolling enabled</value>
+  </data>
+  <data name="btnModeVerticalImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\modeVertical.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnModeVerticalText" xml:space="preserve">
+    <value>Continuous
+Vertical</value>
+  </data>
+  <data name="btnModeVerticalToolTipText" xml:space="preserve">
+    <value>View pages continuously with vertical scrolling enabled</value>
+  </data>
+  <data name="btnNextPageImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toRight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnNextPageText" xml:space="preserve">
+    <value>Next
+Page</value>
+  </data>
+  <data name="btnNextPageToolTipText" xml:space="preserve">
+    <value>Go forward one page</value>
+  </data>
+  <data name="btnCloseImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\docClose.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnSaveImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\docSave.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnOpenText" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="btnCloseDoc" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="btnSaveDoc" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="btnOpenToolTipText" xml:space="preserve">
+    <value>Click to open a PDF file</value>
+  </data>
+  <data name="btnCloseToolTipText" xml:space="preserve">
+    <value>Click to close window</value>
+  </data>
+  <data name="btnSaveToolTipText" xml:space="preserve">
+    <value>Click to save document</value>
+  </data>
+  <data name="btnPreviousPageImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toLeft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnPreviousPageText" xml:space="preserve">
+    <value>Previous
+Page</value>
+  </data>
+  <data name="btnPreviousPageToolTipText" xml:space="preserve">
+    <value>Go back one page</value>
+  </data>
+  <data name="btnPrintImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\docPrint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnPrintText" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="btnPrintToolTipText" xml:space="preserve">
+    <value>Click to print the PDF file</value>
+  </data>
+  <data name="btnRotateLeftImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rotateLeft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnRotateLeftText" xml:space="preserve">
+    <value>Rotate
+Left</value>
+  </data>
+  <data name="btnRotateLeftToolTipText" xml:space="preserve">
+    <value>Rotate the page view 90 degrees counterclockwise</value>
+  </data>
+  <data name="btnRotateRightImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rotateRight.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnRotateRightText" xml:space="preserve">
+    <value>Rotate
+Right</value>
+  </data>
+  <data name="btnRotateRightToolTipText" xml:space="preserve">
+    <value>Rotate the page view 90 degrees clockwise</value>
+  </data>
+  <data name="btnSelectAllImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\selectAll.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnSelectAllText" xml:space="preserve">
+    <value>Select
+All</value>
+  </data>
+  <data name="btnSelectAllToolTipText" xml:space="preserve">
+    <value>Select the entire document</value>
+  </data>
+  <data name="btnZoomComboText" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="btnZoomComboToolTipText" xml:space="preserve">
+    <value>Set the zoom level to a specific value</value>
+  </data>
+  <!--<data name="btnZoomExInImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoomExIn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnZoomExOutImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoomExOut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>-->
+  <data name="btnZoomInImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoomIn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnZoomInText" xml:space="preserve">
+    <value>Zoom
+In</value>
+  </data>
+  <data name="btnZoomInToolTipText" xml:space="preserve">
+    <value>Increase the zoom level</value>
+  </data>
+  <data name="btnZoomOutImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\zoomOut.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnZoomOutText" xml:space="preserve">
+    <value>Zoom
+Out</value>
+  </data>
+  <data name="btnZoomOutToolTipText" xml:space="preserve">
+    <value>Decrease the zoom level</value>
+  </data>
+  <data name="OpenDialogFilter" xml:space="preserve">
+    <value>PDF Files (*.pdf)|*.pdf</value>
+  </data>
+  <data name="menuItemMatchCase" xml:space="preserve">
+    <value>Match Case</value>
+  </data>
+  <data name="menuItemMatchWholeWord" xml:space="preserve">
+    <value>Match Whole Word</value>
+  </data>
+  <data name="searchNextDisabledImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\down_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="searchNextImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="searchPrevDisabledImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\up_disabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="searchPrevImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="searchLblnfo" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="btnModeTwoPage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\modeTwoPage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="btnModeTwoPageText" xml:space="preserve">
+    <value>Facing</value>
+  </data>
+  <data name="btnModeTwoPageToolTipText" xml:space="preserve">
+    <value>View two pages side-by-side</value>
+  </data>
+</root>

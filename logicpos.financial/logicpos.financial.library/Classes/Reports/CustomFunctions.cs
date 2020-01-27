@@ -184,6 +184,10 @@ namespace logicpos.financial.library.Classes.Reports
                 string result = (_resourceManager.GetString(resourceName) != null)
                   ? _resourceManager.GetString(resourceName)
                   : string.Format("UNDEFINED [{0}]", resourceName);
+                if(resourceName == "global_documentfinance_type_title_fs")
+                {
+                    result = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
+                }
 
                 //_log.Debug(string.Format("Message: [{0}]", resourceName));
 

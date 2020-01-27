@@ -218,7 +218,7 @@ namespace logicpos
 
                     //Label Version
                     string appVersion = string.Format(logicpos.App.SettingsApp.AppSoftwareVersionFormat, FrameworkUtils.ProductVersion);
-                    if(GlobalFramework.LicenceReseller != "Logicpulse")
+                    if(GlobalFramework.LicenceReseller != null && GlobalFramework.LicenceReseller.ToString().ToLower() != "logicpulse" && GlobalFramework.LicenceReseller.ToString().ToLower() != "")
                     {
                         appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
                     }

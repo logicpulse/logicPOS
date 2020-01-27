@@ -301,6 +301,22 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
                  );
             }
+			//TK016268 Angola - Certificação 
+            else if (SettingsApp.XpoOidConfigurationCountryAngola.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+            {
+                //All Finance Documents use Processed, else Payments that use Emmited 
+                string prefix = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"); ;
+                //Current Year
+                string localDate = DateTime.Now.Year.ToString();
+                //Processed|Emitted with certified Software Nº {0}/AT
+                certificationText = string.Format(
+                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
+                    prefix,
+                    SettingsApp.SaftSoftwareCertificateNumberAO,
+                    SettingsApp.SaftProductIDAO,
+                    localDate);  
+            }
+
             else {
 				/* All other countries: "Processado por computador" */
                 certificationText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed");

@@ -741,7 +741,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
                 string publicDocID = pDocType.DocumentType.Acronym; ;
                 string serieID = pDocType.Acronym; ;
                 string seqNumber = "" + pDocType.NextDocumentNumber;
-
+                
 
                 //2018-05-08 : Old Format : [FT005012018S1] : Search GenDocumentNumber in ProcessFinanceDocument
                 //string tmpInvoiceFormat = "{0} {1}/{2}";

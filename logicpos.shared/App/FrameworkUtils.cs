@@ -510,9 +510,13 @@ namespace logicpos.shared.App
         //    return SHA1SignMessage(SettingsApp.RsaPrivateKey, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
         //}
 
-        public static string SignDataToSHA1Base64(string pPrivateKey, string pEncryptData, bool pDebug = false)
+        public static string SignDataToSHA1Base64(string pPrivateKeyPT, string pPrivateKeyAO, string pEncryptData, bool pDebug = false)
         {
-            return SHA1SignMessage(pPrivateKey, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
+            if (ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
+                return SHA1SignMessage(pPrivateKeyAO, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
+
+            else 
+                return SHA1SignMessage(pPrivateKeyPT, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
         }
 
         private static string SHA1SignMessage(string pPrivateKey, byte[] pMessage, bool pDebug = false)
@@ -1181,6 +1185,31 @@ namespace logicpos.shared.App
                     break;
             }
             return result;
+        }
+
+        public static bool UsePosPDFViewer()
+        {
+            bool result = false;
+
+            try
+            {
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_POS_PDF_VIEWER"]);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            return (result);
+        }
+
+         public static bool IsLinux
+        {
+            get
+            {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
         }
 
         //Replace Slash with OSSlash ex windows=\ and Linux=/

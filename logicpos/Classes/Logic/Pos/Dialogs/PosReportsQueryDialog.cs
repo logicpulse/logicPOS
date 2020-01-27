@@ -295,12 +295,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //{
             //    _log.Debug("BREAK");
             //}
-
             T1 defaultValue = (T1)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(T1), SettingsApp.XpoOidUndefinedRecord);
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}')){1}", SettingsApp.XpoOidUndefinedRecord, extraFilter));
             resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, SettingsApp.RegexGuid, true);
             resultObject.Name = typeof(T1).Name;
-            resultObject.EntryValidation.IsEditable = false;
+            resultObject.EntryValidation.IsEditable = true;
             resultObject.ClosePopup += _entryBoxSelectShared_ClosePopup;
 
             return resultObject;

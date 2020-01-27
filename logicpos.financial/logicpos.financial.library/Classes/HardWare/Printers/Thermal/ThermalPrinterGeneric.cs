@@ -75,21 +75,38 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         {
             try
             {
-                switch (_printer.PrinterType.Token)
+				//TK016310 Configuração Impressoras Windows 
+                if (IsLinux)
                 {
-                    case "THERMAL_PRINTER_WINDOWS":
-                        printer.genericwindows.Print.WindowsPrint(_printer.NetworkName, getByteArray());
-                        break;
-                    case "THERMAL_PRINTER_LINUX":
-                        printer.genericlinux.Print.LinuxPrint(_printer.NetworkName, getByteArray());
-                        break;
-                    case "THERMAL_PRINTER_SOCKET":
-                        printer.genericsocket.Print.SocketPrint(_printer.NetworkName, getByteArray());
-                        break;
-                    case "THERMAL_PRINTER_USB":
-                        printer.genericusb.Print.USBPrint(_printer.NetworkName, getByteArray());
-                        break;
+                    switch (_printer.PrinterType.Token)
+                    {
+                        case "THERMAL_PRINTER_WINDOWS":
+                            printer.genericwindows.Print.WindowsPrint(_printer.NetworkName, getByteArray());
+                            break;
+                        case "THERMAL_PRINTER_LINUX":
+                            printer.genericlinux.Print.LinuxPrint(_printer.NetworkName, getByteArray());
+                            break;
+                        case "THERMAL_PRINTER_SOCKET":
+                            printer.genericsocket.Print.SocketPrint(_printer.NetworkName, getByteArray());
+                            break;
+                    }
                 }
+                else
+                {
+                    switch (_printer.PrinterType.Token)
+                    {
+                        case "THERMAL_PRINTER_WINDOWS":
+                            printer.genericusb.Print.USBPrintWindows(_printer.Designation, getByteArray());
+                            break;
+                        case "THERMAL_PRINTER_LINUX":
+                            printer.genericusb.Print.USBPrintWindows(_printer.NetworkName, getByteArray());
+                            break;
+                        case "THERMAL_PRINTER_SOCKET":
+                            printer.genericusb.Print.USBPrintWindows(_printer.NetworkName, getByteArray());
+                            break;
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -220,6 +237,17 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         public static string TextCentered(string stringToCenter, int totalLength, char paddingCharacter)
         {
             return stringToCenter.PadLeft(((totalLength - stringToCenter.Length) / 2) + stringToCenter.Length, paddingCharacter).PadRight(totalLength, paddingCharacter);
+        }
+		
+		//TK016310 Configuração Impressoras Windows 
+        //Verifica se é linux
+        public static bool IsLinux
+        {
+            get
+            {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
         }
     }
 }

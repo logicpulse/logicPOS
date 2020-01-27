@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Configuration;
 using System.Text.RegularExpressions;
 using logicpos.resources.Resources.Localization;
 
@@ -34,8 +35,14 @@ namespace logicpos.financial.library.Classes.Finance
             string moedaPlural = ApplyPluralizationForCurrency(pAcronym);
 
             /* IN009018 */
+   
             string moedaDecimalSingular = resources.CustomResources.GetCustomResources("", "numbers_to_words_cent");//Centavo
             string moedaDecimalPlural = resources.CustomResources.GetCustomResources("", "numbers_to_words_cents");//Centavos
+            if (ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-MZ" || ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
+            {
+                moedaDecimalSingular = resources.CustomResources.GetCustomResources(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cent");//Centavo
+                moedaDecimalPlural = resources.CustomResources.GetCustomResources(ConfigurationManager.AppSettings["cultureFinancialRules"], "numbers_to_words_cents");//Centavos
+            }
 
             string strValorExtenso = ""; //Variável que irá armazenar o valor por extenso do número informado
             string strNumero = "";       //Irá armazenar o número para exibir por extenso 

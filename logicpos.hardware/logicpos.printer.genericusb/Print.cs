@@ -9,6 +9,15 @@ namespace logicpos.printer.genericusb
     {
         //Log4Net
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		
+		//TK016310 Configuração Impressoras Windows 
+        public static void USBPrintWindows(string printerName, byte[] document)
+        {
+            if (document == null)
+                return;
+            if (!RawPrinterHelper.SendBytesToPrinter(printerName, document))
+                throw new ArgumentException("Unable to access printer : " + printerName);
+        }
 
         public static void USBPrint(string printerName, byte[] document)
         {

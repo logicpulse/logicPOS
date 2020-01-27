@@ -440,6 +440,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Cli..
+        /// </summary>
+        public static string dialog_button_label_new_client {
+            get {
+                return ResourceManager.GetString("dialog_button_label_new_client", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Doc..
         /// </summary>
         public static string dialog_button_label_new_finance_documents {
@@ -1442,7 +1451,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SAF-T PT Exported to 
+        ///   Looks up a localized string similar to SAF-T Exported to 
         ///{0}.
         /// </summary>
         public static string dialog_message_saftpt_exported_successfully {
@@ -3857,7 +3866,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export SAF-T PT.
+        ///   Looks up a localized string similar to Export SAF-T.
         /// </summary>
         public static string global_export_saftpt {
             get {
@@ -4019,7 +4028,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to NIF.
+        ///   Looks up a localized string similar to NUIT.
         /// </summary>
         public static string global_fiscal_number_acronym {
             get {
@@ -5401,6 +5410,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_report_overlay_software_certification {
             get {
                 return ResourceManager.GetString("global_report_overlay_software_certification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} per validated program # {1} / AGT.
+        /// </summary>
+        public static string global_report_overlay_software_certification_ao {
+            get {
+                return ResourceManager.GetString("global_report_overlay_software_certification_ao", resourceCulture);
             }
         }
         

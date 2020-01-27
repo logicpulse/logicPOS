@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using logicpos.documentviewer;
+using System.Configuration;
 
 namespace logicpos.financial.library.Classes.Reports
 {
@@ -258,7 +259,7 @@ namespace logicpos.financial.library.Classes.Reports
                         //{
                             this.Export(exportXlsx, fileNameExport);
                         //}
-                        if (FrameworkUtils.OSVersion() != "windows")
+                        if (FrameworkUtils.IsLinux)
                         {
                             System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileNameExport)));
                         }
@@ -287,9 +288,9 @@ namespace logicpos.financial.library.Classes.Reports
                         if (GlobalFramework.CanOpenFiles)
                         {
                             //IN009240 Usar o PDF Viewer do POS                                                      
-                            string sql = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'USE_POS_PDF_VIEWER';");
-                            string sqlresult = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
-                            if (sqlresult == "True")
+                            
+
+                            if (!FrameworkUtils.IsLinux && FrameworkUtils.UsePosPDFViewer() == true)
                             {
                                 string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
                                 var ScreenSizePDF = GlobalFramework.screenSize;
@@ -347,7 +348,9 @@ namespace logicpos.financial.library.Classes.Reports
             ///     Shows the value:  000 000,00
             /// </example>
             /// 
-            string currentCulture = GlobalFramework.CurrentCulture.Name;
+            //string currentCulture = GlobalFramework.CurrentCulture.Name;
+            //string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+            string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
 
             List<string> financeDocumentsList = new List<string>
             {
@@ -359,6 +362,7 @@ namespace logicpos.financial.library.Classes.Reports
             /* IN005975: This is covering the scenario of "_reportFileName" does have a temp file path (noticed when not in debug mode)
              * Debug: Resources/Reports/UserReports/ReportDocumentFinance_pt-MZ.frx
              * Release: Temp/Q1bSDxUR.ReportDocumentFinance_pt-MZ.frx
+             * Mocambique
              */
             string documentFileName = Path.GetFileNameWithoutExtension(_reportFileName);
             bool isFinanceDocument = financeDocumentsList.Contains(documentFileName.Substring(documentFileName.LastIndexOf(".") + 1)); // "Resources/Reports/UserReports/ReportDocumentFinance_pt-MZ.frx"
@@ -397,6 +401,37 @@ namespace logicpos.financial.library.Classes.Reports
                         resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"),
                         resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_moz_tax_authority_cert_number")
                     );
+                }
+                else if (SettingsApp.XpoOidConfigurationCountryAngola.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                {
+                    string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
+                    string prefix = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"); ;
+                    string localDate = DateTime.Now.Year.ToString();
+                    textObjectOverlaySoftwareCertification.Text = string.Format(
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
+                        prefix,
+                        SettingsApp.SaftSoftwareCertificateNumberAO,
+                        SettingsApp.SaftProductIDAO,
+                        localDate);
+
+                    //Add Hash Validation if Defined (In DocumentFinance Only)
+                    if (_hash4Chars != String.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", _hash4Chars, textObjectOverlaySoftwareCertification.Text);
+
+                }
+            }
+            else
+            {
+                if (SettingsApp.XpoOidConfigurationCountryAngola.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                {
+                    string fileName = "ReportDocumentFinancePayment_" + currentCulture + ".frx";
+                    string prefix = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted"); ;
+                    string localDate = DateTime.Now.Year.ToString();
+                    textObjectOverlaySoftwareCertification.Text = string.Format(
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
+                        prefix,
+                        SettingsApp.SaftSoftwareCertificateNumberAO,
+                        SettingsApp.SaftProductIDAO,
+                        localDate);
                 }
             }
             
@@ -449,7 +484,9 @@ namespace logicpos.financial.library.Classes.Reports
                 ///     Shows the value:  000 000,00
                 /// </example>
                 // Build Final Filename Report
-                string currentCulture = GlobalFramework.CurrentCulture.Name;
+                //string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
+                //string currentCulture = GlobalFramework.CurrentCulture.Name;
                 string fileName = (documentMaster.DocumentType.WayBill) ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
                 string fileUserReportDocumentFinance = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", fileName));
 

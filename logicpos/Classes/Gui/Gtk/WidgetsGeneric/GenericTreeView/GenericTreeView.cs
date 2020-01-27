@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Reflection;
 using DevExpress.Data.Filtering;
 using logicpos.resources;
+using System.Configuration;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -938,11 +939,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                     catch
                                     {
                                         getCultureFromDB = GlobalFramework.Settings["customCultureResourceDefinition"];
+
                                     }
+                                    if(!Utils.getCultureFromOS(getCultureFromDB))
+                                    {
+                                        GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
+                                        GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"]; 
+                                        CustomResources.UpdateLanguage(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
+                                    }
+                                    else { 
                                     GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
                                     GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
                                     CustomResources.UpdateLanguage(getCultureFromDB);
-                                    Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), getCultureFromDB));
+                                    }
+                                    Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), GlobalFramework.Settings["customCultureResourceDefinition"]));
 
                                 }
                                 //IN009296 ENDS

@@ -1,0 +1,9 @@
+logicpos
+sudo cp -R logicpos/ /usr/share/plymouth/themes
+sudo update-alternatives --install /usr/share/plymouth/themes/default.plymouth default.plymouth /usr/share/plymouth/themes/logicpos/logicpos.plymouth 100
+sudo update-alternatives --config default.plymouth  #here, choose the number of the theme you want to use then hit enter
+sudo update-initramfs -u
+
+Reboot and ready... should be running the new theme.
+
+

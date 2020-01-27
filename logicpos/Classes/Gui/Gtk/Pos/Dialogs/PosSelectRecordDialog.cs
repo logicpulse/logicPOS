@@ -146,8 +146,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Size windowSize = pSize;// new Size(900, 700);
             _genericTreeView = pGenericTreeView;
             _genericTreeViewMode = pGenericTreeViewMode;
-            //_actionAreaButtons = (pActionAreaButtons != null) ? pActionAreaButtons : GetDefaultActionAreaButtons();
-            _actionAreaButtons = pActionAreaButtons;
+            _actionAreaButtons = (pActionAreaButtons != null) ? pActionAreaButtons : GetDefaultActionAreaButtons();
+            //_actionAreaButtons = pActionAreaButtons;
 
             //Init Local Vars
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");

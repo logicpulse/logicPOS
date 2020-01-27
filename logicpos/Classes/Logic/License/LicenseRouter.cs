@@ -84,13 +84,15 @@ namespace logicpos.Classes.Logic.License
                     //Try Update Licence    
                     try
                     {
+                        bool haveLicence = false;
                         if (GlobalFramework.PluginLicenceManager.GetLicenseInformation().Count > 0)
                         {
                             version = GlobalFramework.PluginLicenceManager.GetLicenseInformation()["version"].ToString();
+                            haveLicence = true;
                         }
 
                         //Compare WS License with Local License (GlobalFramework.LicenceVersion)
-                        registredLicence = GlobalFramework.PluginLicenceManager.GetLicence(hardwareID, version);
+                        registredLicence = GlobalFramework.PluginLicenceManager.GetLicence(hardwareID, version, haveLicence);
 
                         //If Diferent Licenses return 1 byte and update local license file, else if equal return byte 0, skipping if
                         if (showDebug)
@@ -212,7 +214,7 @@ namespace logicpos.Classes.Logic.License
         public static void GetLicenceInfo()
         {
             GlobalFramework.LicenceDate = DateTime.Now.ToString("dd/MM/yyyy");
-            GlobalFramework.LicenceVersion = "LOGICPOS_EXPRESS";
+            GlobalFramework.LicenceVersion = "LOGICPOS_LICENSED";
             GlobalFramework.LicenceName = "Nome DEMO";
             GlobalFramework.LicenceCompany = "Empresa DEMO";
             GlobalFramework.LicenceNif = "NIF DEMO";

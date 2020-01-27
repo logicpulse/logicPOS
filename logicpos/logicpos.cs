@@ -35,7 +35,7 @@ namespace logicpos
         private TimeSpan _backupDatabaseTimeSpan = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeStart = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeEnd = new TimeSpan();
-
+        
         public void StartApp(AppMode pMode)
         {
             try

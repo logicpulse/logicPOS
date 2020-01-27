@@ -315,52 +315,40 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ExportSaftPt
 
-        public static string ExportSaftPt(Window pSourceWindow, ExportSaftPtMode pExportSaftPtMode)
+        public static string ExportSaft(Window pSourceWindow, ExportSaftPtMode pExportSaftPtMode)
         {
             string result = string.Empty;
             DateTime dateCurrent = FrameworkUtils.CurrentDateTimeAtomic();
             DateTime dateStart, dateEnd;
 
-            // Plugin Errors Messages
-            if (GlobalFramework.PluginSoftwareVendor == null || !GlobalFramework.PluginSoftwareVendor.IsValidSecretKey(SettingsApp.SecretKey))
+            switch (pExportSaftPtMode)
             {
-                /* IN009034 */
-                GlobalApp.DialogThreadNotify.WakeupMain();
-
-                _log.Debug(String.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_plugin_softwarevendor_not_registered"));
-            }
-            else
-            {
-                switch (pExportSaftPtMode)
-                {
-                    case ExportSaftPtMode.WholeYear:
-                        dateStart = new DateTime(dateCurrent.Year, 1, 1);
-                        dateEnd = new DateTime(dateCurrent.Year, 12, 31);
-                        result = ExportSaftPt(pSourceWindow, dateStart, dateEnd);
-                        break;
-                    case ExportSaftPtMode.LastMonth:
-                        dateStart = dateCurrent.AddMonths(-1);
-                        dateStart = new DateTime(dateStart.Year, dateStart.Month, 1);
-                        dateEnd = dateStart.AddMonths(1).AddDays(-1);
-                        result = ExportSaftPt(pSourceWindow, dateStart, dateEnd);
-                        break;
-                    case ExportSaftPtMode.Custom:
-                        PosDatePickerStartEndDateDialog dialog = new PosDatePickerStartEndDateDialog(pSourceWindow, Gtk.DialogFlags.DestroyWithParent);
-                        ResponseType response = (ResponseType)dialog.Run();
-                        if (response == ResponseType.Ok)
-                        {
-                            result = ExportSaftPt(pSourceWindow, dialog.DateStart, dialog.DateEnd);
-                        }
-                        dialog.Destroy();
-                        break;
-                }
+                case ExportSaftPtMode.WholeYear:
+                    dateStart = new DateTime(dateCurrent.Year, 1, 1);
+                    dateEnd = new DateTime(dateCurrent.Year, 12, 31);
+                    result = ExportSaft(pSourceWindow, dateStart, dateEnd);
+                    break;
+                case ExportSaftPtMode.LastMonth:
+                    dateStart = dateCurrent.AddMonths(-1);
+                    dateStart = new DateTime(dateStart.Year, dateStart.Month, 1);
+                    dateEnd = dateStart.AddMonths(1).AddDays(-1);
+                    result = ExportSaft(pSourceWindow, dateStart, dateEnd);
+                    break;
+                case ExportSaftPtMode.Custom:
+                    PosDatePickerStartEndDateDialog dialog = new PosDatePickerStartEndDateDialog(pSourceWindow, Gtk.DialogFlags.DestroyWithParent);
+                    ResponseType response = (ResponseType)dialog.Run();
+                    if (response == ResponseType.Ok)
+                    {
+                        result = ExportSaft(pSourceWindow, dialog.DateStart, dialog.DateEnd);
+                    }
+                    dialog.Destroy();
+                    break;
             }
 
             return result;
         }
 
-        public static string ExportSaftPt(Window pSourceWindow, DateTime? pDateTimeStart, DateTime? pDateTimeEnd)
+        public static string ExportSaft(Window pSourceWindow, DateTime? pDateTimeStart, DateTime? pDateTimeEnd)
         {
             string result = string.Empty;
 
@@ -369,13 +357,30 @@ namespace logicpos
                 //Overload Management
                 if (pDateTimeStart == null || pDateTimeEnd == null)
                 {
-                    result = SaftPt.ExportSaftPt();
+					//Angola - Certificação [TK:016268]
+                    if(System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT")
+                    {
+                        result = SaftPt.ExportSaftPt();
+                    }
+                    else if (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
+                    {
+                        result = SaftAo.ExportSaftAO();
+                    }
                 }
                 else
                 {
                     DateTime dateTimeStart = Convert.ToDateTime(pDateTimeStart);
                     DateTime dateTimeEnd = Convert.ToDateTime(pDateTimeEnd);
-                    result = SaftPt.ExportSaftPt(dateTimeStart, dateTimeEnd);
+					//Angola - Certificação [TK:016268]
+                    if (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT")
+                    {
+                        result = SaftPt.ExportSaftPt(dateTimeStart, dateTimeEnd);
+                    }
+                    else if (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
+                    {
+                        result = SaftAo.ExportSaftAO(dateTimeStart, dateTimeEnd);
+                    }
+                    
                 }
 
                 Utils.ShowMessageTouch(
@@ -472,7 +477,6 @@ namespace logicpos
                         case "THERMAL_PRINTER_WINDOWS":
                         case "THERMAL_PRINTER_LINUX":
                         case "THERMAL_PRINTER_SOCKET":
-                        case "THERMAL_PRINTER_USB":
                             openDrawer = true;
                             break;
                     }
@@ -484,7 +488,6 @@ namespace logicpos
                         case "THERMAL_PRINTER_WINDOWS":
                         case "THERMAL_PRINTER_LINUX":
                         case "THERMAL_PRINTER_SOCKET":
-                        case "THERMAL_PRINTER_USB":
                             //validFiles = IsValidProtectedFile(FrameworkUtils.OSSlash(template.FileTemplate), extraMessage);
                             break;
                         //FastReport : Report Files
@@ -564,7 +567,6 @@ namespace logicpos
                         case "THERMAL_PRINTER_WINDOWS":
                         case "THERMAL_PRINTER_LINUX":
                         case "THERMAL_PRINTER_SOCKET":
-                        case "THERMAL_PRINTER_USB":
                             break;
                         //FastReport : Report Files
                         case "GENERIC_PRINTER_WINDOWS":

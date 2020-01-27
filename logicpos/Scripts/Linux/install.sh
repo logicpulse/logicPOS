@@ -17,7 +17,7 @@ INFO_SOFTWARE="LogicPOS Ubuntu 18.04.3 LTS Install Script v1.0"
 
 #Files
 FILE_INSTALL=logicpos_linux.zip
-FILE_THEME=plymouth_theme_logicpos.tar.xz
+FILE_THEME=plymouth_theme_logicpos.zip
 #Urls
 URL_DOWNLOAD_SERVER=http://box.logicpulse.com/files/latest
 URL_FILE_INSTALL=$URL_DOWNLOAD_SERVER/$FILE_INSTALL
@@ -107,19 +107,16 @@ read -r -p "Install Additional Programs - Skype and Anydesk (y) or Skip it(N) ? 
 ADDITIONAL=$(echo "$ADDITIONAL" | tr '[:upper:]' '[:lower:]')
 if [ "$ADDITIONAL" = "y" ] ; then
 	echo "Install Additional Programs"
-	echo ""
-	read -p "Press [Enter] key to continue..." ENTER
 else
   echo "Skipped Install Additional Programs "
 fi
 
 echo ""
 read -r -p "Setup logicpos in KiosK Mode(y) or Skip it(N) ? [y/N]  " KIOSKMODE	
-KIOSKMODE=$(echo "$THEME" | tr '[:upper:]' '[:lower:]')
+KIOSKMODE=$(echo "$KIOSKMODE" | tr '[:upper:]' '[:lower:]')
 if [ "$KIOSKMODE" = "y" ] ; then
 	echo "Setup KiosK Mode"
-	echo ""
-	read -p "Press [Enter] key to continue..." ENTER
+
 else
   echo "Skipped KiosK Mode"
 fi
@@ -209,9 +206,10 @@ sudo apt-get install gtk2-engines-nodoka -y
 
 if [ "$KIOSKMODE" = "y" ]; then
 	echo "Install LXDE"
-	sudo apt-get update
 	sudo apt-get install lxde -y
 fi
+
+sudo apt install plymouth-themes -y
 
 echo "Auto Remove"
 sudo apt-get autoremove -y --force-yes
@@ -427,8 +425,8 @@ then
 	#sudo update-initramfs -u 
 	
 	
-	sudo tar -xJf $FILE_THEME -C /usr/share/plymouth/themes/
-	sudo update-alternatives --install /usr/share/plymouth/themes/plymouth_theme_logicpos/default.plymouth default.plymouth /usr/share/plymouth/themes/plymouth_theme_logicpos/logicpos/logicpos.plymouth 100
+	sudo unzip $FILE_INSTALL -d /usr/share/plymouth/themes/
+	sudo update-alternatives --install /usr/share/plymouth/themes/default.plymouth default.plymouth /usr/share/plymouth/themes/logicpos/logicpos.plymouth 100
 	sudo update-alternatives --config default.plymouth
 	sudo update-initramfs -u 
 
@@ -460,11 +458,11 @@ fi
 
 #Final Steps ---------------------------------------------------------------------------------------------------------------------
 
-echo "Reboot system or CNTRL+C to abort"
+read -p "Reboot system or CTRL+C to abort" ENTER
 
 sudo reboot
 
-read -p "Press [Enter] key to continue..." ENTER
+
 
 
 

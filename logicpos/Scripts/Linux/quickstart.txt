@@ -48,7 +48,7 @@ sudo ufw status
 #### Start Install Script
 
 ```
-cd /tmp && [ -f install.sh ] && rm install.sh && rm install_run.sh
+cd /tmp && [ -f install.sh ] && rm install.sh && rm install_run.sh && 
 wget http://box.logicpulse.pt/files/private/logicpos/install.sh && cat install.sh | tr -d '\r' > install_run.sh && sudo chmod 755 install_run.sh && ./install_run.sh
 ```
 

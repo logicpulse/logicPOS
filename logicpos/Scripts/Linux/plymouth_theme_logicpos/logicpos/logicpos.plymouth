@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=LogicPOS
+Description=LogicPulse LogicPos Theme
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/logicpos
+ScriptFile=/usr/share/plymouth/themes/logicpos/logicpos.script

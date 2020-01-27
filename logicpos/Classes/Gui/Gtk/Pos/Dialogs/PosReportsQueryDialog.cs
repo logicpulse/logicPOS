@@ -179,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //actionAreaButtons.Add(_actionAreaButtonCleanFilter);
                 windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filter");
             }
-            else if (FrameworkUtils.OSVersion() == "linux") {
+            else if (Utils.IsLinux) {
                 actionAreaButtons.Add(new ActionAreaButton(_buttonExportXls, _responseTypeExportXls));
                 actionAreaButtons.Add(new ActionAreaButton(_buttonExportPdf, _responseTypeExportPdf));
             }

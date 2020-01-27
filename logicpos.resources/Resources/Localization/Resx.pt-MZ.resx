@@ -639,7 +639,7 @@ Deseja finalizar este ticket e prosseguir?</value>
     <value>Erro ao Exportar o Ficheiro de SAF-T!</value>
   </data>
   <data name="dialog_message_saftpt_exported_successfully" xml:space="preserve">
-    <value>SAF-T PT Exportado para
+    <value>SAF-T Exportado para
 {0}</value>
   </data>
   <data name="dialog_message_series_create_confirmation_text" xml:space="preserve">
@@ -1493,7 +1493,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Exportar Clientes</value>
   </data>
   <data name="global_export_saftpt" xml:space="preserve">
-    <value>Exportar SAF-T PT</value>
+    <value>Exportar SAF-T</value>
   </data>
   <data name="global_export_saftpt_custom" xml:space="preserve">
     <value>SAF-T Personalizado</value>
@@ -3755,5 +3755,11 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="prefparam_use_ccdailyticket" xml:space="preserve">
     <value>Ticket :: Imprimir detalhes da conta corrente no ticket de movimentos diários ou de sessão</value>
+  </data>
+  <data name="global_report_overlay_software_certification_ao" xml:space="preserve">
+    <value>{0} por programa validado Nº {1}/AGT/{3}</value>
+  </data>
+  <data name="dialog_button_label_new_client" xml:space="preserve">
+    <value>Novo Cli.</value>
   </data>
 </root>

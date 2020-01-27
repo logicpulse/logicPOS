@@ -312,11 +312,10 @@ namespace logicpos.App
                 logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(GlobalFramework.Settings["appOperationModeToken"]);
                         
                 string customCultureResourceDefinition = GlobalFramework.Settings["customCultureResourceDefinition"];
-                string customCultureCountryPrefix = customCultureResourceDefinition.Substring(0, customCultureResourceDefinition.IndexOf('-'));
-
+                string customCultureCountryPrefix = customCultureResourceDefinition.Substring(0, customCultureResourceDefinition.IndexOf('-'));         
 
                 if (demo)
-                {
+                {                    
                     //string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
                     string appOperationModeToken = customAppOperationMode.AppOperationModeToken;
                     //..\Resources\Database\Demos\..\..\databasedatademo_backery.sql
@@ -331,6 +330,11 @@ namespace logicpos.App
                 }
                 else
                 {
+					//Angola - Certificação [TK:016268]
+                    if (customCultureResourceDefinition == "pt-AO" && basePath == "Resources\\Database\\Data\\{0}\\{1}\\databasedata.sql")
+                    {
+                        customCultureCountryPrefix = "ao";
+                    }
                     /* Default or Retail */
                     string appOperationTheme = customAppOperationMode.AppOperationTheme;
                     // "Resources\Database\Data\{0}\{1}\databasedata.sql"

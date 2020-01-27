@@ -5,7 +5,7 @@ namespace logicpos.plugin.contracts
     public interface ILicenceManager : IPlugin
     {
         string GetHardwareID();
-        byte[] GetLicence(string hardwareID, string version);
+        byte[] GetLicence(string hardwareID, string version, bool haveLicence);
         SortedList GetLicenseInformation();
         string GetLicenseFilename();
         bool IsLicensed();

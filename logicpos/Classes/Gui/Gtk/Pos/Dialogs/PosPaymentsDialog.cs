@@ -52,6 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private TouchButtonIconWithText _buttonOk;
         private TouchButtonIconWithText _buttonCancel;
         private TouchButtonIconWithText _buttonClearCustomer;
+        private TouchButtonIconWithText _buttonNewCustomer;
         private TouchButtonIconWithText _buttonFullPayment;
         private TouchButtonIconWithText _buttonPartialPayment;
         //Default Objects
@@ -158,6 +159,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool enableCurrentAccountButton = pEnableCurrentAccountButton;
                 if (enablePartialPaymentButtons) enablePartialPaymentButtons = (_articleBagFullPayment.TotalQuantity > 1) ? true : false;
                 //Files
+				//TK016311 Botão Novo Cliente nos pagamentos do TicketPad 
+                string fileIconNewCustomer = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_clients.png");
                 string fileIconClearCustomer = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png");
                 string fileIconFullPayment = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_payment_full.png");
                 string fileIconPartialPayment = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_payment_partial.png");
@@ -474,6 +477,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
                 _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
                 _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
+                _buttonNewCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_new_client"), fileIconNewCustomer);
                 _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_full_payment"), fileIconFullPayment);
                 _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_partial_payment"), fileIconPartialPayment);
                 // Enable if has selectedPaymentMethod defined, ex when working with SplitPayments
@@ -483,6 +487,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //ActionArea
                 ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
                 actionAreaButtons.Add(new ActionAreaButton(_buttonClearCustomer, _responseTypeClearCustomer));
+                actionAreaButtons.Add(new ActionAreaButton(_buttonNewCustomer, _responseTypeClearCustomer));
                 if (enablePartialPaymentButtons)
                 {
                     actionAreaButtons.Add(new ActionAreaButton(_buttonFullPayment, _responseTypeFullPayment));

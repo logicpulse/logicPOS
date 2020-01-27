@@ -466,6 +466,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     // In Copy Document we must Assign DocumentFinanceType to SelectionBox
                     _entryBoxSelectDocumentFinanceType.Value = sourceDocument.DocumentType;
                     _entryBoxSelectDocumentFinanceType.EntryValidation.Text = sourceDocument.DocumentType.Designation;
+                    //Copy notes from Copy Document #Lindote
+                    if(sourceDocument.Notes != null) _entryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
                     // Call Update SelectionBox Shared Method
                     SharedUpdateSelectionBoxsAndPageNavigatorOnChangeDocumentType();
                 }
@@ -671,7 +673,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         _posDocumentFinanceDialog.ValidateMaxQuantities = new System.Collections.Generic.Dictionary<Guid, decimal>();
                         foreach (fin_documentfinancedetail item in addToTree)
                         {
-                            _posDocumentFinanceDialog.ValidateMaxQuantities.Add(item.Article.Oid, item.Quantity);
+                            //If source Document contains duplicated articles in bag -> update collection Key #lindote 14/11/19
+                            if (_posDocumentFinanceDialog.ValidateMaxQuantities.ContainsKey(item.Article.Oid))
+                            {
+                                _posDocumentFinanceDialog.ValidateMaxQuantities[item.Article.Oid] += item.Quantity;
+                            }
+                            else _posDocumentFinanceDialog.ValidateMaxQuantities.Add(item.Article.Oid, item.Quantity);
                         }
                     }
                     //Clear entryBoxReason when change SourceDocument (Disabled)

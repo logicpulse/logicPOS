@@ -11,6 +11,7 @@ using logicpos.datalayer.Enums;
 using logicpos.resources;
 using logicpos.resources.Resources.Localization;
 using System;
+using System.Configuration;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -20,13 +21,37 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private int _windowHeightForTextComponent = 331;
         private int _windowHeight = 0;
 
+        public static void SaveSettings(string fieldName)
+        {
+            try
+            {              
+
+                Configuration config =  ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                config.AppSettings.Settings["customCultureResourceDefinition"].Value = fieldName;
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("appSettings");
+
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+        }
         public DialogConfigurationPreferenceParameter(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
             cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)_dataSourceRow;
-            // Default windowHeight, InputTypes can Override this in Switch 
-            _windowHeight = _windowHeightForTextComponent;
+            // Default windowHeight, InputTypes can Override this in Switch             
+            if (Utils.IsLinux)
+            {
+                _windowHeight = 391;
+            }
+            else 
+            {
+                _windowHeight = _windowHeightForTextComponent;
+            }
             InitUI();
             SetSizeRequest(_windowWidth, _windowHeight);
             InitNotes();
@@ -193,6 +218,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         xpoComboBoxInputType.Changed += delegate
                         {
                             entryValue.Text = getCulturesValues[xpoComboBoxInputType.Active];
+                            if (Utils.IsLinux)
+                            {
+                                SaveSettings(getCulturesValues[xpoComboBoxInputType.Active].ToString());
+                            }
                             //GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCulturesValues[xpoComboBoxInputType.Active]);
                             //GlobalFramework.Settings["customCultureResourceDefinition"] = getCulturesValues[xpoComboBoxInputType.Active];
                             //CustomResources.UpdateLanguage(getCulturesValues[xpoComboBoxInputType.Active]);

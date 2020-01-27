@@ -4,8 +4,6 @@
     <BusinessObjectDataSource Name="DocumentFinancePayment" ReferenceName="DocumentFinancePayment" DataType="logicpos.financial.Classes.Reports.BOs.FRBOGenericCollection1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinancePayment, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Oid" DataType="System.String"/>
       <Column Name="DocumentTypeDesignation" DataType="System.String"/>
-      <Column Name="DocumentTypeResourceString" DataType="System.String"/>
-      <Column Name="DocumentTypeResourceStringReport" DataType="System.String"/>
       <Column Name="PaymentRefNo" DataType="System.String"/>
       <Column Name="PaymentStatus" DataType="System.String"/>
       <Column Name="PaymentAmount" DataType="System.Decimal"/>
@@ -103,7 +101,7 @@
     </inherited>
     <ReportSummaryBand Name="ReportSummary1" ZOrder="-1" Top="311.36" Width="718.2" Height="289.95" PrintOnBottom="true">
       <ShapeObject Name="Shape2" Top="151.2" Width="577.13" Height="122.85" Border.Color="Silver" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true"/>
-      <TextObject Name="TextGlobalDocumentFinanceTypeReportFooterAt" Top="274.05" Width="718.2" Height="15.9" Text="[IIf([DocumentFinancePayment.DocumentTypeResourceStringReport] != &quot;&quot;, Res([DocumentFinancePayment.DocumentTypeResourceStringReport]), &quot;&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Center" Font="Arial, 8pt" Wysiwyg="true"/>
+      
       <TextObject Name="TextDocumentNotesComments" Left="4.54" Top="204.9" Width="566.55" Height="65.6" Text="[DocumentFinancePayment.Notes]" Padding="2, 2, 2, 2" Font="Arial, 9pt" Wysiwyg="true" HtmlTags="true"/>
       <TextObject Name="LabelNotes" Left="4.54" Top="192.45" Width="566.55" Height="11.9" Text="[Res(&quot;global_notes&quot;)]" WordWrap="false" Font="Arial, 7pt, style=Bold"/>
       <TextObject Name="TextInWordsValue" Left="5.45" Top="171.55" Width="566.55" Height="18.35" Text="[ExtendedValue([DocumentFinancePayment.PaymentAmount]*[DocumentFinancePayment.ExchangeRate], [DocumentFinancePayment.CurrencyDesignation])]" Padding="2, 2, 2, 2" Font="Arial, 9pt" Wysiwyg="true"/>

@@ -5,6 +5,14 @@ namespace logicpos.printer.genericwindows
 {
     public static class Print
     {
+		//TK016310 Configuração Impressoras Windows 
+        public static void USBPrintWindows(string printerName, byte[] document)
+        {
+            if (document == null)
+                return;
+            if (!RawPrinterHelper.SendBytesToPrinter(printerName, document))
+                throw new ArgumentException("Unable to access printer : " + printerName);
+        }
         public static void WindowsPrint(string printerName, byte[] document)
         {
             NativeMethods.DOC_INFO_1 documentInfo;

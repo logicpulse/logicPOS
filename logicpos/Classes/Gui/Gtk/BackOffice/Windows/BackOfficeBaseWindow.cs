@@ -134,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Logo
             try
             {
-                if (GlobalFramework.LicenceReseller != "LogicPulse") _imageLogo = new Image(fileImageBackOfficeLogo);
+                if (GlobalFramework.LicenceReseller != null && GlobalFramework.LicenceReseller.ToString().ToLower() != "logicpulse" && GlobalFramework.LicenceReseller.ToString().ToLower() != "") _imageLogo = new Image(fileImageBackOfficeLogo);
                 else _imageLogo = new Image(fileImageBackOfficeLogoLong);
                 //_imageLogo.WidthRequest = _widthAccordion + Convert.ToInt16(borderWidth) * 3;
                 //_imageLogo.SetAlignment(0.0F, 0.5F);
@@ -174,7 +174,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Pack HBox StatusBar
             _hboxStatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             _hboxStatusBar.PackStart(_imageLogo, false, false, 0);
-            if (GlobalFramework.LicenceReseller != "LogicPulse") _hboxStatusBar.PackStart(_reseller, false, false, 0);
+            if (GlobalFramework.LicenceReseller != null && GlobalFramework.LicenceReseller.ToString().ToLower() != "logicpulse" && LicenceManagement.IsLicensed) _hboxStatusBar.PackStart(_reseller, false, false, 0);
             _hboxStatusBar.PackStart(_labelActiveContent, false, false, 0);
             _hboxStatusBar.PackStart(_labelTerminalInfo, true, true, 0);
 
@@ -203,7 +203,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _imageLogo.Dispose();
             _dashboardButton = new TouchButtonIconWithText("DASHBOARD_ICON", FrameworkUtils.StringToColor("168, 204, 79"), "Dashboard", fontDescription, FrameworkUtils.StringToColor("61, 61, 61"), _dashboardIcon, sizeIconDashboard, _widthAccordion, _heightAccordion, true);
             _exitButton = new TouchButtonIconWithText("EXIT_BUTTON", FrameworkUtils.StringToColor("201, 102, 88"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quit"), fontDescription, FrameworkUtils.StringToColor("255, 255, 255"), _exitIcon, sizeButton, _widthAccordion, _heightAccordion, true);
-            _backPOS = new TouchButtonIconWithText("POS", FrameworkUtils.StringToColor("168, 204, 79"), "Logicpos", fontDescription, FrameworkUtils.StringToColor("61, 61, 61"), _backPOSIcon, sizeButton, _widthAccordion, _heightAccordion, true);
+            _backPOS = new TouchButtonIconWithText("POS", FrameworkUtils.StringToColor("168, 204, 79"), "LogicPOS", fontDescription, FrameworkUtils.StringToColor("61, 61, 61"), _backPOSIcon, sizeButton, _widthAccordion, _heightAccordion, true);
             _NewVersion = new TouchButtonIconWithText("Update_Button", FrameworkUtils.StringToColor("168, 204, 79"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_update_pos"), fontDescription, FrameworkUtils.StringToColor("61, 61, 61"), _updateIcon, sizeButton, _widthAccordion, _heightAccordion, true);
             _labelClock.ModifyFont(fontDescriptionStatusBar);
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -254,7 +254,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             string appVersion = FrameworkUtils.ProductVersion.Replace("v", ""); 
 
             bool needToUpdate = false;
-            GlobalFramework.ServerVersion = "1.3.0000";
+            //GlobalFramework.ServerVersion = "1.3.0000";
             if (GlobalFramework.ServerVersion != null)
             {
                 try
@@ -296,9 +296,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
-                            _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 200);
+                            _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 160);
                             _fixAccordion.Add(_labelUpdate);
-                            _fixAccordion.Put(_NewVersion, 0, GlobalApp.boScreenSize.Height - 175);
+                            _fixAccordion.Put(_NewVersion, 0, GlobalApp.boScreenSize.Height - 135);
                             _fixAccordion.Add(_NewVersion);
                         }
                     }

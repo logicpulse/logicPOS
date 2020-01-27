@@ -157,8 +157,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         case "THERMAL_PRINTER_LINUX":
                         //Impressora SINOCAN em ambiente WindowsLinux/Socket
                         case "THERMAL_PRINTER_SOCKET":
-                        //Impressora SINOCAN em ambiente WindowsLinux/USB
-                        case "THERMAL_PRINTER_USB":
                             ThermalPrinterFinanceDocumentMaster thermalPrinterFinanceDocument = new ThermalPrinterFinanceDocumentMaster(pPrinter, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
                             thermalPrinterFinanceDocument.Print();
                             //Add to SystemPrint Audit
@@ -255,8 +253,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         case "THERMAL_PRINTER_LINUX":
                         //Impressora SINOCAN em ambiente WindowsLinux/Socket
                         case "THERMAL_PRINTER_SOCKET":
-                        //Impressora SINOCAN em ambiente WindowsLinux/USB
-                        case "THERMAL_PRINTER_USB":
                             ThermalPrinterFinanceDocumentPayment thermalPrinterFinanceDocumentPayment = new ThermalPrinterFinanceDocumentPayment(pPrinter, pDocumentFinancePayment, copyNames, false);
                             thermalPrinterFinanceDocumentPayment.Print();
                             //Add to SystemPrint Audit
@@ -302,8 +298,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         case "THERMAL_PRINTER_LINUX":
                         //Impressora SINOCAN em ambiente WindowsLinux/Socket
                         case "THERMAL_PRINTER_SOCKET":
-                        //Impressora SINOCAN em ambiente WindowsLinux/USB
-                        case "THERMAL_PRINTER_USB":
                             //NonCurrentAcount
                             ThermalPrinterInternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.NonCurrentAcount);
                             thermalPrinterInternalDocumentWorkSession.Print();
@@ -389,8 +383,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         case "THERMAL_PRINTER_LINUX":
                         //Impressora SINOCAN em ambiente WindowsLinux/Socket
                         case "THERMAL_PRINTER_SOCKET":
-                        //Impressora SINOCAN em ambiente WindowsLinux/USB
-                        case "THERMAL_PRINTER_USB":
                             ThermalPrinterInternalDocumentCashDrawer thermalPrinterInternalDocumentCashDrawer = new ThermalPrinterInternalDocumentCashDrawer(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, pMovementAmount, pMovementDescription);
                             thermalPrinterInternalDocumentCashDrawer.Print();
                             break;
@@ -425,8 +417,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         case "THERMAL_PRINTER_LINUX":
                         //Impressora SINOCAN em ambiente WindowsLinux/Socket
                         case "THERMAL_PRINTER_SOCKET":
-                        //Impressora SINOCAN em ambiente WindowsLinux/USB
-                        case "THERMAL_PRINTER_USB":
                             PrintObject printObjectSINOCAN = new PrintObject(0);
                             // Deprecated
                             //int m = Convert.ToInt32(GlobalFramework.Settings["DoorValueM"]);

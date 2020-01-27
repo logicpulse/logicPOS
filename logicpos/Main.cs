@@ -205,19 +205,42 @@ namespace logicpos
 
         //IN009296 BackOffice - Mudar o idioma da aplicação
         public static void SetCulture()
-        {            
+        {
+            
             try
             {
-                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                GlobalFramework.SessionXpo = Utils.SessionXPO();
-                string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
-                GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
-                GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                if (!Utils.IsLinux)
+                {
+                    string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                    GlobalFramework.SessionXpo = Utils.SessionXPO();
+                    string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();                    
+                    if (!Utils.getCultureFromOS(getCultureFromDB))
+                    {
+                        GlobalFramework.CurrentCulture = new CultureInfo("pt-PT");
+                        GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"]; 
+                    }
+                    else
+                    {
+                        GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
+                        GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                    }
+                        
+                }
             }
             catch
             {
-                GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
-                GlobalFramework.CurrentCulture = new CultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
+
+                if (!Utils.getCultureFromOS(ConfigurationManager.AppSettings["customCultureResourceDefinition"]))
+                {
+                    GlobalFramework.CurrentCulture = new CultureInfo("pt-PT");
+                    GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                }
+                else
+                {
+                    GlobalFramework.CurrentCulture = new CultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
+                    GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                }
+
                 _log.Error(String.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
             }            
         }

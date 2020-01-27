@@ -7,6 +7,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.resources.Resources.Localization;
 using logicpos.Classes.Enums.Dialogs;
 using System;
+using System.Configuration;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -14,6 +15,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
     {
         private VBox _vboxTab2;
         private XPOComboBox _xpoComboBoxPrinterType;
+        private BOWidgetBox _xpoComboBoxPrinterSelect;
+        private Entry entryDesignation;
+        private ComboBox xpoComboBoxInputType;
         private Entry _entryThermalEncoding;
         private Entry _entryThermalImageCompanyLogo;
         private Entry _entryThermalMaxCharsPerLineNormal;
@@ -23,6 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private Entry _entryThermalOpenDrawerValueM;
         private Entry _entryThermalOpenDrawerValueT1;
         private Entry _entryThermalOpenDrawerValueT2;
+        
 
         private sys_configurationprinters _configurationPrinter;
 
@@ -30,7 +35,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinters"));
-            SetSizeRequest(500, 448);
+            
+            if (Utils.IsLinux) SetSizeRequest(500, 468);
+            else SetSizeRequest(500, 448);
             InitUI();
             InitNotes();
             ShowAll();
@@ -44,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             try
             {
                 //Tab1
-                VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+                    VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
                 // HBoxs
                 HBox hbox1 = new HBox(true, _boxSpacing);
@@ -68,17 +75,103 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxTab1.PackStart(boxPrinterType, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinterType, DataSourceRow, "PrinterType", SettingsApp.RegexGuid, true));
 
-                //Designation
-                Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
-                vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
+
+                //Configurar impressora windows com ESC-POS - LINDOTE
+                //Configuração Impressoras Windows TK016310
+                //verifica tipo de dialog conforme o tipo de impressora
+                _configurationPrinter = (_dataSourceRow as sys_configurationprinters);              
+
+                //Preenche o conjunto de strings associado ás diferentes impressoras instaladas no sistema
+                var _printersOnSystem = ComboBoxPrinterSelect();
+                if (!Utils.IsLinux && _printersOnSystem.Length != 0)
+                {
+                    //Designação para Windows será a escolha da impressora instalada no sistema
+                    entryDesignation = new Entry();
+
+                    //Configuração da selectbox
+                    TreeIter iter;
+                    TreeStore store = new TreeStore(typeof(string), typeof(string));
+                    for (int i = 0; i < System.Drawing.Printing.PrinterSettings.InstalledPrinters.Count; i++)
+                    {
+                        iter = store.AppendValues(System.Drawing.Printing.PrinterSettings.InstalledPrinters[i].ToString(), System.Drawing.Printing.PrinterSettings.InstalledPrinters[i]);
+                    }
+                    //Iniciação da comboBox
+                    xpoComboBoxInputType = new ComboBox(_printersOnSystem);
+                    bool flagSelected = false;
+
+                    //Escolha do valor por defeito
+                    xpoComboBoxInputType.Model.GetIterFirst(out iter);
+                    int cbox = 0;
+                    do
+                    {
+                        GLib.Value thisRow = new GLib.Value();
+                        xpoComboBoxInputType.Model.GetValue(iter, 0, ref thisRow);
+                        if ((_dataSourceRow as sys_configurationprinters).Designation != null){
+                            if (_printersOnSystem[cbox] == (_dataSourceRow as sys_configurationprinters).Designation)
+                            {
+                                xpoComboBoxInputType.SetActiveIter(iter);
+                                flagSelected = true;
+                                break;
+                            }
+                        }
+                        cbox++;
+                    } while (xpoComboBoxInputType.Model.IterNext(ref iter));
+
+                    //Se existir impressora selecionada associa á sua designação
+                    if (flagSelected)
+                    {
+                        entryDesignation.Text = _printersOnSystem[xpoComboBoxInputType.Active];    
+                    }
+                    //Label escondida / Já existe a dropdown list que mostra a escolha da seleção
+                    entryDesignation.Visibility = false;
+
+                    //Junção da Drop na WidgetBox do POS
+                    _xpoComboBoxPrinterSelect = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), xpoComboBoxInputType);
+                    
+                    //Mostra Drop List
+                    vboxTab1.PackStart(_xpoComboBoxPrinterSelect, false, false, 0);
+
+                    //Verifica designação válida
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
+
+                }
+                //Se for Linux usa a Designação por defeito, escrita á mão
+                else
+                {
+                    //Designation
+                    Entry entryDesignation = new Entry();
+                    BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
+                    vboxTab1.PackStart(boxDesignation, false, false, 0);
+                    _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
+                }
 
                 //NetworkName
                 Entry entryNetworkName = new Entry();
                 BOWidgetBox boxNetworkName = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_networkname"), entryNetworkName);
                 vboxTab1.PackStart(boxNetworkName, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxNetworkName, _dataSourceRow, "NetworkName", SettingsApp.RegexHardwarePrinterNetworkNameAndUsbEndpoint, false));
+
+                //Quando a combobox da drop altera
+                xpoComboBoxInputType.Changed += delegate
+                {
+                    try { 
+                    //Se a Seleção for válida, associa á designação
+                    entryDesignation.Text = _printersOnSystem[xpoComboBoxInputType.Active];
+                        //Se for impressora de rede associa logo o caminho da rede á impressora associada
+                        if (_xpoComboBoxPrinterType.Active == 3)
+                        { 
+                            entryNetworkName.Text = _printersOnSystem[xpoComboBoxInputType.Active];
+                        }
+                        else
+                        {
+                            entryNetworkName.Text = "";
+                        }
+                        }catch(Exception ex)
+                    {
+                        _log.Error(ex.Message, ex);
+                    }
+                
+                };
 
                 //Tab2
                 _vboxTab2 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
@@ -171,6 +264,39 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _log.Error(ex.Message, ex);
             }
         }
+
+        public static void SaveSettings(string fieldName)
+        {
+            try
+            {
+
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                config.AppSettings.Settings["customCultureResourceDefinition"].Value = fieldName;
+                config.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection("appSettings");
+
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+        }
+
+        //Preenche o conjunto de strings associado ás diferentes impressoras instaladas no sistema
+        private string[] ComboBoxPrinterSelect()
+        {
+            int countPrinters = System.Drawing.Printing.PrinterSettings.InstalledPrinters.Count;
+            string[] _printersOnSystem = new string[countPrinters];
+            int i = 0;
+            foreach (string printer in System.Drawing.Printing.PrinterSettings.InstalledPrinters)
+            {
+                _printersOnSystem[i] = printer;
+                i++;
+            }
+            return _printersOnSystem;
+        }
+
 
         private void XpoComboBoxPrinterType_Changed(object sender, System.EventArgs e)
         {

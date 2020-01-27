@@ -640,7 +640,7 @@ Deseja finalizar este ticket e prosseguir?</value>
     <value>Erro ao Exportar o Ficheiro de SAF-T!</value>
   </data>
   <data name="dialog_message_saftpt_exported_successfully" xml:space="preserve">
-    <value>SAF-T PT Exportado para
+    <value>SAF-T Exportado para
 {0}</value>
   </data>
   <data name="dialog_message_series_create_confirmation_text" xml:space="preserve">
@@ -731,14 +731,14 @@ Para continuar use um cliente com os dados obrigatórios preenchidos.
 Nome, Morada, Código Postal, Cidade, País e Número Único de Identificação Tributária.</value>
   </data>
   <data name="dialog_message_value_exceed_simplified_invoice_max_value" xml:space="preserve">
-    <value>O valor do documento excede o limite máximo definido para as faturas simplificadas.
+    <value>O valor do documento excede o limite máximo definido para as vendas a dinheiro.
 
 {0}
 
 {1}</value>
   </data>
   <data name="dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog" xml:space="preserve">
-    <value>Deseja emitir uma Fatura-Recibo em vez da Fatura Simplificada?</value>
+    <value>Deseja emitir uma Fatura-Recibo em vez da Venda a Dinheiro?</value>
   </data>
   <data name="dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog_documentfinancedialog" xml:space="preserve">
     <value>Para continuar selecione outro tipo de documento fiscal.</value>
@@ -1202,7 +1202,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Grupo de descontos</value>
   </data>
   <data name="global_customer_fiscal_number" xml:space="preserve">
-    <value>NIF Cliente</value>
+    <value>NUIT Cliente</value>
   </data>
   <data name="global_customer_types" xml:space="preserve">
     <value>Tipo de clientes</value>
@@ -1349,7 +1349,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Fatura-Recibo</value>
   </data>
   <data name="global_documentfinance_type_title_fs" xml:space="preserve">
-    <value>Fatura Simplificada</value>
+    <value>Venda a Dinheiro</value>
   </data>
   <data name="global_documentfinance_type_title_ft" xml:space="preserve">
     <value>Fatura</value>
@@ -1494,7 +1494,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Exportar Clientes</value>
   </data>
   <data name="global_export_saftpt" xml:space="preserve">
-    <value>Exportar SAF-T PT</value>
+    <value>Exportar SAF-T</value>
   </data>
   <data name="global_export_saftpt_custom" xml:space="preserve">
     <value>SAF-T Personalizado</value>
@@ -1546,10 +1546,10 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Modelo financeiro</value>
   </data>
   <data name="global_fiscal_number" xml:space="preserve">
-    <value>NIF</value>
+    <value>NUIT</value>
   </data>
   <data name="global_fiscal_number_acronym" xml:space="preserve">
-    <value>NIF</value>
+    <value>NUIT</value>
   </data>
   <data name="global_fiscal_year" xml:space="preserve">
     <value>Ano fiscal</value>
@@ -2019,7 +2019,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <comment>This key is used for software certification label in invoices and the value for this key has specific purposes in different countries. Please pay attention on changes</comment>
   </data>
   <data name="global_report_overlay_software_certification_processed" xml:space="preserve">
-    <value>Documento processado por computador</value>
+    <value>Processado</value>
     <comment>This key is used for software certification label in invoices and the value for this key has specific purposes in different countries. Please pay attention on changes</comment>
   </data>
   <data name="global_report_overlay_software_certification_short" xml:space="preserve">
@@ -3756,5 +3756,11 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="prefparam_use_ccdailyticket" xml:space="preserve">
     <value>Ticket :: Imprimir detalhes da conta corrente no ticket de movimentos diários ou de sessão</value>
+  </data>
+  <data name="global_report_overlay_software_certification_ao" xml:space="preserve">
+    <value>{0} por programa validado Nº {1}/AGT/{3}</value>
+  </data>
+  <data name="dialog_button_label_new_client" xml:space="preserve">
+    <value>Novo Cli.</value>
   </data>
 </root>

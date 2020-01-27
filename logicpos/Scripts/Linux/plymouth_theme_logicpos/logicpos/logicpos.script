@@ -1,0 +1,64 @@
+win_width = Window.GetWidth();
+win_height = Window.GetHeight();
+ww_half = win_width / 2;
+wh_half = win_height / 2;
+
+offset = 0; //win_height / -4;
+
+Window.GetMaxWidth = fun (){
+  i = 0;
+  width = 0;
+  while (Window.GetWidth(i)){
+    width = Math.Max(width, Window.GetWidth(i));
+    i++;
+    }
+  return width;
+};
+
+Window.GetMaxHeight = fun (){
+  i = 0;
+  height = 0;
+  while (Window.GetHeight(i)){
+    height = Math.Max(height, Window.GetHeight(i));
+    i++;
+    }
+  return height;
+};
+
+
+background.original_image = ImageNew("background.png");
+background.image = background.original_image.Scale(Window.GetMaxWidth() , Window.GetMaxHeight());
+background.sprite = SpriteNew();
+background.sprite.SetImage(background.image);
+background.sprite.SetPosition(Window.GetX(), Window.GetY(), -10);
+
+distroLogo.image = Image ("distro_logo.png");
+distroLogo.x = 448;
+distroLogo.y = 198;
+distroLogo.sprite = Sprite (distroLogo.image);
+distroLogo.sprite.SetX (distroLogo.x);
+distroLogo.sprite.SetY (distroLogo.y);
+distroLogo.sprite.SetOpacity (0);
+
+distroLogo.start = 0.2;
+distroLogo.end = 1;
+distroLogo.startb = 0.6;
+distroLogo.endb = 0.8;
+
+fun remap (val, imin, imax, omin, omax) {
+  return (((val - imin) / (imax - imin)) * (omax - omin)) + omin;
+}
+
+fun progress_callback (d, p) {
+
+	p = (p * 100.0) / 15.0;
+
+	if (p >= distroLogo.start && p <= distroLogo.end) {
+		a = remap (p, distroLogo.start, distroLogo.end, 0.5, 1);
+		b = Math.Pi * a;
+		c = remap (p, distroLogo.startb, distroLogo.endb, 0, 1);
+		distroLogo.sprite.SetImage (distroLogo.image.Rotate(b));
+		distroLogo.sprite.SetOpacity (c);
+	}
+}
+Plymouth.SetBootProgressFunction(progress_callback);

@@ -117,8 +117,6 @@
       <Column Name="MovementEndTime" DataType="System.DateTime"/>
       <Column Name="Notes" DataType="System.String"/>
       <Column Name="DocumentType" DataType="System.String"/>
-      <Column Name="DocumentTypeResourceString" DataType="System.String"/>
-      <Column Name="DocumentTypeResourceStringReport" DataType="System.String"/>
       <Column Name="Payed" DataType="System.Boolean" BindableControl="CheckBox"/>
       <Column Name="PayedDate" DataType="System.DateTime"/>
       <Column Name="PaymentMethodCode" DataType="System.UInt32"/>
@@ -268,7 +266,7 @@
       <TextObject Name="TextDocumentTotalTax" Left="604.8" Top="71.6" Width="103.95" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.TotalTax])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="LabelDocumentTotalFinal" Left="368.55" Top="90.5" Width="236.25" Height="18.9" Text="[Res(&quot;global_documentfinance_totalfinal&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="TextDocumentTotalFinal" Left="604.8" Top="90.5" Width="103.95" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.TotalFinal])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>
-      <TextObject Name="TextGlobalDocumentFinanceTypeReportFooterAt" Top="274.05" Width="718.2" Height="15.9" Text="[IIf([DocumentFinanceMaster.DocumentTypeResourceStringReport] != &quot;&quot;, Res([DocumentFinanceMaster.DocumentTypeResourceStringReport]), &quot;&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Center" Font="Arial, 8pt" Wysiwyg="true"/>
+      
       <SubreportObject Name="Subreport1" Left="4.54" Top="15.9" Width="345" Height="111.4" Border.Lines="All" Fill.Color="Transparent" ReportPage="ReportPageReportDocumentFinance" PrintOnParent="true"/>
       <TextObject Name="LabelDocumentDiscountTotal" Left="368.55" Top="33.8" Width="236.25" Height="18.9" Text="[Res(&quot;global_documentfinance_total_discount&quot;)]" Padding="2, 2, 2, 2" HorzAlign="Right" Font="Arial, 9pt" Wysiwyg="true"/>
       <TextObject Name="TextDocumentDiscountTotal" Left="604.8" Top="33.8" Width="103.95" Height="18.9" Text="[ToDecimal([DocumentFinanceMaster.ExchangeRate]*[DocumentFinanceMaster.TotalDiscount])]" Padding="2, 2, 2, 2" Format="Number" Format.UseLocale="false" Format.DecimalDigits="2" Format.DecimalSeparator="," Format.GroupSeparator=" " Format.NegativePattern="1" HorzAlign="Right" WordWrap="false" Font="Arial, 9pt, style=Bold" Wysiwyg="true"/>

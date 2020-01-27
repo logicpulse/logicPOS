@@ -65,7 +65,10 @@ namespace logicpos.financial.console
                     /* IN006018 and IN007009 */
                     //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 }
-                GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
+                //GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
+                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";                
+                string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
 
                 //Always use en-US NumberFormat because of mySql Requirements
                 GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);

@@ -640,7 +640,7 @@ Do you want to close it and proceed?</value>
     <value>Error Exporting SAF-T File!</value>
   </data>
   <data name="dialog_message_saftpt_exported_successfully" xml:space="preserve">
-    <value>SAF-T PT Exported to 
+    <value>SAF-T Exported to 
 {0}</value>
   </data>
   <data name="dialog_message_series_create_confirmation_text" xml:space="preserve">
@@ -1494,7 +1494,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Export Costumers</value>
   </data>
   <data name="global_export_saftpt" xml:space="preserve">
-    <value>Export SAF-T PT</value>
+    <value>Export SAF-T</value>
   </data>
   <data name="global_export_saftpt_custom" xml:space="preserve">
     <value>SAF-T Custom</value>
@@ -3755,5 +3755,11 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   </data>
   <data name="prefparam_use_ccdailyticket" xml:space="preserve">
     <value>Ticket :: Print Current Account Details in Daily or Session movements ticket</value>
+  </data>
+  <data name="global_report_overlay_software_certification_ao" xml:space="preserve">
+    <value>{0} per validated program # {1} / AGT/{3}</value>
+  </data>
+  <data name="dialog_button_label_new_client" xml:space="preserve">
+    <value>New Cli.</value>
   </data>
 </root>

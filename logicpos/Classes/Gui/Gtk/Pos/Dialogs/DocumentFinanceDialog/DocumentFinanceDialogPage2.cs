@@ -885,8 +885,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     bool isValidFiscalNumber = FiscalNumber.IsValidFiscalNumber(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2);
                     _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated = isValidFiscalNumber;
                     //Disable FiscalNumber Entry
-                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = !isValidFiscalNumber;
-                    _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = !isValidFiscalNumber;
+                    //_entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = !isValidFiscalNumber;
+                    //_entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = !isValidFiscalNumber;
                 }
 
                 //Shared

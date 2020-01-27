@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 //TK016231 - Backoffice - Importação/Exportação clientes/artigos 
 namespace logicpos
@@ -343,7 +345,10 @@ namespace logicpos
                     string articleUpdatedBy = articleCreatedBy;
                     article.UpdatedWhere = null;
                     article.ButtonImage = null;
-                    if (row.ItemArray.GetValue(4).ToString() != "") { article.Price1 = Convert.ToDecimal(row.ItemArray.GetValue(4)); }
+                    if (row.ItemArray.GetValue(4).ToString() != "") {
+                        var priceF = row.ItemArray.GetValue(4).ToString().Remove(row.ItemArray.GetValue(4).ToString().Length - 5);   
+                        article.Price1 = Convert.ToDecimal(priceF);
+                    }
                     else
                     {
                         article.Price1 = 0;
@@ -368,9 +373,16 @@ namespace logicpos
                     string articleVatDirectSelling = "cee00590-7317-41b8-af46-66560401096b";
 
                     if (row.ItemArray.GetValue(0).ToString() != "") { article.Code = row.ItemArray.GetValue(0).ToString(); } else { article.Code = (Convert.ToInt32(GetLastCodeFromTable("fin_article")) + 10).ToString(); }
-                    if (row.ItemArray.GetValue(0).ToString() != "") { article.Ord = Convert.ToUInt32(row.ItemArray.GetValue(0)); } else { article.Ord = (Convert.ToUInt32(GetLastCodeFromTable("fin_article")) + 10); }
+                    
+                    if (row.ItemArray.GetValue(0).ToString() != "" && row.ItemArray.GetValue(0).ToString().Any(char.IsDigit)) { 
+                        
+                        article.Ord = Convert.ToUInt32(Regex.Match(row.ItemArray.GetValue(0).ToString(), @"\d+").Value.ToString());
+                    }
+                    else 
+                    { 
+                        article.Ord = (Convert.ToUInt32(GetLastCodeFromTable("fin_article")) + 10); 
+                    }                    
                     article.Designation = row.ItemArray.GetValue(1).ToString();
-
                     try
                     {
                         //Verifica se a Familia existe, se não existe, cria
@@ -611,7 +623,7 @@ namespace logicpos
                         {
                             if (articlesInDb.ResultSet[0].Rows[w].Values[0].Equals("Code"))
                             {
-                                importFromDBdataTable.Columns.Add(articlesInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(Int32));
+                                importFromDBdataTable.Columns.Add(articlesInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
                                 indexCode = w;
                             }
                             if (articlesInDb.ResultSet[0].Rows[w].Values[0].Equals("Designation"))
@@ -658,7 +670,7 @@ namespace logicpos
                             {
                                 if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Code"))
                                 {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(Int32));
+                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
                                     indexCode = w;
                                 }
                                 if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("FiscalNumber"))

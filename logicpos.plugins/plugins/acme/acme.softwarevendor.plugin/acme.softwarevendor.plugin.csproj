@@ -71,7 +71,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
-      <Name>logicpos.plugin.contracts</Name>
+      <Name>PluginContracts</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

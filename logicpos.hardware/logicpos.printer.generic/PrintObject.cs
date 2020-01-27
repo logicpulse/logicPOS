@@ -396,7 +396,8 @@ namespace logicpos.printer.generic
             {
                 case "THERMAL_PRINTER_WINDOWS":
                     //Impressora SINOCAN em ambiente Windows 
-                    genericwindows.Print.WindowsPrint(pPrinterName, printer.getByteArray());
+					//TK016310 Configuração Impressoras Windows 
+                    genericwindows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
                     break;
                 case "THERMAL_PRINTER_LINUX":
                     //Impressora SINOCAN em ambiente Linux 
@@ -405,10 +406,6 @@ namespace logicpos.printer.generic
                 case "THERMAL_PRINTER_SOCKET":
                     //Impressora SINOCAN em ambiente Linux Socket
                     genericsocket.Print.SocketPrint(pPrinterName, printer.getByteArray());
-                    break;
-                case "THERMAL_PRINTER_USB":
-                    //Impressora SINOCAN em ambiente USB
-                    genericusb.Print.USBPrint(pPrinterName, printer.getByteArray());
                     break;
             }
 
@@ -492,7 +489,8 @@ namespace logicpos.printer.generic
                 {
                     case "THERMAL_PRINTER_WINDOWS":
                         //Impressora SINOCAN em ambiente Windows 
-                        genericwindows.Print.WindowsPrint(pPrinterName, printer.getByteArray());
+					//TK016310 Configuração Impressoras Windows 
+                        genericwindows.Print.USBPrintWindows(pPrinterName, printer.getByteArray());
                         break;
 
                     case "THERMAL_PRINTER_LINUX":
@@ -502,10 +500,6 @@ namespace logicpos.printer.generic
                     case "THERMAL_PRINTER_SOCKET":
                         //Impressora SINOCAN em ambiente Linux Socket
                         genericsocket.Print.SocketPrint(pPrinterName, printer.getByteArray());
-                        break;
-                    case "THERMAL_PRINTER_USB":
-                        //Impressora SINOCAN em ambiente USB
-                        genericusb.Print.USBPrint(pPrinterName, printer.getByteArray());
                         break;
                 }
             }
