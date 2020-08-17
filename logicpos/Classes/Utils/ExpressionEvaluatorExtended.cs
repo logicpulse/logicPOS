@@ -117,8 +117,9 @@ namespace logicpos
                 // Config
                 /* IN008024 */
                 /* For  CustomAppOperationMode.RETAIL */
+				//IN009345 - Front-End - Falta de funcionalidades em modo Retalho (Botões) 
                 int intEventBoxPosTicketPadColumns = 4;
-                int intEventBoxPosTicketPadRows = 3;
+                int intEventBoxPosTicketPadRows = 4;
 
                 if (SettingsApp.IsDefaultTheme)
                 {

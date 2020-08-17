@@ -47,7 +47,11 @@ namespace logicpos
                     //ATWS : SendDocumentToATWSDialog
                     if (SendDocumentToATWSEnabled(documentFinanceMaster))
                     {
-                        SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
+                        if (Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["sendDocumentsATinRealTime"].ToString()))
+                        {
+                            SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
+                        }
+                        
                     }
                     /* TK013134 - Parking Ticket Module */
                     foreach (var item in GlobalFramework.PendentPayedParkingTickets)

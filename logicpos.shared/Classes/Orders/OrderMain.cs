@@ -154,6 +154,12 @@ namespace logicpos.shared.Classes.Orders
 
         public fin_documentorderticket FinishOrder(Session pSession, bool pPrintTicket)
         {
+            return FinishOrder(pSession, pPrintTicket, false);
+        }
+
+
+        public fin_documentorderticket FinishOrder(Session pSession, bool pPrintTicket, bool pTicketDrecrease)
+        {
             //Local Vars
             DateTime currentDateTime = DateTime.Now;
             fin_documentordermain xOrderMain;
@@ -186,7 +192,7 @@ namespace logicpos.shared.Classes.Orders
             _persistentOid = GetOpenTableFieldValueGuid(_table.Oid, "Oid");
             _orderStatus = (OrderStatus)GetOpenTableFieldValue(_table.Oid, "OrderStatus");
             _updatedAt = FrameworkUtils.CurrentDateTimeAtomic();
-
+            Guid orderTicketOid = Guid.Empty;
             //Insert
             if (_persistentOid == Guid.Empty)
             {
@@ -218,16 +224,43 @@ namespace logicpos.shared.Classes.Orders
             }
 
             //Create OrderTicket
-            xOrderTicket = new fin_documentorderticket(_sessionXpo)
+            //if (pTicketDrecrease)
+            //{
+            //var sql = string.Format(@"SELECT * FROM fin_documentorderticket WHERE TicketId = '{0}' AND OrderMain = '{1}';", currentOrderMain.CurrentTicketId, currentOrderMain.PersistentOid);
+            //_log.Debug(string.Format("sql: [{0}]", sql));
+            string sql = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);
+            //_log.Debug(string.Format("sql: [{0}]", sql));
+            orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql);
+            xOrderTicket = (fin_documentorderticket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
+
+            //xOrderTicket = (fin_documentorderticket)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
+            if (xOrderTicket != null)
             {
-                TicketId = currentOrderMain.CurrentTicketId,
-                DateStart = currentOrderTicket.DateStart,
-                PriceType = currentOrderTicket.PriceType,
-                Discount = xTable.Discount,
-                OrderMain = xOrderMain,
-                PlaceTable = xTable
-            };
-            if (!isInUOW) xOrderTicket.Save();
+                xOrderTicket.TicketId = currentOrderMain.CurrentTicketId;
+                xOrderTicket.DateStart = currentOrderTicket.DateStart;
+                xOrderTicket.PriceType = currentOrderTicket.PriceType;
+                xOrderTicket.Discount = xTable.Discount;
+                xOrderTicket.OrderMain = xOrderMain;
+                xOrderTicket.PlaceTable = xTable;
+                xOrderTicket.UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
+                if (!isInUOW) xOrderTicket.Save();
+            }
+
+            //}
+            else
+            {
+                xOrderTicket = new fin_documentorderticket(_sessionXpo)
+                {
+                    TicketId = currentOrderMain.CurrentTicketId,
+                    DateStart = currentOrderTicket.DateStart,
+                    PriceType = currentOrderTicket.PriceType,
+                    Discount = xTable.Discount,
+                    OrderMain = xOrderMain,
+                    PlaceTable = xTable
+                };
+                if (!isInUOW) xOrderTicket.Save();
+            }
+
 
             //Create OrderDetail
             fin_documentorderdetail xOrderDetailLine;
@@ -242,45 +275,164 @@ namespace logicpos.shared.Classes.Orders
                 xArticle = (fin_article)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_article), line.ArticleOid);
                 //Get PriceTax from TaxSellType
                 priceTax = (taxSellType == TaxSellType.Normal) ? xArticle.VatOnTable.Value : xArticle.VatDirectSelling.Value;
+				//Edit/cancel orders lindote 10/07/2020
+                //Get order ticket Oid from DB
+                string sql3 = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);                
+                orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql3);
+                
+                //Get order detail Oid from DB
+                string sql4 = string.Format(@"SELECT Oid FROM fin_documentorderdetail WHERE OrderTicket = '{0}' AND Article = '{1}' AND Price = '{2}'  AND TotalDiscount = '{3}'  AND Vat = '{4}';", 
+                             orderTicketOid, line.ArticleOid, line.Properties.PriceNet.ToString().Replace(",", "."),
+                                                              line.Properties.TotalDiscount.ToString().Replace(",", "."),
+                                                              line.Properties.Vat.ToString().Replace(",", "."));                
+                Guid orderDetailOid = FrameworkUtils.GetGuidFromQuery(sql4);
 
-                xOrderDetailLine = new fin_documentorderdetail(_sessionXpo)
+                string pToken2 = "";
+                if (pTicketDrecrease)
                 {
-                    //Values
-                    Ord = itemOrd,
-                    Code = xArticle.Code,
-                    Designation = line.Designation,
-                    Quantity = line.Properties.Quantity,
-                    UnitMeasure = xArticle.UnitMeasure.Acronym,
-                    Price = line.Properties.PriceNet,
-                    Discount = (xArticle.Discount > 0) ? xArticle.Discount : 0.0m,
-                    TotalGross = line.Properties.TotalGross,
-                    TotalDiscount = line.Properties.TotalDiscount,
-                    TotalTax = line.Properties.TotalTax,
-                    TotalFinal = line.Properties.TotalFinal,
-                    //Use PriceTax Normal|TakeAway
-                    Vat = priceTax,
-                    //XPGuidObjects
-                    Article = xArticle,
-                    OrderTicket = xOrderTicket
-                };
-
-                //Detect VatExemptionReason
-                if (line.Properties.VatExemptionReason != Guid.Empty)
-                {
-                    xOrderDetailLine.VatExemptionReason = line.Properties.VatExemptionReason;
+                    pToken2 = "decreased";
                 }
 
-                if (!isInUOW)
+                if (orderDetailOid == Guid.Empty)
                 {
-                    xOrderDetailLine.Save();
+                    xOrderDetailLine = new fin_documentorderdetail(_sessionXpo)
+                    {
+                        //Values                        
+                        Ord = itemOrd,
+                        Code = xArticle.Code,
+                        Designation = line.Designation,
+                        Quantity = line.Properties.Quantity,
+                        UnitMeasure = xArticle.UnitMeasure.Acronym,
+                        Price = line.Properties.PriceNet,
+                        Discount = (xArticle.Discount > 0) ? xArticle.Discount : 0.0m,
+                        TotalGross = line.Properties.TotalGross,
+                        TotalDiscount = line.Properties.TotalDiscount,
+                        TotalTax = line.Properties.TotalTax,
+                        TotalFinal = line.Properties.TotalFinal,
+                        Token2 = pToken2,
+                        //Use PriceTax Normal|TakeAway
+                        Vat = priceTax,
+                        //XPGuidObjects
+                        Article = xArticle,
+                        OrderTicket = xOrderTicket
+                    };
+
+                    //Detect VatExemptionReason
+                    if (line.Properties.VatExemptionReason != Guid.Empty)
+                    {
+                        xOrderDetailLine.VatExemptionReason = line.Properties.VatExemptionReason;
+                    }
+                    if (!isInUOW)
+                    {
+                        xOrderDetailLine.Save();
+                    }
                 }
+                else
+                {
+                    xOrderDetailLine = (fin_documentorderdetail)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderdetail), orderDetailOid);
+
+                    if (xOrderDetailLine.Token2 != "decreased" && !pTicketDrecrease)
+                    {
+                       
+                        xOrderDetailLine.Ord = itemOrd;
+                        xOrderDetailLine.Code = xArticle.Code;
+                        xOrderDetailLine.Designation = line.Designation;
+                        xOrderDetailLine.Quantity += line.Properties.Quantity;
+                        xOrderDetailLine.UnitMeasure = xArticle.UnitMeasure.Acronym;
+                        xOrderDetailLine.Price = line.Properties.PriceNet;
+                        xOrderDetailLine.Discount = (xArticle.Discount > 0) ? xArticle.Discount : 0.0m;
+                        xOrderDetailLine.TotalGross = line.Properties.TotalGross;
+                        xOrderDetailLine.TotalDiscount = line.Properties.TotalDiscount;
+                        xOrderDetailLine.TotalTax = line.Properties.TotalTax;
+                        xOrderDetailLine.TotalFinal = line.Properties.TotalFinal;
+                        xOrderDetailLine.Token2 = pToken2;
+                        //Use PriceTax Normal|TakeAway
+                        xOrderDetailLine.Vat = priceTax;
+                        //XPGuidObjects
+                        xOrderDetailLine.Article = xArticle;
+                        xOrderDetailLine.OrderTicket = xOrderTicket;
+
+                        if (!isInUOW)
+                        {
+                            xOrderDetailLine.Save();
+                        }
+                    }
+                    else
+                    if (xOrderDetailLine.Token2 == "decreased" && pTicketDrecrease)
+                    {
+
+                        xOrderDetailLine.Ord = itemOrd;
+                        xOrderDetailLine.Code = xArticle.Code;
+                        xOrderDetailLine.Designation = line.Designation;
+                        xOrderDetailLine.Quantity += line.Properties.Quantity;
+                        xOrderDetailLine.UnitMeasure = xArticle.UnitMeasure.Acronym;
+                        xOrderDetailLine.Price = line.Properties.PriceNet;
+                        xOrderDetailLine.Discount = (xArticle.Discount > 0) ? xArticle.Discount : 0.0m;
+                        xOrderDetailLine.TotalGross = line.Properties.TotalGross;
+                        xOrderDetailLine.TotalDiscount = line.Properties.TotalDiscount;
+                        xOrderDetailLine.TotalTax = line.Properties.TotalTax;
+                        xOrderDetailLine.TotalFinal = line.Properties.TotalFinal;
+                        xOrderDetailLine.Token2 = pToken2;
+                        //Use PriceTax Normal|TakeAway
+                        xOrderDetailLine.Vat = priceTax;
+                        //XPGuidObjects
+                        xOrderDetailLine.Article = xArticle;
+                        xOrderDetailLine.OrderTicket = xOrderTicket;
+
+                        if (!isInUOW)
+                        {
+                            xOrderDetailLine.Save();
+                        }
+                    }
+                    else
+                    if (xOrderDetailLine.Token2 == "decreased" && !pTicketDrecrease)
+                    {
+
+                        xOrderDetailLine.Ord = itemOrd;
+                        xOrderDetailLine.Code = xArticle.Code;
+                        xOrderDetailLine.Designation = line.Designation;
+                        xOrderDetailLine.Quantity = xOrderDetailLine.Quantity;
+                        xOrderDetailLine.UnitMeasure = xArticle.UnitMeasure.Acronym;
+                        xOrderDetailLine.Price = line.Properties.PriceNet;
+                        xOrderDetailLine.Discount = (xArticle.Discount > 0) ? xArticle.Discount : 0.0m;
+                        xOrderDetailLine.TotalGross = line.Properties.TotalGross;
+                        xOrderDetailLine.TotalDiscount = line.Properties.TotalDiscount;
+                        xOrderDetailLine.TotalTax = line.Properties.TotalTax;
+                        xOrderDetailLine.TotalFinal = line.Properties.TotalFinal;
+                        xOrderDetailLine.Token2 = pToken2;
+                        //Use PriceTax Normal|TakeAway
+                        xOrderDetailLine.Vat = priceTax;
+                        //XPGuidObjects
+                        xOrderDetailLine.Article = xArticle;
+                        xOrderDetailLine.OrderTicket = xOrderTicket;
+
+                        if (!isInUOW)
+                        {
+                            xOrderDetailLine.Save();
+                        }
+                    }
+
+
+
+
+
+                }
+
+
+                //}
+
             };
 
             //Clean Details and Open a New Blank Ticket in Session
             //Increment Terminal SessionApp CurrentTicketId
-            _currentTicketId += 1;
-            currentOrderMain.OrderTickets = new Dictionary<int, OrderTicket>();
-            currentOrderMain.OrderTickets.Add(currentOrderMain.CurrentTicketId, new OrderTicket(this, _table.PriceType));
+            //Only increase in new ticket, else stays the same
+            if (!pTicketDrecrease)
+            {
+                _currentTicketId += 1;
+                currentOrderMain.OrderTickets = new Dictionary<int, OrderTicket>();
+                currentOrderMain.OrderTickets.Add(currentOrderMain.CurrentTicketId, new OrderTicket(this, _table.PriceType));
+            }
+
 
             //Finish Writing Session
             GlobalFramework.SessionApp.Write();
@@ -303,7 +455,7 @@ namespace logicpos.shared.Classes.Orders
                 //OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
                 */
                 ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(this);
-
+                articleBag.UpdateTotals();
                 //sqlTotalTickets
                 string sqlTotalTickets = string.Format(@"
                     SELECT 
@@ -326,10 +478,15 @@ namespace logicpos.shared.Classes.Orders
                 _globalTotalQuantity = articleBag.TotalQuantity;
                 //Persist Final TotalOpen
                 pos_configurationplacetable currentTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), _table.Oid);
-                //Required Reload, after ProcessFinanceDocument uowSession, else we get cached object, and apply changes to old object, ex we get a OpenedTable vs a ClosedTable by uowSession
-                currentTable.Reload();
-                currentTable.TotalOpen = _globalTotalFinal;
-                currentTable.Save();
+
+                if(currentTable != null)
+                {
+                    //Required Reload, after ProcessFinanceDocument uowSession, else we get cached object, and apply changes to old object, ex we get a OpenedTable vs a ClosedTable by uowSession
+                    currentTable.Reload();
+                    currentTable.TotalOpen = _globalTotalFinal;
+                    currentTable.Save();
+                }
+
             }
             catch (Exception ex)
             {
@@ -552,6 +709,22 @@ namespace logicpos.shared.Classes.Orders
             _globalTotalFinal = 0;
             _globalTotalTickets = 0;
             _orderTickets = new Dictionary<int, OrderTicket>();
+            _orderTickets.Add(_currentTicketId, new OrderTicket(this, _table.PriceType));
+            GlobalFramework.SessionApp.Write();
+        }
+
+        /// <summary>
+        /// Add new ticket to order
+        /// </summary>
+        public void AddNewTicket()
+        {
+            _orderStatus = OrderStatus.Open;
+            _currentTicketId = _currentTicketId + 1;
+            //_persistentOid = Guid.Empty;
+            _globalTotalGross = 0;
+            _globalTotalTax = 0;
+            _globalTotalFinal = 0;
+            _globalTotalTickets = 0;
             _orderTickets.Add(_currentTicketId, new OrderTicket(this, _table.PriceType));
             GlobalFramework.SessionApp.Write();
         }

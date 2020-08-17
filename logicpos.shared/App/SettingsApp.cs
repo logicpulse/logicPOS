@@ -233,7 +233,7 @@ namespace logicpos.shared.App
         //</RSAKeyValue>"
         public static string RsaPrivateKeyAO;
         //SAFT-T XML Export Header
-        public static string SaftProductIDAO { get { return GetSaftProductID(); } }
+        public static string SaftProductIDAO { get { return GetSaftProductID_AO(); } }
         //Overrided by SoftwareVendor Plugin - ex: "000000000" : Your Company FiscalNumber;
         public static string SaftProductCompanyTaxIDAO;
         //Overrided by SoftwareVendor Plugin - ex: "0000" : Your Company CertificateNumber;
@@ -292,7 +292,7 @@ namespace logicpos.shared.App
         /* IN009183 - limits decimal to 2 places */
         public static string RegexDecimalGreaterEqualThanZeroFinancial = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,2})?\s*$";
         //http://www.nationwidebarcode.com/upc-country-codes/ 
-        public static string RegexEan12andEan4 = @"^\d{12,14}$|^560\d{12,14}$";// <EAN12 a 14 any COUNTRY (^560\d{9}$|^560\d{11}$ < EAN11 PT, ^600\d{9}$|^560\d{11}$ < EAN11 AO)
+        public static string RegexEan12andEan4 = @"^[0-9A-Za-z]+";    /* @"^\d{12,14}$|^560\d{12,14}$";*/// <EAN12 a 14 any COUNTRY (^560\d{9}$|^560\d{11}$ < EAN11 PT, ^600\d{9}$|^560\d{11}$ < EAN11 AO)
         public static string RegexEmail = @"^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,4})$";
         public static string RegexGuid = @"^\b[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}\b$";
         //This will match valid dates in the format DD/MM/YYYY. It takes leap years into account when matching feb 29th and covers from 01/01/0000 to 31/12/9999
@@ -559,6 +559,12 @@ namespace logicpos.shared.App
         {
             return string.Format("{0}/{1}", AppSoftwareName, AppCompanyName);
         }
+
+        private static string GetSaftProductID_AO()
+        {
+            return string.Format("{0}", AppSoftwareName);
+        }
+
 
         //Use to limit Simplified Invoices to have a total limit of 1000 (Articles Products + Services)
         private static int GetFinanceRuleSimplifiedInvoiceMaxTotal()

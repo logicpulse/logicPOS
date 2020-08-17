@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
 using PCComm;
 using System;
 using System.Collections.Generic;
@@ -68,7 +67,7 @@ namespace logicpos.Classes.Logic.Hardware
         /// Call weigh in the balance from OutSide, this Trigger the WeighingBalance to Calc the Weight and Total
         /// </summary>
         public void WeighArticle(decimal articlePricePerKg)
-        {
+        {     
             //_log.Debug(string.Format("WeighArticle articlePricePerKg: [{0}]", articlePricePerKg));
             // Round Price to 0.00, to force ex 5,00, else we have 5 and it acts has 0,50
             string priceString = articlePricePerKg.ToString("0.00").ToString().Replace(",", string.Empty).Replace(".", string.Empty);
@@ -79,6 +78,7 @@ namespace logicpos.Classes.Logic.Hardware
             // Write to Device
             WriteData(CalculateHexFromPrice(weightHex));
         }
+
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Helper Methods

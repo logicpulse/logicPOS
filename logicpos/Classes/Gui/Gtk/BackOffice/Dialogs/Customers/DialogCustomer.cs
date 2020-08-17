@@ -274,12 +274,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Events
                 _entryFiscalNumber.Changed += delegate { ValidateFiscalNumber(); };
                 _xpoComboBoxCountry.Changed += delegate { UpdateCountryRegExComponents(); };
-				//IN009260 Inserir Cliente permite código já inserido 
-                entryCode.Changed += delegate
+                //IN009260 Inserir Cliente permite código já inserido 
+                entryCode.FocusOutEvent += delegate
                 {
                     foreach (erp_customer item in collectionCustomers)
                     {
-                        if(entryCode.Text == item.Code.ToString())
+                        if (entryCode.Text == item.Code.ToString())
                         {
                             Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_validation_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_code_number_exists"));
                             entryCode.Text = "";
@@ -287,7 +287,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     }
                 };
 
-                entryOrd.Changed += delegate
+                entryOrd.FocusOutEvent += delegate
                 {
                     foreach (erp_customer item in collectionCustomers)
                     {

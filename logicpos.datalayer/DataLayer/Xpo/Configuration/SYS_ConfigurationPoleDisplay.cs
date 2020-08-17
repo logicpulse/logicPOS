@@ -65,6 +65,13 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EndPoint", ref fEndPoint, value); }
         }
 
+        string fComPort;
+        public string COM
+        {
+            get { return fComPort; }
+            set { SetPropertyValue<string>("COM", ref fComPort, value); }
+        }
+
         string fCodeTable;
         public string CodeTable
         {

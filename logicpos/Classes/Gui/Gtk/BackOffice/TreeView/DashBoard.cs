@@ -244,7 +244,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Actions Reports
                 botao13.Clicked += delegate { Utils.startReportsMenuFromBackOffice(pSourceWindow); };
-                botao14.Clicked += delegate { reportsClicked.PrintReportRouter(botao14, null); };
+                botao14.Clicked += delegate { reportsClicked.PrintReportRouter
+                    (botao14, null); };
                 botao15.Clicked += delegate { reportsClicked.PrintReportRouter(botao15, null); };
                 botao16.Clicked += delegate { reportsClicked.PrintReportRouter(botao16, null); };
 
@@ -353,15 +354,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 frame.Add(label);
                 hbox.PackStart(frame, false, false, 0);
                 vbox.PackStart(hbox, false, false, 0);
-                fix.Put(vbox, 640, 515);
+                fix.Put(vbox, 628, 515);
 
                 //COMBO BOX selecionar os anos do gráfico
-
+                int w = 1;
                 string[] getYears = new string[values.Count];
-                for (int i = 0; i < values.Count; i++)
+                getYears[0] = (string)values[0];
+                for (int i = values.Count - 1; i > 0; i--)
                 {
-                    getYears[i] = (string)values[i];
+                    getYears[i] = (string)values[w];
+                    w++;
                 }
+                //w = 1;
                 selAno = new ComboBox(getYears);
                 selAno.ModifyFg(StateType.Selected, Utils.ColorToGdkColor(black));
 
@@ -383,7 +387,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                    annualTotal = 0;
                    foreach (fin_documentfinancemaster item in collectionDocuments)
                    {
-                       if (item.Date.Year.ToString() == values[selAno.Active].ToString())
+                       if (item.Date.Year.ToString() == selAno.ActiveText.ToString())
                        {
                            if (item.DocumentType.Oid.ToString() == creditNoteOid && item.DocumentStatusStatus != "A")
                            {
@@ -406,7 +410,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                    hbox.PackStart(frame, false, false, 0);
                    vbox.PackStart(hbox, false, false, 0);
-                   string selectedDate = string.Format("01/01/{0}", (values[selAno.Active]).ToString());
+                   string selectedDate = string.Format("01/01/{0}", (selAno.ActiveText.ToString()));
                    fix.Put(vbox, 640, 515);
                    fix.Put(drawSalesGraphic(DateTime.Parse(selectedDate), true), 55, 485);
 
@@ -421,7 +425,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 fix.Put(drawSalesGraphic(datenow, false), 55, 485);
 
                 //Adiciona tudo ao evento principal
+                _eventboxDashboard.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
                 _eventboxDashboard.Add(fix);
+                fix.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
             }
             catch (Exception ex)
             {

@@ -87,15 +87,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="Resources\Certificates\ChaveCifraPublicaAT2020.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Certificates\ChaveCifraPublicaAT2020.cer">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\Certificates\ChaveCifraPublicaAT2020.info">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="Resources\Certificates\ChaveCifraPublicaAT2023.bat" />
+    <None Include="Resources\Certificates\ChaveCifraPublicaAT2023.cer" />
+    <None Include="Resources\Certificates\ChaveCifraPublicaAT2023.info" />
     <None Include="Resources\Certificates\TesteWebService.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

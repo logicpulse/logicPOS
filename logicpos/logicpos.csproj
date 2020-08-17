@@ -2073,6 +2073,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Folder Include="Resources\Database\Data\BackOfficeMode\en\grb\" />
+    <Folder Include="Resources\Database\Data\BackOfficeMode\en\usa\" />
+    <Folder Include="Resources\Database\Data\BackOfficeMode\es\esp\" />
+    <Folder Include="Resources\Database\Data\BackOfficeMode\fr\fra\" />
     <Folder Include="Resources\Database\Data\Default\en\grb\" />
     <Folder Include="Resources\Database\Data\Default\en\usa\" />
     <Folder Include="Resources\Database\Data\Default\es\esp\" />
@@ -5986,6 +5990,24 @@
     <Content Include="Resources\Database\Data\ao\databasedata.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Database\Data\BackOfficeMode\ao\databasedata.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Database\Data\BackOfficeMode\en\databasedata.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Database\Data\BackOfficeMode\es\databasedata.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Database\Data\BackOfficeMode\fr\databasedata.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Database\Data\BackOfficeMode\mz\databasedata.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Database\Data\BackOfficeMode\pt\databasedata.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Database\Data\Default\ao\databasedata.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -6665,7 +6687,7 @@
       <Name>logicpos.financial.service</Name>
     </ProjectReference>
 	-->
-    <ProjectReference Include="..\..\logicpos_pos_internal\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
+    <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
       <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
       <Name>logicpos.financial.library</Name>
     </ProjectReference>

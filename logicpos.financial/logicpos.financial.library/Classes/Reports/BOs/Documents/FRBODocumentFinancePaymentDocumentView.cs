@@ -39,6 +39,9 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 
         [FRBO(Field = "fmaTotalFinal")]
         public decimal DocumentTotal { get; set; }                                      //fmaTotalFinal AS DocumentTotal,
+		//TK016319 - Certificação Angola - Alterações para teste da AGT 
+        [FRBO(Field = "fmaTotalTax")]
+        public decimal TotalTax { get; set; }                                           //fmaTotalTax AS TotalTax,
 
         //[FRBO(Field = "fmaPayedDate")]
         //public DateTime PayedDate { get; set; }                                       //fmaPayedDate AS PayedDate,

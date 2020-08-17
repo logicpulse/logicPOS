@@ -17,25 +17,25 @@
 
     namespace FastReport
     {
-      public class ReportScript
-      {
-        private int _pageNo;
-        private int _dataBandRec = 1;
-        private int _dataBandMaxRecs = 10;
-        private DataSourceBase _ds;
+    public class ReportScript
+    {
+    private int _pageNo;
+    private int _dataBandRec = 1;
+    private int _dataBandMaxRecs = 10;
+    private DataSourceBase _ds;
 
-        private void PageHeader1_AfterPrint(object sender, EventArgs e)
-        {
-          _pageNo++;
-        }
+    private void PageHeader1_AfterPrint(object sender, EventArgs e)
+    {
+    _pageNo++;
+    }
 
-        private void PageHeader1_BeforePrint(object sender, EventArgs e)
-        {
-          //Reset dataBandRec
-          _dataBandRec = 1;
-
-          //Get data source
-          _ds = Report.GetDataSource(&quot;DocumentFinanceMaster.DocumentFinanceDetail&quot;);
+    private void PageHeader1_BeforePrint(object sender, EventArgs e)
+    {
+    //Reset dataBandRec
+    _dataBandRec = 1;
+    PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo&quot;);
+    //Get data source
+    _ds = Report.GetDataSource(&quot;DocumentFinanceMaster.DocumentFinanceDetail&quot;);
           // initialize dataSource
           //_ds.Init();
         }

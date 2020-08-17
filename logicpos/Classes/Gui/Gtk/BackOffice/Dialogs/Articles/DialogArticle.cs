@@ -17,6 +17,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
     {
         //UI
         VBox _vboxTab2;
+        //private XPOComboBox _xpoComboBoxCompositeArticle;
         private XPOComboBox _xpoComboBoxFamily;
         private XPOComboBox _xpoComboBoxSubFamily;
         private XPOComboBox _xpoComboBoxVatOnTable;
@@ -34,11 +35,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
             {
-                SetSizeRequest(500, 620);
+                SetSizeRequest(500, 640);
             }
             else
             {
-                SetSizeRequest(500, 646);
+                SetSizeRequest(500, 670);
             }
 
             InitUI();
@@ -122,6 +123,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 BOWidgetBox boxButtonLabel = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_name"), entryButtonLabel);
                 vboxTab1.PackStart(boxButtonLabel, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxButtonLabel, _dataSourceRow, "ButtonLabel", SettingsApp.RegexAlfaNumericArticleButtonLabel, false));
+
+                //Composite article
+                //_xpoComboBoxCompositeArticle = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlefamily), (DataSourceRow as fin_article).Family, "Designation", null);
+                //BOWidgetBox boxComposite = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _xpoComboBoxCompositeArticle);
+                //vboxTab1.PackStart(boxComposite, false, false, 0);
+                //_crudWidgetList.Add(new GenericCRUDWidgetXPO(boxComposite, DataSourceRow, "CompositeArticle", SettingsApp.RegexGuid, true));
 
                 //Family
                 _xpoComboBoxFamily = new XPOComboBox(DataSourceRow.Session, typeof(fin_articlefamily), (DataSourceRow as fin_article).Family, "Designation", null);
@@ -365,6 +372,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Append Tab
                 _notebook.AppendPage(vboxTab3, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab3_label")));
 
+
+                //Tab4
+                //VBox vboxTab4 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+                //_notebook.AppendPage(vboxTab4, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab4_label1")));
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Enable/Disable Components

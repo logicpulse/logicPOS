@@ -341,142 +341,146 @@ namespace logicpos.financial.library.Classes.Finance
 
                     foreach (var item in pParameters.ArticleBag)
                     {
-                        //Get Article
-                        article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
-                        //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
-                        string filterVat = FrameworkUtils.DecimalToString(item.Key.Vat, GlobalFramework.CurrentCultureNumberFormat);
-                        string executeSql = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Value = '{0}';", filterVat);
-                        vatRateOid = FrameworkUtils.GetGuidFromQuery(executeSql);
-                        vatRate = (fin_configurationvatrate)uowSession.GetObjectByKey(typeof(fin_configurationvatrate), vatRateOid);
-
-                        //If Type dont Have Price it Creates an Empty Details document, always use HavePrice, Only Type : Informative Created by Muga dont use HavePrice
-                        if (article.Type.HavePrice)
+                        if (item.Value.Quantity > 0)
                         {
-                            documentFinanceDetail = new fin_documentfinancedetail(uowSession)
-                            {
-                                Ord = lineNumber,
-                                Code = item.Value.Code,
-                                Designation = item.Key.Designation,
-                                Quantity = item.Value.Quantity,
-                                UnitMeasure = item.Value.UnitMeasure,
-                                Price = item.Key.Price,
-                                Vat = item.Key.Vat,
-                                Discount = item.Key.Discount,
-                                TotalNet = item.Value.TotalNet,
-                                TotalGross = item.Value.TotalGross,
-                                TotalDiscount = item.Value.TotalDiscount,
-                                TotalTax = item.Value.TotalTax,
-                                TotalFinal = item.Value.TotalFinal,
-                                DocumentMaster = documentFinanceMaster,
-                                Article = article,
-                                PriceFinal = item.Value.PriceFinal,
-                                PriceType = item.Value.PriceType,
-                                CreatedBy = (userDetail != null && userDetail.Oid != Guid.Empty) ? userDetail : null,
-                                CreatedWhere = (terminal != null && terminal.Oid != Guid.Empty) ? terminal : null
-                            };
+                            //Get Article
+                            article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
+                            //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
+                            string filterVat = FrameworkUtils.DecimalToString(item.Key.Vat, GlobalFramework.CurrentCultureNumberFormat);
+                            string executeSql = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Value = '{0}';", filterVat);
+                            vatRateOid = FrameworkUtils.GetGuidFromQuery(executeSql);
+                            vatRate = (fin_configurationvatrate)uowSession.GetObjectByKey(typeof(fin_configurationvatrate), vatRateOid);
 
-                            if (vatRate != null) documentFinanceDetail.VatRate = vatRate;
-
-                            //Assign VatExemptionReason if Set, else Leave Null
-                            if (item.Key.VatExemptionReasonOid != new Guid())
+                            //If Type dont Have Price it Creates an Empty Details document, always use HavePrice, Only Type : Informative Created by Muga dont use HavePrice
+                            if (article.Type.HavePrice)
                             {
-                                //Get Fresh Object to Prevent Mixing Sessions
-                                vatExemptionReason = (fin_configurationvatexemptionreason)uowSession.GetObjectByKey(typeof(fin_configurationvatexemptionreason), item.Key.VatExemptionReasonOid);
-                                documentFinanceDetail.VatExemptionReason = vatExemptionReason;
-                                documentFinanceDetail.VatExemptionReasonDesignation = vatExemptionReason.Designation;
-                            }
-
-                            //Notes
-                            if (item.Value.Notes != null)
-                            {
-                                documentFinanceDetail.Notes = item.Value.Notes;
-                            }
-
-                            //Order References
-                            //(4.1|2|3.3.20.2 Referência ao documento de origem)
-                            if (pParameters.OrderReferences != null && pParameters.OrderReferences.Count > 0)
-                            {
-                                uint ord = 0;
-                                foreach (fin_documentfinancemaster documentMaster in pParameters.OrderReferences)
+                                documentFinanceDetail = new fin_documentfinancedetail(uowSession)
                                 {
-                                    ord++;
-                                    //Require Fresh Objects to Prevent Xpo Mixing Sessions
-                                    documentFinanceDetail.OrderReferences.Add(
-                                      new fin_documentfinancedetailorderreference(uowSession)
-                                      {
-                                          Ord = ord,
-                                          DocumentMaster = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), documentMaster.Oid),
-                                          OriginatingON = documentMaster.DocumentNumber,
-                                          OrderDate = documentMaster.Date
-                                      }
+                                    Ord = lineNumber,
+                                    Code = item.Value.Code,
+                                    Designation = item.Key.Designation,
+                                    Quantity = item.Value.Quantity,
+                                    UnitMeasure = item.Value.UnitMeasure,
+                                    Price = item.Key.Price,
+                                    Vat = item.Key.Vat,
+                                    Discount = item.Key.Discount,
+                                    TotalNet = item.Value.TotalNet,
+                                    TotalGross = item.Value.TotalGross,
+                                    TotalDiscount = item.Value.TotalDiscount,
+                                    TotalTax = item.Value.TotalTax,
+                                    TotalFinal = item.Value.TotalFinal,
+                                    DocumentMaster = documentFinanceMaster,
+                                    Article = article,
+                                    PriceFinal = item.Value.PriceFinal,
+                                    PriceType = item.Value.PriceType,
+                                    CreatedBy = (userDetail != null && userDetail.Oid != Guid.Empty) ? userDetail : null,
+                                    CreatedWhere = (terminal != null && terminal.Oid != Guid.Empty) ? terminal : null
+                                };
+
+                                if (vatRate != null) documentFinanceDetail.VatRate = vatRate;
+
+                                //Assign VatExemptionReason if Set, else Leave Null
+                                if (item.Key.VatExemptionReasonOid != new Guid())
+                                {
+                                    //Get Fresh Object to Prevent Mixing Sessions
+                                    vatExemptionReason = (fin_configurationvatexemptionreason)uowSession.GetObjectByKey(typeof(fin_configurationvatexemptionreason), item.Key.VatExemptionReasonOid);
+                                    documentFinanceDetail.VatExemptionReason = vatExemptionReason;
+                                    documentFinanceDetail.VatExemptionReasonDesignation = vatExemptionReason.Designation;
+                                }
+
+                                //Notes
+                                if (item.Value.Notes != null)
+                                {
+                                    documentFinanceDetail.Notes = item.Value.Notes;
+                                }
+
+                                //Order References
+                                //(4.1|2|3.3.20.2 Referência ao documento de origem)
+                                if (pParameters.OrderReferences != null && pParameters.OrderReferences.Count > 0)
+                                {
+                                    uint ord = 0;
+                                    foreach (fin_documentfinancemaster documentMaster in pParameters.OrderReferences)
+                                    {
+                                        ord++;
+                                        //Require Fresh Objects to Prevent Xpo Mixing Sessions
+                                        documentFinanceDetail.OrderReferences.Add(
+                                          new fin_documentfinancedetailorderreference(uowSession)
+                                          {
+                                              Ord = ord,
+                                              DocumentMaster = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), documentMaster.Oid),
+                                              OriginatingON = documentMaster.DocumentNumber,
+                                              OrderDate = documentMaster.Date
+                                          }
+                                        );
+                                    }
+                                }
+
+                                //References: From ArticleBag 
+                                //(4.1.4.18.9 Referências a faturas nos documentos retificativos destas.)
+                                if (item.Value.Reference != null)
+                                {
+                                    documentFinanceDetail.References.Add(
+                                        new fin_documentfinancedetailreference(uowSession)
+                                        {
+                                            Ord = 0,
+                                            DocumentMaster = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), item.Value.Reference.Oid),
+                                            Reference = item.Value.Reference.DocumentNumber,
+                                            Reason = item.Value.Reason
+                                        }
                                     );
                                 }
+
+                                /* IN009252 - This represents one of article Reason value. 
+                                 * Because we have the same value included on Document when 
+                                 * issuing it for its whole article list, therefore overwritting */
+                                if (documentFinanceDetail.References.Count > 0)
+                                {
+                                    //Bug nas notas de credito para varios artigos ( "Motivo" repetido)
+                                    documentFinanceMaster.Notes = documentFinanceDetail.References[0].Reason;
+                                }
+
+                                //Inc lineNumber for Ord
+                                lineNumber++;
+
+                                //Commissions Work
+                                PersistFinanceDocumentCommission(uowSession, documentFinanceDetail, userDetail);
                             }
 
-                            //References: From ArticleBag 
-                            //(4.1.4.18.9 Referências a faturas nos documentos retificativos destas.)
-                            if (item.Value.Reference != null)
+                            // TK013134
+                            if (GlobalFramework.AppUseParkingTicketModule)
                             {
-                                documentFinanceDetail.References.Add(
-                                    new fin_documentfinancedetailreference(uowSession)
-                                    {
-                                        Ord = 0,
-                                        DocumentMaster = (fin_documentfinancemaster)uowSession.GetObjectByKey(typeof(fin_documentfinancemaster), item.Value.Reference.Oid),
-                                        Reference = item.Value.Reference.DocumentNumber,
-                                        Reason = item.Value.Reason
-                                    }
-                                );
+                                //Add to PendentPayedParkingTickets
+                                //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingTicket))
+                                //Get Original Designation from Fresh Object
+                                fin_article articleForDesignation = (fin_article)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleOid);
+                                // Extract Ean from Designation 
+                                string ticketEan = item.Key.Designation
+                                    .Replace($"{articleForDesignation.Designation} [", string.Empty)
+                                    .Replace("]", string.Empty);
+                                // Extract Ean from designation after n~hours showed on ticket
+                                string output = ticketEan.Split('[').Last();
+                                /* 
+                                 * TK013134
+                                 * Defined on 2018-12-12 that Designation must be kept the same as it is when billing.
+                                 */
+                                /*articleForDesignation.Reload();
+                                item.Key.Designation = articleForDesignation.Designation;
+                                item.Value.Notes = $"[{ticketEan}]";*/
+
+                                //Add to PendentPayedParkingCards
+                                //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingCard))
+
+                                //IN009279 If ticket (EAN 13)
+                                if (output.Length != 13)
+                                {
+                                    int quantity = Convert.ToInt32(item.Value.Quantity);
+                                    documentFinanceMaster.Notes += string.Format("{0} ", quantity.ToString());
+                                    //documentOrderMain.Notes = item.Value.Quantity.ToString();
+                                    GlobalFramework.PendentPayedParkingCards.Add(output, documentOrderMain.Oid);
+                                }
+                                //IN009279 If Card
+                                else GlobalFramework.PendentPayedParkingTickets.Add(output, documentOrderMain.Oid);
                             }
-
-                            /* IN009252 - This represents one of article Reason value. 
-                             * Because we have the same value included on Document when 
-                             * issuing it for its whole article list, therefore overwritting */
-                            if (documentFinanceDetail.References.Count > 0)
-                            {
-                                documentFinanceMaster.Notes += documentFinanceDetail.References[0].Reason;
-                            }
-
-                            //Inc lineNumber for Ord
-                            lineNumber++;
-
-                            //Commissions Work
-                            PersistFinanceDocumentCommission(uowSession, documentFinanceDetail, userDetail);
-                        }
-
-                        // TK013134
-                        if (GlobalFramework.AppUseParkingTicketModule)
-                        {
-                            //Add to PendentPayedParkingTickets
-                            //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingTicket))
-                            //Get Original Designation from Fresh Object
-                            fin_article articleForDesignation = (fin_article)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleOid);
-                            // Extract Ean from Designation 
-                            string ticketEan = item.Key.Designation
-                                .Replace($"{articleForDesignation.Designation} [", string.Empty)
-                                .Replace("]", string.Empty);
-                            // Extract Ean from designation after n~hours showed on ticket
-                            string output = ticketEan.Split('[').Last();
-                            /* 
-                             * TK013134
-                             * Defined on 2018-12-12 that Designation must be kept the same as it is when billing.
-                             */
-                            /*articleForDesignation.Reload();
-                            item.Key.Designation = articleForDesignation.Designation;
-                            item.Value.Notes = $"[{ticketEan}]";*/
-                            
-                            //Add to PendentPayedParkingCards
-                            //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingCard))
-                            
-                            //IN009279 If ticket (EAN 13)
-                            if (output.Length != 13)
-                            {
-                                int quantity = Convert.ToInt32(item.Value.Quantity);
-                                documentFinanceMaster.Notes += string.Format("{0} ", quantity.ToString()); 
-                                //documentOrderMain.Notes = item.Value.Quantity.ToString();
-                                GlobalFramework.PendentPayedParkingCards.Add(output, documentOrderMain.Oid);
-                            }
-                            //IN009279 If Card
-                            else GlobalFramework.PendentPayedParkingTickets.Add(output, documentOrderMain.Oid);
                         }
                     }
 
@@ -662,7 +666,13 @@ if (GlobalFramework.AppUseParkingTicketModule)
                         result = documentFinanceMaster;
 
                         // Call Generate GenerateDocument
-                        GenerateDocumentFinanceMasterPDFIfNotExists(documentFinanceMaster);
+						//POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
+                        // If is Thermal Print doc don't create PDF + Lindote(06/02/2020)
+                        if (!GlobalFramework.UsingThermalPrinter)
+                        {
+                            GenerateDocumentFinanceMasterPDFIfNotExists(documentFinanceMaster);
+                        }
+                        
                     }
                     catch (Exception ex)
                     {
@@ -1168,6 +1178,11 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     documentFinancePayment.PaymentAmount = totalPayedDocument;
                     documentFinancePayment.CurrencyAmount = totalPayedDocument * documentFinancePayment.ExchangeRate;
                     documentFinancePayment.ExtendedValue = extended;
+
+                    //TK016319 - Certificação Angola - Alterações para teste da AGT 
+					//Calculo da taxa de imposto para recibos
+                    decimal calcTax = ((documentFinancePayment.PaymentAmount * documentMaster.TotalTax) / documentMaster.TotalFinal);
+                    documentFinancePayment.TaxPayable = Math.Round(calcTax, decimalRoundTo);
 
                     //Call PersistFinanceDocumentWorkSession to do WorkSession Job
                     PersistFinanceDocumentWorkSession(uowSession, documentFinancePayment, paymentMethod);

@@ -33,7 +33,7 @@
         {
           //Reset dataBandRec
           _dataBandRec = 1;
-
+          PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo&quot;);
           //Get data source
           _ds = Report.GetDataSource(&quot;DocumentFinanceMaster.DocumentFinanceDetail&quot;);
           // initialize dataSource
@@ -91,6 +91,7 @@
       <Column Name="EntityAddress" DataType="System.String"/>
       <Column Name="EntityZipCode" DataType="System.String"/>
       <Column Name="EntityCity" DataType="System.String"/>
+      <Column Name="EntityLocality" DataType="System.String"/>
       <Column Name="EntityCountry" DataType="System.String"/>
       <Column Name="EntityFiscalNumber" DataType="System.String"/>
       <Column Name="DocumentStatusStatus" DataType="System.String"/>
@@ -226,10 +227,10 @@
           <TableCell Name="TextEntityAddress" Text="[DocumentFinanceMaster.EntityAddress]" Font="Arial, 9pt"/>
         </TableRow>
         <TableRow Name="RowTextEntityZipCodeCity" Height="18.9" MinHeight="0.00" MaxHeight="37.8" AutoSize="true">
-          <TableCell Name="TextEntityZipCodeCity" Text="[IIf([DocumentFinanceMaster.EntityZipCode] != &quot;&quot;, [DocumentFinanceMaster.EntityZipCode]+&quot; &quot;+[DocumentFinanceMaster.EntityCity], [DocumentFinanceMaster.EntityCity])]" Font="Arial, 9pt"/>
+          <TableCell Name="TextEntityZipCodeCity" Text="[IIf([DocumentFinanceMaster.EntityZipCode] != &quot;&quot;, [DocumentFinanceMaster.EntityZipCode]+&quot; &quot;+[DocumentFinanceMaster.EntityLocality], [DocumentFinanceMaster.EntityCity])]" Font="Arial, 9pt"/>
         </TableRow>
         <TableRow Name="RowTextEntityCountry" Height="18.9">
-          <TableCell Name="TextEntityCountry" Text="[DocumentFinanceMaster.EntityCountry]" Font="Arial, 9pt"/>
+          <TableCell Name="TextEntityCountry" Text="[DocumentFinanceMaster.EntityCity], [DocumentFinanceMaster.EntityCountry]" Font="Arial, 9pt"/>
         </TableRow>
       </TableObject>
     </inherited>

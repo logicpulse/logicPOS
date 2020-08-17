@@ -191,7 +191,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //PrintWorkSessionMovement
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_terminal_open"), 0.0m, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.ThermalPrinter, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_terminal_open"), 0.0m, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
 
                             //Enable UI Buttons When Have Open Session
                             GlobalApp.WindowPos.TouchButtonPosToolbarNewFinanceDocument.Sensitive = true;
@@ -258,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //PrintCashDrawerOpenAndMoneyInOut
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_money_in"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.ThermalPrinter, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_money_in"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
                             //Open CashDrawer
                             PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
                             //Audit
@@ -298,7 +298,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //PrintCashDrawerOpenAndMoneyInOut
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.Printer, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_money_out"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.ThermalPrinter, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_money_out"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
                             //Open CashDrawer
                             PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
                             //Audit

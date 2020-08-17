@@ -106,6 +106,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                         documentFinanceMasterView.EntityZipCode = string.Empty;
                         documentFinanceMasterView.EntityCity = string.Empty;
                         documentFinanceMasterView.EntityCountry = string.Empty;
+                        documentFinanceMasterView.EntityLocality = string.Empty;
                         /* IN009230 */
                         documentFinanceMasterView.EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
 
@@ -119,7 +120,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     //    documentFinanceMasterView.EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
                     //}
                 }
-
+				//IN009347 Documentos PT - Alteração do Layout dos dados do Cliente #Lindote 2020
                 /* IN009075 - decrypt phase */
                 if (!customerDataHasBeenCleaned)
                 {
@@ -127,6 +128,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     documentFinanceMasterView.EntityAddress = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityAddress);
                     documentFinanceMasterView.EntityZipCode = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityZipCode);
                     documentFinanceMasterView.EntityCity = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCity);
+                    documentFinanceMasterView.EntityLocality = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityLocality);
                     // documentFinanceMasterView.EntityCountry = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCountry);
                     // EntityLocality???
                     /* IN009230 */
@@ -154,7 +156,13 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 //Detect if is Retification Document (ND/NC) and add SourceDocument to Show on Notes
                 if (retificationDocuments)
                 {
+                    //TK016319 - Certificação Angola - Alterações para teste da AGT
+					//Notas de Credito
                     string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    if (SettingsApp.XpoOidConfigurationCountryAngola.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                    {
+                        notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_source_document_NC_ND"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    }                        
                     /* IN009252 - "Reason" added to "fin_documentfinancemaster.Notes" */
                     if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += Environment.NewLine; /* " | " */
                     notes += String.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reason"), documentFinanceMasterView.Notes);
@@ -211,6 +219,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     gcDocumentFinancePayment.List[0].EntityZipCode = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityZipCode).ToString();
                 if (! string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityCity)) 
                     gcDocumentFinancePayment.List[0].EntityCity = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityCity).ToString();
+                if (!string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityLocality))
+                    gcDocumentFinancePayment.List[0].EntityLocality = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityLocality).ToString();
                 if (! string.IsNullOrEmpty(gcDocumentFinancePayment.List[0].EntityFiscalNumber)) 
                     gcDocumentFinancePayment.List[0].EntityFiscalNumber = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityFiscalNumber).ToString();
 
@@ -221,6 +231,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     gcDocumentFinancePayment.List[0].EntityAddress = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityZipCode = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityCity = string.Empty;
+                    gcDocumentFinancePayment.List[0].EntityLocality = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
                 }
 

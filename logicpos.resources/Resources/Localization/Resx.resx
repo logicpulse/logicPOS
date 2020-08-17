@@ -884,7 +884,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Barcode</value>
   </data>
   <data name="global_barcode_small" xml:space="preserve">
-    <value>BarCode</value>
+    <value>BarCode/Art.Code</value>
   </data>
   <data name="global_cardcode_small" xml:space="preserve">
     <value>Ticket/Card Code</value>
@@ -2294,7 +2294,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Measure unit</value>
   </data>
   <data name="global_unit_measure_acronym" xml:space="preserve">
-    <value>UM</value>
+    <value>Uni.</value>
     <comment>Used in Report Columns</comment>
   </data>
   <data name="global_unit_size" xml:space="preserve">
@@ -3761,5 +3761,35 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   </data>
   <data name="dialog_button_label_new_client" xml:space="preserve">
     <value>New Cli.</value>
+  </data>
+  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
+    <value>Associated Articles</value>
+  </data>
+  <data name="global_composite_article" xml:space="preserve">
+    <value>Composite Article</value>
+  </data>
+  <data name="dialog_message__pos_order_cancel" xml:space="preserve">
+    <value>Are you sure you want to cancel the current order?</value>
+  </data>
+  <data name="report_amount_carried" xml:space="preserve">
+    <value>Amount carried</value>
+  </data>
+  <data name="report_amount_transposed" xml:space="preserve">
+    <value>Amount to be transposed</value>
+  </data>
+  <data name="report_footer_ao" xml:space="preserve">
+    <value>The goods / services were allowed to make this data available: </value>
+  </data>
+  <data name="global_pole_display_com_port" xml:space="preserve">
+    <value>COM port</value>
+  </data>
+  <data name="global_pole_display_global_total" xml:space="preserve">
+    <value>Total Gross</value>
+  </data>
+  <data name="global_barcode_articlecode" xml:space="preserve">
+    <value>Bar Code / Product Code</value>
+  </data>
+  <data name="global_invalid_code" xml:space="preserve">
+    <value>The code entered does not exist in the system</value>
   </data>
 </root>

@@ -384,7 +384,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             //Final Pack      
             PackStart(vbox);
-            
+
         }
 
         /// <summary>
@@ -811,60 +811,91 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <returns></returns>
         private bool CheckItemForReferences()
         {
-            bool registerHasReferences = false;
-
-            String className = _dataSourceRow.GetType().Name;
-            Guid oid = Guid.Empty;
-            String code = String.Empty;
-            int countResult = 0;
-
-            switch (className)
+            try
             {
-                case "erp_customer":
-                    /* erp_customer has Documents */
-                    logicpos.datalayer.DataLayer.Xpo.erp_customer customer = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.erp_customer);
-                    oid = customer.Oid;
-                    code = customer.Code.ToString();
-                    countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[EntityOid] = ?", oid));
-                    break;
 
-                case "fin_articlefamily":
-                    /* Family has subfamily */
-                    logicpos.datalayer.DataLayer.Xpo.fin_articlefamily articleFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlefamily);
-                    oid = articleFamily.Oid;
-                    code = articleFamily.Code.ToString();
-                    countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Family] = ?", oid));
-                    break;
 
-                case "fin_articlesubfamily":
-                    /* Subfamily has article */
-                    logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily articleSubFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily);
-                    oid = articleSubFamily.Oid;
-                    code = articleSubFamily.Code.ToString();
-                    countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[SubFamily] = ?", oid));
-                    break;
+                bool registerHasReferences = false;
 
-                case "fin_article":
-                    /* Has an article an invoice issued for it? */
-                    logicpos.datalayer.DataLayer.Xpo.fin_article article = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_article);
-                    oid = article.Oid;
-                    code = article.Code;
-                    countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancedetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
-                    break;
+                String className = _dataSourceRow.GetType().Name;
+                Guid oid = Guid.Empty;
+                String code = String.Empty;
+                int countResult = 0;
 
-                default:
-                    break;
+                switch (className)
+                {
+                    case "erp_customer":
+                        /* erp_customer has Documents */
+                        logicpos.datalayer.DataLayer.Xpo.erp_customer customer = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.erp_customer);
+                        oid = customer.Oid;
+                        code = customer.Code.ToString();
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[EntityOid] = ?", oid));
+                        break;
+
+                    case "fin_articlefamily":
+                        /* Family has subfamily */
+                        logicpos.datalayer.DataLayer.Xpo.fin_articlefamily articleFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlefamily);
+                        oid = articleFamily.Oid;
+                        code = articleFamily.Code.ToString();
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Family] = ?", oid));
+                        break;
+
+                    case "fin_articlesubfamily":
+                        /* Subfamily has article */
+                        logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily articleSubFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily);
+                        oid = articleSubFamily.Oid;
+                        code = articleSubFamily.Code.ToString();
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[SubFamily] = ?", oid));
+                        break;
+
+                    case "fin_article":
+                        /* Has an article an invoice issued for it? */
+                        logicpos.datalayer.DataLayer.Xpo.fin_article article = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_article);
+                        oid = article.Oid;
+                        code = article.Code;
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancedetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        break;
+                    case "pos_configurationplace":
+                        /* Has an article an invoice issued for it? */
+                        logicpos.datalayer.DataLayer.Xpo.pos_configurationplace configPlace = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.pos_configurationplace);
+                        oid = configPlace.Oid;
+                        code = configPlace.Code.ToString();
+                        if(code == "10")
+                        {
+                            countResult = 1;
+                        }
+                        //countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplace), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Oid] = ?"));
+                        break;
+                    case "pos_configurationplacetable":
+                        /* Has an article an invoice issued for it? */
+                        logicpos.datalayer.DataLayer.Xpo.pos_configurationplacetable configPlaceTable = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.pos_configurationplacetable);
+                        oid = configPlaceTable.Oid;
+                        code = configPlaceTable.Code.ToString();
+                        if (code == "10")
+                        {
+                            countResult = 1;
+                        }
+                        //countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplace), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Oid] = ?"));
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if ((int)countResult > 0)
+                {
+                    registerHasReferences = true;
+
+                    _log.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"));
+                    Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_referenced_record_message"), className, code));
+                }
+                return registerHasReferences;
             }
-
-            if ((int)countResult > 0)
+            catch (Exception ex)
             {
-                registerHasReferences = true;
-
-                _log.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"));
-                Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_referenced_record_message"), className, code));
+                _log.Error(ex.Message, ex);
+                return false;
             }
-
-            return registerHasReferences;
         }
 
         public virtual bool ShowDialog<T>(T pDataObject, Enums.Dialogs.DialogMode pDialogMode)
@@ -941,16 +972,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         getCultureFromDB = GlobalFramework.Settings["customCultureResourceDefinition"];
 
                                     }
-                                    if(!Utils.getCultureFromOS(getCultureFromDB))
+                                    if (!Utils.getCultureFromOS(getCultureFromDB))
                                     {
                                         GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
-                                        GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"]; 
+                                        GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                                         CustomResources.UpdateLanguage(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
                                     }
-                                    else { 
-                                    GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
-                                    GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
-                                    CustomResources.UpdateLanguage(getCultureFromDB);
+                                    else
+                                    {
+                                        GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                                        GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
+                                        CustomResources.UpdateLanguage(getCultureFromDB);
                                     }
                                     Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), GlobalFramework.Settings["customCultureResourceDefinition"]));
 
@@ -1239,7 +1271,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             TreeSelection selection = treeView.Selection;
             TreeModel model;
             String output = string.Empty;
-                        
+
             // The _treeIter will point to the selected row
             if (selection.GetSelected(out model, out _treeIter))
             {

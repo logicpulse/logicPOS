@@ -1,0 +1,140 @@
+X509 Certificate:
+Version: 3
+Serial Number: 2f00001c56506e04bf31e7e8bf000100001c56
+Signature Algorithm:
+    Algorithm ObjectId: 1.2.840.113549.1.1.11 sha256RSA
+    Algorithm Parameters:
+    05 00
+Issuer:
+    CN=DGITA Issuing CA2
+    DC=ritta
+    DC=local
+  Name Hash(sha1): 345e2b5b139b53dee15b8f6c936d4ba073fdb58c
+  Name Hash(md5): 953ce6cb785d80c72d8ddafe94dc75a5
+
+ NotBefore: 23/06/2020 18:50
+ NotAfter: 23/06/2023 18:50
+
+Subject:
+    CN=Chave Cifra Publica AT
+    OU=Sistemas de Informacao
+    O=Autoridade Tributaria e Aduaneira
+    L=Lisboa
+    S=Lisboa
+    C=PT
+  Name Hash(sha1): 97a462370a6d57114c3dc7ec43a0af523803e93d
+  Name Hash(md5): c7ee836418b152b27d7b86b39ecb123a
+
+Public Key Algorithm:
+    Algorithm ObjectId: 1.2.840.113549.1.1.1 RSA
+    Algorithm Parameters:
+    05 00
+Public Key Length: 2048 bits
+Public Key: UnusedBits = 0
+    0000  30 82 01 0a 02 82 01 01  00 83 8b 70 22 39 6b e7
+    0010  27 24 99 8a 55 bc 69 1c  cb 1b 77 ae ab e8 40 53
+    0020  27 fa ce 1f f3 d6 45 9c  52 44 4a fd 26 cb fa 83
+    0030  89 5d 53 83 c1 03 4f 11  dc c4 45 08 a8 cf 44 47
+    0040  cf a2 9d 82 67 7f 1a 28  73 38 6b df 9c e6 a3 25
+    0050  5b 88 d9 19 cb b3 91 b4  56 5b 30 3d 6a 0e d5 4b
+    0060  f9 a0 49 bc 02 95 e7 47  3c 67 06 e4 57 e6 92 ce
+    0070  f6 36 a7 5e 48 d6 ed ab  10 a8 b1 15 5a ac c3 0a
+    0080  a8 d2 41 db 4a 05 5f 09  6f b1 f7 13 13 d5 00 a1
+    0090  96 4f 5e 60 31 09 e7 fb  a0 24 3d de de ad 58 58
+    00a0  29 d5 b0 6c 6d 2e 24 9c  f0 c2 39 28 97 65 05 b7
+    00b0  76 96 c8 4e 5c 2d 36 2d  33 6b ca 30 c4 8f ad 6c
+    00c0  e5 0c fc 01 46 84 b6 b2  bc 07 15 c7 d1 64 01 e6
+    00d0  18 d5 06 60 4b 28 4d a4  3a 1e 8b ea 24 9e 34 78
+    00e0  27 26 0d d1 ca b8 da 57  5c 33 04 93 db ba 8f 6b
+    00f0  fc 70 95 b9 b7 d8 f8 ca  84 e3 8e 27 88 2d 5d e2
+    0100  ef 43 03 c5 a7 e3 81 28  2b 02 03 01 00 01
+Certificate Extensions: 9
+    2.5.29.15: Flags = 0, Length = 4
+    Utilização da Chave
+        Encriptação da chave, Encriptação dos dados (30)
+
+    1.3.6.1.4.1.311.21.7: Flags = 0, Length = 30
+    Informações do modelo de certificado
+        Modelo=1.3.6.1.4.1.311.21.8.4411065.4437546.10439059.6138606.4612083.82.6703269.4806394
+        Número de versão superior=100
+        Número de versão inferior=26
+
+    1.2.840.113549.1.9.15: Flags = 0, Length = 37
+    Capacidades SMIME
+        [1]Capacidades SMIME 
+             ID do objeto=1.2.840.113549.3.2
+             Parâmetros=02 02 00 80
+        [2]Capacidades SMIME 
+             ID do objeto=1.2.840.113549.3.4
+             Parâmetros=02 02 00 80
+        [3]Capacidades SMIME
+             ID do objeto=1.3.14.3.2.7
+        [4]Capacidades SMIME
+             ID do objeto=1.2.840.113549.3.7
+
+    2.5.29.14: Flags = 0, Length = 16
+    Identificador da chave de assunto
+        edb3ba8caee7f0c0fe61d073283a1f38f34dfc3f
+
+    2.5.29.35: Flags = 0, Length = 18
+    Identificador da chave de autoridade
+        ID da chave=c44b738dd560967bbea27b7d25f0b7e2356ffc1e
+
+    2.5.29.31: Flags = 0, Length = cc
+    Pontos de distribuição da CRL
+        [1]Ponto de distribuição da CRL
+             Nome do ponto de distribuição:
+                  Nome completo:
+                       URL=ldap:///CN=DGITA Issuing CA2,CN=SW500210,CN=CDP,CN=Public Key Services,CN=Services,CN=Configuration,DC=ritta,DC=local?certificateRevocationList?base?objectClass=cRLDistributionPoint (ldap:///CN=DGITA%20Issuing%20CA2,CN=SW500210,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=ritta,DC=local?certificateRevocationList?base?objectClass=cRLDistributionPoint)
+
+    1.3.6.1.5.5.7.1.1: Flags = 0, Length = ba
+    Acesso a informações sobre autoridade
+        [1]Acesso a informações de autoridade
+             Método de acesso=Emissor da autoridade de certificação (1.3.6.1.5.5.7.48.2)
+             Nome alternativo:
+                  URL=ldap:///CN=DGITA Issuing CA2,CN=AIA,CN=Public Key Services,CN=Services,CN=Configuration,DC=ritta,DC=local?cACertificate?base?objectClass=certificationAuthority (ldap:///CN=DGITA%20Issuing%20CA2,CN=AIA,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=ritta,DC=local?cACertificate?base?objectClass=certificationAuthority)
+
+    2.5.29.37: Flags = 0, Length = e
+    Utilização de Chave Avançada
+        Sistema de encriptação de ficheiros (1.3.6.1.4.1.311.10.3.4)
+
+    1.3.6.1.4.1.311.21.10: Flags = 0, Length = 10
+    Políticas de aplicações
+        [1]Política de certificados de aplicação:
+             Identificador de política=Sistema de encriptação de ficheiros
+
+Signature Algorithm:
+    Algorithm ObjectId: 1.2.840.113549.1.1.11 sha256RSA
+    Algorithm Parameters:
+    05 00
+Signature: UnusedBits=0
+    0000  d9 ef 15 e4 5b 8b 1c b1  8c 4d d8 6c 70 3c 24 f8
+    0010  ae 50 66 d5 bb 8a 92 ed  cc 7f 3b 70 29 c8 c2 99
+    0020  19 95 e0 b3 dd d2 b2 73  88 62 26 04 78 1c 11 4e
+    0030  cc 84 bc f7 d4 85 27 26  df 04 f4 2d ac d2 a2 ac
+    0040  75 c7 cd 8b b0 d0 a8 fd  75 37 8a 44 17 5d 40 e9
+    0050  f0 63 0f b4 f3 6a a3 21  54 c6 61 49 bf fb 7d 9f
+    0060  d2 0f 6c db c5 4c 04 a0  d4 3a 86 cc b4 22 a8 ed
+    0070  f8 fc 44 fe 95 20 ba b0  91 d7 49 85 c1 dd 8d 97
+    0080  a1 0c a4 e4 ee 71 d9 9f  6c db 8e 9e 58 9b 3f e3
+    0090  be 25 71 33 1b dc 3d d7  79 1a fd 41 82 e8 d7 3b
+    00a0  43 6d 65 64 97 bd 75 ca  71 df f0 38 a6 48 b8 24
+    00b0  1b 30 dd b7 35 37 55 41  1d c5 40 fa f4 9c e2 bd
+    00c0  44 f4 b2 96 01 db 4d 12  d5 5a 86 cb 55 4f 1f a6
+    00d0  39 74 2d 39 74 30 b7 a6  8a d3 d9 79 d1 b7 e9 05
+    00e0  e2 6c dd 0e 31 e1 18 bf  07 22 2a d8 b8 40 54 32
+    00f0  b0 e3 4f 0f 18 d8 a8 0a  0b 63 01 a9 9b 4d 0e 6f
+Non-root Certificate
+Key Id Hash(rfc-sha1): edb3ba8caee7f0c0fe61d073283a1f38f34dfc3f
+Key Id Hash(sha1): bb685edc12407aa164277ceb5b25070c6ccb36dc
+Key Id Hash(bcrypt-sha1): 30265a88b069dbbfff57ba9bfbde807eb06d4d3d
+Key Id Hash(bcrypt-sha256): dc45b6527eccddeedd54d5d39a8f80a589b64a07fe91de0352ebb56ac8095178
+Key Id Hash(md5): 348192b21d8bd1232fb2f542d16ad462
+Key Id Hash(sha256): 21b578bdd1291acbdfd93948c106791d274b29880e6ec849ac2291a91728b649
+Key Id Hash(pin-sha256): nluEcdnI1XJgSjCWbWCww5b1HccEhmmNRU+SKZlcrow=
+Key Id Hash(pin-sha256-hex): 9e5b8471d9c8d572604a30966d60b0c396f51dc70486698d454f9229995cae8c
+Cert Hash(md5): ad139036df600018638e973915052f18
+Cert Hash(sha1): ae88caf068566f15ec6a858417d99d567bde8a77
+Cert Hash(sha256): defd74c164f1ed7176e7ee1ef914585d7e715169103005415eb94c7eeb29f4c3
+Signature Hash: 0bb442a347ea3aeeee41f9d148b874dc42d797e29c3c5cb4794028284fd3f0b1
+CertUtil: -dump command completed successfully.

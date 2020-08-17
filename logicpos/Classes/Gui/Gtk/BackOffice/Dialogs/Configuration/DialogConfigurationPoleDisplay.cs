@@ -70,6 +70,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 hbox1.PackStart(boxEndPoint, true, true, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxEndPoint, _dataSourceRow, "EndPoint", SettingsApp.RegexHardwareEndpoint, true));
 
+                //COM
+                Entry entryCOM = new Entry();
+                BOWidgetBox boxCOM = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_pole_display_com_port"), entryCOM);
+                hbox1.PackStart(boxCOM, true, true, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCOM, _dataSourceRow, "COM", SettingsApp.RegexHardwarePortName, true));
+
                 // Pack hboxVIDAndPid
                 vboxTab1.PackStart(hbox1, false, false, 0);
 

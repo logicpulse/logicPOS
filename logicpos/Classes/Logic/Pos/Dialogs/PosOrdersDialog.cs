@@ -132,7 +132,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (orderTicketOid != new Guid())
             {
                 fin_documentorderticket orderTicket = (fin_documentorderticket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
-                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(GlobalFramework.LoggedTerminal.Printer, orderTicket);
+				//POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
+                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(GlobalFramework.LoggedTerminal.ThermalPrinter, orderTicket);
                 thermalPrinterInternalDocumentOrderRequest.Print();
             }
         }

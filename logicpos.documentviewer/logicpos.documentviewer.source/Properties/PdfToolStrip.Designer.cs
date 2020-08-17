@@ -100,7 +100,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close.
+        ///   Looks up a localized string similar to Fechar.
         /// </summary>
         internal static string btnCloseDoc {
             get {
@@ -119,7 +119,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to close window.
+        ///   Looks up a localized string similar to Click para fechar janela.
         /// </summary>
         internal static string btnCloseToolTipText {
             get {
@@ -156,7 +156,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export.
+        ///   Looks up a localized string similar to Exportar.
         /// </summary>
         internal static string btnExportDoc {
             get {
@@ -175,7 +175,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export to Xls.
+        ///   Looks up a localized string similar to Exportar para Xls.
         /// </summary>
         internal static string btnExportToolTipText {
             get {
@@ -532,7 +532,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open.
+        ///   Looks up a localized string similar to Abrir.
         /// </summary>
         internal static string btnOpenText {
             get {
@@ -541,7 +541,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to open a PDF file.
+        ///   Looks up a localized string similar to Click para abrir ficheiro PDF.
         /// </summary>
         internal static string btnOpenToolTipText {
             get {
@@ -560,8 +560,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Previous
-        ///Page.
+        ///   Looks up a localized string similar to Página Anterior
+        ///.
         /// </summary>
         internal static string btnPreviousPageText {
             get {
@@ -589,7 +589,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Print.
+        ///   Looks up a localized string similar to Imprimir.
         /// </summary>
         internal static string btnPrintText {
             get {
@@ -598,7 +598,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to print the PDF file.
+        ///   Looks up a localized string similar to Click para imprimir PDF.
         /// </summary>
         internal static string btnPrintToolTipText {
             get {
@@ -665,7 +665,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
+        ///   Looks up a localized string similar to Gravar.
         /// </summary>
         internal static string btnSaveDoc {
             get {
@@ -684,7 +684,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to save document.
+        ///   Looks up a localized string similar to Click para gravar documento.
         /// </summary>
         internal static string btnSaveToolTipText {
             get {
@@ -751,7 +751,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Zoom
-        ///In.
+        ///+.
         /// </summary>
         internal static string btnZoomInText {
             get {
@@ -780,7 +780,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Zoom
-        ///Out.
+        ///-.
         /// </summary>
         internal static string btnZoomOutText {
             get {

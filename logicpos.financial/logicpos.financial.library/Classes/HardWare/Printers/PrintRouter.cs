@@ -217,7 +217,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 //Open Door if Has Valid Payment
                 if (pDocumentFinanceMaster.PaymentMethod != null)
                 {
-                    OpenDoor(GlobalFramework.LoggedTerminal.Printer);
+                    OpenDoor(GlobalFramework.LoggedTerminal.ThermalPrinter);
                 }
                 result = true;
             }
@@ -427,7 +427,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             int m = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
                             int t1 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
                             int t2 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
-                            printObjectSINOCAN.OpenDoor(pPrinter.PrinterType.Token, pPrinter.NetworkName, m, t1, t2);
+                            printObjectSINOCAN.OpenDoor(pPrinter.PrinterType.Token, pPrinter.Designation, m, t1, t2);
                             //Audit
                             FrameworkUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
 

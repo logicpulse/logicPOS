@@ -1,5 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="09/05/2018 15:15:15" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.CopyNames="Original">
+  <ScriptText>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Windows.Forms;
+    using System.Drawing;
+    using System.Data;
+    using FastReport;
+    using FastReport.Data;
+    using FastReport.Dialog;
+    using FastReport.Barcode;
+    using FastReport.Table;
+    using FastReport.Utils;
+
+    namespace FastReport
+    {
+      public class ReportScript
+      {
+
+        private void PageHeader1_BeforePrint(object sender, EventArgs e)
+        {
+          PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo_Small&quot;);
+        }
+      }
+    }
+  </ScriptText>
   <Dictionary>
     <BusinessObjectDataSource Name="ArticleFamily" ReferenceName="ArticleFamily" DataType="logicpos.financial.library.Classes.Reports.BOs.FRBOGenericCollection`1[[logicpos.financial.library.Classes.Reports.BOs.Articles.FRBOArticleFamily, LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], LogicposFinancialLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Code" DataType="System.UInt32"/>

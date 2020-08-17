@@ -137,8 +137,8 @@ namespace logicpos.documentviewer
             // 
             this.pdfToolStripMain1.Dock = System.Windows.Forms.DockStyle.None;            
             this.pdfToolStripMain1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            if (export) this.pdfToolStripMain1.Location = new System.Drawing.Point((widthPDF - 215), 0);
-            else this.pdfToolStripMain1.Location = new System.Drawing.Point((widthPDF - 165), 0);
+            if (export) this.pdfToolStripMain1.Location = new System.Drawing.Point((widthPDF - 250), 0);
+            else this.pdfToolStripMain1.Location = new System.Drawing.Point((widthPDF - 200), 0);
             this.pdfToolStripMain1.Name = "pdfToolStripMain1";
             this.pdfToolStripMain1.PdfViewer = this.pdfViewer1;
             this.pdfToolStripMain1.Size = new System.Drawing.Size(107, 58);

@@ -1,12 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29409.12
+VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos", "logicpos\logicpos.csproj", "{340331CF-94E0-49B0-8EBB-D4DF61A3DCCC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{01F26AB4-E023-4E94-85F4-4BB027EA19BF} = {01F26AB4-E023-4E94-85F4-4BB027EA19BF}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logicpos.financial", "logicpos.financial", "{3BEC1553-10A8-4ED7-9ED9-347A0D6C671F}"
 EndProject
@@ -48,13 +45,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "acme", "acme", "{FDE14E3D-F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "acme.softwarevendor.plugin", "logicpos.plugins\plugins\acme\acme.softwarevendor.plugin\acme.softwarevendor.plugin.csproj", "{01F26AB4-E023-4E94-85F4-4BB027EA19BF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logicpos.documentviewer", "logicpos.documentviewer", "{A9A43F26-5855-49AF-B81B-256C6F15113A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logicpos.documentviewer", "logicpos.documentviewer", "{CFA0ADC3-8E27-40C7-A77F-D27FA6BAB579}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.documentviewer", "logicpos.documentviewer\logicpos.documentviewer\logicpos.documentviewer.csproj", "{E39A7986-4C2F-4EBE-A31B-59C766150EAC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "logicpos.documentviewer.source", "logicpos.documentviewer\logicpos.documentviewer.source\logicpos.documentviewer.source.csproj", "{1C688B96-9FCC-465A-9347-1F933C703E21}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medsphere.Widgets", "Medsphere.Widgets\Medsphere.Widgets.csproj", "{319A2AEE-A900-476B-BF30-95C74E41B51B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -605,36 +600,6 @@ Global
 		{1C688B96-9FCC-465A-9347-1F933C703E21}.WinForms|Mixed Platforms.Build.0 = Release|Any CPU
 		{1C688B96-9FCC-465A-9347-1F933C703E21}.WinForms|x86.ActiveCfg = Release|Any CPU
 		{1C688B96-9FCC-465A-9347-1F933C703E21}.WinForms|x86.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Basic|Any CPU.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Basic|Any CPU.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Basic|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Basic|Mixed Platforms.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Basic|x86.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Basic|x86.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Debug|x86.Build.0 = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Demo|Any CPU.ActiveCfg = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Demo|Any CPU.Build.0 = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Demo|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Demo|Mixed Platforms.Build.0 = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Demo|x86.ActiveCfg = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Demo|x86.Build.0 = Debug|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Release|x86.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.Release|x86.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.WinForms|Any CPU.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.WinForms|Any CPU.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.WinForms|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.WinForms|Mixed Platforms.Build.0 = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.WinForms|x86.ActiveCfg = Release|Any CPU
-		{319A2AEE-A900-476B-BF30-95C74E41B51B}.WinForms|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -654,12 +619,11 @@ Global
 		{C1D529E0-AF81-416E-8BB7-EC1453A66975} = {3BEC1553-10A8-4ED7-9ED9-347A0D6C671F}
 		{FDE14E3D-F7AC-4F68-B80F-52AF6310D06A} = {1FB6E2FA-AEBF-4A1C-8C9C-8C1D7D6B3AB3}
 		{01F26AB4-E023-4E94-85F4-4BB027EA19BF} = {FDE14E3D-F7AC-4F68-B80F-52AF6310D06A}
-		{E39A7986-4C2F-4EBE-A31B-59C766150EAC} = {A9A43F26-5855-49AF-B81B-256C6F15113A}
-		{1C688B96-9FCC-465A-9347-1F933C703E21} = {A9A43F26-5855-49AF-B81B-256C6F15113A}
-		{319A2AEE-A900-476B-BF30-95C74E41B51B} = {00C58E14-B034-47C0-BF8C-BA4CF66F8859}
+		{E39A7986-4C2F-4EBE-A31B-59C766150EAC} = {CFA0ADC3-8E27-40C7-A77F-D27FA6BAB579}
+		{1C688B96-9FCC-465A-9347-1F933C703E21} = {CFA0ADC3-8E27-40C7-A77F-D27FA6BAB579}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {8677110D-EDB6-4878-8628-C915A26F03CF}
+		SolutionGuid = {775E1DFA-A1DB-4B25-B9FD-98B7A5716AFE}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = POS\POS.csproj

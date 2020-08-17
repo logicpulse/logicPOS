@@ -79,11 +79,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Configurar impressora windows com ESC-POS - LINDOTE
                 //Configuração Impressoras Windows TK016310
                 //verifica tipo de dialog conforme o tipo de impressora
-                _configurationPrinter = (_dataSourceRow as sys_configurationprinters);              
+                _configurationPrinter = (_dataSourceRow as sys_configurationprinters);
 
+               //Verifica tipo de impressora ativo na drop
+                string getSelectedType = _xpoComboBoxPrinterType.ActiveText.Substring(0, 1);
                 //Preenche o conjunto de strings associado ás diferentes impressoras instaladas no sistema
                 var _printersOnSystem = ComboBoxPrinterSelect();
-                if (!Utils.IsLinux && _printersOnSystem.Length != 0)
+                if (!Utils.IsLinux && _printersOnSystem.Length != 0 /*&& getSelectedType != "-"*/)
                 {
                     //Designação para Windows será a escolha da impressora instalada no sistema
                     entryDesignation = new Entry();
@@ -152,26 +154,30 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxNetworkName, _dataSourceRow, "NetworkName", SettingsApp.RegexHardwarePrinterNetworkNameAndUsbEndpoint, false));
 
                 //Quando a combobox da drop altera
-                xpoComboBoxInputType.Changed += delegate
+                if(xpoComboBoxInputType != null)
                 {
-                    try { 
-                    //Se a Seleção for válida, associa á designação
-                    entryDesignation.Text = _printersOnSystem[xpoComboBoxInputType.Active];
-                        //Se for impressora de rede associa logo o caminho da rede á impressora associada
-                        if (_xpoComboBoxPrinterType.Active == 3)
-                        { 
-                            entryNetworkName.Text = _printersOnSystem[xpoComboBoxInputType.Active];
-                        }
-                        else
-                        {
-                            entryNetworkName.Text = "";
-                        }
-                        }catch(Exception ex)
+                    xpoComboBoxInputType.Changed += delegate
                     {
-                        _log.Error(ex.Message, ex);
-                    }
+                        try { 
+                        //Se a Seleção for válida, associa á designação
+                        entryDesignation.Text = _printersOnSystem[xpoComboBoxInputType.Active];
+                            //Se for impressora de rede associa logo o caminho da rede á impressora associada
+                            if (_xpoComboBoxPrinterType.Active == 3)
+                            { 
+                                entryNetworkName.Text = _printersOnSystem[xpoComboBoxInputType.Active];
+                            }
+                            else
+                            {
+                                entryNetworkName.Text = "";
+                            }
+                            }catch(Exception ex)
+                        {
+                            _log.Error(ex.Message, ex);
+                        }
                 
-                };
+                    };
+                }
+                
 
                 //Tab2
                 _vboxTab2 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };

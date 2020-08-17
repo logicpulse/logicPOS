@@ -36,22 +36,169 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Delete
         void _buttonKeyDelete_Clicked(object sender, EventArgs e)
         {
-            DeleteItem_Event(TicketListDeleteMode.Delete);
+            if (_listMode == TicketListMode.OrderMain)
+            {
+                ResponseType responseType = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message__pos_order_cancel"));
+
+                if (responseType == ResponseType.Yes)
+                {
+                    try
+                    {
+                        _listStoreModel.Clear();
+                        _listStoreModelSelectedIndex = -1;
+                        _listStoreModelTotalItems = 0;
+                        //Get Reference to current OrderMain
+                        OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                        fin_documentordermain documentOrderMain = null;
+                        //Get current OrderMain Article Bag, After Process Payment/PartialPayment to check if current OrderMain has Items, or is Empty
+                        ArticleBag pParameters = ArticleBag.TicketOrderToArticleBag(orderMain);
+                        //Start UnitOfWork
+                        using (UnitOfWork uowSession = new UnitOfWork())
+                        {
+                            if (pParameters.Count > 0)
+                            {
+                                // Warning required to check if (documentOrderMain != null), when we work with SplitPayments and work only one product, 
+                                // the 2,3,4....orders are null, this is because first FinanceDocument Closes Order
+
+                                //Close OrderMain
+                                //if (documentOrderMain != null) documentOrderMain.OrderStatus = OrderStatus.Close;
+
+                                //Required to Update and Sync Terminals
+                                //if (documentOrderMain != null) documentOrderMain.UpdatedAt = documentDateTime;
+
+                                //Change Table Status to Free
+                                pos_configurationplacetable placeTable;
+                                placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
+
+                                placeTable.TableStatus = TableStatus.Free;
+                                FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
+                                placeTable.DateTableClosed = DateTime.Now;
+                                placeTable.TotalOpen = 0;
+                                placeTable.Save();
+                                //Required to Reload Objects after has been changed in Another Session(uowSession)
+                                if (documentOrderMain != null)
+                                {
+                                    documentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
+                                    documentOrderMain.OrderStatus = OrderStatus.Close;
+                                    documentOrderMain.Save();
+                                }
+
+                                if (documentOrderMain != null) documentOrderMain.Reload();
+                                //aceTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                //placeTable.Reload();
+                                ArticleBag.TicketOrderToArticleBag(orderMain).Clear();
+                                //Clean Session if Commited without problems
+                                orderMain.OrderStatus = OrderStatus.Close;
+                                orderMain.CleanSessionOrder();
+                                GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid] = orderMain;
+                                GlobalFramework.SessionApp.DeleteEmptyTickets();
+                                //obalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].CleanSessionOrder();
+                                uowSession.CommitChanges();
+                            }
+                        }
+                        //PartialPayment Detected
+                        //else
+                        //{
+                        //    //Required to Update and Sync Terminals
+                        //    if (documentOrderMain != null) documentOrderMain.UpdatedAt = documentDateTime;
+                        //}
+
+
+                        //Remove from SessionApp
+                        //_currentOrderDetails.Delete(_listStoreModelSelectedIndex);
+
+                        //Remove from TreviewModel
+                        //_listStoreModel.Remove(ref _treeIter);
+                        //Get Reference to current OrderMain
+
+                        CurrentOrderDetails = orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails;
+
+                        //Always Change to OrderMain ListMode before Update Model
+                        _listMode = TicketListMode.Ticket;
+                        orderMain.CleanSessionOrder();
+                        Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
+                        _treeView.ModifyBase(StateType.Normal, colorListMode);
+                        //UpdateModel();
+                        UpdateOrderStatusBar();
+                        UpdateTicketListOrderButtons();
+                        //IMPORTANT & REQUIRED: Assign Current Order Details from New CurrentTicketId, ELSE we cant add items to OrderMain
+                        CurrentOrderDetails = orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error(ex.Message, ex);
+                    }
+                }
+            }
+            else
+            {
+                DeleteItem_Event(TicketListDeleteMode.Delete);
+            }
+
         }
 
         //Decrease
         void _buttonKeyDecrease_Clicked(object sender, EventArgs e)
         {
-            DeleteItem_Event(TicketListDeleteMode.Decrease);
+            try
+            {
+                int i = 0;
+                var price = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindLastIndex(item => item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == _currentDetailArticle.Price1);
+                foreach (var item in CurrentOrderDetails.Lines)
+                {
+                    if (item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == price)
+                    {
+                        _listStoreModelSelectedIndex = i;
+                    }
+                    i++;
+                }
+                //_listMode = TicketListMode.EditList;
+                if (_listStoreModelSelectedIndex == -1)
+                {
+                    //Get current Index with LINQ : To Get OrderDetail articleId Index, If Exists
+                    //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == _currentDetailArticleOid);
+                }
+                DeleteItem_Event(TicketListDeleteMode.Decrease);
+                UpdateTicketListButtons();
+                //UpdateModel();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+
         }
 
         //Increase
         void _buttonKeyIncrease_Clicked(object sender, EventArgs e)
         {
-            //Get Article defaultQuantity
-            decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
-            decimal oldValueQnt = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
-            ChangeQuantity(oldValueQnt + defaultQuantity);
+            try
+            {       
+                //Get Article defaultQuantity
+                decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
+                int i = 0;
+                var price = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                //_listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == _currentDetailArticle.Price1);
+                //foreach (var item in CurrentOrderDetails.Lines)
+                //{
+                //    if (item.ArticleOid == _currentDetailArticleOid && item.Properties.PriceFinal == price)
+                //    {
+                //        _listStoreModelSelectedIndex = i;
+                //    }
+                //    i++;
+                //}
+                decimal oldValueQnt = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity));
+                ChangeQuantity(oldValueQnt + defaultQuantity);
+                UpdateTicketListButtons();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+
         }
 
         //Change Quantity
@@ -66,6 +213,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     ChangeQuantity(newValueQnt);
                 }
+                UpdateTicketListButtons();
             }
             catch (Exception ex)
             {
@@ -76,34 +224,68 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Change Price
         void _buttonKeyChangePrice_Clicked(object sender, EventArgs e)
         {
-            decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
-            decimal oldValuePrice = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
-
-            MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), oldValuePrice);
-            decimal newValuePrice = result.Value;
-
-            if (result.Response == ResponseType.Ok && newValuePrice > 0)
+            try
             {
-                //Create a Fresh Object to Get Input Price and Calc from TotalFinal with Quantity 1, Without Touch Quantity in current Line
-                PriceProperties priceProperties = PriceProperties.GetPriceProperties(
-                  PricePropertiesSourceMode.FromTotalFinal,
-                  CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceWithVat,
-                  newValuePrice,
-                  1.0m,
-                  CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.DiscountArticle,
-                  CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.DiscountGlobal,
-                  CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Vat
-                );
+                //Get Index of article with correct final price
+                _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter, 
+                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), SettingsApp.DecimalRoundTo) == Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
 
-                //Update orderDetails 
-                CurrentOrderDetails.Update(_listStoreModelSelectedIndex, oldValueQuantity, priceProperties.PriceUser);
-                //Update TreeView Model Price
-                _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, FrameworkUtils.DecimalToString(newValuePrice));
-                //Update Total
-                decimal totalLine = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal;
-                _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, FrameworkUtils.DecimalToString(totalLine));
+                decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
+                decimal oldValuePrice = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
+
+                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), oldValuePrice);
+                decimal newValuePrice = result.Value;
+
+                if (result.Response == ResponseType.Ok && newValuePrice > 0)
+                {
+                    //Create a Fresh Object to Get Input Price and Calc from TotalFinal with Quantity 1, Without Touch Quantity in current Line
+                    PriceProperties priceProperties = PriceProperties.GetPriceProperties(
+                      PricePropertiesSourceMode.FromTotalFinal,
+                      CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceWithVat,
+                      newValuePrice,
+                      1.0m,
+                      CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.DiscountArticle,
+                      CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.DiscountGlobal,
+                      CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Vat
+                    );
+                    int countDuplicatedArticles = 0;
+                    int i = 0;
+                    foreach (var line in _currentOrderDetails.Lines)
+                    {
+                        if (_listStoreModelSelectedIndex == i)
+                        {
+                            countDuplicatedArticles++;
+                        }
+                        if (line.ArticleOid == CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid && line.Properties.PriceUser == priceProperties.PriceUser) countDuplicatedArticles++;
+                        i++;
+                    }
+
+                    if (countDuplicatedArticles > 1)
+                    {
+                        int oldIndex = _listStoreModelSelectedIndex;
+                        _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId) 
+                        && item.Properties.PriceFinal == priceProperties.PriceFinal);
+                        oldValueQuantity += CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
+                        CurrentOrderDetails.Delete(oldIndex);
+                        _listStoreModel.Remove(ref _treeIter);
+                    }
+
+                    //Update orderDetails 
+                    CurrentOrderDetails.Update(_listStoreModelSelectedIndex, oldValueQuantity, priceProperties.PriceUser);
+                    //Update TreeView Model Price
+                    _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, FrameworkUtils.DecimalToString(newValuePrice));
+                    //Update Total
+                    decimal totalLine = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal;
+                    _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, FrameworkUtils.DecimalToString(totalLine));
+                }
+                UpdateTicketListTotal();                
+                UpdateModel();
+                UpdateTicketListButtons();
             }
-            UpdateTicketListTotal();
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
         }
 
         //Finish Order
@@ -113,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //Call Framework FinishOrder
                 OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-
+                //CurrentOrderDetailsAll = CurrentOrderDetails;
                 /* 
                  * TK013134 
                  * Parking Ticket Module: Checking for duplicates in Order Main after finishing order
@@ -125,17 +307,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 fin_documentorderticket orderTicket = orderMain.FinishOrder(GlobalFramework.SessionXpo);
 
+
                 // If OrderTicket and has a ThermalPrinter connected
                 // Impressoras - Diferenciação entre Tipos [TK:016249]
                 GlobalFramework.UsingThermalPrinter = true;
-                if (orderTicket != null && GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter)
+                if (orderTicket != null && GlobalFramework.LoggedTerminal.Printer != null &&
+                    GlobalFramework.LoggedTerminal.ThermalPrinter != null &&
+                    GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
+                    orderTicket.OrderDetail.Count != 0)
                 {
                     //public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
                     //IN009239 - This avoids orders being printed when in use of ParkingTicketModule
                     if (!GlobalFramework.AppUseParkingTicketModule)
                     {
                         // TK016249 Impressoras - Diferenciação entre Tipos 
-                        FrameworkCalls.PrintOrderRequest(_sourceWindow, GlobalFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);                        
+                        FrameworkCalls.PrintOrderRequest(_sourceWindow, GlobalFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
                     }
                     FrameworkCalls.PrintArticleRequest(_sourceWindow, orderTicket);
                 }
@@ -240,7 +426,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
-            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode"), string.Empty, SettingsApp.RegexInteger, true);
+            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SettingsApp.RegexAlfaNumeric, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -358,6 +544,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _listMode = (_listMode == TicketListMode.Ticket) ? TicketListMode.OrderMain : TicketListMode.Ticket;
             //ArticleBag
             UpdateModel();
+            //CurrentOrderDetails = CurrentOrderDetailsAll;
+            //generateTicketAll();
+            //for(int i=0; i < CurrentOrderDetailsAll.Lines.Count; i++) { CurrentOrderDetailsAll.Delete(i); }
+            //_listMode = TicketListMode.EditList;
+
         }
 
         //Gifts
@@ -371,6 +562,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
+                _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter,
+       (int)TicketListColumns.ArticleId) && item.Properties.PriceNet == Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
                 //_log.Debug(string.Format("PriceUser: [{0}]", _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser));
                 // Round Price before Send to WeighingBalance
                 decimal articlePricePerKg = decimal.Round(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal, 2, MidpointRounding.AwayFromZero);

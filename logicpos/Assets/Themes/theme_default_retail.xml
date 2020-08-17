@@ -372,7 +372,7 @@
 						<ButtonChangeQuantity>
 							<Name>touchButtonPosTicketPadChangeQuantity</Name>
 							<Text>Resx[pos_button_label_change_quantity]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 0, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_change_quantity.png</ImageFileName>
 							<Visible>true</Visible>
@@ -382,8 +382,8 @@
 							<Name>touchButtonPosTicketPadSelectTable_Green</Name>
 							<!-- <Text>Resx[pos_button_label_tables_appmode_default]</Text> -->
 							<Text>Resx[pos_button_label_tables_appmode_retail]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 0)]</Position>
-							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<!-- <ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_tables.png</ImageFileName> -->
 							<ImageFileName>Assets/Images/Icons/icon_pos_retail_view_orders.png</ImageFileName>
 							<Visible>true</Visible>
@@ -401,7 +401,7 @@
 						<ButtonBarCode>
 							<Name>touchButtonPosTicketPadBarCode</Name>
 							<Text>Resx[global_barcode_small]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_barcode.png</ImageFileName>
 							<Visible>true</Visible>
@@ -419,8 +419,8 @@
 						<ButtonFinishOrder>
 							<Name>touchButtonPosTicketPadFinishOrder_Green</Name>
 							<Text>Resx[pos_button_label_finish_order]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 0)]</Position>
-							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 0)]</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_retail_ticketpad_finish_order.png</ImageFileName>
 							<Visible>true</Visible>
 						</ButtonFinishOrder>
@@ -428,7 +428,7 @@
 						<ButtonWeight>
 							<Name>touchButtonPosTicketPadWeight</Name>
 							<Text>Resx[global_weight]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_weight.png</ImageFileName>
 							<Visible>true</Visible>
@@ -441,7 +441,7 @@
 							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_list_mode.png</ImageFileName>
-							<Visible>false</Visible>
+							<Visible>true</Visible>
 						</ButtonListMode>
 						<!-- ButtonChangePrice -->
 						<ButtonChangePrice>
@@ -450,7 +450,7 @@
 							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_change_price.png</ImageFileName>
-							<Visible>false</Visible>
+							<Visible>true</Visible>
 						</ButtonChangePrice>
 						<!-- ButtonListOrder -->
 						<ButtonListOrder>
@@ -465,7 +465,7 @@
 						<ButtonGifts>
 							<Name>touchButtonPosTicketPadGifts</Name>
 							<Text>Resx[global_gifts]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_gifts.png</ImageFileName>
 							<Visible>false</Visible>
@@ -474,7 +474,7 @@
 						<ButtonChangeTable>
 							<Name>touchButtonPosTicketPadChangeTable</Name>
 							<Text>Resx[pos_button_label_change_table]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_changetable.png</ImageFileName>
 							<Visible>false</Visible>
@@ -483,7 +483,7 @@
 						<ButtonMessages>
 							<Name>touchButtonPosTicketPadMessages</Name>
 							<Text>Resx[global_messages]</Text>
-							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 4)]</Position>
+							<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 1, posMainWindowTicketPadButtonSize.Height * 2)]</Position>
 							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_messages.png</ImageFileName>
 							<Visible>false</Visible>
