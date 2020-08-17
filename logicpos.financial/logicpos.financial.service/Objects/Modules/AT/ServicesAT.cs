@@ -394,12 +394,13 @@ private string _pathSaveSoapResultError;
              *      &   &amp;
              */
             _log.Debug($"string ServicesAT.GenerateXmlStringWB() :: {_documentMaster.DocumentNumber}");
-
+			//IN009347 Documentos PT - Alteração do Layout dos dados do Cliente #Lindote 2020
             /* IN009150 (IN009075) - Decrypt phase */
             string entityName           = "";
             string entityAddress        = "";
             string entityZipCode        = "";
             string entityCity           = "";
+            string entityLocality       = "";
             // string entityCountry        = "";
             string entityFiscalNumber   = "";
 
@@ -407,6 +408,7 @@ private string _pathSaveSoapResultError;
             if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
             if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
             if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality))      { entityCity = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
             // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
             if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */

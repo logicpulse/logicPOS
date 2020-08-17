@@ -77,7 +77,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Only Print if is in Portugal ex "Os artigos faturados...."
                 //Call base PrintDocumentTypeFooterString();
-                if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal)
+                if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal || SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryAngola)
                 { 
                     base.PrintDocumentTypeFooterString(_documentFinanceMasterList[0].DocumentTypeResourceStringReport);
                 }

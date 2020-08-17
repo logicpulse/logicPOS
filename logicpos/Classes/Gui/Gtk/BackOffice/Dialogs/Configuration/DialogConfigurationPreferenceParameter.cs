@@ -270,6 +270,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     && parameter.Token != "COMPANY_COUNTRY_CODE2"
                     && parameter.Token != "COMPANY_FISCALNUMBER"
                     && parameter.Token != "SYSTEM_CURRENCY"
+                    && parameter.Token != "REPORT_FILENAME_LOGO"
                 //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION" 
                 //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION_ID"
                 );

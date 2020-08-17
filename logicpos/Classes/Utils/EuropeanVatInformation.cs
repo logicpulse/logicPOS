@@ -18,7 +18,7 @@ namespace logicpos
             try
             {
                 return Regex.Replace(strIn, @"[*/ƒ]", "",
-                                     RegexOptions.None, TimeSpan.FromSeconds(1.5));
+                                     RegexOptions.Compiled, TimeSpan.FromSeconds(1.5));
             }
             // If we timeout when replacing invalid characters, 
             // we should return Empty.
@@ -83,8 +83,12 @@ namespace logicpos
                     
                     info.CountryCode = CleanInput(response["countryCode"].InnerText);
                     info.VatNumber = CleanInput(response["vatNumber"].InnerText);
+					//IN009346 - Correção - Update de Info via NIF para União Europeia
                     info.Name = CleanInput(response["name"].InnerText);
+                    info.Name = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower());
+
                     info.Address = CleanInput(response["address"].InnerText);
+                    info.Address = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(info.Address.ToLower());
                     return info;
                 }
             }

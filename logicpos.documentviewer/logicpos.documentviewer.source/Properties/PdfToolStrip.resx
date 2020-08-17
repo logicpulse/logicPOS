@@ -259,29 +259,29 @@ Page</value>
     <value>..\Resources\docExport.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="btnOpenText" xml:space="preserve">
-    <value>Open</value>
+    <value>Abrir</value>
   </data>
   <data name="btnCloseDoc" xml:space="preserve">
-    <value>Close</value>
+    <value>Fechar</value>
   </data>
   <data name="btnSaveDoc" xml:space="preserve">
-    <value>Save</value>
+    <value>Gravar</value>
   </data>
   <data name="btnOpenToolTipText" xml:space="preserve">
-    <value>Click to open a PDF file</value>
+    <value>Click para abrir ficheiro PDF</value>
   </data>
   <data name="btnCloseToolTipText" xml:space="preserve">
-    <value>Click to close window</value>
+    <value>Click para fechar janela</value>
   </data>
   <data name="btnSaveToolTipText" xml:space="preserve">
-    <value>Click to save document</value>
+    <value>Click para gravar documento</value>
   </data>
   <data name="btnPreviousPageImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\toLeft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="btnPreviousPageText" xml:space="preserve">
-    <value>Previous
-Page</value>
+    <value>Página Anterior
+</value>
   </data>
   <data name="btnPreviousPageToolTipText" xml:space="preserve">
     <value>Go back one page</value>
@@ -290,10 +290,10 @@ Page</value>
     <value>..\Resources\docPrint.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="btnPrintText" xml:space="preserve">
-    <value>Print</value>
+    <value>Imprimir</value>
   </data>
   <data name="btnPrintToolTipText" xml:space="preserve">
-    <value>Click to print the PDF file</value>
+    <value>Click para imprimir PDF</value>
   </data>
   <data name="btnRotateLeftImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\rotateLeft.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -336,7 +336,7 @@ All</value>
   </data>
   <data name="btnZoomInText" xml:space="preserve">
     <value>Zoom
-In</value>
++</value>
   </data>
   <data name="btnZoomInToolTipText" xml:space="preserve">
     <value>Increase the zoom level</value>
@@ -346,7 +346,7 @@ In</value>
   </data>
   <data name="btnZoomOutText" xml:space="preserve">
     <value>Zoom
-Out</value>
+-</value>
   </data>
   <data name="btnZoomOutToolTipText" xml:space="preserve">
     <value>Decrease the zoom level</value>
@@ -385,9 +385,9 @@ Out</value>
     <value>View two pages side-by-side</value>
   </data>
   <data name="btnExportDoc" xml:space="preserve">
-    <value>Export</value>
+    <value>Exportar</value>
   </data>
   <data name="btnExportToolTipText" xml:space="preserve">
-    <value>Export to Xls</value>
+    <value>Exportar para Xls</value>
   </data>
 </root>

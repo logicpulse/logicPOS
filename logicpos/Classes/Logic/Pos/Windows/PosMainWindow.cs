@@ -306,21 +306,29 @@ namespace logicpos
 
         void _tablePadArticle_Clicked(object sender, EventArgs e)
         {
-            TouchButtonBase button = (TouchButtonBase)sender;
-            //_log.Debug(string.Format("_tablePadArticle_Clicked(): A:CurrentId:[{0}], Name:[{1}]", button.CurrentButtonOid, button.Name));
-
-            //Change Mode
-            if (_ticketList.ListMode != TicketListMode.Ticket)
+            try
             {
-                _ticketList.ListMode = TicketListMode.Ticket;
-                _ticketList.UpdateModel();
+                TouchButtonBase button = (TouchButtonBase)sender;
+                //_log.Debug(string.Format("_tablePadArticle_Clicked(): A:CurrentId:[{0}], Name:[{1}]", button.CurrentButtonOid, button.Name));
+
+                //Change Mode
+                if (_ticketList.ListMode != TicketListMode.Ticket)
+                {
+                    _ticketList.ListMode = TicketListMode.Ticket;
+                    _ticketList.UpdateModel();
+                }
+
+                //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
+                _tablePadArticle.SelectedButtonOid = button.CurrentButtonOid;
+
+                //Send to TicketList
+                _ticketList.InsertOrUpdate(button.CurrentButtonOid);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
             }
 
-            //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            _tablePadArticle.SelectedButtonOid = button.CurrentButtonOid;
-
-            //Send to TicketList
-            _ticketList.InsertOrUpdate(button.CurrentButtonOid);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -330,7 +338,7 @@ namespace logicpos
         {
             if (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.PrinterType.ThermalPrinter)
             {
-                PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
+                PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.ThermalPrinter);
             }
         }
 

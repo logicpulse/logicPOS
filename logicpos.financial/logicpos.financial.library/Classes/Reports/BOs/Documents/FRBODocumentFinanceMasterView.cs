@@ -108,6 +108,9 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
         [FRBO(Field = "fmEntityCity")]
         public string EntityCity { get; set; }                                          //fmEntityCity AS EntityCity,
 
+        [FRBO(Field = "fmEntityLocality")]
+        public string EntityLocality { get; set; }                                      //fmEntityLocality AS EntityCity,
+
         [FRBO(Field = "fmEntityCountryCode2")]
         public string EntityCountryCode2 { get; set; }                                  //fmEntityCountry EntityCountryCode2,
 

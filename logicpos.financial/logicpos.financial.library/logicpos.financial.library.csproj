@@ -49,6 +49,14 @@
       <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Patagames.Pdf, Version=4.3.4.40, Culture=neutral, PublicKeyToken=60fd6cf9b15941cf, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Patagames.Pdf.dll</HintPath>
+    </Reference>
+    <Reference Include="Patagames.Pdf.WinForms, Version=4.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Patagames.Pdf.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -71,6 +79,7 @@
     <Compile Include="Classes\Finance\ProcessFinanceDocumentSeries.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocumentValidation.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocumentValidationException.cs" />
+    <Compile Include="Classes\Finance\SaftAo.cs" />
     <Compile Include="Classes\Finance\SaftPt.cs" />
     <Compile Include="Classes\Finance\FiscalNumber.cs" />
     <Compile Include="Classes\HardWare\Printers\PrintRouter.cs" />
@@ -135,6 +144,14 @@
     <ProjectReference Include="..\..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.documentviewer\logicpos.documentviewer.source\logicpos.documentviewer.source.csproj">
+      <Project>{1c688b96-9fcc-465a-9347-1f933c703e21}</Project>
+      <Name>logicpos.documentviewer.source</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.documentviewer\logicpos.documentviewer\logicpos.documentviewer.csproj">
+      <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
+      <Name>logicpos.documentviewer</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\logicpos.hardware\logicpos.printer.genericlinux\logicpos.printer.genericlinux.csproj">
       <Project>{07ef0127-5b26-431d-aa4e-3a9507d86893}</Project>

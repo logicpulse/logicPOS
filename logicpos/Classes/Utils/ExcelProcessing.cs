@@ -345,8 +345,9 @@ namespace logicpos
                     string articleUpdatedBy = articleCreatedBy;
                     article.UpdatedWhere = null;
                     article.ButtonImage = null;
+                    var count = row.ItemArray.GetValue(4).ToString().Length;
                     if (row.ItemArray.GetValue(4).ToString() != "") {
-                        var priceF = row.ItemArray.GetValue(4).ToString().Remove(row.ItemArray.GetValue(4).ToString().Length - 5);   
+                        var priceF = row.ItemArray.GetValue(4).ToString();   
                         article.Price1 = Convert.ToDecimal(priceF);
                     }
                     else

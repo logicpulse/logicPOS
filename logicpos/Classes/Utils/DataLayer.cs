@@ -356,14 +356,14 @@ namespace logicpos
             }
 
             //If detect errors Drop Incompleted Database
-            if (onErrorsDropDatabase && !result)
-            {
-                //Drop Database 
-                sql = commands["drop_database"].ToString();
-                log.Debug(string.Format("ExecuteScalar drop_database: [{0}]", sql));
-                resultCmd = xpoSession.ExecuteScalar(sql);
-                log.Debug(string.Format("drop_database resultCmd: [{0}]", resultCmd));
-            }
+            //if (onErrorsDropDatabase && !result)
+            //{
+            //    //Drop Database 
+            //    sql = commands["drop_database"].ToString();
+            //    log.Debug(string.Format("ExecuteScalar drop_database: [{0}]", sql));
+            //    resultCmd = xpoSession.ExecuteScalar(sql);
+            //    log.Debug(string.Format("drop_database resultCmd: [{0}]", resultCmd));
+            //}
 
             return result;
         }
@@ -478,73 +478,126 @@ namespace logicpos
 
             log.Debug(string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: ProcessDump Filename: [{0}]", pFilename));
 
-            if (File.Exists(pFilename))
+            try
             {
-                //Get Script Content
-                FileInfo file = new FileInfo(pFilename);
-                string script = file.OpenText().ReadToEnd() + "\r\n";
 
-                //Replace Content before Process
-                if (pReplaceables.Count > 0)
+
+
+                if (File.Exists(pFilename))
                 {
-                    foreach (KeyValuePair<string, string> item in pReplaceables)
+                    //Get Script Content
+                    FileInfo file = new FileInfo(pFilename);
+                    string script = file.OpenText().ReadToEnd() + "\r\n";
+
+                    //Replace Content before Process
+                    if (pReplaceables.Count > 0)
                     {
-                        script = script.Replace(item.Key, item.Value);
+                        foreach (KeyValuePair<string, string> item in pReplaceables)
+                        {
+                            script = script.Replace(item.Key, item.Value);
+                        }
                     }
-                }
 
-                //if (pFilename.Equals("Resources/Database/databasedata.sql"))
-                //{
-                //    log.Debug("DEBUG");
-                //}
-
-                object result;
-                string executeCommand;
-                string[] commandSeparators = new string[] { pCommandSeparator };
-                string[] commands;
-                commands = script.Split(commandSeparators, StringSplitOptions.RemoveEmptyEntries);
-
-                for (int i = 0; i < commands.Length - 1; i++)
-                {
-                    //CarriageReturn \r\n = 
-                    executeCommand = string.Format("{0};", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(commands[i]));
-                    //Replace \n (Multiline Text like SEND_MAIL_FINANCE_DOCUMENTS_BODY)
-                    executeCommand = executeCommand.Replace("\\n", Environment.NewLine);
-
-                    //TODO: Muga melhorar isto : Move it to Replacable in DataBase Type in a Dynamic Value Action
-                    executeCommand = executeCommand.Replace("</NEWGUI>", Guid.NewGuid().ToString());
-
-                    // Helper to debug pReplaceables
-                    //if (executeCommand.Contains("DATE_FORMAT"))
-                    //if (executeCommand.Contains("3f3c562c-850d-452c-af1a-41f9c9e9c89e"))
+                    //if (pFilename.Equals("Resources/Database/databasedata.sql"))
                     //{
-                    //    executeCommand = executeCommand.Replace("\\n", Environment.NewLine);
                     //    log.Debug("DEBUG");
                     //}
 
-                    if (executeCommand != string.Empty && executeCommand != "\r\n" && !executeCommand.StartsWith("--"))
+                    object result;
+                    string executeCommand;
+                    string[] commandSeparators = new string[] { pCommandSeparator };
+                    string[] commands;
+                    commands = script.Split(commandSeparators, StringSplitOptions.RemoveEmptyEntries);
+
+                    for (int i = 0; i < commands.Length - 1; i++)
                     {
-                        log.Debug(string.Format("{0}/{1}> [{2}]", i + 1, commands.Length - 1, executeCommand));
-                        try
-                        {
-                            result = pXpoSession.ExecuteNonQuery(executeCommand);
-                        }
-                        catch (Exception ex)
-                        {
-                            /* IN009021 */
-                            //pXpoSession.RollbackTransaction();
+                        //CarriageReturn \r\n = 
+                        executeCommand = string.Format("{0};", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(commands[i]));
+                        //Replace \n (Multiline Text like SEND_MAIL_FINANCE_DOCUMENTS_BODY)
+                        executeCommand = executeCommand.Replace("\\n", Environment.NewLine);
 
-                            string errorMessage = string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: Error executing Sql Command: [{0}]{1}Exception: [{2}]", executeCommand, Environment.NewLine, ex.Message);
-                            log.Error(string.Format("{0} : {1}", errorMessage, ex.Message), ex);
-                            Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
+                        //TODO: Muga melhorar isto : Move it to Replacable in DataBase Type in a Dynamic Value Action
+                        executeCommand = executeCommand.Replace("</NEWGUI>", Guid.NewGuid().ToString());
 
-                            return false;
+                        // Helper to debug pReplaceables
+                        //if (executeCommand.Contains("DATE_FORMAT"))
+                        //if (executeCommand.Contains("3f3c562c-850d-452c-af1a-41f9c9e9c89e"))
+                        //{
+                        //    executeCommand = executeCommand.Replace("\\n", Environment.NewLine);
+                        //    log.Debug("DEBUG");
+                        //}
+
+                        if (executeCommand != string.Empty && executeCommand != "\r\n" && !executeCommand.StartsWith("--"))
+                        {
+                            log.Debug(string.Format("{0}/{1}> [{2}]", i + 1, commands.Length - 1, executeCommand));
+                            try
+                            {
+                                //If alter Table Query get table and column affected
+                                var output = System.Text.RegularExpressions.Regex.Replace(executeCommand.Split()[0], @"[^0-9a-zA-Z\ ]+", "");
+                                if(output == "alter")
+                                {
+                                    string table = executeCommand.Split('[', ']')[1];
+                                    string commandSql = executeCommand.Split('[', ']')[2];
+                                    string column = executeCommand.Split('[', ']')[3];
+                                    bool columExists = isColumnExists(table, column, pXpoSession);
+                                    if (!columExists && commandSql == " ADD ")
+                                    {
+                                        result = pXpoSession.ExecuteNonQuery(executeCommand);
+                                    }
+                                }
+                                else
+                                {
+                                    result = pXpoSession.ExecuteNonQuery(executeCommand);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                /* IN009021 */
+                                //pXpoSession.RollbackTransaction();
+
+                                string errorMessage = string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: Error executing Sql Command: [{0}]{1}Exception: [{2}]", executeCommand, Environment.NewLine, ex.Message);
+                                log.Error(string.Format("{0} : {1}", errorMessage, ex.Message), ex);
+                                Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
+
+                                return false;
+                            };
                         };
-                    };
+                    }
                 }
-            }
 
-            return true;
+                return true;
+            }catch(Exception Ex)
+            {
+                log.Error(Ex.Message);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Check if column exists when alter table
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public static bool isColumnExists(String table, String column, Session pXpoSession)
+        {
+            try
+            {
+                string query = string.Format("Select " + column + " From " + table);
+                var result = pXpoSession.ExecuteQuery(query);
+                if (result != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }catch(Exception Ex)
+            {               
+                return false;
+            }
         }
 
         /// <summary>

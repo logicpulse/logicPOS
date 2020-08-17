@@ -1155,10 +1155,10 @@ namespace logicpos.financial.library.Classes.Finance
                     //    hasArticlesWithInvalidPrice = true;
                     //}
                     //Validate ValidationField: Quantity
-                    if (!FrameworkUtils.Validate(validationFieldQuantity.Value.ToString(), validationFieldQuantity.Rule, validationFieldQuantity.Required))
-                    {
-                        hasArticlesWithInvalidQuantity = true;
-                    }
+                    //if (!FrameworkUtils.Validate(validationFieldQuantity.Value.ToString(), validationFieldQuantity.Rule, validationFieldQuantity.Required))
+                    //{
+                    //    hasArticlesWithInvalidQuantity = true;
+                    //}
                     //Removed : Framework LogicErp dont send ACRONYM : Search all ERROR_FIELD_ARTICLE_UNIT_MEASURE_ACRONYM_INVALID occurences
                     //if (!FrameworkUtils.Validate(validationFieldUnitMeasureAcronym.Value.ToString(), validationFieldUnitMeasureAcronym.Rule, validationFieldUnitMeasureAcronym.Required))
                     //{

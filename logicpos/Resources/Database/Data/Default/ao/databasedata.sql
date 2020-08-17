@@ -41,9 +41,7 @@ INSERT INTO sys_configurationinputreader (Oid, Designation, Disabled) VALUES ('0
 INSERT INTO sys_configurationpoledisplay (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
 
 -- Data;
-INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('5f0f47a5-5e2a-4d79-ba9f-56966c9f615e',10,10,'Barman');
-INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('096c4da6-9b41-4dce-95d9-17575a2c0b0a',20,20,'Empregado de Mesa');
-INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('6abf2f8e-640b-46f2-ba60-6e7615981463',30,30,'Chefe de Mesa');
+INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('5f0f47a5-5e2a-4d79-ba9f-56966c9f615e',10,10,'Utilizador');
 INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('bc7b598e-55d3-461c-8dd6-92b9b84796d5',40,40,'Supervisor');
 INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('91ad42be-91fb-4131-bc15-84d68531d487',50,50,'Gerente');
 INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('1626e21f-75e6-429e-b0ac-edb755e733c2',60,60,'Proprietário');
@@ -592,7 +590,7 @@ INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capit
 INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capital,TLD,Currency,CurrencyCode,RegExFiscalNumber,RegExZipCode) VALUES ('f38f6cc2-3b21-4a06-b29f-b643401a94d6',30,30,'AL','ALB','Albânia','Tirana','.al','Lek','ALL','^[\w() -]+$','^[\w() -]+$');
 INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capital,TLD,Currency,CurrencyCode,RegExFiscalNumber,RegExZipCode) VALUES ('4f7dfcd8-3f81-42cc-b36f-5d3dbc83b83c',40,40,'DE','DEU','Alemanha','Berlin','.de','Euro','EUR','^(DE)?[0-9]{9}$','^\d{5}?$');
 INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capital,TLD,Currency,CurrencyCode,RegExFiscalNumber,RegExZipCode) VALUES ('654505c5-f43f-4bd7-8541-30a57ed64515',50,50,'AD','AND','Andorra','Andorra la Vella','.ad','Euro','EUR','^[\w() -]+$','^[\w() -]+$');
-INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capital,TLD,Currency,CurrencyCode,RegExFiscalNumber,RegExZipCode) VALUES ('9655510a-ff58-461e-9719-c037058f10ed',60,60,'AO','AGO','Angola','Luanda','.ao','Kwanza','AOA','^(AO)?\d{10,11}$','^[\w-]+$');
+INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capital,TLD,Currency,CurrencyCode,RegExFiscalNumber,RegExZipCode) VALUES ('9655510a-ff58-461e-9719-c037058f10ed',60,60,'AO','AGO','Angola','Luanda','.ao','Kwanza','AOA','^[A-Za-z0-9]+','^[\w-]+$');
 INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capital,TLD,Currency,CurrencyCode,RegExFiscalNumber,RegExZipCode) VALUES ('39bf20ab-113b-423a-bfe4-cc1c6cb6d381',70,70,'AI','AIA','Anguila','The Valley','.ai','Dollar','XCD','^[\w() -]+$','^[\w() -]+$');
 INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capital,TLD,Currency,CurrencyCode,RegExFiscalNumber,RegExZipCode) VALUES ('81716524-3790-4953-a402-b47e200f993b',80,80,'AQ','ATA','Antárctida','Maxwell Bay (unofficial capital)','.aq','AAD (unofficial c.)','AAD','^[\w() -]+$','^[\w() -]+$');
 INSERT INTO cfg_configurationcountry (Oid,Ord,Code,Code2,Code3,Designation,Capital,TLD,Currency,CurrencyCode,RegExFiscalNumber,RegExZipCode) VALUES ('592078b4-3d66-4834-80f2-b954712b4719',90,90,'AG','ATG','Antígua e Barbuda','Saint John´s','.ag','Dollar','XCD','^[\w() -]+$','^[\w() -]+$');
@@ -953,26 +951,13 @@ INSERT INTO fin_configurationpaymentmethod (Oid,Ord,Code,Token,Designation,Acron
 UPDATE fin_configurationpaymentmethod SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 INSERT INTO fin_configurationpricetype (Oid,Ord,Code,Designation,EnumValue) VALUES ('cf17a218-b687-4b82-a8f4-0905594ac1f5',10,10,'Normal',1);
-INSERT INTO fin_configurationpricetype (Oid,Ord,Code,Designation,EnumValue) VALUES ('f837476d-1b62-447f-80fb-b8cbfe5e9c2b',20,20,'Balcão',2);
-INSERT INTO fin_configurationpricetype (Oid,Ord,Code,Designation,EnumValue) VALUES ('f42bc933-49e9-46bc-aee2-d1f17c6ea012',30,30,'Esplanada',3);
-INSERT INTO fin_configurationpricetype (Oid,Ord,Code,Designation,EnumValue) VALUES ('4d3c1925-64ac-4ce9-98a8-f9fa17b18832',40,40,'Especial',4);
-INSERT INTO fin_configurationpricetype (Oid,Ord,Code,Designation,EnumValue) VALUES ('a6e20c09-5b4e-49ed-9565-875ae2a70590',50,50,'Consumo Próprio',5);
 UPDATE fin_configurationpricetype SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 INSERT INTO pos_configurationplacemovementtype (Oid,Ord,Code,Designation,VatDirectSelling) VALUES ('378cef43-82a0-4c2e-a157-4907e52806ef',10,10,'Normal',NULL);
 INSERT INTO pos_configurationplacemovementtype (Oid,Ord,Code,Designation,VatDirectSelling) VALUES ('9e3d68b5-5aae-459b-969d-dd039b33e8cd',20,20,'Consumo Próprio',NULL);
-INSERT INTO pos_configurationplacemovementtype (Oid,Ord,Code,Designation,VatDirectSelling) VALUES ('88e92456-cea4-4a32-ad43-9c3aafb3033b',30,30,'Take-Away',1);
-INSERT INTO pos_configurationplacemovementtype (Oid,Ord,Code,Designation,VatDirectSelling) VALUES ('ab506a3c-4aec-4427-9b71-ce9f0269ce7c',40,40,'Entrega ao Domicílio',1);
 UPDATE pos_configurationplacemovementtype SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
-INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('dd5a3869-db52-42d4-bbed-dec4adfaf62b',10,10,'Balcão','Assets/Images/Icons/Places/icon_pos_balcao.png','cf17a218-b687-4b82-a8f4-0905594ac1f5','378cef43-82a0-4c2e-a157-4907e52806ef');
-INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('99afc739-7828-4fa6-83c9-6e8b71987909',20,20,'Sala','Assets/Images/Icons/Places/icon_pos_sala.png','f837476d-1b62-447f-80fb-b8cbfe5e9c2b','378cef43-82a0-4c2e-a157-4907e52806ef');
-INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('08f60493-2823-4279-920d-003ab1696eda',30,30,'Esplanada','Assets/Images/Icons/Places/icon_pos_esplanada.png','f42bc933-49e9-46bc-aee2-d1f17c6ea012','378cef43-82a0-4c2e-a157-4907e52806ef');
-INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('0ae5cbc0-73de-4d28-a9b6-f415b21217d3',40,40,'Hotel','Assets/Images/Icons/Places/icon_pos_hotel.png','4d3c1925-64ac-4ce9-98a8-f9fa17b18832','378cef43-82a0-4c2e-a157-4907e52806ef');
-INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('7c0dda6f-54f4-45f0-836a-71cb52aff52b',50,50,'Discoteca','Assets/Images/Icons/Places/icon_pos_discoteca.png','a6e20c09-5b4e-49ed-9565-875ae2a70590','378cef43-82a0-4c2e-a157-4907e52806ef');
-INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('5d1f314a-9f86-4cb8-95b7-73149a1b2ab9',60,60,'Take-Away','Assets/Images/Icons/Places/icon_pos_take_away.png','cf17a218-b687-4b82-a8f4-0905594ac1f5','88e92456-cea4-4a32-ad43-9c3aafb3033b');
-INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('dbb86cc4-46f5-4202-b24d-32d5b0d3f0b0',70,70,'Entrega ao Domicílio','Assets/Images/Icons/Places/icon_pos_delivery.png','f837476d-1b62-447f-80fb-b8cbfe5e9c2b','ab506a3c-4aec-4427-9b71-ce9f0269ce7c');
-INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('f8c8fa99-751e-423f-96ac-1f4fe0dcbbec',80,80,'Área dos Empregados','Assets/Images/Icons/Places/icon_pos_staff_area.png','a6e20c09-5b4e-49ed-9565-875ae2a70590','9e3d68b5-5aae-459b-969d-dd039b33e8cd');
+INSERT INTO pos_configurationplace (Oid,Ord,Code,Designation,ButtonImage,PriceType,MovementType) VALUES ('dd5a3869-db52-42d4-bbed-dec4adfaf62b',10,10,'Zona1','Assets/Images/Icons/Places/icon_pos_zona_defeito.png','cf17a218-b687-4b82-a8f4-0905594ac1f5','378cef43-82a0-4c2e-a157-4907e52806ef');
 UPDATE pos_configurationplace SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 -- INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,TableStatus,Place) VALUES ('5a8690a2-5dc7-48fa-98ab-ba6c9adbf253',1,10,'Table 1.1',0,'312ab3e7-c3e7-456f-8da9-c7644f49bf17');
@@ -985,41 +970,6 @@ INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES 
 INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('238f7de5-9090-440b-9c1d-ae0f9feb89da',30,30,3,'dd5a3869-db52-42d4-bbed-dec4adfaf62b');
 INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('dded6340-a904-4b5c-9b6e-e69aaec3469e',40,40,4,'dd5a3869-db52-42d4-bbed-dec4adfaf62b');
 INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('21075d50-74d9-454a-a0e3-ba9693c9d8ed',50,50,5,'dd5a3869-db52-42d4-bbed-dec4adfaf62b');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('c8dcf0d3-b4aa-4c36-9299-da2f376a744f',60,60,6,'99afc739-7828-4fa6-83c9-6e8b71987909');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('f4a2fea4-c20c-478c-b2ea-0774699ed950',70,70,7,'99afc739-7828-4fa6-83c9-6e8b71987909');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('09eff380-8a7e-4770-9713-ddc068e0c040',80,80,8,'99afc739-7828-4fa6-83c9-6e8b71987909');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('c08e6cfe-529e-4f12-a106-c52873c29e1a',90,90,9,'99afc739-7828-4fa6-83c9-6e8b71987909');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('0015a074-17fa-4afe-94fe-d604f2fc53ee',100,100,10,'99afc739-7828-4fa6-83c9-6e8b71987909');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('972a184e-8ca8-4cb4-a499-18d278a3b17b',110,110,11,'08f60493-2823-4279-920d-003ab1696eda');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('19882fc8-99b8-40b4-af71-6ba83ee0a01f',120,120,12,'08f60493-2823-4279-920d-003ab1696eda');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('081449dd-d8cd-4b61-bb0b-fc76357e0a41',130,130,13,'08f60493-2823-4279-920d-003ab1696eda');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('f41ecd62-2f1d-41a9-8f72-a20958c565c7',140,140,14,'08f60493-2823-4279-920d-003ab1696eda');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('0d395a51-969e-4e7a-a8b5-523539fca7b1',150,150,15,'08f60493-2823-4279-920d-003ab1696eda');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('ece81d96-52ee-4ec7-ab58-9d1e51b2b037',160,160,16,'0ae5cbc0-73de-4d28-a9b6-f415b21217d3');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('5f67eecd-844c-46b4-905c-67164b8ec9f8',170,170,17,'0ae5cbc0-73de-4d28-a9b6-f415b21217d3');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('eacbf751-c639-430c-9871-6e2bd5f16394',180,180,18,'0ae5cbc0-73de-4d28-a9b6-f415b21217d3');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('9520fcd4-b6f3-4597-ac26-eb004e2f7b17',190,190,19,'0ae5cbc0-73de-4d28-a9b6-f415b21217d3');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('1be5366a-e611-4622-b6a2-424946df960f',200,200,20,'0ae5cbc0-73de-4d28-a9b6-f415b21217d3');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('60e9ec7c-1a22-4374-8cfe-0f7acc9b9e89',210,210,21,'7c0dda6f-54f4-45f0-836a-71cb52aff52b');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('5d047741-72e3-4cbd-9705-2d95a8813948',220,220,22,'7c0dda6f-54f4-45f0-836a-71cb52aff52b');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('b8ed0129-d338-453a-9481-af205d0b0b20',230,230,23,'7c0dda6f-54f4-45f0-836a-71cb52aff52b');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('3e1055fa-2090-43b7-b8dc-fd376e6aa3c2',240,240,24,'7c0dda6f-54f4-45f0-836a-71cb52aff52b');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('3c23c476-6fbf-448d-85a3-0bca99e90f36',250,250,25,'7c0dda6f-54f4-45f0-836a-71cb52aff52b');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('63bf27d9-d13e-46df-ac4e-5c8dce63f31f',260,260,26,'5d1f314a-9f86-4cb8-95b7-73149a1b2ab9');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('e4712e7a-5f0a-4acc-ad5c-420114b9fe12',270,270,27,'5d1f314a-9f86-4cb8-95b7-73149a1b2ab9');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('d1243b8c-968b-4963-88a7-90250d355382',280,280,28,'5d1f314a-9f86-4cb8-95b7-73149a1b2ab9');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('8f569aad-92b3-4ecc-ad45-3321799fef4b',290,290,29,'5d1f314a-9f86-4cb8-95b7-73149a1b2ab9');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('ed99f917-def5-474a-b454-6de90eb51082',300,300,30,'5d1f314a-9f86-4cb8-95b7-73149a1b2ab9');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('1f1bf1af-a339-40fb-98c3-f54428ba43d9',310,310,31,'dbb86cc4-46f5-4202-b24d-32d5b0d3f0b0');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('7c54bc86-3116-4587-9ab0-7ed6f5e75527',320,320,32,'dbb86cc4-46f5-4202-b24d-32d5b0d3f0b0');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('64b28991-51ce-405e-9fa6-07ef7a3e8122',330,330,33,'dbb86cc4-46f5-4202-b24d-32d5b0d3f0b0');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('e58b2e0e-0cb3-484e-984b-931c55bb6ca5',340,340,34,'dbb86cc4-46f5-4202-b24d-32d5b0d3f0b0');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('f25462d9-b727-4b81-b568-72de599a0ed1',350,350,35,'dbb86cc4-46f5-4202-b24d-32d5b0d3f0b0');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('fb222ffe-0e10-46cf-8caf-ac84643f251c',360,360,36,'f8c8fa99-751e-423f-96ac-1f4fe0dcbbec');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('aca21c5e-139a-4069-9000-87e3b8dfe624',370,370,37,'f8c8fa99-751e-423f-96ac-1f4fe0dcbbec');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('21ca12e4-574b-4fea-9a42-f702be0d992e',380,380,38,'f8c8fa99-751e-423f-96ac-1f4fe0dcbbec');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('b5dea0de-e613-4106-b249-9f8b7adb6ec5',390,390,39,'f8c8fa99-751e-423f-96ac-1f4fe0dcbbec');
-INSERT INTO pos_configurationplacetable (Oid,Ord,Code,Designation,Place) VALUES ('0b15cc4d-5457-4032-bd8c-0ce72b42c05a',400,400,40,'f8c8fa99-751e-423f-96ac-1f4fe0dcbbec');
 UPDATE pos_configurationplacetable SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 INSERT INTO cfg_configurationunitmeasure (Oid,Ord,Code,Designation,Acronym) VALUES ('4c81aa20-98ec-4497-b740-165cdb5fa395',10,10,'Unidade','Un');
@@ -1070,7 +1020,6 @@ INSERT INTO erp_customertype (Oid,Ord,Code,Designation) VALUES ('f2a3a388-1c91-4
 INSERT INTO erp_customertype (Oid,Ord,Code,Designation) VALUES ('e244d1bc-8ace-40f0-b275-7124188d9991',30,30,'Bom');
 INSERT INTO erp_customertype (Oid,Ord,Code,Designation) VALUES ('2ea60fc9-b8d6-4e29-b322-856c898400fd',40,40,'Muito Bom');
 INSERT INTO erp_customertype (Oid,Ord,Code,Designation) VALUES ('ca2e73ba-5cac-4d45-860e-ccb64b061778',50,50,'Empresa');
-INSERT INTO erp_customertype (Oid,Ord,Code,Designation) VALUES ('15120324-9e28-4e74-8ea0-241aa9be7914',60,60,'Fim-de-Semana');
 UPDATE erp_customertype SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 -- Encrypted : Will be Updated by Vendor Plugin Script;
@@ -1083,12 +1032,7 @@ INSERT INTO erp_customerdiscountgroup (Oid,Ord,Code,Designation) VALUES ('da3b95
 INSERT INTO erp_customerdiscountgroup (Oid,Ord,Code,Designation) VALUES ('51880963-295b-4039-84c9-fb137975f420',40,40,'VIP');
 UPDATE erp_customerdiscountgroup SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
-INSERT INTO pos_usercommissiongroup (Oid,Ord,Code,Designation) VALUES ('8dd94fe3-e124-4a86-b112-81d184672a58',10,10,'Balcão');
-INSERT INTO pos_usercommissiongroup (Oid,Ord,Code,Designation) VALUES ('4a18e3a7-5152-4c21-a3bc-93efbb24c34e',20,20,'Empregado de Mesa');
-INSERT INTO pos_usercommissiongroup (Oid,Ord,Code,Designation) VALUES ('1490a7b8-5092-4084-ab96-6c8efca8f5b8',30,30,'Chefe de Mesa');
-INSERT INTO pos_usercommissiongroup (Oid,Ord,Code,Designation) VALUES ('1bf83136-3a64-41b8-942e-19d409a5d67d',40,40,'Gerente');
-INSERT INTO pos_usercommissiongroup (Oid,Ord,Code,Designation) VALUES ('2231a819-aeef-43e9-90a9-546d30ca90a3',50,50,'Cozinheiro');
-INSERT INTO pos_usercommissiongroup (Oid,Ord,Code,Designation) VALUES ('cca989d4-d62f-4c08-95e7-117b41c4d090',60,60,'Ajudante de Cozinha');
+INSERT INTO pos_usercommissiongroup (Oid,Ord,Code,Designation) VALUES ('8dd94fe3-e124-4a86-b112-81d184672a58',10,10,'Utilizador');
 UPDATE pos_usercommissiongroup SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 INSERT INTO rpt_reporttype (Oid,Ord,Code,Designation,ResourceString,MenuIcon,Disabled) VALUES ('eeb05008-d250-4898-bae0-b36980d08543',10,10,'ReportType #1','reporttype_label_type1','report_financial.png',NULL);
@@ -1207,7 +1151,7 @@ INSERT INTO sys_configurationprinterstemplates (Oid,Ord,Code,Designation,FileTem
 INSERT INTO sys_configurationprinterstemplates (Oid,Ord,Code,Designation,FileTemplate,FinancialTemplate) VALUES ('e317b481-920a-4097-a1e1-4c9f7a211855',220,220,'Modelo para Impressão de Fatura Pró-Forma','Resources/Hardware/Printers/Templates/template_documento_fiscal.ticket',1);
 UPDATE sys_configurationprinterstemplates SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-07-05 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
-INSERT INTO sys_configurationpoledisplay (Oid,Disabled,Ord,Code,Designation,VID,PID,EndPoint,CodeTable,DisplayCharactersPerLine,GoToStandByInSeconds,StandByLine1,StandByLine2) VALUES ('a8e7ecb0-1d8c-4cd5-af78-b369b22ac427',0,10,10,'Display de Cliente Genérico Appostar CPD-3230','0x03EB','0x1101','Ep01','0x10',20,60,'LogicPulse','Bem Vindo');
+INSERT INTO sys_configurationpoledisplay (Oid,Disabled,Ord,Code,Designation,VID,PID,EndPoint,CodeTable,COM,DisplayCharactersPerLine,GoToStandByInSeconds,StandByLine1,StandByLine2) VALUES ('a8e7ecb0-1d8c-4cd5-af78-b369b22ac427',0,10,10,'Display de Cliente Genérico Appostar CPD-3230','0x03EB','0x1101','Ep01','0x10','COM1',20,60,'LogicPulse','Bem Vindo');
 UPDATE sys_configurationpoledisplay SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-07-05 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 INSERT INTO sys_configurationweighingmachine (Oid,Disabled,Ord,Code,Designation,PortName,BaudRate,Parity,StopBits,DataBits) VALUES ('f4f91d26-a66f-44be-b12b-146bde20e638',0,10,10,'Balança Genérica','COM1',9600,'None','One',8);
@@ -1373,7 +1317,7 @@ INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLas
 INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLastSerie,ResourceString,ResourceStringReport,Payed,Credit,CreditDebit,PrintCopies,PrintRequestMotive,PrintRequestConfirmation,PrintOpenDrawer,WayBill,WsAtDocument,SaftAuditFile,SaftDocumentType,StockMode,Template) VALUES ('afed98d3-eae7-43a7-a7be-515753594c8f',120,120,'Documento de Conferência','DC',6,'global_documentfinance_type_title_dc','global_documentfinance_type_report_non_invoice_footer_at',0,1,NULL,1,1,0,0,0,0,1,3,0,'f6a25476-40b0-46d7-9104-d5db3f50d7f1');
 INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLastSerie,ResourceString,ResourceStringReport,Payed,Credit,CreditDebit,PrintCopies,PrintRequestMotive,PrintRequestConfirmation,PrintOpenDrawer,WayBill,WsAtDocument,SaftAuditFile,SaftDocumentType,StockMode,Template) VALUES ('b8554d36-642a-4083-b608-8f1da35f0fec',130,130,'Fatura de Consignação','FC',6,'global_documentfinance_type_title_fc','global_documentfinance_type_report_non_invoice_footer_at',0,1,-1,1,1,0,0,0,0,1,3,0,'5a719507-cb44-42b5-bf10-0322c5116a81');
 INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLastSerie,ResourceString,ResourceStringReport,Payed,Credit,CreditDebit,PrintCopies,PrintRequestMotive,PrintRequestConfirmation,PrintOpenDrawer,WayBill,WsAtDocument,SaftAuditFile,SaftDocumentType,StockMode,Template) VALUES ('005ac531-31a1-44bb-9346-058f9c9ad01a',140,140,'Orçamento','OR',6,'global_documentfinance_type_title_or','global_documentfinance_type_report_non_invoice_footer_at',0,1,NULL,1,0,0,0,0,0,1,3,0,'0f7318de-0f7b-4e37-8327-7a00d7f0bba5');
-INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLastSerie,ResourceString,ResourceStringReport,Payed,Credit,CreditDebit,PrintCopies,PrintRequestMotive,PrintRequestConfirmation,PrintOpenDrawer,WayBill,WsAtDocument,SaftAuditFile,SaftDocumentType,StockMode,Template) VALUES ('6f4249d0-4aaf-4711-814f-7f9533a1ef7f',150,150,'Fatura Pró-Forma','FP',6,'global_documentfinance_type_title_fp','global_documentfinance_type_report_non_invoice_footer_at',0,1,NULL,1,0,0,0,0,0,1,3,0,'e317b481-920a-4097-a1e1-4c9f7a211855');
-INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLastSerie,ResourceString,ResourceStringReport,Payed,Credit,CreditDebit,PrintCopies,PrintRequestMotive,PrintRequestConfirmation,PrintOpenDrawer,WayBill,WsAtDocument,SaftAuditFile,SaftDocumentType,StockMode,Template) VALUES ('a009168d-fed1-4f52-b9e3-77e280b18ff5',160,160,'Recibo','RC',6,'global_documentfinance_type_title_rc','global_documentfinance_type_report_non_invoice_footer_at',1,1,1,1,1,0,1,0,0,1,4,0,'5409255a-3741-411c-b05b-056cbd470226');
+INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLastSerie,ResourceString,ResourceStringReport,Payed,Credit,CreditDebit,PrintCopies,PrintRequestMotive,PrintRequestConfirmation,PrintOpenDrawer,WayBill,WsAtDocument,SaftAuditFile,SaftDocumentType,StockMode,Template) VALUES ('6f4249d0-4aaf-4711-814f-7f9533a1ef7f',150,150,'Fatura Pró-Forma','PP',6,'global_documentfinance_type_title_fp','global_documentfinance_type_report_non_invoice_footer_at',0,1,NULL,1,0,0,0,0,0,1,3,0,'e317b481-920a-4097-a1e1-4c9f7a211855');
+INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLastSerie,ResourceString,ResourceStringReport,Payed,Credit,CreditDebit,PrintCopies,PrintRequestMotive,PrintRequestConfirmation,PrintOpenDrawer,WayBill,WsAtDocument,SaftAuditFile,SaftDocumentType,StockMode,Template) VALUES ('a009168d-fed1-4f52-b9e3-77e280b18ff5',160,160,'Recibo','RG',6,'global_documentfinance_type_title_rc','global_documentfinance_type_report_non_invoice_footer_at',1,1,1,1,1,0,1,0,0,1,4,0,'5409255a-3741-411c-b05b-056cbd470226');
 INSERT INTO fin_documentfinancetype (Oid,Ord,Code,Designation,Acronym,AcronymLastSerie,ResourceString,ResourceStringReport,Payed,Credit,CreditDebit,PrintCopies,PrintRequestMotive,PrintRequestConfirmation,PrintOpenDrawer,WayBill,WsAtDocument,SaftAuditFile,SaftDocumentType,StockMode,Template) VALUES ('235f06f3-5ec3-4e13-977b-325614b07e35',170,170,'Entrada Conta Corrente','CC',6,'global_documentfinance_type_title_cc','global_documentfinance_type_report_non_invoice_footer_at',0,1,-1,1,0,0,0,0,0,0,0,0,'adb47395-0adb-40b0-bf02-d15cc35c29ac');
 UPDATE fin_documentfinancetype SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';

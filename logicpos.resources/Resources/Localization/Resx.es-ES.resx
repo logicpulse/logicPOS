@@ -884,7 +884,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
     <value>Código de barras</value>
   </data>
   <data name="global_barcode_small" xml:space="preserve">
-    <value>Código de barras</value>
+    <value>Cód.Barras/Artigo</value>
   </data>
   <data name="global_cardcode_small" xml:space="preserve">
     <value>Código de boleto / tarjeta</value>
@@ -2294,7 +2294,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
     <value>Unidad de medida</value>
   </data>
   <data name="global_unit_measure_acronym" xml:space="preserve">
-    <value>UM</value>
+    <value>Uni.</value>
     <comment>Used in Report Columns</comment>
   </data>
   <data name="global_unit_size" xml:space="preserve">
@@ -3760,9 +3760,30 @@ Por favor, ingrese otro número e intente nuevamente.</value>
     <value>Ticket :: Imprimir detalles de cuenta corriente en ticket de movimientos diarios o de sesión</value>
   </data>
   <data name="global_report_overlay_software_certification_ao" xml:space="preserve">
-    <value>{0} por programa validado Nº {1}/AGT/{3}</value>
+    <value>{0} por programa validado Nº {1}/AGT/{3}/LogicPOS</value>
   </data>
   <data name="dialog_button_label_new_client" xml:space="preserve">
     <value>Nuevo Cli.</value>
+  </data>
+  <data name="dialog_message__pos_order_cancel" xml:space="preserve">
+    <value>Are you sure you want to cancel the order?</value>
+  </data>
+  <data name="report_amount_carried" xml:space="preserve">
+    <value>Amount carried</value>
+  </data>
+  <data name="report_amount_transposed" xml:space="preserve">
+    <value>Amount to be transposed</value>
+  </data>
+  <data name="global_pole_display_com_port" xml:space="preserve">
+    <value>Puerto COM</value>
+  </data>
+  <data name="global_pole_display_global_total" xml:space="preserve">
+    <value>Total Iliq.</value>
+  </data>
+  <data name="global_barcode_articlecode" xml:space="preserve">
+    <value>Código de barras / Código de producto</value>
+  </data>
+  <data name="global_invalid_code" xml:space="preserve">
+    <value>El código ingresado no existe en el sistema</value>
   </data>
 </root>

@@ -1,5 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <inherited BaseReport="TemplateBase.frx" ScriptLanguage="CSharp" ReportInfo.Name="RC RC5TEHDX4012016S001/3" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="07/05/2019 09:59:22" ReportInfo.CreatorVersion="2018.1.4.0" PrintSettings.CopyNames="Original&#13;&#10;Duplicado">
+  <ScriptText>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Windows.Forms;
+    using System.Drawing;
+    using System.Data;
+    using FastReport;
+    using FastReport.Data;
+    using FastReport.Dialog;
+    using FastReport.Barcode;
+    using FastReport.Table;
+    using FastReport.Utils;
+
+    namespace FastReport
+    {
+    public class ReportScript
+    {
+    private void PageHeader1_BeforePrint(object sender, EventArgs e)
+    {
+    PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo&quot;);
+    }
+    }
+
+    }
+  </ScriptText>
   <Dictionary>
     <BusinessObjectDataSource Name="DocumentFinancePayment" ReferenceName="DocumentFinancePayment" DataType="logicpos.financial.Classes.Reports.BOs.FRBOGenericCollection1[[logicpos.financial.Classes.Reports.BOs.FRBODocumentFinancePayment, logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], logicpos.financial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" Enabled="true">
       <Column Name="Oid" DataType="System.String"/>
@@ -42,7 +69,7 @@
     <Parameter Name="Invoice Noº" DataType="System.Int32"/>
   </Dictionary>
   <inherited Name="Page1">
-    <inherited Name="PageHeader1" Height="264.6">
+    <inherited Name="PageHeader1" Height="264.6" BeforePrintEvent="PageHeader1_BeforePrint">
       <inherited Name="PictureCompanyLogo"/>
       <inherited Name="TextLicenceName"/>
       <inherited Name="TextCompanyAddress"/>

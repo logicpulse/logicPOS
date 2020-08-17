@@ -887,7 +887,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Código de barras</value>
   </data>
   <data name="global_barcode_small" xml:space="preserve">
-    <value>Cód.Barras</value>
+    <value>Cód.Barras/Artigo</value>
   </data>
   <data name="global_cardcode_small" xml:space="preserve">
     <value>Código do Ticket/Cartão</value>
@@ -2014,7 +2014,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <comment>This key is used for software certification label in invoices and the value for this key has specific purposes in different countries. Please pay attention on changes</comment>
   </data>
   <data name="global_report_overlay_software_certification_ao" xml:space="preserve">
-    <value>{0} por programa validado Nº {1}/AGT/{3}</value>
+    <value>{0} por programa validado Nº {1}/AGT/{3}/LogicPOS</value>
     <comment>This key is used for software certification label in invoices and the value for this key has specific purposes in different countries. Please pay attention on changes</comment>
   </data>
   <data name="global_report_overlay_software_certification_emitted" xml:space="preserve">
@@ -2298,7 +2298,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Unidade de medida</value>
   </data>
   <data name="global_unit_measure_acronym" xml:space="preserve">
-    <value>UM</value>
+    <value>Uni.</value>
     <comment>Used in Report Columns</comment>
   </data>
   <data name="global_unit_size" xml:space="preserve">
@@ -2425,7 +2425,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Aviso</value>
   </data>
   <data name="global_warning_open_fiscal_year" xml:space="preserve">
-    <value>Para começar a utilizar o POS por favor inicie o ano fiscal no BackOffice</value>
+    <value>Para começar a utilizar o POS por favor inicie o ano fiscal no BackOffice e reinicie a aplicação.</value>
   </data>
   <data name="global_website" xml:space="preserve">
     <value>Página</value>
@@ -2697,7 +2697,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <comment>Used in 800x600 Theme</comment>
   </data>
   <data name="pos_button_label_change_table" xml:space="preserve">
-    <value>Mudar mesa</value>
+    <value>Mudar pedido</value>
   </data>
   <data name="pos_button_label_change_table_small" xml:space="preserve">
     <value>Mudar M.</value>
@@ -3763,5 +3763,35 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="prefparam_use_ccdailyticket" xml:space="preserve">
     <value>Ticket :: Imprimir detalhes da conta corrente no ticket de movimentos diários ou de sessão</value>
+  </data>
+  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
+    <value>Artigos Associados</value>
+  </data>
+  <data name="global_composite_article" xml:space="preserve">
+    <value>Artigo Composto</value>
+  </data>
+  <data name="dialog_message__pos_order_cancel" xml:space="preserve">
+    <value>Tem a certeza que deseja cancelar o pedido atual?</value>
+  </data>
+  <data name="report_amount_carried" xml:space="preserve">
+    <value>Valor transportado</value>
+  </data>
+  <data name="report_amount_transposed" xml:space="preserve">
+    <value>Valor a transportar</value>
+  </data>
+  <data name="report_footer_ao" xml:space="preserve">
+    <value>Os bens/serviços foram colocados à disposição do adquirente nesta data: </value>
+  </data>
+  <data name="global_pole_display_com_port" xml:space="preserve">
+    <value>Porta COM</value>
+  </data>
+  <data name="global_pole_display_global_total" xml:space="preserve">
+    <value>Total Iliq.</value>
+  </data>
+  <data name="global_barcode_articlecode" xml:space="preserve">
+    <value>Código Barras / Código Artigo</value>
+  </data>
+  <data name="global_invalid_code" xml:space="preserve">
+    <value>O código inserido não existe no sistema</value>
   </data>
 </root>

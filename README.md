@@ -2,6 +2,7 @@
 
 Open source Point of Sale Solution
 
+
 ## Manual
 
 - [Portuguese](http://help.logic-pos.com/)

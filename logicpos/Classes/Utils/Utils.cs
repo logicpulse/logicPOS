@@ -1724,6 +1724,23 @@ namespace logicpos
             }
         }
 
+        public static void ThreadLoading (Window pSourceWindow)
+        {
+            try
+            {
+                // Proptection for Startup Windows and Backup, If dont have a valid window, dont show loading (BackGround Thread)
+                if (pSourceWindow != null)
+                {
+                    GlobalApp.DialogThreadWork = GetThreadDialog(pSourceWindow, false);
+                    GlobalApp.DialogThreadWork.Run();
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
         //Sample Test Routines : Used in Startup Window
         public static bool ThreadRoutine()
         {

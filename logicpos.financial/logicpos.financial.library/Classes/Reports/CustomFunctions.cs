@@ -124,6 +124,7 @@ namespace logicpos.financial.library.Classes.Reports
             customVars.Add("COMPANY_TAX_ENTITY", Pref("COMPANY_TAX_ENTITY"));
             //Report
             customVars.Add("REPORT_FILENAME_LOGO", Pref("REPORT_FILENAME_LOGO"));
+            customVars.Add("REPORT_FILENAME_LOGO_SMALL", Pref("REPORT_FILENAME_LOGO_SMALL"));
             customVars.Add("REPORT_FOOTER_LINE1", Pref("REPORT_FOOTER_LINE1"));
             customVars.Add("REPORT_FOOTER_LINE2", Pref("REPORT_FOOTER_LINE2"));
             //Ticket

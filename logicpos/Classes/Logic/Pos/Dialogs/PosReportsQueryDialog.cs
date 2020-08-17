@@ -250,7 +250,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             // Combine final where Filter
-            string datesFilter = string.Format("{0} > '{1}' AND {0} < '{2}'", filterDateField, _dateStart.ToString(SettingsApp.DateTimeFormat), _dateEnd.ToString(SettingsApp.DateTimeFormat));
+            string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, _dateStart.ToString(SettingsApp.DateTimeFormat), _dateEnd.ToString(SettingsApp.DateTimeFormat));
             string filter = (!string.IsNullOrEmpty(filterSelectionBoxs))
                 ? string.Format("({0}) AND ({1})", datesFilter, filterSelectionBoxs)
                 : string.Format("({0})", datesFilter);

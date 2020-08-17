@@ -164,7 +164,7 @@ namespace PCComm
             _parity = string.Empty;
             _stopBits = string.Empty;
             _dataBits = string.Empty;
-            _portName = "COM1";
+            _portName = "COM6";
             //_displayWindow = null;
             //add event handler
             comPort.DataReceived += new SerialDataReceivedEventHandler(comPort_DataReceived);
@@ -313,6 +313,39 @@ namespace PCComm
                 //display message
                 //DisplayData(MessageType.Normal, "Port opened at " + DateTime.Now + "\n");
                 _log.Debug(string.Format("Port {0} opened at {1}", _portName, DateTime.Now));
+                //return true
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //DisplayData(MessageType.Error, ex.Message);
+                //return false;
+                // Forward Exception to me handled Outside
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region OpenDisplayPort
+        public bool OpenDisplayPort(string port)
+        {
+            try
+            {
+                comPort.PortName = port;
+                //first check if the port is already open
+                //if its open then close it
+                if (comPort.IsOpen == true) comPort.Close();
+
+                //set the properties of our SerialPort Object
+                //comPort.BaudRate = int.Parse(_baudRate);    //BaudRate
+                //comPort.DataBits = int.Parse(_dataBits);    //DataBits
+                //comPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), _stopBits);    //StopBits
+                //comPort.Parity = (Parity)Enum.Parse(typeof(Parity), _parity);    //Parity                
+                //now open the port
+                comPort.Open();
+                //display message
+                //DisplayData(MessageType.Normal, "Port opened at " + DateTime.Now + "\n");
+                _log.Debug(string.Format("Port {0} opened at {1}", port, DateTime.Now));
                 //return true
                 return true;
             }

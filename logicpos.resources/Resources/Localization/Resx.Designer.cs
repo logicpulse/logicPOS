@@ -539,6 +539,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Associated Articles.
+        /// </summary>
+        public static string dialog_edit_article_tab4_label1 {
+            get {
+                return ResourceManager.GetString("dialog_edit_article_tab4_label1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Details 1.
         /// </summary>
         public static string dialog_edit_articlesubfamily_tab1_label {
@@ -724,6 +733,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string dialog_edit_DocumentFinanceSeries_tab1_label {
             get {
                 return ResourceManager.GetString("dialog_edit_DocumentFinanceSeries_tab1_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to cancel the current order?.
+        /// </summary>
+        public static string dialog_message__pos_order_cancel {
+            get {
+                return ResourceManager.GetString("dialog_message__pos_order_cancel", resourceCulture);
             }
         }
         
@@ -2084,7 +2102,16 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BarCode.
+        ///   Looks up a localized string similar to Bar Code / Product Code.
+        /// </summary>
+        public static string global_barcode_articlecode {
+            get {
+                return ResourceManager.GetString("global_barcode_articlecode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to BarCode/Art.Code.
         /// </summary>
         public static string global_barcode_small {
             get {
@@ -2503,6 +2530,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string global_company {
             get {
                 return ResourceManager.GetString("global_company", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Composite Article.
+        /// </summary>
+        public static string global_composite_article {
+            get {
+                return ResourceManager.GetString("global_composite_article", resourceCulture);
             }
         }
         
@@ -4262,6 +4298,15 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The code entered does not exist in the system.
+        /// </summary>
+        public static string global_invalid_code {
+            get {
+                return ResourceManager.GetString("global_invalid_code", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Issue Date.
         /// </summary>
         public static string global_issue_date {
@@ -4730,11 +4775,29 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to COM port.
+        /// </summary>
+        public static string global_pole_display_com_port {
+            get {
+                return ResourceManager.GetString("global_pole_display_com_port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EndPoint.
         /// </summary>
         public static string global_pole_display_endpoint {
             get {
                 return ResourceManager.GetString("global_pole_display_endpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total Gross.
+        /// </summary>
+        public static string global_pole_display_global_total {
+            get {
+                return ResourceManager.GetString("global_pole_display_global_total", resourceCulture);
             }
         }
         
@@ -6179,7 +6242,7 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to UM.
+        ///   Looks up a localized string similar to Uni..
         /// </summary>
         public static string global_unit_measure_acronym {
             get {
@@ -8340,6 +8403,24 @@ namespace logicpos.resources.Resources.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount carried.
+        /// </summary>
+        public static string report_amount_carried {
+            get {
+                return ResourceManager.GetString("report_amount_carried", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount to be transposed.
+        /// </summary>
+        public static string report_amount_transposed {
+            get {
+                return ResourceManager.GetString("report_amount_transposed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Balance sheet.
         /// </summary>
         public static string report_balance_sheet {
@@ -8561,6 +8642,15 @@ namespace logicpos.resources.Resources.Localization {
         public static string report_final_balance {
             get {
                 return ResourceManager.GetString("report_final_balance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The goods / services were allowed to make this data available: .
+        /// </summary>
+        public static string report_footer_ao {
+            get {
+                return ResourceManager.GetString("report_footer_ao", resourceCulture);
             }
         }
         

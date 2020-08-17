@@ -3,6 +3,7 @@
     enum TicketListMode
     {
         Ticket,
-        OrderMain
+        OrderMain,
+        EditList
     }
 }

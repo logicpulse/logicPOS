@@ -2813,6 +2813,7 @@ CREATE TABLE sys_configurationpoledisplay (
   PID varchar(100) DEFAULT NULL,
   EndPoint varchar(100) DEFAULT NULL,
   CodeTable varchar(100) DEFAULT NULL,
+  COM varchar(10) DEFAULT NULL,
   DisplayCharactersPerLine int(10) unsigned DEFAULT NULL,
   GoToStandByInSeconds int(10) unsigned DEFAULT NULL,
   StandByLine1 varchar(100) DEFAULT NULL,

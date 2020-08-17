@@ -204,7 +204,12 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
             // Displays a SaveFileDialog so the user can save the Doc  
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "PDF File|*.pdf";
-            saveFileDialog1.Title = "Save document as File";
+            saveFileDialog1.Title = "Gravar documento como Ficheiro";
+            string separator = "/";
+            string name = PdfViewer.DocPath;
+            string[] names = name.Split(separator.ToCharArray(),
+                StringSplitOptions.RemoveEmptyEntries);
+            saveFileDialog1.FileName = names[names.Length - 1];
             //Initialize a new thread for print dialog
             Thread thread2 = new Thread(() =>
             {
@@ -212,9 +217,9 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
                 {
                     try
                     {
+                        
                         string newDirectory = saveFileDialog1.FileName;
-                        System.IO.File.Copy(PdfViewer.DocPath, newDirectory, true);                        
-                        //saveFileDialog1.FileName = PdfViewer.DocPath;
+                        System.IO.File.Copy(PdfViewer.DocPath, newDirectory, true);   
 
                     }
                     catch (Win32Exception)

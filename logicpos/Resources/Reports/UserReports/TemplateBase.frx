@@ -1,5 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CustomReport ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe" ReportInfo.Author="LogicPulse logicpos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="05/08/2018 14:52:56" ReportInfo.CreatorVersion="2014.1.8.0" PrintSettings.Copies="2" PrintSettings.CopyNames="Original&#13;&#10;Duplicado&#13;&#10;Triplicado&#13;&#10;Quadriplicado">
+<ScriptText>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Windows.Forms;
+    using System.Drawing;
+    using System.Data;
+    using FastReport;
+    using FastReport.Data;
+    using FastReport.Dialog;
+    using FastReport.Barcode;
+    using FastReport.Table;
+    using FastReport.Utils;
+
+    namespace FastReport
+    {
+		public class ReportScript
+		{
+			      private void PageHeader1_BeforePrint(object sender, EventArgs e)
+					  {
+						PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo_Small&quot;);
+					  }
+		}
+
+    }
+  </ScriptText>
   <Styles>
     <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" Font="Arial, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
     <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
@@ -13,8 +40,8 @@
   </Styles>
   <Dictionary/>
   <ReportPage Name="Page1" RawPaperSize="9" BottomMargin="5" FirstPageSource="15" OtherPagesSource="15" Watermark.Font="Arial, 60pt">
-    <PageHeaderBand Name="PageHeader1" Width="718.2" Height="207.9" AfterPrintEvent="PageHeader1_AfterPrint">
-      <PictureObject Name="PictureCompanyLogo" Width="343.65" Height="86.4" SizeMode="Normal" ImageLocation="Assets\Images\Reports\UserReports\company_logo.png"/>
+    <PageHeaderBand Name="PageHeader1" Width="718.2" Height="207.9" BeforPrintEvent="PageHeader1_BeforePrint" AfterPrintEvent="PageHeader1_AfterPrint">
+      <PictureObject Name="PictureCompanyLogo" Width="343.65" Height="86.4" SizeMode="Normal"/>
       <TextObject Name="TextLicenceName" Left="2" Top="85.05" Width="340.2" Height="18.9" Text="[GetParam(&quot;Company_Name&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 10pt, style=Bold" Wysiwyg="true"/>
       <TextObject Name="TextCompanyAddress" Left="2" Top="103.95" Width="340.2" Height="18.9" Text="[GetParam(&quot;Company_Address&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 9pt" Wysiwyg="true"/>
       <TextObject Name="TextCompanyPostalcode" Left="2" Top="122.85" Width="340.2" Height="18.9" Text="[GetParam(&quot;Company_Postalcode&quot;)] [GetParam(&quot;Company_City&quot;)]" Padding="0, 0, 2, 0" Font="Arial, 9pt" Wysiwyg="true"/>

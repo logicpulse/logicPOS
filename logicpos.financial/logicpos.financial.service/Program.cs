@@ -149,8 +149,14 @@ namespace logicpos.financial.service
                 try
                 {
                     _log.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
+
+                    Utils.Log(xpoConnectionString);
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
+                    if(XpoDefault.DataLayer != null)
+                    Utils.Log("DataLayer...");
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    if (GlobalFramework.SessionXpo != null)
+                        Utils.Log("SessionXpo...");
                 }
                 catch (Exception ex)
                 {
@@ -167,7 +173,7 @@ namespace logicpos.financial.service
 
                 //PreferenceParameters
                 GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
-
+                Utils.Log("GetPreferencesParameters...");
                 //CultureInfo/Localization
                 string culture = GlobalFramework.PreferenceParameters["CULTURE"];
                 if (!string.IsNullOrEmpty(culture))
@@ -175,7 +181,9 @@ namespace logicpos.financial.service
                     /* IN006018 and IN007009 */
                     //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 }
+                
                 GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
+                if(GlobalFramework.CurrentCulture != null) Utils.Log("CULTURE...");
                 //Always use en-US NumberFormat because of MySql Requirements
                 GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
 
@@ -368,7 +376,7 @@ namespace logicpos.financial.service
             _serviceHost.Open();
 
             //StartTimer
-            StartTimer(_timer);
+            StartTimer();
         }
 
         public static void Stop()
@@ -379,31 +387,36 @@ namespace logicpos.financial.service
             _serviceHost.Close();
 
             //StopTimer
-            StopTimer(_timer);
+            StopTimer();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Timer
 
-        public static void StartTimer(System.Timers.Timer pTimer)
+        public static void StartTimer()
         {
             if (SettingsApp.ServiceTimerEnabled)
             {
                 _log.Debug("Service StartTimer");
-                pTimer = new System.Timers.Timer(SettingsApp.ServiceTimerInterval);
-                pTimer.AutoReset = true;
-                pTimer.Elapsed += new System.Timers.ElapsedEventHandler(TimerElapsedEvent);
-                pTimer.Start();
+                DateTime nowTime = DateTime.Now;
+                DateTime oneAmTime = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, SettingsApp.ServiceTimer.Hour, SettingsApp.ServiceTimer.Minute, 0, 0);
+                if (nowTime > oneAmTime)
+                    oneAmTime = oneAmTime.AddDays(1);
+
+                double tickTime = (oneAmTime - nowTime).TotalMilliseconds;
+                _timer = new System.Timers.Timer(tickTime);
+                _timer.Elapsed += TimerElapsedEvent;
+                _timer.Start();
             }
         }
 
-        public static void StopTimer(System.Timers.Timer pTimer)
+        public static void StopTimer()
         {
-            if (SettingsApp.ServiceTimerEnabled && pTimer != null)
+            if (SettingsApp.ServiceTimerEnabled && _timer != null)
             {
                 //_log.Debug("Service StopTimer");
-                pTimer.Stop();
-                pTimer = null;
+                _timer.Stop();
+                _timer = null;
             }
         }
 
@@ -411,17 +424,21 @@ namespace logicpos.financial.service
         {
             if (!_timerRunningTasks)
             {
+
+                Stop();
                 //Started Running Tasks
                 _timerRunningTasks = true;
 
-                //_log.Debug(String.Format("Implement TimerElapsedEvent Code Here"));
-                if (SettingsApp.ServiceATSendDocuments || SettingsApp.ServiceATSendDocumentsWayBill)
-                {
+                _log.Debug(String.Format("Send Documents to AT"));
+                //if (SettingsApp.ServiceATSendDocuments || SettingsApp.ServiceATSendDocumentsWayBill)
+                //{
+                    _log.Debug(String.Format("ServiceATSendDocuments True"));
                     Utils.ServiceSendPendentDocuments();
-                }
+                //}
 
                 //Finished Running Tasks
                 _timerRunningTasks = false;
+                StartTimer();
             }
         }
     }

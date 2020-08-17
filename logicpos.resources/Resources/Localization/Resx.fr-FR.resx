@@ -884,7 +884,7 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
     <value>Code-barres</value>
   </data>
   <data name="global_barcode_small" xml:space="preserve">
-    <value>Code Barre</value>
+    <value>Code Barre/Article</value>
   </data>
   <data name="global_cardcode_small" xml:space="preserve">
     <value>Ticket / Code de la carte</value>
@@ -2294,7 +2294,7 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
     <value>Unité de mesure</value>
   </data>
   <data name="global_unit_measure_acronym" xml:space="preserve">
-    <value>UM</value>
+    <value>Uni.</value>
     <comment>Used in Report Columns</comment>
   </data>
   <data name="global_unit_size" xml:space="preserve">
@@ -3760,5 +3760,29 @@ Veuillez entrer un autre numéro et réessayer.</value>
   </data>
   <data name="dialog_button_label_new_client" xml:space="preserve">
     <value>Nouveau  Cli.</value>
+  </data>
+  <data name="dialog_message__pos_order_cancel" xml:space="preserve">
+    <value>Are you sure you want to cancel the order?</value>
+  </data>
+  <data name="report_amount_carried" xml:space="preserve">
+    <value>Amount carried</value>
+  </data>
+  <data name="report_amount_transposed" xml:space="preserve">
+    <value>Amount to be transposed</value>
+  </data>
+  <data name="report_footer_ao" xml:space="preserve">
+    <value>Os bens/serviços foram colocados à disposição do adquirente nesta data: </value>
+  </data>
+  <data name="global_pole_display_com_port" xml:space="preserve">
+    <value>Port COM</value>
+  </data>
+  <data name="global_pole_display_global_total" xml:space="preserve">
+    <value>Iliq. Total</value>
+  </data>
+  <data name="global_barcode_articlecode" xml:space="preserve">
+    <value>Code à barres / code produit</value>
+  </data>
+  <data name="global_invalid_code" xml:space="preserve">
+    <value>Le code saisi n'existe pas dans le système</value>
   </data>
 </root>

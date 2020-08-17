@@ -337,6 +337,11 @@ namespace logicpos.App
                     }
                     /* Default or Retail */
                     string appOperationTheme = customAppOperationMode.AppOperationTheme;
+					//Utiliza SQL para BackOfficeMode
+                    if(SettingsApp.CustomAppOperationMode.AppOperationModeToken == "BackOfficeMode")
+                    {
+                        appOperationTheme = "BackOfficeMode";
+                    }
                     // "Resources\Database\Data\{0}\{1}\databasedata.sql"
                     // "..\Resources\Database\Other\Plugins\SoftwareVendor\Data\{0}\{1}"
                     result = string.Format(basePath,

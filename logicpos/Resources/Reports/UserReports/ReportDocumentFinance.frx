@@ -226,7 +226,7 @@
           <TableCell Name="TextEntityAddress" Text="[DocumentFinanceMaster.EntityAddress]" Font="Arial, 9pt"/>
         </TableRow>
         <TableRow Name="RowTextEntityZipCodeCity" Height="18.9" MinHeight="0.00" MaxHeight="37.8" AutoSize="true">
-          <TableCell Name="TextEntityZipCodeCity" Text="[IIf([DocumentFinanceMaster.EntityZipCode] != &quot;&quot;, [DocumentFinanceMaster.EntityZipCode]+&quot; &quot;+[DocumentFinanceMaster.EntityCity], [DocumentFinanceMaster.EntityCity])]" Font="Arial, 9pt"/>
+          <TableCell Name="TextEntityZipCodeCity" Text="[IIf([DocumentFinanceMaster.EntityZipCode] != &quot;&quot;, [DocumentFinanceMaster.EntityZipCode]+&quot; &quot;+[DocumentFinanceMaster.EntityLocality], [DocumentFinanceMaster.EntityCity])]" Font="Arial, 9pt"/>
         </TableRow>
         <TableRow Name="RowTextEntityCountry" Height="18.9">
           <TableCell Name="TextEntityCountry" Text="[DocumentFinanceMaster.EntityCountry]" Font="Arial, 9pt"/>

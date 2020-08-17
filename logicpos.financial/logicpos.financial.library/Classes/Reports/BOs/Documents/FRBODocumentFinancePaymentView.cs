@@ -58,6 +58,9 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 
         [FRBO(Field = "fpaPaymentAmount")]
         public decimal PaymentAmount { get; set; }                                      //fpaPaymentAmount AS PaymentAmount,
+		//TK016319 - Certificação Angola - Alterações para teste da AGT
+        [FRBO(Field = "fpaTaxPayable")]
+        public decimal TaxPayable { get; set; }                                         //fmaTotalTax AS TaxPayable,
 
         [FRBO(Field = "fpaPaymentDate")]
         public string PaymentDate { get; set; }                                         //fpaPaymentDate AS PaymentDate,
@@ -81,7 +84,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
         public string EntityZipCode { get; set; }                                       //cusZipCode AS EntityZipCode, 
 
         [FRBO(Field = "cusCity")]
-        public string EntityCity { get; set; }                                          //cusCity AS EntityCity, 
+        public string EntityCity { get; set; }                                          //cusCity AS EntityCity,
+
+        [FRBO(Field = "cusLocality")]
+        public string EntityLocality { get; set; }                                          //cusCity AS EntityCity, 
 
         [FRBO(Field = "ccoDesignation")]
         public string EntityCountry { get; set; }                                       //ccoDesignation AS EntityCountry, 

@@ -1,9 +1,14 @@
-﻿using LibUsbDotNet;
+﻿using Gtk;
+using LibUsbDotNet;
 using LibUsbDotNet.Main;
 using logicpos.App;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Orders;
+using PCComm;
 using System;
+using System.Drawing;
+using System.Globalization;
+using System.Text;
 
 namespace logicpos.Classes.Logic.Hardware
 {
@@ -15,6 +20,7 @@ namespace logicpos.Classes.Logic.Hardware
         private const bool _debug = false;
         private UsbDevice _usbDevice;
         private UsbEndpointWriter _usbWriter;
+        private CommunicationManager _communicationManager;
         private ErrorCode _usbErrorCode = ErrorCode.None;
         private int _charactersPerLine = 20;
         private uint _standByInSeconds;
@@ -33,17 +39,17 @@ namespace logicpos.Classes.Logic.Hardware
         /// <param name="Vid">Vendor ID Hex:0x03EB, Int: 1003</param>
         /// <param name="Pid">Product ID Hex:0x1101, Int: 4353</param>
         /// <param name="WriteEndpointID">Usb EndPoint</param>
-        public UsbDisplayDevice(int pVid, int pPid, string pWriteEndpoint)
-            : this(pVid, pPid, GetEnumFromString(pWriteEndpoint))
+        public UsbDisplayDevice(int pVid, int pPid, string pWriteEndpoint, string COM)
+            : this(pVid, pPid, GetEnumFromString(pWriteEndpoint), COM)
         {
         }
 
-        public UsbDisplayDevice(string pVid, string pPid, string pWriteEndpoint)
-            : this(ConvertStringHexToInt(pVid), ConvertStringHexToInt(pPid), GetEnumFromString(pWriteEndpoint))
+        public UsbDisplayDevice(string pVid, string pPid, string pWriteEndpoint, string COM)
+            : this(ConvertStringHexToInt(pVid), ConvertStringHexToInt(pPid), GetEnumFromString(pWriteEndpoint), COM)
         {
         }
 
-        public UsbDisplayDevice(int pVid, int pPid, WriteEndpointID pWriteEndpointID)
+        public UsbDisplayDevice(int pVid, int pPid, WriteEndpointID pWriteEndpointID, string COM)
         {
             try
             {
@@ -57,9 +63,17 @@ namespace logicpos.Classes.Logic.Hardware
                 string message = string.Empty;
                 if (_usbDevice == null)
                 {
-                    message = string.Format("UsbDisplayDevice: Device Not Found VID:{0} PID:{1}", pVid, pPid);
-                    _log.Error(message);
-                    throw new Exception("UsbDisplayDevice(int pVid, int pPid, WriteEndpointID pWriteEndpointID) :: " + message);
+
+                    //string baud, string par, string sBits, string dBits, string name
+                    _communicationManager = new CommunicationManager();
+                    _communicationManager.CurrentTransmissionType = PCComm.CommunicationManager.TransmissionType.Hex;
+                    _communicationManager.PortName = COM;
+                    // Start With OpenPort
+                    OpenPort();
+
+                    //message = string.Format("UsbDisplayDevice: Device Not Found VID:{0} PID:{1}", pVid, pPid);
+                    //_log.Error(message);
+                    //throw new Exception("UsbDisplayDevice(int pVid, int pPid, WriteEndpointID pWriteEndpointID) :: " + message);
                 }
                 else
                 {
@@ -106,6 +120,22 @@ namespace logicpos.Classes.Logic.Hardware
             catch (Exception ex)
             {
                 _log.Error((_usbErrorCode != ErrorCode.None ? _usbErrorCode + ":" : string.Empty) + ex.Message);
+            }
+        }
+
+        public bool OpenPort()
+        {
+            try
+            {
+                return _communicationManager.OpenDisplayPort(_communicationManager.PortName);
+            }
+            catch (Exception ex)
+            {
+                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
+                    );
+                _log.Error(ex.Message, ex);
+                return false;
             }
         }
 
@@ -160,11 +190,27 @@ namespace logicpos.Classes.Logic.Hardware
                         //throw new Exception(UsbDevice.LastErrorString);
                     }
                 }
+                else if(_communicationManager != null)
+                {
+                    _communicationManager.WriteData(ByteToHex(pOutput));
+                }
             }
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
             }
+        }
+
+        private string ByteToHex(byte[] comByte)
+        {
+            //create a new StringBuilder object
+            StringBuilder builder = new StringBuilder(comByte.Length * 3);
+            //loop through each byte in the array
+            foreach (byte data in comByte)
+                //convert the byte to a string and add to the stringbuilder
+                builder.Append(Convert.ToString(data, 16).PadLeft(2, '0').PadRight(3, ' '));
+            //return the converted value
+            return builder.ToString().ToUpper();
         }
 
         public void Write(string pOutput)
@@ -477,14 +523,14 @@ namespace logicpos.Classes.Logic.Hardware
                 UsbDisplayDevice displayDevice = new UsbDisplayDevice(
                     GlobalFramework.LoggedTerminal.PoleDisplay.VID,
                     GlobalFramework.LoggedTerminal.PoleDisplay.PID,
-                    GlobalFramework.LoggedTerminal.PoleDisplay.EndPoint
+                    GlobalFramework.LoggedTerminal.PoleDisplay.EndPoint,
+                    GlobalFramework.LoggedTerminal.PoleDisplay.COM
                 );
                 //Initializers
                 displayDevice._charactersPerLine = Convert.ToInt16(GlobalFramework.LoggedTerminal.PoleDisplay.DisplayCharactersPerLine);
                 displayDevice._standByInSeconds = GlobalFramework.LoggedTerminal.PoleDisplay.GoToStandByInSeconds;
                 displayDevice._standByLine1 = GlobalFramework.LoggedTerminal.PoleDisplay.StandByLine1;
                 displayDevice._standByLine2 = GlobalFramework.LoggedTerminal.PoleDisplay.StandByLine2;
-
                 result = displayDevice;
             }
             catch (Exception ex)
@@ -525,10 +571,10 @@ namespace logicpos.Classes.Logic.Hardware
         public void ShowOrder(string pArticle, decimal pQuantity, decimal pPrice, decimal pTotal)
         {
             string article = string.Format("{0} x {1}", FrameworkUtils.DecimalToString(pQuantity), pArticle);
-            //string price = string.Format("{0}", FrameworkUtils.DecimalToString(pPrice));
-            //string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
-            Write(article, 1);
-            WriteJustified(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total"), FrameworkUtils.DecimalToString(pTotal), 2);
+            string price = string.Format("{0}", FrameworkUtils.DecimalToString(pPrice));
+            string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
+            Write(RemoveAccents(line1), 1);
+            WriteJustified(RemoveAccents(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_pole_display_global_total")), FrameworkUtils.DecimalToString(pTotal), 2);
             EnableStandBy();
         }
 
@@ -537,6 +583,18 @@ namespace logicpos.Classes.Logic.Hardware
             Write(pPaymentType, 1);
             WriteJustified(FrameworkUtils.DecimalToString(pTotalDelivery), FrameworkUtils.DecimalToString(pTotalChange), 2);
             EnableStandBy();
+        }
+
+        public static string RemoveAccents(string text)
+        {
+            StringBuilder sbReturn = new StringBuilder();
+            var arrayText = text.Normalize(NormalizationForm.FormD).ToCharArray();
+            foreach (char letter in arrayText)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(letter) != UnicodeCategory.NonSpacingMark)
+                    sbReturn.Append(letter);
+            }
+            return sbReturn.ToString();
         }
     }
 }

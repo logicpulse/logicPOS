@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using DevExpress.Xpo;
+using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -26,6 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Settings: Colors
         private Color _colorPosTicketListModeTicketBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosTicketListModeTicketBackground"]);
         private Color _colorPosTicketListModeOrderMainBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosTicketListModeOrderMainBackground"]);
+        private Color _colorPosTicketListModeEditBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosTicketListModeEditBackground"]);
         //SessionApp
         private Guid _currentOrderMainOid;
         private int _currentTicketId;
@@ -35,9 +37,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private int _listStoreModelTotalItems = 0;
         private int _listStoreModelTotalItemsTicketListMode = 0;
         private OrderDetail _currentOrderDetails;
-        public OrderDetail CurrentOrderDetails { 
+        public OrderDetail CurrentOrderDetails
+        {
             get { return _currentOrderDetails; }
             set { _currentOrderDetails = value; }
+        }
+        private OrderDetail _currentOrderDetailsAll;
+        public OrderDetail CurrentOrderDetailsAll
+        {
+            get { return _currentOrderDetailsAll; }
+            set { _currentOrderDetailsAll = value; }
         }
         private ArticleBag _articleBag;
         private fin_article _currentDetailArticle;
@@ -360,10 +369,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //TicketListColumns.Designation
             rendererText = new CellRendererText() { FontDesc = fontDesc };
-             column = new TreeViewColumn(null, rendererText, "text", TicketListColumns.Designation)
+            column = new TreeViewColumn(null, rendererText, "text", TicketListColumns.Designation)
             {
-                Widget = labelDesignation, 
-                MinWidth = widthDesignation, 
+                Widget = labelDesignation,
+                MinWidth = widthDesignation,
                 MaxWidth = widthDesignation
             };
             pTreeView.AppendColumn(column);
@@ -428,89 +437,194 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void UpdateModel()
         {
-            //Always Init a New Model, and Init Values
-            _listStoreModel.Clear();
-            _listStoreModelSelectedIndex = -1;
-            _listStoreModelTotalItems = 0;
-
-            //Init Values from SessionApp
-            _currentOrderMainOid = GlobalFramework.SessionApp.CurrentOrderMainOid;
-            _currentTicketId = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].CurrentTicketId;
-            _currentOrderDetails = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
-
-            //Change BackGround Color ListMode
-            Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
-            _treeView.ModifyBase(StateType.Normal, colorListMode);
-
-            //Ticket Mode
-            if (_listMode == TicketListMode.Ticket)
+            try
             {
-                //Reset TicketList Mode, only if is in TicketList Mode, else keep unchanged
-                _listStoreModelTotalItemsTicketListMode = 0;
+                //Always Init a New Model, and Init Values
+                _listStoreModel.Clear();
+                _listStoreModelSelectedIndex = -1;
+                _listStoreModelTotalItems = 0;
 
-                //Start Append Items to Model
-                foreach (OrderDetailLine line in _currentOrderDetails.Lines)
+                //Init Values from SessionApp
+                _currentOrderMainOid = GlobalFramework.SessionApp.CurrentOrderMainOid;
+                _currentTicketId = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].CurrentTicketId;
+                _currentOrderDetails = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
+
+                //Change BackGround Color ListMode
+                Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
+                _treeView.ModifyBase(StateType.Normal, colorListMode);
+
+                //Ticket Mode
+                if (_listMode == TicketListMode.Ticket)
                 {
-                    _listStoreModel.AppendValues(
-                      line.ArticleOid,
-                      line.Designation,
-                      FrameworkUtils.DecimalToString(line.Properties.PriceFinal),
-                      FrameworkUtils.DecimalToString(line.Properties.Quantity),
-                      line.Properties.DiscountArticle.ToString(),
-                      line.Properties.Vat.ToString(),
-                      FrameworkUtils.DecimalToString(line.Properties.TotalFinal)
-                    );
-                    //Store Current TreeIter in Session (Non Public)
-                    line.TreeIter = _treeIter;
-                }
-            }
-            //OrderMain Mode
-            else
-            {
-                //Update Global Article Bag, from DB
-                UpdateArticleBag();
+                    //Reset TicketList Mode, only if is in TicketList Mode, else keep unchanged
+                    _listStoreModelTotalItemsTicketListMode = 0;
 
-                //Reset listIndex to store Index position in Dictionary
-                int listIndex = 0;
-
-                //Loop ArticleBag, and create new FinanceDetail Document lines
-                foreach (var item in _articleBag)
-                {
-                    ArticleBagKey articleBagKey = new ArticleBagKey(item.Key.ArticleOid, item.Key.Designation, item.Key.Price, item.Key.Discount, item.Key.Vat);
-
-                    //Detect and Assign VatExemptionReason to ArticleBak Key
-                    if (item.Key.VatExemptionReasonOid != null && item.Key.VatExemptionReasonOid != Guid.Empty)
+                    //Start Append Items to Model
+                    foreach (OrderDetailLine line in _currentOrderDetails.Lines)
                     {
-                        articleBagKey.VatExemptionReasonOid = item.Key.VatExemptionReasonOid;
+                        if (line.Properties.Quantity > 0)
+                        {
+                            _listStoreModel.AppendValues(
+                              line.ArticleOid,
+                              line.Designation,
+                              FrameworkUtils.DecimalToString(line.Properties.PriceFinal),
+                              FrameworkUtils.DecimalToString(line.Properties.Quantity),
+                              line.Properties.DiscountArticle.ToString(),
+                              line.Properties.Vat.ToString(),
+                              FrameworkUtils.DecimalToString(line.Properties.TotalFinal)
+                            );
+                            //Store Current TreeIter in Session (Non Public)
+                            line.TreeIter = _treeIter;
+                        }
+
+                    }
+                }
+                //OrderMain Mode
+                else
+                {
+                    //Update Global Article Bag, from DB
+                    UpdateArticleBag();
+
+                    //Reset listIndex to store Index position in Dictionary
+                    int listIndex = 0;
+
+                    //Loop ArticleBag, and create new FinanceDetail Document lines
+                    foreach (var item in _articleBag)
+                    {
+                        ArticleBagKey articleBagKey = new ArticleBagKey(item.Key.ArticleOid, item.Key.Designation, item.Key.Price, item.Key.Discount, item.Key.Vat);
+
+                        //Detect and Assign VatExemptionReason to ArticleBak Key
+                        if (item.Key.VatExemptionReasonOid != null && item.Key.VatExemptionReasonOid != Guid.Empty)
+                        {
+                            articleBagKey.VatExemptionReasonOid = item.Key.VatExemptionReasonOid;
+                        }
+                        if (item.Value.Quantity > 0)
+                        {
+                            _listStoreModel.AppendValues(
+                            item.Key.ArticleOid,
+                            item.Key.Designation,
+                            FrameworkUtils.DecimalToString(item.Value.PriceFinal),
+                            FrameworkUtils.DecimalToString(item.Value.Quantity),
+                            item.Key.Discount.ToString(),
+                            item.Key.Vat.ToString(),
+                            FrameworkUtils.DecimalToString(item.Value.TotalFinal),
+                            //Add ArticleBag Key to Model
+                            articleBagKey
+                            );
+                            //Store Current TreeIter in Session (Non Public)
+                            item.Value.TreeIter = _treeIter;
+                            //Assign / Increment listIndex
+                            item.Value.ListIndex = listIndex++;
+                        }
+
+
+                    }
+                }
+
+                //Required Always Start in Last Record, After initialize TreeView Model
+                _treeView.SetCursor(_treePath, null, false);
+                _treeView.ScrollToCell(_treePath, _treeView.Columns[0], false, 0, 0);
+
+                //Init _currentDetailArticleOid, If Model is Empty the Value 0 is Assigned
+                if (_listStoreModel.Data.Count > 0) _currentDetailArticleOid = (Guid)_listStoreModel.GetValue(_treeIter, 0);
+
+                UpdateTicketListButtons();
+                UpdateTicketListTotal();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+        }
+
+        public void TicketDecrease()
+        {
+            try
+            {
+                if (_listMode == TicketListMode.OrderMain)
+                {
+
+                    OrderDetailLine newLine;
+                    //Init Values from SessionApp
+                    _currentOrderMainOid = GlobalFramework.SessionApp.CurrentOrderMainOid;
+                    _currentTicketId = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].CurrentTicketId;
+                    _currentOrderDetails = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
+                    int currentTicketAux = _currentTicketId;
+                    bool newArticleLine = true;
+                    //Change BackGround Color ListMode
+                    //Gdk.Color colorListMode = (_listMode == TicketListMode.EditList) ? colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeEditBackground) : colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
+                    //_treeView.ModifyBase(StateType.Normal, colorListMode);
+
+                    //If ticket was empty Create new line
+                    if (GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Count == 0)
+                    {
+                        GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails = new OrderDetail();
+
+                        if (_currentDetailArticle != null)
+                        {
+                            newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
+                                FrameworkUtils.GetArticlePrice((fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
+                                (SettingsApp.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
+
+                            newLine.Properties.PriceNet = Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                            newLine.Properties.TotalFinal = Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Total)) - Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                            //newLine.Properties.Quantity -= GetArticleDefaultQuantity(_currentDetailArticle.Oid);
+                            newLine.Properties.Quantity = -1;
+
+                            GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Add(newLine);
+                        }
+                    }
+                    //Else update line with article update
+                    else
+                    {
+                        if (_currentDetailArticle != null)
+                        {
+                            for (int i = 0; i < GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Count; i++)
+                            {
+                                if (GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].ArticleOid == _currentDetailArticle.Oid &&
+                                    GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet == GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet)
+                                {
+                                    GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.Quantity = -1;
+                                    GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceFinal;
+                                    GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.TotalFinal = (GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.TotalFinal
+                                                                                                                                                                           - (GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines[i].Properties.PriceNet));
+                                    newArticleLine = false;
+                                }
+                            }
+                            //If new article in current ticket
+                            if (newArticleLine)
+                            {
+
+                                if (_currentDetailArticle != null)
+                                {
+
+                                    newLine = new OrderDetailLine(_currentDetailArticle.Oid, _currentDetailArticle.Designation,
+                                        FrameworkUtils.GetArticlePrice((fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), _currentDetailArticle.Oid),
+                                        (SettingsApp.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
+
+                                    newLine.Properties.PriceNet = Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
+                                    newLine.Properties.TotalFinal = Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Total)) - Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));                                    
+
+                                    //newLine.Properties.Quantity -= GetArticleDefaultQuantity(_currentDetailArticle.Oid);
+                                    newLine.Properties.Quantity = -1;
+                                    GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Add(newLine);                                    
+                                }
+                            }
+                        }
                     }
 
-                    _listStoreModel.AppendValues(
-                      item.Key.ArticleOid,
-                      item.Key.Designation,
-                      FrameworkUtils.DecimalToString(item.Value.PriceFinal),
-                      FrameworkUtils.DecimalToString(item.Value.Quantity),
-                      item.Key.Discount.ToString(),
-                      item.Key.Vat.ToString(),
-                      FrameworkUtils.DecimalToString(item.Value.TotalFinal),
-                      //Add ArticleBag Key to Model
-                      articleBagKey
-                    );
-                    //Store Current TreeIter in Session (Non Public)
-                    item.Value.TreeIter = _treeIter;
-                    //Assign / Increment listIndex
-                    item.Value.ListIndex = listIndex++;
+
+                    GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].FinishOrder(GlobalFramework.SessionXpo, false, true);
+                    //UpdateModel();
+                    //UpdateOrderStatusBar();
+                    _buttonKeyFinishOrder.Sensitive = true;
+                    //UpdateTicketListTotal();
                 }
             }
-
-            //Required Always Start in Last Record, After initialize TreeView Model
-            _treeView.SetCursor(_treePath, null, false);
-            _treeView.ScrollToCell(_treePath, _treeView.Columns[0], false, 0, 0);
-
-            //Init _currentDetailArticleOid, If Model is Empty the Value 0 is Assigned
-            if (_listStoreModel.Data.Count > 0) _currentDetailArticleOid = (Guid)_listStoreModel.GetValue(_treeIter, 0);
-
-            UpdateTicketListButtons();
-            UpdateTicketListTotal();
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
         }
 
         public void InsertOrUpdate(string pArticleEAN)
@@ -523,12 +637,27 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 InsertOrUpdate(articleGuid);
             }
+            else
+            {
+                sql = string.Format("SELECT Oid FROM fin_article WHERE Code = '{0}';", pArticleEAN);
+                articleGuid = FrameworkUtils.GetGuidFromQuery(sql);
+                if (articleGuid != Guid.Empty)
+                {
+                    InsertOrUpdate(articleGuid);
+                }
+                else
+                {                    
+                    string message = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_invalid_code");
+                    Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
+                    return;
+                }
+            }
         }
 
         public void ArticleNotFound()
-        {            
-            string message = string.Format("O ticket inserido não existe no sistema");
-            Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Ticket Inválido", message);
+        {
+            string message = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_invalid_code");
+            Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
             return;
         }
 
@@ -562,7 +691,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 //Get Article
-                fin_article article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), pArticleOid);                
+                fin_article article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), pArticleOid);
                 //Force Refresh Cache 
                 //article.Reload();
                 /* TK013134 */
@@ -570,7 +699,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 bool isAppUseParkingTicketModule = GlobalFramework.AppUseParkingTicketModule && !string.IsNullOrEmpty(ean);
                 // Override default Designation with pToken1 : Priority
                 if (isAppUseParkingTicketModule)
-                {                    
+                {
                     //article.Designation = $"{article.Designation} [{ean}]";
                     //article.Notes = $"[{ean}] {parkingTicketResult.Description}";
                     /* IN009239 */
@@ -594,16 +723,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         int index = designation.LastIndexOf("[");
                         if (index > 0)
                             designation = designation.Substring(0, index);
-                                              
+
                         article.Designation = $"{designation}[{parkingTicketResult.Ean}]";
                         article.Notes = $"[{ean}]";
                         article.DefaultQuantity = Convert.ToInt32(parkingTicketResult.Quantity);
                     }
-                                    /* 
-                     * This was a unnecessary double-check already being done by ParkingTicket class.
-                     * When a parking ticket is already in the order list, it is unique and its quantity is '1' ever. We can't have 2+ units of the same.
-                     * But variable _listStoreModelSelectedIndex is settled to '0' without the line code below... Therefore, setting it to '-1'
-                     */
+                    /* 
+     * This was a unnecessary double-check already being done by ParkingTicket class.
+     * When a parking ticket is already in the order list, it is unique and its quantity is '1' ever. We can't have 2+ units of the same.
+     * But variable _listStoreModelSelectedIndex is settled to '0' without the line code below... Therefore, setting it to '-1'
+     */
                     //Get current Index with LINQ : To Get OrderDetail articleId Index, If Exists
                     // _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.Designation.Contains(pToken1));
                     _listStoreModelSelectedIndex = -1;
@@ -616,7 +745,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 //Get Article defaultQuantity
                 decimal defaultQuantity = GetArticleDefaultQuantity(pArticleOid);
-                if (GlobalFramework.AppUseParkingTicketModule) { defaultQuantity = article.DefaultQuantity; if (defaultQuantity == 0) defaultQuantity = 1;  }
+                if (GlobalFramework.AppUseParkingTicketModule) { defaultQuantity = article.DefaultQuantity; if (defaultQuantity == 0) defaultQuantity = 1; }
                 else { defaultQuantity = GetArticleDefaultQuantity(pArticleOid); }
                 decimal price = 0.0m;
 
@@ -630,11 +759,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_vatrate_free_article_detected"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_without_vat_exception_reason_detected"));
                     return;
                 }
-           
+
                 //Check if ticket is exited and show message
                 if (parkingTicketResult.AlreadyExit)
                 {
-                    string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}",parkingTicketResult.Ean, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
+                    string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
                     Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), message);
                     return;
                 }
@@ -649,7 +778,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Update
                 //Ticket não incrementar com codigo barras desconhecido (acrescentado -> && GlobalFramework.AppUseParkingTicketModule && isAppUseParkingTicketModule)
                 if (_listStoreModelSelectedIndex != -1 && GlobalFramework.AppUseParkingTicketModule && isAppUseParkingTicketModule)
-                
+
                 {
                     //Update orderDetails SessionApp
                     _currentOrderDetails.Update(_listStoreModelSelectedIndex, _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity += defaultQuantity);
@@ -677,7 +806,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     PricePropertiesSourceMode sourceMode;
 
                     //If article dont have price or article has a variable price defined, request final price
-                       /* TK013134 */
+                    /* TK013134 */
                     if (isAppUseParkingTicketModule)
                     {
                         /* Parking Ticket refers to an input from other app, therefore the same scenario as manual price inputs */
@@ -704,7 +833,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (result.Response == ResponseType.Cancel) return;
                         sourceMode = PricePropertiesSourceMode.FromTotalFinal;
                         price = result.Value;
-                    }                 
+                    }
                     //If Article has Price, Use its PriceNet
                     else
                     {
@@ -731,27 +860,58 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                     //Add VatExemptionReason to VatExemptionReason
                     if (article.VatExemptionReason != null) priceProperties.VatExemptionReason = article.VatExemptionReason.Oid;
+                    int i = 0;
+                    foreach(var item in CurrentOrderDetails.Lines)
+                    {
+                        if(item.ArticleOid == pArticleOid && item.Properties.PriceFinal == priceProperties.PriceFinal)
+                        {
+                            _listStoreModelSelectedIndex = i;
+                        }
+                        i++;
+                    }
 
-                    //Insert into orderDetails SessionApp
-                    _currentOrderDetails.Insert(article.Oid, article.Designation, priceProperties);
+                    if (_listStoreModelSelectedIndex != -1 && Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)) == Math.Round(priceProperties.PriceFinal, SettingsApp.DecimalRoundTo) &&
+                        (Guid)(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId)) == pArticleOid)
+                    {
+                        //Update TreeView Model Price and quantity
+                        var newQuantity = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity;
+                        var newTotalPrice = newQuantity * Convert.ToDecimal(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser);
 
-                    //Insert into TreeView Model : [0]ArticleId,[1]Designation,[2]Price,[3]Quantity,[4]Discount,[5]Vat,[6]Total
-                    System.Object[] columnValues = new System.Object[Enum.GetNames(typeof(TicketListColumns)).Length];
-                    columnValues[0] = article.Oid;
-                    columnValues[1] = article.Designation;
-                    columnValues[2] = FrameworkUtils.DecimalToString(_currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.PriceFinal);
-                    columnValues[3] = FrameworkUtils.DecimalToString(defaultQuantity);
-                    columnValues[4] = _currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.DiscountArticle.ToString();
-                    columnValues[5] = _currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.Vat.ToString();
-                    columnValues[6] = FrameworkUtils.DecimalToString(_currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.TotalFinal);
+                        //Update orderDetails 
+                        CurrentOrderDetails.Update(_listStoreModelSelectedIndex, newQuantity, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser);
 
-                    //Assign Global TreeIter
-                    _treeIter = _listStoreModel.AppendValues(columnValues);
+                        //_listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, FrameworkUtils.DecimalToString(newPrice));
+                        _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, FrameworkUtils.DecimalToString(newQuantity));
+                        
+                        //Update Total
+                        _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, FrameworkUtils.DecimalToString(newTotalPrice));
 
-                    //Assign SessionApp TreeIter, get ArticleId with LINQ
-                    _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == pArticleOid);
-                    _currentOrderDetails.Lines[_listStoreModelSelectedIndex].TreeIter = _treeIter;
-                    if (GlobalFramework.AppUseParkingTicketModule) { _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = defaultQuantity; }
+                        //Update Total Items Member
+                        _listStoreModelTotalItems = _listStoreModel.IterNChildren();
+                    }
+                    else
+                    {
+                        //Insert into orderDetails SessionApp
+                        _currentOrderDetails.Insert(article.Oid, article.Designation, priceProperties);
+
+                        //Insert into TreeView Model : [0]ArticleId,[1]Designation,[2]Price,[3]Quantity,[4]Discount,[5]Vat,[6]Total
+                        System.Object[] columnValues = new System.Object[Enum.GetNames(typeof(TicketListColumns)).Length];
+                        columnValues[0] = article.Oid;
+                        columnValues[1] = article.Designation;
+                        columnValues[2] = FrameworkUtils.DecimalToString(_currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.PriceFinal);
+                        columnValues[3] = FrameworkUtils.DecimalToString(defaultQuantity);
+                        columnValues[4] = _currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.DiscountArticle.ToString();
+                        columnValues[5] = _currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.Vat.ToString();
+                        columnValues[6] = FrameworkUtils.DecimalToString(_currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.TotalFinal);
+
+                        //Assign Global TreeIter
+                        _treeIter = _listStoreModel.AppendValues(columnValues);
+
+                        //Assign SessionApp TreeIter, get ArticleId with LINQ
+                        _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == pArticleOid);
+                        _currentOrderDetails.Lines[_listStoreModelSelectedIndex].TreeIter = _treeIter;
+                        if (GlobalFramework.AppUseParkingTicketModule) { _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = defaultQuantity; }
+                    }
                 };
 
                 //Shared SetCursor
@@ -769,6 +929,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void ChangeQuantity(decimal pQuantity)
         {
+            _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter,
+                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), SettingsApp.DecimalRoundTo) == Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
+
             decimal oldValueQnt = _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
 
             //If oldValue is diferent from New One
@@ -822,6 +985,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                 Prev();
 
+                                UpdateModel();
+
                                 //Update Buttons
                                 UpdateTicketListButtons();
                             }
@@ -848,24 +1013,40 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         DeleteItem_ListModeOrderMain();
                         //}
                     }
-                }catch (Exception ex){
+                }
+                catch (Exception ex)
+                {
                     _log.Error(ex.Message, ex);
                 }
             }
+            else if (_listMode == TicketListMode.OrderMain)
+            {
+                DeleteItem_ListModeOrderMain();
+            }
+            // Cancel order Lindote 2020/06/08
+            // Passou para o botão Eliminar  
 
         }
 
         public void DeleteItem_ListModeTicket()
         {
             //Get Article defaultQuantity
+            _currentOrderMainOid = GlobalFramework.SessionApp.CurrentOrderMainOid;
+            _currentTicketId = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].CurrentTicketId;
+            _currentOrderDetails = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
             decimal defaultQuantity = GetArticleDefaultQuantity(_currentDetailArticleOid);
             DeleteItem_ListModeTicket(defaultQuantity);
         }
 
         public void DeleteItem_ListModeTicket(decimal pRemoveQuantity)
         {
+            //Get Current Quantity
+            var quantity = _listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity);
+
+            decimal totalQtd = Convert.ToDecimal(quantity) - pRemoveQuantity;
+
             //Decrease Quantity by defaultQuantity
-            _currentOrderDetails.Update(_listStoreModelSelectedIndex, _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity -= pRemoveQuantity);
+            _currentOrderDetails.Update(_listStoreModelSelectedIndex, totalQtd);
 
             //If Quantity <= 0 Remove Article From Model and SessionApp
             if (_currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity <= 0)
@@ -917,10 +1098,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if (canDeleteItem)
             {
+
                 //Call ArticleBag Delete, without PartialPayment Items
                 decimal currentTotalQuantity = _articleBag.DeleteFromDocumentOrder(articleBagKey, pRemoveQuantity);
                 //REQUIRE to ReCalc Line TotalFinal Without PartialPayment Items
                 decimal currentTotalFinal = currentTotalQuantity * _articleBag[articleBagKey].PriceFinal;
+
+                //Add items deleted into current ticket
+                //Update items decreased in current ticket
+                TicketDecrease();
 
                 if (currentTotalQuantity <= 0)
                 {
@@ -988,8 +1174,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //No Items, always disable All actions
             if (_listStoreModelTotalItems == 0)
             {
-                if (_buttonKeyPrev != null && _buttonKeyPrev.Sensitive) _buttonKeyPrev.Sensitive = false;
-                if (_buttonKeyNext != null && _buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = false;
+                //if (_buttonKeyPrev != null && _buttonKeyPrev.Sensitive) _buttonKeyPrev.Sensitive = false;
+                //if (_buttonKeyNext != null && _buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = false;
                 if (_buttonKeyIncrease != null && _buttonKeyIncrease.Sensitive) _buttonKeyIncrease.Sensitive = false;
                 if (_buttonKeyDecrease != null && _buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = false;
                 if (_buttonKeyDelete != null && _buttonKeyDelete.Sensitive) _buttonKeyDelete.Sensitive = false;
@@ -1017,7 +1203,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     if (_buttonKeyIncrease != null && _buttonKeyIncrease.Sensitive) _buttonKeyIncrease.Sensitive = false;
-                    if (_buttonKeyDecrease != null && _buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = false;
+                    if (_buttonKeyDecrease != null && !_buttonKeyDecrease.Sensitive) _buttonKeyDecrease.Sensitive = true;
                     //Always Disabled in Orders
                     //_buttonKeyDelete.Sensitive = false;
                     //Enabled Again
@@ -1029,36 +1215,37 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (_buttonKeySplitAccount != null && _buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = false;
                 }
 
+
                 //In First Item with One Item
-                if (_listStoreModelSelectedIndex == 0)
-                {
-                    if (_buttonKeyPrev != null && _buttonKeyPrev.Sensitive) _buttonKeyPrev.Sensitive = false;
-                    if (_buttonKeyNext != null)
-                    {
-                        //If has more than One Item Enable Next
-                        if (_listStoreModelTotalItems > 1)
-                        {
-                            if (!_buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = true;
-                        }
-                        //If has One Item Disable Next
-                        else
-                        {
-                            if (_buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = false;
-                        }
-                    }
-                }
-                //Last Item
-                else if (_listStoreModelSelectedIndex == _listStoreModelTotalItems - 1)
-                {
-                    if (_buttonKeyPrev != null && !_buttonKeyPrev.Sensitive) _buttonKeyPrev.Sensitive = true;
-                    if (_buttonKeyNext != null && _buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = false;
-                }
-                //Middle Items
-                else
-                {
-                    if (_buttonKeyPrev != null && !_buttonKeyPrev.Sensitive) _buttonKeyPrev.Sensitive = true;
-                    if (_buttonKeyNext != null && !_buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = true;
-                };
+                //if (_listStoreModelSelectedIndex == 0)
+                //{
+                //    if (_buttonKeyPrev != null && _buttonKeyPrev.Sensitive) _buttonKeyPrev.Sensitive = false;
+                //    if (_buttonKeyNext != null)
+                //    {
+                //        //If has more than One Item Enable Next
+                //        if (_listStoreModelTotalItems > 1)
+                //        {
+                //            if (!_buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = true;
+                //        }
+                //        //If has One Item Disable Next
+                //        else
+                //        {
+                //            if (_buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = false;
+                //        }
+                //    }
+                //}
+                ////Last Item
+                //else if (_listStoreModelSelectedIndex == _listStoreModelTotalItems - 1)
+                //{
+                //    if (_buttonKeyPrev != null && !_buttonKeyPrev.Sensitive) _buttonKeyPrev.Sensitive = true;
+                //    if (_buttonKeyNext != null && _buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = false;
+                //}
+                ////Middle Items
+                //else
+                //{
+                //    if (_buttonKeyPrev != null && !_buttonKeyPrev.Sensitive) _buttonKeyPrev.Sensitive = true;
+                //    if (_buttonKeyNext != null && !_buttonKeyNext.Sensitive) _buttonKeyNext.Sensitive = true;
+                //};
             };
 
             //Toolbar Buttons
@@ -1290,7 +1477,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     // Get Article Oid from treeIter
                     _currentDetailArticleOid = (Guid)_listStoreModel.GetValue(_treeIter, 0);
                     // Get Article
-                    _currentDetailArticle = (fin_article) GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), _currentDetailArticleOid);
+                    _currentDetailArticle = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), _currentDetailArticleOid);
 
                     //Ticket List Mode
                     if (_listMode == TicketListMode.Ticket)

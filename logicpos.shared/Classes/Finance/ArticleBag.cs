@@ -618,7 +618,11 @@ namespace logicpos.shared.Classes.Finance
                             articleBagProps.Token2 = Convert.ToString(row.Values[selectedDataOrders.GetFieldIndex("Token2")]); //ticketLine.Token2
 
                             //Send to Bag
-                            articleBag.Add(articleBagKey, articleBagProps);
+                            if(articleBagProps.Quantity > 0)
+                            {
+                                articleBag.Add(articleBagKey, articleBagProps);
+                            }
+                            
                             //if (debug) log.Debug(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ticket.PlaceTable.Place.Oid, ticket.PlaceTable.Designation, ticket.PriceType, ticketLine.Article.Oid, ticketLine.Code, ticketLine.Designation, ticketLine.Price, ticketLine.Quantity, ticketLine.UnitMeasure, ticketLine.Discount, ticketLine.Vat));
                         }
                     }

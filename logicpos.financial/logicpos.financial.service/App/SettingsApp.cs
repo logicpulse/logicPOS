@@ -39,6 +39,7 @@ namespace logicpos.financial.service.App
 
         public static bool ServiceTimerEnabled = Convert.ToBoolean(GlobalFramework.Settings["serviceTimerEnabled"]);
         public static double ServiceTimerInterval = Convert.ToDouble(GlobalFramework.Settings["serviceTimerInterval"]);
+        public static DateTime ServiceTimer = DateTime.ParseExact((GlobalFramework.Settings["serviceTimer"]), "H:mm", null, System.Globalization.DateTimeStyles.None); 
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // AT Web Services
