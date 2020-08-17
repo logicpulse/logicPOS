@@ -30,8 +30,8 @@ namespace logicpos.financial.library.Classes.Finance
         //Settings
         private static string _dateTimeFormatDocumentDate = SettingsApp.DateTimeFormatDocumentDate;
         //Custom Number Format
-        private static string _decimalFormat = "0.00"; //SettingsApp.DecimalFormatGrossTotalSAFTAO;
-        private static string _decimalFormatTotals = "0.00";
+        private static string _decimalFormat = "0.000"; //SettingsApp.DecimalFormatGrossTotalSAFTAO;
+        private static string _decimalFormatTotals = "0.000";
         //Default Customer
         private static erp_customer _defaultCustomer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
         //Default Currency
@@ -1262,7 +1262,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                         lineTaxPayable = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPayable")]), SettingsApp.DecimalRoundTo);
                         lineNetTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("NetTotal")]), SettingsApp.DecimalRoundTo);
-                        lineGrossTotal = Math.Round(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("GrossTotal")]), SettingsApp.DecimalRoundTo);
+                        lineGrossTotal = Math.Round((lineTaxPayable + lineNetTotal), SettingsApp.DecimalRoundTo);
                         totalLineResult.TaxPayable += lineTaxPayable;
                         totalLineResult.NetTotal += lineNetTotal;
                         totalLineResult.GrossTotal += lineGrossTotal;

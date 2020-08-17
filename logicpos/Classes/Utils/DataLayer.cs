@@ -536,14 +536,22 @@ namespace logicpos
                                 var output = System.Text.RegularExpressions.Regex.Replace(executeCommand.Split()[0], @"[^0-9a-zA-Z\ ]+", "");
                                 if(output == "alter")
                                 {
-                                    string table = executeCommand.Split('[', ']')[1];
-                                    string commandSql = executeCommand.Split('[', ']')[2];
-                                    string column = executeCommand.Split('[', ']')[3];
-                                    bool columExists = isColumnExists(table, column, pXpoSession);
-                                    if (!columExists && commandSql == " ADD ")
+                                    try
                                     {
-                                        result = pXpoSession.ExecuteNonQuery(executeCommand);
+                                        string table = executeCommand.Split('[', ']')[1];
+                                        string commandSql = executeCommand.Split('[', ']')[2];
+                                        string column = executeCommand.Split('[', ']')[3];
+                                        bool columExists = isColumnExists(table, column, pXpoSession);
+                                        if (!columExists && commandSql == " ADD ")
+                                        {
+                                            result = pXpoSession.ExecuteNonQuery(executeCommand);
+                                        }
                                     }
+                                    catch(Exception ex)
+                                    {
+                                        log.Error(string.Format("Error trying to split command : {0}", ex.Message), ex);
+                                    }
+
                                 }
                                 else
                                 {
