@@ -66,11 +66,11 @@
     <Reference Include="ClosedXML, Version=0.94.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\logicpos_pos_internal\packages\ClosedXML.0.94.2\lib\net40\ClosedXML.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Data.v18.1, Version=18.1.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\logicpos_pos_internal\packages\DevExpress.Data.18.1.9\lib\net40\DevExpress.Data.v18.1.dll</HintPath>
+    <Reference Include="DevExpress.Data.v20.1, Version=20.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevExpress.Data.20.1.6\lib\net452\DevExpress.Data.v20.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpo.v18.1, Version=18.1.9.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\logicpos_pos_internal\packages\DevExpress.Xpo.18.1.9\lib\net40\DevExpress.Xpo.v18.1.dll</HintPath>
+    <Reference Include="DevExpress.Xpo.v20.1, Version=20.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevExpress.Xpo.20.1.6\lib\net452\DevExpress.Xpo.v20.1.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\..\logicpos_pos_internal\packages\DocumentFormat.OpenXml.2.7.2\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
@@ -101,6 +101,10 @@
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Medsphere.Widgets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Medsphere.Widgets.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp">
       <Private>False</Private>
@@ -6687,10 +6691,6 @@
       <Name>logicpos.financial.service</Name>
     </ProjectReference>
 	-->
-    <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
-      <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
-      <Name>logicpos.financial.library</Name>
-    </ProjectReference>
     <ProjectReference Include="..\logicpos.datalayer\logicpos.datalayer.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>logicpos.datalayer</Name>
@@ -6702,6 +6702,10 @@
     <ProjectReference Include="..\logicpos.documentviewer\logicpos.documentviewer\logicpos.documentviewer.csproj">
       <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
       <Name>logicpos.documentviewer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\logicpos.financial\logicpos.financial.library\logicpos.financial.library.csproj">
+      <Project>{7f643f3c-0f7b-451a-aa16-a9a25a56ccf3}</Project>
+      <Name>logicpos.financial.library</Name>
     </ProjectReference>
     <ProjectReference Include="..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
@@ -6718,10 +6722,6 @@
     <ProjectReference Include="..\logicpos.shared\logicpos.shared.csproj">
       <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
       <Name>logicpos.shared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Medsphere.Widgets\Medsphere.Widgets.csproj">
-      <Project>{319a2aee-a900-476b-bf30-95c74e41b51b}</Project>
-      <Name>Medsphere.Widgets</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
