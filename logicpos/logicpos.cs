@@ -187,7 +187,7 @@ namespace logicpos
 
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (GlobalFramework.PluginSoftwareVendor != null) logicpos.datalayer.App.SettingsApp.PluginSoftwareVendor = GlobalFramework.PluginSoftwareVendor;
+                if (GlobalFramework.PluginSoftwareVendor != null) logicpos.datalayer.App.SettingsApp.PluginSoftwareVendor = GlobalFramework.PluginSoftwareVendor;           
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)

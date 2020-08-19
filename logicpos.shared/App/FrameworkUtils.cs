@@ -526,7 +526,15 @@ namespace logicpos.shared.App
             //Init RSACryptoServiceProvider with Key
             RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
 
-            rsaCryptoServiceProvider.FromXmlString(pPrivateKey);
+            try
+            {
+                rsaCryptoServiceProvider.FromXmlString(pPrivateKey);
+            }
+            catch(Exception ex)
+            {
+                _log.Debug(ex.Message);
+            }
+      
 
             //SHA1 Sign 
             byte[] signature = rsaCryptoServiceProvider.SignData(pMessage, CryptoConfig.MapNameToOID("SHA1"));
