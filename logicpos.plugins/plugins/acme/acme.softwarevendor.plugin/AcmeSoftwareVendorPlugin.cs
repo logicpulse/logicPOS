@@ -74,11 +74,6 @@ namespace acme.softwarevendor.plugin
             return SettingsApp.FileFormatSaftPT;
         }
 
-        public string GetFileFormatSaftAO()
-        {
-            return SettingsApp.FileFormatSaftAO;
-        }
-
         public int GetDocumentsPadLength()
         {
             return SettingsApp.DocumentsPadLength;
