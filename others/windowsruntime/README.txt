@@ -8,8 +8,8 @@
     2.2 - gtk-sharp-2.12.22.msi
 
 3 - Copy libnodoka.dll (theme engine) to
-   "c:\Program Files\GtkSharp\2.12\lib\gtk-2.0\2.10.0\engines\" (32bit), or 
-   "c:\Program Files (x86)\GtkSharp\2.12\lib\gtk-2.0\2.10.0\engines\" (64bit)
+   "c:\Program Files\GtkSharp\2.12\lib\gtk-2.0\2.10.0\engines\" (64bit), or 
+   "c:\Program Files (x86)\GtkSharp\2.12\lib\gtk-2.0\2.10.0\engines\" (32bit)
 
 4 -
  Restart Windows (Required)
