@@ -47,8 +47,8 @@
       <TextObject Name="TextReportTitle" Left="198.45" Width="519.75" Height="18.9" Text="[Res(&quot;GLOBAL_FAMILIES&quot;)]" HorzAlign="Right" WordWrap="false" Font="Arial, 12pt, style=Bold" Wysiwyg="true"/>
     </PageHeaderBand>
     <PageFooterBand Name="PageFooter1" Top="53" Width="718.2" Height="56.7" Border.Lines="Top">
-      <TextObject Name="TextFooter1" Top="18.9" Width="718.2" Height="18.9" Text="&lt;b&gt;[GetParam(&quot;company_name&quot;)]&lt;/b&gt; || [GetParam(&quot;company_address&quot;)] || &lt;b&gt;[GetParam(&quot;company_postalcode&quot;)]&lt;/b&gt; [GetParam(&quot;company_city&quot;)] || &lt;b&gt;[Res(&quot;global_fiscal_number&quot;)]:&lt;/b&gt; [GetParam(&quot;company_fiscalnumber&quot;)]" HorzAlign="Center" Font="Arial, 8pt" TextRenderType="HtmlTags"/>
-      <TextObject Name="Text1" Top="37.8" Width="718.2" Height="18.9" Text="&lt;b&gt;[Res(&quot;global_printed_on_date&quot;)]:&lt;/b&gt; [Date] || &lt;b&gt;[Res(&quot;global_report_page&quot;)]:&lt;/b&gt; [Page]/[IIf([TotalPages] == 0,1,[TotalPages])]" HorzAlign="Center" Font="Arial, 8pt" TextRenderType="HtmlTags"/>
+      <TextObject Name="TextFooter1" Top="18.9" Width="718.2" Height="18.9" Text="&lt;b&gt;[GetParam(&quot;company_name&quot;)]&lt;/b&gt; || [GetParam(&quot;company_address&quot;)] || &lt;b&gt;[GetParam(&quot;company_postalcode&quot;)]&lt;/b&gt; [GetParam(&quot;company_city&quot;)] || &lt;b&gt;[Res(&quot;global_fiscal_number&quot;)]:&lt;/b&gt; [GetParam(&quot;company_fiscalnumber&quot;)]" HorzAlign="Center" Font="Arial, 8pt" HtmlTags="true"/>
+      <TextObject Name="Text1" Top="37.8" Width="718.2" Height="18.9" Text="&lt;b&gt;[Res(&quot;global_printed_on_date&quot;)]:&lt;/b&gt; [Date] || &lt;b&gt;[Res(&quot;global_report_page&quot;)]:&lt;/b&gt; [Page]/[IIf([TotalPages] == 0,1,[TotalPages])]" HorzAlign="Center" Font="Arial, 8pt" HtmlTags="true"/>
     </PageFooterBand>
   </ReportPage>
 </Report>

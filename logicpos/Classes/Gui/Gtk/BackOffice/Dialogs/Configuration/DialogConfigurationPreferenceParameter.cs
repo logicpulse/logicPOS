@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private int _windowWidth = 500;
         private int _windowHeightForTextComponent = 331;
         private int _windowHeight = 0;
-
+        private XPGuidObject _XPGuidObject;
         public static void SaveSettings(string fieldName)
         {
             try
@@ -41,6 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationPreferenceParameter(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
+            _XPGuidObject = pXPGuidObject;
             this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
             cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)_dataSourceRow;
             // Default windowHeight, InputTypes can Override this in Switch             
@@ -238,7 +239,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if (inputType.Equals(PreferenceParameterInputType.FilePicker))
                         {
                             fileChooser.SetFilename(dataSourceRow.Value);
-                            fileChooser.Filter = Utils.GetFileFilterImages();
+                            if (_XPGuidObject != null && _XPGuidObject.Oid == Guid.Parse("9bc7099e-d2ef-43dc-b761-ef1a33c6f07a"))
+                            {
+                                fileChooser.Filter = Utils.GetFileFilterBMPImages();
+                            }
+                            else
+                            {
+                                fileChooser.Filter = Utils.GetFileFilterImages();
+                            }
+                           
                         }
                         else
                         {
@@ -262,6 +271,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Protect PreferenceParameterInputType : Disable if is COMPANY_FISCALNUMBER or Other Sensitive Data
                 cfg_configurationpreferenceparameter parameter = (_dataSourceRow as cfg_configurationpreferenceparameter);
+#if !DEBUG
                 if (entryValue != null) entryValue.Sensitive = (
                     parameter.Token != "COMPANY_NAME"
                     && parameter.Token != "COMPANY_BUSINESS_NAME"
@@ -274,6 +284,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION" 
                 //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION_ID"
                 );
+#endif
             }
             catch (System.Exception ex)
             {

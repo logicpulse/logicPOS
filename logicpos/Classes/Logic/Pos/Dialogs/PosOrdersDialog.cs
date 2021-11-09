@@ -88,7 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         void buttonPrintOrder_Clicked(object sender, EventArgs e)
         {
-            if (Utils.ShowMessageTouchRequiredValidPrinter(this)) return;
+            if (Utils.ShowMessageTouchRequiredValidPrinter(this, GlobalFramework.LoggedTerminal.ThermalPrinter)) return;
 
             string sql = string.Empty;
             OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];

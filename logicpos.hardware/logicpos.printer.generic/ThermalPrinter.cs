@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -613,11 +615,15 @@ namespace logicpos.printer.generic
 			/// CODE 11
 			/// </summary>
 			code11 = 9,
-			/// <summary>
-			/// MSI
-			/// </summary>
-			msi = 10
-		}
+            /// <summary>
+            /// MSI
+            /// </summary>
+            msi = 10,
+            /// <summary>
+            /// QRCode
+            /// </summary>
+            qrcode = 12
+        }
 
         public enum OptionsToText
         {
@@ -998,7 +1004,26 @@ namespace logicpos.printer.generic
 					WriteByte(0);
 				}
 				break;
-			}
+                case BarcodeType.qrcode:
+                    if (data.Length > 1)
+                    {
+                        int store_len = (data).Length + 3;
+                        byte store_pL = (byte)(store_len % 256);
+                        byte store_pH = (byte)(store_len / 256);
+
+                        WriteByte(AsciiControlChars.GroupSeparator);
+                        WriteByte(AsciiControlChars.PrintBarcode);
+                        WriteBytes(new byte[] { 29, 40, 107, 4, 0, 49, 65, 50, 0 });
+                        WriteBytes(new byte[] { 29, 40, 107, 4, 0, 49, 65, 50, 0 });
+                        WriteBytes(new byte[] { 29, 40, 107, 3, 0, 49, 67, 8 });
+                        WriteBytes(new byte[] { 29, 40, 107, 3, 0, 49, 69, 48 });
+                        WriteBytes(new byte[] { 29, 40, 107, store_pL, store_pH, 49, 80, 48 });
+                        WriteBytes(outputBytes);
+                        WriteBytes(new byte[] { 29, 40, 107, 3, 0, 49, 81, 48 });
+                        WriteByte(0);
+                    }
+                    break;
+            }
 		}
 		
 		/// <summary>
@@ -1037,8 +1062,42 @@ namespace logicpos.printer.generic
             WriteByte(spacingDots);
         }
 
-        public void PrintImage(string bmpFilename)
+        public void PrintImage(string bmpFilename, bool QrCode = false)
         {
+            float widthBMP = QrCode ? 300 : 328;
+            float heightBMP = QrCode ? 300 : 126; 
+            var brush = new SolidBrush(Color.White);
+
+            if (!File.Exists(Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp"))
+            {
+                Image Dummy = Image.FromFile(bmpFilename);
+                Dummy.Save("image.bmp", ImageFormat.Bmp);
+                var fullPath = Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp";
+
+
+                Bitmap myBitmap = new Bitmap(Dummy);
+                if(!QrCode) ToGrayScale(myBitmap);
+          
+
+                var bmp = new Bitmap((int)widthBMP, (int)heightBMP);
+                var graph = Graphics.FromImage(bmp);
+
+                float scale = Math.Min(widthBMP / myBitmap.Width, heightBMP / myBitmap.Height);
+
+                var scaleWidth = (int)(myBitmap.Width * scale);
+                var scaleHeight = (int)(myBitmap.Height * scale);
+
+                graph.FillRectangle(brush, new RectangleF(0, 0, widthBMP, heightBMP));
+                graph.DrawImage(myBitmap, ((int)widthBMP - scaleWidth) / 2, ((int)heightBMP - scaleHeight) / 2, scaleWidth, scaleHeight);
+
+                bmp.Save(Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+                bmpFilename = Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp";
+
+            }
+            else
+            {
+                bmpFilename = Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp";
+            }
             var data = Util.GetBitmapData(bmpFilename);
             var dots = data.Dots;
             var width = BitConverter.GetBytes(data.Width);
@@ -1106,20 +1165,166 @@ namespace logicpos.printer.generic
             WriteByte(AsciiControlChars.Escape);
             WriteByte(AsciiControlChars.SetLineSpacing);
             WriteByte((byte)30);
+
         }
-		
-		/// <summary>
-		/// Sets the printing parameters.
-		/// </summary>
-		/// <param name='maxPrintingDots'>
-		/// Max printing dots (0-255), unit: (n+1)*8 dots, default: 7 (beceause (7+1)*8 = 64 dots)
-		/// </param>
-		/// <param name='heatingTime'>
-		/// Heating time (3-255), unit: 10µs, default: 80 (800µs)
-		/// </param>
-		/// <param name='heatingInterval'>
-		/// Heating interval (0-255), unit: 10µs, default: 2 (20µs)
-		/// </param>
+
+        public void PrintImage(Bitmap myBitmap)
+        {
+
+            var data = Util.GetBitmapData(myBitmap);
+            var dots = data.Dots;
+            var width = BitConverter.GetBytes(data.Width);
+
+            // So we have our bitmap data sitting in a bit array called "dots."
+            // This is one long array of 1s (black) and 0s (white) pixels arranged
+            // as if we had scanned the bitmap from top to bottom, left to right.
+            // The printer wants to see these arranged in bytes stacked three high.
+            // So, essentially, we need to read 24 bits for x = 0, generate those
+            // bytes, and send them to the printer, then keep increasing x. If our
+            // image is more than 24 dots high, we have to send a second bit image
+            // command.
+
+            // Set the line spacing to 24 dots, the height of each "stripe" of the
+            // image that we're drawing.
+            WriteByte(AsciiControlChars.Escape);
+            WriteByte(AsciiControlChars.SetLineSpacing);
+            WriteByte((byte)24);
+
+            // OK. So, starting from x = 0, read 24 bits down and send that data
+            // to the printer.
+            int offset = 0;
+
+            while (offset < data.Height)
+            {
+                WriteByte(AsciiControlChars.Escape);
+                WriteByte(AsciiControlChars.SelectBitImageMode);                // bit-image mode
+                WriteByte(AsciiControlChars.SelectPrintMode);                   // 24-dot double-density
+                WriteByte((byte)width[0]);                                      // width low byte
+                WriteByte((byte)width[1]);                                      // width high byte
+
+                for (int x = 0; x < data.Width; ++x)
+                {
+                    for (int k = 0; k < 3; ++k)
+                    {
+                        byte slice = 0;
+
+                        for (int b = 0; b < 8; ++b)
+                        {
+                            int y = (((offset / 8) + k) * 8) + b;
+
+                            // Calculate the location of the pixel we want in the bit array.
+                            // It'll be at (y * width) + x.
+                            int i = (y * data.Width) + x;
+
+                            // If the image is shorter than 24 dots, pad with zero.
+                            bool v = false;
+                            if (i < dots.Length)
+                            {
+                                v = dots[i];
+                            }
+
+                            slice |= (byte)((v ? 1 : 0) << (7 - b));
+                        }
+
+                        WriteByte(slice);
+                    }
+                }
+
+                offset += 24;
+                WriteByte(AsciiControlChars.Newline);
+            }
+
+            // Restore the line spacing to the default of 30 dots.
+            WriteByte(AsciiControlChars.Escape);
+            WriteByte(AsciiControlChars.SetLineSpacing);
+            WriteByte((byte)30);
+        }
+
+       
+
+        public BitmapData GetBitmapData(Bitmap bmp) // (string bmpFileName)
+        {
+            //using (var bitmap = (Bitmap)Bitmap.FromFile(bmpFileName))
+            using (var bitmap = bmp)
+            {
+                var threshold = 127;
+                var index = 0;
+                double multiplier = 570; // this depends on your printer
+                double scale = (double)(multiplier / (double)bitmap.Width);
+                int xheight = (int)(bitmap.Height * scale);
+                int xwidth = (int)(bitmap.Width * scale);
+                var dimensions = xwidth * xheight;
+                var dots = new System.Collections.BitArray(dimensions);
+
+                for (var y = 0; y < xheight; y++)
+                {
+                    for (var x = 0; x < xwidth; x++)
+                    {
+                        var _x = (int)(x / scale);
+                        var _y = (int)(y / scale);
+                        var color = bitmap.GetPixel(_x, _y);
+                        var luminance = (int)(color.R * 0.3 + color.G * 0.59 + color.B * 0.11);
+                        dots[index] = (luminance < threshold);
+                        index++;
+                    }
+                }
+
+                return new BitmapData()
+                {
+                    Dots = dots,
+                    Height = (int)(bitmap.Height * scale),
+                    Width = (int)(bitmap.Width * scale)
+                };
+            }
+        }
+
+        public class BitmapData
+        {
+            public System.Collections.BitArray Dots
+            {
+                get;
+                set;
+            }
+
+            public int Height
+            {
+                get;
+                set;
+            }
+
+            public int Width
+            {
+                get;
+                set;
+            }
+        }
+
+        public void ToGrayScale(Bitmap Bmp)
+        {
+            int rgb;
+            Color c;
+
+            for (int y = 0; y < Bmp.Height; y++)
+                for (int x = 0; x < Bmp.Width; x++)
+                {
+                    c = Bmp.GetPixel(x, y);
+                    rgb = (int)Math.Round(.299 * c.R + .587 * c.G + .114 * c.B);
+                    Bmp.SetPixel(x, y, Color.FromArgb(rgb, rgb, rgb));
+                }
+        }
+
+        /// <summary>
+        /// Sets the printing parameters.
+        /// </summary>
+        /// <param name='maxPrintingDots'>
+        /// Max printing dots (0-255), unit: (n+1)*8 dots, default: 7 (beceause (7+1)*8 = 64 dots)
+        /// </param>
+        /// <param name='heatingTime'>
+        /// Heating time (3-255), unit: 10µs, default: 80 (800µs)
+        /// </param>
+        /// <param name='heatingInterval'>
+        /// Heating interval (0-255), unit: 10µs, default: 2 (20µs)
+        /// </param>
         //public void SetPrintingParameters(byte maxPrintingDots, byte heatingTime, byte heatingInterval)
         //{
         //    WriteByte(AsciiControlChars.Escape);
@@ -1128,11 +1333,11 @@ namespace logicpos.printer.generic
         //    WriteByte(heatingTime);				
         //    WriteByte(heatingInterval);
         //}
-		
-		/// <summary>
-		/// Sets the printer offine.
-		/// </summary>
-		public void Sleep()
+
+        /// <summary>
+        /// Sets the printer offine.
+        /// </summary>
+        public void Sleep()
 		{
             WriteByte(AsciiControlChars.Escape);
 			WriteByte(61);
@@ -1430,6 +1635,7 @@ namespace logicpos.printer.generic
 
             return _memStream.ToArray();
         }
+
 	}
 }
 

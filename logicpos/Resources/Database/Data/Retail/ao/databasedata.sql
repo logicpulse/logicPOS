@@ -3,6 +3,9 @@
 -- Encrypted : Will be Updated by Vendor Plugin Script - Require to be Here, and updated After;
 INSERT INTO sys_userdetail (Oid, Name, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
 INSERT INTO erp_customer (Oid, Name, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
+INSERT INTO fin_articleserialnumber (Oid, SerialNumber, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
+INSERT INTO fin_warehouse (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
+INSERT INTO erp_customer (Oid,Ord,Code,CodeInternal,Name,FiscalNumber,CardNumber,Address,Locality,ZipCode,City,Country,Discount,PriceType,CustomerType,Disabled,Supplier) VALUES ('00000000-0000-0000-0000-000000000002',01,01,'00000000-0000-0000-0000-000002','Interno','000000000',NULL,'Desconhecido','Desconhecido','1000-000','Indefinido','e7e8c325-a0d4-4908-b148-508ed750676a',0,'cf17a218-b687-4b82-a8f4-0905594ac1f5','a4b3811f-9851-430d-810e-f8be7ac3f392',1,1);
 -- Non Encrypted;
 INSERT INTO cfg_configurationcountry (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
 INSERT INTO cfg_configurationcurrency (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
@@ -39,6 +42,8 @@ INSERT INTO sys_configurationprinterstype (Oid, Designation, Disabled) VALUES ('
 INSERT INTO sys_configurationweighingmachine (Oid,Designation,Disabled,PortName,Parity,BaudRate,StopBits,DataBits) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1, 'COM1','None','9600','One',0);
 INSERT INTO sys_configurationinputreader (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
 INSERT INTO sys_configurationpoledisplay (Oid, Designation, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
+INSERT INTO fin_warehouse (Oid, Ord, Code, Designation, IsDefault, Disabled) VALUES ('4f5f33a7-7717-49cd-8687-5dc302a0c3cb',10,10, 'Armazém 1', 1, 0);
+INSERT INTO fin_warehouselocation (Oid, Ord, Code, Designation, Warehouse, Disabled) VALUES ('a12a472b-5f32-4c7a-a648-03072560ffc8',10,10, 'Localização 1','4f5f33a7-7717-49cd-8687-5dc302a0c3cb', 0);
 
 -- Data;
 INSERT INTO sys_userprofile (Oid,Ord,Code,Designation) VALUES ('5f0f47a5-5e2a-4d79-ba9f-56966c9f615e',10,10,'Assistente de Balcão');
@@ -264,7 +269,7 @@ INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGro
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('2d78c8d0-27ab-41ea-9dc4-f058148ffc1d',2410,2410,'REPORT_LIST_CURRENT_ACCOUNT','Relatório :: Conta Corrente (venda à crédito)','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('30d6c72d-fe80-44d8-8192-50ee7c8f75fe',2420,2420,'REPORT_LIST_CUSTOMERS','Relatório :: Clientes','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('de7b1453-cde8-4e1a-b1f9-0a1dfec3782a',2430,2430,'REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES','Relatório :: Famílias, SubFamílias e Artigos','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
-INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('376065db-7a04-4e0f-a8e7-c64ddbc9705a',2440,2440,'REPORT_LIST_STOCK_MOVEMENTS','Relatório :: Movimentos :: Mercadoria','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('376065db-7a04-4e0f-a8e7-c64ddbc9705a',2440,2440,'REPORT_LIST_STOCK_MOVEMENTS','Relatório :: Movimentos :: Stocks','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('29cf8ad3-6ca4-48b5-93ad-fe4157860d3d',2450,2450,'REPORT_LIST_USER_COMMISSION','Relatório :: Comissões','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('767d7da3-e775-4f02-abbd-b3d89e0493ec',2500,2500,'REPORT_SALES_DETAIL_GROUP_PER_COUNTRY','Relatório :: Vendas Detalhadas/Agrupadas por País','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('ebeb00f4-4823-4a46-997c-92f64a0f5c7d',2510,2510,'REPORT_SALES_DETAIL_GROUP_PER_CURRENCY','Relatório :: Vendas Detalhadas/Agrupadas por Moeda','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
@@ -301,10 +306,30 @@ INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGro
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('a0c08015-f5ad-4bad-b13d-c72eedee29a3',2860,2860,'REPORT_SALES_PER_PAYMENT_METHOD','Relatório :: Vendas por Método :: Pagamento','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('236b5673-5351-4e53-a75d-6d47007f7352',2870,2870,'REPORT_SALES_PER_TERMINAL','Relatório :: Vendas por Terminal','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('c8fa0346-3112-4b71-a7a8-612285ac76f3',2880,2880,'REPORT_SALES_PER_USER','Relatório :: Vendas por Utilizador/Funcionário','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
-INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('ff8726e4-75c6-4a6e-9b02-e126c76473c8',3000,3000,'STOCK_MERCHANDISE_ENTRY_ACCESS','Entrada/Saída de Mercadoria','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('ff8726e4-75c6-4a6e-9b02-e126c76473c8',3000,3000,'STOCK_MERCHANDISE_ENTRY_ACCESS','Entrada/Saída de Stocks','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('b55180d6-5992-4261-2812-cb8a43e28728',3050,3050,'TICKETLIST_CHANGE_PRICE','Lista de Tickets :: Alterar Preço','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('b55180d6-5992-4261-a6c9-cb8a43e28798',3100,3100,'TICKETLIST_DELETE','Lista de Tickets :: Apagar Items','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
 INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('b55180d6-5992-4261-a6c9-cb8a43edd798',3150,3150,'WORKSESSION_ALL','Sessões :: Todas as Operações','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('f07fbdec-8a54-4d0f-836c-1a4fc05b1c1c', 3400, 3400,'BACKOFFICE_MAN_ARTICLESTOCK_CREATE','BackOffice :: Gestão de Movimentos de Stock :: Criação','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('b9c3c308-8898-4179-b835-38377ba27703', 3500, 3500,'BACKOFFICE_MAN_WAREHOUSE_CREATE','BackOffice :: Gestão de Armazéns :: Criação','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('9bf1d39f-8f9a-45fb-b58c-4f45987395e7', 3510, 3510,'BACKOFFICE_MAN_WAREHOUSE_DELETE','BackOffice ::Gestão de Armazéns :: Eliminação','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('a0b3e944-c9f8-459c-8b4b-dfd24b15f160', 3520, 3520,'BACKOFFICE_MAN_WAREHOUSE_EDIT','BackOffice :: Gestão de Armazéns :: Editar','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('ae2ab865-365c-4bc0-82f7-79505f517ffe', 3530, 3530,'BACKOFFICE_MAN_WAREHOUSE_MENU','BackOffice :: Gestão de Armazéns :: Menu','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('083d7c91-72c0-482d-83e0-7c0b327fe8e8', 3540, 3540,'BACKOFFICE_MAN_WAREHOUSE_VIEW','BackOffice :: Gestão de Armazéns :: Ver','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('ae3dd7d2-4ea5-4da6-b16a-0c820a6ea274', 3550, 3550,'BACKOFFICE_MAN_ARTICLEWAREHOUSE_CREATE','BackOffice :: Gestão de Armazéns/Artigos :: Criação','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('56ea98eb-e0f9-4d10-9bd7-bb37c9b9ac65', 3560, 3560,'BACKOFFICE_MAN_ARTICLEWAREHOUSE_DELETE','BackOffice ::Gestão de Armazéns/Artigos :: Eliminação','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('e9b23452-976f-48c1-a324-94681bed1868', 3570, 3570,'BACKOFFICE_MAN_ARTICLEWAREHOUSE_EDIT','BackOffice :: Gestão de Armazéns/Artigos :: Editar','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('8028840b-5e4b-4f04-8816-23ea67b2c2f4', 3580, 3580,'BACKOFFICE_MAN_ARTICLEWAREHOUSE_MENU','BackOffice :: Gestão de Armazéns/Artigos :: Menu','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('e1ab4485-0909-4c0b-9e62-b148febeedb4', 3590, 3590,'BACKOFFICE_MAN_ARTICLEWAREHOUSE_VIEW','BackOffice :: Gestão de Armazéns/Artigos :: Ver','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('061e7ff2-418c-4270-9292-e3b0b457f077', 4000, 4000,'REPORT_LIST_STOCK_WAREHOUSE','Relatório :: Armazém :: Stocks','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);        
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('2e71e645-4a96-4673-9680-eff3aeedf5d3', 4010, 4010,'REPORT_LIST_STOCK_ARTICLE','Relatório :: Stocks por Artigo','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('d59f992c-310e-4fb6-afaa-47c6ad8c0b27', 4020, 4020,'REPORT_LIST_STOCK_SUPPLIER','Relatório :: Stocks por Fornecedor','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('6599822b-ce40-4bc8-983c-d060ce6809d9', 4030, 4030,'REPORT_SALES_DETAIL_GROUP_PER_VAT','Relatório :: Vendas Detalhadas/Agrupadas por Taxa de IVA','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('6fbebe95-1e90-43ae-99f8-1bb3479ebf11', 1397,1397,'REPORT_SALES_PER_VAT','Relatório :: Vendas por Taxa IVA','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('efe21943-3448-45e5-8f8f-0c4e59a89874', 1398,1398,'REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS','Relatório :: Vendas por Taxa IVA / Classe de artigo','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',NULL);
+
 -- Not Used - YET;
 --INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('12196527-067a-49e9-95de-b190160dce02',9020,9020,'REPORT_TOP_CLOSE_EMPLOYEES','Relatório :: Top Fecho Empregados','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',1);
 --INSERT INTO sys_userpermissionitem (Oid,Ord,Code,Token,Designation,PermissionGroup,Disabled) VALUES ('099d4403-5f04-4dee-a905-078103c403c4',9030,9030,'REPORT_OCCUPATION_AVERAGE','Relatório :: Média :: Ocupação','4c047b35-8fe5-4a4b-ac6e-59c87e0f760a',1);
@@ -563,6 +588,27 @@ INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) V
 INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('fc530f50-9717-4bd1-a551-0722fde18979',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','e959719b-6328-4b86-b642-1d39586df693');
 INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('9496781a-28d4-4489-96bd-d639ea9731ac',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','f4a0d9ff-4ee8-4788-a9f3-1e42be16de19');
 INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('ce5b2994-42d7-45b2-9f16-14d0b0f440ea',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','c2e40369-19af-47a4-b1dd-5eab3e3867ed');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('6cbb4f99-a43b-4da3-907b-8941152b72b3',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','f07fbdec-8a54-4d0f-836c-1a4fc05b1c1c');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('7bdcdfdc-6bca-4789-aaff-7287f656e3a4',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','b9c3c308-8898-4179-b835-38377ba27703');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('8f75f053-ff2f-47f5-845b-09768fad4fe7',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','9bf1d39f-8f9a-45fb-b58c-4f45987395e7');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('a082b301-be75-42df-badb-d0460ff58356',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','a0b3e944-c9f8-459c-8b4b-dfd24b15f160');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('0acb1ff2-7901-4f5a-abd0-d0517860b8cd',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','ae2ab865-365c-4bc0-82f7-79505f517ffe');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('97b6fbce-53ba-45b9-ae1c-08805338d16f',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','083d7c91-72c0-482d-83e0-7c0b327fe8e8');
+
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('5632906e-e0fd-44b5-8b05-a39cb5b67121',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','ae3dd7d2-4ea5-4da6-b16a-0c820a6ea274');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('2d77ada6-e406-4e30-ad94-e85e984cbceb',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','56ea98eb-e0f9-4d10-9bd7-bb37c9b9ac65');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('0698adc9-2f35-47ec-ac7b-eedf43b21998',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','e9b23452-976f-48c1-a324-94681bed1868');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('95cbf173-c5bf-4424-8234-ac1f47f96fce',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','8028840b-5e4b-4f04-8816-23ea67b2c2f4');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('18d65246-60c1-4b27-9240-41bf4d0bf7a3',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','e1ab4485-0909-4c0b-9e62-b148febeedb4');
+
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('fe5dc800-cbb7-4e7b-8bf6-9825adc7889b',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','061e7ff2-418c-4270-9292-e3b0b457f077');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('f524fc77-238a-446a-86bf-c08fecd7c8d4',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','2e71e645-4a96-4673-9680-eff3aeedf5d3');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('4f22a693-ca3d-42ca-b590-1addc91857f6',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','d59f992c-310e-4fb6-afaa-47c6ad8c0b27'); 
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('b48adb5e-98ab-488d-80ec-c51b8a9cc0e5',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','6599822b-ce40-4bc8-983c-d060ce6809d9');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('afabdd4a-b9a8-4ca8-b1b7-6ae1190813e5',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','6fbebe95-1e90-43ae-99f8-1bb3479ebf11');
+INSERT INTO sys_userpermissionprofile (Oid,Granted,userprofile,PermissionItem) VALUES ('8eca6316-3179-4e67-b173-3991068e6c7f',1,'1626e21f-75e6-429e-b0ac-edb755e733c2','efe21943-3448-45e5-8f8f-0c4e59a89874');
+
+INSERT INTO fin_articlestock(Oid, DocumentNumber, Disabled) VALUES ('00000000-0000-0000-0000-000000000001', '-- Selecione --', 1);
 ----FINANCE_DOCUMENT_CANCEL_DOCUMENT - Force This Permission to be Un-Granted at Start;
 --UPDATE sys_userpermissionprofile SET Granted = 0 WHERE Oid = '1978e461-ec5e-11e5-a20f-005056c00008';
 
@@ -1020,7 +1066,8 @@ INSERT INTO erp_customertype (Oid,Ord,Code,Designation) VALUES ('15120324-9e28-4
 UPDATE erp_customertype SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 -- Encrypted : Will be Updated by Vendor Plugin Script;
-INSERT INTO erp_customer (Oid,Ord,Code,CodeInternal,Name,FiscalNumber,CardNumber,Address,Locality,ZipCode,City,Country,Discount,PriceType,CustomerType) VALUES ('0cf40622-578b-417d-b50f-e945fefb5d68',10,10,'0cf40622-578b-417d-b50f-e945fe','Consumidor Final','999999990',NULL,'Desconhecido','Desconhecido','1000-000','Indefinido','e7e8c325-a0d4-4908-b148-508ed750676a',0,'cf17a218-b687-4b82-a8f4-0905594ac1f5','a4b3811f-9851-430d-810e-f8be7ac3f392');
+INSERT INTO erp_customer (Oid,Ord,Code,CodeInternal,Name,FiscalNumber,CardNumber,Address,Locality,ZipCode,City,Country,Discount,PriceType,CustomerType) VALUES ('0cf40622-578b-417d-b50f-e945fefb5d68',10,10,'0cf40622-578b-417d-b50f-e945fe','Consumidor Final','999999999',NULL,'Desconhecido','Desconhecido','1000-000','Indefinido','e7e8c325-a0d4-4908-b148-508ed750676a',0,'cf17a218-b687-4b82-a8f4-0905594ac1f5','a4b3811f-9851-430d-810e-f8be7ac3f392');
+INSERT INTO erp_customer (Oid,Ord,Code,CodeInternal,Name,FiscalNumber,CardNumber,Address,Locality,ZipCode,City,Country,Discount,PriceType,CustomerType,Disabled,Supplier) VALUES ('00000000-0000-0000-0000-000000000002',01,01,'00000000-0000-0000-0000-000002',(Select Value from cfg_configurationpreferenceparameter where Token = 'COMPANY_NAME'),(Select Value from cfg_configurationpreferenceparameter where Token = 'COMPANY_FISCALNUMBER'),NULL,'Desconhecido','Desconhecido','1000-000','Indefinido','e7e8c325-a0d4-4908-b148-508ed750676a',0,'cf17a218-b687-4b82-a8f4-0905594ac1f5','a4b3811f-9851-430d-810e-f8be7ac3f392',1,1);
 UPDATE erp_customer SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 INSERT INTO erp_customerdiscountgroup (Oid,Ord,Code,Designation) VALUES ('72dfb8e2-3a48-4d01-8800-8d497e599fbe',10,10,'Mínimo');
@@ -1042,6 +1089,7 @@ INSERT INTO rpt_reporttype (Oid,Ord,Code,Designation,ResourceString,MenuIcon,Dis
 -- IN009072 -- INSERT INTO rpt_reporttype (Oid,Ord,Code,Designation,ResourceString,MenuIcon,Disabled) VALUES ('09bbb9b2-698e-48ce-9b1b-73b425ebadd4',30,30,'ReportType #3','reporttype_label_type3','report_financial_detailed_grouped.png',NULL);
 INSERT INTO rpt_reporttype (Oid,Ord,Code,Designation,ResourceString,MenuIcon,Disabled) VALUES ('2866fc5d-9ce8-4793-a9ef-fc9c62695257',40,40,'ReportType #4','reporttype_label_type4','report_auxiliary_tables.png',NULL);
 INSERT INTO rpt_reporttype (Oid,Ord,Code,Designation,ResourceString,MenuIcon,Disabled) VALUES ('856ee1f1-4947-47fc-a04a-361f3da28227',50,50,'ReportType #5','reporttype_label_type5','report_other_reports.png',NULL);
+INSERT INTO rpt_reporttype (Oid,Ord,Code,Designation,ResourceString,MenuIcon,Disabled) VALUES ('751c9e56-26bb-4fc8-8110-6c1e3b7c84e6',60,60,'ReportType #6','reporttype_label_type6','report_other_reports.png',NULL);
 UPDATE rpt_reporttype SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-02-28 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('7b730d4f-fdf5-463c-af13-8e16ef648a8f', 09, 09,'Relatório :: Faturação da Empresa','report_company_billing','REPORT_COMPANY_BILLING','eeb05008-d250-4898-bae0-b36980d08543',NULL); /* IN009204 */
@@ -1088,8 +1136,17 @@ INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType
 INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('a6d2e05f-88e5-4328-a2b3-74e622b41803',800,800,'Relatório :: Famílias, SubFamílias e Artigos','report_list_family_subfamily_articles','REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES','2866fc5d-9ce8-4793-a9ef-fc9c62695257',NULL);
 INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('864767f0-f6ea-4ba9-b7d5-f13d302a2da2',810,810,'Relatório :: Clientes','report_list_customers','REPORT_LIST_CUSTOMERS','2866fc5d-9ce8-4793-a9ef-fc9c62695257',NULL);
 INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('f2111896-e376-4112-a86f-b3a9b05e4f64',900,900,'Relatório :: Auditoria','report_list_audit_table','REPORT_LIST_AUDIT_TABLE','856ee1f1-4947-47fc-a04a-361f3da28227',NULL);
-INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('c721aee9-cb5e-49c7-85ea-0dfef2540638',910,910,'Relatório :: Movimentos de Mercadoria','report_list_stock_movements','REPORT_LIST_STOCK_MOVEMENTS','856ee1f1-4947-47fc-a04a-361f3da28227',NULL);
+INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('c721aee9-cb5e-49c7-85ea-0dfef2540638',910,910,'Relatório :: Movimentos de Stocks','report_list_stock_movements','REPORT_LIST_STOCK_MOVEMENTS','751c9e56-26bb-4fc8-8110-6c1e3b7c84e6',NULL);
 INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('ca02c74b-05b4-4d02-b70a-546b962f3d64',930,930,'Relatório :: Comissões','report_list_user_commission','REPORT_LIST_USER_COMMISSION','856ee1f1-4947-47fc-a04a-361f3da28227',NULL);
+
+INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('8bda2d73-43ad-41ee-9c92-febbcd86ffab',940,940,'Relatório :: Stock por Armazém','report_list_stock_warehouse','REPORT_LIST_STOCK_WAREHOUSE','751c9e56-26bb-4fc8-8110-6c1e3b7c84e6',NULL);
+INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('e0576081-c809-4a3c-9a81-13a44c8f1009',950,950,'Relatório :: Stock por Artigo','report_list_stock_article','REPORT_LIST_STOCK_ARTICLE','751c9e56-26bb-4fc8-8110-6c1e3b7c84e6',NULL);
+INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('8c45f62b-c3aa-4c4e-84eb-c8402837dead',960,960,'Relatório :: Stock por Fornecedor','report_list_stock_supplier','REPORT_LIST_STOCK_SUPPLIER','751c9e56-26bb-4fc8-8110-6c1e3b7c84e6',NULL);
+
+INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('3af51597-d69b-4095-9115-363ebb2b0677',1000,1000,'Relatório :: Vendas Detalhadas por Taxa de IVA','report_sales_detail_group_per_vat','REPORT_SALES_DETAIL_GROUP_PER_VAT','b0992600-83c4-4932-8fae-3c491abf2a18',NULL);
+
+INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('507f5075-3b7d-4c0d-824c-0fc740b5c721',1010,1010,'Relatório :: Vendas por Taxa de IVA','report_sales_per_vat','REPORT_SALES_PER_VAT','eeb05008-d250-4898-bae0-b36980d08543',NULL);
+INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('f11e3fbe-c21a-47b5-afe6-c5a394f04cfd',1020,1020,'Relatório :: Vendas por Taxa de IVA / Classe de artigos','report_sales_per_vat_by_article_class','REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS','eeb05008-d250-4898-bae0-b36980d08543',NULL);
 
 -- Above are Un-Implemented
 --INSERT INTO rpt_report (Oid,Ord,Code,Designation,ResourceString,Token,ReportType,Disabled) VALUES ('99e22008-c669-4150-9a84-04a72d7e9796',920,920,'Relatório :: Fecho de Sessão de Trabalho','report_list_close_worksession','REPORT_LIST_CLOSE_WORKSESSION','856ee1f1-4947-47fc-a04a-361f3da28227',1);
@@ -1151,7 +1208,12 @@ INSERT INTO sys_configurationprinterstemplates (Oid,Ord,Code,Designation,FileTem
 INSERT INTO sys_configurationprinterstemplates (Oid,Ord,Code,Designation,FileTemplate,FinancialTemplate) VALUES ('adb47395-0adb-40b0-bf02-d15cc35c29ac',200,200,'Modelo para Impressão de Entradas de Conta Corrente','Resources/Hardware/Printers/Templates/template_entrada_conta_corrente.ticket',1);
 INSERT INTO sys_configurationprinterstemplates (Oid,Ord,Code,Designation,FileTemplate,FinancialTemplate) VALUES ('0f7318de-0f7b-4e37-8327-7a00d7f0bba5',210,210,'Modelo para Impressão de Orçamento','Resources/Hardware/Printers/Templates/template_documento_fiscal.ticket',1);
 INSERT INTO sys_configurationprinterstemplates (Oid,Ord,Code,Designation,FileTemplate,FinancialTemplate) VALUES ('e317b481-920a-4097-a1e1-4c9f7a211855',220,220,'Modelo para Impressão de Fatura Pró-Forma','Resources/Hardware/Printers/Templates/template_documento_fiscal.ticket',1);
+INSERT INTO sys_configurationprinterstemplates (Oid, CreatedAt, UpdatedAt, Ord, Code, Designation, FileTemplate, FinancialTemplate, IsBarCode) VALUES ('b931ef9c-75cf-4e2e-94ed-b67a22f50cda','2021-03-15 12:00:00.000','2021-03-15 12:00:00.000', 300, 300, 'Modelo para impressão de Código de Barras 40*30', 'Resources/Reports/UserReports/BarCodeTemplate_40x30.frx',0,1);
+
+INSERT INTO sys_configurationprinterstemplates (Oid, CreatedAt, UpdatedAt, Ord, Code, Designation, FileTemplate, FinancialTemplate, IsBarCode) VALUES ('577c83c4-2469-4d15-aae8-770f34782d57','2021-03-15 12:00:00.000','2021-03-15 12:00:00.000', 310, 310, 'Modelo para impressão de Código de Barras 100*50', 'Resources/Reports/UserReports/BarCodeTemplate_100x50.frx',0,1);
 UPDATE sys_configurationprinterstemplates SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-07-05 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
+
+UPDATE fin_article SET TemplateBarCode = 'b931ef9c-75cf-4e2e-94ed-b67a22f50cda', UpdatedAt = '2021-03-15 14:16:18';
 
 INSERT INTO sys_configurationpoledisplay (Oid,Disabled,Ord,Code,Designation,VID,PID,EndPoint,CodeTable,COM,DisplayCharactersPerLine,GoToStandByInSeconds,StandByLine1,StandByLine2) VALUES ('a8e7ecb0-1d8c-4cd5-af78-b369b22ac427',0,10,10,'Display de Cliente Genérico Appostar CPD-3230','0x03EB','0x1101','Ep01','0x10','COM1',20,60,'LogicPulse','Bem Vindo');
 UPDATE sys_configurationpoledisplay SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-07-05 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
@@ -1241,6 +1303,11 @@ INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Va
 INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Value,ValueTip,Required,RegEx,ResourceString,ResourceStringInfo,FormType,FormPageNo,InputType) VALUES ('9c13f51b-8321-4bba-a20f-fcbf38a6e072',NULL,570,570,'USE_EUROPEAN_VAT_AUTOCOMPLETE','True','true | false',1,'RegexBoolean','prefparam_use_vat_autocomplete',NULL,2,1,3);
 INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Value,ValueTip,Required,RegEx,ResourceString,ResourceStringInfo,FormType,FormPageNo,InputType) VALUES ('9c13f51b-8321-4bca-a20f-fcbf38a6e073',NULL,580,580,'USE_POS_PDF_VIEWER','True','true | false',1,'RegexBoolean','prefparam_use_pdfviewer',NULL,2,1,3);
 INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Value,ValueTip,Required,RegEx,ResourceString,ResourceStringInfo,FormType,FormPageNo,InputType) VALUES ('bc0bc5df-4c01-462a-81b7-9051a7869574',NULL,590,590,'USE_CC_DAILY_TICKET','False','true | false',1,'RegexBoolean','prefparam_use_ccdailyticket',NULL,2,1,3);
+INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Value,ValueTip,Required,RegEx,ResourceString,ResourceStringInfo,FormType,FormPageNo,InputType) VALUES ('a8813e64-b20a-4bb4-b666-1cf81695e7e7',NULL,600,600,'TICKET_PRINT_TICKET','True','true | false',1,'RegexBoolean','prefparam_ticket_print_ticket',NULL,2,1,3);
+INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Value,ValueTip,Required,RegEx,ResourceString,ResourceStringInfo,FormType,FormPageNo,InputType) VALUES ('a3313e64-b20a-4bb4-b626-1cf81695e7e7',NULL,610,610,'TICKET_PRINT_COMERCIAL_NAME','True','true | false',1,'RegexBoolean','prefparam_ticket_print_company_name',NULL,2,1,3);
+INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Value,ValueTip,Required,RegEx,ResourceString,ResourceStringInfo,FormType,FormPageNo,InputType) VALUES ('f19d91c5-b042-4cca-9025-6045f76dfb41',NULL,700,700,'PRINT_QRCODE','True','true | false',1,'RegexBoolean','prefparam_print_qrcode',NULL,2,1,3);
+INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Value,ValueTip,Required,RegEx,ResourceString,ResourceStringInfo,FormType,FormPageNo,InputType) VALUES ('213aa95f-8e67-498a-a5a4-0fc9ec48f88c',NULL,800,800,'CHECK_STOCKS','True','true | false',1,'RegexBoolean','prefparam_check_stocks',NULL,2,1,3);
+INSERT INTO cfg_configurationpreferenceparameter (Oid,Disabled,Ord,Code,Token,Value,ValueTip,Required,RegEx,ResourceString,ResourceStringInfo,FormType,FormPageNo,InputType) VALUES ('a318a646-19fe-468a-9325-fa88eadeb22d','true',810,810,'CHECK_STOCKS_MESSAGE','True','true | false',1,'RegexBoolean','prefparam_check_stocks_message',NULL,2,1,3);
 UPDATE cfg_configurationpreferenceparameter SET UpdatedBy = '090c5684-52ba-4d7a-8bc3-a00320ef503d', CreatedAt = '2014-07-27 14:02:28', UpdatedAt = '2019-03-11 23:16:18';
 
 --UPDATE sys_systemaudittype SET ResourceString = LOWER(CONCAT("systemaudittype_", TOKEN));

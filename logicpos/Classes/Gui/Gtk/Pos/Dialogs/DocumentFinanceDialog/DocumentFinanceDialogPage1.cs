@@ -226,7 +226,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _entryBoxDocumentMasterNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
 
             //Reason
-            _entryBoxReason = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reason"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxReason = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reason"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtendedForMotive, false);
             _entryBoxReason.EntryValidation.Changed += delegate { Validate(); };
 
             // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes : After all Components ex entryBoxReason, else we trigger a NPE
@@ -291,31 +291,36 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 bool wayBillMode = GetAndUpdateUIWayBillMode();
 
                 //Always Clear Articles when change DocumentType, if not in CopyDocument mode
-                _treeViewArticles.DeleteRecords();
+                //_treeViewArticles.DeleteRecords();
                 
                 //Always Clear ArticleBag when change DocumentType
                 (_pagePad.Pages[2] as DocumentFinanceDialogPage3).ArticleBag = new ArticleBag();
 
                 //When Change DocumentFinanceType always Clean EntryBoxSelectSourceDocumentFinance, EntryBoxDocumentMasterNotes and EntryBoxReason
                 if (_entryBoxSelectSourceDocumentFinance.Value != null) { _entryBoxSelectSourceDocumentFinance.Value = null; _entryBoxSelectSourceDocumentFinance.EntryValidation.Text = string.Empty; };
-                if (_entryBoxSelectCopyDocumentFinance.Value != null) { _entryBoxSelectCopyDocumentFinance.Value = null; _entryBoxSelectCopyDocumentFinance.EntryValidation.Text = string.Empty; };
-                if (_entryBoxDocumentMasterNotes.EntryValidation.Text != string.Empty) { _entryBoxDocumentMasterNotes.EntryValidation.Text = string.Empty; };
-                if (_entryBoxReason.EntryValidation.Text != string.Empty) { _entryBoxReason.EntryValidation.Text = string.Empty; };
+                //if (_entryBoxSelectCopyDocumentFinance.Value != null) { _entryBoxSelectCopyDocumentFinance.Value = null; _entryBoxSelectCopyDocumentFinance.EntryValidation.Text = string.Empty; };
+                //if (_entryBoxDocumentMasterNotes.EntryValidation.Text != string.Empty) { _entryBoxDocumentMasterNotes.EntryValidation.Text = string.Empty; };
+                //if (_entryBoxReason.EntryValidation.Text != string.Empty) { _entryBoxReason.EntryValidation.Text = string.Empty; };
 
                 // Fill Default Notes From DocumentFinanceType, usefull for IBANS and Other Custom/Generic Notes
-                UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes();
-
+                if(_entryBoxSelectCopyDocumentFinance.Value == null)
+                {
+                    UpdateDocumentMasterNotesFromDocumentFinanceTypeNotes();
+                }
                 //Update Criteria for Customers
                 string filterBaseCustomer = "(Disabled IS NULL OR Disabled  <> 1) AND (Hidden IS NULL OR Hidden = 0)";
 
                 //If Not SimplifiedInvoice
-                if (_entryBoxSelectDocumentFinanceType.Value.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice)
+                if (_entryBoxSelectDocumentFinanceType.Value.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice && _entryBoxSelectDocumentFinanceType.Value.Oid != SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
                 {
                     filterBaseCustomer = filterBaseCustomer + string.Format(" AND Oid <> '{0}'", SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                     //If FinalConsumerEntity, Clean it
                     if (_pagePad2.EntryBoxSelectCustomerName != null || _pagePad2.EntryBoxSelectCustomerName.Value.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity)
                     {
-                        _pagePad2.ClearCustomerAndWayBill();
+                        if (_entryBoxSelectCopyDocumentFinance.Value == null)
+                        {
+                            _pagePad2.ClearCustomerAndWayBill();
+                        }
                     }
                 }
                 //If SimplifiedInvoice
@@ -398,9 +403,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide ||
                     _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
                     _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide ||
+                    _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill ||
                     _entryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeReturnGuide
                 )
                 {
+                    _pagePad2.AssignShipToDetails();
+
                     //Assign Default Values from Company
                     _pagePad5.AssignShipFromDefaults();
                 }
@@ -701,6 +709,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _entryBoxSelectConfigurationCurrency.EntryValidation.Text = sourceDocument.Currency.Acronym;
                     _entryBoxSelectConfigurationCurrency.EntryValidation.Validate(sourceDocument.Currency.Oid.ToString());
                 }
+                //Page1: Notes from Source document
+                _entryBoxDocumentMasterNotes.EntryValidation.Text = sourceDocument.Notes;
 
                 //Page2:Customer
                 erp_customer customer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), sourceDocument.EntityOid);
@@ -775,6 +785,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     // Required to add string, if assign null value we have problems with updates and DBNull Type
                     dataRow["Token1"] = (item.Token1 != null) ? item.Token1 : string.Empty;
                     dataRow["Token2"] = (item.Token2 != null) ? item.Token2 : string.Empty;
+                    dataRow["SerialNumber"] = (item.SerialNumber != null) ? item.SerialNumber : string.Empty;
+                    dataRow["Warehouse"] = (item.Warehouse != null) ? item.Warehouse : string.Empty;
                     dataRow["Notes"] = (item.Notes != null) ? item.Notes : string.Empty;
                     //Insert DataRow into DataTable
                     _treeViewArticles.DataSourceRowInsert<DataRow>(dataRow);
@@ -828,6 +840,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 _entryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = false;
                 //_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Sensitive = false;
                 _pagePad3.TreeViewArticles.ReadOnly = true;
+
+                // SourceDocument
+                // Edit articles from pro-forma
+                if(_entryBoxSelectSourceDocumentFinance.Value != null)
+                {
+                    fin_documentfinancemaster sourceDocument;
+                    sourceDocument = _entryBoxSelectSourceDocumentFinance.Value;
+                    if (sourceDocument != null && (sourceDocument.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice || 
+                        sourceDocument.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeBudget))
+                    {
+                        _pagePad3.TreeViewArticles.ReadOnly = false;
+                        _pagePad3.TreeViewArticles.AllowRecordUpdate = true;
+                        _pagePad3.TreeViewArticles.AllowRecordInsert = true;                        
+                    }
+                }
+ 
             }
             else
             {

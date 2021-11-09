@@ -1,5 +1,6 @@
 using DevExpress.Xpo;
 using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
 using System;
 namespace logicpos.datalayer.DataLayer.Xpo
@@ -229,6 +230,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<decimal>("Accounting", ref fAccounting, value); }
         }
 
+		//Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
+        decimal fMinimumStock;
+        public decimal MinimumStock
+        {
+            get { return fMinimumStock; }
+            set { SetPropertyValue<decimal>("MinimumStock", ref fMinimumStock, value); }
+        }
+
         decimal fTare;
         public decimal Tare
         {
@@ -256,6 +265,20 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return fPVPVariable; }
             set { SetPropertyValue<bool>("PVPVariable", ref fPVPVariable, value); }
+        }
+		//Artigos Compostos [IN:016522]
+        bool fIsComposed;
+        public bool IsComposed
+        {
+            get { return fIsComposed; }
+            set { SetPropertyValue<bool>("IsComposed", ref fIsComposed, value); }
+        }
+
+        bool fUniqueArticles;
+        public bool UniqueArticles
+        {
+            get { return fUniqueArticles; }
+            set { SetPropertyValue<bool>("UniqueArticles", ref fUniqueArticles, value); }
         }
 
         bool fFavorite;
@@ -308,6 +331,26 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public XPCollection<fin_documentfinancedetail> DocumentFinanceDetail
         {
             get { return GetCollection<fin_documentfinancedetail>("DocumentFinanceDetail"); }
+        }
+
+		//Artigos Compostos [IN:016522]
+        //Article One <> Many ArticlesComposition
+        [Association(@"ArticleReferencesArticleComposition", typeof(fin_articlecomposition))]
+        public XPCollection<fin_articlecomposition> ArticleComposition
+        {
+            get { return GetCollection<fin_articlecomposition>("ArticleComposition"); }
+        }
+
+        [Association(@"ArticleReferencesArticleSerialNumber", typeof(fin_articleserialnumber))]
+        public XPCollection<fin_articleserialnumber> ArticleSerialNumber
+        {
+            get { return GetCollection<fin_articleserialnumber>("ArticleSerialNumber"); }
+        }
+
+        [Association(@"ArticleReferencesArticleWareHouse", typeof(fin_articlewarehouse))]
+        public XPCollection<fin_articlewarehouse> ArticleWarehouse
+        {
+            get { return GetCollection<fin_articlewarehouse>("ArticleWarehouse"); }
         }
 
         //Family One <> Many Article
@@ -425,6 +468,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return fTemplate; }
             set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
+        }
+
+        sys_configurationprinterstemplates fTemplateBarCode;
+        [Association(@"ConfigurationPrintersBarCodeTemplatesReferencesArticle")]
+        public sys_configurationprinterstemplates TemplateBarCode
+        {
+            get { return fTemplateBarCode; }
+            set { SetPropertyValue<sys_configurationprinterstemplates>("TemplateBarCode", ref fTemplateBarCode, value); }
         }
     }
 }

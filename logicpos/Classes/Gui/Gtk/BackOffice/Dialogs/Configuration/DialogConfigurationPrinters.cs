@@ -36,7 +36,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinters"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 468);
+            if (Utils.IsLinux) SetSizeRequest(500, 480);
             else SetSizeRequest(500, 448);
             InitUI();
             InitNotes();
@@ -151,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Entry entryNetworkName = new Entry();
                 BOWidgetBox boxNetworkName = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_networkname"), entryNetworkName);
                 vboxTab1.PackStart(boxNetworkName, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxNetworkName, _dataSourceRow, "NetworkName", SettingsApp.RegexHardwarePrinterNetworkNameAndUsbEndpoint, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxNetworkName, _dataSourceRow, "NetworkName", "", false));
 
                 //Quando a combobox da drop altera
                 if(xpoComboBoxInputType != null)

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>logicpos.datalayer</RootNamespace>
     <AssemblyName>LogicposDatalayer</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -34,25 +34,38 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v20.1, Version=20.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevExpress.Data.20.1.6\lib\net452\DevExpress.Data.v20.1.dll</HintPath>
+    <Reference Include="DevExpress.Data.v20.1, Version=20.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\logicpos_pos_internal\packages\DevExpress.Data.20.1.6\lib\net452\DevExpress.Data.v20.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpo.v20.1, Version=20.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\packages\DevExpress.Xpo.20.1.6\lib\net452\DevExpress.Xpo.v20.1.dll</HintPath>
+    <Reference Include="DevExpress.Xpo.v20.1, Version=20.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\logicpos_pos_internal\packages\DevExpress.Xpo.20.1.6\lib\net452\DevExpress.Xpo.v20.1.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.13\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App\SettingsApp.cs" />
+    <Compile Include="DataLayer\Xpo\Articles\FIN_ArticleCompositionSerialnumber.cs" />
+    <Compile Include="DataLayer\Xpo\Articles\FIN_ArticleSerialNumber.cs" />
+    <Compile Include="DataLayer\Xpo\Articles\FIN_ArticleComposition.cs" />
+    <Compile Include="DataLayer\Xpo\Articles\FIN_ArticleWarehouse.cs" />
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationInputReader.cs" />
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationPoleDisplay.cs" />
     <Compile Include="DataLayer\Xpo\Configuration\SYS_ConfigurationWeighingMachine.cs" />
+    <Compile Include="DataLayer\Xpo\Documents\FIN_Warehouse.cs" />
+    <Compile Include="DataLayer\Xpo\Documents\FIN_WarehouseLocation.cs" />
     <Compile Include="DataLayer\Xpo\Documents\VIEW_ViewDocumentFinancePaymentTotals.cs" />
     <Compile Include="DataLayer\Xpo\System\SYS_SystemNotificationDocumentMaster.cs" />
     <Compile Include="DataLayer\Xpo\XPGuidObjectAttribute.cs" />

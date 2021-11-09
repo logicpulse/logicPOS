@@ -16,6 +16,8 @@ using System.Drawing;
 using System.Reflection;
 using logicpos.Classes.Enums.Dialogs;
 using System.Collections;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.Classes.Gui.Gtk.BackOffice;
 
 //Note: This component dont have Validation, is used to be the Base XPOEntryBoxSelectRecordValidation 
 //and to be used with CrudWidgetList Validation
@@ -54,9 +56,27 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             get { return _buttonSelectValue; }
             set { _buttonSelectValue = value; }
         }
+
+        private TouchButtonIcon _buttonClearValue;
+        public TouchButtonIcon ButtonClearValue
+        {
+            get { return _buttonClearValue; }
+            set { _buttonClearValue = value; }
+        }
+
+        private TouchButtonIcon _buttonAddValue;
+        public TouchButtonIcon ButtonAddValue
+        {
+            get { return _buttonAddValue; }
+            set { _buttonAddValue = value; }
+        }
+
+        
         //Custom Events
         public event EventHandler OpenPopup;
         public event EventHandler ClosePopup;
+        public event EventHandler CleanArticleEvent;
+        public event EventHandler AddNewEntryEvent;
         //Param: Optional 
         private CriteriaOperator _criteriaOperator;
         public CriteriaOperator CriteriaOperator
@@ -74,6 +94,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             get { return _entry; }
             set { _entry = value; }
         }
+		//Artigos Compostos [IN:016522]
+        private Entry _qtdentry;
+        public Entry QtdEntry
+        {
+            get { return _qtdentry; }
+            set { _qtdentry = value; }
+        }
+
+        private Entry _codeEntry;
+        public Entry CodeEntry
+        {
+            get { return _codeEntry; }
+            set { _codeEntry = value; }
+        }
 
         public ICollection dropdownTextCollection;
 
@@ -90,8 +124,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         public XPOEntryBoxSelectRecord(Window pSourceWindow, String pLabelText, String pFieldDisplayValue, String pFieldValidateValue, T1 pValue)
             : this(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldDisplayValue, pValue, null) { }
 
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, String pLabelText, String pFieldDisplayValue, String pFieldValidateValue, T1 pValue, CriteriaOperator pCriteriaOperator)
-            : base(pSourceWindow, pLabelText)
+        public XPOEntryBoxSelectRecord(Window pSourceWindow, String pLabelText, String pFieldDisplayValue, String pFieldValidateValue, T1 pValue, CriteriaOperator pCriteriaOperator, bool BOSource = false)
+            : base(pSourceWindow, pLabelText, BOSource)
         {
             //Parameters
             _sourceWindow = pSourceWindow;
@@ -107,6 +141,97 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 _entry = new Entry();
                 InitEntry(_entry);
             }
+        }
+		//Artigos Compostos [IN:016522]
+        protected void InitEntryBOSource(Entry pCodeEntry, Entry pEntry, Entry pQtdentry)
+        {
+            //params
+            _entry = pEntry;
+            _qtdentry = pQtdentry;
+            _codeEntry = pCodeEntry;
+            ListStore store = null;
+            //Settings
+            String iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
+            String iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+            String iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+            //Init Button
+            _buttonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
+            _buttonClearValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
+            _buttonAddValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconAddRecord, new Size(20, 20), 30, 30);
+
+            //UI/Pack
+            //Assign Initial Value
+            if (_value != null && _value.GetMemberValue(_fieldDisplayValue) != null)
+            {
+                try
+                {
+                    if(_value.GetType() == typeof(fin_articlewarehouse))
+                    {
+                        if((_value as fin_articlewarehouse).ArticleSerialNumber != null)
+                        {
+                            _entry.Text = (_value as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
+                        }
+                        else if((_value as fin_articlewarehouse).Article != null)
+                        {
+                            _entry.Text = (_value as fin_articlewarehouse).Article.Designation;
+                        }
+                        else _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
+                    }
+                    else _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
+                }
+                catch (Exception ex)
+                {
+                    _log.Error(ex.Message, ex);
+                    _entry.Text = string.Empty;
+                }
+            }
+            //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
+            //Se for código de artigo, lista os códigos, por defeito é a designação
+            if (_fieldDisplayValue == "Code") _articleCode = true;
+            else _articleCode = false;
+
+            //Preenche o dropdown de auto-complete
+            //store = fillDropDowntext(_value, _criteriaOperator);
+
+            //_entry.Completion = new EntryCompletion();
+            //_entry.Completion.Model = store;
+            //_entry.Completion.TextColumn = 0;
+            //_entry.Completion.PopupCompletion = true;
+            //_entry.Completion.InlineCompletion = true;
+            //_entry.Completion.PopupSingleMatch = true;
+            //_entry.Completion.InlineSelection = true;
+            _entry.ModifyFont(_fontDescription);
+            _codeEntry.ModifyFont(_fontDescription);
+            _qtdentry.ModifyFont(_fontDescription);
+            //_articleCode = true;
+            //_codeEntry.Completion = new EntryCompletion();
+            //_codeEntry.Completion.Model = fillDropDowntext(_value, _criteriaOperator);
+            //_codeEntry.Completion.TextColumn = 0;
+            //_codeEntry.Completion.PopupCompletion = true;
+            //_codeEntry.Completion.InlineCompletion = true;
+            //_codeEntry.Completion.PopupSingleMatch = true;
+            //_codeEntry.Completion.InlineSelection = true;
+            //_codeEntry.ModifyFont(_fontDescription);
+            _codeEntry.WidthRequest = 50;
+            _qtdentry.WidthRequest = 50;
+
+            _hbox.PackStart(_codeEntry, false, false, 0);
+            _hbox.PackStart(_entry, true, true, 0);
+            _hbox.PackStart(_qtdentry, false, false, 0);
+            _hbox.PackStart(_buttonSelectValue, false, false, 0);
+            _hbox.PackStart(_buttonClearValue, false, false, 0);
+            _hbox.PackStart(_buttonAddValue, false, false, 0);
+            //Events
+            _buttonSelectValue.Clicked += delegate { PopupDialog(_entry); };
+            _buttonClearValue.Clicked += delegate { OnCleanArticleEvent();  };
+            _buttonAddValue.Clicked += delegate { OnAddNewEntryEvent(); };
+
+            //_entry.Changed += delegate
+            //{
+            //    SelectRecordDropDownBOSourceCode(_entry, _codeEntry, _qtdentry);
+            //};
+
+            //_entry.FocusGrabbed += delegate { PopupDialog(_entry); };
         }
 
         protected void InitEntry(Entry pEntry)
@@ -124,7 +249,19 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             {
                 try
                 {
-                    _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
+                    if (_value.GetType() == typeof(fin_articlewarehouse))
+                    {
+                        if ((_value as fin_articlewarehouse).ArticleSerialNumber != null)
+                        {
+                            _entry.Text = (_value as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
+                        }
+                        else if ((_value as fin_articlewarehouse).Article != null)
+                        {
+                            _entry.Text = (_value as fin_articlewarehouse).Article.Designation;
+                        }
+                        else _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
+                    }
+                    else _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
                 }
                 catch (Exception ex)
                 {
@@ -138,7 +275,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             else _articleCode = false;
 
             //Preenche o dropdown de auto-complete
-            store = fillDropDowntext(_value);
+            store = fillDropDowntext(_value, _criteriaOperator);
 
             _entry.Completion = new EntryCompletion();
             _entry.Completion.Model = store;
@@ -162,8 +299,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
             //_entry.FocusGrabbed += delegate { PopupDialog(_entry); };
         }
+
 		//TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 	
-        private ListStore fillDropDowntext(T1 value)
+        private ListStore fillDropDowntext(T1 value, CriteriaOperator pCriteria = null)
         {
             ListStore store = new ListStore(typeof(string));
             if (value != null)
@@ -173,11 +311,27 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 {
                     sortProp = "Name";
                 }
+                else if (value.GetType() == typeof(fin_articleserialnumber))
+                {
+                    sortProp = "SerialNumber";
+                }
+                else if (value.GetType() == typeof(fin_articlewarehouse))
+                {
+                    sortProp = "CreatedAt";
+                }
+                else if (value.GetType() == typeof(fin_articlestock))
+                {
+                    sortProp = "DocumentNumber";
+                }
+                else if (value.GetType() == typeof(fin_documentfinancemaster))
+                {
+                    sortProp = "DocumentNumber";
+                }
                 SortingCollection sortCollection = new SortingCollection();
                 sortCollection.Add(new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending));
-                CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
+                if(pCriteria == null) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
-                dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(value), criteria, sortCollection, int.MaxValue, false, true);
+                dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(value), pCriteria, sortCollection, int.MaxValue, false, true);
 
                 if (dropdownTextCollection != null)
                 {
@@ -191,6 +345,28 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                         {
                             store.AppendValues(item.Code);
                         }
+                        else if (value.GetType() == typeof(fin_articleserialnumber))
+                        {
+                            store.AppendValues(item.SerialNumber);
+                        }
+                        else if (value.GetType() == typeof(fin_articlestock) || value.GetType() == typeof(fin_documentfinancemaster))
+                        {
+                            if(item.DocumentNumber != null)
+                            {
+                                store.AppendValues(item.DocumentNumber);
+                            }
+                        }
+                        else if (value.GetType() == typeof(fin_articlewarehouse))
+                        {
+                            if(item.ArticleSerialNumber != null)
+                            {
+                                store.AppendValues(item.ArticleSerialNumber.SerialNumber);
+                            }
+                            else
+                            {
+                                store.AppendValues(item.Article.Designation);
+                            }                            
+                        }
                         else { store.AppendValues(item.Designation); }
                     }
                 }
@@ -198,8 +374,66 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
             return store;
         }
-		//TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
-        private void SelectRecordDropDown(Entry pEntry)
+		//Artigos Compostos [IN:016522]
+        private void SelectRecordDropDownBOSourceCode(Entry pEntry, Entry pEntryCode, Entry pEntryQtd)
+        {
+            PropertyInfo propertyInfo;
+            //Store previousValue before update _value, to keep it
+            _previousValue = _value;
+
+            Guid articleOid = Guid.Empty;
+            if (dropdownTextCollection != null && _value != null)
+            {
+                foreach (fin_article item in dropdownTextCollection)
+                {
+                    if (item.Code == pEntryCode.Text)
+                    {
+                        articleOid = item.Oid;
+                        break;
+                    }
+                    if (item.Designation == pEntry.Text)
+                    {
+                        articleOid = item.Oid;
+                        break;
+                    }
+                }
+            }
+            if (!articleOid.Equals(Guid.Empty))
+            {
+                //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
+                _value = (T1)FrameworkUtils.GetXPGuidObject(typeof(T1), articleOid);
+                propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
+
+                fin_article value = null;
+                if (propertyInfo != null)
+                {
+                    // Get value from XPGuidObject Instance
+                    value = (fin_article)propertyInfo.GetValue(_value, null);
+                }
+                else
+                {
+                    string invalidFieldMessage = string.Format("Invalid Field DisplayValue:[{0}] on XPGuidObject:[{1}]", _fieldDisplayValue, _value.GetType().Name);
+                    _log.Error(invalidFieldMessage);
+                    //value = invalidFieldMessage;
+                }
+                
+
+                pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+
+                pEntryCode.Text = (value != null) ? value.Code.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                
+                OnClosePopup();
+            }
+            else
+            {
+                //Front-End - Adicionar artigos na criação de Documentos [IN:010335]
+                propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
+            }
+        }
+
+        //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
+        private void SelectRecordDropDown(Entry pEntry, bool pBOSource = false)
         {
             PropertyInfo propertyInfo;
             //Store previousValue before update _value, to keep it
@@ -222,6 +456,37 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                         if (item.Code == pEntry.Text)
                         {
                             articleOid = item.Oid;
+                        }
+                    }
+                    else if (_value.GetType() == typeof(fin_articleserialnumber))
+                    {
+                        if (item.SerialNumber == pEntry.Text)
+                        {
+                            articleOid = item.Oid;
+                        }
+                    }
+                    else if (_value.GetType() == typeof(fin_articlestock))
+                    {
+                        if (item.DocumentNumber == pEntry.Text)
+                        {
+                            articleOid = item.Oid;
+                        }
+                    }
+                    else if (_value.GetType() == typeof(fin_articlewarehouse))
+                    {
+                        if (item.ArticleSerialNumber != null)
+                        {
+                            if (item.ArticleSerialNumber.SerialNumber == pEntry.Text)
+                            {
+                                articleOid = item.Oid;
+                            }
+                        }
+                        else
+                        {
+                            if (item.Article.Designation == pEntry.Text)
+                            {
+                                articleOid = item.Oid;
+                            }
                         }
                     }
                     else if (item.Designation == pEntry.Text)
@@ -248,11 +513,34 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     _log.Error(invalidFieldMessage);
                     value = invalidFieldMessage;
                 }
-
-                pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                if (value != null && value.GetType() == typeof(fin_articleserialnumber))
+                {
+                    _entry.Text = (value as fin_articleserialnumber).SerialNumber;
+                }
+                else if(propertyInfo.Name == "ArticleSerialNumber") 
+                {
+                    pEntry.Text = (value != null) ? value.ToString() : "";
+                }
+                else
+                {
+                    pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                }           
                 OnClosePopup();
             }
+            //else if (typeof(T2) == typeof(TreeViewArticleSerialNumber))
+            //{
+            //    var articleSerialNumber = (fin_articleserialnumber)FrameworkUtils.GetXPGuidObject(typeof(fin_article), (_value as fin_articleserialnumber).Article.Oid);
+            //    pEntry.Text = articleSerialNumber.SerialNumber;
+            //}
+            else {
+                //Front-End - Adicionar artigos na criação de Documentos [IN:010335]
+                propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
+                if (!pBOSource && _value != null && _value.ClassInfo.ToString() == "logicpos.datalayer.DataLayer.Xpo.fin_article")
+                {
+                    OnClosePopup();
+                }
 
+            }
         }
 
         //Events
@@ -307,13 +595,25 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             PropertyInfo propertyInfo;
             //Store previousValue before update _value, to keep it
             _previousValue = _value;
-
+            object value = null;
             //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
             _value = (T1)FrameworkUtils.GetXPGuidObject(typeof(T1), dialog.GenericTreeView.DataSourceRow.Oid);
             propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
-            object value = null;
-            if (propertyInfo != null)
+            if (typeof(T2) == typeof(TreeViewArticleSerialNumber))
+            {
+                propertyInfo = typeof(T1).GetProperty("SerialNumber");
+            }
+
+            if (typeof(T2) == typeof(TreeViewArticleWarehouse))
+            {
+                _value = (T1)FrameworkUtils.GetXPGuidObject(typeof(T1), (dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
+                propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
+                if(propertyInfo == null) { propertyInfo = typeof(T1).GetProperty("Warehouse"); }
+            }
+
+            
+            else if (propertyInfo != null)
             {
                 // Get value from XPGuidObject Instance
                 value = propertyInfo.GetValue(_value, null);
@@ -324,11 +624,33 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 _log.Error(invalidFieldMessage);
                 value = invalidFieldMessage;
             }
-
-            pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
-
-            //Call Custom Event, Only if OK, if Cancel Dont Trigger Event   
-            OnClosePopup();
+            if (value != null && value.GetType() == typeof(fin_articleserialnumber))
+            {
+                _entry.Text = (value as fin_articleserialnumber).SerialNumber;
+            }
+            else
+            {
+                if(_value != null && _value.Oid == SettingsApp.XpoOidUserRecord)
+                {
+                    pEntry.Text = (value != null) ? CryptorEngine.Decrypt(value.ToString(), true, SettingsApp.SecretKey) : "";
+                }
+                else
+                {
+                    pEntry.Text = (value != null) ? value.ToString() : "";
+                }
+                 //resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+            }
+            if (typeof(T2) == typeof(TreeViewArticleWarehouse))
+            {
+                var articleWarehouse = (fin_articlewarehouse)FrameworkUtils.GetXPGuidObject(typeof(fin_articlewarehouse), (dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
+                if((articleWarehouse as fin_articlewarehouse).ArticleSerialNumber != null)
+                {
+                    pEntry.Text = (articleWarehouse as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
+                }                
+                if(string.IsNullOrEmpty(pEntry.Text)) pEntry.Text = "";
+            }
+                //Call Custom Event, Only if OK, if Cancel Dont Trigger Event   
+                OnClosePopup();
         }
 
 
@@ -372,8 +694,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 string extraFilter = string.Empty;
 
                 List<string> result = new List<string>();
-
-                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster");
+				//Titulo nas janelas de filtro de relatório [IN:014328]
+                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
                 DialogResponseType responseFilter = (DialogResponseType)dialogFilter.Run();
 
                 //If button Clean Filter Clicked
@@ -481,6 +803,22 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (ClosePopup != null)
             {
                 ClosePopup(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnCleanArticleEvent()
+        {
+            if (CleanArticleEvent != null)
+            {
+                CleanArticleEvent(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnAddNewEntryEvent()
+        {
+            if (AddNewEntryEvent != null)
+            {
+                AddNewEntryEvent(this, EventArgs.Empty);
             }
         }
     }

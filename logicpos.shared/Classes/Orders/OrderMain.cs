@@ -8,6 +8,7 @@ using logicpos.shared.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace logicpos.shared.Classes.Orders
 {
@@ -175,10 +176,17 @@ namespace logicpos.shared.Classes.Orders
             //Get Place Object to extract TaxSellType Normal|TakeWay
             pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
             //Use VatDirectSelling if in Retail or in TakeWay mode
-            TaxSellType taxSellType = (configurationPlace.MovementType.VatDirectSelling || SettingsApp.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal;
+            TaxSellType taxSellType = (SettingsApp.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             //Open Table on First Finish OrderTicket
             pos_configurationplacetable xTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), _table.Oid);
+			//Proteção para mesas vazias, escolhe a primeira
+            if (xTable == null)
+            {
+                //Order #1 by default
+				//TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
+                xTable = ((pos_configurationplacetable)FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable);
+            }
             xTable.Reload();
             if (xTable.TableStatus != TableStatus.Open)
             {

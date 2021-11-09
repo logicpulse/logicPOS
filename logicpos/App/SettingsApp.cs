@@ -167,7 +167,7 @@ namespace logicpos.App
         /// <summary>
         /// Define Rows per Page for pagination load
         /// </summary>
-        public static int PaginationRowsPerPage = 20;
+        public static int PaginationRowsPerPage = 30;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Helper Methods

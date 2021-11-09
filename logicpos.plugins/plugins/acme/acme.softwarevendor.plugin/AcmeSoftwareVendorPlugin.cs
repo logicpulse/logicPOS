@@ -74,11 +74,6 @@ namespace acme.softwarevendor.plugin
             return SettingsApp.FileFormatSaftPT;
         }
 
-        public string GetFileFormatSaftAO()
-        {
-            return SettingsApp.FileFormatSaftAO;
-        }
-
         public int GetDocumentsPadLength()
         {
             return SettingsApp.DocumentsPadLength;
@@ -196,7 +191,7 @@ namespace acme.softwarevendor.plugin
         {
             if (IsValidSecretKey(secretKey))
             {
-                return FrameworkUtils.SignDataToSHA1Base64(SettingsApp.RsaPrivateKey, SettingsApp.RsaPrivateKeyAO, encryptData, debug);
+                return FrameworkUtils.SignDataToSHA1Base64(SettingsApp.RsaPrivateKey, encryptData, debug);
             }
             else
             {
@@ -394,101 +389,6 @@ namespace acme.softwarevendor.plugin
             cert.Import(pathCertificate, password, X509KeyStorageFlags.Exportable);
             
             return cert;
-        }
-
-        //SAFT AO
-        public int GetDocumentsPadLengthAO()
-        {
-            return SettingsApp.DocumentsPadLengthAO;
-        }
-
-        public string GetDateTimeFormatDocumentDateAO()
-        {
-            return SettingsApp.DateTimeFormatDocumentDateAO; ;
-        }
-
-        public string GetDateTimeFormatCombinedDateTimeAO()
-        {
-            return SettingsApp.DateTimeFormatCombinedDateTimeAO; ;
-        }
-
-        public string GetFinanceFinalConsumerFiscalNumberAO()
-        {
-            return SettingsApp.FinanceFinalConsumerFiscalNumberAO;
-        }
-
-        public string GetFinanceFinalConsumerFiscalNumberDisplayAO()
-        {
-            return SettingsApp.FinanceFinalConsumerFiscalNumberDisplayAO;
-        }
-        public string GetDecimalFormatSAFTAO()
-        {
-            return SettingsApp.DecimalFormatSAFTAO;
-        }
-
-        public string GetDecimalFormatGrossTotalSAFTAO()
-        {
-            return SettingsApp.DecimalFormatGrossTotalSAFTAO;
-        }
-
-        public string GetRsaPrivateKeyAO()
-        {
-            return SettingsApp.RsaPrivateKeyAO;
-        }
-
-        public string GetSaftProductIDAO()
-        {
-            return SettingsApp.SaftProductIDAO;
-        }
-
-        public string GetSaftProductCompanyTaxIDAO()
-        {
-            return SettingsApp.SaftProductCompanyTaxIDAO;
-        }
-
-        public string GetSaftSoftwareCertificateNumberAO()
-        {
-            return SettingsApp.SaftSoftwareCertificateNumberAO;
-        }
-
-        public string GetSaftVersionPrefixAO()
-        {
-            return SettingsApp.SaftVersionPrefixAO;
-        }
-
-        public string GetSaftVersionAO()
-        {
-            return SettingsApp.SaftVersionAO;
-        }
-
-        public int GetHashControlAO()
-        {
-            return SettingsApp.HashControlAO;
-        }
-
-        public string GetTaxAccountingBasisAO()
-        {
-            return SettingsApp.TaxAccountingBasisAO;
-        }
-
-        public string GetSaftCurrencyCodeAO()
-        {
-            return SettingsApp.SaftCurrencyCodeAO;
-        }
-
-        public int GetFinanceRuleSimplifiedInvoiceMaxTotalAO()
-        {
-            return SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalAO;
-        }
-
-        public int GetFinanceRuleSimplifiedInvoiceMaxTotalServicesAO()
-        {
-            return SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServicesAO;
-        }
-
-        public int GetFinanceRuleRequiredCustomerDetailsAboveValueAO()
-        {
-            return SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValueAO;
         }
     }
 }

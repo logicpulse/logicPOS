@@ -10,13 +10,39 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.resources.Resources.Localization;
 using System;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using System.Data;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
+using System.Collections;
+using static Medsphere.Widgets.GridView;
+using System.Collections.Generic;
+using System.Drawing;
+using Image = Gtk.Image;
+using logicpos.datalayer.DataLayer.Xpo.Documents;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
     class DialogArticle : BOBaseDialog
     {
         //UI
+        //Artigos Compostos [IN:016522]
         VBox _vboxTab2;
+
+        private TouchButtonIconWithText _buttonInsert;
+        public TouchButtonIconWithText ButtonInsert
+        {
+            get { return _buttonInsert; }
+            set { _buttonInsert = value; }
+        }
+        protected GenericTreeViewNavigator<fin_article, TreeViewArticle> _navigator;
+        public GenericTreeViewNavigator<fin_article, TreeViewArticle> Navigator
+        {
+            get { return _navigator; }
+            set { _navigator = value; }
+        }
+
         //private XPOComboBox _xpoComboBoxCompositeArticle;
         private XPOComboBox _xpoComboBoxFamily;
         private XPOComboBox _xpoComboBoxSubFamily;
@@ -25,26 +51,52 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private XPOComboBox _xpoComboBoxVatExemptionReason;
         //Non UI
         private fin_article _article = null;
+        private fin_article _previousValue = null;
         //Other
+        VBox vboxTab4, vboxTab5;
+        ScrolledWindow _scrolledWindowCompositionView;
+        ScrolledWindow _scrolledWindowSerialNumbersView;
+        Viewport _CompositionView;
+        Viewport _SerialNumbersView;
+        private TouchButtonIcon _buttonAddSerialNumber;
+        private TouchButtonIcon _buttonClearSerialNumber;
         private uint _totalNumberOfFinanceDocuments = 0;
+        private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle1;
+        private GenericCRUDWidgetXPO _genericCRUDWidgetXPO;
+        public ICollection _dropdownTextCollection;
+        private CheckButton _checkButtonComposite;
+        private CheckButton _checkButtonUniqueArticles;
+        private ICollection <Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>> _serialNumberCollection;
+        String iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+        String iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+
+        private int _totalCompositeEntrys = 0;
+
+        private ICollection<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>> _entryCompositeLinesCollection;
 
         public DialogArticle(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, pDialogMode, pXPGuidObject)
         {
             this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_article"));
 
+            _entryCompositeLinesCollection = new List<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>>();
+            _articlecompositions = new List<fin_articlecomposition>();
+
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
             {
-                SetSizeRequest(500, 640);
+                SetSizeRequest(500, 700);
             }
             else
             {
-                SetSizeRequest(500, 670);
+                SetSizeRequest(500, 740);
             }
 
             InitUI();
             InitNotes();
             ShowAll();
+            if(_scrolledWindowCompositionView != null) _scrolledWindowCompositionView.Visible = _checkButtonComposite.Active;
+            if (_scrolledWindowSerialNumbersView != null) _scrolledWindowSerialNumbersView.Visible = _checkButtonUniqueArticles.Active;
+            if (_checkButtonComposite.Active && _checkButtonUniqueArticles.Active) SetSizeRequest(550, 740); else { SetSizeRequest(500, 740); }
         }
 
         private void InitUI()
@@ -56,7 +108,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 try
                 {
                     //IN009261 BackOffice - Inserir mais auto-completes nos forms
-                    if(GlobalFramework.DatabaseType.ToString() == "MSSqlServer"){
+                    if (GlobalFramework.DatabaseType.ToString() == "MSSqlServer")
+                    {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM fin_article");
                         lastArticleCode = GlobalFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
                     }
@@ -70,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         string lastArticleSql = string.Format("SELECT MAX(CAST(code AS UNSIGNED)) as Cast FROM fin_article;");
                         lastArticleCode = GlobalFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
                     }
-                        
+
                 }
                 catch (Exception ex)
                 {
@@ -79,6 +132,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Init Local Vars
                 _article = (_dataSourceRow as fin_article);
+                if (_article.ArticleComposition.Count > 0)
+                {
+                    foreach (var line in _article.ArticleComposition)
+                    {
+                        _articlecompositions.Add(line);
+                    }
+                }
 
                 if (_dialogMode != DialogMode.Insert)
                 {
@@ -163,6 +223,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(fileChooserFrameImagePreviewButtonImage, false, false, 0);
                 vboxTab1.PackStart(hboxfileChooserAndimagePreviewButtonImage, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxfileChooserButtonImage, _dataSourceRow, "ButtonImage", string.Empty, false));
+
+                //Artigos Compostos [IN:016522]
+                //Composite
+                _checkButtonComposite = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                vboxTab1.PackStart(_checkButtonComposite, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_checkButtonComposite, _dataSourceRow, "IsComposed"));
+                if(_article.ArticleComposition.Count > 0) { _checkButtonComposite.Active = true; }
+
+                //Unique Articles (Have multi S/N)
+                _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unique_articles"));
+                vboxTab1.PackStart(_checkButtonUniqueArticles, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_checkButtonUniqueArticles, _dataSourceRow, "UniqueArticles"));
+                _dataSourceRow.Reload();
+                if (_article.ArticleSerialNumber.Count > 0) { _checkButtonUniqueArticles.Active = true; }
+                _checkButtonUniqueArticles.Sensitive = false;
 
                 //Favorite
                 CheckButton checkButtonFavorite = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_favorite"));
@@ -308,9 +383,24 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Accounting
                 Entry entryAccounting = new Entry();
-                BOWidgetBox boxAccounting = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_accounting"), entryAccounting);
+                BOWidgetBox boxAccounting = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock"), entryAccounting);
                 vboxTab3.PackStart(boxAccounting, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxAccounting, _dataSourceRow, "Accounting", SettingsApp.RegexDecimal, false));
+                //entryAccounting.Editable = false;
+                try
+                {
+                    string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", _article.Oid);
+                    entryAccounting.Text = _dataSourceRow.Session.ExecuteScalar(stockQuery).ToString();
+                }
+                catch
+                {
+                    entryAccounting.Text = "0";
+                }
+                //MinimumStock
+                Entry entryMinimumStock = new Entry();
+                BOWidgetBox boxMinimumStock = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock"), entryMinimumStock);
+                vboxTab3.PackStart(boxMinimumStock, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxMinimumStock, _dataSourceRow, "MinimumStock", SettingsApp.RegexDecimal, false));
 
                 //Tare
                 Entry entryTare = new Entry();
@@ -349,10 +439,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxPrinter, DataSourceRow, "Printer", SettingsApp.RegexGuid, false));
 
                 //Template
-                XPOComboBox xpoComboBoxTemplate = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).Template, "Designation", null);
+                CriteriaOperator criteriaOperatorSelectTemplate = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (IsBarCode IS NULL OR IsBarCode = 0)"));
+                XPOComboBox xpoComboBoxTemplate = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).Template, "Designation", criteriaOperatorSelectTemplate);
                 BOWidgetBox boxTemplate = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersTemplates"), xpoComboBoxTemplate);
                 vboxTab3.PackStart(boxTemplate, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplate, DataSourceRow, "Template", SettingsApp.RegexGuid, false));
+
+                //TemplateBarCode
+                CriteriaOperator criteriaOperatorSelectTemplateBarCode = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND IsBarCode = 1"));
+                XPOComboBox xpoComboBoxTemplateBarCode = new XPOComboBox(DataSourceRow.Session, typeof(sys_configurationprinterstemplates), (DataSourceRow as fin_article).TemplateBarCode, "Designation", criteriaOperatorSelectTemplateBarCode);
+                BOWidgetBox boxTemplateBarCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersBarCodeTemplates"), xpoComboBoxTemplateBarCode);
+                vboxTab3.PackStart(boxTemplateBarCode, false, false, 0);
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxTemplateBarCode, DataSourceRow, "TemplateBarCode", SettingsApp.RegexGuid, false));
 
                 if (GlobalApp.ScreenSize.Width > 800 && GlobalApp.ScreenSize.Height > 600)
                 {
@@ -372,24 +470,111 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Append Tab
                 _notebook.AppendPage(vboxTab3, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab3_label")));
 
+                //Artigos Compostos [IN:016522]
+                //Tab4 Composite article
+                vboxTab4 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-                //Tab4
-                //VBox vboxTab4 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-                //_notebook.AppendPage(vboxTab4, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab4_label1")));
-                //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+                _scrolledWindowCompositionView = new ScrolledWindow();
+                _scrolledWindowCompositionView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+                _scrolledWindowCompositionView.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindowCompositionView.ShadowType = ShadowType.None;
+                _CompositionView = new Viewport();
 
-                //Enable/Disable Components
+                _notebook.AppendPage(_scrolledWindowCompositionView, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_article_tab4_label1")));
+
+                //vboxTab4.PackStart(_buttonInsert, false, false, 0);
+                //Add composite article #1
+                _totalCompositeEntrys++;
+                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
+                if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Oid != '{0}')", _article.Oid.ToString())); }
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, "", SettingsApp.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+                _entryBoxSelectArticle1.EntryValidation.IsEditable = true;
+                _entryBoxSelectArticle1.EntryQtdValidation.IsEditable = true;
+                _entryBoxSelectArticle1.Value = null;
+                _entryBoxSelectArticle1.EntryValidation.Text = "";
+
+                _entryBoxSelectArticle1.EntryValidation.Validate();
+                _entryBoxSelectArticle1.EntryCodeValidation.Validate();
+                _entryBoxSelectArticle1.EntryQtdValidation.Validate();
+
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code")), SettingsApp.RegexAlfaNumericArticleCode, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation")), SettingsApp.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SettingsApp.RegexDecimalGreaterThanZero, true));
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
+
+                vboxTab4.PackStart(_entryBoxSelectArticle1, false, false, 0);
+
+                _entryCompositeLinesCollection.Add(_entryBoxSelectArticle1);                
+
+                _entryBoxSelectArticle1.BorderWidth = 0;
+
+                _CompositionView.Add(vboxTab4);
+
+                _scrolledWindowCompositionView.Add(_CompositionView);
+
+
+                if (_article.ArticleComposition.Count > 0) PopulateCompositeArticleEntrys();
+
+                //Tab 5
+                vboxTab5 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+                _scrolledWindowSerialNumbersView = new ScrolledWindow();
+                _scrolledWindowSerialNumbersView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+                _scrolledWindowSerialNumbersView.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindowSerialNumbersView.ShadowType = ShadowType.None;
+
+                _notebook.AppendPage(_scrolledWindowSerialNumbersView, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number")));
+
+                //SerialNumber
+                _serialNumberCollection = new List<Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO,   HBox>>();
+                int snCount = 0;
+                if (_dataSourceRow != null && (_dataSourceRow as fin_article).ArticleSerialNumber.Count > 0)
+                {
+                    foreach(var serialNumber in (_dataSourceRow as fin_article).ArticleSerialNumber)
+                    {
+                        if (serialNumber.Oid != Guid.Empty && !serialNumber.Disabled)
+                        {
+                            XPGuidObject dataSourceRowSerialNumber = FrameworkUtils.GetXPGuidObject(typeof(fin_articleserialnumber), serialNumber.Oid);
+                            if (dataSourceRowSerialNumber != null){                                
+                                PopulateSerialNumberArticleEntrys(dataSourceRowSerialNumber);
+                                snCount++;
+                            } 
+                        }
+                    }
+                }
+                //else if(_checkButtonUniqueArticles.Active == true)
+                //{
+                //    PopulateSerialNumberArticleEntrys(null);
+                //}
+
+                if (snCount == 0)
+                {                    
+                    _checkButtonUniqueArticles.Active = false;
+                    _dataSourceRow.Session.Delete((_dataSourceRow as fin_article).ArticleSerialNumber);
+                    _dataSourceRow.Session.Save((_dataSourceRow as fin_article).ArticleSerialNumber);
+                }
+
+                //Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(PosDocumentFinanceArticleDialog);
+
+                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+                    //Enable/Disable Components
                 entryDesignation.Sensitive = (_totalNumberOfFinanceDocuments > 0) ? false : true;
 
                 //IN009261 BackOffice - Inserir mais auto-completes nos forms
 
-                int lcode = 0;
-                lcode = Convert.ToInt32(lastArticleCode.ToString()) + 10;
-                if (lcode != 10 && entryCode.Text == "") { entryCode.Text = lcode.ToString(); }
-                
+
                 //Show or Hide vboxTab2  
                 if (_article.Type != null) { _vboxTab2.Visible = _article.Type.HavePrice; }
-
+                _scrolledWindowCompositionView.Visible = _checkButtonComposite.Active;
                 //Assign Initial Value for Family
                 DefineInitialValueForXpoComboBoxFamily();
                 //Call UI Update for VatExemptionReason
@@ -400,12 +585,82 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 xpoComboBoxType.Changed += xpoComboBoxType_Changed;
                 _xpoComboBoxVatDirectSelling.Changed += xpoComboBoxVatDirectSelling_Changed;
                 if (_xpoComboBoxVatOnTable != null) _xpoComboBoxVatOnTable.Changed += xpoComboBoxVatDirectSelling_Changed;
+                _checkButtonComposite.Toggled += CheckButtonComposite_Toggled;
+                _checkButtonUniqueArticles.Toggled += CheckButtonUniqueArticles_Toggled;
+
+                //Events Composition
+                _entryBoxSelectArticle1.ClosePopup += _entryBoxSelectArticle_ClosePopup;
+                _entryBoxSelectArticle1.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+                _entryBoxSelectArticle1.AddNewEntryEvent += NewBox_AddNewEntryEvent;
+                _entryBoxSelectArticle1.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
+
+
+                //Auto Complete
+                _entryBoxSelectArticle1.EntryValidation.Completion = new EntryCompletion();
+                _entryBoxSelectArticle1.EntryValidation.Completion.Model = FillDropDownListStore(false, criteriaOperatorSelectArticle);
+                _entryBoxSelectArticle1.EntryValidation.Completion.TextColumn = 0;
+                _entryBoxSelectArticle1.EntryValidation.Completion.PopupCompletion = true;
+                _entryBoxSelectArticle1.EntryValidation.Completion.InlineCompletion = false;
+                _entryBoxSelectArticle1.EntryValidation.Completion.PopupSingleMatch = true;
+                _entryBoxSelectArticle1.EntryValidation.Completion.InlineSelection = true;
+
+                _entryBoxSelectArticle1.EntryValidation.Changed += delegate
+                {
+                    SelectRecordDropDownArticle(false, _entryBoxSelectArticle1);
+                };
+
+                _entryBoxSelectArticle1.EntryCodeValidation.Completion = new EntryCompletion();
+                _entryBoxSelectArticle1.EntryCodeValidation.Completion.Model = FillDropDownListStore(true);
+                _entryBoxSelectArticle1.EntryCodeValidation.Completion.TextColumn = 0;
+                _entryBoxSelectArticle1.EntryCodeValidation.Completion.PopupCompletion = true;
+                _entryBoxSelectArticle1.EntryCodeValidation.Completion.InlineCompletion = false;
+                _entryBoxSelectArticle1.EntryCodeValidation.Completion.PopupSingleMatch = true;
+                _entryBoxSelectArticle1.EntryCodeValidation.Completion.InlineSelection = true;
+
+                _entryBoxSelectArticle1.EntryCodeValidation.Changed += delegate
+                {
+                    SelectRecordDropDownArticle(true, _entryBoxSelectArticle1);
+                };
+
+
+                //string sql1 = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Oid == 'cee00590-7317-41b8-af46-66560401096b'");
+                //Guid NormalVat = FrameworkUtils.GetGuidFromQuery(sql1);
+
+                //if (_xpoComboBoxVatDirectSelling.Value == null)
+                //{
+                //    CriteriaOperator criteria = CriteriaOperator.Parse("");
+                //    _xpoComboBoxVatOnTable.UpdateModel(criteria, FrameworkUtils.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat));
+                //}
+                //if (_xpoComboBoxVatOnTable.Value == null) _xpoComboBoxVatOnTable.Value = FrameworkUtils.GetXPGuidObject(typeof(fin_configurationvatrate), NormalVat);
+
+
+                //Taxas de Iva por defeito na inserção de novos artigos
+                if (_xpoComboBoxVatOnTable != null && _xpoComboBoxVatOnTable.Active == 0)
+                {
+                    _xpoComboBoxVatOnTable.Active = 1;
+                }
+                if (_xpoComboBoxVatDirectSelling.Active == 0)
+                {
+                    _xpoComboBoxVatDirectSelling.Active = 1;
+                }
+
+                int lcode = 0;
+                lcode = Convert.ToInt32(lastArticleCode.ToString()) + 10;
+                if (lcode != 10 && entryCode.Text == "") { entryCode.Text = lcode.ToString(); }
             }
             catch (System.Exception ex)
             {
                 _log.Error(ex.Message, ex);
             }
         }
+
+        private void _entrySerialNumberDefault_TextInserted(object o, TextInsertedArgs args)
+        {
+            //_genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget("boxSerialNumberDefault") as GenericCRUDWidgetXPO);
+            //_genericCRUDWidgetXPO.Validated = true;            
+        }
+
+
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -508,6 +763,846 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             UpdateUIVatExemptionReason();
         }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //Composite articles
+        //Artigos Compostos [IN:016522]
+        //Populate entrys on page load
+        private void PopulateCompositeArticleEntrys()
+        {
+            try
+            {
+                foreach (fin_articlecomposition articleLine in _article.ArticleComposition)
+                {
+                    fin_article articleChild = articleLine.ArticleChild;
+                    if (_entryBoxSelectArticle1.Value == null)
+                    {
+                        _entryBoxSelectArticle1.Value = articleChild;
+                        _entryBoxSelectArticle1.EntryValidation.Text = articleChild.Designation;
+                        _entryBoxSelectArticle1.EntryQtdValidation.Text = String.Format("{0:0.##}", articleLine.Quantity);
+                        _entryBoxSelectArticle1.CodeEntry.Text = articleChild.Code;
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO.Validated = true;
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO.Validated = true;
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                        if (_entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
+                    }
+                    else
+                    {
+                        _totalCompositeEntrys++;
+                        NewBox_AddNewEntryAndPopulate(articleLine);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error populating Composite article Entry : " + ex.Message);
+            }
+        }
+
+        //Select record from dropdown menu
+        private void SelectRecordDropDownArticle(bool isArticleCode, XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> pXPOEntry)
+        {
+            try
+            {
+                Guid articleOid = Guid.Empty;
+                _previousValue = (fin_article)pXPOEntry.Value;
+                if (_dropdownTextCollection != null)
+                {
+                    foreach (dynamic item in _dropdownTextCollection)
+                    {
+                        if (isArticleCode)
+                        {
+                            if (item.Code == pXPOEntry.CodeEntry.Text)
+                            {
+                                articleOid = item.Oid;
+                                break;
+                            }
+                        }
+                        else if (item.Designation == pXPOEntry.EntryValidation.Text)
+                        {
+                            articleOid = item.Oid;
+                            break;
+                        }
+                    }
+                }
+                if (!articleOid.Equals(Guid.Empty))
+                {
+                    //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
+                    fin_article newArticle = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), articleOid);
+
+                    if (isArticleCode)
+                    {
+                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+
+                        var childQuantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
+
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? String.Format("{0:0.##}", childQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+
+                        pXPOEntry.EntryCodeValidation.Validate();
+
+                        pXPOEntry.EntryValidation.Validate();
+
+                        pXPOEntry.EntryQtdValidation.Validate();
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO.Validated = true;
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                        _genericCRUDWidgetXPO.Validated = true;
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                        if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
+
+
+                        return;
+                    }
+
+                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+
+                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+
+                    decimal quantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
+
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? String.Format("{0:0.##}", quantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+
+                    pXPOEntry.Value = newArticle;
+
+                    pXPOEntry.EntryCodeValidation.Validate();
+
+                    pXPOEntry.EntryValidation.Validate();
+
+                    pXPOEntry.EntryQtdValidation.Validate();
+
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO.Validated = true;
+
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                    _genericCRUDWidgetXPO.Validated = true;
+
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                    if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
+
+
+                    //Clean previous value from colection
+                    if (_previousValue != null)
+                    {
+                        foreach (fin_articlecomposition articleLine in _article.ArticleComposition)
+                        {
+                            if (articleLine.ArticleChild == _previousValue)
+                            {
+                                _article.ArticleComposition.Remove(articleLine);
+                                break;
+                            }
+                        }
+                    }
+
+                    //Insert associated articles to collection
+                    if (pXPOEntry.Value == _article)
+                    {
+                        pXPOEntry.Value = null;
+                        Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        pXPOEntry.EntryValidation.Text = "";
+                        return;
+                    }
+
+                    bool insertNewArticleChild = false;
+                    if (_article.ArticleComposition.Count > 0)
+                    {
+                        foreach (var line in _article.ArticleComposition)
+                        {
+                            if (line.ArticleChild == pXPOEntry.Value)
+                            {
+                                insertNewArticleChild = true;
+                                pXPOEntry.EntryValidation.Text = "";
+                                pXPOEntry.CodeEntry.Text = "";
+                                pXPOEntry.EntryQtdValidation.Text = "";
+                                pXPOEntry.Value = null;
+                                pXPOEntry.EntryCodeValidation.Validate();
+                                pXPOEntry.EntryValidation.Validate();
+                                pXPOEntry.EntryQtdValidation.Validate();
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                                _genericCRUDWidgetXPO.Validated = false;
+
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                                _genericCRUDWidgetXPO.Validated = false;
+
+                                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                                if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = false;
+
+                                Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_already"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                                return;
+                            }
+                        }
+                    }
+
+                    if (!insertNewArticleChild)
+                    {
+                        var newCompostion = new fin_articlecomposition(_dataSourceRow.Session);
+                        var articleChild = (fin_article)newCompostion.Session.GetObjectByKey(typeof(fin_article), pXPOEntry.Value.Oid);
+                        newCompostion.ArticleChild = articleChild;
+                        newCompostion.Quantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
+                        newCompostion.Article = _article;
+                        //var newComposition = new fin_articlecomposition(_dataSourceRow.Session) { ArticleChild = pXPOEntry.Value, Quantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1 };
+                        _article.ArticleComposition.Add(newCompostion);
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error selecting new Composite article Entry : " + ex.Message);
+            }
+        }
+
+        //Populate dropdown list
+        private ListStore FillDropDownListStore(bool isArticleCode, CriteriaOperator pCriteria = null)
+        {
+            try
+            {
+                ListStore store = new ListStore(typeof(string));
+                string sortProp = "Designation";
+                SortingCollection sortCollection = new SortingCollection();
+                sortCollection.Add(new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending));
+                if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
+
+                _dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
+
+                if (_dropdownTextCollection != null)
+                {
+                    foreach (dynamic item in _dropdownTextCollection)
+                    {
+                        if (isArticleCode)
+                        {
+                            store.AppendValues(item.Code);
+                        }
+                        else
+                        {
+                            store.AppendValues(item.Designation);
+                        }
+                    }
+                }
+                return store;
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error populating dropdown list : " + ex.Message);
+                return null;
+            }
+        }
+
+        //Dynamic entrys
+        private void NewBox_AddNewEntryAndPopulate(fin_articlecomposition pArticleComposition)
+        {
+            try
+            {
+                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
+                if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1 AND Oid != '{0}')", _article.Oid)); }
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, "", SettingsApp.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code")), "", true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation")), SettingsApp.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), NewEntryBoxSelectArticle.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SettingsApp.RegexDecimalGreaterThanZero, true));
+
+                NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
+                fin_article articleChild = pArticleComposition.ArticleChild;
+
+                NewEntryBoxSelectArticle.Value = articleChild;
+                NewEntryBoxSelectArticle.EntryValidation.Text = articleChild.Designation;
+                NewEntryBoxSelectArticle.EntryQtdValidation.Text = String.Format("{0:0.##}", pArticleComposition.Quantity);
+                NewEntryBoxSelectArticle.CodeEntry.Text = articleChild.Code;
+
+                //Events
+                NewEntryBoxSelectArticle.ClosePopup += _entryBoxSelectArticle_ClosePopup;
+                NewEntryBoxSelectArticle.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+                NewEntryBoxSelectArticle.AddNewEntryEvent += NewBox_AddNewEntryEvent;
+                NewEntryBoxSelectArticle.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
+                NewEntryBoxSelectArticle.ShowAll();
+
+
+                //Auto Complete
+                NewEntryBoxSelectArticle.EntryValidation.Completion = new EntryCompletion();
+                NewEntryBoxSelectArticle.EntryValidation.Completion.Model = FillDropDownListStore(false, criteriaOperatorSelectArticle);
+                NewEntryBoxSelectArticle.EntryValidation.Completion.TextColumn = 0;
+                NewEntryBoxSelectArticle.EntryValidation.Completion.PopupCompletion = true;
+                NewEntryBoxSelectArticle.EntryValidation.Completion.InlineCompletion = false;
+                NewEntryBoxSelectArticle.EntryValidation.Completion.PopupSingleMatch = true;
+                NewEntryBoxSelectArticle.EntryValidation.Completion.InlineSelection = true;
+
+                NewEntryBoxSelectArticle.EntryValidation.Changed += delegate
+                {
+                    SelectRecordDropDownArticle(false, NewEntryBoxSelectArticle);
+                };
+
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion = new EntryCompletion();
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.Model = FillDropDownListStore(true, criteriaOperatorSelectArticle);
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.TextColumn = 0;
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.PopupCompletion = true;
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.InlineCompletion = false;
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.PopupSingleMatch = true;
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.InlineSelection = true;
+
+                NewEntryBoxSelectArticle.EntryCodeValidation.Changed += delegate
+                {
+                    SelectRecordDropDownArticle(true, NewEntryBoxSelectArticle);
+                };
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO.Validated = true;
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                _genericCRUDWidgetXPO.Validated = true;
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                if (_entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
+
+                _entryCompositeLinesCollection.Add(NewEntryBoxSelectArticle);
+
+
+                vboxTab4.PackStart(NewEntryBoxSelectArticle, false, false, 0);
+                _CompositionView.Add(vboxTab4);
+                //scrolledWindowCompositionView.ShowAll();
+
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error Adding new Composite article Entry : " + ex.Message);
+            }
+
+        }
+
+        //Add new entry's event
+        private void NewBox_AddNewEntryEvent(object sender, EventArgs e)
+        {
+            try
+            {
+                _totalCompositeEntrys++;
+                //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
+                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
+                if (_article != null) { criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND Oid != '{0}'", _article.Oid.ToString())); }
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", _article, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, SettingsApp.RegexAlfaNumericArticleCode, SettingsApp.RegexDecimalGreaterThanZero, _totalCompositeEntrys);
+
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryCodeValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code")), SettingsApp.RegexAlfaNumericArticleCode, true));
+
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation")), SettingsApp.RegexAlfaNumericExtended, true));
+
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(_entryBoxSelectArticle1.EntryQtdValidation, _dataSourceRow, string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), _totalCompositeEntrys, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity")), SettingsApp.RegexDecimalGreaterThanZero, true));
+
+                NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
+                NewEntryBoxSelectArticle.Value = null;
+                NewEntryBoxSelectArticle.EntryValidation.Text = "";
+                NewEntryBoxSelectArticle.EntryCodeValidation.Text = "";
+                NewEntryBoxSelectArticle.EntryQtdValidation.Text = "";
+                NewEntryBoxSelectArticle.EntryCodeValidation.Validate();
+                NewEntryBoxSelectArticle.EntryQtdValidation.Validate();
+                vboxTab4.PackStart(NewEntryBoxSelectArticle, false, false, 0);
+
+                //Events
+                NewEntryBoxSelectArticle.ClosePopup += _entryBoxSelectArticle_ClosePopup;
+                NewEntryBoxSelectArticle.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+                NewEntryBoxSelectArticle.AddNewEntryEvent += NewBox_AddNewEntryEvent;
+                NewEntryBoxSelectArticle.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
+                NewEntryBoxSelectArticle.ShowAll();
+
+                //Auto Complete
+                NewEntryBoxSelectArticle.EntryValidation.Completion = new EntryCompletion();
+                NewEntryBoxSelectArticle.EntryValidation.Completion.Model = FillDropDownListStore(false, criteriaOperatorSelectArticle);
+                NewEntryBoxSelectArticle.EntryValidation.Completion.TextColumn = 0;
+                NewEntryBoxSelectArticle.EntryValidation.Completion.PopupCompletion = true;
+                NewEntryBoxSelectArticle.EntryValidation.Completion.InlineCompletion = false;
+                NewEntryBoxSelectArticle.EntryValidation.Completion.PopupSingleMatch = true;
+                NewEntryBoxSelectArticle.EntryValidation.Completion.InlineSelection = true;
+
+                NewEntryBoxSelectArticle.EntryValidation.Changed += delegate
+                {
+                    SelectRecordDropDownArticle(false, NewEntryBoxSelectArticle);
+                };
+
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion = new EntryCompletion();
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.Model = FillDropDownListStore(true);
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.TextColumn = 0;
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.PopupCompletion = true;
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.InlineCompletion = false;
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.PopupSingleMatch = true;
+                NewEntryBoxSelectArticle.EntryCodeValidation.Completion.InlineSelection = true;
+
+                NewEntryBoxSelectArticle.EntryCodeValidation.Changed += delegate
+                {
+                    SelectRecordDropDownArticle(true, NewEntryBoxSelectArticle);
+                };
+
+                NewEntryBoxSelectArticle.EntryValidation.Validate();
+                NewEntryBoxSelectArticle.EntryCodeValidation.Validate();
+                NewEntryBoxSelectArticle.EntryQtdValidation.Validate();
+
+                _entryCompositeLinesCollection.Add(NewEntryBoxSelectArticle);
+                _CompositionView.Add(vboxTab4);
+                //eventBoxPosCompositionView.Add(scrolledWindowCompositionView);
+
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error Adding new Composite article Entry : " + ex.Message);
+            }
+        }
+
+        //Clean article event
+        private void _entryBoxSelectArticle_CleanArticleEvent(object sender, EventArgs e)
+        {
+            try
+            {
+                bool cleanFirstEntry = false;
+                var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
+                Guid articleToDeleteAux = Guid.Empty;
+                if (entrySelected != null)
+                {
+                    if (entrySelected.Value != null) articleToDeleteAux = entrySelected.Value.Oid;
+
+                    if (entrySelected == _entryBoxSelectArticle1)
+                    {
+                        if (_totalCompositeEntrys > 1 && _entryCompositeLinesCollection.Count > 1)
+                        {
+                            foreach (var line in _entryCompositeLinesCollection)
+                            {
+                                if (line.EntryNumber == _totalCompositeEntrys)
+                                {
+                                    _entryBoxSelectArticle1.Value = line.Value;
+                                    _entryBoxSelectArticle1.EntryValidation.Text = line.EntryValidation.Text;
+                                    _entryBoxSelectArticle1.EntryQtdValidation.Text = line.EntryQtdValidation.Text;
+                                    _entryBoxSelectArticle1.CodeEntry.Text = line.CodeEntry.Text;
+                                    _entryBoxSelectArticle1.EntryValidation.Validate();
+                                    _entryBoxSelectArticle1.EntryCodeValidation.Validate();
+                                    _entryBoxSelectArticle1.EntryQtdValidation.Validate();
+
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                                    if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                                    if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+
+                                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                                    if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+
+                                    line.Hide();
+                                    _entryCompositeLinesCollection.Remove(line);
+                                    line.Value = null;
+                                    _totalCompositeEntrys--;
+                                    cleanFirstEntry = true;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            _entryBoxSelectArticle1.EntryValidation.Text = "";
+                            _entryBoxSelectArticle1.EntryQtdValidation.Text = "";
+                            _entryBoxSelectArticle1.CodeEntry.Text = "";
+                            _entryBoxSelectArticle1.EntryValidation.Validate();
+                            _entryBoxSelectArticle1.EntryCodeValidation.Validate();
+                            _entryBoxSelectArticle1.EntryQtdValidation.Validate();
+
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                            if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                            if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+
+                            _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                            if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+                        }
+                    }
+                    else
+                    {
+                        entrySelected.Hide();
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                        _crudWidgetList.Remove(_genericCRUDWidgetXPO);
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                        _crudWidgetList.Remove(_genericCRUDWidgetXPO);
+
+                        _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                        _crudWidgetList.Remove(_genericCRUDWidgetXPO);
+
+                        _totalCompositeEntrys--;
+
+                        _entryCompositeLinesCollection.Remove(entrySelected);
+
+                    }
+                    if (entrySelected.Value != null)
+                    {
+                        fin_article auxArticle = new fin_article();
+
+                        if (cleanFirstEntry)
+                        {
+                            auxArticle = (fin_article)_dataSourceRow.Session.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
+                        }
+                        else
+                        {
+                            auxArticle = entrySelected.Value;
+                        }
+                        foreach (fin_articlecomposition articleLine in _article.ArticleComposition)
+                        {
+                            if (articleLine.ArticleChild == auxArticle)
+                            {
+                                _article.ArticleComposition.Remove(articleLine);
+                                if (entrySelected != _entryBoxSelectArticle1) entrySelected = null;
+                                break;
+                            }
+                        }
+                        entrySelected = null;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+        }
+
+        //Close popup articles event
+        private void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
+        {
+            try
+            {
+                var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
+
+                if (string.IsNullOrEmpty(entrySelected.EntryValidation.Text))
+                {
+                    return;
+                }
+
+                if (entrySelected.Value == _article)
+                {
+                    entrySelected.Value = null;
+                    Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    entrySelected.EntryValidation.Text = "";
+                    return;
+                }
+                entrySelected.CodeEntry.Text = entrySelected.Value.Code;
+                entrySelected.EntryQtdValidation.Text = String.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message);
+            }
+        }
+
+        //Change quantity
+        private void QtdEntryValidation_TextInserted(object o, TextInsertedArgs args)
+        {
+            try
+            {
+                var entryQtdSelect = (Entry)o;
+                var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)entryQtdSelect.Parent.Parent.Parent;
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), entrySelected.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                entrySelected.EntryQtdValidation.Validate();
+                if (entrySelected.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true;
+
+                if (entrySelected.Value != null)
+                {
+                    if (_article.ArticleComposition.Count > 0 && Convert.ToDecimal(entrySelected.EntryQtdValidation.Text) > 0)
+                    {
+                        foreach (fin_articlecomposition articleLine in _article.ArticleComposition)
+                        {
+                            if (articleLine.Article != null && articleLine.Article == _article && articleLine.ArticleChild == entrySelected.Value)
+                            {
+                                articleLine.Quantity = FrameworkUtils.StringToDecimal(entrySelected.EntryQtdValidation.Text);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _genericCRUDWidgetXPO.Validated = false;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error updating quantity from article child : " + ex.Message);
+            }
+        }
+
+
+        //Toggle composite articles
+        private void CheckButtonComposite_Toggled(object sender, EventArgs e)
+        {
+            var checkButtonToggled = (CheckButton)sender;
+            if (checkButtonToggled.Active)
+            {
+                if(_checkButtonComposite.Active && _checkButtonUniqueArticles.Active) SetSizeRequest(550, 690); else { SetSizeRequest(500, 690); }
+                _scrolledWindowCompositionView.Show();
+
+                _entryBoxSelectArticle1.EntryCodeValidation.Validate();
+                _entryBoxSelectArticle1.EntryValidation.Validate();
+                _entryBoxSelectArticle1.EntryQtdValidation.Validate();
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryCodeValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+
+                _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                if (_genericCRUDWidgetXPO != null && _entryBoxSelectArticle1.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = true; else { _genericCRUDWidgetXPO.Validated = false; }
+
+            }
+            else
+            {
+                if (_checkButtonComposite.Active && _checkButtonUniqueArticles.Active) SetSizeRequest(550, 690); else { SetSizeRequest(500, 690); }
+                _scrolledWindowCompositionView.Hide();
+
+                for (int i = 1; i <= _totalCompositeEntrys; i++)
+                {
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
+                    if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
+
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"))) as GenericCRUDWidgetXPO);
+                    if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
+
+                    _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), i, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
+                    if (_genericCRUDWidgetXPO != null) _genericCRUDWidgetXPO.Validated = true;
+                }
+            }
+        }
+
+        private void CheckButtonUniqueArticles_Toggled(object sender, EventArgs e)
+        {
+            try
+            {
+                var checkButtonToggled = (CheckButton)sender;
+                if (checkButtonToggled.Active)
+                {
+                    if (_checkButtonComposite.Active && _checkButtonUniqueArticles.Active) SetSizeRequest(550, 690); else { SetSizeRequest(500, 690); }
+                    foreach (var serialNumber in _serialNumberCollection)
+                    {
+                        var xpObject = serialNumber.Item1;
+                        if (xpObject == null)
+                        {
+                            xpObject = new fin_articleserialnumber(_dataSourceRow.Session);
+                        }
+                        vboxTab5.PackStart(serialNumber.Item6, false, false, 0);
+                        _crudWidgetList.Add(serialNumber.Item3);
+                        _crudWidgetList.Add(serialNumber.Item4);
+                        _crudWidgetList.Add(serialNumber.Item5);
+
+                    }
+                    _scrolledWindowSerialNumbersView.Show();
+                    if(_serialNumberCollection.Count == 0)
+                    {
+                        PopulateSerialNumberArticleEntrys(null);
+                    }
+                }
+                else
+                {
+                    if (_checkButtonComposite.Active && _checkButtonUniqueArticles.Active) SetSizeRequest(550, 690); else { SetSizeRequest(500, 690); }
+                    _scrolledWindowSerialNumbersView.Hide();
+                    foreach (var serialNumber in _serialNumberCollection)
+                    {
+                        var xpObject = serialNumber.Item1;
+                        if (xpObject != null && xpObject.Oid == Guid.Empty)
+                        {
+                            xpObject.Delete();
+                        }
+                        vboxTab5.Remove(serialNumber.Item6);
+                        _crudWidgetList.Remove(serialNumber.Item3);
+                        _crudWidgetList.Remove(serialNumber.Item4);
+                        _crudWidgetList.Remove(serialNumber.Item5);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error hiding serial numbers article Entry : " + ex.Message);
+            }
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //Unique articles
+        //Populate entrys on page load
+        private void PopulateSerialNumberArticleEntrys(XPGuidObject pDataSourceRow)
+        {
+            try
+            {
+                //Dynamic SerialNumber
+                if (pDataSourceRow == null)
+                {
+                    pDataSourceRow = new fin_articleserialnumber(_dataSourceRow.Session);
+                }
+                XPGuidObject pWareHouseDataSourceRow = new fin_warehouse(_dataSourceRow.Session);
+                if (pDataSourceRow != null && (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse != null)
+                {
+                    pWareHouseDataSourceRow = (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse;
+                }                
+
+
+                //Stock Moviment In for serialNumber
+                if (pDataSourceRow != null && ((pDataSourceRow as fin_articleserialnumber).StockMovimentIn == null || (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Oid == Guid.Empty))
+                {
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn = new fin_articlestock(_dataSourceRow.Session);
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Article = _article;
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.ArticleSerialNumber = (pDataSourceRow as fin_articleserialnumber);
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Customer = (erp_customer) _dataSourceRow.Session.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidUserRecord);
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.DocumentNumber = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_moviment");
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Quantity = 1;
+                    (pDataSourceRow as fin_articleserialnumber).StockMovimentIn.Date = DateTime.Now;
+                }
+
+                //SerialNumber
+                (pDataSourceRow as fin_articleserialnumber).Article = _article;
+                HBox hboxSerialNumber = new HBox(false, _boxSpacing);
+                Entry entrySerialNumber = new Entry();
+                BOWidgetBox boxSerialNumber = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), entrySerialNumber);
+                GenericCRUDWidgetXPO serialnumberCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxSerialNumber, pDataSourceRow, "SerialNumber", SettingsApp.RegexAlfaNumericExtended, true);
+                _crudWidgetList.Add(serialnumberCRUDWidgetXPO);
+                hboxSerialNumber.PackStart(boxSerialNumber);
+
+                //Warehouse
+                CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
+                fin_warehouse defaultWareHouse = ((pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse != null && (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse.Oid != Guid.Empty) ? (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Warehouse : (fin_warehouse)pDataSourceRow.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
+                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                GenericCRUDWidgetXPO warehouseCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Warehouse", SettingsApp.RegexAlfaNumeric, false);
+                _crudWidgetList.Add(warehouseCRUDWidgetXPO);
+                hboxSerialNumber.PackStart(boxWareHouse);
+
+                //Location
+                CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) "));
+                if(defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
+                fin_warehouselocation defaultLocation = ((pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location != null) ? (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse.Location : (fin_warehouselocation)pDataSourceRow.Session.FindObject(typeof(fin_warehouselocation), criteria);
+                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                GenericCRUDWidgetXPO warehouseLocationCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, (pDataSourceRow as fin_articleserialnumber).ArticleWarehouse, "Location", SettingsApp.RegexAlfaNumeric, false);
+                _crudWidgetList.Add(warehouseLocationCRUDWidgetXPO);
+                hboxSerialNumber.PackStart(boxWareHouseLocation);
+                if (defaultWareHouse == null)
+                {
+                    xpoComboBoxWarehouseLocation.Active = 0;
+                    xpoComboBoxWarehouseLocation.Sensitive = false;
+                }
+
+                //If serial number already sold cannot be edited
+                if ((pDataSourceRow as fin_articleserialnumber).StockMovimentOut != null)
+                {
+                    entrySerialNumber.Sensitive = false;
+                    xpoComboBoxWarehouseLocation.Sensitive = false;
+                    xpoComboBoxWarehouse.Sensitive = false;
+                }
+
+                    //Clear
+                    TouchButtonIcon buttonClearSerialNumber = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
+                hboxSerialNumber.PackEnd(buttonClearSerialNumber, false, false, 1);
+
+                //Add
+                TouchButtonIcon buttonAddSerialNumber = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconAddRecord, new Size(20, 20), 30, 30);
+                hboxSerialNumber.PackEnd(buttonAddSerialNumber, false, false, 1);
+
+                vboxTab5.PackStart(hboxSerialNumber, false, false, 0);
+                _scrolledWindowSerialNumbersView.AddWithViewport(vboxTab5);
+
+                //Events
+                buttonAddSerialNumber.Clicked += delegate {
+                    PopulateSerialNumberArticleEntrys(null);
+                };
+                buttonClearSerialNumber.Sensitive = false;
+                buttonAddSerialNumber.Sensitive = false;
+                buttonClearSerialNumber.Clicked += _buttonClearSerialNumber_Clicked;
+                xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
+                vboxTab5.ShowAll();
+                //Add to collection
+                _serialNumberCollection.Add(new Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>(
+                    pDataSourceRow as fin_articleserialnumber,  //T1
+                    entrySerialNumber,                          //T2
+                    serialnumberCRUDWidgetXPO,                  //T3
+                    warehouseCRUDWidgetXPO,                     //T4
+                    warehouseLocationCRUDWidgetXPO,             //T5
+                    hboxSerialNumber));                         //T6
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error populating SerialNumber Entrys : " + ex.Message);
+            }
+        }
+
+        private void XpoComboBoxWarehouse_Changed(object sender, EventArgs e)
+        {
+            try
+            {
+                bool found = false;
+                fin_warehouse parent = new fin_warehouse();
+                foreach (var serialNumber in _serialNumberCollection)
+                {
+                    foreach (var child in serialNumber.Item6.Children)
+                    {
+                        
+                        if (!found && child.GetType() == typeof(BOWidgetBox) && (child as BOWidgetBox).Children[1] as XPOComboBox == sender as XPOComboBox)
+                        {
+                            found = true;
+                            parent = (((child as BOWidgetBox).Children[1] as XPOComboBox).Value as fin_warehouse);
+                            continue;
+                        }
+                        if (found && child.GetType() == typeof(BOWidgetBox) && parent != null)
+                        {
+                            CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", parent.Oid.ToString()));
+                            //var xpCollection = new XPCollection(_dataSourceRow.Session, typeof(fin_warehouselocation));
+                            ((child as BOWidgetBox).Children[1] as XPOComboBox).UpdateModel(criteria, null);
+                            return;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error clear SerialNumber Entry : " + ex.Message);
+            }
+        }
+
+        private void _buttonClearSerialNumber_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                ResponseType responseType = Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+
+                if (responseType == ResponseType.Yes)
+                {
+                    foreach (var serialNumber in _serialNumberCollection)
+                    {
+                        if (_serialNumberCollection.Count == 1)
+                        {
+                            serialNumber.Item2.Text = "";
+                            return;
+                        }
+                        foreach (var child in serialNumber.Item6.Children)
+                        {
+                            if (child.Equals(sender as TouchButtonIcon))
+                            {
+                                var xpObject = serialNumber.Item1;
+                                _article.ArticleSerialNumber.Remove(xpObject);                                           
+                                vboxTab5.Remove(serialNumber.Item6);
+                                _crudWidgetList.Remove(serialNumber.Item3);
+                                _crudWidgetList.Remove(serialNumber.Item4);
+                                _crudWidgetList.Remove(serialNumber.Item5);
+                                _serialNumberCollection.Remove(serialNumber);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error clear SerialNumber Entry : " + ex.Message);
+            }
+
+        }
     }
+    
 }
 

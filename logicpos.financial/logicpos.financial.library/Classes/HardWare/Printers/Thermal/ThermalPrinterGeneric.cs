@@ -78,6 +78,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 				//TK016310 Configuração Impressoras Windows 
                 if (IsLinux)
                 {
+                    _log.Info(_printer.PrinterType.Token);
+                    _log.Info(_printer.Designation);
+                    _log.Info(_printer.NetworkName);
                     switch (_printer.PrinterType.Token)
                     {
                         case "THERMAL_PRINTER_WINDOWS":

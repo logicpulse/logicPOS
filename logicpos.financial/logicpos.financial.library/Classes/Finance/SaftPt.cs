@@ -66,6 +66,10 @@ namespace logicpos.financial.library.Classes.Finance
             string dateTimeFileFormat = SettingsApp.FileFormatDateTime;
             string dateTime = FrameworkUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
             string fileName = GlobalFramework.Path["saftpt"] + string.Format(fileSaftPT, SettingsApp.SaftVersionPrefix, SettingsApp.SaftVersion, dateTime).ToLower();
+            if (!FrameworkUtils.HasWritePermissionOnDir(GlobalFramework.Path["saftpt"].ToString()))
+            {
+                fileName = string.Format("\\temp\\" + fileSaftPT, SettingsApp.SaftVersionPrefix, SettingsApp.SaftVersion, dateTime).ToLower();
+            }
 
             //XmlWriterSettings
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
@@ -331,16 +335,39 @@ namespace logicpos.financial.library.Classes.Finance
 			            cu.Email AS Email,
 			            cu.Website AS Website
                     FROM 
-	                    fin_documentfinancemaster as fm
+                        fin_documentfinancepayment as fp
+	                    left join erp_customer cu ON (fp.EntityOid = cu.Oid)
+	                    left join cfg_configurationcountry cc ON (cu.Country = cc.Oid)
+                    WHERE 
+                        cu.Oid IS NOT NULL 
+                        AND (fp.DocumentDate >= '{0}' AND fp.DocumentDate <= '{1}')
+
+                    UNION
+
+                    SELECT 
+                        cu.CodeInternal AS CustomerID,
+			            '' AS AccountID,
+			            cu.FiscalNumber AS CustomerTaxID,
+			            cu.Name AS CompanyName,
+			            cu.Address AS AddressDetail,
+			            cu.City AS City,
+			            cu.ZipCode AS PostalCode,
+			            cc.Code2 AS Country,
+			            cu.Phone AS Telephone,
+			            cu.Fax AS Fax,
+			            cu.Email AS Email,
+			            cu.Website AS Website
+                    FROM 
+                        fin_documentfinancemaster as fm
 	                    left join erp_customer cu ON (fm.EntityOid = cu.Oid)
 	                    left join cfg_configurationcountry cc ON (cu.Country = cc.Oid)
                     WHERE 
                         cu.Oid IS NOT NULL 
                         AND (fm.Date >= '{0}' AND fm.Date <= '{1}')
+                        
                     GROUP BY 
 	                    cu.CodeInternal, cu.FiscalNumber, cu.Name, cu.Address, cu.City, cu.ZipCode, cc.Code2, cu.Phone, cu.Fax, cu.Email, cu.Website
-                    ORDER BY
-	                    cu.Name
+   
                     ;"
                     , _documentDateStart.ToString(SettingsApp.DateTimeFormat)
                     , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
@@ -462,8 +489,7 @@ namespace logicpos.financial.library.Classes.Finance
 	                    left join fin_articlefamily af ON (af.Oid = ar.Family)
 	                    left join fin_articleclass ac ON (ac.Oid = ar.Class)
                     WHERE 
-	                    (fm.Date >= '{0}' AND fm.Date <= '{1}')AND
-                                  ar.Oid <> 'null'
+	                    (fm.Date >= '{0}' AND fm.Date <= '{1}')
                     GROUP BY 
 	                    ac.Acronym, ar.Oid, ar.Code, af.Designation, ar.Designation, ar.BarCode
                     ORDER BY
@@ -477,7 +503,7 @@ namespace logicpos.financial.library.Classes.Finance
                 XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
-                    if(row.Values[1] != null)
+                    if (row.Values[1] != null)
                     {
                         //<Product>
                         _xmlWriter.WriteStartElement("Product");
@@ -765,7 +791,7 @@ namespace logicpos.financial.library.Classes.Finance
                         }
 
                         WriteElement("NumberOfMovementLines", numberOfEntries);
-                        WriteElement("TotalQuantityIssued", totalQuantity); //2015-01-20 apmuga verificar se é soma de kg+lt+m
+                        WriteElement("TotalQuantityIssued", totalQuantity.ToString().Replace(',','.')); //2015-01-20 apmuga verificar se é soma de kg+lt+m
 
                         //<Invoice|StockMovement|WorkDocument>
                         SourceDocuments_DocumentType_Childs(pSaftDocumentType, documentNodeKeyWord, documentNodeNameChild, documentNodeNameChildNo, documentNodeFilter);
@@ -898,7 +924,10 @@ namespace logicpos.financial.library.Classes.Finance
                         fm.ATDocCodeID,
                         fm.ExchangeRate,
                         cc.Acronym AS CurrencyCode, 
-                        0 AS ATCUD
+                        0 AS ATCUD,
+                        fm.TotalNet as TotalNet,
+                        fm.TotalDiscount as TotalDiscount,
+                        fm.TotalFinal as TotalFinal
                     FROM
                         fin_documentfinancemaster fm
                         left join fin_documentfinancetype ft ON (fm.DocumentType = ft.Oid)
@@ -930,180 +959,183 @@ namespace logicpos.financial.library.Classes.Finance
                 XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
                 {
-                    if (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("PaymentAmount")]) != 0.0m)
+                    //Protected Documents with total amount and discount zero 
+                    if(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TotalDiscount")].ToString()) == 0 && Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TotalNet")].ToString()) == 0)
                     {
-                        //<Invoice|StockMovement|WorkDocument>
-                        _xmlWriter.WriteStartElement(pDocumentNodeNameChild);
-                        WriteElement(pDocumentNodeNameChildNo, row.Values[xPSelectData.GetFieldIndex("DocumentNo")]);
-                        WriteElement("ATCUD", row.Values[xPSelectData.GetFieldIndex("ATCUD")]);
-                        //<DocumentStatus>
-                        _xmlWriter.WriteStartElement("DocumentStatus");
-                        WriteElement(string.Format("{0}Status", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentStatusStatus")]);
-                        WriteElement(string.Format("{0}StatusDate", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentStatusDate")]);
-                        WriteElement("Reason", row.Values[xPSelectData.GetFieldIndex("DocumentStatusReason")]);
-                        WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDStatus")].ToString());
-                        WriteElement("SourceBilling", row.Values[xPSelectData.GetFieldIndex("SourceBilling")]);
-                        _xmlWriter.WriteEndElement();
-                        //</DocumentStatus>
-                        WriteElement("Hash", row.Values[xPSelectData.GetFieldIndex("Hash")]);
-                        WriteElement("HashControl", row.Values[xPSelectData.GetFieldIndex("HashControl")]);
-                        WriteElement("Period", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]).Month);
-                        WriteElement(string.Format("{0}Date", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentDate")]);
-                        //Required to Replace WorkType OR and FP with DC
-                        documentType = row.Values[xPSelectData.GetFieldIndex("DocumentType")].ToString();
-                        //Replace DocumentType if Detect a ConferenceDocument (OR|FP|DC)
-                        if (documentType == "OR" || documentType == "FP") documentType = "DC";
-                        //Detect if DocumentType is WayBill
-                        wayBill = Convert.ToBoolean(row.Values[xPSelectData.GetFieldIndex("WayBill")]);
-
-                        //Write Element
-                        WriteElement(string.Format("{0}Type", pDocumentNodeKeyWord), documentType);
-
-                        switch (pSaftDocumentType)
-                        {
-                            case SaftDocumentType.SalesInvoices:
-                                try
-                                {
-                                    //<SpecialRegimes>
-                                    _xmlWriter.WriteStartElement("SpecialRegimes");
-                                    WriteElement("SelfBillingIndicator", row.Values[xPSelectData.GetFieldIndex("SelfBillingIndicator")]);
-                                    WriteElement("CashVATSchemeIndicator", row.Values[xPSelectData.GetFieldIndex("CashVatSchemeIndicator")]);
-                                    WriteElement("ThirdPartiesBillingIndicator", row.Values[xPSelectData.GetFieldIndex("ThirdPartiesBillingIndicator")]);
-                                    _xmlWriter.WriteEndElement();
-                                    //</SpecialRegimes> 
-
-                                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
-                                    WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
-                                    WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
-                                    //WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndex("TransactionID")]);
-                                    if (row.Values[xPSelectData.GetFieldIndex("CustomerID")] != null)
-                                    {
-                                        WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")]);
-                                    }
-                                    else
-                                    {
-                                        WriteElement("CustomerID", _defaultCustomer.CodeInternal);
-                                    }
-
-                                    //Check if is WayBill Document and Call ShipDetails Helper to Output ShipTo|ShipFrom Details
-                                    if (wayBill) SourceDocuments_DocumentType_Childs_ShipDetails(xPSelectData, row);
-                                }
-                                catch (Exception ex)
-                                {
-                                    _log.Error(ex.Message, ex);
-                                };
-                                break;
-
-                            case SaftDocumentType.MovementOfGoods:
-                                try
-                                {
-                                    WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
-                                    WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndex("TransactionID")]);
-                                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")].ToString());
-                                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
-                                    WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
-
-                                    //Allways Call ShipDetails Helper to Output ShipTo|ShipFrom Details
-                                    SourceDocuments_DocumentType_Childs_ShipDetails(xPSelectData, row);
-
-                                    //4.2.3.19: Used only in MovementOfGoods: Código de identificação atribuído pela AT ao documento, nos termos do Decreto - Lei n.º 147/2003, de 11 de julho.
-                                    WriteElement("ATDocCodeID", row.Values[xPSelectData.GetFieldIndex("ATDocCodeID")]);
-                                }
-                                catch (Exception ex)
-                                {
-                                    _log.Error(ex.Message, ex);
-                                }
-                                break;
-
-                            case SaftDocumentType.WorkingDocuments:
-                                try
-                                {
-                                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
-                                    WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
-                                    WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
-                                    if (row.Values[xPSelectData.GetFieldIndex("CustomerID")] != null)
-                                    {
-                                        WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")]);
-                                    }
-                                    else
-                                    {
-                                        WriteElement("CustomerID", _defaultCustomer.CodeInternal);
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    _log.Error(ex.Message, ex);
-                                }
-                                break;
-                        }
-
-                        //<Line>
-                        guidDocumentMaster = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        TotalLinesResult totalLineResult = SourceDocuments_Lines(pSaftDocumentType, guidDocumentMaster);
-                        //</Line>
-
-                        //<DocumentTotals>
-                        //  <TaxPayable>1.59</TaxPayable>
-                        //  <NetTotal>6.91</NetTotal>
-                        //  <GrossTotal>8.50</GrossTotal>
-                        //  <Payment>
-                        //    <PaymentMechanism>NU</PaymentMechanism>
-                        //    <PaymentAmount>8.50</PaymentAmount>
-                        //    <PaymentDate>2014-07-16</PaymentDate>
-                        //  </Payment>
-                        //</DocumentTotals>
-
-                        //<DocumentTotals>
-                        _xmlWriter.WriteStartElement("DocumentTotals");
-                        WriteElement("TaxPayable", FrameworkUtils.DecimalToString(totalLineResult.TaxPayable, GlobalFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
-                        WriteElement("NetTotal", FrameworkUtils.DecimalToString(totalLineResult.NetTotal, GlobalFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
-                        WriteElement("GrossTotal", FrameworkUtils.DecimalToString(totalLineResult.GrossTotal, GlobalFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
-
-                        //Currency
-                        if (_defaultCurrency.Acronym != row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString())
-                        {
-                            //Calculate Totals
-                            documentExchangeRate = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("ExchangeRate")]);
-                            currencyCurrencyAmount = totalLineResult.GrossTotal * documentExchangeRate;
-                            currencyExchangeRate = totalLineResult.GrossTotal / currencyCurrencyAmount;
-                            //<Currency>
-                            _xmlWriter.WriteStartElement("Currency");
-                            WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString());
-                            WriteElement("CurrencyAmount", FrameworkUtils.DecimalToString(currencyCurrencyAmount, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
-                            //In SAT-F Example we have 2 examples one with decimals 0.00 and other with 0.00000000000 opted to use divide value without conversion
-                            WriteElement("ExchangeRate", FrameworkUtils.DecimalToString(currencyExchangeRate, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
-                            //WriteElement("ExchangeRate", currencyExchangeRate);
-                            _xmlWriter.WriteEndElement();
-                            //</Currency>
-                        }
-
-                        //</SalesInvoices|MovementOfGoods|WorkingDocuments>
-                        switch (pSaftDocumentType)
-                        {
-                            case SaftDocumentType.SalesInvoices:
-                                //Get decimal to check if Greater than Zero
-                                decimal paymentAmount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("PaymentAmount")]);
-                                //Only Export if Greater Than Zero (SAF-T Recomendation)
-                                if (paymentAmount > 0.0m)
-                                {
-                                    //<Payment>
-                                    _xmlWriter.WriteStartElement("Payment");
-                                    //Default : OU : OtherPayments /Outros Pagamentos
-                                    WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndex("PaymentMechanism")], "OU");
-                                    WriteElement("PaymentAmount", FrameworkUtils.DecimalToString(paymentAmount, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
-                                    WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndex("DocumentDate")]);
-                                    _xmlWriter.WriteEndElement();
-                                    //</Payment>
-                                }
-                                break;
-                        }
-
-                        _xmlWriter.WriteEndElement();
-                        //</DocumentTotals>
-
-                        //</Invoice|StockMovement|WorkDocument>
-                        _xmlWriter.WriteEndElement();
+                        continue;
                     }
+                        //<Invoice|StockMovement|WorkDocument>
+                    _xmlWriter.WriteStartElement(pDocumentNodeNameChild);
+                    WriteElement(pDocumentNodeNameChildNo, row.Values[xPSelectData.GetFieldIndex("DocumentNo")]);
+                    WriteElement("ATCUD", row.Values[xPSelectData.GetFieldIndex("ATCUD")]);
+                    //<DocumentStatus>
+                    _xmlWriter.WriteStartElement("DocumentStatus");
+                    WriteElement(string.Format("{0}Status", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentStatusStatus")]);
+                    WriteElement(string.Format("{0}StatusDate", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentStatusDate")]);
+                    WriteElement("Reason", row.Values[xPSelectData.GetFieldIndex("DocumentStatusReason")]);
+                    WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDStatus")].ToString());
+                    WriteElement("SourceBilling", row.Values[xPSelectData.GetFieldIndex("SourceBilling")]);
+                    _xmlWriter.WriteEndElement();
+                    //</DocumentStatus>
+                    WriteElement("Hash", row.Values[xPSelectData.GetFieldIndex("Hash")]);
+                    WriteElement("HashControl", row.Values[xPSelectData.GetFieldIndex("HashControl")]);
+                    WriteElement("Period", Convert.ToDateTime(row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]).Month);
+                    WriteElement(string.Format("{0}Date", pDocumentNodeKeyWord), row.Values[xPSelectData.GetFieldIndex("DocumentDate")]);
+                    //Required to Replace WorkType OR and FP with DC
+                    documentType = row.Values[xPSelectData.GetFieldIndex("DocumentType")].ToString();
+                    //Replace DocumentType if Detect a ConferenceDocument (OR|FP|DC)
+                    if (documentType == "OR" || documentType == "FP") documentType = "DC";
+                    //Detect if DocumentType is WayBill
+                    wayBill = Convert.ToBoolean(row.Values[xPSelectData.GetFieldIndex("WayBill")]);
+
+                    //Write Element
+                    WriteElement(string.Format("{0}Type", pDocumentNodeKeyWord), documentType);
+
+                    switch (pSaftDocumentType)
+                    {
+                        case SaftDocumentType.SalesInvoices:
+                            try
+                            {
+                                //<SpecialRegimes>
+                                _xmlWriter.WriteStartElement("SpecialRegimes");
+                                WriteElement("SelfBillingIndicator", row.Values[xPSelectData.GetFieldIndex("SelfBillingIndicator")]);
+                                WriteElement("CashVATSchemeIndicator", row.Values[xPSelectData.GetFieldIndex("CashVatSchemeIndicator")]);
+                                WriteElement("ThirdPartiesBillingIndicator", row.Values[xPSelectData.GetFieldIndex("ThirdPartiesBillingIndicator")]);
+                                _xmlWriter.WriteEndElement();
+                                //</SpecialRegimes> 
+
+                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
+                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
+                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
+                                //WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndex("TransactionID")]);
+                                if (row.Values[xPSelectData.GetFieldIndex("CustomerID")] != null)
+                                {
+                                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")]);
+                                }
+                                else
+                                {
+                                    WriteElement("CustomerID", _defaultCustomer.CodeInternal);
+                                }
+
+                                //Check if is WayBill Document and Call ShipDetails Helper to Output ShipTo|ShipFrom Details
+                                if (wayBill) SourceDocuments_DocumentType_Childs_ShipDetails(xPSelectData, row);
+                            }
+                            catch (Exception ex)
+                            {
+                                _log.Error(ex.Message, ex);
+                            };
+                            break;
+
+                        case SaftDocumentType.MovementOfGoods:
+                            try
+                            {
+                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
+                                WriteElement("TransactionID", row.Values[xPSelectData.GetFieldIndex("TransactionID")]);
+                                WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")].ToString());
+                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
+                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
+
+                                //Allways Call ShipDetails Helper to Output ShipTo|ShipFrom Details
+                                SourceDocuments_DocumentType_Childs_ShipDetails(xPSelectData, row);
+
+                                //4.2.3.19: Used only in MovementOfGoods: Código de identificação atribuído pela AT ao documento, nos termos do Decreto - Lei n.º 147/2003, de 11 de julho.
+                                WriteElement("ATDocCodeID", row.Values[xPSelectData.GetFieldIndex("ATDocCodeID")]);
+                            }
+                            catch (Exception ex)
+                            {
+                                _log.Error(ex.Message, ex);
+                            }
+                            break;
+
+                        case SaftDocumentType.WorkingDocuments:
+                            try
+                            {
+                                WriteElement("SourceID", row.Values[xPSelectData.GetFieldIndex("SourceIDCreator")].ToString());
+                                WriteElement("EACCode", row.Values[xPSelectData.GetFieldIndex("EACCode")]);
+                                WriteElement("SystemEntryDate", row.Values[xPSelectData.GetFieldIndex("SystemEntryDate")]);
+                                if (row.Values[xPSelectData.GetFieldIndex("CustomerID")] != null)
+                                {
+                                    WriteElement("CustomerID", row.Values[xPSelectData.GetFieldIndex("CustomerID")]);
+                                }
+                                else
+                                {
+                                    WriteElement("CustomerID", _defaultCustomer.CodeInternal);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _log.Error(ex.Message, ex);
+                            }
+                            break;
+                    }
+
+                    //<Line>
+                    guidDocumentMaster = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
+                    TotalLinesResult totalLineResult = SourceDocuments_Lines(pSaftDocumentType, guidDocumentMaster);
+                    //</Line>
+
+                    //<DocumentTotals>
+                    //  <TaxPayable>1.59</TaxPayable>
+                    //  <NetTotal>6.91</NetTotal>
+                    //  <GrossTotal>8.50</GrossTotal>
+                    //  <Payment>
+                    //    <PaymentMechanism>NU</PaymentMechanism>
+                    //    <PaymentAmount>8.50</PaymentAmount>
+                    //    <PaymentDate>2014-07-16</PaymentDate>
+                    //  </Payment>
+                    //</DocumentTotals>
+
+                    //<DocumentTotals>
+                    _xmlWriter.WriteStartElement("DocumentTotals");
+                    WriteElement("TaxPayable", FrameworkUtils.DecimalToString(totalLineResult.TaxPayable, GlobalFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
+                    WriteElement("NetTotal", FrameworkUtils.DecimalToString(totalLineResult.NetTotal, GlobalFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
+                    WriteElement("GrossTotal", FrameworkUtils.DecimalToString(totalLineResult.GrossTotal, GlobalFramework.CurrentCultureNumberFormat, _decimalFormatTotals));
+
+                    //Currency
+                    if (_defaultCurrency.Acronym != row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString())
+                    {
+                        //Calculate Totals
+                        documentExchangeRate = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("ExchangeRate")]);
+                        currencyCurrencyAmount = totalLineResult.GrossTotal * documentExchangeRate;
+                        currencyExchangeRate = totalLineResult.GrossTotal / currencyCurrencyAmount;
+                        //<Currency>
+                        _xmlWriter.WriteStartElement("Currency");
+                        WriteElement("CurrencyCode", row.Values[xPSelectData.GetFieldIndex("CurrencyCode")].ToString());
+                        WriteElement("CurrencyAmount", FrameworkUtils.DecimalToString(currencyCurrencyAmount, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        //In SAT-F Example we have 2 examples one with decimals 0.00 and other with 0.00000000000 opted to use divide value without conversion
+                        WriteElement("ExchangeRate", FrameworkUtils.DecimalToString(currencyExchangeRate, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
+                        //WriteElement("ExchangeRate", currencyExchangeRate);
+                        _xmlWriter.WriteEndElement();
+                        //</Currency>
+                    }
+
+                    //</SalesInvoices|MovementOfGoods|WorkingDocuments>
+                    switch (pSaftDocumentType)
+                    {
+                        case SaftDocumentType.SalesInvoices:
+                            //Get decimal to check if Greater than Zero
+                            decimal paymentAmount = Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("PaymentAmount")]);
+                            //Only Export if Greater Than Zero (SAF-T Recomendation)
+                            if (paymentAmount > 0.0m)
+                            {
+                                //<Payment>
+                                _xmlWriter.WriteStartElement("Payment");
+                                //Default : OU : OtherPayments /Outros Pagamentos
+                                WriteElement("PaymentMechanism", row.Values[xPSelectData.GetFieldIndex("PaymentMechanism")], "OU");
+                                WriteElement("PaymentAmount", FrameworkUtils.DecimalToString(paymentAmount, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
+                                WriteElement("PaymentDate", row.Values[xPSelectData.GetFieldIndex("DocumentDate")]);
+                                _xmlWriter.WriteEndElement();
+                                //</Payment>
+                            }
+                            break;
+                    }
+
+                    _xmlWriter.WriteEndElement();
+                    //</DocumentTotals>
+
+                    //</Invoice|StockMovement|WorkDocument>
+                    _xmlWriter.WriteEndElement();
+
                 }
             }
             catch (Exception ex)
@@ -1276,72 +1308,88 @@ namespace logicpos.financial.library.Classes.Finance
                         totalLineResult.NetTotal += lineNetTotal;
                         totalLineResult.GrossTotal += lineGrossTotal;
 
-                        if(row.Values[xPSelectData.GetFieldIndex("ProductCode")] != null){
-                        
-
-                        //<Line>
-                        _xmlWriter.WriteStartElement("Line");
-
-                        WriteElement("LineNumber", row.Values[xPSelectData.GetFieldIndex("LineNumber")]);
-                        switch (pSaftDocumentType)
+                        if (row.Values[xPSelectData.GetFieldIndex("ProductCode")] != null && lineNetTotal != 0.0m)
                         {
-                            case SaftDocumentType.SalesInvoices:
-                            case SaftDocumentType.MovementOfGoods:
-                            case SaftDocumentType.WorkingDocuments:
-                                //<OrderReferences>
-                                guidDocumentDetail = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                                SourceDocuments_Lines_OrderReferences(guidDocumentDetail);
-                                //</OrderReferences>
-                                break;
-                        }
+                            //<Line>
+                            _xmlWriter.WriteStartElement("Line");
 
-                        WriteElement("ProductCode", row.Values[xPSelectData.GetFieldIndex("ProductCode")].ToString());
-                        WriteElement("ProductDescription", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
-                        WriteElement("Quantity", FrameworkUtils.DecimalToString(lineQuantity, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
-                        WriteElement("UnitOfMeasure", row.Values[xPSelectData.GetFieldIndex("UnitOfMeasure")]);
-                        WriteElement("UnitPrice", FrameworkUtils.DecimalToString(lineUnitPrice, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
+                            WriteElement("LineNumber", row.Values[xPSelectData.GetFieldIndex("LineNumber")]);
+                            switch (pSaftDocumentType)
+                            {
+                                case SaftDocumentType.SalesInvoices:
+                                case SaftDocumentType.MovementOfGoods:
+                                case SaftDocumentType.WorkingDocuments:
+                                    //<OrderReferences>
+                                    guidDocumentDetail = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
+                                    SourceDocuments_Lines_OrderReferences(guidDocumentDetail);
+                                    //</OrderReferences>
+                                    break;
+                            }
 
-                        switch (pSaftDocumentType)
-                        {
-                            case SaftDocumentType.SalesInvoices:
-                            case SaftDocumentType.WorkingDocuments:
-                                //<TaxPointDate>
-                                WriteElement("TaxPointDate", row.Values[xPSelectData.GetFieldIndex("TaxPointDate")]);
-                                //<//TaxPointDate>
-                                break;
-                        }
+                            WriteElement("ProductCode", row.Values[xPSelectData.GetFieldIndex("ProductCode")].ToString());
+                            WriteElement("ProductDescription", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
+                            WriteElement("Quantity", FrameworkUtils.DecimalToString(lineQuantity, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
+                            WriteElement("UnitOfMeasure", row.Values[xPSelectData.GetFieldIndex("UnitOfMeasure")]);
+                            WriteElement("UnitPrice", FrameworkUtils.DecimalToString(lineUnitPrice, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
 
-                        switch (pSaftDocumentType)
-                        {
-                            case SaftDocumentType.SalesInvoices:
-                                //<References>
-                                SourceDocuments_Lines_References(guidDocumentDetail);
-                                //</References>
-                                break;
-                        }
+                            switch (pSaftDocumentType)
+                            {
+                                case SaftDocumentType.SalesInvoices:
+                                case SaftDocumentType.WorkingDocuments:
+                                    //<TaxPointDate>
+                                    WriteElement("TaxPointDate", row.Values[xPSelectData.GetFieldIndex("TaxPointDate")]);
+                                    //<//TaxPointDate>
+                                    break;
+                            }
 
-                        WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
-                        //CreditAmount|DebitAmount
-                        WriteElement(nodeNameCreditOrDebitAmount, FrameworkUtils.DecimalToString(lineCreditOrDebit, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
+                            switch (pSaftDocumentType)
+                            {
+                                case SaftDocumentType.SalesInvoices:
+                                    //<References>
+                                    SourceDocuments_Lines_References(guidDocumentDetail);
+                                    //</References>
+                                    break;
+                            }
 
-                        //<Tax>
-                        _xmlWriter.WriteStartElement("Tax");
-                        WriteElement("TaxType", row.Values[xPSelectData.GetFieldIndex("TaxType")]);
-                        WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndex("TaxCountryRegion")]);
-                        WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndex("TaxCode")]);
-                        WriteElement("TaxPercentage", FrameworkUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]), GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
-                        _xmlWriter.WriteEndElement();
-                        //</Tax>
-                        if((Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")])) == 0.00m)
-                        {
+                            WriteElement("Description", row.Values[xPSelectData.GetFieldIndex("ProductDescription")]);
+                            //CreditAmount|DebitAmount
+                            WriteElement(nodeNameCreditOrDebitAmount, FrameworkUtils.DecimalToString(lineCreditOrDebit, GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
+
+                            //<Tax>
+                            _xmlWriter.WriteStartElement("Tax");
+                            WriteElement("TaxType", row.Values[xPSelectData.GetFieldIndex("TaxType")]);
+                            WriteElement("TaxCountryRegion", row.Values[xPSelectData.GetFieldIndex("TaxCountryRegion")]);
+                            WriteElement("TaxCode", row.Values[xPSelectData.GetFieldIndex("TaxCode")]);
+                            WriteElement("TaxPercentage", FrameworkUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]), GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
+                            _xmlWriter.WriteEndElement();
+                            Console.WriteLine(row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")]);
+                            Console.WriteLine(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")]);
+
+                            if (row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")] == null || string.IsNullOrEmpty(row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")].ToString()))
+                            {
+                                Console.WriteLine("Taxa 0 sem motivo de isenção");
+                                if ((Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")])) == 0.00m)
+                                {
+                                    //vai buscar á configuração do artigo
+                                    fin_article article = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), Guid.Parse(row.Values[xPSelectData.GetFieldIndex("ProductCode")].ToString()));
+                                    if (article != null && article.VatExemptionReason != null)
+                                    {
+                                        row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")] = article.VatExemptionReason.Designation;
+                                        row.Values[xPSelectData.GetFieldIndex("TaxExemptionCode")] = article.VatExemptionReason.Acronym;
+                                    }
+                                }
+                            }
+                            //</Tax>
+                            if ((Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("TaxPercentage")])) == 0.00m)
+                            {
                                 WriteElement("TaxExemptionReason", row.Values[xPSelectData.GetFieldIndex("TaxExemptionReason")]);
                                 WriteElement("TaxExemptionCode", row.Values[xPSelectData.GetFieldIndex("TaxExemptionCode")]);
                                 if (Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]) > 0.0m)
                                     WriteElement("SettlementAmount", FrameworkUtils.DecimalToString(Convert.ToDecimal(row.Values[xPSelectData.GetFieldIndex("SettlementAmount")]), GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
-                        }
-                        
+                            }
 
-                        _xmlWriter.WriteEndElement();
+
+                            _xmlWriter.WriteEndElement();
                         }
                         //</Line>
                     }

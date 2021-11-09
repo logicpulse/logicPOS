@@ -12,6 +12,10 @@ using System.Reflection;
 using DevExpress.Data.Filtering;
 using logicpos.resources;
 using System.Configuration;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Stocks;
+using logicpos.datalayer.Enums;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -40,9 +44,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         protected Guid _guidDefaultValue;
         //UI
         //Used for _listStoreModelFilterSort (#3 model)
-        protected TreeIter _treeIter;
-        protected TreePath _treePath;
-        protected TreeViewColumn _treeViewColumn;
+        public TreeIter _treeIter;
+        public TreePath _treePath;
+        public TreeViewColumn _treeViewColumn;
         //Columns
         private SortType _columnSortType = SortType.Ascending;
         private int _columnSortColumnId = 0;
@@ -506,7 +510,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <summary>
         /// Convert a T2 DataSourceRow to Object Array of Values, used to Work in Insert, Append TreeView Models
         /// </summary>
-        protected System.Object[] DataSourceRowToModelRow(T2 pDataSourceRow)
+        public System.Object[] DataSourceRowToModelRow(T2 pDataSourceRow)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -778,19 +782,71 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     try
                     {
-                        //Delete
-                        DataSourceRowDelete(_dataSourceRow);
+                        if (_dataSourceRow.GetType() == typeof(fin_article))
+                        {
+                            (_dataSourceRow as fin_article).Disabled = true;
+                            (_dataSourceRow as fin_article).DeletedAt = DateTime.Now;
+                            (_dataSourceRow as fin_article).Designation = Utils.RandomString();
+                            (_dataSourceRow as fin_article).Code = Utils.RandomString();
+                            (_dataSourceRow as fin_article).Save();
 
-                        //FIX DOUBLEDELETE in Cloned Documents (Search for FIX DOUBLEDELETE) : Line Above Commented, Model.Remove inside DataSourceRowDelete for both modes XPO and DataTable
-                        //_listStoreModel.Remove(ref _treeIterModel);
+                            //if ((_dataSourceRow as fin_article).IsComposed)
+                            //{
+                            //    foreach (var item in (_dataSourceRow as fin_article).ArticleComposition)
+                            //    {
+                            //        string sqlDelete = string.Format("DELETE FROM [fin_articlecomposition] WHERE [ArticleChild] = '{0}';", item.ArticleChild);
+                            //        GlobalFramework.SessionXpo.ExecuteQuery(sqlDelete);
+                            //        _log.Debug("Delete() :: articles composition '" + "' : " + item.ArticleChild);
+                            //    }
+                            //}
+                            //if((_dataSourceRow as fin_article).ArticleSerialNumber.Count > 0)
+                            //{
+                            //    (_dataSourceRow as fin_article).ArticleSerialNumber.DeleteObjectOnRemove = true;
+                            //    (_dataSourceRow as fin_article).Session.Delete((_dataSourceRow as fin_article).ArticleSerialNumber);
+                            //    (_dataSourceRow as fin_article).Session.Save((_dataSourceRow as fin_article).ArticleSerialNumber);
+                            //     _log.Debug("Delete() :: articles serial Numbers");                                    
+                            //}
+                            //if ((_dataSourceRow as fin_article).ArticleWarehouse.Count > 0)
+                            //{
+                            //    (_dataSourceRow as fin_article).ArticleWarehouse.DeleteObjectOnRemove = true;
+                            //    (_dataSourceRow as fin_article).Session.Delete((_dataSourceRow as fin_article).ArticleWarehouse);
+                            //    (_dataSourceRow as fin_article).Session.Save((_dataSourceRow as fin_article).ArticleWarehouse);
+                            //    _log.Debug("Delete() :: articles from warehouses");
+                            //}
+                        }
+                        else if (_dataSourceRow.GetType() == typeof(fin_warehouse))
+                        {
+                            (_dataSourceRow as fin_warehouse).Disabled = true;
+                            (_dataSourceRow as fin_warehouse).DeletedAt = DateTime.Now;
+                            (_dataSourceRow as fin_warehouse).Save();
 
+                            
+                        }
+                        else if (_dataSourceRow.GetType() == typeof(fin_articlewarehouse))
+                        {
+                            (_dataSourceRow as fin_articlewarehouse).Disabled = true;
+                            (_dataSourceRow as fin_articlewarehouse).DeletedAt = DateTime.Now;
+                            (_dataSourceRow as fin_articlewarehouse).Save();
+                        }
+                        else
+                        {
+                            //Delete
+                            DataSourceRowDelete(_dataSourceRow);
+
+                            //FIX DOUBLEDELETE in Cloned Documents (Search for FIX DOUBLEDELETE) : Line Above Commented, Model.Remove inside DataSourceRowDelete for both modes XPO and DataTable
+                            //_listStoreModel.Remove(ref _treeIterModel);
+
+                 
+                            //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Deleted***");
+                        }
                         //Update ModelFilter after changes in Base Model
                         UpdateChildModelsAfterCRUDChanges();
 
                         //Fire Event
                         OnRecordAfterDelete();
 
-                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Deleted***");
+                        //Refresh treeview
+                        this.Refresh();
                     }
                     catch (Exception ex)
                     {
@@ -819,16 +875,18 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
                 String className = _dataSourceRow.GetType().Name;
                 Guid oid = Guid.Empty;
-                String code = String.Empty;
+                string code = string.Empty;
                 int countResult = 0;
 
+                //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
                 switch (className)
                 {
                     case "erp_customer":
                         /* erp_customer has Documents */
                         logicpos.datalayer.DataLayer.Xpo.erp_customer customer = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.erp_customer);
                         oid = customer.Oid;
-                        code = customer.Code.ToString();
+                        code = string.Format("fin_documentfinancemaster");
+
                         countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[EntityOid] = ?", oid));
                         break;
 
@@ -836,7 +894,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         /* Family has subfamily */
                         logicpos.datalayer.DataLayer.Xpo.fin_articlefamily articleFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlefamily);
                         oid = articleFamily.Oid;
-                        code = articleFamily.Code.ToString();
+                        code = "fin_articlesubfamily";
                         countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Family] = ?", oid));
                         break;
 
@@ -844,7 +902,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         /* Subfamily has article */
                         logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily articleSubFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily);
                         oid = articleSubFamily.Oid;
-                        code = articleSubFamily.Code.ToString();
+                        code = "fin_article";
                         countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[SubFamily] = ?", oid));
                         break;
 
@@ -852,36 +910,270 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         /* Has an article an invoice issued for it? */
                         logicpos.datalayer.DataLayer.Xpo.fin_article article = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_article);
                         oid = article.Oid;
-                        code = article.Code;
+                        code = "fin_article";
                         countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancedetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articleserialnumber), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[ArticleChild] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(fin_articlestock), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        break;
+
+                    case "fin_warehouse":
+                        /* Has an article an invoice issued for it? */
+                        logicpos.datalayer.DataLayer.Xpo.fin_warehouse warehouse = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_warehouse);
+                        oid = warehouse.Oid;
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Documents.fin_warehouselocation), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Warehouse] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(fin_articlewarehouse), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Warehouse] = ?", oid));
+                        break;
+
+                    case "fin_articleclass":
+                        /* Has an article an invoice issued for it? */
+                        logicpos.datalayer.DataLayer.Xpo.fin_articleclass articleClass = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articleclass);
+                        oid = articleClass.Oid;
+                        code = "fin_article";
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Class] = ?", oid));
+                        break;
+
+                    case "fin_documentfinancetype":
+                        /* Has an documentFinanceType an invoice issued for it? */
+                        logicpos.datalayer.DataLayer.Xpo.fin_documentfinancetype docType = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_documentfinancetype);
+                        oid = docType.Oid;
+                        code = "fin_documentfinancemaster / fin_documentfinancepayment";
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DocumentType] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DocumentType] = ?", oid));
                         break;
                     case "pos_configurationplace":
-                        /* Has an article an invoice issued for it? */
+                        /* Has an place an invoice issued for it? */
                         logicpos.datalayer.DataLayer.Xpo.pos_configurationplace configPlace = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.pos_configurationplace);
                         oid = configPlace.Oid;
                         code = configPlace.Code.ToString();
-                        if(code == "10")
+                        if (code == "10")
                         {
                             countResult = 1;
+                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                            break;
                         }
-                        //countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplace), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Oid] = ?"));
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplacetable), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Place] = ?", oid));
+                        code = "pos_configurationplacetable";
                         break;
+
                     case "pos_configurationplacetable":
-                        /* Has an article an invoice issued for it? */
+                        /* Has an placetable an document issued for it? or is code 10 for protected record */
                         logicpos.datalayer.DataLayer.Xpo.pos_configurationplacetable configPlaceTable = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.pos_configurationplacetable);
                         oid = configPlaceTable.Oid;
                         code = configPlaceTable.Code.ToString();
                         if (code == "10")
                         {
                             countResult = 1;
+                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                            break;
                         }
-                        //countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplace), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Oid] = ?"));
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentordermain), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PlaceTable] = ?"));
+                        code = "fin_documentordermain";
+                        break;
+
+                    case "pos_configurationplaceterminal":
+                        logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal terminal = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal);
+                        oid = terminal.Oid;
+                        code = terminal.Code.ToString();
+                        /* If logged terminal is the same, cannot delete */
+                        if (GlobalFramework.LoggedTerminal.Oid == oid)
+                        {
+                            countResult = 1;
+                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
+                            break;
+                        }
+                        /* If logged terminal is referenced on documents */
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CreatedWhere] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CreatedWhere] = ?", oid));
+                        code = "fin_documentfinancemaster / fin_documentfinancepayment";
+                        break;
+
+                    case "sys_configurationprinterstemplates":
+                        /* If templates are referenced on articles */
+                        logicpos.datalayer.DataLayer.Xpo.sys_configurationprinterstemplates printerTemplate = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationprinterstemplates);
+                        oid = printerTemplate.Oid;
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
+                        code = "fin_article / fin_articlesubfamily / fin_articlefamily";
+                        break;
+
+                    case "sys_configurationprinters":
+                        /* If templates are referenced on articles / documents / terminals */
+                        logicpos.datalayer.DataLayer.Xpo.sys_configurationprinters printer = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationprinters);
+                        oid = printer.Oid;
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancetype), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        if (!printer.PrinterType.ThermalPrinter)
+                        {
+                            countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        }
+                        else
+                        {
+                            countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[ThermalPrinter] = ?", oid));
+                        }
+                        code = "fin_article / fin_articlesubfamily / fin_articlefamily / pos_configurationplaceterminal";
+                        break;
+
+                    case "sys_configurationpoledisplay":
+                        /* If pole display are referenced on terminals */
+                        logicpos.datalayer.DataLayer.Xpo.sys_configurationpoledisplay poleDisplay = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationpoledisplay);
+                        oid = poleDisplay.Oid;
+                        code = "pos_configurationplaceterminal";
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PoleDisplay] = ?", oid));
+                        break;
+
+                    case "sys_configurationweighingmachine":
+                        /* If weighing machine are referenced on terminals */
+                        logicpos.datalayer.DataLayer.Xpo.sys_configurationweighingmachine weighingMachine = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationweighingmachine);
+                        oid = weighingMachine.Oid;
+                        code = "pos_configurationplaceterminal"; countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[WeighingMachine] = ?", oid));
+                        break;
+
+                    case "sys_configurationinputreader":
+                        /* If input reader device are referenced on terminals */
+                        logicpos.datalayer.DataLayer.Xpo.sys_configurationinputreader inputReader = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationinputreader);
+                        oid = inputReader.Oid;
+                        code = "pos_configurationplaceterminal"; countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[BarcodeReader] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CardReader] = ?", oid));
+                        break;
+
+                    case "sys_userprofile":
+                        /* If User profile are referenced on User details / User permission profiles */
+                        logicpos.datalayer.DataLayer.Xpo.sys_userprofile userProfile = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_userprofile);
+                        oid = userProfile.Oid;
+                        code = "sys_userdetail / sys_userpermissionprofile";
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_userdetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Profile] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_userpermissionprofile), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[UserProfile] = ?", oid));
+                        break;
+
+                    case "erp_customertype":
+                        logicpos.datalayer.DataLayer.Xpo.erp_customertype customerType = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.erp_customertype);
+                        oid = customerType.Oid;
+                        code = customerType.Code.ToString();
+                        /* If Customer type is code 10 for protected record */
+                        if (code == "10")
+                        {
+                            countResult = 1;
+                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
+                            break;
+                        }
+                        /* If Customer type are referenced on Customer */
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.erp_customer), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CustomerType] = ?", oid));
+                        code = "erp_customer";
+                        break;
+
+                    case "fin_configurationpaymentcondition":
+                        logicpos.datalayer.DataLayer.Xpo.fin_configurationpaymentcondition cfgPaymentContition = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_configurationpaymentcondition);
+                        oid = cfgPaymentContition.Oid;
+                        code = cfgPaymentContition.Code.ToString();
+                        /* If Payment condition is code 10 for protected record */
+                        if (code == "10")
+                        {
+                            countResult = 1;
+                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
+                            break;
+                        }
+                        /* If Payment Condition is referenced on creted documents*/
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PaymentCondition] = ?", oid));
+                        code = "fin_documentfinancemaster";
+                        break;
+
+                    case "fin_configurationvatrate":
+                        logicpos.datalayer.DataLayer.Xpo.fin_configurationvatrate cfgVateRate = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_configurationvatrate);
+                        oid = cfgVateRate.Oid;
+                        code = cfgVateRate.Code.ToString();
+                        /* If Vat Rate is code 10 for protected record */
+                        if (code == "10")
+                        {
+                            countResult = 1;
+                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                            break;
+                        }
+                        /* If Vat Rate is referenced on creted articles / subfamily*/
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatOnTable] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatDirectSelling] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatOnTable] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatDirectSelling] = ?", oid));
+                        code = "fin_article / fin_articlesubfamily";
+                        break;
+
+                    case "fin_configurationvatexemptionreason":
+                        /* If Vat Rate Exception is referenced on document orders / articles */
+                        logicpos.datalayer.DataLayer.Xpo.fin_configurationvatexemptionreason cfgVateExReason = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_configurationvatexemptionreason);
+                        oid = cfgVateExReason.Oid;
+                        code = cfgVateExReason.Code.ToString();
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatExemptionReason] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentorderdetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatExemptionReason] = ?", oid));
+                        code = "fin_article / fin_documentorderdetail";
+                        break;
+
+                    case "fin_configurationpaymentmethod":
+                        logicpos.datalayer.DataLayer.Xpo.fin_configurationpaymentmethod payMethod = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_configurationpaymentmethod);
+                        oid = payMethod.Oid;
+                        code = payMethod.Code.ToString();
+                        //If payment Method = Numerario/MB/CD/Cheque/CC/ContaCorrente
+                        switch (code)
+                        {
+                            case "10":
+                            case "20":
+                            case "30":
+                            case "80":
+                            case "90":
+                            case "300":
+                                countResult = 1;
+                                code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                                break;
+                            default: break;
+                        }
+                        /* If payment Method is referenced on documents */
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PaymentMethod] = ?", oid));
+                        code = "fin_documentfinancemaster";
+                        break;
+
+                    case "sys_userdetails":
+                        /* If user details is referenced on system print */
+                        logicpos.datalayer.DataLayer.Xpo.sys_userdetail userDetail = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_userdetail);
+                        oid = userDetail.Oid;
+                        code = "sys_systemprint";
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_systemprint), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[UserDetail] = ?", oid));
+                        break;
+
+                    case "pos_usercommissiongroup":
+                        /* If user commission group is referenced on articles / articles family / articles sub-family */
+                        logicpos.datalayer.DataLayer.Xpo.pos_usercommissiongroup commissionGrp = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.pos_usercommissiongroup);
+                        oid = commissionGrp.Oid;
+                        code = "fin_article / fin_articlesubfamily / fin_articlefamily";
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
+                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
+                        break;
+
+                    case "erp_customerdiscountgroup":
+                        /* If customer discount group is referenced on articles  */
+                        logicpos.datalayer.DataLayer.Xpo.erp_customerdiscountgroup discountGrp = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.erp_customerdiscountgroup);
+                        oid = discountGrp.Oid;
+                        code = "fin_article";
+                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DiscountGroup] = ?", oid));
+                        break;
+
+                    case "cfg_configurationcountry":
+                    case "cfg_configurationcurrency":
+                    case "cfg_configurationholidays":
+                    case "cfg_configurationunitmeasure":
+                    case "cfg_configurationunitsize":
+                        /* Tables protected records */
+                        code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                        countResult = 1;
                         break;
 
                     default:
                         break;
                 }
-
                 if ((int)countResult > 0)
                 {
                     registerHasReferences = true;
@@ -917,6 +1209,26 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 else if (_dialogType.BaseType == typeof(PosBaseDialogGenericTreeView<T>))
                 {
                     _dialog = (PosBaseDialogGenericTreeView<T>)Activator.CreateInstance(_dialogType, dialogConstructor);
+                }
+                else if (_dialogType == typeof(PosArticleStockDialog))
+                {
+                    ProcessArticleStockParameter res = PosArticleStockDialog.GetProcessArticleStockParameter(_sourceWindow);
+
+                    if (res != null)
+                    {
+                        if (res.ArticleCollectionSimple.Count > 0)
+                        {
+                            foreach (var item in res.ArticleCollectionSimple)
+                            {
+                                res.Quantity = item.Value;
+                                res.Article = item.Key;
+                                ProcessArticleStock.Add(ProcessArticleStockMode.In, res);
+                            }
+                            return true;
+                        }
+                    }
+                    else return false;
+
                 }
 
                 //After Dialog Constructor
@@ -990,7 +1302,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 //IN009296 ENDS
                             }
                         }
-
+                        if (_sourceWindow.GetType() == typeof(DialogArticleStock))
+                        {
+                            (_sourceWindow as DialogArticleStock).TreeViewXPO_ArticleDetails.Refresh();
+                            (_sourceWindow as DialogArticleStock).TreeViewXPO_ArticleHistory.Refresh();
+                            (_sourceWindow as DialogArticleStock).TreeViewXPO_ArticleWarehouse.Refresh();
+                            (_sourceWindow as DialogArticleStock).TreeViewXPO_StockMov.Refresh();
+                        }
                         return true;
                     }
                     else

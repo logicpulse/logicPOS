@@ -102,8 +102,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _NewVersion.Clicked += delegate
             {
                 DateTime actualDate = DateTime.Now;
-                if (actualDate <= GlobalFramework.LicenceUpdateDate)
-                {
+                //if (actualDate <= GlobalFramework.LicenceUpdateDate)
+                //{
                     string fileName = "\\LPUpdater\\LPUpdater.exe";
                     string lPathToUpdater = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
                     //string lPathToUpdater = "" + Utils.GetCurrentDirectory() + "\\LPUpdater\\LPUpdater.exe";
@@ -119,11 +119,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             LogicPos.QuitWithoutConfirmation();
                         }
                     }
-                }
-                else
-                {
-                   Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Error, ButtonsType.Ok, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), GlobalFramework.ServerVersion), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_blocked"));
-                }
+                //}
+                //else
+                //{
+                //   Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Error, ButtonsType.Ok, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), GlobalFramework.ServerVersion), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_blocked"));
+                //}
 
             };
 
@@ -241,9 +241,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _accordionChildArticles.Add("ArticleType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_types")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleType>(this) });
                 _accordionChildArticles.Add("ArticleClass", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_class")) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleClass>(this) });
                 _accordionChildArticles.Add("ConfigurationPriceType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price_type")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPriceType>(this) });
-                Utils.startTreeViewFromBackOffice(_accordionChildArticles);
                 // Disable to Speed uo Opening BO, noew we have Stock Reports
-                //_accordionChildArticles.Add("ArticleStock", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements) { Content = Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this) });
+                _accordionChildArticles.Add("ArticleStock", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")) { /*Content = Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this),*/ Clicked = delegate { Utils.OpenArticleStockDialog(this); } });
 
                 //Customers
                 Dictionary<string, AccordionNode> _accordionChildCustomers = new Dictionary<string, AccordionNode>();
@@ -289,6 +288,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _accordionChildAuxiliarTables.Add("ConfigurationUnitMeasure", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_units_measure")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitMeasure>(this) });
                 _accordionChildAuxiliarTables.Add("ConfigurationUnitSize", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_units_size")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationUnitSize>(this) });
                 _accordionChildAuxiliarTables.Add("ConfigurationHolidays", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_holidays")) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationHolidays>(this) });
+                _accordionChildAuxiliarTables.Add("Warehouse", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse")) { Content = Utils.GetGenericTreeViewXPO<TreeViewWarehouse>(this) });
+
 
                 //Devices
                 Dictionary<string, AccordionNode> _accordionDevices = new Dictionary<string, AccordionNode>();
@@ -319,9 +320,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Export
                 if (GlobalFramework.PluginSoftwareVendor != null && (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal || SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryAngola))
                 {
-                    _accordionChildExport.Add("System_ExportSaftPT_SaftPt", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_saftpt_whole_year")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.WholeYear); } });
-                    _accordionChildExport.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_saftpt_last_month")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.LastMonth); } });
-                    _accordionChildExport.Add("System_ExportSaftPT_Custom", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_saftpt_custom")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.Custom); } });
+                    if ((System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO") || (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-PT"))
+                    {
+                        _accordionChildExport.Add("System_ExportSaftPT_SaftPt", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_saftpt_whole_year")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.WholeYear); } });
+                        _accordionChildExport.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_saftpt_last_month")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.LastMonth); } });
+                        _accordionChildExport.Add("System_ExportSaftPT_Custom", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_saftpt_custom")) { Clicked = delegate { FrameworkCalls.ExportSaft(this, ExportSaftPtMode.Custom); } });
+                    }
                 }
                 _accordionChildExport.Add("System_Export_Articles", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportArticles); } });
                 _accordionChildExport.Add("System_Export_Costumers", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportCustomers); } });
@@ -329,6 +333,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 Dictionary<string, AccordionNode> _accordionChildSystem = new Dictionary<string, AccordionNode>();
                 /* IN006001 - "System" > "Notification" menu option */
                 _accordionChildSystem.Add("System_Notification", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_notification")) { Clicked = delegate { Utils.ShowNotifications(this, true); } });
+                _accordionChildSystem.Add("System_ChangeLog", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "change_log")) { Clicked = delegate { Utils.ShowChangeLog(this); } });
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {

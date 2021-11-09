@@ -62,13 +62,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
         }
         /* IN005974 -  KeyboardMode.AlfaNumeric makes date fields accept text */
-        public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, string pRule, bool pRequired, string pDateFormat)
-            :this(pSourceWindow, pLabelText, string.Empty, pDateTime, KeyboardMode.AlfaNumeric, pRule, pRequired, pDateFormat)
+        public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, string pRule, bool pRequired, string pDateFormat, bool pBOSource = false)
+            :this(pSourceWindow, pLabelText, string.Empty, pDateTime, KeyboardMode.AlfaNumeric, pRule, pRequired, pDateFormat, pBOSource)
         {
         }
 
-        public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, KeyboardMode pKeyboardMode, string pRule, bool pRequired, string pDateFormat)
-            : base(pSourceWindow, pLabelText, pKeyboardMode, pRule, pRequired)
+        public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, KeyboardMode pKeyboardMode, string pRule, bool pRequired, string pDateFormat, bool pBOSource = false)
+            : base(pSourceWindow, pLabelText, pKeyboardMode, pRule, pRequired,"", pBOSource)
         {
             //Parameters
             _sourceWindow = pSourceWindow;
@@ -156,7 +156,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 _entryValidation.Validated = false;
             }
-            Utils.ValidateUpdateColors(_entryValidation, _entryValidation.Label, _entryValidation.Validated);
+            Utils.ValidateUpdateColors(_entryValidation, _entryValidation.Label, _entryValidation.Validated, _entryValidation.Label2, _entryValidation.Label3);
         }
     }
 }

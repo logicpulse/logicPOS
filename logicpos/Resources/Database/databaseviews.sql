@@ -129,6 +129,131 @@ CREATE VIEW view_articlestockmovement AS
         LEFT JOIN fin_documentfinancemaster fdm ON ((fdm.Oid = stk.DocumentMaster)))
 ;
 
+CREATE VIEW view_articlestockwarehouse AS
+  SELECT 
+        afa.Oid AS afaOid,
+        afa.Ord AS afaOrd,
+        afa.Code AS afaCode,
+        afa.Designation AS afaDesignation,
+        afa.Disabled AS afaDisabled,
+        asf.Oid AS asfOid,
+        asf.Ord AS asfOrd,
+        asf.Code AS asfCode,
+        asf.Designation AS asfDesignation,
+        asf.Disabled AS asfDisabled,
+        art.Oid AS Article,
+        art.Ord AS artOrd,
+        art.Code AS artCode,
+        art.CodeDealer AS artCodeDealer,
+        art.Designation AS artDesignation,
+        art.Disabled AS artDisabled,
+        DATE_FORMAT(stk.CreatedAt, '%Y-%m-%d') AS stkDateDay,
+        stk.Oid AS stkOid,
+        stk.CreatedAt AS Date,
+        stk.Quantity AS stkQuantity,
+        aum.Acronym AS aumAcronym,
+        aum.Designation AS aumDesignation,
+        stk.CreatedWhere AS afaTerminal,
+        stk.CreatedBy AS afaUserDetail,
+        wrh.Designation AS wrhDesignation,
+        whl.Designation AS whlDesignation,
+        asn.SerialNumber AS asnSerialNumber,
+        wrh.Oid AS Warehouse,
+        whl.Oid AS Location,
+        asn.Oid AS ArticleSerialNumber
+    FROM
+        (((((((fin_articlewarehouse stk
+        LEFT JOIN fin_article art ON ((art.Oid = stk.Article)))
+        LEFT JOIN fin_articlefamily afa ON ((afa.Oid = art.Family)))
+        LEFT JOIN fin_articlesubfamily asf ON ((asf.Oid = art.SubFamily)))
+        LEFT JOIN cfg_configurationunitmeasure aum ON ((aum.Oid = art.UnitMeasure)))
+        LEFT JOIN fin_warehouse wrh ON ((wrh.Oid = stk.Warehouse)))
+        LEFT JOIN fin_warehouselocation whl ON ((whl.Oid = stk.Location)))
+        LEFT JOIN fin_articleserialnumber asn ON ((asn.Oid = stk.ArticleSerialNumber)))
+;
+
+CREATE VIEW view_articlestock AS
+SELECT  afa.Oid AS afaOid,
+        afa.Ord AS afaOrd,
+        afa.Code AS afaCode,
+        afa.Designation AS afaDesignation,
+        afa.Disabled AS afaDisabled,
+        asf.Oid AS asfOid,
+        asf.Ord AS asfOrd,
+        asf.Code AS asfCode,
+        asf.Designation AS asfDesignation,
+        asf.Disabled AS asfDisabled,
+        art.Oid AS Article,
+        art.Designation as artDesignation,
+        art.Ord AS artOrd,
+        art.Code AS artCode,
+        art.MinimumStock AS artMinStock,
+        DATE_FORMAT(stm.Date, '%Y-%m-%d') AS stmDateDay,
+        stm.Date AS Date,
+        (SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = art.Oid AND (Disabled = 0 OR Disabled is NULL)) as artStk,
+        aum.Acronym AS aumAcronym,
+        aum.Designation AS aumDesignation
+        FROM 
+        ((((fin_articlestock stm
+        LEFT JOIN fin_article art ON ((stm.Article = art.Oid)))   
+        LEFT JOIN fin_articlefamily afa ON ((afa.Oid = art.Family)))
+        LEFT JOIN fin_articlesubfamily asf ON ((asf.Oid = art.SubFamily)))
+        LEFT JOIN cfg_configurationunitmeasure aum ON ((aum.Oid = art.UnitMeasure)))
+        GROUP BY Article     
+;
+
+CREATE VIEW view_articlestocksupplier AS
+  SELECT stm.Oid as stmOid,
+        afa.Oid AS afaOid,
+        afa.Ord AS afaOrd,
+        afa.Code AS afaCode,
+        afa.Designation AS afaDesignation,
+        afa.Disabled AS afaDisabled,
+        asf.Oid AS asfOid,
+        asf.Ord AS asfOrd,
+        asf.Code AS asfCode,
+        asf.Designation AS asfDesignation,
+        asf.Disabled AS asfDisabled,
+        art.Oid AS Article,
+        art.Ord AS artOrd,
+        art.Code AS artCode,
+        art.CodeDealer AS artCodeDealer,
+        art.Designation AS artDesignation,
+        art.Disabled AS artDisabled,        
+        DATE_FORMAT(stm.Date, '%Y-%m-%d') AS stmDateDay,
+        stm.Date AS Date,
+        aum.Acronym AS aumAcronym,
+        aum.Designation AS aumDesignation,
+        stm.CreatedWhere AS afaTerminal,
+        stm.CreatedBy AS afaUserDetail,
+        wrh.Designation AS wrhDesignation,
+        whl.Designation AS whlDesignation,
+        asn.SerialNumber AS asnSerialNumber,
+        wrh.Oid AS Warehouse,
+        whl.Oid AS Location,
+        asn.Oid AS ArticleSerialNumber,
+        stm.Customer AS EntityOid,
+        stm.PurchasePrice AS stmPrice,
+        stm.Quantity AS stmQtd,
+        ctm.Name as ctmName,
+        (Select Oid FROM fin_documentfinancemaster f Where Oid = stm.DocumentMaster) as fdmOid,
+        stm.DocumentNumber AS stmDocumentNumber,
+        (Select Acronym FROM cfg_configurationcurrency Where Oid = fdm.Currency) AS Currency
+    FROM
+        ((((((((((fin_articlestock stm
+        LEFT JOIN fin_article art ON ((art.Oid = stm.Article)))
+        LEFT JOIN fin_articlefamily afa ON ((afa.Oid = art.Family)))
+        LEFT JOIN fin_articlesubfamily asf ON ((asf.Oid = art.SubFamily)))
+        LEFT JOIN cfg_configurationunitmeasure aum ON ((aum.Oid = art.UnitMeasure)))
+        LEFT JOIN fin_articleserialnumber asn ON ((asn.StockMovimentIn = stm.Oid)))
+        LEFT JOIN fin_articlewarehouse awh ON ((awh.Oid = asn.ArticleWarehouse)))
+        LEFT JOIN fin_warehouse wrh ON ((wrh.Oid = awh.Warehouse)))
+        LEFT JOIN fin_warehouselocation whl ON ((whl.Oid = awh.Location)))
+        LEFT JOIN erp_customer ctm ON ((ctm.Oid = stm.Customer)))
+        LEFT JOIN fin_documentfinancemaster fdm ON ((fdm.Oid = stm.DocumentMaster)))
+        ;
+
+
 CREATE VIEW view_country AS
 	SELECT 
 		cou.Oid AS couOid,
@@ -151,174 +276,53 @@ CREATE VIEW view_country AS
 	)
 ;
 
-CREATE VIEW view_documentfinance AS
-    SELECT 
-        ft.Oid AS ftOid,
-        ft.Ord AS ftDocumentTypeOrd,
-        ft.Code AS ftDocumentTypeCode,
-        ft.Designation AS ftDocumentTypeDesignation,
-        ft.ResourceString AS ftDocumentTypeResourceString,
-        ft.Acronym AS ftDocumentTypeAcronym,
-        ft.ResourceStringReport AS ftDocumentTypeResourceStringReport,
-        ft.Credit AS ftCredit,
-        ft.WayBill AS ftWayBill,
-        ft.SaftAuditFile AS ftSaftAuditFile,
-        ft.SaftDocumentType AS ftSaftDocumentType,
-        fm.Oid AS fmOid,
-        fm.Date AS fmDate,
-        fm.DocumentNumber AS fmDocumentNumber,
-        fm.DocumentDate AS fmDocumentDate,
-        fm.SystemEntryDate AS fmSystemEntryDate,
-        fm.TransactionID AS fmTransactionID,
-        fm.ShipToDeliveryID AS fmShipToDeliveryID,
-        fm.ShipToDeliveryDate AS fmShipToDeliveryDate,
-        fm.ShipToWarehouseID AS fmShipToWarehouseID,
-        fm.ShipToLocationID AS fmShipToLocationID,
-        fm.ShipToAddressDetail AS fmShipToAddressDetail,
-        fm.ShipToCity AS fmShipToCity,
-        fm.ShipToPostalCode AS fmShipToPostalCode,
-        fm.ShipToRegion AS fmShipToRegion,
-        fm.ShipToCountry AS fmShipToCountry,
-        fm.ShipFromDeliveryID AS fmShipFromDeliveryID,
-        fm.ShipFromDeliveryDate AS fmShipFromDeliveryDate,
-        fm.ShipFromWarehouseID AS fmShipFromWarehouseID,
-        fm.ShipFromLocationID AS fmShipFromLocationID,
-        fm.ShipFromAddressDetail AS fmShipFromAddressDetail,
-        fm.ShipFromCity AS fmShipFromCity,
-        fm.ShipFromPostalCode AS fmShipFromPostalCode,
-        fm.ShipFromRegion AS fmShipFromRegion,
-        fm.ShipFromCountry AS fmShipFromCountry,
-        fm.MovementStartTime AS fmMovementStartTime,
-        fm.MovementEndTime AS fmMovementEndTime,
-        fm.ATDocCodeID AS fmATDocCodeID,
-        fm.DocumentCreatorUser AS fmDocumentCreatorUser,
-        fm.DocumentStatusStatus AS fmDocumentStatusStatus,
-        fm.Payed AS fmPayed,
-        fm.PayedDate AS fmPayedDate,
-        fm.TotalNet AS fmTotalNet,
-        fm.TotalGross AS fmTotalGross,
-        fm.TotalDiscount AS fmTotalDiscount,
-        fm.TotalTax AS fmTotalTax,
-        fm.TotalFinal AS fmTotalFinal,
-        fm.TotalFinalRound AS fmTotalFinalRound,
-        fm.TotalDelivery AS fmTotalDelivery,
-        fm.TotalChange AS fmTotalChange,
-        fm.Discount AS fmDiscount,
-        fm.DiscountFinancial AS fmDiscountFinancial,
-        fm.ExchangeRate AS fmExchangeRate,
-        fm.EntityOid AS fmEntity,
-        fm.EntityInternalCode AS fmEntityInternalCode,
-        cu.Ord AS cuEntityOrd,
-        cu.Code AS cuEntityCode,
-        cu.Hidden AS cuEntityHidden,
-        fm.EntityName AS fmEntityName,
-        fm.EntityAddress AS fmEntityAddress,
-        fm.EntityZipCode AS fmEntityZipCode,
-		fm.EntityLocality AS fmEntityLocality,
-        fm.EntityCity AS fmEntityCity,
-        fm.EntityCountry AS fmEntityCountryCode2,
-        fm.EntityFiscalNumber AS fmEntityFiscalNumber,
-        fm.Notes AS fmNotes,
-        fm.SourceOrderMain AS fmSourceOrderMain,
-        fm.DocumentParent AS fmDocumentParent,
-        fm.DocumentType AS fmDocumentType,
-        fm.DocumentSerie AS fmDocumentSerie,
-        pm.Oid AS fmPaymentMethod,
-        pm.Ord AS pmPaymentMethodOrd,
-        pm.Code AS pmPaymentMethodCode,
-        pm.Designation AS pmPaymentMethodDesignation,
-        pm.Token AS pmPaymentMethodToken,
-        fm.PaymentCondition AS fmPaymentCondition,
-        pc.Ord AS pcPaymentConditionOrd,
-        pc.Code AS pcPaymentConditionCode,
-        pc.Designation AS pcPaymentConditionDesignation,
-        pc.Acronym AS pcPaymentConditionAcronym,
-        cc.Oid AS ccCountry,
-        cc.Ord AS ccCountryOrd,
-        cc.Code AS ccCountryCode,
-        cc.Designation AS ccCountryDesignation,
-        fm.Currency AS fmCurrency,
-        cr.Ord AS crCurrencyOrd,
-        cr.Code AS crCurrencyCode,
-        cr.Designation AS crCurrencyDesignation,
-        cr.Acronym AS crCurrencyAcronym,
-        af.Oid AS afFamily,
-        af.Ord AS afFamilyOrd,
-        af.Code AS afFamilyCode,
-        af.Designation AS afFamilyDesignation,
-        sf.Oid AS sfSubFamily,
-        sf.Ord AS sfSubFamilyOrd,
-        sf.Code AS sfSubFamilyCode,
-        sf.Designation AS sfSubFamilyDesignation,
-        fd.Oid AS fdOid,
-        fd.Article AS fdArticle,
-        fd.Ord AS fdOrd,
-        fd.Code AS fdCode,
-        fd.Designation AS fdDesignation,
-        fd.Quantity AS fdQuantity,
-        fd.UnitMeasure AS fdUnitMeasure,
-        fd.Price AS fdPrice,
-        (fd.Price - ((fd.Price * fd.Discount) / 100)) AS fdPriceWithDiscount,
-        fd.Vat AS fdVat,
-        fd.Discount AS fdDiscount,
-        ar.PriceWithVat AS arPriceWithVat,
-        fd.TotalNet AS fdTotalNet,
-        fd.TotalGross AS fdTotalGross,
-        fd.TotalDiscount AS fdTotalDiscount,
-        fd.TotalTax AS fdTotalTax,
-        fd.TotalFinal AS fdTotalFinal,
-        fd.VatExemptionReason AS fdVatExemptionReason,
-        fd.VatExemptionReasonDesignation AS fdVatExemptionReasonDesignation,
-        cx.Acronym AS cxAcronym,
-        fd.Token1 AS fdToken1,
-        fd.Token2 AS fdToken2,
-        cv.Ord AS cfVatOrd,
-        cv.Code AS cfVatCode,
-        cv.Designation AS cfVatDesignation,
-        cv.TaxType AS cvTaxType,
-        cv.TaxCode AS cvTaxCode,
-        cv.TaxCountryRegion AS cvTaxCountryRegion,
-        cv.TaxExpirationDate AS cvTaxExpirationDate,
-        cv.TaxDescription AS cvTaxDescription,
-        ud.Oid AS udUserDetail,
-        ud.Ord AS udUserDetailOrd,
-        ud.Code AS udUserDetailCode,
-        ud.Name AS udUserDetailName,
-        tr.Oid AS trTerminal,
-        tr.Ord AS trTerminalOrd,
-        tr.Code AS trTerminalCode,
-        tr.Designation AS trTerminalDesignation,
-        cp.Oid AS cpPlace,
-        cp.Ord AS cpPlaceOrd,
-        cp.Code AS cpPlaceCode,
-        cp.Designation AS cpPlaceDesignation,
-        dm.PlaceTable AS dmPlaceTable,
-        ct.Ord AS ctPlaceTableOrd,
-        ct.Code AS ctPlaceTableCode,
-        ct.Designation AS ctPlaceTableDesignation,
-        cg.Designation AS cgDesignation,
-        cg.Commission AS cgCommission
-    FROM
-        ((((((((((((((((((fin_documentfinancemaster fm
-        LEFT JOIN fin_documentfinancedetail fd ON ((fm.Oid = fd.DocumentMaster)))
-        LEFT JOIN fin_documentfinancetype ft ON ((fm.DocumentType = ft.Oid)))
-        LEFT JOIN fin_article ar ON ((ar.Oid = fd.Article)))
-        LEFT JOIN fin_articlefamily af ON ((af.Oid = ar.Family)))
-        LEFT JOIN fin_articlesubfamily sf ON ((sf.Oid = ar.SubFamily)))
-        LEFT JOIN fin_configurationvatrate cv ON ((cv.Oid = fd.VatRate)))
-        LEFT JOIN fin_configurationvatexemptionreason cx ON ((cx.Oid = fd.VatExemptionReason)))
-        LEFT JOIN fin_documentordermain dm ON ((fm.SourceOrderMain = dm.Oid)))
-        LEFT JOIN pos_configurationplacetable ct ON ((dm.PlaceTable = ct.Oid)))
-        LEFT JOIN pos_configurationplace cp ON ((ct.Place = cp.Oid)))
-        LEFT JOIN fin_configurationpaymentmethod pm ON ((fm.PaymentMethod = pm.Oid)))
-        LEFT JOIN fin_configurationpaymentcondition pc ON ((pc.Oid = fm.PaymentCondition)))
-        LEFT JOIN cfg_configurationcountry cc ON ((fm.EntityCountry = cc.Code2)))
-        LEFT JOIN cfg_configurationcurrency cr ON ((fm.Currency = cr.Oid)))
-        LEFT JOIN sys_userdetail ud ON ((fm.UpdatedBy = ud.Oid)))
-        LEFT JOIN pos_usercommissiongroup cg ON ((cg.Oid = ud.CommissionGroup)))
-        LEFT JOIN pos_configurationplaceterminal tr ON ((fm.UpdatedWhere = tr.Oid)))
-        LEFT JOIN erp_customer cu ON ((fm.EntityOid = cu.Oid)))
-;
+CREATE VIEW view_documentfinance AS SELECT        ft.Oid AS ftOid, ft.Ord AS ftDocumentTypeOrd, ft.Code AS ftDocumentTypeCode, ft.Designation AS ftDocumentTypeDesignation, ft.ResourceString AS ftDocumentTypeResourceString, ft.Acronym AS ftDocumentTypeAcronym, 
+                         ft.ResourceStringReport AS ftDocumentTypeResourceStringReport, ft.Credit AS ftCredit, ft.WayBill AS ftWayBill, ft.SaftAuditFile AS ftSaftAuditFile, ft.SaftDocumentType AS ftSaftDocumentType, fm.Oid AS fmOid, fm.Date AS fmDate,
+                          fm.DocumentNumber AS fmDocumentNumber, fm.DocumentDate AS fmDocumentDate, fm.SystemEntryDate AS fmSystemEntryDate, fm.TransactionID AS fmTransactionID, fm.ShipToDeliveryID AS fmShipToDeliveryID, 
+                         fm.ShipToDeliveryDate AS fmShipToDeliveryDate, fm.ShipToWarehouseID AS fmShipToWarehouseID, fm.ShipToLocationID AS fmShipToLocationID, fm.ShipToAddressDetail AS fmShipToAddressDetail, 
+                         fm.ShipToCity AS fmShipToCity, fm.ShipToPostalCode AS fmShipToPostalCode, fm.ShipToRegion AS fmShipToRegion, fm.ShipToCountry AS fmShipToCountry, fm.ShipFromDeliveryID AS fmShipFromDeliveryID, 
+                         fm.ShipFromDeliveryDate AS fmShipFromDeliveryDate, fm.ShipFromWarehouseID AS fmShipFromWarehouseID, fm.ShipFromLocationID AS fmShipFromLocationID, fm.ShipFromAddressDetail AS fmShipFromAddressDetail, 
+                         fm.ShipFromCity AS fmShipFromCity, fm.ShipFromPostalCode AS fmShipFromPostalCode, fm.ShipFromRegion AS fmShipFromRegion, fm.ShipFromCountry AS fmShipFromCountry, 
+                         fm.MovementStartTime AS fmMovementStartTime, fm.MovementEndTime AS fmMovementEndTime, fm.ATDocCodeID AS fmATDocCodeID, fm.DocumentCreatorUser AS fmDocumentCreatorUser, 
+                         fm.DocumentStatusStatus AS fmDocumentStatusStatus, fm.Payed AS fmPayed, fm.PayedDate AS fmPayedDate, fm.TotalNet AS fmTotalNet, fm.TotalGross AS fmTotalGross, fm.TotalDiscount AS fmTotalDiscount, 
+                         fm.TotalTax AS fmTotalTax, fm.TotalFinal AS fmTotalFinal, fm.TotalFinalRound AS fmTotalFinalRound, fm.TotalDelivery AS fmTotalDelivery, fm.TotalChange AS fmTotalChange, fm.Discount AS fmDiscount, 
+                         fm.DiscountFinancial AS fmDiscountFinancial, fm.ExchangeRate AS fmExchangeRate, fm.EntityOid AS fmEntity, fm.EntityInternalCode AS fmEntityInternalCode, fm.ATDocQRCode AS fmATDocQRCode, cu.Ord AS cuEntityOrd, 
+                         cu.Code AS cuEntityCode, cu.Hidden AS cuEntityHidden, fm.EntityName AS fmEntityName, fm.EntityAddress AS fmEntityAddress, fm.EntityZipCode AS fmEntityZipCode, fm.EntityLocality AS fmEntityLocality, 
+                         fm.EntityCity AS fmEntityCity, fm.EntityCountry AS fmEntityCountryCode2, fm.EntityFiscalNumber AS fmEntityFiscalNumber, fm.Notes AS fmNotes, fm.SourceOrderMain AS fmSourceOrderMain, 
+                         fm.DocumentParent AS fmDocumentParent, fm.DocumentType AS fmDocumentType, fm.DocumentSerie AS fmDocumentSerie, pm.Oid AS fmPaymentMethod, pm.Ord AS pmPaymentMethodOrd, 
+                         pm.Code AS pmPaymentMethodCode, pm.Designation AS pmPaymentMethodDesignation, pm.Token AS pmPaymentMethodToken, fm.PaymentCondition AS fmPaymentCondition, pc.Ord AS pcPaymentConditionOrd, 
+                         pc.Code AS pcPaymentConditionCode, pc.Designation AS pcPaymentConditionDesignation, pc.Acronym AS pcPaymentConditionAcronym, cc.Oid AS ccCountry, cc.Ord AS ccCountryOrd, cc.Code AS ccCountryCode, 
+                         cc.Designation AS ccCountryDesignation, fm.Currency AS fmCurrency, cr.Ord AS crCurrencyOrd, cr.Code AS crCurrencyCode, cr.Designation AS crCurrencyDesignation, cr.Acronym AS crCurrencyAcronym, af.Oid AS afFamily, 
+                         af.Ord AS afFamilyOrd, af.Code AS afFamilyCode, af.Designation AS afFamilyDesignation, sf.Oid AS sfSubFamily, sf.Ord AS sfSubFamilyOrd, sf.Code AS sfSubFamilyCode, sf.Designation AS sfSubFamilyDesignation, 
+                         fd.Oid AS fdOid, fd.Article AS fdArticle, fd.Ord AS fdOrd, fd.Code AS fdCode, fd.Designation AS fdDesignation, fd.Quantity AS fdQuantity, fd.UnitMeasure AS fdUnitMeasure, fd.Price AS fdPrice, (fd.Price - ((fd.Price * fd.Discount) 
+                         / 100)) AS fdPriceWithDiscount, fd.Vat AS fdVat, fd.Discount AS fdDiscount, ar.PriceWithVat AS arPriceWithVat, fd.TotalNet AS fdTotalNet, fd.TotalGross AS fdTotalGross, fd.TotalDiscount AS fdTotalDiscount, 
+                         fd.TotalTax AS fdTotalTax, fd.TotalFinal AS fdTotalFinal, fd.VatExemptionReason AS fdVatExemptionReason, fd.VatExemptionReasonDesignation AS fdVatExemptionReasonDesignation, cx.Acronym AS cxAcronym, 
+                         fd.Token1 AS fdToken1, fd.Token2 AS fdToken2, cv.Ord AS cfVatOrd, cv.Code AS cfVatCode, cv.Designation AS cfVatDesignation, cv.TaxType AS cvTaxType, cv.TaxCode AS cvTaxCode, 
+                         cv.TaxCountryRegion AS cvTaxCountryRegion, cv.TaxExpirationDate AS cvTaxExpirationDate, cv.TaxDescription AS cvTaxDescription, ud.Oid AS udUserDetail, ud.Ord AS udUserDetailOrd, ud.Code AS udUserDetailCode, 
+                         ud.Name AS udUserDetailName, tr.Oid AS trTerminal, tr.Ord AS trTerminalOrd, tr.Code AS trTerminalCode, tr.Designation AS trTerminalDesignation, cp.Oid AS cpPlace, cp.Ord AS cpPlaceOrd, cp.Code AS cpPlaceCode, 
+                         cp.Designation AS cpPlaceDesignation, dm.PlaceTable AS dmPlaceTable, ct.Ord AS ctPlaceTableOrd, ct.Code AS ctPlaceTableCode, ct.Designation AS ctPlaceTableDesignation, cg.Designation AS cgDesignation, 
+                         cg.Commission AS cgCommission, cv.Oid AS cfOid, ar.Class AS arClass, ac.Designation as acDesignation, ac.Acronym as acAcronym
+FROM            (((((((((((((((((((fin_documentfinancemaster fm LEFT JOIN
+                         fin_documentfinancedetail fd ON ((fm.Oid = fd.DocumentMaster))) LEFT JOIN
+                         fin_documentfinancetype ft ON ((fm.DocumentType = ft.Oid))) LEFT JOIN
+                         fin_article ar ON ((ar.Oid = fd.Article))) LEFT JOIN
+                         fin_articlefamily af ON ((af.Oid = ar.Family))) LEFT JOIN
+                         fin_articlesubfamily sf ON ((sf.Oid = ar.SubFamily))) LEFT JOIN
+						            fin_articleclass ac ON ((ac.Oid = ar.Class))) LEFT JOIN
+                         fin_configurationvatrate cv ON ((cv.Oid = fd.VatRate))) LEFT JOIN
+                         fin_configurationvatexemptionreason cx ON ((cx.Oid = fd.VatExemptionReason))) LEFT JOIN
+                         fin_documentordermain dm ON ((fm.SourceOrderMain = dm.Oid))) LEFT JOIN
+                         pos_configurationplacetable ct ON ((dm.PlaceTable = ct.Oid))) LEFT JOIN
+                         pos_configurationplace cp ON ((ct.Place = cp.Oid))) LEFT JOIN
+                         fin_configurationpaymentmethod pm ON ((fm.PaymentMethod = pm.Oid))) LEFT JOIN
+                         fin_configurationpaymentcondition pc ON ((pc.Oid = fm.PaymentCondition))) LEFT JOIN
+                         cfg_configurationcountry cc ON ((fm.EntityCountry = cc.Code2))) LEFT JOIN
+                         cfg_configurationcurrency cr ON ((fm.Currency = cr.Oid))) LEFT JOIN
+                         sys_userdetail ud ON ((fm.UpdatedBy = ud.Oid))) LEFT JOIN
+                         pos_usercommissiongroup cg ON ((cg.Oid = ud.CommissionGroup))) LEFT JOIN
+                         pos_configurationplaceterminal tr ON ((fm.UpdatedWhere = tr.Oid))) LEFT JOIN
+                         erp_customer cu ON ((fm.EntityOid = cu.Oid)));;
+   
 
 CREATE VIEW view_documentfinancecommision AS
     SELECT 

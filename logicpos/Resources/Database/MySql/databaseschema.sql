@@ -467,6 +467,8 @@ CREATE TABLE erp_customertype (
 -- Table structure for table fin_article
 --
 
+
+
 DROP TABLE IF EXISTS fin_article;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -486,6 +488,8 @@ CREATE TABLE fin_article (
   Ord int(10) unsigned DEFAULT NULL,
   Code varchar(25) DEFAULT NULL,
   CodeDealer varchar(25) DEFAULT NULL,
+  IsComposed bit(1) DEFAULT NULL,
+  UniqueArticles bit(1) DEFAULT NULL,
   Designation varchar(100) DEFAULT NULL,
   ButtonLabel varchar(35) DEFAULT NULL,
   ButtonLabelHide bit(1) DEFAULT NULL,
@@ -506,10 +510,11 @@ CREATE TABLE fin_article (
   Price3UsePromotionPrice bit(1) DEFAULT NULL,
   Price4UsePromotionPrice bit(1) DEFAULT NULL,
   Price5UsePromotionPrice bit(1) DEFAULT NULL,
-  PriceWithVat bit(1) DEFAULT NULL,
+  PriceWithVat bit(1) DEFAULT NULL,  
   Discount double DEFAULT NULL,
   DefaultQuantity double DEFAULT NULL,
   Accounting double DEFAULT NULL,
+  MinimumStock double DEFAULT NULL,
   Tare double DEFAULT NULL,
   Weight double DEFAULT NULL,
   BarCode varchar(100) DEFAULT NULL,
@@ -531,6 +536,7 @@ CREATE TABLE fin_article (
   VatExemptionReason char(38) DEFAULT NULL,
   Printer char(38) DEFAULT NULL,
   Template char(38) DEFAULT NULL,
+  TemplateBarCode char(38) DEFAULT NULL,  
   OptimisticLockField int(11) DEFAULT NULL,
   PRIMARY KEY (Oid),
   UNIQUE KEY iOid_fin_article (Oid),
@@ -556,6 +562,7 @@ CREATE TABLE fin_article (
   KEY iVatExemptionReason_fin_article (VatExemptionReason),
   KEY iPrinter_fin_article (Printer),
   KEY iTemplate_fin_article (Template),
+  KEY iTemplateBarCode_fin_article (TemplateBarCode),
   CONSTRAINT FK_fin_article_Class FOREIGN KEY (Class) REFERENCES fin_articleclass (Oid),
   CONSTRAINT FK_fin_article_CommissionGroup FOREIGN KEY (CommissionGroup) REFERENCES pos_usercommissiongroup (Oid),
   CONSTRAINT FK_fin_article_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES sys_userdetail (Oid),
@@ -577,6 +584,210 @@ CREATE TABLE fin_article (
   CONSTRAINT FK_fin_article_VatOnTable FOREIGN KEY (VatOnTable) REFERENCES fin_configurationvatrate (Oid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table fin_articlecomposition
+--
+
+DROP TABLE IF EXISTS fin_articlecomposition;
+CREATE TABLE fin_articlecomposition (
+  Oid char(38) NOT NULL,
+  Disabled bit(1) DEFAULT NULL,
+  Notes longtext,
+  CreatedAt datetime DEFAULT NULL,
+  CreatedBy char(38) DEFAULT NULL,
+  CreatedWhere char(38) DEFAULT NULL,
+  UpdatedAt datetime DEFAULT NULL,
+  UpdatedBy char(38) DEFAULT NULL,
+  UpdatedWhere char(38) DEFAULT NULL,
+  DeletedAt datetime DEFAULT NULL,
+  DeletedBy char(38) DEFAULT NULL,
+  DeletedWhere char(38) DEFAULT NULL,
+  Article char(38) NULL,
+  ArticleChild char(38) NULL,
+  Quantity double DEFAULT NULL,
+  OptimisticLockField int(11) DEFAULT NULL,
+  PRIMARY KEY (Oid),
+  UNIQUE KEY iOid_fin_articlecomposition(Oid),
+  KEY iCreatedBy_fin_articlecomposition (CreatedBy),
+  KEY iCreatedWhere_fin_articlecomposition (CreatedWhere),
+  KEY iUpdatedBy_fin_articlecomposition (UpdatedBy),
+  KEY iUpdatedWhere_fin_articlecomposition (UpdatedWhere),
+  KEY iDeletedBy_fin_articlecomposition (DeletedBy),
+  KEY iDeletedWhere_fin_articlecomposition (DeletedWhere),
+  CONSTRAINT FK_fin_article FOREIGN KEY (Article) REFERENCES fin_article (Oid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table fin_warehouse
+--
+DROP TABLE IF EXISTS fin_warehouse;
+CREATE TABLE fin_warehouse (
+  Oid char(38) NOT NULL,
+  Disabled bit(1) DEFAULT NULL,
+  Notes longtext,
+  CreatedAt datetime DEFAULT NULL,
+  CreatedBy char(38) DEFAULT NULL,
+  CreatedWhere char(38) DEFAULT NULL,
+  UpdatedAt datetime DEFAULT NULL,
+  UpdatedBy char(38) DEFAULT NULL,
+  UpdatedWhere char(38) DEFAULT NULL,
+  DeletedAt datetime DEFAULT NULL,
+  DeletedBy char(38) DEFAULT NULL,
+  DeletedWhere char(38) DEFAULT NULL,
+  Ord int(10) unsigned DEFAULT NULL,
+  Code int(10) unsigned DEFAULT NULL,
+  Designation char(200) NULL,
+  IsDefault bit(1) DEFAULT NULL,
+  OptimisticLockField int(11) DEFAULT NULL,
+  PRIMARY KEY (Oid),
+  UNIQUE KEY iOid_fin_warehouse(Oid),
+  KEY iCreatedBy_fin_warehouse (CreatedBy),
+  KEY iCreatedWhere_fin_warehouse(CreatedWhere),
+  KEY iUpdatedBy_fin_warehouse (UpdatedBy),
+  KEY iUpdatedWhere_fin_warehouse (UpdatedWhere),
+  KEY iDeletedBy_fin_warehouse (DeletedBy),
+  KEY iDeletedWhere_fin_warehouse (DeletedWhere),
+  KEY iDesignation_fin_warehouse (Designation),
+  KEY iIsDefault_fin_warehouse (IsDefault)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table fin_warehouselocation
+--
+DROP TABLE IF EXISTS fin_warehouselocation;
+CREATE TABLE fin_warehouselocation (
+  Oid char(38) NOT NULL,
+  Disabled bit(1) DEFAULT NULL,
+  Notes longtext,
+  CreatedAt datetime DEFAULT NULL,
+  CreatedBy char(38) DEFAULT NULL,
+  CreatedWhere char(38) DEFAULT NULL,
+  UpdatedAt datetime DEFAULT NULL,
+  UpdatedBy char(38) DEFAULT NULL,
+  UpdatedWhere char(38) DEFAULT NULL,
+  DeletedAt datetime DEFAULT NULL,
+  DeletedBy char(38) DEFAULT NULL,
+  DeletedWhere char(38) DEFAULT NULL,
+  Ord int(10) unsigned DEFAULT NULL,
+  Code int(10) unsigned DEFAULT NULL,
+  Designation char(200) NULL,
+  Warehouse char(38) NULL,
+  OptimisticLockField int(11) DEFAULT NULL,
+  PRIMARY KEY (Oid),
+  UNIQUE KEY iOid_fin_warehouselocation(Oid),
+  KEY iCreatedBy_fin_warehouselocation (CreatedBy),
+  KEY iCreatedWhere_fin_warehouselocation (CreatedWhere),
+  KEY iUpdatedBy_fin_warehouselocation (UpdatedBy),
+  KEY iUpdatedWhere_fin_warehouselocation (UpdatedWhere),
+  KEY iDeletedBy_fin_warehouselocation (DeletedBy),
+  KEY iDeletedWhere_fin_warehouselocation (DeletedWhere),
+  KEY iDesignation_fin_warehouselocation (Designation),
+  CONSTRAINT FK_fin_warehouse FOREIGN KEY (Warehouse) REFERENCES fin_warehouse (Oid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Table structure for table fin_articleserialnumber
+--
+DROP TABLE IF EXISTS fin_articleserialnumber;
+CREATE TABLE fin_articleserialnumber (
+  Oid char(38) NOT NULL,
+  Disabled bit(1) DEFAULT NULL,
+  Notes longtext,
+  CreatedAt datetime DEFAULT NULL,
+  CreatedBy char(38) DEFAULT NULL,
+  CreatedWhere char(38) DEFAULT NULL,
+  UpdatedAt datetime DEFAULT NULL,
+  UpdatedBy char(38) DEFAULT NULL,
+  UpdatedWhere char(38) DEFAULT NULL,
+  DeletedAt datetime DEFAULT NULL,
+  DeletedBy char(38) DEFAULT NULL,
+  DeletedWhere char(38) DEFAULT NULL,
+  ArticleWarehouse char(38) NULL,
+  StockMovimentIn char(38) NULL,
+  StockMovimentOut char(38) NULL,
+  Article char(38) NULL,
+  SerialNumber char(200) NULL,
+  IsSold bit(1) DEFAULT NULL,
+  Status int DEFAULT NULL,
+  OptimisticLockField int(11) DEFAULT NULL,
+  PRIMARY KEY (Oid),
+  UNIQUE KEY iOid_fin_articleserialnumber(Oid),
+  KEY iCreatedBy_fin_articleserialnumber (CreatedBy),
+  KEY iCreatedWhere_fin_articleserialnumber (CreatedWhere),
+  KEY iUpdatedBy_fin_articleserialnumber (UpdatedBy),
+  KEY iUpdatedWhere_fin_articleserialnumber (UpdatedWhere),
+  KEY iDeletedBy_fin_articleserialnumber (DeletedBy),
+  KEY iDeletedWhere_fin_articleserialnumber (DeletedWhere)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Table structure for table fin_articlecompositionserialnumber
+--
+DROP TABLE IF EXISTS fin_articlecompositionserialnumber;
+CREATE TABLE fin_articlecompositionserialnumber (
+  Oid char(38) NOT NULL,
+  Disabled bit(1) DEFAULT NULL,
+  Notes longtext,
+  CreatedAt datetime DEFAULT NULL,
+  CreatedBy char(38) DEFAULT NULL,
+  CreatedWhere char(38) DEFAULT NULL,
+  UpdatedAt datetime DEFAULT NULL,
+  UpdatedBy char(38) DEFAULT NULL,
+  UpdatedWhere char(38) DEFAULT NULL,
+  DeletedAt datetime DEFAULT NULL,
+  DeletedBy char(38) DEFAULT NULL,
+  DeletedWhere char(38) DEFAULT NULL,  
+  ArticleSerialNumber char(38) NULL,
+  ArticleSerialNumberChild char(38) NULL,
+  OptimisticLockField int(11) DEFAULT NULL,
+  PRIMARY KEY (Oid),
+  UNIQUE KEY iOid_fin_articlecompositionserialnumber(Oid),
+  KEY iCreatedBy_fin_articlecompositionserialnumber (CreatedBy),
+  KEY iCreatedWhere_fin_articlecompositionserialnumber (CreatedWhere),
+  KEY iUpdatedBy_fin_articlecompositionserialnumber (UpdatedBy),
+  KEY iUpdatedWhere_fin_articlecompositionserialnumber (UpdatedWhere),
+  KEY iDeletedBy_fin_articlecompositionserialnumber (DeletedBy),
+  KEY iDeletedWhere_fin_articlecompositionserialnumber (DeletedWhere)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table fin_articlewarehouse
+--
+DROP TABLE IF EXISTS fin_articlewarehouse;
+CREATE TABLE fin_articlewarehouse (
+  Oid char(38) NOT NULL,
+  Disabled bit(1) DEFAULT NULL,
+  Notes longtext,
+  CreatedAt datetime DEFAULT NULL,
+  CreatedBy char(38) DEFAULT NULL,
+  CreatedWhere char(38) DEFAULT NULL,
+  UpdatedAt datetime DEFAULT NULL,
+  UpdatedBy char(38) DEFAULT NULL,
+  UpdatedWhere char(38) DEFAULT NULL,
+  DeletedAt datetime DEFAULT NULL,
+  DeletedBy char(38) DEFAULT NULL,
+  DeletedWhere char(38) DEFAULT NULL,
+  Warehouse char(38) NULL,
+  Location char(38) NULL,
+  Article char(38) NULL,
+  ArticleSerialNumber char(38) NULL,
+  Quantity double DEFAULT NULL,
+  OptimisticLockField int(11) DEFAULT NULL,
+  PRIMARY KEY (Oid),
+  UNIQUE KEY iOid_fin_articlewarehouse(Oid),
+  KEY iCreatedBy_fin_articlewarehouse (CreatedBy),
+  KEY iCreatedWhere_fin_articlewarehouse (CreatedWhere),
+  KEY iUpdatedBy_fin_articlewarehouse (UpdatedBy),
+  KEY iUpdatedWhere_fin_articlewarehouse (UpdatedWhere),
+  KEY iDeletedBy_fin_articlewarehouse (DeletedBy),
+  KEY iDeletedWhere_fin_articlewarehouse (DeletedWhere),
+  CONSTRAINT FK_fin_warehouselocation FOREIGN KEY (Location) REFERENCES fin_warehouselocation (Oid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 --
 -- Table structure for table fin_articleclass
@@ -711,6 +922,9 @@ CREATE TABLE fin_articlestock (
   Quantity double DEFAULT NULL,
   DocumentMaster char(38) DEFAULT NULL,
   DocumentDetail char(38) DEFAULT NULL,
+  ArticleSerialNumber char(38) DEFAULT NULL,
+  PurchasePrice double DEFAULT NULL,
+  AttachedFile LONGBLOB NULL,
   OptimisticLockField int(11) DEFAULT NULL,
   PRIMARY KEY (Oid),
   UNIQUE KEY iOid_fin_articlestock (Oid),
@@ -1181,6 +1395,8 @@ CREATE TABLE fin_documentfinancedetail (
   Article char(38) DEFAULT NULL,
   VatRate char(38) DEFAULT NULL,
   VatExemptionReason char(38) DEFAULT NULL,
+  SerialNumber varchar(10000) DEFAULT NULL,
+  Warehouse varchar(10000) DEFAULT NULL,
   OptimisticLockField int(11) DEFAULT NULL,
   PRIMARY KEY (Oid),
   UNIQUE KEY iOid_fin_documentfinancedetail (Oid),
@@ -1393,11 +1609,13 @@ CREATE TABLE fin_documentfinancemaster (
   ATDocCodeID varchar(200) DEFAULT NULL,
   ATValidAuditResult char(38) DEFAULT NULL,
   ATResendDocument bit(1) DEFAULT NULL,
+  ATCUD varchar(200) DEFAULT NULL,
+  ATDocQRCode varchar(200) DEFAULT NULL,
   DocumentType char(38) DEFAULT NULL,
   DocumentSerie char(38) DEFAULT NULL,
   PaymentMethod char(38) DEFAULT NULL,
   PaymentCondition char(38) DEFAULT NULL,
-  Currency char(38) DEFAULT NULL,
+  Currency char(38) DEFAULT NULL,  
   OptimisticLockField int(11) DEFAULT NULL,
   PRIMARY KEY (Oid),
   UNIQUE KEY iOid_fin_documentfinancemaster (Oid),
@@ -2919,6 +3137,7 @@ CREATE TABLE sys_configurationprinterstemplates (
   Designation varchar(100) DEFAULT NULL,
   FileTemplate varchar(100) DEFAULT NULL,
   FinancialTemplate bit(1) DEFAULT NULL,
+  IsBarCode bit(1) DEFAULT NULL,
   OptimisticLockField int(11) DEFAULT NULL,
   PRIMARY KEY (Oid),
   UNIQUE KEY iOid_sys_configurationprinterstemplates (Oid),

@@ -46,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
 
                 //HavePrice
-                CheckButton checkButtonHavePrice = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_work_in_stock"));
+                CheckButton checkButtonHavePrice = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_articletype_haveprice"));
                 vboxTab1.PackStart(checkButtonHavePrice, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonHavePrice, _dataSourceRow, "HavePrice"));
 
@@ -58,6 +58,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
+				
+				//Proteção para artigos do tipo "Sem Preço" [IN:013329]
+				//Impede alteração do tipo de preço para artigo do tipo Normal
+                if(entryCode.Text == "10")
+                {
+                    entryCode.Sensitive = false;
+                    entryOrd.Sensitive = false;
+                    entryDesignation.Sensitive = false;
+                    checkButtonHavePrice.Sensitive = false;
+                    checkButtonDisabled.Sensitive = false;
+                }
             }
             catch (System.Exception ex)
             {

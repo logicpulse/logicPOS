@@ -37,7 +37,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                throw ex;
+                return false;
             }
 
             return result;

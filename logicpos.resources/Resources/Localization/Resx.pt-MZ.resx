@@ -120,7 +120,7 @@
   <data name="app_error_application_unlicenced_function_disabled" xml:space="preserve">
     <value>{0}
     
-Aplicação não está licenciada!</value>
+Aplicação não está registada!</value>
   </data>
   <data name="app_error_contact_support" xml:space="preserve">
     <value>Erro na Aplicação! Por favor contacte o suporte técnico.</value>
@@ -212,10 +212,10 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
     <value>Artigo {0} - Quantidade: {1}/{2} removido da Ordem pelo utilizador {3}</value>
   </data>
   <data name="audit_message_stock_movement_in" xml:space="preserve">
-    <value>Entrada de Mercadoria: Artigo: {0} - Quantidade: {1}</value>
+    <value>Entrada de Stock: Artigo: {0} - Quantidade: {1}</value>
   </data>
   <data name="audit_message_stock_movement_out" xml:space="preserve">
-    <value>Saída de mercadorias: Item: {0} - Quantidade: {1}</value>
+    <value>Saída de stock: Item: {0} - Quantidade: {1}</value>
   </data>
   <data name="audit_message_table_close" xml:space="preserve">
     <value>Mesa fechada: {0}</value>
@@ -355,7 +355,7 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
     <value>O ticket que está a tentar pagar já foi pago e já deu saida.</value>
   </data>
   <data name="dialog_message_cant_create_cc_document_with_default_entity" xml:space="preserve">
-    <value>Não pode criar documentos de entrada de conta corrente com o cliente consumidor final ou com um cliente sem nome/NUIT!
+    <value>Não pode criar faturas com o cliente consumidor final ou com um cliente sem nome/NUIT!
 Use um cliente válido e tente novamente.</value>
   </data>
   <data name="dialog_message_cashdrawer_money_out_error" xml:space="preserve">
@@ -1125,6 +1125,9 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_ConfigurationPrintersTemplates" xml:space="preserve">
     <value>Modelos de Impressão </value>
   </data>
+  <data name="global_ConfigurationPrintersBarCodeTemplates" xml:space="preserve">
+    <value>Modelos de Impressão de Códigos de Barras</value>
+  </data>
   <data name="global_ConfigurationPrintersType" xml:space="preserve">
     <value>Tipos de impressora</value>
   </data>
@@ -1472,7 +1475,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Assunto</value>
   </data>
   <data name="global_email_to" xml:space="preserve">
-    <value>Para</value>
+    <value>Para (para multiplos emails use a virgula. Ex. 123@123.pt,test@test.pt)</value>
   </data>
   <data name="global_entity" xml:space="preserve">
     <value>Entidade</value>
@@ -2137,7 +2140,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Movimento</value>
   </data>
   <data name="global_stock_movements" xml:space="preserve">
-    <value>Movimentos de Mercadoria</value>
+    <value>Gestão de Stocks</value>
   </data>
   <data name="global_stock_movement_in" xml:space="preserve">
     <value>Entrada</value>
@@ -2943,7 +2946,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Pasta :: Cópias de Segurança</value>
   </data>
   <data name="prefparam_path_saftpt" xml:space="preserve">
-    <value>Pasta :: Exportação do Saft-PT</value>
+    <value>Pasta :: Exportação do Saft</value>
   </data>
   <data name="prefparam_report_filename_logo" xml:space="preserve">
     <value>Relatório :: Ficheiro do Logo</value>
@@ -3032,6 +3035,12 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="prefparam_ticket_footer_line2" xml:space="preserve">
     <value>Ticket :: Texto Linha 2</value>
   </data>
+  <data name="prefparam_ticket_print_ticket" xml:space="preserve">
+    <value>Ticket :: Imprimir Ticket</value>
+  </data>
+  <data name="prefparam_print_qrcode" xml:space="preserve">
+    <value>Documentos :: Imprimir QRCode</value>
+  </data>
   <data name="prefparam_use_cached_images" xml:space="preserve">
     <value>Aplicação :: Usar Imagens Temporárias</value>
   </data>
@@ -3055,6 +3064,9 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   </data>
   <data name="reporttype_label_type5" xml:space="preserve">
     <value>Outros Relatórios</value>
+  </data>
+  <data name="reporttype_label_type6" xml:space="preserve">
+    <value>Relatórios de Stock</value>
   </data>
   <data name="report_account_balance" xml:space="preserve">
     <value>Saldo da Conta</value>
@@ -3172,7 +3184,16 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Famílias, Subfamílias e Artigos</value>
   </data>
   <data name="report_list_stock_movements" xml:space="preserve">
-    <value>Movimentos de Mercadoria</value>
+    <value>Movimentos de Stocks</value>
+  </data>
+  <data name="report_list_stock_warehouse" xml:space="preserve">
+    <value>Stock em Armazém</value>
+  </data>
+  <data name="report_list_stock_article" xml:space="preserve">
+    <value>Stock por Artigo</value>
+  </data>
+  <data name="report_list_stock_supplier" xml:space="preserve">
+    <value>Stock por Fornecedor</value>
   </data>
   <data name="report_list_user_commission" xml:space="preserve">
     <value>Comissões</value>
@@ -3214,6 +3235,12 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   </data>
   <data name="report_sales_per_date" xml:space="preserve">
     <value>Vendas por dia</value>
+  </data>
+  <data name="report_sales_per_vat" xml:space="preserve">
+    <value>Vendas por taxa IVA</value>
+  </data>
+  <data name="report_sales_per_vat_by_article_class" xml:space="preserve">
+    <value>Vendas por taxa IVA/classe de artigo</value>
   </data>
   <data name="report_sales_per_family" xml:space="preserve">
     <value>Vendas por família</value>
@@ -3399,7 +3426,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Saida de Ticket</value>
   </data>
   <data name="window_title_dialog_article_stock" xml:space="preserve">
-    <value>Entrada de Mercadoria</value>
+    <value>Entrada/Saída de Stock</value>
   </data>
   <data name="window_title_dialog_cash" xml:space="preserve">
     <value>Sessão de Trabalho</value>
@@ -3414,7 +3441,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Mudar de utilizador</value>
   </data>
   <data name="window_title_dialog_clone_documents_confirmation" xml:space="preserve">
-    <value>Este processo não pode ser revertido! Deseja confirmar e copiar os seguintes documentos?
+    <value>Deseja confirmar e copiar os seguintes documentos?
 
 {0}</value>
   </data>
@@ -3660,7 +3687,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Editar perfis de utilizador</value>
   </data>
   <data name="window_title_license" xml:space="preserve">
-    <value>LogicPulse: Sistema de Licenciamento</value>
+    <value>LogicPulse: Sistema de registo gratuito</value>
   </data>
   <data name="window_title_reports" xml:space="preserve">
     <value>Relatórios</value>
@@ -3721,7 +3748,7 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
     <value>Aber. de ano fiscal</value>
   </data>
   <data name="global_documentticket_type_title_cs_short" xml:space="preserve">
-    <value>Ent./Saí. de Num.</value>
+    <value>Stocks</value>
   </data>
   <data name="report_company_billing_short" xml:space="preserve">
     <value>Rel. de Fatur.</value>
@@ -3785,5 +3812,101 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="global_invalid_code" xml:space="preserve">
     <value>O código inserido não existe no sistema</value>
+  </data>
+  <data name="global_documentfinance_insert_new_article" xml:space="preserve">
+    <value>Novo artigo inserido com sucesso</value>
+  </data>
+  <data name="global_documentfinance_insert_new_article_code_error" xml:space="preserve">
+    <value>O código do item inserido já existente ou codigo / designação de artigo vazio</value>
+  </data>
+  <data name="article_type_without_price" xml:space="preserve">
+    <value>Tipo de Artigo sem preço</value>
+  </data>
+  <data name="global_new_article" xml:space="preserve">
+    <value>novo artigo</value>
+  </data>
+  <data name="global_printer_choose_printer" xml:space="preserve">
+    <value>Deseja imprimir documento na impressora de talões?</value>
+  </data>
+  <data name="global_email_separator" xml:space="preserve">
+    <value>Email (para multiplos emails use a virgula. Ex. 123@123.pt,test@test.pt)</value>
+  </data>
+  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
+    <value>Artigos Associados</value>
+  </data>
+  <data name="global_composite_article" xml:space="preserve">
+    <value>Artigo composto</value>
+  </data>
+  <data name="dialog_message_composite_article_same" xml:space="preserve">
+    <value>Artigo inserido é o artigo original!</value>
+  </data>
+  <data name="dialog_message_composite_article_already" xml:space="preserve">
+    <value>Artigo inserido já está associado!</value>
+  </data>
+  <data name="change_log" xml:space="preserve">
+    <value>Registro de alterações (Changelog)</value>
+  </data>
+  <data name="global_minimum_stock" xml:space="preserve">
+    <value>Stock mínimo</value>
+  </data>
+  <data name="prefparam_check_stocks" xml:space="preserve">
+    <value>Stocks :: Verificar stocks</value>
+  </data>
+  <data name="prefparam_check_stocks_message" xml:space="preserve">
+    <value>Stocks :: Mostrar mensagem stock</value>
+  </data>
+  <data name="window_check_stock_question" xml:space="preserve">
+    <value>A quantidade introduzida é igual ou inferior á quantidade minima de stock, Pretende continuar?</value>
+  </data>
+  <data name="global_serialnumber" xml:space="preserve">
+    <value>Número de série</value>
+  </data>
+  <data name="global_unique_articles" xml:space="preserve">
+    <value>Artigos únicos</value>
+  </data>
+  <data name="global_serial_number" xml:space="preserve">
+    <value>Número de série</value>
+  </data>
+  <data name="global_warehose_management" xml:space="preserve">
+    <value>Gestão de Armazéns</value>
+  </data>
+  <data name="global_warehouse" xml:space="preserve">
+    <value>Armazém</value>
+  </data>
+  <data name="window_title_article_location" xml:space="preserve">
+    <value>Alterar localização do artigo</value>
+  </data>
+  <data name="global_default_warehouse" xml:space="preserve">
+    <value>Armazém por defeito</value>
+  </data>
+  <data name="global_article_history" xml:space="preserve">
+    <value>Histórico do Artigo</value>
+  </data>
+  <data name="global_internal_moviment" xml:space="preserve">
+    <value>Movimento interno</value>
+  </data>
+  <data name="global_locations" xml:space="preserve">
+    <value>Localizações</value>
+  </data>
+  <data name="global_warning_acquire_module_stocks" xml:space="preserve">
+    <value>Para utilizar a versão completa da gestão de stocks, por favor adquira o módulo adicional</value>
+  </data>
+  <data name="global_warning_message_database_version" xml:space="preserve">
+    <value>A versão da base de dados é superior à versão do software, atualize para a versão</value>
+  </data>
+  <data name="global_purchase_price" xml:space="preserve">
+    <value>Preço Compra</value>
+  </data>
+  <data name="report_sales_detail_per_group_vat" xml:space="preserve">
+    <value>Vendas por Taxa de Imposto</value>
+  </data>
+  <data name="open_cash_draw_permissions" xml:space="preserve">
+    <value>O utilizador não tem permissões para abrir a caixa registadora</value>
+  </data>
+  <data name="global_software_key" xml:space="preserve">
+    <value>Chave de software</value>
+  </data>
+  <data name="prefparam_ticket_print_company_name" xml:space="preserve">
+    <value>Ticket :: Imprimir nome comercial</value>
   </data>
 </root>

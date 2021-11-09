@@ -25,6 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private Label _labelStatus;
         //Used to store New Password in Memory, to Compare with Confirmation
         private string _passwordNew;
+        private bool _notLoginAuth;
         //Public Properties
         private NumberPadPinMode _mode;
         public NumberPadPinMode Mode
@@ -80,11 +81,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             set { _buttonKeyQuit = value; }
         }
 
-        public NumberPadPin(Window pSourceWindow, string pName, Color pButtonColor, string pFont, string pFontLabelStatus, Color pFontColor, Color pFontColorLabelStatus, byte pButtonWidth, byte pButtonHeight, bool pShowSystemButtons = false, bool pVisibleWindow = false, uint pRowSpacingLabelStatus = 20, uint pRowSpacingSystemButtons = 40, byte pPadding = 3)
+        public NumberPadPin(Window pSourceWindow, string pName, Color pButtonColor, string pFont, string pFontLabelStatus, Color pFontColor, Color pFontColorLabelStatus, byte pButtonWidth, byte pButtonHeight, bool pNotLoginAuth, bool pShowSystemButtons = false, bool pVisibleWindow = false, uint pRowSpacingLabelStatus = 20, uint pRowSpacingSystemButtons = 40, byte pPadding = 3)
         {
             _sourceWindow = pSourceWindow;
             this.Name = pName;
-
+            _notLoginAuth = pNotLoginAuth;
             //Show or Hide System Buttons (Startup Visible, Pos Change User Invisible)
             uint tableRows = (pShowSystemButtons) ? (uint)5 : (uint)3;
 
@@ -257,10 +258,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Logic
 
-        public bool ProcessPassword(Window pSourceWindow, sys_userdetail pUserDetail)
+        public bool ProcessPassword(Window pSourceWindow, sys_userdetail pUserDetail, bool pNotLoginAuth = false)
         {
             bool result = false;
-
+            _notLoginAuth = pNotLoginAuth;
             try
             {
                 switch (_mode)
@@ -269,8 +270,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Valid User
                         if (ValidatePassword(pUserDetail))
                         {
-                            //Start Application
-                            ProcessLogin(pUserDetail);
+                            //Start Application if login Authentication
+                            if (!_notLoginAuth)
+                            {
+                                ProcessLogin(pUserDetail);
+                            }
                             //Finish Job usefull to PosPinDialog send Respond(ResponseType.Ok) when Done
                             result = true;
                         }
@@ -417,7 +421,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 case NumberPadPinMode.Password:
                     _labelStatus.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_password");
                     //_buttonKeyOK.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_login;
-                    _buttonKeyOK.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_login");
+                    _buttonKeyOK.LabelText = (!_notLoginAuth) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_login") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordOld:
                     //Show message to user, to change old password

@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Settings
             string _fileIconListFinanceDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
-            string _fileIconListCurrentAccountDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_current account_document.png");
+            string _fileIconListCurrentAccountDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_reports.png");
             string _fileIconListWorksessionPeriods = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png");
             string _fileIconListMerchandiseEntry = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_merchandise_entry.png");
 
@@ -46,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _touchButtonPosToolbarFinanceDocuments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocuments_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_record_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "ALL" };
             _toolbarFinanceDocumentsInvoicesUnpayed = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsInvoicesForPayment_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_ft_unpaid"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "FT_UNPAYED" };
             _toolbarFinanceDocumentsPayments = new TouchButtonIconWithText("touchButtonPosToolbarFinanceDocumentsPayments_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListFinanceDocuments, sizeIcon, buttonWidth, buttonHeight);
-            _touchButtonPosToolbarCurrentAccountDocuments = new TouchButtonIconWithText("touchButtonPosToolbarCurrentAccountDocuments_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_cc"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListCurrentAccountDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "CC" };
+            _touchButtonPosToolbarCurrentAccountDocuments = new TouchButtonIconWithText("REPORT_CUSTOMER_BALANCE_DETAILS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_cc"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListCurrentAccountDocuments, sizeIcon, buttonWidth, buttonHeight) { Token = "CC" };
             _touchButtonPosToolbarWorkSessionPeriods = new TouchButtonIconWithText("touchButtonPosToolbarWorkSessionPeriods_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_worksession_period"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListWorksessionPeriods, sizeIcon, buttonWidth, buttonHeight);
             _touchButtonPosToolbarMerchandiseEntry = new TouchButtonIconWithText("touchButtonPosToolbarMerchandiseEntry_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_merchandise_entry"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileIconListMerchandiseEntry, sizeIcon, buttonWidth, buttonHeight);
             //Permission
@@ -64,6 +64,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             table.Attach(_touchButtonPosToolbarWorkSessionPeriods, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
             table.Attach(_touchButtonPosToolbarMerchandiseEntry, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
 
+            PosReportsDialog reportsClicked = new PosReportsDialog();
+
             //TK016235 BackOffice - Mode
             //numero da escolha vem do accordion do BackOfficeMainWindow, e passa por Utils
             switch (docChoice)
@@ -78,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _toolbarFinanceDocumentsPayments_Clicked(_toolbarFinanceDocumentsPayments, null);
                     break;
                 case 4:
-                    touchButtonPosToolbarFinanceDocuments_Clicked(_touchButtonPosToolbarCurrentAccountDocuments, null);
+                    _touchButtonPosToolbarCurrentAccountDocuments.Clicked += delegate { reportsClicked.PrintReportRouter(_touchButtonPosToolbarCurrentAccountDocuments, null); };                    
                     break;
                 case 5:
                     _touchButtonPosToolbarWorkSessionPeriods_Clicked(_touchButtonPosToolbarWorkSessionPeriods, null);
@@ -94,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Shared Events 
                     _touchButtonPosToolbarFinanceDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
                     _toolbarFinanceDocumentsInvoicesUnpayed.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
-                    _touchButtonPosToolbarCurrentAccountDocuments.Clicked += touchButtonPosToolbarFinanceDocuments_Clicked;
+                    _touchButtonPosToolbarCurrentAccountDocuments.Clicked += delegate { reportsClicked.PrintReportRouter(_touchButtonPosToolbarCurrentAccountDocuments, null); };
                     //Non Shared Events
                     _toolbarFinanceDocumentsPayments.Clicked += _toolbarFinanceDocumentsPayments_Clicked;
                     _touchButtonPosToolbarWorkSessionPeriods.Clicked += _touchButtonPosToolbarWorkSessionPeriods_Clicked;

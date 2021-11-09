@@ -117,18 +117,84 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
             };
 
+            if(_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
+            {
+
+                List<DataRow> dataRows = new List<DataRow>();
+                foreach (DataRow item in _pagePad3.TreeViewArticles.DataSource.Rows)
+                {
+                    article = (item["Article.Code"] as fin_article);
+                    if (article != null && article.UniqueArticles)
+                    {
+                        item["Notes"] = string.Empty;
+                        if (item["Warehouse"].ToString().Contains(";"))
+                        {
+                            var splitArticleWareHouse = item["Warehouse"].ToString().Split(';');
+                            var splitArticleSerialNumber = item["SerialNumber"].ToString().Split(';');
+                            for (int i = 0; i < splitArticleWareHouse.Length; i++)
+                            {
+                                DataRow newRow = _pagePad3.TreeViewArticles.DataSource.NewRow();
+                                for (int j = 0; j < item.ItemArray.Length; j++)
+                                {
+                                    newRow[j] = item[j];
+                                }
+                                newRow[10] = item[5];
+                                newRow[11] = item[12];
+                                newRow["Warehouse"] = splitArticleWareHouse[i];
+                                newRow["SerialNumber"] = splitArticleSerialNumber[i];
+                                newRow["Quantity"] = 1;
+                                dataRows.Add(newRow);                                
+                            }
+                            item["Warehouse"] = splitArticleWareHouse[0];
+                            item["SerialNumber"] = splitArticleSerialNumber[0];
+                        }
+                    }              
+                }
+                if (dataRows.Count > 0)
+                {
+                    _pagePad3.TreeViewArticles.DataSource.Rows.Clear();
+                    foreach (var items in dataRows)
+                    {
+                        _pagePad3.TreeViewArticles.DataSource.Rows.Add(items);
+                    }
+                }
+            }
+
+
             foreach (DataRow item in _pagePad3.TreeViewArticles.DataSource.Rows)
             {
                 article = (item["Article.Code"] as fin_article);
                 configurationVatRate = (item["ConfigurationVatRate.Value"] as fin_configurationvatrate);
                 configurationVatExemptionReason = (item["VatExemptionReason.Acronym"] as fin_configurationvatexemptionreason);
+               
+
+                PriceProperties priceProperties = PriceProperties.GetPriceProperties(
+                PricePropertiesSourceMode.FromPriceUser,
+                false, //PriceWithVat : Always use PricesWithoutVat in Invoices
+                Convert.ToDecimal(item["PriceFinal"]),
+                FrameworkUtils.StringToDecimal(item["Quantity"].ToString()),
+                FrameworkUtils.StringToDecimal(item["Discount"].ToString()),
+                FrameworkUtils.StringToDecimal(customerDiscount.ToString()),
+                FrameworkUtils.StringToDecimal(configurationVatRate.Value.ToString())
+            );
+
+                //Documentos - Arredondamentos de preço [IN:016536]
+                //PriceProperties calcPriceProps = PriceProperties.GetPriceProperties(
+                //  PricePropertiesSourceMode.FromPriceUser,
+                //  true,
+                //  Convert.ToDecimal(item["Price"]),
+                //  Convert.ToDecimal(item["Quantity"]),
+                //  Convert.ToDecimal(item["Discount"]),
+                //  Convert.ToDecimal(customerDiscount),
+                //  Convert.ToDecimal(configurationVatRate.Value)
+                //);
 
                 //Prepare articleBag Key and Props
                 articleBagKey = new ArticleBagKey(
                   new Guid(item["Oid"].ToString()),
                   article.Designation,
                   Convert.ToDecimal(item["Price"]),     //Always use Price in DefaultCurrency
-                  Convert.ToDecimal(item["Discount"]),
+                  FrameworkUtils.StringToDecimal(item["Discount"].ToString()),
                   configurationVatRate.Value,
                     //If has a Valid ConfigurationVatExemptionReason use it Else send New Guid
                   (configurationVatExemptionReason != null) ? configurationVatExemptionReason.Oid : new Guid()
@@ -142,10 +208,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   article.UnitMeasure.Acronym
                 );
 
+                //SerialNumber
+                if (!string.IsNullOrEmpty(item["SerialNumber"].ToString()))
+                {
+                    articleBagProps.SerialNumber = item["SerialNumber"].ToString();
+                    articleBagProps.Notes += resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number") + ": " + item["SerialNumber"].ToString();
+                }
+
                 // Notes
                 if (!string.IsNullOrEmpty(item["Notes"].ToString()))
                 {
-                    articleBagProps.Notes = item["Notes"].ToString();
+                    articleBagProps.Notes += item["Notes"].ToString();
+                }
+
+                // Warehouse
+                if (!string.IsNullOrEmpty(item["Warehouse"].ToString()))
+                {
+                    articleBagProps.Warehouse += item["Warehouse"].ToString();
                 }
 
                 //Assign DocumentMaster Reference and Reason to ArticleBag item
@@ -157,7 +236,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 articleBag.Add(articleBagKey, articleBagProps);
             }
-
+            _pagePad3.TreeViewArticles.Refresh();
             return articleBag;
         }
 
@@ -305,13 +384,16 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 result.Notes = _pagePad1.EntryBoxDocumentMasterNotes.EntryValidation.Text;
             }
 
+            //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
+            _pagePad3.ArticleBag = GetArticleBag();
+
             return result;
         }
 
         private ResponseType ShowPreview(DocumentFinanceDialogPreviewMode pMode)
         {
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
-            _pagePad3.ArticleBag = GetArticleBag();            
+            //_pagePad3.ArticleBag = GetArticleBag();            
             
             DocumentFinanceDialogPreview dialog = new DocumentFinanceDialogPreview(this, DialogFlags.DestroyWithParent, pMode, _pagePad3.ArticleBag, _pagePad1.EntryBoxSelectConfigurationCurrency.Value);
             ResponseType response = (ResponseType) dialog.Run();

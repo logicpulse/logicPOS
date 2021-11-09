@@ -11,6 +11,7 @@ using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 
@@ -226,6 +227,14 @@ namespace logicpos.financial.library.Classes.Finance
                     //ExchangeRate
                     documentFinanceMaster.ExchangeRate = pParameters.ExchangeRate;
 
+                    //Currency Congo K
+                    if(System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
+                    {
+                        documentFinanceMaster.Currency = (cfg_configurationcurrency)uowSession.GetObjectByKey(typeof(cfg_configurationcurrency), Guid.Parse("c96b971b-5d6a-40dd-be1a-8d1ef408a25c"));
+                        //ExchangeRate
+                        documentFinanceMaster.ExchangeRate = documentFinanceMaster.Currency.ExchangeRate;
+                    }
+
                     //PaymentMethod
                     fin_configurationpaymentmethod paymentMethod = null;
                     if (pParameters.PaymentMethod != new Guid())
@@ -233,7 +242,8 @@ namespace logicpos.financial.library.Classes.Finance
                         paymentMethod = (fin_configurationpaymentmethod)uowSession.GetObjectByKey(typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod);
                     }
                     //Assign Only it was not Null
-                    if (paymentMethod != null)
+					// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
+                    if (paymentMethod != null && paymentMethod.Oid != SettingsApp.XpoOidConfigurationPaymentMethodCurrentAccount)
                     {
                         documentFinanceMaster.PaymentMethod = paymentMethod;
                     }
@@ -373,6 +383,8 @@ namespace logicpos.financial.library.Classes.Finance
                                     Article = article,
                                     PriceFinal = item.Value.PriceFinal,
                                     PriceType = item.Value.PriceType,
+                                    SerialNumber = item.Value.SerialNumber,
+                                    Warehouse = item.Value.Warehouse,
                                     CreatedBy = (userDetail != null && userDetail.Oid != Guid.Empty) ? userDetail : null,
                                     CreatedWhere = (terminal != null && terminal.Oid != Guid.Empty) ? terminal : null
                                 };
@@ -392,6 +404,18 @@ namespace logicpos.financial.library.Classes.Finance
                                 if (item.Value.Notes != null)
                                 {
                                     documentFinanceDetail.Notes = item.Value.Notes;
+                                }
+
+                                // SerialNumber
+                                if (!string.IsNullOrEmpty(item.Value.SerialNumber))
+                                {
+                                    documentFinanceDetail.SerialNumber = item.Value.SerialNumber;
+                                }
+
+                                // Warehouse
+                                if (!string.IsNullOrEmpty(item.Value.SerialNumber))
+                                {
+                                    documentFinanceDetail.SerialNumber = item.Value.SerialNumber;
                                 }
 
                                 //Order References
@@ -528,10 +552,23 @@ namespace logicpos.financial.library.Classes.Finance
                     //Store CodeInternals to use in SAF-T
                     documentFinanceMaster.DocumentStatusUser = userDetail.CodeInternal;
                     documentFinanceMaster.DocumentCreatorUser = userDetail.CodeInternal;
+					//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+                    documentFinanceMaster.ATCUD = "0"; //A preencher pelo WS da AT Julho 2021?
+                    documentFinanceMaster.ATDocQRCode = GenDocumentQRCode(uowSession, documentFinanceType, documentFinanceSerie, documentFinanceMaster, true);
                     //CAE is Deprecated, this will prevent triggering Errors
                     if (GlobalFramework.PreferenceParameters.ContainsKey("COMPANY_CAE") && ! string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["COMPANY_CAE"].ToString()))
                     {
                         documentFinanceMaster.EACCode = GlobalFramework.PreferenceParameters["COMPANY_CAE"];
+                    }
+
+                    //Currency Congo K
+                    if (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
+                    {
+                        var usCurrency = (cfg_configurationcurrency)uowSession.GetObjectByKey(typeof(cfg_configurationcurrency), Guid.Parse("28d692ad-0083-11e4-96ce-00ff2353398c"));
+                        //ExchangeRate
+                        var usExchangeRate = usCurrency.ExchangeRate;
+
+                        documentFinanceMaster.Notes += string.Format("Valeur totale en dollars: " + documentFinanceMaster.TotalFinal * usExchangeRate) + "USD";
                     }
 
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -580,6 +617,15 @@ namespace logicpos.financial.library.Classes.Finance
 
                             //Get current OrderMain Article Bag, After Process Payment/PartialPayment to check if current OrderMain has Items, or is Empty
                             pParameters.ArticleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
+                            //Proteção para artigos do tipo "Sem Preço" [IN:013329]
+                            //Check if Article bag contains Products with no price type and clean it
+                            var toRemove = pParameters.ArticleBag.Where(pair => pair.Key.Price == 0.00m)
+                             .Select(pair => pair.Key)
+                             .ToList();
+                            foreach (var key in toRemove)
+                            {
+                                pParameters.ArticleBag.Remove(key);
+                            }
 
                             if (pParameters.ArticleBag.Count <= 0)
                             {
@@ -595,17 +641,18 @@ namespace logicpos.financial.library.Classes.Finance
                                 //Change Table Status to Free
                                 pos_configurationplacetable placeTable;
                                 placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplacetable), orderMain.Table.Oid);
-                                placeTable.TableStatus = TableStatus.Free;
-                                FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
-                                placeTable.DateTableClosed = documentDateTime;
-                                placeTable.TotalOpen = 0;
-
-                                //Required to Reload Objects after has been changed in Another Session(uowSession)
-                                if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
-                                if (documentOrderMain != null) documentOrderMain.Reload();
-                                placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
-                                placeTable.Reload();
-
+                                if(placeTable != null)
+                                {
+                                    placeTable.TableStatus = TableStatus.Free;
+                                    FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
+                                    placeTable.DateTableClosed = documentDateTime;
+                                    placeTable.TotalOpen = 0;
+                                    //Required to Reload Objects after has been changed in Another Session(uowSession)
+                                    if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
+                                    if (documentOrderMain != null) documentOrderMain.Reload();
+                                    placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                    placeTable.Reload();
+                                }
                                 //Clean Session if Commited without problems
                                 orderMain.CleanSessionOrder();
                             }
@@ -660,7 +707,23 @@ if (GlobalFramework.AppUseParkingTicketModule)
                         FrameworkUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
-                        ProcessArticleStock.Add(documentFinanceMaster);
+                        try
+                        {
+                            GlobalFramework.StockManagementModule = (GlobalFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+                            if (GlobalFramework.LicenceModuleStocks && GlobalFramework.StockManagementModule != null)
+                            {
+                                GlobalFramework.StockManagementModule.Add(documentFinanceMaster);
+                            }
+                            else
+                            {
+                                ProcessArticleStock.Add(documentFinanceMaster);
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            _log.Error("Error processing stocks :: " + ex.Message, ex);
+                        }
 
                         //Assign Document to Result
                         result = documentFinanceMaster;
@@ -736,6 +799,118 @@ if (GlobalFramework.AppUseParkingTicketModule)
             if (debug) _log.Debug(string.Format("GenDocumentHash(): sql [{0}]", sql));
 
             return resultSignedHash;
+        }
+
+		//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+        //Na criação da mensagem a incorporar no código QR devem ser observadas as
+        //seguintes regras:
+        //a) Cada campo será formado pela concatenação do valor da coluna “Código”,
+        //constante na tabela do ponto 4, «:» (dois pontos) e o respetivo valor da coluna
+        //“Descrição”, sem espaços;
+        //b) Os campos assim criados, e sempre pela ordem indicada na tabela do ponto 4,
+        //deverão ser concatenados com o separador «*» (asterisco);
+        //c) Os campos monetários deverão ser representados em euros, com «.» (ponto)
+        //como separador decimal e sempre com duas(2) casas decimais,
+        //independentemente do número de casas decimais(inferior ou superior)
+        //apresentado na base de dados e na exportação para o ficheiro SAF-T(PT). Nos
+        //documentos emitidos em moeda diferente de Euro, os montantes apresentados
+        //deverão ser previamente convertidos em euros;
+        //d) Os campos assinalados com «+» são de criação obrigatória;
+        //e) Os campos assinalados com «++», são opcionais, mas deverão ser criados
+    
+        //f) Nos campos opcionais, na ausência de informação não deverá ser criado o
+        //respetivo campo;
+        //g) Na criação dos campos com os códigos I1 a I8, J1 a J8 e K1 a K8,
+        //representativos dos espaços fiscais para efeitos de IVA(por exemplo, PT, PTAC e PT-MA), terá sempre de existir, pelo menos, um espaço fiscal, até ao
+        //máximo de três espaços fiscais em simultâneo, nacionais ou estrangeiros;
+        //h) Na composição do campo com o código I1, no caso de documento emitido sem
+        //indicação da taxa de IVA, que deva constar na tabela 4.2, 4.3 ou 4.4 do SAF-T
+        //(PT), deverá ser preenchido com «I1»«:»«0»;
+        //i) Nenhum valor da coluna “Descrição” poderá ultrapassar o tamanho máximo
+        //definido na tabela do ponto 4;
+        //j) Na composição do campo com o código “S”, sempre que necessário, os
+        //elementos que o compõem serão concatenados com «;» (ponto e virgula) sem
+        //espaços;
+        //k) Para as diferentes taxas de IVA existentes no documento(isento, reduzida,
+        //intermédia e normal) devem constar, nos respetivos campos, os totais
+        //acumulados de base tributável e IVA.
+
+        public static string GenDocumentQRCode(Session pSession, fin_documentfinancetype pDocType, fin_documentfinanceseries pDocSerie, fin_documentfinancemaster pDocumentFinanceMaster, bool _debug = false)
+        {
+            bool debug = _debug;
+            //byte[] resultQRCode = new byte[64]; 
+            string resultQRCode = "";
+            fin_documentfinancemaster doc = pDocumentFinanceMaster;
+
+            // Old Method without Plugin
+            //resultSignedHash = FrameworkUtils.SignDataToSHA1Base64(signTargetString, debug);
+            // Sign Document if has a valid PluginSoftwareVendor 
+
+            //A NIF do emitente Exemplo A:123456789 +
+            //B NIF do adquirente Exemplo B:999999990 +
+            //C País do adquirente Exemplo C:PT +
+            //D Tipo de documento Exemplo D:FS +
+            //E Estado do documento Exemplo E:N +
+            //F Data do documento Exemplo F:20190812 +
+            //G Identificação única do documento Exemplo G:FS CDVF/ 12345 +
+            //H ATCUD Exemplo H:CDF7T5HD-12345 +
+            //I1 Espaço fiscal Exemplo I1:PT +
+            //I7 Base tributável de IVA à taxa normal Exemplo I7:0.65 ++
+            //I8 Total de IVA à taxa normal Exemplo I8:0.15++
+            //N Total de impostos Exemplo N: 0.15 +
+            //O Total do documento com impostos Exemplo O: 0.80 +
+            //Q 4 carateres do Hash Exemplo Q:YhGV +
+            //R Nº do certificado Exemplo R:9999 +
+            //S Outras informações Exemplo S: NU; 0.80 ++
+
+            string A = "A:" + GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
+            string B = "B:" + GlobalFramework.PluginSoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
+            string C = "C:" + doc.EntityCountry + "*";
+            string D = "D:" + pDocType.Acronym + "*";
+            string E = "E:" + doc.DocumentStatusStatus + "*";
+            string F = "F:" + doc.DocumentDate.Replace("-","") + "*";
+            string G = "G:" + doc.DocumentNumber + "*";
+            string H = "H:" + doc.ATCUD + "*"; 
+            string I1 = "I1:PT*";
+            string I7 = "";
+            string I8 = "";
+            string N = "N:" + FrameworkUtils.DecimalToString(doc.TotalTax).Replace(",",".") + "*";
+            string O = "O:" + FrameworkUtils.DecimalToString(doc.TotalFinal).Replace(",", ".") + "*";
+            string Q = "Q:" + GenDocumentHash4Chars(doc.Hash) + "*";
+            string R = "R:" + SettingsApp.SaftSoftwareCertificateNumber + "*";
+            string S = "";
+            //Debug
+            if (debug) _log.Debug(string.Format("GenDocumentQRCode(): " + A + B + C + D + E + F + G + H + I1 + I7 + I8 + N + O + Q + R + S));
+
+            if (GlobalFramework.PluginSoftwareVendor != null && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
+            {
+                //resultSignedHash = GlobalFramework.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
+
+                //A elaboração do código de barras bidimensional (código QR) deve obedecer àsseguintes especificações:
+                //a) Taxa de Recuperação de Erro(ECC): “M”;
+                //b) Tipo: Byte;
+                //c) Pontos por módulo(Size): 2;
+                //d) Versão: v = 9(valor mínimo);
+                //e) Dimensões de imagem: mínimo 30x30 milímetros;
+                //f) Margem de Segurança(Margin): 0,25 cm.     
+                //QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                //QRCodeData qrCodeData = qrGenerator.CreateQrCode(A+B+C+D+E+F+G+H+I1+I7+I8+N+O+Q+R+S, QRCodeGenerator.ECCLevel.M, false,false, QRCodeGenerator.EciMode.Default, 9);
+                //QRCode qrCode = new QRCode(qrCodeData);
+                //Bitmap qrCodeImage = qrCode.GetGraphic(17, Color.Black, Color.White, null, 15, 2, true);
+
+                //return FrameworkUtils.BitmapToByteArray(qrCodeImage);
+                resultQRCode = A + B + C + D + E + F + G + H + I1 + I7 + I8 + N + O + Q + R + S;
+                return resultQRCode;
+            }
+            else
+            {
+                // Dont Sign it without SoftwareVendor
+                resultQRCode = null;
+            }
+
+            
+
+            return resultQRCode;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1011,7 +1186,7 @@ SELECT
             '{SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide}'
         ) THEN NULL 
 		ELSE (
-			DFM.TotalFinal - (
+			DFM.TotalFinal - (COALESCE(
 				(
 					SELECT 
 						SUM(DocFinMaster.TotalFinal) AS TotalFinal
@@ -1025,22 +1200,8 @@ SELECT
 							( DocFinMaster.DocumentStatusStatus <> 'A' AND DocFinMaster.Disabled <> 1)
 					GROUP BY
 						DocFinMaster.DocumentParent
-					UNION 
-						SELECT 
-							0 AS CreditAmount
-						WHERE 
-							NOT EXISTS (
-								SELECT 1
-								FROM 
-									fin_documentfinancemaster AS DFMNC
-								WHERE
-									DocumentType = 'fa924162-beed-4f2f-938d-919deafb7d47'
-									AND 
-										DFMNC.DocumentParent = DFM.Oid
-									AND
-										( DFMNC.DocumentStatusStatus <> 'A' AND DFMNC.Disabled <> 1)
-							) 
-				) + 
+					
+				),0) + 
 				(
 					SELECT 
 						 SUM(DocFinMasterPay.CreditAmount) AS CreditAmount
@@ -1054,21 +1215,7 @@ SELECT
 							(DocFinPay.PaymentStatus <> 'A' AND DocFinPay.Disabled <> 1)
 					GROUP BY
 						DocFinMasterPay.DocumentFinanceMaster
-					UNION 
-						SELECT 
-							0 AS CreditAmount
-						WHERE 
-							NOT EXISTS (
-								SELECT 1
-								FROM 
-									fin_documentfinancemasterpayment AS DFMRC
-								LEFT JOIN 
-									fin_documentfinancepayment AS DFPRC ON (DFPRC.Oid = DFMRC.DocumentFinancePayment)
-								WHERE
-									DFMRC.DocumentFinanceMaster = DFM.Oid
-									AND
-										( DFPRC.PaymentStatus <> 'A' AND DFMRC.Disabled <> 1)
-							) 
+					
 				) 
 			)
 		)
@@ -1199,7 +1346,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     _log.Error(ex.Message, ex);
                     //2016-01-05 apmuga passar erro para cima e não mascarar com outro erro
                     //throw new Exception("ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT", ex.InnerException);
-                    throw ex;
+                   // throw ex;
 
                 }
             }
@@ -1475,8 +1622,8 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             documentFinanceMaster.DocumentNumber.Replace('/', '-').Replace(' ', '_'),
                             entityName
                         );
-                        
-                        if (! File.Exists(reportFilename))
+                        //Canceled documents with "Canceled" Text on PDF
+                        if (! File.Exists(reportFilename) || documentFinanceMaster.DocumentStatusStatus == "A")
                         {
                             result = CustomReport.DocumentMasterCreatePDF(CustomReportDisplayMode.ExportPDFSilent, documentFinanceMaster, reportFilename);
                         }

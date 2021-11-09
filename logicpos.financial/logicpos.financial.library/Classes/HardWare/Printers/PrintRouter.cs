@@ -402,47 +402,63 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         public static bool OpenDoor(sys_configurationprinters pPrinter)
         {
-            bool result = false;
-            bool hasPermission = FrameworkUtils.HasPermissionTo("HARDWARE_DRAWER_OPEN");
-
-            if (pPrinter != null && hasPermission)
+            try
             {
-                try
-                {
-                    switch (pPrinter.PrinterType.Token)
+                bool result = false;
+                if (GlobalFramework.LoggedTerminal.ThermalPrinter != null)
+                {                    
+                    bool hasPermission = FrameworkUtils.HasPermissionTo("HARDWARE_DRAWER_OPEN");
+                    int m = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
+                    int t1 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
+                    int t2 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
+                    PrintObject printObjectSINOCAN = new PrintObject(0);
+                    if (GlobalFramework.LoggedTerminal.ThermalPrinter != null && hasPermission)
                     {
-                        //Impressora SINOCAN em ambiente Windows
-                        case "THERMAL_PRINTER_WINDOWS":
-                        //Impressora SINOCAN em ambiente Linux
-                        case "THERMAL_PRINTER_LINUX":
-                        //Impressora SINOCAN em ambiente WindowsLinux/Socket
-                        case "THERMAL_PRINTER_SOCKET":
-                            PrintObject printObjectSINOCAN = new PrintObject(0);
-                            // Deprecated
-                            //int m = Convert.ToInt32(GlobalFramework.Settings["DoorValueM"]);
-                            //int t1 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT1"]);
-                            //int t2 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT2"]);
-                            // Open Drawer
-							//TK016249 - Impressoras - Diferenciação entre Tipos
-                            int m = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
-                            int t1 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
-                            int t2 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
-                            printObjectSINOCAN.OpenDoor(pPrinter.PrinterType.Token, pPrinter.Designation, m, t1, t2);
-                            //Audit
-                            FrameworkUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
+                        try
+                        {
+                            switch (GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token)
+                            {
+                                //Impressora SINOCAN em ambiente Windows
+                                case "THERMAL_PRINTER_WINDOWS":
+                                    printObjectSINOCAN.OpenDoor(GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, GlobalFramework.LoggedTerminal.ThermalPrinter.Designation, m, t1, t2);
+                                    break;
+                                //Impressora SINOCAN em ambiente Linux
+                                case "THERMAL_PRINTER_LINUX":
+                                //Impressora SINOCAN em ambiente WindowsLinux/Socket
+                                case "THERMAL_PRINTER_SOCKET":
+                                    // Deprecated
+                                    //int m = Convert.ToInt32(GlobalFramework.Settings["DoorValueM"]);
+                                    //int t1 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT1"]);
+                                    //int t2 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT2"]);
+                                    // Open Drawer
+                                    //TK016249 - Impressoras - Diferenciação entre Tipos
+                                    printObjectSINOCAN.OpenDoor(GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, GlobalFramework.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
+                                    //Audit
+                                    FrameworkUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
 
-                            break;
+                                    break;
+                            }
+
+                            result = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            _log.Warn(ex.Message, ex);
+                        }
                     }
 
-                    result = true;
+                    return result;
                 }
-                catch (Exception ex)
-                {
-                    _log.Warn(ex.Message, ex);
-                }
-            }
 
-            return result;
+                return result;
+
+            }
+            catch(Exception ex)
+            {
+                _log.Error("Error open cash drawer :" + ex.Message);
+                return false;
+            }
+            
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

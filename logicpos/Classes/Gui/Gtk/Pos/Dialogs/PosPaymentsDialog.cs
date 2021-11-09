@@ -33,6 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private ResponseType _responseTypeClearCustomer = (ResponseType)11;
         private ResponseType _responseTypeFullPayment = (ResponseType)12;
         private ResponseType _responseTypePartialPayment = (ResponseType)13;
+        private ResponseType _responseTypeCurrentAccount= (ResponseType)14;
         //UI
         private Label _labelTotalValue;
         private Label _labelDeliveryValue;
@@ -55,6 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private TouchButtonIconWithText _buttonNewCustomer;
         private TouchButtonIconWithText _buttonFullPayment;
         private TouchButtonIconWithText _buttonPartialPayment;
+        private TouchButtonIconWithText _buttonCurrentAccount;
         //Default Objects
         private cfg_configurationcountry _intialValueConfigurationCountry;
         //Store Partial Payment Enabled/Disabled
@@ -148,22 +150,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _sourceWindow = pSourceWindow;
                 string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_payments");
                 //TODO:THEME
-                Size windowSize = new Size(598, 620);
+                Size windowSize = new Size(633, 620);
                 string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_payments.png");
 
                 //Parameters
                 _articleBagFullPayment = pArticleBag;
                 _skipPersistFinanceDocument = pSkipPersistFinanceDocument;
                 _processFinanceDocumentParameter = pProcessFinanceDocumentParameter;
-                bool enablePartialPaymentButtons = pEnablePartialPaymentButtons;
+                bool enablePartialPaymentButtons = true;
                 bool enableCurrentAccountButton = pEnableCurrentAccountButton;
-                if (enablePartialPaymentButtons) enablePartialPaymentButtons = (_articleBagFullPayment.TotalQuantity > 1) ? true : false;
+                //if (enablePartialPaymentButtons) enablePartialPaymentButtons = (_articleBagFullPayment.TotalQuantity > 1) ? true : false;
                 //Files
 				//TK016311 Botão Novo Cliente nos pagamentos do TicketPad 
                 string fileIconNewCustomer = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_clients.png");
                 string fileIconClearCustomer = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png");
                 string fileIconFullPayment = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_payment_full.png");
                 string fileIconPartialPayment = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_payment_partial.png");
+                string fileIconCurrentAccount = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
+                //Valor a pagar 
+                //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+               string fileIconChangePaumentAmount = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_toolbar_finance_document.png");
+
                 //Colors
                 Color colorPosPaymentsDialogTotalPannelBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosPaymentsDialogTotalPannelBackground"]);
                 //Objects
@@ -236,7 +243,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _labelTotalValue = new Label(FrameworkUtils.DecimalToStringCurrency(_articleBagFullPayment.TotalFinal))
                 {
                     //Total Width
-                    WidthRequest = 120
+                    WidthRequest = 135
                 };
                 _labelDeliveryValue = new Label(FrameworkUtils.DecimalToStringCurrency(0));
                 _labelChangeValue = new Label(FrameworkUtils.DecimalToStringCurrency(0));
@@ -283,7 +290,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //TotalPannel
                 EventBox eventboxTotalPannel = new EventBox();
-                eventboxTotalPannel.BorderWidth = 3;
+                eventboxTotalPannel.BorderWidth = 4;
                 eventboxTotalPannel.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorPosPaymentsDialogTotalPannelBackground));
                 eventboxTotalPannel.Add(tableTotalPannel);
 
@@ -480,12 +487,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _buttonNewCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_new_client"), fileIconNewCustomer);
                 _buttonFullPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_full_payment"), fileIconFullPayment);
                 _buttonPartialPayment = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_partial_payment"), fileIconPartialPayment);
+                _buttonCurrentAccount = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_ft"), fileIconCurrentAccount);
                 // Enable if has selectedPaymentMethod defined, ex when working with SplitPayments
                 _buttonOk.Sensitive = (_selectedPaymentMethod != null);
                 _buttonFullPayment.Sensitive = false;
 
                 //ActionArea
                 ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
+                actionAreaButtons.Add(new ActionAreaButton(_buttonCurrentAccount, _responseTypeCurrentAccount)); 
                 actionAreaButtons.Add(new ActionAreaButton(_buttonClearCustomer, _responseTypeClearCustomer));
                 actionAreaButtons.Add(new ActionAreaButton(_buttonNewCustomer, _responseTypeClearCustomer));
                 if (enablePartialPaymentButtons)

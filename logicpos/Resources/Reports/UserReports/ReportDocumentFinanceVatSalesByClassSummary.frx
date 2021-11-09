@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="08/25/2021 16:36:31" ReportInfo.CreatorVersion="2019.4.4.0" PrintSettings.CopyNames="Original">
+  <Styles>
+    <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" Font="Arial, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="DataLevel1Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 12pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 9.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFont" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Arial, 8pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFontBold" Font="Arial, 8pt, style=Bold" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFontNegative" TextFill.Color="Red" Font="Arial, 8pt" ApplyBorder="false" ApplyFill="false"/>
+    <Style Name="BackgroundColor1" Font="Arial, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BackgroundColor2" Fill.Color="Gainsboro" Font="Arial, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+  </Styles>
+  <Dictionary>
+    <BusinessObjectDataSource Name="DocumentFinanceVatSalesByClassSummary" ReferenceName="DocumentFinanceVatSalesByClassSummary" DataType="null" Enabled="true">
+      <Column Name="Oid" DataType="System.String" PropName="Oid"/>
+      <Column Name="Vat" DataType="System.String" PropName="Oid"/>
+      <Column Name="TotalNet" DataType="System.Decimal"/>
+      <Column Name="TotalTax" DataType="System.Decimal"/>
+      <Column Name="TotalFinal" DataType="System.Decimal"/>
+      <Column Name="ArticleClassDesignation" DataType="System.String"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Parameter Name="Currency" DataType="System.String"/>
+    <Total Name="GroupTotalNet" Expression="[DocumentFinanceVatSalesByClassSummary.TotalNet]" Evaluator="Data2" PrintOn="GroupFooter1"/>
+    <Total Name="GroupTotalTax" Expression="[DocumentFinanceVatSalesByClassSummary.TotalTax]" Evaluator="Data2" PrintOn="GroupFooter1"/>
+    <Total Name="GroupTotalfinal" Expression="[DocumentFinanceVatSalesByClassSummary.TotalFinal]" Evaluator="Data2" PrintOn="GroupFooter1"/>
+    <Total Name="DataSum" TotalType="Count" Evaluator="Data2"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
+      <inherited Name="PictureCompanyLogo" Top="9.45" Height="39.15"/>
+      <inherited Name="TextReportTitle" Top="-9.45" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
+      <TextObject Name="TextReportFilter" ZOrder="2" Left="207.9" Top="28.35" Width="510.3" Height="18.9" Text="[Report Filter]" HorzAlign="Right" Font="Arial, 7pt" Wysiwyg="true"/>
+    </inherited>
+    <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="51" Width="718.2" Height="37.8" Condition="[DocumentFinanceVatSalesByClassSummary.Oid]">
+      <TextObject Name="TextGroupHeader1" Top="9.45" Width="718.2" Height="22.68" Text="[Res(&quot;global_vat_rate_tax_type&quot;)] : [DocumentFinanceVatSalesByClassSummary.Vat] %" VertAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <DataBand Name="Data2" Top="132.6" Width="718.2" Height="21.19" CanGrow="true" EvenStyle="EvenRow" DataSource="DocumentFinanceVatSalesByClassSummary">
+        <TextObject Name="Text31" Left="207.9" Width="163.96" Height="18.9" CanGrow="true" Text="[DocumentFinanceVatSalesByClassSummary.TotalNet] [Currency]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text32" Left="378" Width="163.96" Height="18.9" CanGrow="true" Text="[DocumentFinanceVatSalesByClassSummary.TotalTax] [Currency]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text35" Left="548.1" Width="163.96" Height="18.9" CanGrow="true" Text="[DocumentFinanceVatSalesByClassSummary.TotalFinal] [Currency]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <TextObject Name="Text37" Left="9.45" Width="163.96" Height="18.9" CanGrow="true" Text="[DocumentFinanceVatSalesByClassSummary.ArticleClassDesignation]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter"/>
+        <DataHeaderBand Name="DataHeader1" Top="90.8" Width="718.2" Height="39.8" Border.Lines="Top">
+          <TextObject Name="Text30" Left="207.9" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_totalnet&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
+          <TextObject Name="Text33" Left="378" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_documentfinance_totaltax&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
+          <TextObject Name="Text34" Left="548.1" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_total_final&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
+          <TextObject Name="Text36" Left="9.45" Top="9.45" Width="163.96" Height="18.9" Text="[Res(&quot;global_article_class&quot;)]" VertAlign="Bottom" Font="Arial, 9.75pt, style=Bold"/>
+        </DataHeaderBand>
+        <Sort>
+          <Sort Expression="[DocumentFinanceVatSalesByClassSummary.Oid]"/>
+        </Sort>
+      </DataBand>
+      <GroupFooterBand Name="GroupFooter1" Top="155.79" Width="718.2" Height="56.7" Border.Lines="Bottom">
+        <TextObject Name="Text55" Left="9.45" Top="18.9" Width="163.96" Height="18.9" Text="[Res(&quot;report_label_totals&quot;)]" VertAlign="Bottom" Font="Arial, 10pt, style=Bold"/>
+        <TextObject Name="Text542" Left="207.9" Top="18.9" Width="160.65" Height="18.9" Text="[FormatNumber([GroupTotalNet],2)] [Currency]" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text532" Left="378" Top="18.9" Width="160.65" Height="18.9" Text="[FormatNumber([GroupTotalTax],2)] [Currency]" VertAlign="Center" Style="DataFontBold"/>
+        <TextObject Name="Text522" Left="548.1" Top="18.9" Width="160.65" Height="18.9" Text="[FormatNumber([GroupTotalfinal],2)] [Currency]" VertAlign="Center" Style="DataFontBold"/>
+      </GroupFooterBand>
+    </GroupHeaderBand>
+    <inherited Name="PageFooter1" Top="214.49">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>

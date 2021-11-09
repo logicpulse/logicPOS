@@ -114,6 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //_treeView.RulesHint = true;
             TreeView.EnableSearch = true;
             TreeView.SearchColumn = 1;
+            TreeView.ModifyBg(StateType.Normal, new Gdk.Color(255, 0, 0));
             TreeView.ModifyCursor(new Gdk.Color(100, 100, 100), new Gdk.Color(200, 200, 200));
             //Add Columns
             AddColumns();

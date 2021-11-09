@@ -33,14 +33,22 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
             columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Name") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_name"), MinWidth = 200, Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), MinWidth = 150 });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Name") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_name"), MinWidth = 200, Expand = true, DecryptValue = true });
+            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), MinWidth = 150, DecryptValue = true });
             columnProperties.Add(new GenericTreeViewColumnProperty("CardNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_card_number"), MinWidth = 150 });
             columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
             CriteriaOperator criteria = pXpoCriteria;
+            if(pXpoCriteria != null)
+            {
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+            }
+            else
+            {
+                criteria = CriteriaOperator.Parse($"(DeletedAt IS NULL)");
+            }
             /* IN009162 - customer sorting changes when "PosDocumentFinanceDialog" window */
             string sortedColumn = "Ord"; // Default one
             if ("PosDocumentFinanceDialog".Equals(pSourceWindow.GetType().Name))

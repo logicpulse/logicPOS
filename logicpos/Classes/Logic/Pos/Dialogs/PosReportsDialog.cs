@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private List<string> GetReportsQueryDialogFilter(ReportsQueryDialogMode pReportsQueryDialogMode, string pDatabaseSourceObject)
         {
-            PosReportsQueryDialog dialog = new PosReportsQueryDialog(_sourceWindow, DialogFlags.DestroyWithParent, pReportsQueryDialogMode, pDatabaseSourceObject);
+            PosReportsQueryDialog dialog = new PosReportsQueryDialog(_sourceWindow, DialogFlags.DestroyWithParent, pReportsQueryDialogMode, pDatabaseSourceObject, _windowTitle);
             ResponseType response = (ResponseType)dialog.Run();
             List<string> result = new List<string>();
             // Filter SellDocuments
@@ -76,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 // Add extraFilter for SellDocuments
                 if (filterSellDocuments == true)
                 {
-					/* IN009066 - FS and NC added to reports */
+                    /* IN009066 - FS and NC added to reports */
                     extraFilter = $@" AND ({statusField} <> 'A') AND (
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
 {filterField} = '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
@@ -123,7 +123,7 @@ OR
 
             senderType = sender.GetType();
 
-            if(senderType.Name == "AccordionChildButton")
+            if (senderType.Name == "AccordionChildButton")
             {
                 button = (sender as AccordionChildButton);
             }
@@ -138,58 +138,175 @@ OR
             // Get Token From buttonName
             ReportsTypeToken token = (ReportsTypeToken)Enum.Parse(typeof(ReportsTypeToken), button.Name, true);
             _log.Debug("void PrintReportRouter(object sender, EventArgs e) :: ReportsTypeToken: " + token.ToString());
-			//TK016249 - Impressoras - Diferenciação entre Tipos
+            //TK016249 - Impressoras - Diferenciação entre Tipos
             GlobalFramework.UsingThermalPrinter = true;
             // Prepare ReportsQueryDialogMode
+            //Titulo nas janelas de filtro de relatório [IN:014328]
             ReportsQueryDialogMode reportsQueryDialogMode = ReportsQueryDialogMode.UNDEFINED;
             // Catch REPORT_SALES_DETAIL_* and REPORT_SALES_DETAIL_GROUP_* use same View
-             if (token.ToString().StartsWith("REPORT_SALES_DETAIL_"))
+            if (token.ToString().StartsWith("REPORT_SALES_DETAIL_"))
             {
-                reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL;
+                if (token.ToString() == "REPORT_SALES_DETAIL_PER_FINANCE_DOCUMENT")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_finance_document") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_DATE")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_date") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_USER")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_user") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_TERMINAL")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_terminal") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_CUSTOMER")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_customer") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_PAYMENT_METHOD")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_payment_method") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_PAYMENT_CONDITION")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_payment_condition") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_CURRENCY")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_currency") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_PER_COUNTRY")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_country") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                }
+                else if (token.ToString() == "REPORT_SALES_DETAIL_GROUP_PER_VAT" || token.ToString() == "REPORT_SALES_PER_VAT")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_vat");
+                    reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT;
+                }
+                else
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter") + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_detail_postfix");
+                
+                if(reportsQueryDialogMode == ReportsQueryDialogMode.UNDEFINED)reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL;
                 databaseSourceObject = "view_documentfinance";
             }
+            else if (token.ToString() == "REPORT_SALES_PER_VAT" || token.ToString() == "REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS")
+            {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_vat");
+                reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT;
+                databaseSourceObject = "view_documentfinance";
+            }
+
             else if (token.ToString().StartsWith("REPORT_SALES_"))
             {
+                if (token.ToString() == "REPORT_SALES_PER_FINANCE_DOCUMENT")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_finance_document");
+                }
+                else if (token.ToString() == "REPORT_SALES_PER_DATE")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_date");
+                }
+
+                else if (token.ToString() == "REPORT_SALES_PER_USER")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_user");
+                }
+                else if (token.ToString() == "REPORT_SALES_PER_TERMINAL")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_terminal");
+                }
+                else if (token.ToString() == "REPORT_SALES_PER_CUSTOMER")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_customer");
+                }
+                else if (token.ToString() == "REPORT_SALES_PER_PAYMENT_METHOD")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_payment_method");
+                }
+                else if (token.ToString() == "REPORT_SALES_PER_PAYMENT_CONDITION")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_payment_condition");
+                }
+                else if (token.ToString() == "REPORT_SALES_PER_CURRENCY")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_currency");
+                }
+                else if (token.ToString() == "REPORT_SALES_PER_COUNTRY")
+                {
+                    this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_country");
+                }
+                else { this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"); }
+
                 reportsQueryDialogMode = ReportsQueryDialogMode.FINANCIAL;
                 databaseSourceObject = "fin_documentfinancemaster";
             }
-            else if (token.ToString().Equals("REPORT_LIST_STOCK_MOVEMENTS"))
-            {
-                reportsQueryDialogMode = ReportsQueryDialogMode.ARTICLE_STOCK_MOVEMENTS;
-                databaseSourceObject = "view_articlestockmovement";
-            }
             else if (token.ToString().Equals("REPORT_LIST_AUDIT_TABLE"))
             {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_audit_table");
                 reportsQueryDialogMode = ReportsQueryDialogMode.SYSTEM_AUDIT;
                 databaseSourceObject = "view_systemaudit";
             }
             else if (token.ToString().Equals("REPORT_LIST_CURRENT_ACCOUNT"))
             {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_details");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CURRENT_ACCOUNT;
                 databaseSourceObject = "view_documentfinancecurrentaccount";
             }
             /* IN008018 */
             else if (token.ToString().Equals("REPORT_CUSTOMER_BALANCE_DETAILS"))
             {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_summary");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_DETAILS;
                 databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
             /* IN009010 */
             else if (token.ToString().Equals("REPORT_CUSTOMER_BALANCE_SUMMARY"))
             {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_details");
                 reportsQueryDialogMode = ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY;
                 databaseSourceObject = "view_documentfinancecustomerbalancesummary";
             }
             /* IN009204 - based on CUSTOMER_BALANCE_DETAILS report */
             else if (token.ToString().Equals("REPORT_COMPANY_BILLING"))
             {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_company_billing");
                 reportsQueryDialogMode = ReportsQueryDialogMode.COMPANY_BILLING;
                 databaseSourceObject = "view_documentfinancecustomerbalancedetails";
             }
             else if (token.ToString().Equals("REPORT_LIST_USER_COMMISSION"))
             {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_user_commission");
                 reportsQueryDialogMode = ReportsQueryDialogMode.USER_COMMISSION;
                 databaseSourceObject = "view_usercommission";
+            }
+            //Stock Reports
+            else if (token.ToString().Equals("REPORT_LIST_STOCK_MOVEMENTS"))
+            {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_movements");
+                reportsQueryDialogMode = ReportsQueryDialogMode.ARTICLE_STOCK_MOVEMENTS;
+                databaseSourceObject = "view_articlestockmovement";
+            }
+            else if (token.ToString().Equals("REPORT_LIST_STOCK_WAREHOUSE"))
+            {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_warehouse");
+                reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_WAREHOUSE;
+                databaseSourceObject = "view_articlestockwarehouse";
+            }
+            else if (token.ToString().Equals("REPORT_LIST_STOCK_ARTICLE"))
+            {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_article");
+                reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_STOCK;
+                databaseSourceObject = "view_articlestock";
+            }
+            else if (token.ToString().Equals("REPORT_LIST_STOCK_SUPPLIER"))
+            {
+                this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_supplier");
+                reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_STOCK_SUPPLIER;
+                databaseSourceObject = "view_articlestocksupplier";
             }
 
             // Common GetReportsQueryDialogFilter for All Non Undefined ReportsQueryDialogMode 
@@ -214,7 +331,7 @@ OR
             //if (reportFilter != null || !financialViewMode)
             if (reportFilter != null/* || reportsQueryDialogMode != ReportsQueryDialogMode.UNDEFINED*/)
             {
-            	// Now we have two types of export according the Button response
+                // Now we have two types of export according the Button response
                 displayMode = exportType;
                 switch (token)
                 {
@@ -235,6 +352,7 @@ OR
                             reportFilter,
                             reportFilterHumanReadable
                             );
+                        this._windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_date");
                         break;
                     case ReportsTypeToken.REPORT_SALES_PER_USER:
                         CustomReport.ProcessReportDocumentMasterList(displayMode
@@ -616,6 +734,15 @@ OR
                         );
                         break;
 
+                    case ReportsTypeToken.REPORT_SALES_DETAIL_GROUP_PER_VAT:
+                        CustomReport.ProcessReportDocumentDetail(displayMode
+                     , token.ToString().ToLower()
+                     , "[DocumentFinanceDetail.ArticleVat]"
+                     , "[DocumentFinanceDetail.ArticleVat]",
+                     reportFilter,
+                     reportFilterHumanReadable
+                     );
+                        break;
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                     // Where it is Called?
@@ -655,9 +782,6 @@ OR
                     case ReportsTypeToken.REPORT_LIST_AUDIT_TABLE:
                         CustomReport.ProcessReportSystemAudit(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
-                    case ReportsTypeToken.REPORT_LIST_STOCK_MOVEMENTS:
-                        CustomReport.ProcessReportArticleStockMovement(displayMode, reportFilter, reportFilterHumanReadable);
-                        break;
                     case ReportsTypeToken.REPORT_LIST_CURRENT_ACCOUNT:
                         CustomReport.ProcessReportDocumentFinanceCurrentAccount(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
@@ -675,6 +799,25 @@ OR
                         break;
                     case ReportsTypeToken.REPORT_LIST_USER_COMMISSION:
                         CustomReport.ProcessReportUserCommission(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    // Stock Reports
+                    case ReportsTypeToken.REPORT_LIST_STOCK_MOVEMENTS:
+                        CustomReport.ProcessReportArticleStockMovement(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    case ReportsTypeToken.REPORT_LIST_STOCK_WAREHOUSE:
+                        CustomReport.ProcessReportArticleStockWarehouse(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    case ReportsTypeToken.REPORT_LIST_STOCK_ARTICLE:
+                        CustomReport.ProcessReportArticleStock(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    case ReportsTypeToken.REPORT_LIST_STOCK_SUPPLIER:
+                        CustomReport.ProcessReportArticleStockSupplier(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    case ReportsTypeToken.REPORT_SALES_PER_VAT:
+                        CustomReport.ProcessReportVatSalesResumed(displayMode, reportFilter, reportFilterHumanReadable);
+                        break;
+                    case ReportsTypeToken.REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS:
+                        CustomReport.ProcessReportVatSalesByClassResumed(displayMode, reportFilter, reportFilterHumanReadable);
                         break;
                     // ABove are not Implemented Yet
                     case ReportsTypeToken.REPORT_TOTAL_PER_FAMILY:

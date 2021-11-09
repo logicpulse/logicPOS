@@ -1,5 +1,6 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.App;
 using logicpos.resources.Resources.Localization;
@@ -45,7 +46,12 @@ namespace logicpos.financial.library.Classes.Stocks
                 }
 
                 //Get Objects in same Session
-                erp_customer customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), pCustomer.Oid);
+                //Gestão de Stocks - Ajuste de Stock diretamente no Artigo (BackOffice) [IN:016530]
+                erp_customer customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidUserRecord);
+                if (pCustomer != null)
+                {
+                    customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), pCustomer.Oid);
+                }
                 fin_article article = (fin_article)pSession.GetObjectByKey(typeof(fin_article), pArticle.Oid);
                 pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)pSession.GetObjectByKey(typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid);
                 sys_userdetail userDetail = (sys_userdetail)pSession.GetObjectByKey(typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
@@ -69,7 +75,13 @@ namespace logicpos.financial.library.Classes.Stocks
                 }
 
                 //Only saves if not Working on a Unit Of Work Transaction
-                if (pSession.GetType() != typeof(UnitOfWork)) articleStock.Save();
+                //Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
+                if (pSession.GetType() != typeof(UnitOfWork))
+                {
+                    article.Accounting += quantity;
+                    article.Save();
+                    articleStock.Save();
+                }
 
                 //Audit
                 switch (pMode)
@@ -152,6 +164,24 @@ namespace logicpos.financial.library.Classes.Stocks
                                         item.Quantity,
                                         item.Notes
                                     );
+
+                                    //Artigos Compostos [IN:016522]
+                                    if (item.Article.IsComposed)
+                                    {
+                                        foreach (fin_articlecomposition compositeArticle in item.Article.ArticleComposition)
+                                        {
+                                            fin_article articleChild = compositeArticle.ArticleChild;
+                                            Add(
+                                            uowSession,
+                                            mode, item,
+                                            customer, ord, documentFinanceMaster.Date, documentFinanceMaster.DocumentNumber,
+                                            articleChild,
+                                            // ReverseStock
+                                            compositeArticle.Quantity * item.Quantity,
+                                            item.Notes
+                                        );
+                                        }
+                                    }
                                 }
                             }
                             uowSession.CommitChanges();

@@ -692,8 +692,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //Get Article
                 fin_article article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), pArticleOid);
+
                 //Force Refresh Cache 
-                //article.Reload();
+                article.Reload();
+                //article1 used to get original article designation
+                string originalDesignation = article.Designation;
                 /* TK013134 */
                 string ean = parkingTicketResult.Ean;
                 bool isAppUseParkingTicketModule = GlobalFramework.AppUseParkingTicketModule && !string.IsNullOrEmpty(ean);
@@ -793,11 +796,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Insert
                 else
                 {
+                    bool showMessage;
+                    if (Utils.CheckStocks())
+                    {
+                        if(!Utils.ShowMessageMinimumStock(_sourceWindow, pArticleOid, Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity, out showMessage)) { 
+                            if(showMessage) return;
+                        }
+                    }
                     //Get Place Object to extract TaxSellType Normal|TakeWay
                     OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
                     pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
+                    fin_articletype articletype = (fin_articletype)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_articletype), article.Type.Oid);
+
+                    if (configurationPlace == null) { configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), SettingsApp.XpoOidConfigurationPlaceTableDefaultOpenTable); } 
                     //Use VatDirectSelling if in Retail or in TakeWay mode
-                    TaxSellType taxSellType = (configurationPlace.MovementType.VatDirectSelling || SettingsApp.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal;
+                    TaxSellType taxSellType = (SettingsApp.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling ) ? TaxSellType.TakeAway : TaxSellType.Normal;
                     decimal priceTax = (taxSellType == TaxSellType.Normal) ? article.VatOnTable.Value : article.VatDirectSelling.Value;
 
                     //Get PriceFinal to Request Price Dialog
@@ -827,6 +840,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
 
                     }
+					//Proteção para artigos do tipo "Sem Preço" [IN:013329]
+                    else if (!articletype.HavePrice)
+                    {
+                        sourceMode = PricePropertiesSourceMode.FromPriceNet;
+                        price = 0.00m;
+                        article.Designation = string.Format(articletype.Designation + " : " + originalDesignation);
+                    }
                     else if (price <= 0.0m || article.PVPVariable == true)
                     {
                         MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), price);
@@ -842,7 +862,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
 
                     //TODO: Be sure that Money Dialog dont Permit <= 0 Values
-                    if (price <= 0.0m)
+                    if (price <= 0.0m && articletype.HavePrice)
                     {
                         throw new Exception("defaultPrice <= 0.0m");
                     }
@@ -863,33 +883,59 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     int i = 0;
                     foreach(var item in CurrentOrderDetails.Lines)
                     {
-                        if(item.ArticleOid == pArticleOid && item.Properties.PriceFinal == priceProperties.PriceFinal)
+                        _log.Debug(item.ArticleOid);
+                        _log.Debug(pArticleOid);
+                        _log.Debug(item.Properties.PriceFinal);
+                        _log.Debug(priceProperties.PriceFinal);
+                        if (item.ArticleOid == pArticleOid && item.Properties.PriceFinal == priceProperties.PriceFinal)
                         {
                             _listStoreModelSelectedIndex = i;
+                            break;
                         }
                         i++;
                     }
+                    _log.Debug(_listStoreModelSelectedIndex);
 
-                    if (_listStoreModelSelectedIndex != -1 && Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)) == Math.Round(priceProperties.PriceFinal, SettingsApp.DecimalRoundTo) &&
-                        (Guid)(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId)) == pArticleOid)
+                    //Check if item is already on ticket list and his position
+                    bool itemInTicket = false;
+                    decimal newQuantity = 0.0m;
+                    decimal newTotalPrice = 0.0m;
+
+                    _listStoreModel.GetIterFirst(out _treeIter);
+                    for (int itemPosition = 0; itemPosition < _listStoreModel.IterNChildren(); itemPosition++)
                     {
-                        //Update TreeView Model Price and quantity
-                        var newQuantity = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity;
-                        var newTotalPrice = newQuantity * Convert.ToDecimal(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser);
+                        if ((Guid)(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId)) == pArticleOid &&
+                                Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)) == Math.Round(priceProperties.PriceFinal, SettingsApp.DecimalRoundTo))
+                        {
+                            
+                            _listStoreModelSelectedIndex = itemPosition;
 
-                        //Update orderDetails 
-                        CurrentOrderDetails.Update(_listStoreModelSelectedIndex, newQuantity, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser);
+                            //Update TreeView Model Price and quantity
+                            newQuantity = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity;
+                            newTotalPrice = newQuantity * Convert.ToDecimal(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal);
 
-                        //_listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, FrameworkUtils.DecimalToString(newPrice));
-                        _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, FrameworkUtils.DecimalToString(newQuantity));
-                        
-                        //Update Total
-                        _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, FrameworkUtils.DecimalToString(newTotalPrice));
+                            //Update orderDetails 
+                            _currentOrderDetails.Update(_listStoreModelSelectedIndex, newQuantity, Convert.ToDecimal(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser));
 
-                        //Update Total Items Member
-                        _listStoreModelTotalItems = _listStoreModel.IterNChildren();
+
+                            //_listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, FrameworkUtils.DecimalToString(newPrice));
+                            _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Quantity, FrameworkUtils.DecimalToString(newQuantity));
+
+                            //Update Total
+                            _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, FrameworkUtils.DecimalToString(newTotalPrice));
+
+                            _currentOrderDetails.Lines[_listStoreModelSelectedIndex].TreeIter = _treeIter;
+
+                            itemInTicket = true;
+
+                            break;
+                        }
+                        _listStoreModel.IterNext(ref _treeIter);
                     }
-                    else
+                    //Update Total Items Member
+                    _listStoreModelTotalItems = _listStoreModel.IterNChildren();
+
+                    if(!itemInTicket)
                     {
                         //Insert into orderDetails SessionApp
                         _currentOrderDetails.Insert(article.Oid, article.Designation, priceProperties);
@@ -1161,8 +1207,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void UpdateArticleBag()
         {
-            if (GlobalFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid))
-                _articleBag = ArticleBag.TicketOrderToArticleBag(GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid]);
+            try
+            {
+                if (GlobalFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid))
+                    _articleBag = ArticleBag.TicketOrderToArticleBag(GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid]);
+            }catch (Exception ex)
+            {
+                _log.Error(string.Format("UpdateArticleBag Error: [{0}]", ex.Message));
+            }
             //_log.Debug(string.Format("UpdateArticleBag TotalQuantity: [{0}]", _articleBag.TotalQuantity));
         }
 
@@ -1198,7 +1250,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (_buttonKeyChangeQuantity != null && !_buttonKeyChangeQuantity.Sensitive) _buttonKeyChangeQuantity.Sensitive = true;
                     if (_buttonKeyWeight != null) _buttonKeyWeight.Sensitive = (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen() && _currentDetailArticle.UseWeighingBalance);
                     //if (_buttonKeyGifts != null && !_buttonKeyGifts.Sensitive) _buttonKeyGifts.Sensitive = (_articleBag.Count > 1);
-                    if (_buttonKeySplitAccount != null && !_buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = (_articleBag.Count > 1);
+                    if (_buttonKeySplitAccount != null && !_buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = (_articleBag.Count > 1 && _articleBag.TotalFinal > 0.00m);
                 }
                 else
                 {
@@ -1212,7 +1264,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (_buttonKeyChangeQuantity != null && _buttonKeyChangeQuantity.Sensitive) _buttonKeyChangeQuantity.Sensitive = false;
                     if (_buttonKeyWeight != null && _buttonKeyWeight.Sensitive) _buttonKeyWeight.Sensitive = false;
                     //if (_buttonKeyGifts != null && _buttonKeyGifts.Sensitive) _buttonKeyGifts.Sensitive = false;
-                    if (_buttonKeySplitAccount != null && _buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = false;
+                    if (_buttonKeySplitAccount != null && _buttonKeySplitAccount.Sensitive) _buttonKeySplitAccount.Sensitive = (_articleBag.Count > 1 && _articleBag.TotalFinal > 0.00m); ;
                 }
 
 
@@ -1262,7 +1314,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (_toolbarShowSystemDialog != null && !_toolbarShowSystemDialog.Sensitive) _toolbarShowSystemDialog.Sensitive = FrameworkUtils.HasPermissionTo("SYSTEM_ACCESS");
                 if (_toolbarLogoutUser != null && !_toolbarLogoutUser.Sensitive) _toolbarLogoutUser.Sensitive = true;
                 if (_toolbarShowChangeUserDialog != null && !_toolbarShowChangeUserDialog.Sensitive) _toolbarShowChangeUserDialog.Sensitive = true;
-                if (_toolbarCashDrawer != null /*&& !_toolbarCashDrawer.Sensitive*/) _toolbarCashDrawer.Sensitive = FrameworkUtils.HasPermissionTo("WORKSESSION_ALL");
+                if (_toolbarCashDrawer != null /*&& !_toolbarCashDrawer.Sensitive*/) _toolbarCashDrawer.Sensitive = (FrameworkUtils.HasPermissionTo("WORKSESSION_ALL")); 
                 if (_toolbarFinanceDocuments != null && !_toolbarFinanceDocuments.Sensitive) _toolbarFinanceDocuments.Sensitive = true;
                 //With Valid Open WorkSessionPeriodTerminal
                 if (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
@@ -1300,7 +1352,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     // Always Enable Buttons if have Order/Table Open
                     _buttonKeyBarCode.Sensitive = true;
 
-                    if (_listStoreModelTotalItemsTicketListMode > 0)
+                    if (_listStoreModelTotalItemsTicketListMode > 0 &&
+                            _currentOrderDetails.TotalFinal > 0.00m)
                     {
                         _buttonKeyPayments.Sensitive = true;
                         _buttonKeySplitAccount.Sensitive = true;
@@ -1316,7 +1369,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (_listStoreModelTotalItemsTicketListMode == 0)
                     {
-                        if (GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].OrderStatus == OrderStatus.Open)
+                        if (GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].OrderStatus == OrderStatus.Open &&
+                            _articleBag.TotalFinal > 0.00m)
                         {
                             _buttonKeyPayments.Sensitive = true;
                             _buttonKeySplitAccount.Sensitive = true;

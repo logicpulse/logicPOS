@@ -1,5 +1,6 @@
 ﻿using System;
 using DevExpress.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 
 namespace logicpos.datalayer.DataLayer.Xpo
 {
@@ -39,6 +40,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentNumber", ref fDocumentNumber, value); }
         }
 
+        fin_articleserialnumber fArticleSerialNumber;
+        //[Indexed(Unique = true)]
+        public fin_articleserialnumber ArticleSerialNumber
+        {
+            get { return fArticleSerialNumber; }
+            set { SetPropertyValue<fin_articleserialnumber>("ArticleSerialNumber", ref fArticleSerialNumber, value); }
+        }
+
         fin_article fArticle;
         public fin_article Article
         {
@@ -51,6 +60,20 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return fQuantity; }
             set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
+        }
+
+        decimal fPurchasePrice;
+        public decimal PurchasePrice
+        {
+            get { return fPurchasePrice; }
+            set { SetPropertyValue<decimal>("PurchasePrice", ref fPurchasePrice, value); }
+        }
+
+        byte[] fAttachedFile;
+        public byte[] AttachedFile
+        {
+            get { return fAttachedFile; }
+            set { SetPropertyValue<byte[]>("AttachedFile", ref fAttachedFile, value); }
         }
 
         fin_documentfinancemaster fDocumentMaster;

@@ -76,14 +76,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //If has a valid open session
                 if (GlobalFramework.WorkSessionPeriodTerminal != null)
                 {
+					//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                     //Get From MoneyInCashDrawer, Includes CASHDRAWER_START and Money Movements
                     _totalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(GlobalFramework.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
+                    if (_totalAmountInCashDrawer < 0) _totalAmountInCashDrawer = _totalAmountInCashDrawer * (-1);
                 }
                 //Dont have Open Terminal Session YET, use from last Closed CashDrawer
                 else
                 {
                     //Default Last Closed Cash Value
                     _totalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_CLOSE");
+                    if (_totalAmountInCashDrawer < 0) _totalAmountInCashDrawer = _totalAmountInCashDrawer * (-1);
                 }
 
                 //Init Local Vars
@@ -161,6 +164,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //EntryAmountMoney
                 _entryBoxMovementAmountMoney = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_money"), KeyboardMode.Money, SettingsApp.RegexDecimalGreaterEqualThanZero, true);
                 _entryBoxMovementAmountMoney.EntryValidation.Changed += delegate { ValidateDialog(); };
+				//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
+                _entryBoxMovementAmountMoney.EntryValidation.Text = FrameworkUtils.DecimalToString(_totalAmountInCashDrawer);
 
                 //TODO: Enable Other Payments
                 //EntryAmountOtherPayments

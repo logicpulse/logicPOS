@@ -53,6 +53,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
+
+				//Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
+				//Impede alteração do tipo de Clientes normal
+                if (entryCode.Text == "10")
+                {
+                    entryCode.Sensitive = false;
+                    entryOrd.Sensitive = false;
+                    entryDesignation.Sensitive = false;
+                    checkButtonDisabled.Sensitive = false;
+                }
+
             }
             catch (System.Exception ex)
             {

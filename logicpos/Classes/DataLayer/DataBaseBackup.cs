@@ -154,6 +154,7 @@ namespace logicpos.Classes.DataLayer
                     Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid)
                 };
                 systemBackup.Save();
+                string backupProcess = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_database_backup");
 
                 switch (GlobalFramework.DatabaseType)
                 {
@@ -164,7 +165,7 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupSQLite(fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupSQLite(fileName));
-                        Utils.ThreadStart(pSourceWindow, thread);
+                        Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                         break;
                     case DatabaseType.MSSqlServer:
                         fileName = GetBackupFileName(_fileExtension, systemBackup.Version, "");
@@ -172,7 +173,7 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupMSSqlServer(fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupMSSqlServer(Path.GetFileName(fileName), SessionXpoForBackupPurposes));
-                        Utils.ThreadStart(pSourceWindow, thread);
+                        Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                         break;
                     case DatabaseType.MySql:
                         fileName = GetBackupFileName(_fileExtension, systemBackup.Version, "");
@@ -180,7 +181,7 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupMySql(_backupConnectionString, fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupMySql(_backupConnectionString, fileName));
-                        Utils.ThreadStart(pSourceWindow, thread);
+                        Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                         break;
                     default:
                         break;
@@ -446,6 +447,7 @@ namespace logicpos.Classes.DataLayer
         {
             Thread thread;
             bool resultRestore = false;
+            string backupProcess = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_database_restore");
 
             switch (GlobalFramework.DatabaseType)
             {
@@ -455,20 +457,20 @@ namespace logicpos.Classes.DataLayer
                     //resultRestore = RestoreSQLite(pFileName);
                     //Thread
                     thread = new Thread(() => resultRestore = RestoreSQLite(pFileName));
-                    Utils.ThreadStart(pSourceWindow, thread);
+                    Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                     break;
                 case DatabaseType.MSSqlServer:
                     //string FileName = GetBackupFileName(_fileExtension, pSystemBackup.Version, pFileName);
                     //Non Thread
                     //resultRestore = RestoreMSSqlServer(_backupConnectionString, pFileName);
                     thread = new Thread(() => resultRestore = RestoreMSSqlServer(_backupConnectionString, pFileName));
-                    Utils.ThreadStart(pSourceWindow, thread);
+                    Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                     break;
                 case DatabaseType.MySql:
                     //Non Thread
                     //resultRestore = RestoreMySql(_backupConnectionString, pFileName);
                     thread = new Thread(() => resultRestore = RestoreMySql(_backupConnectionString, pFileName));
-                    Utils.ThreadStart(pSourceWindow, thread);
+                    Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                     break;
                 default:
                     break;

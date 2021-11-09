@@ -5,14 +5,14 @@ using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.resources.Resources.Localization;
-using logicpos.ServiceReference;
 using logicpos.shared.Classes.Orders;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using logicpos.Classes.Enums.Finance;
 using logicpos.Classes.Enums.Tickets;
+using logicpos.datalayer.Enums;
+using logicpos.financial.service.Objects.Modules.AT;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -44,14 +44,26 @@ namespace logicpos
                 fin_documentfinancedetailorderreference fin_documentfinancedetailorderreference = new fin_documentfinancedetailorderreference();
                 if (documentFinanceMaster != null)
                 {
-                    //ATWS : SendDocumentToATWSDialog
+                    //ATWS : SendDocumentToATWSDialog                    
                     if (SendDocumentToATWSEnabled(documentFinanceMaster))
                     {
-                        if (Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["sendDocumentsATinRealTime"].ToString()))
+                        //Financial.service - Envio de Documentos transporte AT (Estrangeiro) [IN:016502]
+                        //It is not necessary to communicate to AT if the destination country is different from Portugal
+                        //https://suportesage.zendesk.com/hc/pt/articles/203628246-Se-efectuar-um-documento-de-transporte-para-o-estrangeiro-tenho-que-comunicar-
+                        if (documentFinanceMaster.DocumentType.SaftDocumentType == SaftDocumentType.MovementOfGoods && documentFinanceMaster.ShipToCountry == "PT" )
                         {
-                            SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
-                        }
-                        
+                            try
+                            {
+                                _log.Debug(string.Format("Send Document {0} to AT", documentFinanceMaster.DocumentNumber));
+                                SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
+                            }
+                            catch(Exception Ex)
+                            {
+                                _log.Error(Ex.Message);
+                            }
+                            
+                            //SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
+                        }                 
                     }
                     /* TK013134 - Parking Ticket Module */
                     foreach (var item in GlobalFramework.PendentPayedParkingTickets)
@@ -126,7 +138,9 @@ namespace logicpos
                     }
 
                     //Print Document
-                    if (printDocument) PrintFinanceDocument(pSourceWindow, documentFinanceMaster);
+                    fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), documentFinanceMaster.Oid);
+                    //documentFinanceMaster.Reload();
+                    if (printDocument) PrintFinanceDocument(pSourceWindow, documentMaster);
                 }
             }
             catch (Exception ex)
@@ -164,6 +178,7 @@ namespace logicpos
         }
 
         //ATWS: Check if Document is a Valid Document to send to ATWebServices
+		//Financial.service - Correções no envio de documentos AT [IN:014494]
         public static bool SendDocumentToATWSEnabled(fin_documentfinancemaster documentFinanceMaster)
         {
             bool result = false;
@@ -175,7 +190,7 @@ namespace logicpos
                 if (!documentFinanceMaster.DocumentType.WayBill || documentFinanceMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill)
                 {
                     //If Enabled in Config
-                    result = (SettingsApp.ServiceATSendDocuments);
+                    result = false; //(SettingsApp.ServiceATSendDocuments);
                 }
                 //DocumentsWayBill
                 else
@@ -183,7 +198,7 @@ namespace logicpos
                     //If Enabled in Config and is not a FinalConsumer
                     //É obrigatório comunicar um documento de transporte à AT cujo destinatário seja um consumidor final?
                     //Não. Estão excluídos das obrigações de comunicação os documentos de transporte em que o destinatário ou adquirente seja consumidor final.
-                    result = (SettingsApp.ServiceATSendDocumentsWayBill && documentFinanceMaster.EntityOid != SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                    result = (/*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                 }
             }
 
@@ -217,57 +232,117 @@ namespace logicpos
             }
             return isCanceledByUser;
         }
-
-        //ATWS: Send Document to AT WebWebService
+		//Financial.service - Correções no envio de documentos AT [IN:014494]
+        //NEW SEND METHOD
         public static ServicesATSoapResult SendDocumentToATWS(fin_documentfinancemaster pDocumentFinanceMaster)
         {
-            ServicesATSoapResult result = new ServicesATSoapResult();
-
-            //Detect Document and Check if is a document to Sent to ATWS
-            bool sendDocumentToATWS = SendDocumentToATWSEnabled(pDocumentFinanceMaster);
-            string sendDocumentToATWSResult = string.Empty;
-
-            //Send Document to WebServices and Get String Result
-            if (sendDocumentToATWS)
+            ServicesATSoapResult result = null;
+            try
             {
-                string endpointAddress = FrameworkUtils.GetEndpointAddress();
-                if (FrameworkUtils.IsWebServiceOnline(endpointAddress))
-                {
-                    try
-                    {
-                        //Init Client
-                        Service1Client serviceClient = new Service1Client();
-                        //SendDocuments
-                        result = serviceClient.SendDocument(pDocumentFinanceMaster.Oid);
-                        //Check Result
-                        if (result != null)
-                        {
-                            _log.Debug(string.Format("DocumentNumber: [{0}] - AT WebService ReturnCode: [{1}], ReturnMessage: [{2}]", pDocumentFinanceMaster.DocumentNumber, result.ReturnCode, result.ReturnMessage));
-                        }
-                        else
-                        {
-                            _log.Error(String.Format("Error null resultResultObject: [{0}]", result));
-                        }
+                fin_documentfinancemaster documentMaster = pDocumentFinanceMaster;
 
-                        // Always Close Client
-                        serviceClient.Close();
-                    }
-                    catch (Exception ex)
+                if (documentMaster != null)
+                {
+                    //Send Document
+                    ServicesAT servicesAT = new ServicesAT(documentMaster);
+                    //Get Result from SendDocument Object
+                    string resultSend = servicesAT.Send();
+                    //Get SoapResult
+                    result = servicesAT.SoapResult;
+
+                    if (
+                        //Error: Não foi possível resolver o nome remoto: 'servicos.portaldasfinancas.gov.pt'
+                        result == null
+                        //Error: <faultcode>33</faultcode>
+                        ||
+                        result != null && string.IsNullOrEmpty(result.ReturnCode)
+                        )
                     {
-                        _log.Error(ex.Message, ex);
+                        result = new ServicesATSoapResult("200", resultSend);
+                        servicesAT.PersistResult(result);
+                        _log.Error(string.Format("Error {0}: [{1}]", result.ReturnCode, result.ReturnMessage));
+                    }
+                    else
+                    {
+                        //Output in ServiceAT With Log, here is optional
+                        //Utils.Log(string.Format("SendDocument Result: [{0}]:[{1}]:[{2}]", result.ReturnCode, result.ReturnMessage, result.ReturnRaw));
                     }
                 }
                 else
                 {
-                    result = new ServicesATSoapResult();
-                    result.ReturnCode = "201";
-                    result.ReturnMessage = string.Format("Erro a comunicar com o WebService:{0}{1}", Environment.NewLine, endpointAddress);
-                    _log.Debug(string.Format("EndpointAddress OffLine, Please check URI: {0}", endpointAddress));
+                    //All messages are in PT, from ATWS, dont required translation here
+                    string errorMsg = string.Format("Documento Inválido: {0}", pDocumentFinanceMaster.DocumentNumber);
+                    result = new ServicesATSoapResult("202", errorMsg);
+                    _log.Error(string.Format("Error {0}: [{1}]", result.ReturnCode, result.ReturnMessage));
                 }
             }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                if (Environment.UserInteractive) { _log.Error(ex.Message); }
+                //Send Error Message : 210 is All Exceptions Errors
+                result = new financial.service.Objects.Modules.AT.ServicesATSoapResult("210", ex.Message);
+            }
 
+            //Dont Send null ServicesATSoapResult here, else triggers erros outside
             return result;
         }
+
+
+       
+        //OLD METHOD
+        //ATWS: Send Document to AT WebWebService
+        //public static ServicesATSoapResult SendDocumentToATWS(fin_documentfinancemaster pDocumentFinanceMaster)
+        //{
+        //    ServicesATSoapResult result = new ServicesATSoapResult();
+
+        //    //Detect Document and Check if is a document to Sent to ATWS
+        //    bool sendDocumentToATWS = SendDocumentToATWSEnabled(pDocumentFinanceMaster);
+        //    string sendDocumentToATWSResult = string.Empty;
+
+        //    //Send Document to WebServices and Get String Result
+        //    if (sendDocumentToATWS)
+        //    {
+        //        string endpointAddress = FrameworkUtils.GetEndpointAddress();
+        //        if (FrameworkUtils.IsWebServiceOnline(endpointAddress))
+        //        {
+        //            try
+        //            {
+        //                //Init Client
+        //                Service1Client serviceClient = new Service1Client();
+        //                //SendDocuments
+        //                _log.Debug(string.Format("Send Document: [{0}] to AT", pDocumentFinanceMaster.DocumentNumber));
+        //                result = serviceClient.SendDocument(pDocumentFinanceMaster.Oid);
+        //                //Check Result
+        //                if (result != null)
+        //                {
+        //                    _log.Debug(string.Format("DocumentNumber: [{0}] - AT WebService ReturnCode: [{1}], ReturnMessage: [{2}]", pDocumentFinanceMaster.DocumentNumber, result.ReturnCode, result.ReturnMessage));
+        //                }
+        //                else
+        //                {
+        //                    _log.Error(String.Format("Error null resultResultObject: [{0}]", result));
+        //                }
+
+        //                // Always Close Client
+        //                serviceClient.Close();
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                _log.Error(ex.Message, ex);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            result = new ServicesATSoapResult();
+        //            result.ReturnCode = "201";
+        //            result.ReturnMessage = string.Format("Erro a comunicar com o WebService:{0}{1}", Environment.NewLine, endpointAddress);
+        //            _log.Debug(string.Format("EndpointAddress OffLine, Please check URI: {0}", endpointAddress));
+        //        }
+        //    }
+
+        //    return result;
+        //}
+
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ProcessFinanceDocument
@@ -335,7 +410,7 @@ namespace logicpos
                 case ExportSaftPtMode.LastMonth:
                     dateStart = dateCurrent.AddMonths(-1);
                     dateStart = new DateTime(dateStart.Year, dateStart.Month, 1);
-                    dateEnd = dateStart.AddMonths(1).AddDays(-1);
+                    dateEnd = dateStart.AddMonths(1).AddSeconds(-1);
                     result = ExportSaft(pSourceWindow, dateStart, dateEnd);
                     break;
                 case ExportSaftPtMode.Custom:
@@ -428,6 +503,24 @@ namespace logicpos
             bool openDrawer = false;
             PosDocumentFinancePrintDialog.PrintDialogResponse response;
 
+            //Delete generated files
+            try
+            {
+
+                string rootFolderPath = @"temp";
+                string filesToDelete = @"*qrcode*";
+                string[] fileList = System.IO.Directory.GetFiles(rootFolderPath, filesToDelete);
+                foreach (string file in fileList)
+                {
+                    System.Diagnostics.Debug.WriteLine(file + "will be deleted");
+                    System.IO.File.Delete(file);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
                 Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
@@ -518,10 +611,30 @@ namespace logicpos
                     {
                         //Print Document use Printer Document
                         result = PrintRouter.PrintFinanceDocument(printerDoc, pDocumentFinanceMaster, response.CopyNames, response.SecondCopy, response.Motive);
+
+
+                        
                         //OpenDoor use Printer Drawer
-                        if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy) PrintRouter.OpenDoor(printer);
+                        if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy) 
+                        {
+                            var resultOpenDoor = PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
+                            if (!resultOpenDoor)
+                            {
+                                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
+                            }
+                            else
+                            {
+                                FrameworkUtils.Audit("CASHDRAWER_OUT", string.Format(
+                                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
+                                GlobalFramework.LoggedTerminal.Designation,
+                                "Button Open Door"));
+                            }
+                          
+                        }
+                    
                     }
                 }
+
             }
             catch (Exception ex)
             {
@@ -582,9 +695,26 @@ namespace logicpos
                     }
                     //ProtectedFiles Protection
                     if (!validFiles) return false;
+                    //Recibos com impressão em impressora térmica
+                    if (GlobalFramework.LoggedTerminal.ThermalPrinter != null)
+                    {
+                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_DialogConfigurationPrintersType_tab1_label"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_choose_printer")); 
 
-                    //Call Print Document
-                    result = PrintRouter.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
+                        if (responseType == ResponseType.Yes)
+                        {
+                            //Call Print Document thermal
+                            result = PrintRouter.PrintFinanceDocumentPayment(GlobalFramework.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
+                        }
+                        else
+                        {
+                            result = PrintRouter.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
+                        }
+                    }
+                    else
+                    {
+                        //Call Print Document A4
+                        result = PrintRouter.PrintFinanceDocumentPayment(printer, pDocumentFinancePayment);
+                    }
                 }
             }
             catch (Exception ex)

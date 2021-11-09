@@ -9,6 +9,7 @@ using logicpos.Classes.Enums.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
+using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
@@ -16,6 +17,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
 using System;
@@ -31,6 +33,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -353,7 +356,7 @@ namespace logicpos
             }
             finally
             {
-                dialog.Destroy();
+                if (resultResponse != ResponseType.Apply) { dialog.Destroy(); } 
             }
         }
 
@@ -373,9 +376,9 @@ namespace logicpos
             return ShowMessageTouch(pSourceWindow, Gtk.DialogFlags.Modal, new Size(800, 400), Gtk.MessageType.Error, Gtk.ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_printing_ticket"), printerDesignation, printerNetworkName, pEx.Message));
         }
 
-        public static bool ShowMessageTouchRequiredValidPrinter(Window pSourceWindow)
+        public static bool ShowMessageTouchRequiredValidPrinter(Window pSourceWindow, sys_configurationprinters pPrinter)
         {
-            bool result = (GlobalFramework.LoggedTerminal.Printer != null) ? false : true;
+            bool result = (pPrinter != null || GlobalFramework.LoggedTerminal.ThermalPrinter != null) ? false : true;
 
             if (result)
             {
@@ -558,6 +561,94 @@ namespace logicpos
 
             return result;
         }
+        public static bool ShowMessageMinimumStock(Window pSourceWindow, Guid pArticleOid, decimal pNewQuantity)
+        {
+            bool unusedBool = false;
+            return ShowMessageMinimumStock(pSourceWindow, pArticleOid, pNewQuantity, out unusedBool);
+        }
+
+        public static bool ShowMessageMinimumStock(Window pSourceWindow, Guid pArticleOid, decimal pNewQuantity, out bool showMessage)
+        {
+            showMessage = false;
+            Size size = new Size(500, 350);
+            fin_article article = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), pArticleOid);            
+            decimal articleStock = 0;
+            try
+            {
+                string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", article.Oid);
+                articleStock = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(stockQuery));
+            }
+            catch
+            {
+                _log.Debug("Article with stock 0 or NULL");
+                articleStock = 0;
+            }
+
+            string childStockMessage = Environment.NewLine + Environment.NewLine + "Stock de artigos associados: " + Environment.NewLine;
+            //Composite article Messages
+            int childStockAlertCount = 0;
+            if (article.IsComposed)
+            {
+                foreach(fin_articlecomposition item in article.ArticleComposition)
+                {
+                    fin_article child = item.ArticleChild;
+                    decimal childStock = 0;
+                    try
+                    {
+                        string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", item.ArticleChild.Oid);
+                        childStock = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(stockQuery));
+                    }
+                    catch
+                    {
+                        _log.Debug("Article child with stock 0 or NULL");
+                        childStock = 0;
+                    }
+                    var childStockAfterChanged = childStock - (pNewQuantity * item.Quantity);
+                    if (childStockAfterChanged <= child.MinimumStock)
+                    {
+                        childStockMessage += Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + child.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(childStock), GlobalFramework.CurrentCultureNumberFormat, "0.00")  + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine ;
+                        childStockAlertCount++;
+                    }
+                }
+            }
+            var stockQuantityAfterChanged = articleStock - pNewQuantity;
+            //Mensagem de stock apenas para artigos da classe Produtos
+            if ((stockQuantityAfterChanged <= article.MinimumStock || childStockAlertCount > 0) && article.Class.Oid == Guid.Parse("6924945d-f99e-476b-9c4d-78fb9e2b30a3"))
+            {
+                if (article.IsComposed)
+                {
+                    size = new Size(650, 480);
+                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(articleStock), GlobalFramework.CurrentCultureNumberFormat, "0.00")  + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00")  + childStockMessage);
+                    if (response == ResponseType.Yes)
+                    {
+                        showMessage = true;
+                        return true;
+                    }
+                    else
+                    {
+                        showMessage = true;
+                        return false;
+                    }
+                }
+                else
+                {
+                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(articleStock), GlobalFramework.CurrentCultureNumberFormat, "0.00")   + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") );
+                    if (response == ResponseType.Yes)
+                    {
+                        showMessage = true;
+                        return true;
+                    }
+                    else
+                    {
+                        showMessage = true;
+                        return false;
+                    }
+                }
+            }
+            showMessage = false;
+            return false;
+        }
+
 
         public static void ShowMessageTouchProtectedDeleteRecordMessage(Window pSourceWindow)
         {
@@ -1140,6 +1231,19 @@ namespace logicpos
             return filter;
         }
 
+        public static FileFilter GetFileFilterBMPImages()
+        {
+            FileFilter filter = new FileFilter();
+            filter.Name = "BMP, PNG and JPEG images";
+            filter.AddMimeType("image/png");
+            filter.AddPattern("*.png");
+            filter.AddMimeType("image/jpeg");
+            filter.AddPattern("*.jpg");
+            filter.AddMimeType("image/bmp");
+            filter.AddPattern("*.bmp");
+            return filter;
+        }
+
         public static FileFilter GetFileFilterTemplates()
         {
             FileFilter filter = new FileFilter();
@@ -1178,6 +1282,18 @@ namespace logicpos
             //New: Shared for All database Types
             filter.AddMimeType("application/octet-stream");
             filter.AddPattern("*.bak");
+
+            return filter;
+        }
+
+
+        public static FileFilter GetFileFilterPDF()
+        {
+            FileFilter filter = new FileFilter();
+
+            filter.Name = "PDF Files";
+            filter.AddMimeType("application/pdf");
+            filter.AddPattern("*.pdf");
 
             return filter;
         }
@@ -1385,6 +1501,32 @@ namespace logicpos
             return result;
         }
 
+        
+        public static string OpenNewSerialNumberCompositePopUpWindow(Window pSourceWindow, XPGuidObject pXPGuidObject, out List<fin_articleserialnumber> pSelectedCollection, string pSerialNumber = "", List<fin_articleserialnumber> pSelectedCollectionToFill = null)
+        {
+            try
+            {
+                DialogArticleCompositionSerialNumber dialog = new DialogArticleCompositionSerialNumber(pSourceWindow, Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, pXPGuidObject, pSelectedCollectionToFill, pSerialNumber);
+                ResponseType response = (ResponseType)dialog.Run();
+                if(response == ResponseType.Ok)
+                {
+                    string insertedSerialNumber = dialog.EntryBoxSerialNumber1.EntryValidation.Text;
+                    pSelectedCollection = dialog.SelectedAssocietedArticles;
+                    dialog.Destroy();
+                    return insertedSerialNumber;
+                }
+                dialog.Destroy(); 
+                pSelectedCollection = dialog.SelectedAssocietedArticles; 
+                return pSerialNumber;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                pSelectedCollection = null;
+                return "";
+            }
+        }
+
         /// <summary>
         /// Method responsible for screen resolution validation and if necessary, sets the default resolution settings.
         /// <para>See also "IN008023: apply "800x600" settings as default"</para>
@@ -1463,6 +1605,13 @@ namespace logicpos
         //http://www.mono-project.com/docs/gui/gtksharp/responsive-applications/
         public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists)
         {
+            string backupProcess = string.Empty;
+            return GetThreadDialog(pSourceWindow, dbExists, backupProcess);
+        }
+
+
+        public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists, string backupProcess)
+        {
             string fileWorking = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Other\working.gif");          
   
             Dialog dialog = new Dialog("Working", pSourceWindow, DialogFlags.Modal | DialogFlags.DestroyWithParent);
@@ -1472,6 +1621,8 @@ namespace logicpos
             Label labelBoot;            
             if (dbExists) labelBoot = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_load")); 
             else labelBoot = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_load_first_time"));
+            if(backupProcess != string.Empty) labelBoot = new Label(backupProcess);
+
             labelBoot.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 10 Bold"));
             labelBoot.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.DarkSlateGray));
             dialog.Decorated = false;
@@ -1704,6 +1855,12 @@ namespace logicpos
 
         public static void ThreadStart(Window pSourceWindow, Thread pThread)
         {
+            string backupProcess = string.Empty;
+            ThreadStart(pSourceWindow, pThread, backupProcess);
+        }
+
+        public static void ThreadStart(Window pSourceWindow, Thread pThread, string backupProcess)
+        {
             try
             {
                 /* ERR201810#15 - Database backup issues */
@@ -1713,7 +1870,7 @@ namespace logicpos
                 // Proptection for Startup Windows and Backup, If dont have a valid window, dont show loading (BackGround Thread)
                 if (pSourceWindow != null)
                 {
-                    GlobalApp.DialogThreadWork = GetThreadDialog(pSourceWindow, Utils.checkIfDbExists());
+                    GlobalApp.DialogThreadWork = GetThreadDialog(pSourceWindow, Utils.checkIfDbExists(), backupProcess);
                     GlobalApp.DialogThreadWork.Run();
                 }
                 /* END: ERR201810#15 */
@@ -2369,6 +2526,40 @@ namespace logicpos
             //}
         }
 
+        public static void ShowChangeLog(Window pSourceWindow)
+        {
+            try
+            {
+                string message = "";
+
+
+                WebClient wc = new WebClient();
+                byte[] raw = wc.DownloadData("http://box.logicpulse.com/files/changelogs/pos.txt");
+
+                message = System.Text.Encoding.UTF8.GetString(raw);
+
+                System.Text.Encoding iso = System.Text.Encoding.GetEncoding("ISO-8859-1");
+                System.Text.Encoding utf8 = System.Text.Encoding.UTF8;
+                byte[] isoBytes = System.Text.Encoding.Convert(utf8, iso, raw);
+                message = iso.GetString(isoBytes);
+
+                ResponseType response = Utils.ShowMessageTouch(
+                         pSourceWindow,
+                         DialogFlags.DestroyWithParent | DialogFlags.Modal,
+                         new Size(700, 480),
+                         MessageType.Info,
+                         ButtonsType.Ok,
+                         resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "change_log"),
+                         message
+                       );
+            }
+            catch (Exception ex)
+            {
+                _log.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
+                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "There is an error when checking for changelog. Please contact the helpdesk");
+            }
+        }
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Virtual KeyBoard
 
@@ -2504,6 +2695,109 @@ namespace logicpos
 
             return (result);
         }
+		//Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
+        internal static bool PrintTicket()
+        {
+            bool result = false;
+
+            try
+            {
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["TICKET_PRINT_TICKET"]);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+				return true;
+            }
+
+            return (result);
+        }
+        //Criação de variável nas configurações para imprimir ou não ticket's com designação comercial da empresa
+        internal static bool PrintTicketComercialName()
+        {
+            bool result = false;
+
+            try
+            {
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["TICKET_PRINT_COMERCIAL_NAME"]);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                return true;
+            }
+
+            return (result);
+        }
+        
+
+        //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+        //Criação de variável nas configurações para imprimir ou não QRCode
+        internal static bool PrintQRCode()
+        {
+            bool result = false;
+
+            try
+            {
+                string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'PRINT_QRCODE' AND (Disabled = 0 OR Disabled is NULL);");
+                result = Convert.ToBoolean(GlobalFramework.SessionXpo.ExecuteScalar(query));
+                GlobalFramework.PrintQRCode = result;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["PRINT_QRCODE"]);
+                GlobalFramework.PrintQRCode = result;
+                return true;
+            }
+
+            return (result);
+        }
+
+        internal static bool CheckStocks()
+        {
+            bool result = false;
+
+            try
+            {
+                string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS' AND (Disabled = 0 OR Disabled is NULL);");
+                result = Convert.ToBoolean(GlobalFramework.SessionXpo.ExecuteScalar(query));                
+                GlobalFramework.CheckStocks = result;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["CHECK_STOCKS"]);
+                GlobalFramework.CheckStocks = result;
+                return true;
+            }
+
+            return (result);
+        }
+
+        internal static bool CheckStockMessage()
+        {
+            bool result = false;
+
+            try
+            {
+                string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS_MESSAGE';");
+                result = Convert.ToBoolean(GlobalFramework.SessionXpo.ExecuteScalar(query));
+                GlobalFramework.CheckStockMessage = result;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["CHECK_STOCKS_MESSAGE"]);
+                GlobalFramework.CheckStockMessage = result;
+                return true;
+            }
+
+            return (result);
+        }
+
+        
+
 
         //Commented by Mario because its not used in Project
         //internal static void DeleteWidgetChilds(Fixed pxedWindow)
@@ -2528,13 +2822,13 @@ namespace logicpos
         //GenericTreeView
 
         //Helper Static Method to Return a GenericTreeView from T
-        public static T GetGenericTreeViewXPO<T>(Window pSourceWindow)
+        public static T GetGenericTreeViewXPO<T>(Window pSourceWindow, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default)
           where T : IGenericTreeView, new()
         {
-            return GetGenericTreeViewXPO<T>(pSourceWindow, null);
+            return GetGenericTreeViewXPO<T>(pSourceWindow, null, pGenericTreeViewNavigatorMode, pGenericTreeViewMode);
         }
 
-        public static T GetGenericTreeViewXPO<T>(Window pSourceWindow, CriteriaOperator pCriteria)
+        public static T GetGenericTreeViewXPO<T>(Window pSourceWindow, CriteriaOperator pCriteria, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default)
           where T : IGenericTreeView, new()
         {
             T genericTreeView = default(T);
@@ -2544,9 +2838,7 @@ namespace logicpos
                 // Add default Criteria to Hide Undefined Records
                 string undefinedFilter = string.Format("Oid <> '{0}'", SettingsApp.XpoOidUndefinedRecord);
 
-#pragma warning disable CS0618 // Type or member is obsolete
                 if (pCriteria == null)
-#pragma warning restore CS0618 // Type or member is obsolete
                 {
                     pCriteria = CriteriaOperator.Parse(undefinedFilter);
                 }
@@ -2561,8 +2853,8 @@ namespace logicpos
                       null,         //Default Value
                       pCriteria,    //Criteria
                       null,         //DialogType
-                      GenericTreeViewMode.Default,
-                      GenericTreeViewNavigatorMode.Default
+                      pGenericTreeViewMode,
+                      pGenericTreeViewNavigatorMode
                 };
                 genericTreeView = (T)Activator.CreateInstance(typeof(T), constructor);
                 //Cast to Box to use ShowAll for all T(ypes) of GenericTreeView
@@ -2674,8 +2966,9 @@ namespace logicpos
 
             foreach (erp_customer item in collectionCustomers)
             {
-
-                if (item.FiscalNumber == pFiscalNumber || item.Name == pName) customerExists = true;               
+				//Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
+                if (item.FiscalNumber == pFiscalNumber) customerExists = true;
+                if (item.Oid.Equals(finalConsumerEntity)) customerExists = true;
             }
 
             //insert new Customer before Process Finance Document
@@ -2683,6 +2976,8 @@ namespace logicpos
             if (!customerExists)
             {
                 changed = true;
+				//Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
+                if (string.IsNullOrEmpty(pName)) pName = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"); 
                 result = new erp_customer(GlobalFramework.SessionXpo)
                 {
                     Ord = (pFiscalNumber != string.Empty) ? FrameworkUtils.GetNextTableFieldID("erp_customer", "Ord") : 0,
@@ -2716,30 +3011,34 @@ namespace logicpos
                 //Require to get a Fresh Object
                 result = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), pCustomer.Oid);
 
-                if (CheckIfFieldChanged(result.Name, pName)) { result.Name = pName; changed = true; };
-                if (CheckIfFieldChanged(result.Address, pAddress)) { result.Address = pAddress; changed = true; };
-                if (CheckIfFieldChanged(result.Locality, pLocality)) { result.Locality = pLocality; changed = true; };
-                if (CheckIfFieldChanged(result.ZipCode, pZipCode)) { result.ZipCode = pZipCode; changed = true; };
-                if (CheckIfFieldChanged(result.City, pCity)) { result.City = pCity; changed = true; };
-                if (result.Country != pCountry) { result.Country = pCountry; changed = true; };
-                if (CheckIfFieldChanged(result.FiscalNumber, pFiscalNumber)) { result.FiscalNumber = pFiscalNumber; changed = true; };
-                if (CheckIfFieldChanged(result.CardNumber, pCardNumber)) { result.CardNumber = pCardNumber; changed = true; };
-                if (CheckIfFieldChanged(result.Discount, pDiscount)) { result.Discount = pDiscount; changed = true; };
-                if (CheckIfFieldChanged(result.Notes, pNotes)) { result.Notes = pNotes; changed = true; };
-                // Only used in DocumentFinanceDialogPage2
-                if (pPhone != null && CheckIfFieldChanged(result.Phone, pPhone)) { result.Phone = pPhone; changed = true; };
-                if (pEmail != null && CheckIfFieldChanged(result.Email, pEmail)) { result.Email = pEmail; changed = true; };
-
-                if (changed)
+                if(result != finalConsumerEntity)
                 {
-                    ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_modified"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_customer_updated_save_changes"));
-                    if (responseType == ResponseType.No)
+                    if (CheckIfFieldChanged(result.Name, pName)) { result.Name = pName; changed = true; };
+                    if (CheckIfFieldChanged(result.Address, pAddress)) { result.Address = pAddress; changed = true; };
+                    if (CheckIfFieldChanged(result.Locality, pLocality)) { result.Locality = pLocality; changed = true; };
+                    if (CheckIfFieldChanged(result.ZipCode, pZipCode)) { result.ZipCode = pZipCode; changed = true; };
+                    if (CheckIfFieldChanged(result.City, pCity)) { result.City = pCity; changed = true; };
+                    if (result.Country != pCountry) { result.Country = pCountry; changed = true; };
+                    if (CheckIfFieldChanged(result.FiscalNumber, pFiscalNumber)) { result.FiscalNumber = pFiscalNumber; changed = true; };
+                    if (CheckIfFieldChanged(result.CardNumber, pCardNumber)) { result.CardNumber = pCardNumber; changed = true; };
+                    if (CheckIfFieldChanged(result.Discount, pDiscount)) { result.Discount = pDiscount; changed = true; };
+                    if (CheckIfFieldChanged(result.Notes, pNotes)) { result.Notes = pNotes; changed = true; };
+                    // Only used in DocumentFinanceDialogPage2
+                    if (pPhone != null && CheckIfFieldChanged(result.Phone, pPhone)) { result.Phone = pPhone; changed = true; };
+                    if (pEmail != null && CheckIfFieldChanged(result.Email, pEmail)) { result.Email = pEmail; changed = true; };
+
+                    //If final Consumer not save
+                    if (changed && result.Oid != finalConsumerEntity.Oid)
                     {
-                        changed = false;
-                        //Require to Revert Changes from XPO Session Memory
-                        result.Reload();
+                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_modified"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_customer_updated_save_changes"));
+                        if (responseType == ResponseType.No)
+                        {
+                            changed = false;
+                            //Require to Revert Changes from XPO Session Memory
+                            result.Reload();
+                        }
                     }
-                }
+                }               
             }
 
             //Shared Save for Insert and Update
@@ -2797,7 +3096,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Change Widgets Validation Colors
 
-        public static void ValidateUpdateColors(Widget pWidget, Label pLabel, bool pValidated)
+        public static void ValidateUpdateColors(Widget pWidget, Label pLabel, bool pValidated, Label pLabel2 = null, Label pLabel3 = null)
         {
             //Use source widget or child Widget based on Type 
             Widget target = (pWidget.GetType() != typeof(EntryBoxValidationMultiLine))
@@ -2817,6 +3116,8 @@ namespace logicpos
                     target.ModifyText(StateType.Active, Utils.ColorToGdkColor(colorEntryValidationValidFont));
                     target.ModifyBase(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidBackground));
                     if (pLabel != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                    if (pLabel2 != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                    if (pLabel3 != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
                 }
                 else
                 {
@@ -2824,6 +3125,8 @@ namespace logicpos
                     target.ModifyText(StateType.Active, Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
                     target.ModifyBase(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationInvalidBackground));
                     if (pLabel != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
+                    if (pLabel2 != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                    if (pLabel3 != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
                 }
             }
             catch (Exception ex)
@@ -2996,6 +3299,43 @@ namespace logicpos
         }
 
 
+        //TK016235 BackOffice - Mode
+        public static void OpenArticleStockDialog(Window pSourceWindow)
+        {
+            try
+            {
+                if (GlobalFramework.LicenceModuleStocks && GlobalFramework.StockManagementModule != null)
+                {
+                    DialogArticleStock dialog = new DialogArticleStock(pSourceWindow);
+                    ResponseType response = (ResponseType)dialog.Run();
+                    dialog.Destroy();
+                }
+                else if(Utils.CheckStockMessage() && !GlobalFramework.LicenceModuleStocks)
+                {
+                    var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_acquire_module_stocks"));                   
+                    if (messageDialog == ResponseType.Ok)
+                    {
+                        Process.Start("https://logic-pos.com/");
+                    }
+
+                    string query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Value = 'False' WHERE Token = 'CHECK_STOCKS_MESSAGE';"); 
+                    GlobalFramework.SessionXpo.ExecuteScalar(query);
+                    query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
+                    GlobalFramework.SessionXpo.ExecuteScalar(query);
+                    startDocumentsMenuFromBackOffice(pSourceWindow, 6);
+                }
+                else
+                {
+                    startDocumentsMenuFromBackOffice(pSourceWindow, 6);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+
         public static void startReportFromBackOffice(Window pSourceWindow)
         {
             //CustomReport.ProcessReportDocumentMasterList(displayMode
@@ -3045,6 +3385,37 @@ namespace logicpos
                 int p = (int)Environment.OSVersion.Platform;
                 return (p == 4) || (p == 6) || (p == 128);
             }
+        }
+		//Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
+        public static bool IsPortOpen(string portName)
+        {
+            var port = new SerialPort(portName);
+            try
+            {
+                port.Open();
+                port.Close();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _log.Debug(string.Format("Port already in use: [{0}]", portName));
+                return false;
+            }
+        }
+
+        //Generate random String
+        public static string RandomString()
+        {
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            var stringChars = new char[8];
+            var random = new Random();
+
+            for (int i = 0; i < stringChars.Length; i++)
+            {
+                stringChars[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new String(stringChars);
         }
 
     }

@@ -120,7 +120,7 @@
   <data name="app_error_application_unlicenced_function_disabled" xml:space="preserve">
     <value>{0}
 
-Solicitud sin licencia!</value>
+¡Aplicación no registrada!</value>
   </data>
   <data name="app_error_contact_support" xml:space="preserve">
     <value>¡Error de la aplicación! Póngase en contacto con el soporte técnico</value>
@@ -355,7 +355,7 @@ O seleccione '{2}' para iniciar POS en el modo predeterminado '1024x768'.</value
     <value>Para crear documentos financieros que contengan artículos exentos de IVA, asigne la razón de excepción de IVA predeterminada en BackOffice.</value>
   </data>
   <data name="dialog_message_cant_create_cc_document_with_default_entity" xml:space="preserve">
-    <value>No se pueden crear documentos de cuenta actuales con el consumidor final o sin un cliente con nombre y número fiscal!
+    <value>No se pueden crear documentos de factura con el consumidor final o sin un cliente con nombre y número fiscal!
 Por favor, use un cliente válido y vuelva a intentarlo.</value>
   </data>
   <data name="dialog_message_cashdrawer_money_out_error" xml:space="preserve">
@@ -1126,6 +1126,9 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
   <data name="global_ConfigurationPrintersTemplates" xml:space="preserve">
     <value>Plantillas de impresora</value>
   </data>
+  <data name="global_ConfigurationPrintersBarCodeTemplates" xml:space="preserve">
+    <value>Plantillas de impresión de códigos de barras</value>
+  </data>
   <data name="global_ConfigurationPrintersType" xml:space="preserve">
     <value>Tipo de impresora</value>
   </data>
@@ -1473,7 +1476,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
     <value>Tema</value>
   </data>
   <data name="global_email_to" xml:space="preserve">
-    <value>A</value>
+    <value>A (pestaña , para varios correos electrónicos. Ej. 123@123.es,test@test.com)</value>
   </data>
   <data name="global_entity" xml:space="preserve">
     <value>Entidad</value>
@@ -2144,7 +2147,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
     <value>Movimientos de stock</value>
   </data>
   <data name="global_stock_movement_in" xml:space="preserve">
-    <value>Entrada de stock</value>
+    <value>Entrada/Salída de Stock</value>
   </data>
   <data name="global_stock_movement_out" xml:space="preserve">
     <value>Salida de stock</value>
@@ -3036,6 +3039,15 @@ Para proceder debes cambiar la contraseña anterior!</value>
   <data name="prefparam_ticket_footer_line2" xml:space="preserve">
     <value>Ticket :: Pie de Página Línea 2</value>
   </data>
+  <data name="prefparam_ticket_print_ticket" xml:space="preserve">
+    <value>Ticket :: Imprimir Ticket</value>
+  </data>
+  <data name="prefparam_ticket_print_company_name" xml:space="preserve">
+    <value>Ticket :: Imprimir nombre comercial (eslogan)</value>
+  </data>
+  <data name="prefparam_print_qrcode" xml:space="preserve">
+    <value>Documentos :: Imprimir QRCode</value>
+  </data>
   <data name="prefparam_use_cached_images" xml:space="preserve">
     <value>Aplicación :: Usa imágenes en caché</value>
   </data>
@@ -3059,6 +3071,9 @@ Para proceder debes cambiar la contraseña anterior!</value>
   </data>
   <data name="reporttype_label_type5" xml:space="preserve">
     <value>Otros informes</value>
+  </data>
+  <data name="reporttype_label_type6" xml:space="preserve">
+    <value>Informes de Stock</value>
   </data>
   <data name="report_account_balance" xml:space="preserve">
     <value>Saldo de la Cuenta</value>
@@ -3176,7 +3191,16 @@ Para proceder debes cambiar la contraseña anterior!</value>
     <value>Familias, subfamilias y artículos</value>
   </data>
   <data name="report_list_stock_movements" xml:space="preserve">
-    <value>Movimientos de stock</value>
+    <value>Movimientos de Stock</value>
+  </data>
+  <data name="report_list_stock_warehouse" xml:space="preserve">
+    <value>Stock en Almacén</value>
+  </data>
+  <data name="report_list_stock_supplier" xml:space="preserve">
+    <value>Stock por Proveedor</value>
+  </data>
+  <data name="report_list_stock_article" xml:space="preserve">
+    <value>Stock por Artículo</value>
   </data>
   <data name="report_list_user_commission" xml:space="preserve">
     <value>Comisiones</value>
@@ -3219,8 +3243,14 @@ Para proceder debes cambiar la contraseña anterior!</value>
   <data name="report_sales_per_date" xml:space="preserve">
     <value>Ventas por fecha</value>
   </data>
+  <data name="report_sales_per_vat" xml:space="preserve">
+    <value>Ventas por VAT</value>
+  </data>
+  <data name="report_sales_per_vat_by_article_class" xml:space="preserve">
+    <value>Ventes par VAT/Clase de Artículo</value>
+  </data>
   <data name="report_sales_per_family" xml:space="preserve">
-    <value>Seles por familia</value>
+    <value>Ventas por familia</value>
   </data>
   <data name="report_sales_per_family_and_subfamily" xml:space="preserve">
     <value>Ventas por familia/subfamilia</value>
@@ -3418,7 +3448,7 @@ Para proceder debes cambiar la contraseña anterior!</value>
     <value>Cambiar usuario</value>
   </data>
   <data name="window_title_dialog_clone_documents_confirmation" xml:space="preserve">
-    <value>¡Este proceso no se puede deshacer! ¿Confirmar clonado siguiendo documentos?
+    <value>¿Confirmar clonado siguiendo documentos?
 
 {0}</value>
   </data>
@@ -3664,7 +3694,7 @@ Para proceder debes cambiar la contraseña anterior!</value>
     <value>Editar Perfiles de usuario</value>
   </data>
   <data name="window_title_license" xml:space="preserve">
-    <value>LogicPulse: Mecanismo de concesión de licencias</value>
+    <value>LogicPulse: Sistema de registro gratuito</value>
   </data>
   <data name="window_title_reports" xml:space="preserve">
     <value>Informes</value>
@@ -3785,5 +3815,98 @@ Por favor, ingrese otro número e intente nuevamente.</value>
   </data>
   <data name="global_invalid_code" xml:space="preserve">
     <value>El código ingresado no existe en el sistema</value>
+  </data>
+  <data name="global_documentfinance_insert_new_article" xml:space="preserve">
+    <value>Nuevo artículo insertado correctamente</value>
+  </data>
+  <data name="global_documentfinance_insert_new_article_code_error" xml:space="preserve">
+    <value>El código de artículo insertado ya existe o el código / designación de artículo está vacío</value>
+  </data>
+  <data name="article_type_without_price" xml:space="preserve">
+    <value>Tipo de artículo sin precio</value>
+  </data>
+  <data name="global_new_article" xml:space="preserve">
+    <value>new article</value>
+  </data>
+  <data name="global_printer_choose_printer" xml:space="preserve">
+    <value>¿Quiere imprimir un documento en la impresora de recibos?</value>
+  </data>
+  <data name="global_email_separator" xml:space="preserve">
+    <value>Correo electrónico (pestaña , para varios correos electrónicos. Ej. 123@123.es,test@test.es)</value>
+  </data>
+  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
+    <value>Artículos relacionados</value>
+  </data>
+  <data name="global_composite_article" xml:space="preserve">
+    <value>Artículo compuesto</value>
+  </data>
+  <data name="dialog_message_composite_article_same" xml:space="preserve">
+    <value>¡El artículo insertado es el artículo original!</value>
+  </data>
+  <data name="dialog_message_composite_article_already" xml:space="preserve">
+    <value>¡El artículo insertado ya está asociado!</value>
+  </data>
+  <data name="change_log" xml:space="preserve">
+    <value>Registro de cambios (registro de cambios)</value>
+  </data>
+  <data name="global_minimum_stock" xml:space="preserve">
+    <value>Stock mínimo</value>
+  </data>
+  <data name="prefparam_check_stocks" xml:space="preserve">
+    <value>Stocks :: Consultar existencias</value>
+  </data>
+  <data name="prefparam_check_stocks_message" xml:space="preserve">
+    <value>Stocks :: Mostrar mensagem stock</value>
+  </data>
+  <data name="window_check_stock_question" xml:space="preserve">
+    <value>La cantidad ingresada es igual o menor que la cantidad mínima de stock, ¿Quieres continuar?</value>
+  </data>
+  <data name="global_serialnumber" xml:space="preserve">
+    <value>Número de serie</value>
+  </data>
+  <data name="global_unique_articles" xml:space="preserve">
+    <value>Artículos únicos</value>
+  </data>
+  <data name="global_serial_number" xml:space="preserve">
+    <value>Número de serie</value>
+  </data>
+  <data name="global_warehose_management" xml:space="preserve">
+    <value>Gestion de Almacenes</value>
+  </data>
+  <data name="global_warehouse" xml:space="preserve">
+    <value>Almacén</value>
+  </data>
+  <data name="window_title_article_location" xml:space="preserve">
+    <value>Cambiar la ubicación del artículo</value>
+  </data>
+  <data name="global_default_warehouse" xml:space="preserve">
+    <value>almacén predeterminado</value>
+  </data>
+  <data name="global_article_history" xml:space="preserve">
+    <value>Historial del artículo</value>
+  </data>
+  <data name="global_internal_moviment" xml:space="preserve">
+    <value>Movimiento interno</value>
+  </data>
+  <data name="global_locations" xml:space="preserve">
+    <value>Ubicaciones</value>
+  </data>
+  <data name="global_warning_acquire_module_stocks" xml:space="preserve">
+    <value>Para utilizar la versión completa de la gestión de existencias, adquiera el módulo adicional</value>
+  </data>
+  <data name="global_warning_message_database_version" xml:space="preserve">
+    <value>La versión de la base de datos es superior a la versión del software, actualice a la versión</value>
+  </data>
+  <data name="global_purchase_price" xml:space="preserve">
+    <value>Precio de compra</value>
+  </data>
+  <data name="report_sales_detail_per_group_vat" xml:space="preserve">
+    <value>Ventas por tasa de impuestos</value>
+  </data>
+  <data name="open_cash_draw_permissions" xml:space="preserve">
+    <value>El usuario no tiene permiso para abrir la caja registradora</value>
+  </data>
+  <data name="global_software_key" xml:space="preserve">
+    <value>Clave de software</value>
   </data>
 </root>

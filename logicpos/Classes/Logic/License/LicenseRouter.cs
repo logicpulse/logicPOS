@@ -4,6 +4,7 @@ using logicpos.Classes.Enums.App;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using System;
 using System.Collections;
+using System.Data;
 using System.IO;
 
 namespace logicpos.Classes.Logic.License
@@ -46,6 +47,7 @@ namespace logicpos.Classes.Logic.License
             GlobalFramework.LicenceAddress = "Morada Demonstração";
             GlobalFramework.LicenceEmail = "mail@demonstracao.tld";
             GlobalFramework.LicenceTelephone = "DEBUG";
+            GlobalFramework.LicenceModuleStocks = true;
 #else
             if (showDebug)
             {
@@ -91,8 +93,11 @@ namespace logicpos.Classes.Logic.License
                             haveLicence = true;
                         }
 
+                        string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(), GlobalFramework.PluginLicenceManager.GetLicenseFilename());
+                        completeFilePath = completeFilePath.Replace("\\", "/");
+
                         //Compare WS License with Local License (GlobalFramework.LicenceVersion)
-                        registredLicence = GlobalFramework.PluginLicenceManager.GetLicence(hardwareID, version, haveLicence);
+                        registredLicence = GlobalFramework.PluginLicenceManager.GetLicence(hardwareID, version, haveLicence, ReadFileToByteArray(completeFilePath), GlobalFramework.DtLicenceKeys);
 
                         //If Diferent Licenses return 1 byte and update local license file, else if equal return byte 0, skipping if
                         if (showDebug)
@@ -100,10 +105,16 @@ namespace logicpos.Classes.Logic.License
                             _log.Debug("registredLicence.Length: " + registredLicence.Length);
                         }
 
+                        //Update Current Version
+                        int result = GlobalFramework.PluginLicenceManager.updateCurrentVersion(hardwareID, version, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                        if (result > 0)
+                        {
+                            _log.Debug("licence updated to version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                        }
+                        else { _log.Error("Error updating licence version"); }
+
                         if (registredLicence.Length > 0)
                         {
-                            string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(), GlobalFramework.PluginLicenceManager.GetLicenseFilename());
-                            completeFilePath = completeFilePath.Replace("\\", "/");
                             //Used to generate diferent license file names per HardwareId : to Enable find "completeFilePath"
                             //string completeFilePath = GetCurrentDirectory() + string.Format("logicpos_{0}.license", textBoxHardwareID.Text);
 
@@ -166,6 +177,7 @@ namespace logicpos.Classes.Logic.License
             if (showDebug)
             {
                 _log.Debug("loadPOS = " + _loadApp);
+                //LicenseUIResult licenseUIResult = PosLicenceDialog.GetLicenseDetails(hardwareID);
             }
 
             if (_loadApp)
@@ -213,6 +225,14 @@ namespace logicpos.Classes.Logic.License
 
         public static void GetLicenceInfo()
         {
+            if (GlobalFramework.DtLicenceKeys == null)
+            {
+                GlobalFramework.DtLicenceKeys = new DataTable("keysLicence");
+                GlobalFramework.DtLicenceKeys.Columns.Add("name", typeof(string));
+                GlobalFramework.DtLicenceKeys.Columns.Add("value", typeof(string));
+            }
+            GlobalFramework.DtLicenceKeys.Rows.Clear();
+
             GlobalFramework.LicenceDate = DateTime.Now.ToString("dd/MM/yyyy");
             GlobalFramework.LicenceVersion = "LOGICPOS_LICENSED";
             GlobalFramework.LicenceName = "Nome DEMO";
@@ -231,6 +251,8 @@ namespace logicpos.Classes.Logic.License
             GlobalFramework.LicenceAddress = "DEBUG";
             GlobalFramework.LicenceEmail = "DEBUG";
             GlobalFramework.LicenceTelephone = "DEBUG";
+            GlobalFramework.LicenceModuleStocks = true;
+            GlobalFramework.LicenceReseller = "Logicpulse";
 #endif
 
             SortedList sortedList = GlobalFramework.PluginLicenceManager.GetLicenseInformation();
@@ -248,7 +270,7 @@ namespace logicpos.Classes.Logic.License
                 string key = sortedList.GetKey(i).ToString();
                 string value = sortedList.GetByIndex(i).ToString();
                 _log.Debug("Licence Key:" + key + "=" + value);
-
+                GlobalFramework.DtLicenceKeys.Rows.Add(key, value);
                 switch (key)
                 {
                     case "version":
@@ -277,6 +299,10 @@ namespace logicpos.Classes.Logic.License
                         break;
                     case "reseller":
                         GlobalFramework.LicenceReseller = value;
+                        SettingsApp.AppCompanyName = value;
+                        break;
+                    case "logicpos_Module_Stocks":
+                        GlobalFramework.LicenceModuleStocks = Convert.ToBoolean(value);
                         break;
                     case "all_UpdateExpirationDate":
                         GlobalFramework.LicenceUpdateDate = Convert.ToDateTime(value);
@@ -321,6 +347,20 @@ namespace logicpos.Classes.Logic.License
             }
 
             return currentDir;
+        }
+
+        private static byte[] ReadFileToByteArray(string filePath)
+        {
+            try
+            {
+                byte[] bytes = System.IO.File.ReadAllBytes(filePath);
+                return bytes;
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error ReadFileToByteArray!", ex);
+            }
+            return null;
         }
 
         public static bool WriteByteArrayToFile(byte[] buff, string filePath)

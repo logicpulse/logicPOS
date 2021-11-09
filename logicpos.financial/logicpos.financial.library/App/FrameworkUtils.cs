@@ -102,7 +102,31 @@ namespace logicpos.financial.library.App
                     pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput
                 )
                 {
-                    result = new Guid[] {
+                    //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
+                    //- Fatura simplificada em documentos de origem, para inserir nº contribuinte após emissão de fatura
+                    if (SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                    {      
+                        result = new Guid[] {
+                        //SaftDocumentType = 2
+                        SettingsApp.XpoOidDocumentFinanceTypeInvoice,
+                        SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice,
+                        SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                        SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote,
+                        SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput,
+                        SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide,
+                        SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
+                        SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide,
+                        SettingsApp.XpoOidDocumentFinanceTypeReturnGuide,
+                        //SaftDocumentType = 3 
+                        SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument,
+                        SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice,
+                        //SaftDocumentType = 0 
+                        SettingsApp.XpoOidDocumentFinanceTypeBudget,
+                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice };
+                    }
+                    else
+                    {
+                        result = new Guid[] {
                         //SaftDocumentType = 2
                         SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote,
                         SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide,
@@ -114,8 +138,9 @@ namespace logicpos.financial.library.App
                         SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice,
                         //SaftDocumentType = 0 
                         SettingsApp.XpoOidDocumentFinanceTypeBudget,
-                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice
-                    };
+                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice };
+                    }
+                   
                 }
                 //CreditNote
                 else if (
@@ -204,7 +229,7 @@ namespace logicpos.financial.library.App
         public static XPCollection<fin_documentfinancedetail> GetUnCreditedItemsFromSourceDocument(fin_documentfinancemaster pSourceDocument, out string pCreditedDocuments)
         {
             XPCollection<fin_documentfinancedetail> result = new XPCollection<fin_documentfinancedetail>(pSourceDocument.Session, false);
-            CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("DocumentMaster = '{0}'", pSourceDocument.Oid));
+            CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("DocumentMaster = '{0}' AND Disabled = 'False'", pSourceDocument.Oid));
             XPCollection xpoCollectionReferences = new XPCollection(pSourceDocument.Session, typeof(fin_documentfinancedetailreference), criteria);
             bool addToCollection = true;
             List<string> listCreditedDocuments = new List<string>();
@@ -700,6 +725,32 @@ namespace logicpos.financial.library.App
         public static string GetPreferenceParameter(string pToken)
         {
             return CustomFunctions.Pref(pToken);
+        }
+
+        public static bool HasWritePermissionOnDir(string path)
+        {
+            var writeAllow = false;
+            var writeDeny = false;
+            var accessControlList = System.IO.Directory.GetAccessControl(path);
+            if (accessControlList == null)
+                return false;
+            var accessRules = accessControlList.GetAccessRules(true, true,
+                                        typeof(System.Security.Principal.SecurityIdentifier));
+            if (accessRules == null)
+                return false;
+
+            foreach (System.Security.AccessControl.FileSystemAccessRule rule in accessRules)
+            {
+                if ((System.Security.AccessControl.FileSystemRights.Write & rule.FileSystemRights) != System.Security.AccessControl.FileSystemRights.Write)
+                    continue;
+
+                if (rule.AccessControlType == System.Security.AccessControl.AccessControlType.Allow)
+                    writeAllow = true;
+                else if (rule.AccessControlType == System.Security.AccessControl.AccessControlType.Deny)
+                    writeDeny = true;
+            }
+
+            return writeAllow && !writeDeny;
         }
     }
 }

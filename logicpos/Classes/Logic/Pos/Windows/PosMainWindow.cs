@@ -336,9 +336,31 @@ namespace logicpos
 
         private void eventBoxImageLogo_ButtonPressEvent(object o, ButtonPressEventArgs args)
         {
-            if (GlobalFramework.LoggedTerminal.Printer != null && GlobalFramework.LoggedTerminal.Printer.PrinterType.ThermalPrinter)
+            if (GlobalFramework.LoggedTerminal.ThermalPrinter != null)
             {
-                PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.ThermalPrinter);
+                PosPinPadDialog dialogPinPad = new PosPinPadDialog(this, Gtk.DialogFlags.Modal, GlobalFramework.LoggedUser, true);
+                int responsePinPad = dialogPinPad.Run();
+                if (responsePinPad == (int)ResponseType.Ok)
+                {
+                    var resultOpenDoor = PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
+                    if (!resultOpenDoor)
+                    {
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
+                    }
+                    else
+                    {
+                        //Audit
+                        FrameworkUtils.Audit("CASHDRAWER_OUT", string.Format(
+                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
+                            GlobalFramework.LoggedTerminal.Designation,
+                            "Button Open Door"));
+                    }
+                    
+                };
+
+                dialogPinPad.Destroy();
+
+             
             }
         }
 

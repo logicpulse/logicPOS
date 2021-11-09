@@ -38,6 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public bool Visible { get; set; }
         public bool Resizable { get; set; }
         public bool Reorderable { get; set; }
+        public string ForegroundGdkColor { get; set; }         
         public bool Expand { get; set; }
         public NullBoolean Searchable { get; set; }
         public float Alignment { get; set; }
@@ -77,6 +78,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             FontDesc = Pango.FontDescription.FromString(_fontGenericTreeViewColumn);
             CellRenderer = new CellRendererText();
             if (this.FontDesc != null) CellRenderer.FontDesc = this.FontDesc;
+            //if(string.IsNullOrEmpty(this.ForegroundGdkColor)) CellRenderer.ForegroundGdk = Utils.StringToGdkColor(this.ForegroundGdkColor);
+
             //SetFixedSize, this will force all rows to be same size, even multile longtext Fields :)
             CellRenderer.SetFixedSize(0, 24);
             //CellRenderer.SingleParagraphMode = true;

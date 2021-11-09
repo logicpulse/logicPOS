@@ -137,5 +137,11 @@
 
         [FRBO(Field = "fdVatExemptionReasonDesignation")]                               //fd.VatExemptionReasonDesignation AS fdVatExemptionReasonDesignation,
         public string ArticleVatExemptionReasonDesignation { get; set; }
+
+        [FRBO(Field = "cfVatCode")]                                        
+        public string ArticleVatDesignation{ get; set; }
+
+        [FRBO(Field = "cvTaxType")]                              
+        public string ArticleVatCode { get; set; }
     }
 }

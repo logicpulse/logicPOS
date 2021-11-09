@@ -120,7 +120,7 @@
   <data name="app_error_application_unlicenced_function_disabled" xml:space="preserve">
     <value>{0}
 
-L'application est pas autorisé!</value>
+L'application non enregistrée!</value>
   </data>
   <data name="app_error_contact_support" xml:space="preserve">
     <value>Erreur dans l´application ! S´il vous plaît contacter le support technique.</value>
@@ -355,8 +355,8 @@ Ou sélectionnez "{2}" pour démarrer POS en mode "1024x768" par défaut.</value
     <value>Pour créer des documents financiers contenant des articles exonérés de la Vat , affectez Vat par défaut Exception Raison de BackOffice .</value>
   </data>
   <data name="dialog_message_cant_create_cc_document_with_default_entity" xml:space="preserve">
-    <value>Vous ne pouvez pas créer actuels documents compte d´entrée avec le client de l´utilisateur final!
-Sélectionnez un compte valide et essayez de nouveau.</value>
+    <value>Vous ne pouvez pas créer de documents de facturation avec le client utilisateur final!
+Sélectionnez un compte valide et réessayez.</value>
   </data>
   <data name="dialog_message_cashdrawer_money_out_error" xml:space="preserve">
     <value>Ne peut pas supprimer la valeur saisie [{0}] de la boîte, il est supérieur à la valeur [{1}]! 
@@ -1126,6 +1126,9 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
   <data name="global_ConfigurationPrintersTemplates" xml:space="preserve">
     <value>Modèles d´impression</value>
   </data>
+  <data name="global_ConfigurationPrintersBarCodeTemplates" xml:space="preserve">
+    <value>Modèles d'impression de codes à barres</value>
+  </data>
   <data name="global_ConfigurationPrintersType" xml:space="preserve">
     <value>Types de imprimeur</value>
   </data>
@@ -1349,7 +1352,7 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
     <value>Facture-Receipt</value>
   </data>
   <data name="global_documentfinance_type_title_fs" xml:space="preserve">
-    <value>Projet simplifié</value>
+    <value>Facture simplifiée</value>
   </data>
   <data name="global_documentfinance_type_title_ft" xml:space="preserve">
     <value>Facture</value>
@@ -1473,7 +1476,7 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
     <value>Sujet</value>
   </data>
   <data name="global_email_to" xml:space="preserve">
-    <value>To</value>
+    <value>À (onglet , pour plusieurs e-mails. Ex. 123@123.fr,test@test.fr)</value>
   </data>
   <data name="global_entity" xml:space="preserve">
     <value>Entité</value>
@@ -1685,7 +1688,7 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
     <value>Paramètres de partage réseau ou de port USB</value>
   </data>
   <data name="global_notes" xml:space="preserve">
-    <value>Billets</value>
+    <value>Notes</value>
   </data>
   <data name="global_open_drawer" xml:space="preserve">
     <value>Ouvrir tiroir</value>
@@ -2947,7 +2950,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
     <value>Chemin du Fichier :: Copie de Sauvegarde</value>
   </data>
   <data name="prefparam_path_saftpt" xml:space="preserve">
-    <value>Chemin du Fichier :: Saft-PT Export</value>
+    <value>Chemin du Fichier :: Saft Export</value>
   </data>
   <data name="prefparam_report_filename_logo" xml:space="preserve">
     <value>Rapport :: Logo</value>
@@ -3036,6 +3039,12 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
   <data name="prefparam_ticket_footer_line2" xml:space="preserve">
     <value>Ticket :: Texte Ligne 2</value>
   </data>
+  <data name="prefparam_ticket_print_ticket" xml:space="preserve">
+    <value>Ticket :: Ticket Imprimir</value>
+  </data>
+  <data name="prefparam_print_qrcode" xml:space="preserve">
+    <value>Documents :: Imprimer QRCode</value>
+  </data>
   <data name="prefparam_use_cached_images" xml:space="preserve">
     <value>Application :: Use Cached Images</value>
   </data>
@@ -3059,6 +3068,9 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
   </data>
   <data name="reporttype_label_type5" xml:space="preserve">
     <value>Tables Auxiliaires</value>
+  </data>
+  <data name="reporttype_label_type6" xml:space="preserve">
+    <value>Rapports de Stock</value>
   </data>
   <data name="report_account_balance" xml:space="preserve">
     <value>Solde du Compte</value>
@@ -3178,6 +3190,15 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
   <data name="report_list_stock_movements" xml:space="preserve">
     <value>Mouvements de Marchandises</value>
   </data>
+  <data name="report_list_stock_warehouse" xml:space="preserve">
+    <value>Stock en Entrepôt</value>
+  </data>
+  <data name="report_list_stock_article" xml:space="preserve">
+    <value>Stock par Article</value>
+  </data>
+  <data name="report_list_stock_supplier" xml:space="preserve">
+    <value>Stock par Fournisseur</value>
+  </data>
   <data name="report_list_user_commission" xml:space="preserve">
     <value>Commissions</value>
   </data>
@@ -3218,6 +3239,12 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
   </data>
   <data name="report_sales_per_date" xml:space="preserve">
     <value>Ventes par jour</value>
+  </data>
+  <data name="report_sales_per_vat" xml:space="preserve">
+    <value>Ventes par VAT</value>
+  </data>
+  <data name="report_sales_per_vat_by_article_class" xml:space="preserve">
+    <value>Ventes par VAT/Classe Articles</value>
   </data>
   <data name="report_sales_per_family" xml:space="preserve">
     <value>Ventes par famille</value>
@@ -3418,7 +3445,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
     <value>Changer D´Utilisateur</value>
   </data>
   <data name="window_title_dialog_clone_documents_confirmation" xml:space="preserve">
-    <value>Ce processus ne peut pas être inversé! Voulez-vous confirmer et copier les documents suivants?
+    <value>Voulez-vous confirmer et copier les documents suivants?
 
 {0}</value>
   </data>
@@ -3660,7 +3687,7 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
     <value>De modifier les profils utilisateur</value>
   </data>
   <data name="window_title_license" xml:space="preserve">
-    <value>LogicPulse : Système de Licences</value>
+    <value>LogicPulse : Système d'inscription gratuit</value>
   </data>
   <data name="window_title_reports" xml:space="preserve">
     <value>Rapports</value>
@@ -3784,5 +3811,101 @@ Veuillez entrer un autre numéro et réessayer.</value>
   </data>
   <data name="global_invalid_code" xml:space="preserve">
     <value>Le code saisi n'existe pas dans le système</value>
+  </data>
+  <data name="global_documentfinance_insert_new_article" xml:space="preserve">
+    <value>Le code d'article a bien été inséré</value>
+  </data>
+  <data name="global_documentfinance_insert_new_article_code_error" xml:space="preserve">
+    <value>Le code article inséré existe déjà ou code article / désignation vide</value>
+  </data>
+  <data name="article_type_without_price" xml:space="preserve">
+    <value>Type d'article sans prix</value>
+  </data>
+  <data name="global_new_article" xml:space="preserve">
+    <value>nouvel article</value>
+  </data>
+  <data name="global_printer_choose_printer" xml:space="preserve">
+    <value>Voulez-vous imprimer un document sur l'imprimante de reçus?</value>
+  </data>
+  <data name="global_email_separator" xml:space="preserve">
+    <value>E-mail (onglet , pour plusieurs e-mails. Ex. 123@123.fr,test@test.fr)</value>
+  </data>
+  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
+    <value>Articles associés</value>
+  </data>
+  <data name="global_composite_article" xml:space="preserve">
+    <value>Article composite</value>
+  </data>
+  <data name="dialog_message_composite_article_same" xml:space="preserve">
+    <value>L'article inséré est l'article original!</value>
+  </data>
+  <data name="dialog_message_composite_article_already" xml:space="preserve">
+    <value>L'article inséré est déjà associé!</value>
+  </data>
+  <data name="change_log" xml:space="preserve">
+    <value>Changelog</value>
+  </data>
+  <data name="global_minimum_stock" xml:space="preserve">
+    <value>Stock minimum</value>
+  </data>
+  <data name="prefparam_check_stocks" xml:space="preserve">
+    <value>Stocks :: Vérifier les stocks</value>
+  </data>
+  <data name="prefparam_check_stocks_message" xml:space="preserve">
+    <value>Stocks :: Afficher le message de stock</value>
+  </data>
+  <data name="window_check_stock_question" xml:space="preserve">
+    <value>La quantité saisie est égale ou inférieure à la quantité minimale de stock, Voulez-vous continuer?</value>
+  </data>
+  <data name="global_serialnumber" xml:space="preserve">
+    <value>Numéro de série</value>
+  </data>
+  <data name="global_unique_articles" xml:space="preserve">
+    <value>Articles uniques</value>
+  </data>
+  <data name="global_serial_number" xml:space="preserve">
+    <value>Numéro de série</value>
+  </data>
+  <data name="global_warehose_management" xml:space="preserve">
+    <value>Gestion d'Entrepôt</value>
+  </data>
+  <data name="global_warehouse" xml:space="preserve">
+    <value>Entrepôt</value>
+  </data>
+  <data name="window_title_article_location" xml:space="preserve">
+    <value>Modifier l'emplacement de l'article</value>
+  </data>
+  <data name="global_default_warehouse" xml:space="preserve">
+    <value>entrepôt par défaut</value>
+  </data>
+  <data name="global_article_history" xml:space="preserve">
+    <value>Histoire de l'article</value>
+  </data>
+  <data name="global_internal_moviment" xml:space="preserve">
+    <value>Mouvement interne</value>
+  </data>
+  <data name="global_locations" xml:space="preserve">
+    <value>Emplacements</value>
+  </data>
+  <data name="global_warning_acquire_module_stocks" xml:space="preserve">
+    <value>Pour utiliser la version complète de la gestion des stocks, veuillez acheter le module complémentaire</value>
+  </data>
+  <data name="global_warning_message_database_version" xml:space="preserve">
+    <value>La version de la base de données est supérieure à la version du logiciel, veuillez mettre à jour vers la version</value>
+  </data>
+  <data name="global_purchase_price" xml:space="preserve">
+    <value>Prix ​​d'achat</value>
+  </data>
+  <data name="report_sales_detail_per_group_vat" xml:space="preserve">
+    <value>Ventes par taux de taxe</value>
+  </data>
+  <data name="open_cash_draw_permissions" xml:space="preserve">
+    <value>L'utilisateur n'a pas la permission d'ouvrir la caisse enregistreuse</value>
+  </data>
+  <data name="global_software_key" xml:space="preserve">
+    <value>Clé logicielle</value>
+  </data>
+  <data name="prefparam_ticket_print_company_name" xml:space="preserve">
+    <value>Ticket :: Imprimer le nom commercial (slogan)</value>
   </data>
 </root>

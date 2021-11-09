@@ -32,6 +32,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         void buttonCurrentAccount_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
         void buttonCustomerCard_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
 
+        //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+        private decimal newValuePrice = 0.00m;
+
         protected override void OnResponse(ResponseType pResponse)
         {
             try
@@ -89,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         {
                             //Get Document Type to Emmit, based on Payment Mode
                             _processDocumentType = (_selectedPaymentMethod.Token == "CURRENT_ACCOUNT")
-                                ? SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput
+                                ? SettingsApp.XpoOidDocumentFinanceTypeInvoice
                                 : SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice;
 
                             ArticleBag processArticleBag;
@@ -107,8 +110,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             ResponseType responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = ResponseType.None;
                             //Get response for user confirmation to emmit Invoice-Payment before Extra Protections, we must have user respose before enter in "Extra Protections" above
                             if (
-                                    processArticleBag.TotalFinal > SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal ||
-                                    processArticleBag.GetClassTotals("S") > SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices
+                                    _processDocumentType != SettingsApp.XpoOidDocumentFinanceTypeInvoice &&
+                                    (processArticleBag.TotalFinal > SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal ||
+                                    processArticleBag.GetClassTotals("S") > SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices)
                                 )
                             {
                                 responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_sourceWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog, processArticleBag.TotalFinal, SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal, processArticleBag.GetClassTotals("S"), SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices);
@@ -235,7 +239,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if (pResponse == _responseTypeFullPayment)
                 {
                     //Update UI
-                    UpdateUIWhenAlternateFullToPartialPayment(false);
+                    UpdateUIWhenAlternateFullToPartialPayment(false, false);
 
                     //Clean _articleBagPartialPayment, this Enable Normal mode
                     _articleBagPartialPayment = null;
@@ -255,9 +259,48 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //Clear Customer Details
                     ClearCustomer();
-
+                    if (_selectedPaymentMethod != null) _selectedPaymentMethod = null;
+                    if (_selectedPaymentMethodButton != null) _selectedPaymentMethodButton.Sensitive = true;
+                    
                     //Prevent Parent Dialog Payments from Close 
                     this.Run();
+                }
+                else if(pResponse == _responseTypeCurrentAccount)
+                {
+                    _buttonCurrentAccount.Token = "CURRENT_ACCOUNT";
+                    _buttonCurrentAccount.CurrentButtonOid = SettingsApp.XpoOidConfigurationPaymentMethodCurrentAccount;
+                    //Prevent Default Customer Entity and Hidden Customer (Only with Name Filled) to Process CC Documents
+                    if (                      
+                        (_selectedCustomer != null &&(
+                            _selectedCustomer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity ||
+                            _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty ||
+                            _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty)
+                        )
+                    )
+                    {
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                        //Prevent Parent Dialog Payments from Close
+                        this.Run();
+                    }else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty || _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
+                    {
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                        //Prevent Parent Dialog Payments from Close
+                        this.Run();
+                    }
+                    else
+                    {
+                        _entryBoxSelectCustomerName.EntryValidation.Sensitive = false;
+                        _entryBoxCustomerAddress.EntryValidation.Sensitive = false;
+                        _entryBoxCustomerZipCode.EntryValidation.Sensitive = false;
+                        _entryBoxCustomerCity.EntryValidation.Sensitive = false;
+                        _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = false;
+                        _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = false;
+                        _entryBoxCustomerLocality.EntryValidation.Sensitive = false;
+                        buttonCurrentAccount_Clicked((TouchButtonBase)_buttonCurrentAccount, null);
+                        //Keep Running
+                        this.Run();
+                    }
+               
                 }
             }
             catch (Exception ex)
@@ -437,9 +480,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     ////Hide Partial Payment
                     //_buttonPartialPayment.HideAll();
-                    ////Update UI
-                    //UpdateUIWhenAlternateFullToPartialPayment(false);
-                    //Clean _articleBagPartialPayment, this Enable Normal mode
+                    //////Update UI
+                    //UpdateUIWhenAlternateFullToPartialPayment(false, false);
+                    ////Clean _articleBagPartialPayment, this Enable Normal mode
                     //_articleBagPartialPayment = null;
                 }
                 else
@@ -564,9 +607,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if (Utils.UseVatAutocomplete())
                 {
                     string cod_FiscalNumber = string.Format("{0}{1}", cfg_configurationpreferenceparameter.GetCountryCode2, _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
-                    var address = EuropeanVatInformation.Get(cod_FiscalNumber).Address.Split('\n');
-                    if (address != null)
+                    if(EuropeanVatInformation.Get(cod_FiscalNumber) != null)
                     {
+                        var address = EuropeanVatInformation.Get(cod_FiscalNumber).Address.Split('\n');
                         string zip = address[2].Substring(0, address[2].IndexOf(' '));
                         string city = address[2].Substring(address[2].IndexOf(' ') + 1);
                         _entryBoxCustomerAddress.EntryValidation.Text = address[0];
@@ -575,6 +618,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         _entryBoxCustomerCity.EntryValidation.Text = city;
                         _entryBoxSelectCustomerName.EntryValidation.Text = EuropeanVatInformation.Get(cod_FiscalNumber).Name;
                         _entryBoxCustomerDiscount.EntryValidation.Text = FrameworkUtils.DecimalToString(_discountGlobal);
+                        if (pFieldName != "CardNumber")
+                        {
+                            _entryBoxSelectCustomerCardNumber.Value = null;
+                            _entryBoxSelectCustomerCardNumber.EntryValidation.Text = string.Empty;
+                        }
+                        _entryBoxCustomerNotes.EntryValidation.Text = string.Empty;
+                    }
+                    else
+                    {
+                        _entryBoxCustomerAddress.EntryValidation.Text = string.Empty;
+                        _entryBoxCustomerLocality.EntryValidation.Text = string.Empty;
+                        _entryBoxCustomerZipCode.EntryValidation.Text = string.Empty;
+                        _entryBoxCustomerCity.EntryValidation.Text = string.Empty;
+                        _entryBoxSelectCustomerName.EntryValidation.Text = string.Empty;
+                        _entryBoxCustomerDiscount.EntryValidation.Text = string.Empty;
                         if (pFieldName != "CardNumber")
                         {
                             _entryBoxSelectCustomerCardNumber.Value = null;
@@ -711,7 +769,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (isFinalConsumerEntity)
                 {
                     //EntryBox
-                    _entryBoxCustomerDiscount.EntryValidation.Sensitive = false;
+					//Janela Pagamentos - Aplicação de desconto total ao utilizador consumidor-final
+                    _entryBoxCustomerDiscount.EntryValidation.Sensitive = true;
                     _entryBoxCustomerAddress.EntryValidation.Sensitive = false;
                     _entryBoxCustomerLocality.EntryValidation.Sensitive = false;
                     _entryBoxCustomerZipCode.EntryValidation.Sensitive = false;
@@ -920,9 +979,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void PartialPayment()
         {
+            //Button icon source path
+            string buttonIconChangePrice = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_cashdrawer_out.png");
+
             //Default ActionArea Buttons
             TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
+            
+            //Pagamentos parciais -Escolher valor a pagar por artigo[TK: 019295]
+            TouchButtonIconWithText touchButtonChangePrice = new TouchButtonIconWithText("touchButtonChangePrice", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, buttonIconChangePrice, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             buttonOk.Sensitive = false;
 
             //ActionArea Buttons
@@ -930,8 +995,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Add references to Send to Event CursorChanged
             ActionAreaButton actionAreaButtonOk = new ActionAreaButton(buttonOk, ResponseType.Ok);
             ActionAreaButton actionAreaButtonCancel = new ActionAreaButton(buttonCancel, ResponseType.Cancel);
+
+            //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+            ActionAreaButton actionAreaButtonChangePrice = new ActionAreaButton(touchButtonChangePrice, ResponseType.Apply);
+            actionAreaButtons.Add(actionAreaButtonChangePrice);
+            actionAreaButtonChangePrice.Button.Sensitive = false;
+            
             actionAreaButtons.Add(actionAreaButtonOk);
             actionAreaButtons.Add(actionAreaButtonCancel);
+            //if(_articleBagFullPayment.TotalQuantity <= 1)
+            //{
+            
 
             //Reset Vars in Next Call
             _totalPartialPaymentItems = 0;
@@ -963,8 +1037,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 else if (_dialogPartialPayment.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
                 {
                     actionAreaButtonOk.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0) ? true : false;
-
-                    //Get Indexes
+					
+					//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+                    actionAreaButtonChangePrice.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0) ? true : false;
+                    
+					//Get Indexes
                     int indexColumnCheckBox = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("CheckBox");
                     int indexColumnPrice = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("Price");
                     int indexColumnDiscount = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("Discount");
@@ -1016,7 +1093,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         ProcessPartialPayment(_articleBagPartialPayment);
                     }
                 }
-                //dialog.Run();
+                //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+                if (args.ResponseId == ResponseType.Apply)
+                {
+                    //Init Global ArticleBag
+                    if(_articleBagPartialPayment == null)
+                    {
+                        _articleBagPartialPayment = new ArticleBag();
+                    }
+
+                    dialog.GenericTreeView.ListStoreModel.Foreach(new TreeModelForeachFunc(TreeModelForEachTaskDivide));
+
+                    if(newValuePrice > 0)
+                    {
+                        ProcessPartialPayment(_articleBagPartialPayment, false);
+                    }
+                    //dialog.Run();
+                }
+                //[TK:019295] Ends
             }
         }
 
@@ -1055,7 +1149,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                       (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("TableOid")],
                       (PriceType)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceType")],
                       (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
-                      (Int16)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")],
+                      Convert.ToDecimal(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")]),
                       (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
                     );
                     //Token Work
@@ -1077,17 +1171,112 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             return false;
         }
 
+        //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+        private bool TreeModelForEachTaskDivide(TreeModel model, TreePath path, TreeIter iter)
+        {
+            int columnIndexIndex = 0;
+            int columnIndexCheckBox = 1;
+            ArticleBagKey articleBagKey;
+            ArticleBagProperties articleBagProps;
+            DataTable dataTable = _dialogPartialPayment.GenericTreeView.DataSource;
+            Int32 itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
+            bool itemChecked = Convert.ToBoolean(model.GetValue(iter, columnIndexCheckBox));
+
+            try
+            {
+                if (itemChecked)
+                {
+                    //Get Money pad title based on line selected (Desigantion & Price)
+                    decimal priceFinal = decimal.Round((Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
+                    string priceFinalText = FrameworkUtils.DecimalToStringCurrency(priceFinal);
+
+                    string moneyPadTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
+                        priceFinalText); 
+
+
+                    MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, moneyPadTitle, priceFinal, priceFinal);
+                    newValuePrice = result.Value;
+
+                    if (result.Response == ResponseType.Ok && newValuePrice > 0)
+                    {
+                        if (newValuePrice > decimal.Round((Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2))
+                        {
+                            Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, "Valor Errado", "Valor inserido superior ao total");
+                        }
+                        else
+                        {
+                            //dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")] = decimal.Round(newValuePrice,2);
+
+                            string token1 = string.Empty;
+                            string token2 = string.Empty;
+
+
+                            //Always get values from DataTable, this way we have Types :)
+                            Guid itemGuid = (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")];
+                            //_log.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
+
+                            //Calculate values with new price
+                            decimal vatRate = (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")];
+                            decimal PriceNet = (newValuePrice / (vatRate / 100 + 1));
+                            decimal totalTax = newValuePrice - PriceNet;
+                            decimal oldQuantity = Convert.ToDecimal(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")]);
+                            decimal quantity = (newValuePrice * oldQuantity) / (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")];
+
+                            //Prepare articleBag Key and Props
+                            articleBagKey = new ArticleBagKey(
+                              (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")],
+                              (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
+                              (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
+                              (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
+                              (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
+                            );
+                            articleBagProps = new ArticleBagProperties(
+                              (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PlaceOid")],
+                              (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("TableOid")],
+                              (PriceType)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceType")],
+                              (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
+                              quantity,
+                              (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
+                            );
+                            //Token Work
+                            if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")].Equals(System.DBNull.Value))
+                                token1 = (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
+                            if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")].Equals(System.DBNull.Value))
+                                token2 = (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
+                            if (token1 != string.Empty) articleBagProps.Token1 = token1;
+                            if (token2 != string.Empty) articleBagProps.Token2 = token2;
+
+                            //Send to Bag
+                            _articleBagPartialPayment.Add(articleBagKey, articleBagProps);
+
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+
+            return false;
+        }
+
         private void ProcessPartialPayment(ArticleBag pArticleBag)
+        {
+            ProcessPartialPayment(pArticleBag, false);
+        }
+
+        private void ProcessPartialPayment(ArticleBag pArticleBag, bool changePrice)
         {
             bool debug = false;
 
             //Update UI
-            UpdateUIWhenAlternateFullToPartialPayment(true);
+            UpdateUIWhenAlternateFullToPartialPayment(true, changePrice);
             //Debug
             if (debug) pArticleBag.ShowInLog();
         }
 
-        public void UpdateUIWhenAlternateFullToPartialPayment(bool pIsPartialPayment, bool pResetPaymentMethodButton = true)
+        public void UpdateUIWhenAlternateFullToPartialPayment(bool pIsPartialPayment, bool changePrice, bool pResetPaymentMethodButton = true)
         {
             //Update private member _partialPaymentEnabled
             _partialPaymentEnabled = pIsPartialPayment;

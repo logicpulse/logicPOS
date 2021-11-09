@@ -310,6 +310,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 {
                     switch (pMovementTypeTotal)
                     {
+						//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                         case MovementTypeTotal.All:
                             sqlWhereTypeTotal = @"((cpmPaymentMethodToken = 'MONEY' AND wmtMovementTypeToken <> 'CASHDRAWER_OPEN' AND wmtMovementTypeToken <> 'FINANCE_DOCUMENT')) OR (cpmPaymentMethodToken <> 'MONEY')";
                             break;

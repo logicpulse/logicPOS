@@ -438,11 +438,12 @@ namespace logicpos.financial.service.Objects
             fin_documentfinancemaster documentMaster = null;
             ServicesATSoapResult soapResult = new ServicesATSoapResult();
 
+            // Financial.service - Correções no envio de documentos AT [IN:014494]
             /* IN009083 - #TODO apply same validation for when sending documents to AT */
             try
             {
                 //Invoice Documents
-                if (SettingsApp.ServiceATSendDocuments)
+                if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocuments"]))
                 {
                     string sqlDocuments = GetDocumentsQuery(false);
                     //_log.Debug(String.Format("sqlDocuments: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocuments)));
@@ -468,7 +469,7 @@ namespace logicpos.financial.service.Objects
                 }
 
                 //WayBill Documents
-                if (SettingsApp.ServiceATSendDocumentsWayBill)
+                if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocumentsWayBill"]))
                 {
                     string sqlDocumentsWayBill = GetDocumentsQuery(true);
                     //_log.Debug(String.Format("sqlDocumentsWayBill: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocumentsWayBill)));
@@ -522,6 +523,19 @@ namespace logicpos.financial.service.Objects
             //}
 
             return soapResult;
+        }
+
+
+        /// <summary>
+        /// Check System Os
+        /// </summary>
+        public static bool IsLinux
+        {
+            get
+            {
+                int p = (int)Environment.OSVersion.Platform;
+                return (p == 4) || (p == 6) || (p == 128);
+            }
         }
     }
 }

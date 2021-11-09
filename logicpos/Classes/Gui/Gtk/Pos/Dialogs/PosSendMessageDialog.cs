@@ -30,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public PosSendMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon)
         //public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)            
-            : base(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", SettingsApp.RegexAlfaNumericExtended, true)
+            : base(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_send_message"), pWindowIcon, "Label", "Default", SettingsApp.RegexAlfaNumericEmail, true)
         {
             this.HeightRequest = 320;
 
