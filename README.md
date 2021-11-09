@@ -72,15 +72,15 @@ Open source Point of Sale Solution
 
 ## Install Development Environment
 
-- Install [.NET 4.5](https://www.microsoft.com/pt-pt/download/details.aspx?id=30653) _(If not already in system)_
+- Install [.NET 4.8](https://support.microsoft.com/pt-pt/topic/instalador-offline-do-microsoft-net-framework-4-8-para-windows-9d23f658-3b97-68ab-d013-aa3c3e7495e0) _(If not already in system)_
 
-- [Install Visual Studio 2017 Community](https://www.visualstudio.com)
+- [Install Visual Studio 2019 Community](https://www.visualstudio.com)
 
 - Install GTK Runtime [others\windowsruntime\gtk-sharp-2.12.22.msi](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/gtk-sharp-2.12.22.msi?raw=true)
 	
 	Read the [others\windowsruntime\README.txt](https://github.com/logicpulse/logicPOS/blob/master/others/windowsruntime/README.txt) to install `libnodoka.dll`
 
-- Open Visual Studio 2017
+- Open Visual Studio 2019
 
 	- Open Solution `logicpos.sln` or Folder Source Folder
 
@@ -91,5 +91,9 @@ Open source Point of Sale Solution
 	- Set **logicpos** as Startup Project
 	
 	- Set application settings on App.config
+	
+	- Nugget SkiaSharp.QrCode
 
 	- Run **logicpos** project
+	
+	
