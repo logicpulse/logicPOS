@@ -705,15 +705,52 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     isConferenceDocument = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument);
                     isWayBill = _pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill;
                 }
-
+				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
                 //Disable/Enable ButtonClearCustomer based on SourceDocument, if has SourceDocument Disable ClearButton
                 _posDocumentFinanceDialog.ButtonClearCustomer.Sensitive = (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value == null);
+
+                if(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid) 
+                    && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null 
+                    && (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice || _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoice))
+                {
+
+                    _posDocumentFinanceDialog.ButtonClearCustomer.Sensitive = true;
+                    _entryBoxCustomerDiscount.EntryValidation.Sensitive = true;
+                    _entryBoxCustomerDiscount.ButtonKeyBoard.Sensitive = true;
+
+                    //EntryBoxSelect
+                    _entryBoxSelectCustomerName.EntryValidation.Sensitive = true;
+                    _entryBoxSelectCustomerName.ButtonKeyBoard.Sensitive = true;
+                    _entryBoxSelectCustomerName.ButtonSelectValue.Sensitive = true;
+                    _entryBoxSelectCustomerCountry.EntryValidation.Sensitive = true;
+                    _entryBoxSelectCustomerCountry.ButtonSelectValue.Sensitive = true;
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Sensitive = true;
+                    _entryBoxSelectCustomerFiscalNumber.ButtonKeyBoard.Sensitive = true;
+                    _entryBoxSelectCustomerFiscalNumber.ButtonSelectValue.Sensitive = true;
+                    _entryBoxSelectCustomerCardNumber.EntryValidation.Sensitive = true;
+                    _entryBoxSelectCustomerCardNumber.ButtonKeyBoard.Sensitive = true;
+                    _entryBoxSelectCustomerCardNumber.ButtonSelectValue.Sensitive = true;
+
+                    //Disable Required Fields after Source Document, usefull to create NC for Hidden Customers
+                    //EntryBox
+                    _entryBoxCustomerAddress.EntryValidation.Required = true;
+                    //_entryBoxCustomerLocality.EntryValidation.Required = false;
+                    _entryBoxCustomerZipCode.EntryValidation.Required = true;
+                    _entryBoxCustomerCity.EntryValidation.Required = true;
+                    _entryBoxCustomerNotes.EntryValidation.Required = true;
+                    _entryBoxCustomerDiscount.EntryValidation.Required = true;
+                    //EntryBoxSelect
+                    _entryBoxSelectCustomerName.EntryValidation.Required = true;
+                    _entryBoxSelectCustomerCountry.EntryValidation.Required = true;
+                    _entryBoxSelectCustomerFiscalNumber.EntryValidation.Required = true;
+                    _entryBoxSelectCustomerCardNumber.EntryValidation.Required = false;
+                }
 
                 //If has SourceDocument and not a ConferenceDocument put all Edits and Validation to ReadOnly, and Put Validation Required Fields to False
                 //if ((_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && !isConferenceDocument) && (! isSingularEntity && isHiddenConsumerEntity) && ! isWayBill)
                 //Used || in TestCollapseRowArgs, Was &&
                 //if ((_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && !isConferenceDocument) || (!isSingularEntity && isHiddenConsumerEntity) && !isWayBill)
-                if ((_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && !isConferenceDocument) || (!isSingularEntity && isHiddenConsumerEntity) && !isWayBill)
+                else if ((_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null && !isConferenceDocument) || (!isSingularEntity && isHiddenConsumerEntity) && !isWayBill)
                 {
                     // Commented now we can Edit some values to prevent source documents like invoice with totals > 1000 and alter missing values like ZipCode
 

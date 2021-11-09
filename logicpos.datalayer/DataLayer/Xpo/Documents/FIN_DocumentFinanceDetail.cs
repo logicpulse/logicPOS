@@ -145,6 +145,24 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Token2", ref fToken2, value); }
         }
 
+        //Serial Number
+        string fSerialNumber;
+        [Size(255)]
+        public string SerialNumber
+        {
+            get { return fSerialNumber; }
+            set { SetPropertyValue<string>("SerialNumber", ref fSerialNumber, value); }
+        }
+
+        //Serial Number
+        string fWarehouse;
+        [Size(255)]
+        public string Warehouse
+        {
+            get { return fWarehouse; }
+            set { SetPropertyValue<string>("Warehouse", ref fWarehouse, value); }
+        }
+
         //DocumentFinanceMaster One <> Many DocumentFinanceDetail
         fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesDocumentFinanceDetail")]

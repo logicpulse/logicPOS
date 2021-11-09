@@ -78,6 +78,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Disable View Button
             _treeViewArticles.Navigator.ButtonView.Sensitive = false;
 
+            if(!GlobalFramework.AppUseBackOfficeMode) _treeViewArticles.Columns[18].Visible = false;
+
             PackStart(_treeViewArticles);
 
             //Events

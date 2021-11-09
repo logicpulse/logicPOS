@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
             get { return _validated; }
             set { 
                 _validated = value; 
-                Utils.ValidateUpdateColors(this, _label, _validated);
+                Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
             }
         }
         //Public Properties
@@ -127,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
         {
             //Default FieldValidateValue is the Entry.Text
             Validated = FrameworkUtils.Validate(pValue, _rule, _required);
-            Utils.ValidateUpdateColors(this, _label, _validated);
+            Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
         }
     }
 }

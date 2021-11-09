@@ -21,8 +21,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             set { _button = value; }
         }
 
-        public EntryBoxValidationButton(Window pSourceWindow, String pLabelText, KeyboardMode pKeyboardMode, string pRule, bool pRequired, string pIconFile = "")
-            : base(pSourceWindow, pLabelText)
+        public EntryBoxValidationButton(Window pSourceWindow, String pLabelText, KeyboardMode pKeyboardMode, string pRule, bool pRequired, string pIconFile = "", bool pBOSource = false)
+            : base(pSourceWindow, pLabelText, pBOSource)
         {
             //Settings
             string iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
@@ -41,7 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _hbox.PackStart(_entryValidation, true, true, 0);
             _hbox.PackStart(_button, false, false, 0);
             //Init Keyboard
-            InitKeyboard(_entryValidation);
+            if(!pBOSource) InitKeyboard(_entryValidation);
         }
     }
 }

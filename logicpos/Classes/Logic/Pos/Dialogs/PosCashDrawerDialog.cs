@@ -28,23 +28,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 else if (_selectedMovementType.Token == "CASHDRAWER_CLOSE")
                 {
+					//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                     cashLastMovementTypeAmount = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_OPEN");
                     //Keep Running            
-                    if (!IsCashDrawerAmountValid(cashLastMovementTypeAmount))
-                    {
-                        this.Run();
-                    }
-                    else
-                    {
-                        pResponse = Utils.ShowMessageTouch(
-                      this, DialogFlags.Modal, new Size(500, 350), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_print"),
-                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation"));
-
-                        if (pResponse == ResponseType.Yes)
-                        {
-                            FrameworkCalls.PrintWorkSessionMovement(this, GlobalFramework.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodTerminal);
-                        }
-                    }
+                    //if (!IsCashDrawerAmountValid(cashLastMovementTypeAmount))
+                    //{
+                    //    this.Run();
+                    //}
+                    //else
+                    //{
+                      
+                    //}
                 }
                 else if (_selectedMovementType.Token == "CASHDRAWER_OUT")
                 {
@@ -148,9 +142,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_selectedMovementType.Token == "CASHDRAWER_OPEN")
             {
                 _entryBoxMovementAmountMoney.EntryValidation.Text = FrameworkUtils.DecimalToString(_totalAmountInCashDrawer);
-                _entryBoxMovementAmountMoney.EntryValidation.Sensitive = false;
+                _entryBoxMovementAmountMoney.EntryValidation.Sensitive = true;
                 //Required to disable keyboard button
-                _entryBoxMovementAmountMoney.ButtonKeyBoard.Sensitive = false;
+                _entryBoxMovementAmountMoney.ButtonKeyBoard.Sensitive = true;
                 _entryBoxMovementAmountMoney.EntryValidation.Required = false;
                 _entryBoxMovementAmountMoney.EntryValidation.Rule = null;
             }

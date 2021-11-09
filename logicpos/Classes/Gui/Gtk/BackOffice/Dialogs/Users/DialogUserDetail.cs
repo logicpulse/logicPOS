@@ -151,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Email
                 Entry entryEmail = new Entry();
-                BOWidgetBox boxEmail = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email"), entryEmail);
+                BOWidgetBox boxEmail = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_separator"), entryEmail);
                 vboxTab2.PackStart(boxEmail, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxEmail, _dataSourceRow, "Email", SettingsApp.RegexEmail, false));
 

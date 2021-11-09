@@ -7,6 +7,7 @@ using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -250,6 +251,92 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             //Reset to Left
             _thermalPrinterGeneric.SetAlignLeft();
         }
+		//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+        //Print QRCode
+        protected void PrintQRCode(string QRCode)
+        {
+            //Align Center
+            _thermalPrinterGeneric.SetAlignCenter();
+
+            //Convert ASCII/Decimal
+            string ESC = Convert.ToString((char)27);
+            string GS = Convert.ToString((char)29);
+            string center = ESC + "a" + (char)1; //align center
+            //string left = ESC + "a" + (char)0; //align left
+            string bold_on = ESC + "E" + (char)1; //turn on bold mode
+            string bold_off = ESC + "E" + (char)0; //turn off bold mode
+            string cut = ESC + "d" + (char)1 + GS + "V" + (char)66; //add 1 extra line before partial cut
+            string initp = ESC + (char)64; //initialize printer
+            string buffer = ""; //store all the data that want to be printed
+            string QrData = QRCode; //data to be print in QR code
+            Encoding m_encoding = Encoding.GetEncoding("UTF-8"); //set encoding for QRCode
+            int store_len = (QrData).Length + 3;
+            byte store_pL = (byte)(store_len % 256);
+            byte store_pH = (byte)(store_len / 256);
+            buffer += initp; //initialize printer
+            buffer += center;
+            buffer += m_encoding.GetString(new byte[] { 29, 40, 107, 4, 0, 49, 65, 50, 0 });
+            buffer += m_encoding.GetString(new byte[] { 29, 40, 107, 3, 0, 49, 67, 8 });
+            buffer += m_encoding.GetString(new byte[] { 29, 40, 107, 3, 0, 49, 69, 48 });
+            buffer += m_encoding.GetString(new byte[] { 29, 40, 107, store_pL, store_pH, 49, 80, 48 });
+            buffer += QrData;
+            buffer += m_encoding.GetString(new byte[] { 29, 40, 107, 3, 0, 49, 81, 48 });
+            //Cut Receipt
+            //buffer += cut + initp;
+
+            //Send to Printer
+
+            _thermalPrinterGeneric.WriteLine(buffer);
+
+            //Line Feed
+            _thermalPrinterGeneric.LineFeed();
+
+            //Reset to Left
+            //_thermalPrinterGeneric.SetAlignLeft();
+        }
+
+        protected void TestBarcode(string QrCode)
+        {
+            //ThermalPrinter.BarcodeType myType = ThermalPrinter.BarcodeType.ean13;
+            string myData = QrCode;
+            //_thermalPrinterGeneric.Reset();
+
+            //printer.SetBarcodeLeftSpace(10);
+
+            _thermalPrinterGeneric.SelectFontHRIBarcode(0);
+            _thermalPrinterGeneric.SelectPrintingPositionHRIBarcode(2);
+
+            _thermalPrinterGeneric.SetAlignCenter();
+
+            _thermalPrinterGeneric.SetBarcodeWidth(4);
+            _thermalPrinterGeneric.PrintBarcode(logicpos.printer.generic.ThermalPrinter.BarcodeType.qrcode, myData);
+            _thermalPrinterGeneric.SetBarcodeWidth(2);
+            _thermalPrinterGeneric.LineFeed();
+            _thermalPrinterGeneric.LineFeed();
+            _thermalPrinterGeneric.LineFeed();
+            _thermalPrinterGeneric.LineFeed();
+            //_thermalPrinterGeneric.Cut(false);
+        }
+
+        protected void PrintQRCodeImage(System.Drawing.Bitmap bitmap)
+        {
+            //Align Center
+            _thermalPrinterGeneric.SetAlignCenter();
+
+            //Convert ASCII/Decimal
+            string ESC = Convert.ToString((char)27);
+            string GS = Convert.ToString((char)29);
+            string center = ESC + "a" + (char)1; //align center
+
+            _thermalPrinterGeneric.PrintImage(@"temp/qrcode.Bmp", true);
+       
+            //Line Feed
+            _thermalPrinterGeneric.LineFeed();
+
+            //Reset to Left
+            _thermalPrinterGeneric.SetAlignLeft();
+
+        }
 
         protected void PrintCertificationText()
         {
@@ -340,6 +427,134 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
             //Reset to Left
             _thermalPrinterGeneric.SetAlignLeft();
+        }
+
+        //UTILS
+        public string GetQrCode(System.Drawing.Bitmap QRCode)
+        {
+            //int widthBMP = 113;
+            //int heightBMP = 113;
+            //var brush = new System.Drawing.SolidBrush(System.Drawing.Color.White);
+
+            //var bmp = new System.Drawing.Bitmap((int)widthBMP, (int)heightBMP);
+            //var graph = System.Drawing.Graphics.FromImage(bmp);
+
+            //float scale = Math.Min(widthBMP / QRCode.Width, heightBMP / QRCode.Height);
+
+            //var scaleWidth = (int)(QRCode.Width * scale);
+            //var scaleHeight = (int)(QRCode.Height * scale);
+
+            //graph.FillRectangle(brush, new System.Drawing.RectangleF(0, 0, widthBMP, heightBMP));
+            //graph.DrawImage(QRCode, ((int)widthBMP - scaleWidth) / 2, ((int)heightBMP - scaleHeight) / 2, scaleWidth, scaleHeight);
+
+            BitmapData data = GetBitmapData(QRCode);
+            System.Collections.BitArray dots = data.Dots;
+            byte[] width = BitConverter.GetBytes(data.Width);
+
+            int offset = 0;
+            System.IO.MemoryStream stream = new System.IO.MemoryStream();
+            System.IO.BinaryWriter bw = new System.IO.BinaryWriter(stream);
+
+            bw.Write((char)0x1B);
+            bw.Write('@');
+
+            bw.Write((char)0x1B);
+            bw.Write('3');
+            bw.Write((byte)24);
+
+            while (offset < data.Height)
+            {
+                bw.Write((char)0x1B);
+                bw.Write('*');         // bit-image mode
+                bw.Write((byte)33);    // 24-dot double-density
+                bw.Write(width[0]);  // width low byte
+                bw.Write(width[1]);  // width high byte
+
+                for (int x = 0; x < data.Width; ++x)
+                {
+                    for (int k = 0; k < 3; ++k)
+                    {
+                        byte slice = 0;
+                        for (int b = 0; b < 8; ++b)
+                        {
+                            int y = (((offset / 8) + k) * 8) + b;
+                            // Calculate the location of the pixel we want in the bit array.
+                            // It'll be at (y * width) + x.
+                            int i = (y * data.Width) + x;
+
+                            // If the image is shorter than 24 dots, pad with zero.
+                            bool v = false;
+                            if (i < dots.Length)
+                            {
+                                v = dots[i];
+                            }
+                            slice |= (byte)((v ? 1 : 0) << (7 - b));
+                        }
+
+                        bw.Write(slice);
+                    }
+                }
+                offset += 24;
+                bw.Write((char)0x0A);
+            }
+            // Restore the line spacing to the default of 30 dots.
+            bw.Write((char)0x1B);
+            bw.Write('3');
+            bw.Write((byte)30);
+
+            bw.Flush();
+            byte[] bytes = stream.ToArray();
+            return Encoding.Default.GetString(bytes);
+        }
+
+        public BitmapData GetBitmapData(System.Drawing.Bitmap QRCode)
+        {
+            using (var bitmap = QRCode)
+            {
+                var threshold = 127;
+                var index = 0;
+                var dimensions = bitmap.Width * bitmap.Height;
+                var dots = new System.Collections.BitArray(dimensions);
+
+                for (var y = 0; y < bitmap.Height; y++)
+                {
+                    for (var x = 0; x < bitmap.Width; x++)
+                    {
+                        var color = bitmap.GetPixel(x, y);
+                        var luminance = (int)(color.R * 0.3 + color.G * 0.59 + color.B * 0.11);
+                        dots[index] = (luminance < threshold);
+                        index++;
+                    }
+                }
+
+                return new BitmapData()
+                {
+                    Dots = dots,
+                    Height = bitmap.Height,
+                    Width = bitmap.Width
+                };
+            }
+        }
+
+        public class BitmapData
+        {
+            public System.Collections.BitArray Dots
+            {
+                get;
+                set;
+            }
+
+            public int Height
+            {
+                get;
+                set;
+            }
+
+            public int Width
+            {
+                get;
+                set;
+            }
         }
     }
 }

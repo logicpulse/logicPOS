@@ -228,13 +228,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         payed = "0";
                     }
                     else { payed = "False"; }
-                    string criteriaOperatorString = string.Format("{0} DocumentType = '{1}' AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, SettingsApp.XpoOidDocumentFinanceTypeInvoice, SettingsApp.XpoOidDocumentFinanceTypeCreditNote, payed);
+                    string criteriaOperatorString = string.Format("{0} (DocumentType = '{1}' OR DocumentType = '{2}' OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, SettingsApp.XpoOidDocumentFinanceTypeInvoice, SettingsApp.XpoOidDocumentFinanceTypeCreditNote, payed, SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill);
                     criteriaOperator = CriteriaOperator.Parse(criteriaOperatorString);
+
+                    //string criteriaOperatorString2 = string.Format("{0} (DocumentType = '{1}' OR (DocumentType = '{2}' AND (DocFinMaster.DocumentParent NOT IN (SELECT DocFinMaster2.Oid FROM fin_documentfinancemaster DocFinMaster2 WHERE DocFinMaster2.Oid = DocFinMaster.DocumentParent AND Payed = 'False') OR DocFinMaster.DocumentParent IS NULL)) OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, SettingsApp.XpoOidDocumentFinanceTypeInvoice, SettingsApp.XpoOidDocumentFinanceTypeCreditNote, payed, SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill);
+
+                    //string criteriaOperatorString2 = string.Format("{0} (DocumentType = '{1}' OR DocumentType = '{4}') AND DocumentStatusStatus <> 'A' AND Payed = '{3}'", criteriaOperatorShared, SettingsApp.XpoOidDocumentFinanceTypeInvoice, SettingsApp.XpoOidDocumentFinanceTypeCreditNote, payed, SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill);
+
 
                     /* IN009067 - This query will retrieve all documents pendent of payment, partial or total */
                     string sql = @"
 SELECT
-    DocFinMaster.Oid
+    DocFinMaster.Oid, DocFinMaster.EntityOid, DocFinMaster.DocumentType, DocFinMaster.DocumentParent
 FROM
     fin_documentfinancemaster DocFinMaster
 LEFT JOIN
@@ -271,15 +276,43 @@ WHERE
                     //documentDebit = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(sql));
                     /* IN009067 - creates a list of documents not payed, total or partial either */
 
-     
 
                     var sqlResult = GlobalFramework.SessionXpo.ExecuteQuery(string.Format(sql, criteriaOperatorString));
+                    var query = string.Format(sql, criteriaOperatorString);
                     List<Guid> resultList = new List<Guid>();
                     string inClause = string.Empty;
+
+                    //Filtrar documentos Notas de crédito
                     foreach (var item in sqlResult.ResultSet[0].Rows)
                     {
-                        resultList.Add(new Guid(Convert.ToString(item.Values[0])));
-                        inClause += "'" + (Convert.ToString(item.Values[0])) + "', ";
+                        //Mostrar notas crédito de documentos que já tenham sido liquidados
+                        var docMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), Guid.Parse(Convert.ToString(item.Values[0])));
+                        string docParent = "";
+                        bool showCreditNote = false;
+                        if (item.Values[3] != null)
+                        {
+                            docParent = item.Values[3].ToString();
+                            if (!string.IsNullOrEmpty(docParent))
+                            {
+                                var getDocParentXpoObject = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), Guid.Parse(docParent));
+                                if (getDocParentXpoObject != null && getDocParentXpoObject.Payed == true && docMaster.Payed == false)
+                                {
+                                    showCreditNote = true;
+                                }
+                            }
+                        }
+
+                        //Mostrar notas de crédito apenas para para clientes com saldo positivo / Mostrar notas crédito de documentos que já tenham sido liquidados
+                        var sqlbalanceTotal = string.Format("SELECT Balance FROM view_documentfinancecustomerbalancesummary WHERE (EntityOid = '{0}');", Convert.ToString(item.Values[1]));
+                        var getCustomerBalance = GlobalFramework.SessionXpo.ExecuteScalar(sqlbalanceTotal);
+                        if((getCustomerBalance != null && (Convert.ToDecimal(getCustomerBalance) > 0) && Guid.Parse(Convert.ToString(item.Values[2])) == SettingsApp.XpoOidDocumentFinanceTypeCreditNote) ||
+                            (Guid.Parse(Convert.ToString(item.Values[2])) != SettingsApp.XpoOidDocumentFinanceTypeCreditNote) ||
+                            showCreditNote
+                            )
+                        {
+                            resultList.Add(new Guid(Convert.ToString(item.Values[0])));
+                            inClause += "'" + (Convert.ToString(item.Values[0])) + "', ";
+                        }
                     }
                     string countQuery = string.Empty;            
 
@@ -318,7 +351,7 @@ WHERE
 
 
 
-                    countResult = GlobalFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse(string.Format("{0} {1}", criteriaOperatorString, countQuery)));
+                    //countResult = GlobalFramework.SessionXpo.Evaluate(typeof(fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse(string.Format("{0} {1}", criteriaOperatorString, countQuery)));
 
                     countResult = resultList.Count.ToString();
 
@@ -586,7 +619,7 @@ WHERE
                         _actionAreaButtonSendEmailDocument.Button.Sensitive = validMarkedDocumentTypesForSendEmailSensitive;
                         if (_actionAreaButtonPayCurrentAcountsDocument != null && _dialogFinanceMasterCallerButton.Token == "CC") _actionAreaButtonPayCurrentAcountsDocument.Button.Sensitive = hasOpenWorkStation;
                         //Must Greater than zero to Pay Something or Zero to Issue Zero Payment Document and Set Payed to Documents
-                        if (_actionAreaButtonPayInvoice != null && _dialogFinanceMasterCallerButton.Token == "FT_UNPAYED") _actionAreaButtonPayInvoice.Button.Sensitive = (hasOpenWorkStation && _totalDialogFinanceMasterDocuments >= 0);
+                        if (_actionAreaButtonPayInvoice != null && _dialogFinanceMasterCallerButton.Token == "FT_UNPAYED" && documentFinanceMaster.DocumentStatusStatus != "F") _actionAreaButtonPayInvoice.Button.Sensitive = (hasOpenWorkStation && _totalDialogFinanceMasterDocuments >= 0);
                         //Cancel Documents must me in ALL, CC, or FT_UNPAYED Mode 
                         if (_actionAreaButtonCancelDocument != null && (
                                 _dialogFinanceMasterCallerButton.Token == "ALL" ||
@@ -650,11 +683,21 @@ WHERE
             _dialogFinanceDocumentsResponse = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>)o;
 
             fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)_dialogFinanceDocumentsResponse.GenericTreeView.DataSourceRow;
-
+               
             if (args.ResponseId != ResponseType.Close)
             {
+                //Assign Choosed Printer based on user ResponseType
+                if (documentFinanceMaster.SourceOrderMain != null)
+                {
+                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? GlobalFramework.LoggedTerminal.ThermalPrinter : _printerGeneric;
+                }
+                else
+                {
+                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? GlobalFramework.LoggedTerminal.Printer : _printerGeneric;
+                }
+
                 if (
-                        (args.ResponseId == _responseTypePrint && !Utils.ShowMessageTouchRequiredValidPrinter(_dialogFinanceDocumentsResponse))
+                        (args.ResponseId == _responseTypePrint && !Utils.ShowMessageTouchRequiredValidPrinter(_dialogFinanceDocumentsResponse, _printerChoosed))
                         || args.ResponseId == _responseTypePrintAs
                     )
                 {
@@ -887,7 +930,7 @@ WHERE
 
                     List<string> result = new List<string>();
 
-                    PosReportsQueryDialog dialog = new PosReportsQueryDialog(_dialogFinanceDocumentsResponse, DialogFlags.Modal, _filterChoice, "fin_documentfinancemaster");
+                    PosReportsQueryDialog dialog = new PosReportsQueryDialog(_dialogFinanceDocumentsResponse, DialogFlags.Modal, _filterChoice, "fin_documentfinancemaster", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
                     DialogResponseType response = (DialogResponseType)dialog.Run();
 
                     //IF button Clean Filter Clicked
@@ -931,7 +974,7 @@ WHERE
                         string addFilter = dialog.FilterValue;
 
                         criteriaOperatorFilter = GroupOperator.And(CriteriaOperatorBase, CriteriaOperator.Parse(addFilter));
-
+                        //criteriaOperatorFilter = CriteriaOperator.Parse(addFilter);
                         _dialogFinanceDocumentsResponse.GenericTreeView.DataSource.Criteria = criteriaOperatorFilter;
                         _dialogFinanceDocumentsResponse.GenericTreeView.DataSource.TopReturnedObjects = SettingsApp.PaginationRowsPerPage * _dialogFinanceDocumentsResponse.GenericTreeView.CurrentPageNumber;
                         _dialogFinanceDocumentsResponse.GenericTreeView.Refresh();
@@ -1443,6 +1486,18 @@ WHERE
                         {
                             articleBagProps.Notes = articleDetail.Notes;
                         }
+
+                        // SerialNumber
+                        if (!string.IsNullOrEmpty(articleDetail.SerialNumber))
+                        {
+                            articleBagProps.SerialNumber = articleDetail.SerialNumber;
+                        }
+
+                        // Warehouse
+                        if (!string.IsNullOrEmpty(articleDetail.Warehouse))
+                        {
+                            articleBagProps.Warehouse = articleDetail.Warehouse;
+                        }
                         articleBag.Add(articleBagKey, articleBagProps);
                     }
 
@@ -1514,7 +1569,7 @@ WHERE
                         string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
 
                         //Call Request Motive Dialog
-                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
+                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, SettingsApp.RegexAlfaNumericExtendedForMotive, true);
 
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
@@ -1527,27 +1582,26 @@ WHERE
                             /* IN009083 - uncommented */
                             //ATWS: Check if Sent Resend Document to AT WebServices                                                 //WIP: CancellWayBills : 
                             bool sendDocumentToAT = false;                                                                          //WIP: CancellWayBills : 
-                            if (                                                                                                    //WIP: CancellWayBills : 
-                                SettingsApp.ServiceATSendDocumentsWayBill                                                           //WIP: CancellWayBills : 
-                                && SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal     //WIP: CancellWayBills : 
+                            //Financial.service - Correções no envio de documentos AT [IN:014494]
+							if ( SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal     //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.WsAtDocument                                                         //WIP: CancellWayBills : 
                                 && documentMaster.DocumentType.WayBill                                                              //WIP: CancellWayBills : 
-                                && documentMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill           //WIP: CancellWayBills : 
+                                && documentMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill && documentMaster.ShipToCountry != null && documentMaster.ShipToCountry == "PT"       //Envio de Documentos transporte AT (Estrangeiro) [IN:016502]               //WIP: CancellWayBills : 
                                 )                                                                                                   //WIP: CancellWayBills : 
                             {                                                                                                       //WIP: CancellWayBills : 
                                 sendDocumentToAT = true;                                                                            //WIP: CancellWayBills : 
                             }                                                                                                       //WIP: CancellWayBills : 
 
                             /* IN009083 - case document is not "DocumentType.WayBill", we will send it to AT if able to */
-                            if (
-                                SettingsApp.ServiceATSendDocuments
-                                && SettingsApp.XpoOidConfigurationCountryPortugal.Equals(SettingsApp.ConfigurationSystemCountry.Oid)
-                                && documentMaster.DocumentType.WsAtDocument
-                                && !documentMaster.DocumentType.WayBill
-                                )
-                            {
-                                sendDocumentToAT = true;
-                            }/* IN009083 - end */
+                            //if (
+                            //    SettingsApp.ServiceATSendDocuments
+                            //    && SettingsApp.XpoOidConfigurationCountryPortugal.Equals(SettingsApp.ConfigurationSystemCountry.Oid)
+                            //    && documentMaster.DocumentType.WsAtDocument
+                            //    && !documentMaster.DocumentType.WayBill
+                            //    )
+                            //{
+                            //    sendDocumentToAT = true;
+                            //}/* IN009083 - end */
 
                             /* 
                                 See "logicpos.financial.service.Objects.Utils"
@@ -1567,10 +1621,10 @@ WHERE
                                     ) 
                             */
                             //if ( SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal)
-                            {
-                                /* IN009032 and then removed by IN009083 */
-                                //documentMaster.ATResendDocument = true;
-                            }
+                            //{
+                            //    /* IN009032 and then removed by IN009083 */
+                            //    //documentMaster.ATResendDocument = true;
+                            //}
 
                             /* IN009083 */
                             bool isCanceledByUser = false;
@@ -1597,13 +1651,26 @@ WHERE
                                 _log.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: AT Document Cancellation Process: real time process cancelled by user [" + documentMaster.DocumentNumber + "]");
                                 ignoredDocuments.Add(string.Format("{0} [{1}]", documentMaster.DocumentNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_in_at_ws_call_status")));
                             }
-
-                            /* Restore stock items */
-                            if (!ProcessArticleStockMode.None.Equals(documentMaster.DocumentType.StockMode))
+                            try
                             {
-                                //Process Stock : Restore Stock after Cancelling Documents
-                                _log.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: Process Stock : restoring stock after cancelling [" + documentMaster.DocumentNumber + "] document");
-                                ProcessArticleStock.Add(documentMaster, true);
+                                /* Restore stock items */
+                                if (!ProcessArticleStockMode.None.Equals(documentMaster.DocumentType.StockMode))
+                                {
+                                    //Process Stock : Restore Stock after Cancelling Documents
+                                    _log.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: Process Stock : restoring stock after cancelling [" + documentMaster.DocumentNumber + "] document");
+                                    if (GlobalFramework.LicenceModuleStocks && GlobalFramework.StockManagementModule != null)
+                                    {
+                                        GlobalFramework.StockManagementModule.Add(documentMaster, true);
+                                    }
+                                    else
+                                    {
+                                        ProcessArticleStock.Add(documentMaster, true);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _log.Error("Error processing stocks :: " + ex.Message, ex);
                             }
 
                             documentMaster.Save();
@@ -1696,8 +1763,30 @@ WHERE
             DateTime currentDateDay = FrameworkUtils.CurrentDateTimeAtomicMidnight();
             DateTime documentDateDay = FrameworkUtils.DateTimeToMidnightDate(pDocumentFinanceMaster.Date);
 
+            //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
+            //Pode cancelar documentos de origem do tipo fatura ou fatura simplificada
+            if ((SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid) && pDocumentFinanceMaster.DocumentStatusStatus != "A" && currentDateDay == documentDateDay)){
+
+                isCancellable = true;
+                if ((pDocumentFinanceMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice && pDocumentFinanceMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoice))
+                {/* IN009083 - if invoice products are already in transport */
+                    _log.Debug("Moçambique : Document Type not Invoice or Simplified Invoice");
+                    return false;
+                }
+                if (!pDocumentFinanceMaster.DocumentType.WayBill && IsAlreadyReceivedByAT(pDocumentFinanceMaster.Oid))
+                {/* IN009083 - if fiscal document was already received by AT */
+                    _log.Debug("CanCancelFinanceMasterDocument() :: document was already received successfully by AT: " + pDocumentFinanceMaster.DocumentNumber);
+                    return false;
+                }
+                else if (pDocumentFinanceMaster.DocumentType.WayBill && pDocumentFinanceMaster.ShipFromDeliveryDate <= DateTime.Now)
+                {/* IN009083 - if invoice products are already in transport */
+                    _log.Debug("CanCancelFinanceMasterDocument() :: products are already in transport: " + pDocumentFinanceMaster.DocumentNumber);
+                    return false;
+                }
+            }
+
             /* IN009083 - document is not cancelled nor invoiced and Date of document is Today */
-            if (pDocumentFinanceMaster.DocumentStatusStatus != "A" && pDocumentFinanceMaster.DocumentStatusStatus != "F" && currentDateDay == documentDateDay)
+            else if (pDocumentFinanceMaster.DocumentStatusStatus != "A" && pDocumentFinanceMaster.DocumentStatusStatus != "F" && currentDateDay == documentDateDay)
             {
                 isCancellable = true;
 
@@ -2105,12 +2194,12 @@ WHERE
             if (args.ResponseId != ResponseType.Close)
             {
                 if (
-                        (args.ResponseId == _responseTypePrint && !Utils.ShowMessageTouchRequiredValidPrinter(_dialogFinanceDocumentsResponse))
+                        (args.ResponseId == _responseTypePrint && !Utils.ShowMessageTouchRequiredValidPrinter(_dialogFinanceDocumentsResponse, _printerChoosed))
                         || args.ResponseId == _responseTypePrintAs
                     )
                 {
                     //Assign Choosed Printer based on user ResponseType
-                    _printerChoosed = (args.ResponseId == _responseTypePrint) ? GlobalFramework.LoggedTerminal.Printer : _printerGeneric;
+                    _printerChoosed = (args.ResponseId == _responseTypePrint && GlobalFramework.LoggedTerminal.Printer != null) ? GlobalFramework.LoggedTerminal.Printer : GlobalFramework.LoggedTerminal.ThermalPrinter;
 
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
                     if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)
@@ -2206,7 +2295,7 @@ WHERE
                         //Reset current page to 1 ( Pagination go to defined initialy )
                         dialog.GenericTreeView.CurrentPageNumber = 1;
 
-                        PosReportsQueryDialog dialogPayedDocuments = new PosReportsQueryDialog(dialog, DialogFlags.Modal, ReportsQueryDialogMode.FILTER_PAYMENT_DOCUMENTS, typeof(fin_documentfinancepayment).Name);
+                        PosReportsQueryDialog dialogPayedDocuments = new PosReportsQueryDialog(dialog, DialogFlags.Modal, ReportsQueryDialogMode.FILTER_PAYMENT_DOCUMENTS, typeof(fin_documentfinancepayment).Name, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
                         DialogResponseType response = (DialogResponseType)dialogPayedDocuments.Run();
                         List<string> result = new List<string>();
 
@@ -2396,7 +2485,7 @@ WHERE
                     {
                         string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
 
-                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
+                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SettingsApp.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_log.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
@@ -2533,7 +2622,15 @@ WHERE
 
             if (response != null)
             {
-                ProcessArticleStock.Add(ProcessArticleStockMode.In, response);
+                if (response.ArticleCollectionSimple.Count > 0)
+                {
+                    foreach (var item in response.ArticleCollectionSimple)
+                    {
+                        response.Quantity = item.Value;
+                        response.Article = item.Key;
+                        ProcessArticleStock.Add(ProcessArticleStockMode.In, response);
+                    }
+                }
             }
         }
 

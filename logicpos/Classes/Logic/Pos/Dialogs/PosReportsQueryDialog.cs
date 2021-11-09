@@ -139,7 +139,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 try
                 {
-                    countQuerySql = string.Format("SELECT COUNT(*) AS Count FROM {0} WHERE {1};", _databaseSourceObject, _filterValue);
+                    if (_databaseSourceObject == "fin_articleserialnumber" || _databaseSourceObject == "fin_articlewarehouse")
+                    {
+                        _filterValue = _filterValue.Replace("Date", "CreatedAt");
+                    }
+                    
+                     countQuerySql = string.Format("SELECT COUNT(*) AS Count FROM {0} WHERE {1};", _databaseSourceObject, _filterValue);
+
                     DataTable dataTable = FrameworkUtils.GetDataTableFromQuery(countQuerySql);
                     count = Convert.ToInt32(Convert.ToDecimal(dataTable.Rows[0].ItemArray[0]));
                 }
@@ -148,6 +154,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _log.Error(ex.Message, ex);
                     _log.Error(string.Format("Error in countQuerySql: [{0}]", countQuerySql));
                 }
+                //if(_databaseSourceObject == "fin_articlewarehouse" && _filterValue.Contains("SerialNumber"))
+                //{
+                //    this.Destroy();
+                //}
 
                 if (count <= 0)
                 {
@@ -240,38 +250,56 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 filterSelectionBoxsHumanReadable = filterSelectionBoxsHumanReadable.Substring(0, filterSelectionBoxsHumanReadable.LastIndexOf(", "));
             }
 
-			/* IN009010 */
+            /* IN009010 */
             //if (_reportsQueryDialogMode.Equals(ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY))
-            if("UNDEFINED_DATE_FIELD".Equals(filterDateField))//TO DO
+            else if ("UNDEFINED_DATE_FIELD".Equals(filterDateField))//TO DO
             {
                 filterDateField = "CustomerSinceDate";
                 _dateStart = new DateTime(1900, 1, 1, 0, 0, 0);// "1900-01-01 00:00:00"
                 _dateEnd = DateTime.Now;
             }
 
-            // Combine final where Filter
-            string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, _dateStart.ToString(SettingsApp.DateTimeFormat), _dateEnd.ToString(SettingsApp.DateTimeFormat));
-            string filter = (!string.IsNullOrEmpty(filterSelectionBoxs))
-                ? string.Format("({0}) AND ({1})", datesFilter, filterSelectionBoxs)
-                : string.Format("({0})", datesFilter);
-            // HumanReadable
-            /* IN006004 */
-            string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart.ToString(SettingsApp.DateTimeFormat), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd.ToString(SettingsApp.DateTimeFormat));
-            string filterHumanReadable = (!string.IsNullOrEmpty(filterSelectionBoxsHumanReadable))
-                ? string.Format("{0}, {1}", datesFilterHumanReadable, filterSelectionBoxsHumanReadable)
-                : datesFilterHumanReadable;
-
-            if (debug) _log.Debug(string.Format("Filter: [{0}]", filter));
-            if (debug) _log.Debug(string.Format("filterHumanReadable: [{0}]", filterHumanReadable));
-
-            /* IN009204 - RCs should be removed from this report, only AT Financial documents here */
-            if (Enums.Reports.ReportsQueryDialogMode.COMPANY_BILLING.Equals(_reportsQueryDialogMode))
+            if (Enums.Reports.ReportsQueryDialogMode.FINANCIAL_DETAIL_VAT.Equals(_reportsQueryDialogMode))
             {
-                string documentTypeOid = SettingsApp.XpoOidDocumentFinanceTypePayment.ToString();
-                string documentTypeDesignation = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc");
-                /* Based on "view_documentfinancecustomerbalancedetails" we are removing RCs ("a009168d-fed1-4f52-b9e3-77e280b18ff5") */
-                filter += $" AND DocumentTypeOid <> '{documentTypeOid}'";
-                // filterHumanReadable += $", {resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type} <> '{documentTypeDesignation}'";
+                filterDateField = "fmDate";
+            }
+            string filter = filterSelectionBoxs;
+            string filterHumanReadable = filterSelectionBoxsHumanReadable;
+            // Combine final where Filter
+            if (!Enums.Reports.ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY.Equals(_reportsQueryDialogMode))
+            {
+                string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, _dateStart.ToString(SettingsApp.DateTimeFormat), _dateEnd.ToString(SettingsApp.DateTimeFormat));
+                filter = (!string.IsNullOrEmpty(filterSelectionBoxs))
+                    ? string.Format("({0}) AND ({1})", datesFilter, filterSelectionBoxs)
+                    : string.Format("({0})", datesFilter);
+
+                //if (_reportsQueryDialogMode == Enums.Reports.ReportsQueryDialogMode.FILTER_ARTICLE_STOCK)
+                //{
+                //    string stkFilter = "artStk IS NOT NULL";
+                //    filter = (!string.IsNullOrEmpty(filterSelectionBoxs))
+                //    ? string.Format("({0}) AND ({1})", stkFilter, filterSelectionBoxs)
+                //    : string.Format("({0})", stkFilter);
+                //}
+                // HumanReadable
+                /* IN006004 */
+                string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart.ToString(SettingsApp.DateTimeFormat), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd.ToString(SettingsApp.DateTimeFormat));
+                filterHumanReadable = (!string.IsNullOrEmpty(filterSelectionBoxsHumanReadable))
+                    ? string.Format("{0}, {1}", datesFilterHumanReadable, filterSelectionBoxsHumanReadable)
+                    : datesFilterHumanReadable;
+
+                if (debug) _log.Debug(string.Format("Filter: [{0}]", filter));
+                if (debug) _log.Debug(string.Format("filterHumanReadable: [{0}]", filterHumanReadable));
+
+
+                /* IN009204 - RCs should be removed from this report, only AT Financial documents here */
+                if (Enums.Reports.ReportsQueryDialogMode.COMPANY_BILLING.Equals(_reportsQueryDialogMode))
+                {
+                    string documentTypeOid = SettingsApp.XpoOidDocumentFinanceTypePayment.ToString();
+                    string documentTypeDesignation = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc");
+                    /* Based on "view_documentfinancecustomerbalancedetails" we are removing RCs ("a009168d-fed1-4f52-b9e3-77e280b18ff5") */
+                    filter += $" AND DocumentTypeOid <> '{documentTypeOid}'";
+                    // filterHumanReadable += $", {resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type} <> '{documentTypeDesignation}'";
+                }
             }
 
             result.Add(filter);
@@ -295,8 +323,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //{
             //    _log.Debug("BREAK");
             //}
-            T1 defaultValue = (T1)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(T1), SettingsApp.XpoOidUndefinedRecord);
-            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}')){1}", SettingsApp.XpoOidUndefinedRecord, extraFilter));
+            T1 defaultValue = (T1)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(T1), SettingsApp.XpoOidUndefinedRecord);            
+            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", SettingsApp.XpoOidUndefinedRecord,SettingsApp.XpoOidUserRecord, extraFilter));
             resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, SettingsApp.RegexGuid, true);
             resultObject.Name = typeof(T1).Name;
             resultObject.EntryValidation.IsEditable = true;

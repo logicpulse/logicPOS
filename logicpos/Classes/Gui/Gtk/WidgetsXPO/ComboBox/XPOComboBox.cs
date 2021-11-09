@@ -44,15 +44,16 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         }
 
         //IN:009261 Overload for default value selected
-        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0)
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
         {
-            InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty, active);
+            InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty, active, pXPCollection);
         }
 
-        public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0)
+        public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
         {
             //Required to Force Combo to be same Height has Entrys
             HeightRequest = 23;
+            if(Utils.IsLinux) HeightRequest = 32;
 
             //Parameters
             _xpoSession = pXpoSession;
@@ -71,7 +72,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
 
             //Init Collection  based on xpoObjectType
-            _XpCollection = new XPCollection(_xpoSession, _xpoObjectType, pCriteria, pSortProperty);
+            if (pXPCollection != null) _XpCollection = pXPCollection; 
+            else _XpCollection = new XPCollection(_xpoSession, _xpoObjectType, pCriteria, pSortProperty);
 
             //Init CellRenderer
             CellRendererText comboBoxCell = new CellRendererText();
@@ -88,19 +90,19 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (active != 0) Active = active;
         }
 
-        public void UpdateModel(CriteriaOperator pCriteria)
+        public void UpdateModel(CriteriaOperator pCriteria, SortProperty pSortProperty = null)
         {
             XPCollection xpCollection = new XPCollection(_xpoSession, _xpoObjectType, pCriteria);
-            CreateModel(xpCollection, null);
+            CreateModel(xpCollection, null, pSortProperty);
         }
 
-        public void UpdateModel(CriteriaOperator pCriteria, XPGuidObject pCurrentValue)
+        public void UpdateModel(CriteriaOperator pCriteria, XPGuidObject pCurrentValue, SortProperty pSortProperty = null)
         {
             XPCollection xpCollection = new XPCollection(_xpoSession, _xpoObjectType, pCriteria);
-            CreateModel(xpCollection, pCurrentValue);
+            CreateModel(xpCollection, pCurrentValue, pSortProperty);
         }
 
-        public void CreateModel(XPCollection pXpCollection, XPGuidObject pCurrentValue)
+        public void CreateModel(XPCollection pXpCollection, XPGuidObject pCurrentValue, SortProperty pSortProperty = null)
         {
             //Local Variables
             TreeIter tempItemIter;
@@ -108,6 +110,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
             //Parameters
             _XpCollection = pXpCollection;
+
+            //Add sort property
+            if (pSortProperty != null) _XpCollection.Sorting.Add(pSortProperty);
 
             //Add Default Sorting Order, if Not Assigned by Parameter
             if (_XpCollection.Sorting.Count == 0) _XpCollection.Sorting = FrameworkUtils.GetXPCollectionDefaultSortingCollection();

@@ -1,9 +1,13 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -16,6 +20,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Protected
         protected Window _sourceWindow;
         protected Label _label;
+        protected Label _label2;
+        protected Label _label3;
+
         //Public    
         protected VBox _vbox;
         public VBox Vbox
@@ -34,6 +41,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             get { return _label; }
             set { _label = value; }
+        }
+        public Label Label2
+        {
+            get { return _label2; }
+            set { _label2 = value; }
+        }
+        public Label Label3
+        {
+            get { return _label3; }
+            set { _label3 = value; }
         }
         public EntryBoxBase(String pLabelText)
             : this(null, pLabelText)
@@ -75,6 +92,130 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _vbox.PackStart(_hbox, true, true, 0);
             //Finish
             Add(_vbox);
+        }
+		//Artigos Compostos [IN:016522]
+        public EntryBoxBase(Window pSourceWindow, String pLabelText, bool pBOsource=false)
+        {
+            if (!pBOsource)
+            {
+                //Parameters
+                _sourceWindow = pSourceWindow;
+                //Defaults
+                Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+                String fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
+                String fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
+                int padding = 2;
+                //This
+                this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                this.BorderWidth = (uint)padding;
+                //VBox
+                _vbox = new VBox(false, padding);
+                _vbox.BorderWidth = (uint)padding;
+                //Label
+                Pango.FontDescription fontDescriptionLabel = Pango.FontDescription.FromString(fontLabel);
+                _label = new Label(pLabelText);
+                _label.ModifyFont(fontDescriptionLabel);
+                _label.SetAlignment(0, 0.5F);
+                //Child Entrys
+                _fontDescription = Pango.FontDescription.FromString(fontEntry);
+                //HBox
+                _hbox = new HBox(false, padding);
+                //Pack
+                _vbox.PackStart(_label, false, false, 0);
+                _vbox.PackStart(_hbox, true, true, 0);
+                //Finish
+                Add(_vbox);
+            }
+            else if ((pSourceWindow.GetType().Name == "DialogArticleStockMoviment" || pSourceWindow.GetType().Name == "DialogAddArticleStock" || (pSourceWindow.GetType().Name == "DialogArticleCompositionSerialNumber") && pLabelText != "Artigo") || pSourceWindow.GetType().Name == "DialogArticleWarehouse" || pLabelText != "Número do Doc.")
+            {
+                //Parameters
+                _sourceWindow = pSourceWindow;
+                //Defaults
+                Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor("240, 240, 240");
+                Color validLabel = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
+
+                String fontLabel = "10";
+                String fontEntry = "9";
+                int padding = 2;
+                if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
+                {
+                    colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+                    fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
+                    fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
+                }
+
+                this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                //this.BorderWidth = (uint)padding;
+                //VBox
+                _vbox = new VBox(false, padding);
+                _vbox.BorderWidth = (uint)padding;
+                //Label
+                Pango.FontDescription fontDescriptionLabel = Pango.FontDescription.FromString(fontLabel);
+                _label = new Label(pLabelText);
+                _label.ModifyFont(fontDescriptionLabel);
+                _label.SetAlignment(0, 2.5F);
+                //Child Entrys
+                _fontDescription = Pango.FontDescription.FromString(fontEntry);
+                //HBox
+                _hbox = new HBox(false, padding);
+                //Pack
+                _vbox.PackStart(_label, false, false, 0);
+                _vbox.PackStart(_hbox, true, true, 0);
+                //Finish
+                Add(_vbox);
+            }
+            else
+            {
+                //Parameters
+                _sourceWindow = pSourceWindow;
+                //Defaults
+                Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor("240, 240, 240");
+                Color validLabel = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
+     
+                String fontLabel = "10";
+                String fontEntry = "9";
+                int padding = 2;
+                if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
+                {
+                    colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+                    fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
+                    fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
+                }
+
+
+                this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                //this.BorderWidth = (uint)padding;
+                //VBox
+                _vbox = new VBox(false, padding);
+                _vbox.BorderWidth = (uint)padding;
+                //Label
+                Pango.FontDescription fontDescriptionLabel = Pango.FontDescription.FromString(fontLabel);
+                _label = new Label(pLabelText);
+                _label.ModifyFont(fontDescriptionLabel);
+                _label.SetAlignment(0, 2.5F);
+                _label2 = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code") + "   ");
+                _label2.ModifyFont(fontDescriptionLabel);
+                _label2.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(validLabel));
+                _label2.SetAlignment(0, 0.5F);
+                _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity"));
+                _label3.ModifyFont(fontDescriptionLabel);
+                _label3.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(validLabel));
+                _label3.SetAlignment(0, 0.5F);
+                //Child Entrys
+                _fontDescription = Pango.FontDescription.FromString(fontEntry);
+                //HBox
+                HBox _hbox1 = new HBox(false, padding);
+                _hbox = new HBox(false, padding);
+                //Pack
+                _hbox1.PackStart(_label2, false, false, 0);
+                _hbox1.PackStart(_label, false, false, 0);
+                _hbox1.PackStart(_label3, false, false, 0);
+                _vbox.PackStart(_hbox1, false, false, 0);
+                _vbox.PackStart(_hbox, true, true, 0);
+                //Finish
+                Add(_vbox);
+            }
+
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

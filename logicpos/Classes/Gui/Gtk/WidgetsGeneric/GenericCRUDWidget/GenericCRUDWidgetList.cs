@@ -12,6 +12,11 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.financial.library.Classes.Stocks;
+using logicpos.datalayer.Enums;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.financial.library.Classes.Reports;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -44,8 +49,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public abstract bool Save();
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-        public bool Modified(object pSource, object pTarget, Type pType)
+		//Documentos - Acerto de arredondamentos [IN:019542]
+        public bool Modified(object pSource, object pTarget, Type pType, string pFieldName = "")
         {
             bool result;
 
@@ -55,7 +60,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             if (pSource != null)
             {
-                result = !(pSource.Equals(pTarget));
+                if(pType == typeof(decimal) && pFieldName == "Price")
+                {
+                    result = !(Math.Round(Convert.ToDecimal(FrameworkUtils.StringToDecimal(Convert.ToString(pSource))),2).Equals(Math.Round(Convert.ToDecimal(FrameworkUtils.StringToDecimal(Convert.ToString(pTarget))),2)));
+                }
+                else
+                {
+                    result = !(pSource.Equals(pTarget));
+                }                
             }
             else if (pTarget != null)
             {
@@ -203,7 +215,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 (item.Widget as Entry).Text = (item.Widget as Entry).Text.Replace(',', '.');
                             }
 
-                            modified = Modified(item.GetMemberValue(), (item.Widget as Entry).Text, item.FieldType);
+                            modified = Modified(item.GetMemberValue(), (item.Widget as Entry).Text, item.FieldType, item.FieldName);
                             if (modified)
                             {
                                 if (!String.IsNullOrEmpty((item.Widget as Entry).Text))
@@ -290,7 +302,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         //EntryBoxValidation
                         else if (item.Widget.GetType() == typeof(EntryBoxValidation))
                         {
-                            modified = Modified(item.GetMemberValue(), (item.Widget as EntryBoxValidation).EntryValidation.Text, item.FieldType);
+                            modified = Modified(item.GetMemberValue(), (item.Widget as EntryBoxValidation).EntryValidation.Text, item.FieldType, item.FieldName);
                             if (modified)
                             {
                                 if (!String.IsNullOrEmpty((item.Widget as EntryBoxValidation).EntryValidation.Text))
@@ -340,6 +352,34 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                     item.SetMemberValue(dynamicWiget.Value);
                                 }
                             }
+                        }
+                        //XPOEntryBoxSelectRecordValidation
+                        else if (item.Widget.GetType().IsGenericType && item.Widget.GetType().GetGenericTypeDefinition() == typeof(XPOEntryBoxSelectRecordValidation<,>))
+                        {
+                            //Required to use Dynamic, we cant cast without knowing generic types <T,T>
+                            dynamic dynamicWiget = item.Widget;
+
+                            //Detect if Widget Value is a XPGuidObject SubClass, and Target is not a XPGuidObject
+                            if (dynamicWiget.Value == null)
+                            {
+                                item.SetMemberValue(null);
+                            }
+                            else if (dynamicWiget.Value.GetType().BaseType == typeof(XPGuidObject) && item.FieldType == typeof(Guid))
+                            {
+                                modified = Modified(item.GetMemberValue(), dynamicWiget.Value.Oid, item.FieldType);
+                                if (modified)
+                                {
+                                    item.SetMemberValue(dynamicWiget.Value.Oid);
+                                }
+                            }
+                            else
+                            {
+                                modified = Modified(item.GetMemberValue(), dynamicWiget.Value, item.FieldType);
+                                if (modified)
+                                {
+                                    item.SetMemberValue(dynamicWiget.Value);
+                                }
+                            }
                         };
 
                         //Force Modified if in in InsertMode
@@ -348,6 +388,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             modified = true;
                         }
 
+                        //Force Modified if Articles
+                        //if(item.GetType() == typeof(fin_article))
+                        //{
+                        //    modified = true;
+                        //}
                         //Check Modified
                         if (modified)
                         {
@@ -408,8 +453,55 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         {
             if (pResponse == ResponseType.Ok)
             {
+                if (pDialog.GetType() == typeof(DialogAddArticleStock) && GlobalFramework.LicenceModuleStocks)
+                {
+                    ProcessArticleStockParameter res = DialogAddArticleStock.GetProcessArticleStockParameter(pDialog as DialogAddArticleStock);
+                    List<fin_articleserialnumber> barCodeLabelList = new List<fin_articleserialnumber>();
+
+                    if (res != null)
+                    {
+                        if (res.ArticleCollection.Count > 0)
+                        {
+                            foreach (var item in res.ArticleCollection)
+                            {
+                                res.Quantity = item.Value.Item1;
+                                
+                                res.PurchasePrice = item.Value.Item3;
+                                res.Article = item.Key;
+                                res.WarehouseLocation = item.Value.Item4;
+                                //If has serial Numbers
+                                if (item.Value.Item2.Count > 0)
+                                {
+                                    foreach (var itemS in item.Value.Item2)
+                                    {
+                                        res.Quantity = 1;
+                                        res.SerialNumber = itemS.Key;
+                                        res.AssociatedArticles = itemS.Value;
+                                        GlobalFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
+                                        string sql = string.Format("SELECT Oid FROM fin_articleserialnumber WHERE SerialNumber = '{0}';", res.SerialNumber.ToString());
+                                        var serialNumberOid = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                                        if (serialNumberOid != null)
+                                        {
+                                            fin_articleserialnumber serialNumber = (fin_articleserialnumber)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(serialNumberOid.ToString()));
+                                            barCodeLabelList.Add(serialNumber);
+                                        }
+                                    }
+                                }
+                                else {
+                                    GlobalFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
+                                }
+                                if (barCodeLabelList.Count > 0)
+                                {
+                                    CustomReport.ProcessReportBarcodeLabel(shared.Enums.CustomReportDisplayMode.Print, null, "", false, barCodeLabelList);
+                                }
+                            }
+                            return;
+                        }
+                    }
+                    else return;
+                }
                 //Validate Fields
-                if (!ValidateRecord())
+                else if (!ValidateRecord())
                 {
                     pDialog.Run();
                 }
@@ -420,6 +512,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         pDialog.Run();
                     };
+                    if (pDialog.GetType() == typeof(DialogArticleStock))
+                    {
+                        (pDialog as DialogArticleStock).TreeViewXPO_ArticleDetails.Refresh();
+                        (pDialog as DialogArticleStock).TreeViewXPO_ArticleHistory.Refresh();
+                        (pDialog as DialogArticleStock).TreeViewXPO_ArticleWarehouse.Refresh();
+                        (pDialog as DialogArticleStock).TreeViewXPO_StockMov.Refresh();
+                    }
                 };
             };
         }

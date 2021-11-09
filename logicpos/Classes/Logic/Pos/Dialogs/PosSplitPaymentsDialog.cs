@@ -377,7 +377,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             bool debug = false;
             decimal checkTotal = 0.0m;
-
             try
             {
                 TouchButtonSplitPayment touchButtonSplitPayment = (TouchButtonSplitPayment)sender;
@@ -388,6 +387,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     checkTotal += item.Value.PriceFinal * item.Value.Quantity;
                 }
                 if (debug) _log.Debug(string.Format("touchButtonSplitPayment.ArticleBag: Total: [{0}]", checkTotal));
+
+                //Arredondamento de valores na divisão de contas gera perdas no valor e quantidade [IN:005944]
+                //if (_articleBag.TotalFinal < checkTotal * _splitPaymentButtons.Count && touchButtonSplitPayment == _splitPaymentButtons[_splitPaymentButtons.Count - 1])
+                //{
+                //    var totalPSplit = Convert.ToDecimal(FrameworkUtils.DecimalToString(checkTotal));
+                //    var totalPTotal = Convert.ToDecimal(FrameworkUtils.DecimalToString(_articleBag.TotalFinal));
+                //    var missingRoundPayment = Convert.ToDecimal(FrameworkUtils.DecimalToString(totalPTotal - (totalPSplit * _splitPaymentButtons.Count)));
+
+                //    touchButtonSplitPayment.ArticleBag.TotalFinal += missingRoundPayment;
+                //    //if(missingRoundPayment > 0)
+                //    //{
+                //    //    foreach (var item in touchButtonSplitPayment.ArticleBag)
+                //    //    {
+                //    //        item.Value.PriceFinal += (missingRoundPayment / _splitPaymentButtons.Count);
+                //    //    }
+                //    //}            
+                //}
 
                 // Using RequestProcessFinanceDocumentParameter, to prevent Emmit Document On Ok/Close
                 PosPaymentsDialog dialog = new PosPaymentsDialog(_sourceWindow, DialogFlags.DestroyWithParent, touchButtonSplitPayment.ArticleBag, false, true, true, touchButtonSplitPayment.ProcessFinanceDocumentParameter, touchButtonSplitPayment.SelectedPaymentMethodButtonName);

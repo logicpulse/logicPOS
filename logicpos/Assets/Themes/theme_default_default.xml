@@ -76,7 +76,7 @@
 			<Objects>
 				<!-- EventBoxImageLogo -->
 				<EventBoxImageLogo>
-					<Position>Eval[Size(globalScreenSize.Width - posMainWindowEventBoxPosTicketListColumnWidth - (posMainWindowComponentsMargin * 2), 0)]</Position>
+					<Position>Eval[Size(globalScreenSize.Width - posMainWindowEventBoxPosTicketListColumnWidth - (posMainWindowComponentsMargin * 2), 8)]</Position>
 					<Size>Eval[Size(posMainWindowEventBoxPosTicketListColumnWidth + (posMainWindowComponentsMargin * 2), posMainWindowEventBoxStatusBar1And2Height * 2)]</Size>
 					<Visible>true</Visible>
 					<VisibleWindow>false</VisibleWindow>

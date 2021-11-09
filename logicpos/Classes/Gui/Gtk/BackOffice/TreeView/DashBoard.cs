@@ -84,8 +84,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public DashBoard(Window pSourceWindow)
-            : this(pSourceWindow, null, null, null, GenericTreeViewMode.Default, GenericTreeViewNavigatorMode.Default) { }
+            : this(pSourceWindow, null, null, null, GenericTreeViewMode.Default, GenericTreeViewNavigatorMode.Default) { _sourceWindow = pSourceWindow; }
 
+        
         //ScreenArea
         protected EventBox _eventboxDashboard;
         protected Color _colorBaseDialogDefaultButtonFont = FrameworkUtils.StringToColor("76, 72, 70");
@@ -114,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
             var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
-
+            _sourceWindow = pSourceWindow;
 
             Color screenBackgroundColor = FrameworkUtils.StringToColor(themeWindow.Globals.ScreenBackgroundColor);
             Color white = System.Drawing.Color.White;
@@ -240,7 +241,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 botao9.Clicked += delegate { Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 0); };
                 botao10.Clicked += delegate { Utils.startNewDocumentFromBackOffice(pSourceWindow); };
                 botao11.Clicked += delegate { Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 3); };
-                botao12.Clicked += delegate { Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 6); };
+                botao12.Clicked += delegate { Utils.OpenArticleStockDialog(_sourceWindow); };
 
                 //Actions Reports
                 botao13.Clicked += delegate { Utils.startReportsMenuFromBackOffice(pSourceWindow); };

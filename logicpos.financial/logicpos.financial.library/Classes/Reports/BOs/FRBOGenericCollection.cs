@@ -28,23 +28,29 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         }
 
         //Constructors
-        public FRBOGenericCollection() : this("", "", "", "", 0) { }
-        public FRBOGenericCollection(string pFilter) : this(pFilter, "", "", "", 0) { }
-        public FRBOGenericCollection(int pLimit) : this("", "", "", "", pLimit) { }
-        public FRBOGenericCollection(string pFilter, int pLimit) : this(pFilter, "", "", "", pLimit) { }
-        public FRBOGenericCollection(string pFilter, string pOrder) : this(pFilter, "", pOrder, "", 0) { }
-        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder) : this(pFilter, pGroup, pOrder, "", 0) { }
-        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder, string pFields) : this(pFilter, pGroup, pOrder, pFields, 0) { }
-        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder, string pFields, int pLimit)
+        public FRBOGenericCollection() : this("", "", "", "", 0,"") { }
+        public FRBOGenericCollection(int pLimit) : this("", "", "", "", pLimit, "") { }
+        public FRBOGenericCollection(string pFilter) : this(pFilter, "", "", "", 0, "") { }
+        public FRBOGenericCollection(string pFilter, int pLimit, string pQuery) : this(pFilter, "", "", "", pLimit, pQuery) { }
+        public FRBOGenericCollection(string pFilter, int pLimit) : this(pFilter, "", "", "", pLimit, "") { }
+        public FRBOGenericCollection(string pFilter, string pOrder) : this(pFilter, "", pOrder, "", 0, "") { }
+        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder) : this(pFilter, pGroup, pOrder, "", 0, "") { }
+        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder, string pFields) : this(pFilter, pGroup, pOrder, pFields, 0, "") { }
+        public FRBOGenericCollection(string pFilter, string pGroup, string pOrder, string pFields, int pLimit, string pQuery)
         {
             //Assign Attributes Defined
             _objectHaveAttributes = ((typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute) != null) ? true : false;
 
+            string sqlQuery = pQuery;
+
             //Attributes: Sql
-            string sqlQuery = (_objectHaveAttributes && (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Sql != null)
-                ? (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Sql
-                //If not SqlQuery Defined from Attributes, Create it From Reflection and FRBO Object Attributes
-                : GenQueryFromFRBOObject(pFilter, pGroup, pOrder, pFields);
+            if (string.IsNullOrEmpty(sqlQuery))
+            {
+                sqlQuery = (_objectHaveAttributes && (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Sql != null)
+                    ? (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Sql
+                    //If not SqlQuery Defined from Attributes, Create it From Reflection and FRBO Object Attributes
+                    : GenQueryFromFRBOObject(pFilter, pGroup, pOrder, pFields);
+            }
 
             //Atributes: Limit
             int sqlLimit = 0;

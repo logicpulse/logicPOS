@@ -18,6 +18,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Ui
         private HBox _hboxMain;
         private EntryBoxValidation _entryBoxHardwareId;
+        private EntryBoxValidation _entryBoxSoftwareKey;
         private TouchButtonIconWithText _buttonRegister;
         private TouchButtonIconWithText _buttonContinue;
         private TouchButtonIconWithText _buttonClose;
@@ -64,7 +65,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //Init Local Vars
             string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_license");
-            System.Drawing.Size windowSize = new System.Drawing.Size(890, 630);
+            System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
             string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_license.png");
 
             //If detected empty Hardware Id from Parameters, get it from IntelliLock
@@ -107,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Files
             string fileAppBanner = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Licence\licence.png");
             //Init
-            int padding = 3;
+            int padding = 2;
             //Init Fonts
 
 
@@ -119,11 +120,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string mockAddress = (useMockData) ? "Rua Capitão Salgueiro Maia, nº7, 3080-245 Figueira da Foz" : string.Empty;
             string mockPhone = (useMockData) ? "+351 233 042 347" : string.Empty;
             string mockEmail = (useMockData) ? "portugal@logicpulse.com" : string.Empty;
+            string mockSoftwareKey = (useMockData) ? "string.Empty" : string.Empty;
 
             //Init Content
             _hboxMain = new HBox(false, 0) { BorderWidth = (uint)padding };
             //Inner
-            Image appBanner = new Image(fileAppBanner) { WidthRequest = 200 };
+            Image appBanner = new Image(fileAppBanner) { WidthRequest = 215 };
             VBox vboxMain = new VBox(false, padding);
             _hboxMain.PackStart(appBanner, false, false, (uint)padding);
             _hboxMain.PackStart(vboxMain, true, true, (uint)padding);
@@ -131,12 +133,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Pack VBoxMain : Welcome
             Label labelWelcome = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_license_label_welcome"));
             labelWelcome.SetAlignment(0.0F, 0.0F);
-            labelWelcome.ModifyFont(FontDescription.FromString("Arial 12 bold"));
+            labelWelcome.ModifyFont(FontDescription.FromString("Arial 9 bold"));
             vboxMain.PackStart(labelWelcome, false, false, (uint)padding);
             //Pack VBoxMain : Info
             Label lableInfo = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_license_label_info"));
             lableInfo.WidthRequest = 630;
-            lableInfo.ModifyFont(FontDescription.FromString("Arial 11"));
+            lableInfo.ModifyFont(FontDescription.FromString("Arial 9"));
             lableInfo.Wrap = true;
             lableInfo.SetAlignment(0.0F, 0.0F);
             vboxMain.PackStart(lableInfo, true, true, (uint)padding);
@@ -208,6 +210,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxHardwareId.EntryValidation.HeightRequest = 30;
             vboxInnerLeft.PackStart(_entryBoxHardwareId, false, false, 0);
 
+            //EntryBoxSoftwareKey
+            _entryBoxSoftwareKey = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_software_key"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxSoftwareKey.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
+            _entryBoxSoftwareKey.EntryValidation.Text = mockSoftwareKey;
+            _entryBoxSoftwareKey.EntryValidation.Changed += delegate { Validate(); };
+            vboxInnerLeft.PackStart(_entryBoxSoftwareKey, false, false, 0);
+
             //VBoxInnerRight
             Label labelWithoutInternetRegistration = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_registration"));
             labelWithoutInternetRegistration.SetAlignment(0.0F, 0.0F);
@@ -272,7 +281,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxFiscalNumber.EntryValidation.Validated &&
                 _entryBoxAddress.EntryValidation.Validated &&
                 _entryBoxEmail.EntryValidation.Validated &&
-                _entryBoxPhone.EntryValidation.Validated
+                _entryBoxPhone.EntryValidation.Validated && _entryBoxSoftwareKey.EntryValidation.Validated
             );
         }
 
@@ -314,7 +323,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _entryBoxEmail.EntryValidation.Text,
                     _entryBoxPhone.EntryValidation.Text,
                     _entryBoxHardwareId.EntryValidation.Text,
-                    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
+                    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                    _entryBoxSoftwareKey.EntryValidation.Text
                 );
 
                 string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(), GlobalFramework.PluginLicenceManager.GetLicenseFilename());

@@ -5,6 +5,7 @@ using logicpos.shared.Classes.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 
 namespace logicpos.shared.App
@@ -29,7 +30,9 @@ namespace logicpos.shared.App
         public static String LicenceTelephone;
         public static String LicenceHardwareId;
         public static String LicenceReseller;
+        public static bool LicenceModuleStocks;
         public static DateTime LicenceUpdateDate;
+        public static DataTable DtLicenceKeys;
         //TK016248 - BackOffice - Check New Version 
         public static String ServerVersion;
         //AT - Only Used in logicerp.Modules.FINANCIAL | LogicposHelper
@@ -39,6 +42,7 @@ namespace logicpos.shared.App
         public static String DatabaseName;
         public static String DatabaseUser;
         public static String DatabasePassword;
+        public static String DatabaseVersion;
         //WorkSession
         public static pos_worksessionperiod WorkSessionPeriodDay;
         public static pos_worksessionperiod WorkSessionPeriodTerminal;
@@ -49,6 +53,7 @@ namespace logicpos.shared.App
         // Plugins
         public static ISoftwareVendor PluginSoftwareVendor;
         public static ILicenceManager PluginLicenceManager;
+
         //User/Terminal/Permissions
         public static Dictionary<string, bool> LoggedUserPermissions;
         //PreferenceParameters
@@ -58,7 +63,12 @@ namespace logicpos.shared.App
         public static Dictionary<string, string> FastReportCustomVars;
         //TK013134: HardCoded Modules
         public static bool AppUseParkingTicketModule = false;
-		//TK016235 BackOffice - Mode
+		//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+        public static bool PrintQRCode = true;
+		//Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
+        public static bool CheckStocks = true;
+        public static bool CheckStockMessage = true;
+        //TK016235 BackOffice - Mode
         public static bool AppUseBackOfficeMode = false;
         public static Dictionary<string,Guid> PendentPayedParkingTickets = new Dictionary<string, Guid>();
         public static Dictionary<string,Guid> PendentPayedParkingCards = new Dictionary<string, Guid>();

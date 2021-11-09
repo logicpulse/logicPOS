@@ -37,7 +37,7 @@ namespace logicpos.datalayer.Enums
         public static readonly CustomAppOperationMode  SEAFOOD_SHOP   = new CustomAppOperationMode("SeafoodShop", "pt", "databasedatademo_seafood_shop.sql", "Retail");
         public static readonly CustomAppOperationMode  SHOE_STORE     = new CustomAppOperationMode("ShoeStore", "pt", "databasedatademo_shoe_store.sql", "Retail");
         //TK016235 BackOffice - Mode
-		public static readonly CustomAppOperationMode  BACKOFFICE     = new CustomAppOperationMode("BackOfficeMode", "pt", "databasedatademo.sql", "Default");
+		public static readonly CustomAppOperationMode  BACKOFFICE     = new CustomAppOperationMode("BackOfficeMode", "pt", "databasedatademo.sql", "Retail");
 
         public string AppOperationModeToken { get; private set; }
         public string CustomCultureDefaultCountryPrefix { get; private set; }

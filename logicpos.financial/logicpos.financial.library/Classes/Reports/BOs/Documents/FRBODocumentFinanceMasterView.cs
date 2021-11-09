@@ -258,6 +258,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 
         [FRBO(Field = "crCurrencyAcronym")]
         public string CurrencyAcronym { get; set; }                                     //crCurrencyAcronym AS CurrencyAcronym,
+		
+		//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+        [FRBO(Field = "fmATDocQRCode")]
+        public string ATDocQRCode { get; set; }                                     //fmATDocQRCode AS ATDocQRCode,
 
         //Chield FRBOs Objects
         public List<FRBODocumentFinanceDetail> DocumentFinanceDetail { get; set; }

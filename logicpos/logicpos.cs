@@ -16,6 +16,7 @@ using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -35,7 +36,8 @@ namespace logicpos
         private TimeSpan _backupDatabaseTimeSpan = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeStart = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeEnd = new TimeSpan();
-        
+        private static bool needToUpdate = false;
+
         public void StartApp(AppMode pMode)
         {
             try
@@ -124,6 +126,7 @@ namespace logicpos
 
                 //Check if Database Exists if Not Create it from Scripts
                 bool databaseCreated = false;
+                
                 if (!xpoCreateDatabaseAndSchema)
                 {
                     //Get result to check if DB is created (true)
@@ -131,7 +134,7 @@ namespace logicpos
                     {
                         // Launch Scripts
                         SettingsApp.firstBoot = true;
-                        databaseCreated = DataLayer.CreateDatabaseSchema(xpoConnectionString, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName);                        
+                        databaseCreated = DataLayer.CreateDatabaseSchema(xpoConnectionString, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName, out needToUpdate);               
                     }
                     catch (Exception ex)
                     {
@@ -185,9 +188,44 @@ namespace logicpos
                     }
                 }
 
+                //Compare DataBase version with software version
+                //Desempenho - Comparar versão da base de dados com o versão software [IN:017526]
+#if !DEBUG
+                if (string.IsNullOrEmpty(GlobalFramework.DatabaseVersion))
+                {
+                    try
+                    {
+                        string sql = string.Format(@"SELECT Version FROM sys_databaseversion;", GlobalFramework.DatabaseName);
+                        GlobalFramework.DatabaseVersion = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+
+                        string[] tmpDatabaseVersion = GlobalFramework.DatabaseVersion.Split('.');
+                        long tmpDatabaseVersionNumber = int.Parse(tmpDatabaseVersion[0]) * 10000000 + int.Parse(tmpDatabaseVersion[1]) * 10000 + int.Parse(tmpDatabaseVersion[2]);
+
+                        string[] tmpSoftwareVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString().Split('.');
+                        long tmpSoftwareVersionNumber = int.Parse(tmpSoftwareVersion[0]) * 10000000 + int.Parse(tmpSoftwareVersion[1]) * 10000 + int.Parse(tmpSoftwareVersion[2]);
+
+                        if (tmpDatabaseVersionNumber > tmpSoftwareVersionNumber)
+                        {
+                            GlobalApp.DialogThreadNotify.WakeupMain();
+                            //throw new InvalidOperationException(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
+                            string fileName = "\\LPUpdater\\LPUpdater.exe";
+                            string lPathToUpdater = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
+                            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
+                            System.Diagnostics.Process.Start(lPathToUpdater);
+                            Environment.Exit(0);
+                        }
+                    }
+                    catch(Exception Ex)
+                    {
+                        GlobalApp.DialogThreadNotify.Close();
+                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),  Ex.Message);
+                        Environment.Exit(0);
+                    }
+                }
+#endif
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (GlobalFramework.PluginSoftwareVendor != null) logicpos.datalayer.App.SettingsApp.PluginSoftwareVendor = GlobalFramework.PluginSoftwareVendor;           
+                if (GlobalFramework.PluginSoftwareVendor != null) logicpos.datalayer.App.SettingsApp.PluginSoftwareVendor = GlobalFramework.PluginSoftwareVendor;
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
@@ -231,6 +269,8 @@ namespace logicpos
                     culture = GlobalFramework.Settings["customCultureResourceDefinition"];
                 }
 
+          
+
                 //if (!string.IsNullOrEmpty(culture))
                 //{
                 /* IN006018 and IN007009 */
@@ -241,8 +281,8 @@ namespace logicpos
                 //{
                 //    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 //}                
-                GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
-                
+                GlobalFramework.CurrentCulture = GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
+
                 /* IN006018 and IN007009 */
                 _log.Debug(string.Format("CUSTOM CULTURE :: CurrentUICulture '{0}' in use.", CultureInfo.CurrentUICulture));
 
@@ -329,8 +369,22 @@ namespace logicpos
                 //Hardware : Init WeighingBalance
                 if (GlobalFramework.LoggedTerminal.WeighingMachine != null)
                 {
-                    GlobalApp.WeighingBalance = new WeighingBalance(GlobalFramework.LoggedTerminal.WeighingMachine);
-                    //_log.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen()));
+					//Protecções de integridade das BD's [IN:013327]
+                    //Check if port is used by pole display
+                    if (GlobalFramework.LoggedTerminal.WeighingMachine.PortName == GlobalFramework.LoggedTerminal.PoleDisplay.COM)
+                    {
+                        _log.Debug(string.Format("Port " + GlobalFramework.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
+                    }
+                    else
+                    {
+                        if (Utils.IsPortOpen(GlobalFramework.LoggedTerminal.WeighingMachine.PortName))
+                        {
+                            GlobalApp.WeighingBalance = new WeighingBalance(GlobalFramework.LoggedTerminal.WeighingMachine);
+                            //_log.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen())); }
+                        }
+
+                    }
+
                 }
 
                 //Send To Log
@@ -373,8 +427,15 @@ namespace logicpos
                     _log.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GlobalFramework.AppUseParkingTicketModule));
                 }
 
+
                 //Create SystemNotification
                 FrameworkUtils.SystemNotification();
+
+                //Activate stock module for debug
+#if DEBUG 
+                GlobalFramework.LicenceModuleStocks = true;
+                SettingsApp.AppCompanyName = GlobalFramework.LicenceCompany = GlobalFramework.LicenceReseller = "Logicpulse";
+#endif
 
                 //Clean Documents Folder on New Database, else we have Document files that dont correspond to Database
                 if (databaseCreated && Directory.Exists(GlobalFramework.Path["documents"].ToString()))
@@ -557,7 +618,9 @@ namespace logicpos
                     _log.Debug("Init windowImageFileName ");
                     string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                     _log.Debug("StartupWindow " + windowImageFileName);
-                    GlobalApp.WindowStartup = new StartupWindow(windowImageFileName);
+                    GlobalApp.WindowStartup = new StartupWindow(windowImageFileName, needToUpdate);
+
+     
                 }
                 catch (Exception ex)
                 {

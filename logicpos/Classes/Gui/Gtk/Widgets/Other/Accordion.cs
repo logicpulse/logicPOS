@@ -14,13 +14,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public Widget Content { get; set; }
         public Image GroupIcon { get; set; }
         public string ExternalAppFileName { get; set; }
+        public bool Sensitive;
 
         //EventHandlers
         public EventHandler Clicked { get; set; }
 
-        public AccordionNode(String pLabel)
+        public AccordionNode(String pLabel, bool pSensitve = true)
         {
             Label = pLabel;
+            Sensitive = pSensitve;
         }
     }
 
@@ -253,7 +255,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             accordionParentButton.ChildBox.PackStart(accordionChildButton, false, false, 2);
 
                             //If have (Content | Events | ExternalApp) & Privileges or the Button is Enabled, Else is Disabled
-                            accordionChildButton.Sensitive = (FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null));
+                            accordionChildButton.Sensitive = (FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null) && (childLevel.Value.Sensitive));
 
                             //EventHandler, Redirected to public Clicked, this way we have ouside Access
                             accordionChildButton.Clicked += accordionChildButton_Clicked;

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>logicpos.financial.console</RootNamespace>
     <AssemblyName>LogicposFinancialConsole</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -52,18 +52,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DevExpress.Data.v20.1, Version=20.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DevExpress.Data.20.1.6\lib\net452\DevExpress.Data.v20.1.dll</HintPath>
+      <HintPath>..\..\..\logicpos_pos_internal\packages\DevExpress.Data.20.1.6\lib\net452\DevExpress.Data.v20.1.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Xpo.v20.1, Version=20.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DevExpress.Xpo.20.1.6\lib\net452\DevExpress.Xpo.v20.1.dll</HintPath>
+      <HintPath>..\..\..\logicpos_pos_internal\packages\DevExpress.Xpo.20.1.6\lib\net452\DevExpress.Xpo.v20.1.dll</HintPath>
     </Reference>
     <Reference Include="FastReport.Mono, Version=2014.1.14.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\fastreport\FastReport.Mono.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\logicpos_pos_internal\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

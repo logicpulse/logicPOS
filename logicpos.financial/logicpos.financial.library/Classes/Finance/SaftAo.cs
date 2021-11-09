@@ -1,4 +1,5 @@
-﻿using DevExpress.Xpo.DB;
+﻿
+using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.App;

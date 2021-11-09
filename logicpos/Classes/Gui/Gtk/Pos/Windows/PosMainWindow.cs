@@ -10,7 +10,9 @@ using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections;
 using System.Drawing;
+using System.IO;
 using System.Threading;
+using Image = Gtk.Image;
 
 namespace logicpos
 {
@@ -211,16 +213,23 @@ namespace logicpos
                     _log.Debug("void InitUI() :: POS Main Window theme rendering completed!"); /* IN009008 */
                     //Notify Thread End
                     GlobalApp.DialogThreadNotify.WakeupMain();
-                    
+
                     //Check if fiscal year was created
-                    SortingCollection sortCollection = new SortingCollection();
-                    sortCollection.Add(new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending));
-                    CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                    ICollection collectionDocumentFinanceSeries = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
-                    if (collectionDocumentFinanceSeries.Count == 0)
+                    try
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
+                        SortingCollection sortCollection = new SortingCollection();
+                        sortCollection.Add(new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending));
+                        CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
+                        ICollection collectionDocumentFinanceSeries = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
+                        if (collectionDocumentFinanceSeries.Count == 0)
+                        {
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
+                        }
+                    }catch(Exception ex)
+                    {
+                        _log.Error("Error checking fiscal year existance " + ex.Message);
                     }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -238,9 +247,6 @@ namespace logicpos
         {
             _log.Debug("void InitUIEventBoxImageLogo(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
-
-            //VARS
-
             //Objects:EventBoxImageLogo
             Position eventBoxImageLogoPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxImageLogo.Position);
             Size eventBoxImageLogoSize = Utils.StringToSize(themeWindow.Objects.EventBoxImageLogo.Size);
@@ -248,6 +254,23 @@ namespace logicpos
             bool eventBoxImageLogoVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.VisibleWindow);
             Gdk.Color eventBoxImageLogoBackgroundColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxImageLogo.BackgroundColor);
 
+            //LOGO
+            Image imageLogo = new Image(Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]));
+            if (GlobalFramework.PluginLicenceManager != null)
+            {
+                string fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logicPOS_logicpulse_login.png"));
+
+                if (!string.IsNullOrEmpty(GlobalFramework.LicenceReseller) && GlobalFramework.LicenceReseller == "NewTech")
+                {
+                    fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_logicpulse_login.png"), "NT");
+                }
+
+                //var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
+                //Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
+                //imageLogo = new Image(pixbufImageLogo);
+            }
+
+            //fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 300, 50);
             //UI
             EventBox eventBoxImageLogo = new EventBox();
             eventBoxImageLogo.WidthRequest = eventBoxImageLogoSize.Width;
@@ -255,7 +278,10 @@ namespace logicpos
             eventBoxImageLogo.VisibleWindow = eventBoxImageLogoVisibleWindow;
             if (eventBoxImageLogoVisibleWindow) eventBoxImageLogo.ModifyBg(Gtk.StateType.Normal, eventBoxImageLogoBackgroundColor);
             if (eventBoxImageLogoVisible) _fixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
+         
+            eventBoxImageLogo.Add(imageLogo);
             eventBoxImageLogo.ButtonPressEvent += eventBoxImageLogo_ButtonPressEvent;
+            
         }
 
         private void InitUIEventBoxStatusBar1(dynamic pThemeWindow)

@@ -46,6 +46,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             set { _amount = value; }
         }
 
+		//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+        private decimal _totalOrder = 0.0m;
+        public decimal TotalOrder
+        {
+            get { return _totalOrder; }
+            set { _totalOrder = value; }
+        }
+
         public PosMoneyPadDialog(Window pSourceWindow, DialogFlags pDialogFlags, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
             : base(pSourceWindow, pDialogFlags)
         {
@@ -80,6 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _moneyPad.EntryChanged += _moneyPad_EntryChanged;
             //If pInitialValue defined, Assign it
             _amount = (pInitialValue > 0) ? pInitialValue : 0.0m;
+            _totalOrder = pTotalOrder;
 
             //Init Content
             Fixed fixedContent = new Fixed();
@@ -89,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             //Start Enable or Disable
-            _buttonOk.Sensitive = (pInitialValue > 0 && pInitialValue > pTotalOrder) ? true : false;
+            _buttonOk.Sensitive = (pInitialValue > 0 && pInitialValue >= pTotalOrder) ? true : false;
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
@@ -102,11 +111,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
-
+		//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
         void _moneyPad_EntryChanged(object sender, EventArgs e)
         {
             _amount = _moneyPad.DeliveryValue;
-            _buttonOk.Sensitive = _moneyPad.Validated;
+
+            if (_totalOrder != 0)
+            {
+                if (_amount <= _totalOrder)
+                    _buttonOk.Sensitive = _moneyPad.Validated;
+                else { _buttonOk.Sensitive = false; }
+            }
+            else
+            {
+                _buttonOk.Sensitive = _moneyPad.Validated;
+            }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

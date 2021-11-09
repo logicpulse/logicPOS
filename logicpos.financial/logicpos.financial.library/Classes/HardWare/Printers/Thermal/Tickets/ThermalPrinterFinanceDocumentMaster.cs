@@ -4,10 +4,12 @@ using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports.BOs;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
-using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using SkiaSharp;
+using SkiaSharp.QrCode.Image;
+using System.IO;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -77,10 +79,35 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Only Print if is in Portugal ex "Os artigos faturados...."
                 //Call base PrintDocumentTypeFooterString();
-                if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal || SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryAngola)
-                { 
-                    base.PrintDocumentTypeFooterString(_documentFinanceMasterList[0].DocumentTypeResourceStringReport);
-                }
+                try
+                {
+                    if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal || SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryAngola)
+                    {
+                        base.PrintDocumentTypeFooterString(_documentFinanceMasterList[0].DocumentTypeResourceStringReport);
+                        //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+                        //Print QRCode
+                        if (Convert.ToBoolean(GlobalFramework.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.ATDocQRCode))
+                        {
+                            //PrintQRCode with buffer
+                            //base.PrintQRCode(_documentMaster.ATDocQRCode);
+
+                            //PrintQRCode with image
+                            var qrCode = new QrCode(_documentMaster.ATDocQRCode, new Vector2Slim(256, 256), SKEncodedImageFormat.Png);
+                            using (var output = new FileStream(@"temp/qrcode.Png", FileMode.OpenOrCreate))
+                            {
+                                qrCode.GenerateImage(output);
+                            }
+                            using (var bitmap = new System.Drawing.Bitmap(@"temp/qrcode.Png"))
+                            {
+                                bitmap.Save(@"temp/qrcode.Bmp");
+                            }
+
+                            base.PrintQRCodeImage(new System.Drawing.Bitmap(@"temp/qrcode.Bmp"));
+
+
+                        }
+                    }
+                }catch(Exception ex) { _log.Error("QRCode print error: " + ex.Message); }
 
                 //Get Hash4Chars from Hash
                 string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(_documentMaster.Hash);
@@ -132,10 +159,25 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                  * We opt for "(%)" symbol to be added to value itself because of column title lenght limit, and for this, we changed from Decimal to String here.
                  * The conversion will be done when printing the DataRow for VatRate and Discount fields (FrameworkUtils.DecimalToString(pFinanceDetail.Vat)).
                  */
-                columns.Add(new TicketColumn("VatRate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                //Colum
+                if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal){
+                    columns.Add(new TicketColumn("VatRate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "IVA") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                }
+                else
+                {
+                    columns.Add(new TicketColumn("VatRate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                }                
                 columns.Add(new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 columns.Add(new TicketColumn("UnitMeasure", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
-                columns.Add(new TicketColumn("Price", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal)
+                {
+                    columns.Add(new TicketColumn("UnitPrice", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_short_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                }
+                else
+                {
+                    columns.Add(new TicketColumn("Price", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                }
+
                 columns.Add(new TicketColumn("Discount", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount_acronym") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 //columns.Add(new TicketColumn("TotalNet", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_totalnet_acronym, 9, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 columns.Add(new TicketColumn("TotalFinal", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_per_item"), 0, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));//Dynamic
@@ -202,7 +244,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 				dataRow[0] = pFinanceDetail.Vat;
                 dataRow[1] = pFinanceDetail.Quantity;
                 dataRow[2] = pFinanceDetail.UnitMeasure;
-                dataRow[3] = pFinanceDetail.Price * _documentFinanceMasterList[0].ExchangeRate;
+				//Layout talões PT - Preço Unitário em vez de Preço sem IVA [IN:016509]
+                dataRow[3] = pFinanceDetail.UnitPrice;
                 dataRow[4] = pFinanceDetail.Discount;
                 //dataRow[5] = pFinanceDetail.TotalNet * _documentFinanceMasterList[0].ExchangeRate;
                 /* fix for item total before CustomerDiscount: (TotalGross - ItemDiscount) + ItemVAT */

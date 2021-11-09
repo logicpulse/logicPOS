@@ -278,7 +278,9 @@ namespace logicpos.shared.App
         public static string RegexAlfaPlus = @"^[a-zA-ZÀ-ÿ&ºª'´\- ]*$";
         /* IN005968 */
         public static string RegexAlfaNumericPlus = @"^[À-ÿ&ºª,;'\.\\\/\*\- \w]*$"; /* IN009253 - '\w' includes '_' */
-        public static string RegexAlfaNumericExtended = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]*$";
+        public static string RegexAlfaNumericExtendedForMotive = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,50}$";
+        public static string RegexAlfaNumericExtended = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,200}$";
+        public static string RegexAlfaNumericEmail = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]*$";
         public static string RegexAlfaNumericFilePath = @"^[0-9A-Za-z\-\\\.:_\/ \s]*$";
         public static string RegexInteger = @"^\d+$";
         public static string RegexIntegerGreaterThanZero = @"^[1-9][0-9]*$";
@@ -293,7 +295,8 @@ namespace logicpos.shared.App
         public static string RegexDecimalGreaterEqualThanZeroFinancial = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,2})?\s*$";
         //http://www.nationwidebarcode.com/upc-country-codes/ 
         public static string RegexEan12andEan4 = @"^[0-9A-Za-z]+";    /* @"^\d{12,14}$|^560\d{12,14}$";*/// <EAN12 a 14 any COUNTRY (^560\d{9}$|^560\d{11}$ < EAN11 PT, ^600\d{9}$|^560\d{11}$ < EAN11 AO)
-        public static string RegexEmail = @"^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,4})$";
+		//Ficha Cliente: Possibilidade de múltiplos email's [IN:016510]
+        public static string RegexEmail = @"^(|([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([,.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$";
         public static string RegexGuid = @"^\b[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}\b$";
         //This will match valid dates in the format DD/MM/YYYY. It takes leap years into account when matching feb 29th and covers from 01/01/0000 to 31/12/9999
         //public static string RegexDate = @"^(((0[1-9]|[12][0-9]|3[01])[- /\\.](0[13578]|1[02])|(0[1-9]|[12][0-9]|30)[- /\\.](0[469]|11)|(0[1-9]|1\d|2[0-8])[- /\\.]02)[- /\\.]\d{4}|29[- /\\.]02[- /\\.](\d{2}(0[48]|[2468][048]|[13579][26])|([02468][048]|[1359][26])00))$";
@@ -379,6 +382,7 @@ namespace logicpos.shared.App
 
         // Undefined Record
         public static Guid XpoOidUndefinedRecord = new Guid("00000000-0000-0000-0000-000000000001");
+        public static Guid XpoOidUserRecord = new Guid("00000000-0000-0000-0000-000000000002");
         public static String XpoOidHiddenRecordsFilter = "00000000-0000-0000-0000-000000000%";
 
         //ArticleClass

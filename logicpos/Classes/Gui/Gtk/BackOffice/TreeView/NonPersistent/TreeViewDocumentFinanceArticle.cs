@@ -100,7 +100,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             columnProperties.Add(new GenericTreeViewColumnProperty("Token2") { Type = typeof(string), Visible = false });  //MediaNova:FriendlyID
             /*15*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false });
-
+            /*16*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("Article.Family") { Type = typeof(fin_articlefamily), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_family"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false });
+            /*17*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("Article.Subfamily") { Type = typeof(fin_articlesubfamily), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_subfamily"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false });
+            /*18*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("SerialNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"), Type = typeof(string), Visible = true });
+            /*19*/
+            columnProperties.Add(new GenericTreeViewColumnProperty("Warehouse") { Type = typeof(string), Visible = false });
             //init DataTable
             DataTable dataTable = GetDataTable(columnProperties, false);
 
@@ -151,7 +158,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                         //Column Fields
                         dataRow[0] = item.Key.ArticleOid;
-                        dataRow[1] = article;                   //Article.Code
+                        dataRow[1] = article.Code;                   //Article.Code
                         dataRow[2] = article;                   //Article.Designation
                         dataRow[3] = item.Value.Quantity;
                         //dataRow[4] = configurationUnitMeasure;// ConfigurationUnitMeasure.Acronym
@@ -170,6 +177,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         dataRow[13] = string.Empty;             //Token1
                         dataRow[14] = string.Empty;             //Token2
                         dataRow[15] = string.Empty;             //Notes
+                        dataRow[16] = article.Family;
+                        dataRow[17] = article.SubFamily;
                         //Add Row
                         resultDataTable.Rows.Add(dataRow);
                     }

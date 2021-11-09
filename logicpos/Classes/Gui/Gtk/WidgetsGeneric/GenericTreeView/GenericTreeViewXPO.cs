@@ -5,6 +5,7 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _sourceWindow = pSourceWindow;
             _dataSource = pXpoCollection;
 
-            if (_dataSource.Count > 0)
+            if (_dataSource != null &&_dataSource.Count > 0)
             {
                 _dataSourceRow = pXpoDefaultValue;
             }
@@ -232,24 +233,79 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         //Query
                         else if (_columnProperties[i].Query != null && _columnProperties[i].Query != string.Empty)
                         {
-                            columnValues[i] = ColumnPropertyGetQuery(_columnProperties[i].Query, dataRow.GetMemberValue("Oid"));
-                            // Decrypt Before use Format
-                            if (_columnProperties[i].DecryptValue)
+                            if (dataRow.GetType() == typeof(fin_articleserialnumber))
                             {
-                                columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]);
+                                if ((dataRow as fin_articleserialnumber).StockMovimentIn != null)
+                                {
+                                    var Oid = new Guid();
+                                    if (_columnProperties[i].Query == "SELECT Name as Result FROM erp_customer WHERE Oid = '{0}';")
+                                    {
+                                        Oid = (dataRow as fin_articleserialnumber).StockMovimentIn.Customer.Oid;
+                                    }
+                                        
+                                    else if (_columnProperties[i].Query == "SELECT DocumentNumber as Result FROM fin_documentfinancemaster WHERE Oid = '{0}';")
+                                    {
+                                        if ((dataRow as fin_articleserialnumber).StockMovimentOut != null)
+                                        {
+                                            Oid = (dataRow as fin_articleserialnumber).StockMovimentOut.DocumentMaster.Oid;
+                                        }
+                                    }
+                                    else if (_columnProperties[i].Query != string.Empty && dataRow.GetType() == typeof(fin_articleserialnumber))
+                                    {
+                                        Oid = (dataRow as fin_articleserialnumber).ArticleWarehouse.Location.Oid;
+                                    }
+
+                                    columnValues[i] = ColumnPropertyGetQuery(_columnProperties[i].Query, Oid);
+                                    // Decrypt Before use Format
+                                    if (_columnProperties[i].DecryptValue)
+                                    {
+                                        columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]);
+                                    }
+                                    //Format String using Column FormatProvider              
+                                    if (_columnProperties[i].FormatProvider != null && Convert.ToString(columnValues[i]) != string.Empty)
+                                    {
+                                        columnValues[i] = string.Format(_columnProperties[i].FormatProvider, "{0}", columnValues[i]);
+                                    }
+                                }
+                                else
+                                {
+                                    columnValues[i] = string.Empty;
+                                }
                             }
-                            //Format String using Column FormatProvider              
-                            if (_columnProperties[i].FormatProvider != null && Convert.ToString(columnValues[i]) != string.Empty)
+                            else
                             {
-                                columnValues[i] = string.Format(_columnProperties[i].FormatProvider, "{0}", columnValues[i]);
+                                columnValues[i] = ColumnPropertyGetQuery(_columnProperties[i].Query, dataRow.GetMemberValue("Oid"));
+                                // Decrypt Before use Format
+                                if (_columnProperties[i].DecryptValue)
+                                {
+                                    columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]);
+                                }
+                                //Format String using Column FormatProvider              
+                                if (_columnProperties[i].FormatProvider != null && Convert.ToString(columnValues[i]) != string.Empty)
+                                {
+                                    columnValues[i] = string.Format(_columnProperties[i].FormatProvider, "{0}", columnValues[i]);
+                                }
                             }
                         }
+
                         //If detect XPGuidObject Value Type (Value is a XPObject, Child Object), Get Value from its Chield Field (Related Table)
                         else if (dataRow.GetMemberValue(_columnProperties[i].Name) != null &&
                           dataRow.GetMemberValue(_columnProperties[i].Name).GetType().BaseType == typeof(XPGuidObject))
                         {
-                            columnValues[i] = GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName);
-                        }
+                            var value = GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName);
+                            if (value != null)
+                            {
+                                if (GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName).Equals("False") || GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName).Equals("True"))
+                                {
+                                    bool booleanValue = Convert.ToBoolean(GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName));
+                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                                }
+                                else
+                                {
+                                    columnValues[i] = GetXPGuidObjectChildValue(dataRow.GetMemberValue(_columnProperties[i].Name), fieldName, _columnProperties[i].ChildName);
+                                }
+                            }
+                        }        
                         //Get Default Value from Field Name
                         else
                         {
@@ -273,6 +329,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                     bool booleanValue = Convert.ToBoolean(dataRow.GetMemberValue(_columnProperties[i].Name));
                                     columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
                                 }
+                                else if (dataRow.GetMemberValue(_columnProperties[i].Name).Equals("False") || dataRow.GetMemberValue(_columnProperties[i].Name).Equals("True"))
+                                {
+                                    bool booleanValue = Convert.ToBoolean(dataRow.GetMemberValue(_columnProperties[i].Name));
+                                    columnValues[i] = (booleanValue) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_true") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_false");
+                                }
+                                //Enum
+                                else if (dataRow.GetType() == typeof(fin_articleserialnumber) && _columnProperties[i].Name == "Status")
+                                {
+                                    columnValues[i] = Convert.ToString(Enum.GetName(typeof(datalayer.Enums.ArticleSerialNumberStatus), Convert.ToInt32(dataRow.GetMemberValue(_columnProperties[i].Name))));
+                                }
+
                                 //Other Fields
                                 else
                                 {
@@ -281,6 +348,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                     if (_columnProperties[i].FormatProvider != null)
                                     {
                                         columnValues[i] = string.Format(_columnProperties[i].FormatProvider, "{0}", columnValues[i]);
+                                    }
+                                    if (_columnProperties[i].DecryptValue)
+                                    {
+                                        columnValues[i] = XPGuidObject.DecryptIfNeeded(columnValues[i]); 
                                     }
                                 }
                             }
@@ -409,7 +480,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         {
             //_dataSource.Remove(pDataSourceRow);
             //FIX for dataSource.Remove(pDataSourceRow), it wont work!!!!, now we use Session.Delete to ByPass this Problem
-            (pDataSourceRow as XPGuidObject).Session.Delete(pDataSourceRow);
+            //(pDataSourceRow as XPGuidObject).Session.Delete(pDataSourceRow);
+            if((pDataSourceRow as XPGuidObject) != null)
+            {
+                (pDataSourceRow as XPGuidObject).DeletedAt = DateTime.Now;
+                (pDataSourceRow as XPGuidObject).DeletedBy = GlobalFramework.LoggedUser;
+                (pDataSourceRow as XPGuidObject).Disabled = true;
+                (pDataSourceRow as XPGuidObject).Save();
+            }
             //Assign to Null to prevent UPDATE OR DELETE in a Deleted Object
             _dataSourceRow = null;
             //Remove from Model

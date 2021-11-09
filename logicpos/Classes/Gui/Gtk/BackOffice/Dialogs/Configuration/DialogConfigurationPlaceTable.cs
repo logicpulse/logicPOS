@@ -60,6 +60,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
+                if (_dataSourceRow != null && (_dataSourceRow as pos_configurationplacetable).Oid == SettingsApp.XpoOidConfigurationPlaceTableDefaultOpenTable) checkButtonDisabled.Sensitive = false;
+
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
             }

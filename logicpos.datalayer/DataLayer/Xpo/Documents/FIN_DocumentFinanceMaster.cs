@@ -580,6 +580,24 @@ namespace logicpos.datalayer.DataLayer.Xpo
             get { return fATDocCodeID; }
             set { SetPropertyValue<string>("ATDocCodeID", ref fATDocCodeID, value); }
         }
+		//
+        //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+        string fATCUD;
+        [Size(200)]
+        public string ATCUD
+        {
+            get { return fATCUD; }
+            set { SetPropertyValue<string>("ATCUD", ref fATCUD, value); }
+        }
+
+        //QRCode image
+        string fATDocQRCode;
+        [Size(200)]
+        public string ATDocQRCode
+        {
+            get { return fATDocQRCode; }
+            set { SetPropertyValue<string>("ATDocQRCode", ref fATDocQRCode, value); }
+        }
 
         //AT WebServices
         sys_systemauditat fATValidAuditResult;

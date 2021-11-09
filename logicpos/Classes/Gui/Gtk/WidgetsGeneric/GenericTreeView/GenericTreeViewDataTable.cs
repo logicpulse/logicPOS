@@ -265,7 +265,16 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         {
             _dataSource.Rows.Remove(pDataSourceRow as DataRow);
             //Assign to Null to prevent UPDATE OR DELETE in a Deleted Object
-            _dataSourceRow.Delete();
+            //_dataSourceRow.Delete();
+
+            //Prevent full delete because abcent 
+            if((pDataSourceRow as XPGuidObject) != null)
+            {
+                (pDataSourceRow as XPGuidObject).DeletedAt = DateTime.Now;
+                (pDataSourceRow as XPGuidObject).Disabled = true;
+                (pDataSourceRow as XPGuidObject).Save();
+            }
+
             _dataSourceRow = null;
 
             //Remove from Model and re-Index RowIndex and TotalRows

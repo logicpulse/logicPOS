@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Parameters
             _sourceWindow = pSourceWindow;
             //Init Local Vars
-            Size windowSize = new Size(780, 546);
+            Size windowSize = new Size(790, 546);
             //Image Icons
             string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_document_new.png");
             string fileActionPreview = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_preview.png");
@@ -196,6 +196,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (_pagePad3.ArticleBag.TotalFinal > 0)
                 {
+                    //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
+                    _pagePad3.ArticleBag = GetArticleBag();
                     result += string.Format(" : {0}", FrameworkUtils.DecimalToStringCurrency(_pagePad3.ArticleBag.TotalFinal * configurationCurrency.ExchangeRate, configurationCurrency.Acronym));
                     //Enable or Disabled Preview Button
                     _buttonPreview.Visible = true;

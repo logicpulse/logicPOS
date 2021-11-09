@@ -19,6 +19,18 @@ namespace logicpos
             get { return _label; }
             set { _label = value; }
         }
+        private Label _label2;
+        public Label Label2
+        {
+            get { return _label2; }
+            set { _label2 = value; }
+        }
+        private Label _label3;
+        public Label Label3
+        {
+            get { return _label3; }
+            set { _label3 = value; }
+        }
         private string _initialLabelText;
         public string LabelText
         {
@@ -57,7 +69,7 @@ namespace logicpos
             set
             {
                 _validated = value;
-                Utils.ValidateUpdateColors(this, _label, _validated);
+                Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
             }
         }
 
@@ -113,7 +125,7 @@ namespace logicpos
         {
             //Default FieldValidateValue is the Entry.Text
             _validated = FrameworkUtils.Validate(pValue, _rule, _required);
-            Utils.ValidateUpdateColors(this, _label, _validated);
+            Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
         }
 
         void EntryValidation_Changed(object sender, EventArgs e)

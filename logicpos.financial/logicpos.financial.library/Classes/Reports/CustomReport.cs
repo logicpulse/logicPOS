@@ -1,5 +1,6 @@
 ﻿using FastReport;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.documentviewer;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
@@ -9,6 +10,7 @@ using logicpos.financial.library.Classes.Reports.BOs.Customers;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.financial.library.Classes.Reports.BOs.System;
 using logicpos.financial.library.Classes.Reports.BOs.Users;
+using logicpos.resources;
 using logicpos.shared.Enums;
 using Patagames.Pdf.Net;
 using Patagames.Pdf.Net.Controls.WinForms;
@@ -17,6 +19,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
@@ -61,7 +64,7 @@ namespace logicpos.financial.library.Classes.Reports
             // If not in Debug mode use Stream reports from PluginSoftwareVendor else use local file location, usefulll to Develop Reports
             // This Workis without deleting temporary files equired for prevuiew and design loop
             List<string> tempReports = new List<string>();
-            if (!Debugger.IsAttached || _forceReleaseMode)
+            if ((!Debugger.IsAttached || _forceReleaseMode) && !string.IsNullOrEmpty(pTemplateBase))
             {
                 // Get Protected temporary Reports
                 tempReports = GlobalFramework.PluginSoftwareVendor.GetReportFileName(SettingsApp.SecretKey, _reportFileName, pTemplateBase);
@@ -348,7 +351,7 @@ namespace logicpos.financial.library.Classes.Reports
 
                                 if (!GlobalFramework.UsingThermalPrinter) exportXls = false;
 
-                                System.Windows.Forms.Application.Run(new startDocumentViewer(docPath, widthPDF-50, heightPDF-20, exportXls));
+                                System.Windows.Forms.Application.Run(new logicpos.documentviewer.startDocumentViewer(docPath, widthPDF-50, heightPDF-20, exportXls));
                             }
                             else
                             {
@@ -396,9 +399,26 @@ namespace logicpos.financial.library.Classes.Reports
             ///     Shows the value:  000 000,00
             /// </example>
             /// 
-            //string currentCulture = GlobalFramework.CurrentCulture.Name;
-            //string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
             string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
+            try
+            {
+                if (CultureInfo.CurrentUICulture.Name != currentCulture)
+                {
+                }
+            }
+            catch
+            {
+                currentCulture = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+            }
+
+
+            //string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
+            //CultureInfo.CurrentUICulture = GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["cultureFinancialRules"]);
+
+            if(currentCulture != "pt-AO" && currentCulture != "pt-PT" && currentCulture != "pt-BR" && currentCulture != "pt-MZ" )
+            {
+                currentCulture = "pt-MZ";
+            }
 
             List<string> financeDocumentsList = new List<string>
             {
@@ -545,17 +565,49 @@ namespace logicpos.financial.library.Classes.Reports
                 ///     Shows the value:  000 000,00
                 /// </example>
                 // Build Final Filename Report
-                //string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                //string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";                
+
                 string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
+                try
+                {
+                    if (CultureInfo.CurrentUICulture.Name != currentCulture)
+                    {
+                        //CultureInfo.CurrentUICulture = GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(currentCulture);
+                    }
+                }
+                catch
+                {
+                    currentCulture = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    //CultureInfo.CurrentUICulture = GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(currentCulture);
+                }
+
+                if (string.IsNullOrEmpty(currentCulture))
+                {
+                    currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];                    
+                }
+                _log.Debug("Current Culture: " + currentCulture);
+                if (currentCulture != "pt-AO" && currentCulture != "pt-PT" && currentCulture != "pt-BR" && currentCulture != "pt-MZ" )
+                {
+                    currentCulture = "pt-MZ";
+                }
+
                 //string currentCulture = GlobalFramework.CurrentCulture.Name;
                 string fileName = (documentMaster.DocumentType.WayBill) ? "ReportDocumentFinanceWayBill_" + currentCulture + ".frx" : "ReportDocumentFinance_" + currentCulture + ".frx";
+				//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+                if (Convert.ToBoolean(GlobalFramework.PreferenceParameters["PRINT_QRCODE"]) && SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryPortugal) && !string.IsNullOrEmpty(documentMaster.ATDocQRCode))
+                {
+                    fileName = fileName.Replace(".frx", "_QRCode.frx");
+                }
                 string fileUserReportDocumentFinance = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", fileName));
                 
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinance, FILENAME_TEMPLATE_BASE, pCopyNames);
-                customReport.DoublePass = (documentMaster.DocumentDetail.Count > SettingsApp.CustomReportReportDocumentFinanceMaxDetail);
+                customReport.DoublePass = (documentMaster.DocumentDetail.Count > SettingsApp.CustomReportReportDocumentFinanceMaxDetail);  
                 customReport.Hash4Chars = pHash4Chars;
                 customReport.SetParameterValue("Report_FileName_Logo", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO"]);
                 customReport.SetParameterValue("Report_FileName_Logo_Small", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO_SMALL"]);
+				//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+                customReport.SetParameterValue("ATDocQRCodeVisible", GlobalFramework.PreferenceParameters["PRINT_QRCODE"].ToString());
+                customReport.SetParameterValue("ATDocQRCode", documentMaster.ATDocQRCode);
                 
                 //Report Parameters
                 //customReport.SetParameterValue("Invoice Noº", 280);
@@ -568,7 +620,7 @@ namespace logicpos.financial.library.Classes.Reports
                 customReport.RegisterData(gcDocumentFinanceMaster, "DocumentFinanceMaster");
 
                 /* IN005976 for Mozambique deployment */
-                if (SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryMozambique))
+                if (SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryMozambique) || ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
                 {
                     //if (GlobalFramework.CurrentCulture.Name.Equals("pt-MZ")){
                     cfg_configurationcurrency defaultCurrencyForExchangeRate = 
@@ -645,12 +697,31 @@ namespace logicpos.financial.library.Classes.Reports
             try
             {
                 //string fileUserReportDocumentFinancePayment = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", "ReportDocumentFinancePayment.frx"));
-				//TK016319 - Certificação Angola - Alterações para teste da AGT
-				//Bug - Não eram utilizados templates por região nos recibos, apenas default
+                //TK016319 - Certificação Angola - Alterações para teste da AGT
+                //Bug - Não eram utilizados templates por região nos recibos, apenas default
                 string currentCulture = ConfigurationManager.AppSettings["cultureFinancialRules"];
+                try
+                {
+                    if (CultureInfo.CurrentUICulture.Name != currentCulture)
+                    {
+                        //CultureInfo.CurrentUICulture = GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(currentCulture);
+                    }
+                }
+                catch
+                {
+                    currentCulture = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    //CultureInfo.CurrentUICulture = GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(currentCulture);
+                }
+
+                if (currentCulture != "pt-AO" || currentCulture != "pt-PT" || currentCulture != "pt-BR" || currentCulture != "pt-MZ")
+                {
+                    currentCulture = "pt-MZ";
+                }
+
+
                 string fileFrxFromCulture = string.Format("ReportDocumentFinancePayment_" + currentCulture + ".frx");
                 string fileUserReportDocumentFinancePayment = FrameworkUtils.OSSlash(string.Format("{0}{1}\\{2}", GlobalFramework.Path["reports"], "UserReports", fileFrxFromCulture));
-
+                _log.Debug("Current Culture: " + currentCulture);
                 CustomReport customReport = new CustomReport(fileUserReportDocumentFinancePayment, FILENAME_TEMPLATE_BASE, pCopyNames);
 
                 //Get Result Objects from FRBOHelper
@@ -831,6 +902,247 @@ namespace logicpos.financial.library.Classes.Reports
             }
         }
 
+        public static void ProcessReportArticleStockWarehouse(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportArticleStockWarehouseList.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_warehouse"));
+                customReport.SetParameterValue("Report_FileName_Logo", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO"]);
+                customReport.SetParameterValue("Report_FileName_Logo_Small", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO_SMALL"]);
+                //customReport.SetParameterValue("Factura No", 280);
+
+                //Prepare and Declare FRBOGenericCollections 
+                FRBOGenericCollection<FRBOArticleStockWareHouseView> gcArticleStockWarehouse = new FRBOGenericCollection<FRBOArticleStockWareHouseView>(filter);
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcArticleStockWarehouse, "ArticleStockWarehouse");
+                if (customReport.GetDataSource("ArticleStockWarehouse") != null) customReport.GetDataSource("ArticleStockWarehouse").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        public static void ProcessReportArticleStock(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportArticleStockList.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_article"));
+                customReport.SetParameterValue("Report_FileName_Logo", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO"]);
+                customReport.SetParameterValue("Report_FileName_Logo_Small", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO_SMALL"]);
+                //customReport.SetParameterValue("Factura No", 280);
+
+                //Prepare and Declare FRBOGenericCollections 
+                FRBOGenericCollection<FRBOArticleStockView> gcArticleStock = new FRBOGenericCollection<FRBOArticleStockView>(filter);
+
+                //New collection to filter only unique results
+                //Starts with 0 results
+                FRBOGenericCollection<FRBOArticleStockView> gcArticleStockNew = new FRBOGenericCollection<FRBOArticleStockView>("Date <= '0001-01-01 00:00:00");
+                List<string> listArticles = new List<string>();
+
+                //Decrypt Name
+                foreach (FRBOArticleStockView line in gcArticleStock)
+                {
+                    string sqlCount = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE {0} AND Article = '{1}' AND (Disabled = 0 OR Disabled is NULL)", filter, line.Article);
+                    line.ArticleStockQuantity = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(sqlCount));
+                    line.ArticleStockDateDay = filterHumanReadable;
+                    //Only add unique Articles to new collection
+                    if (!listArticles.Contains(line.Article.ToString())) 
+                    {
+                        listArticles.Add(line.Article.ToString());
+                        gcArticleStockNew.Add(line);
+                    } 
+                }
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcArticleStockNew, "ArticleStock");
+                if (customReport.GetDataSource("ArticleStock") != null) customReport.GetDataSource("ArticleStock").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        public static void ProcessReportArticleStockSupplier(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+
+                string reportFile = GetReportFilePath("ReportArticleStockSupplierList.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_supplier"));
+                customReport.SetParameterValue("Report_FileName_Logo", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO"]);
+                customReport.SetParameterValue("Report_FileName_Logo_Small", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO_SMALL"]);
+                //customReport.SetParameterValue("Factura No", 280);
+
+                if (filter.Contains("stmOid"))
+                {
+                    var result1 = filterHumanReadable.Split(',');
+                    var result2 = result1[result1.Length-1].Substring(result1[result1.Length-1].IndexOf('\''), result1[result1.Length-1].LastIndexOf('\''));
+
+                    var result3 = filter.Substring(0, filter.IndexOf(')')+1);
+
+                    filter = result3 + " AND (stmDocumentNumber = " + result2 + ")";
+
+                }
+
+                //Prepare and Declare FRBOGenericCollections 
+                FRBOGenericCollection<FRBOArticleStockSupplierView> gcArticleStockSupplier = new FRBOGenericCollection<FRBOArticleStockSupplierView>(filter);
+
+                //Get Default defaultCurrency
+                cfg_configurationcurrency defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
+                //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
+                cfg_configurationcurrency configurationCurrency;                
+                configurationCurrency = (cfg_configurationcurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);                
+        
+                //Decrypt Name
+                foreach (FRBOArticleStockSupplierView line in gcArticleStockSupplier)
+                {
+                    line.ArticleStockCostumerName = GlobalFramework.PluginSoftwareVendor.Decrypt(line.ArticleStockCostumerName);
+                    if (string.IsNullOrEmpty(line.ArticleStockCurrency)) line.ArticleStockCurrency = configurationCurrency.Acronym;
+                }
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(gcArticleStockSupplier, "ArticleStockSupplier");
+                if (customReport.GetDataSource("ArticleStockSupplier") != null) customReport.GetDataSource("ArticleStockSupplier").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+
+        public static void ProcessReportVatSalesResumed(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+                string reportFile = GetReportFilePath("ReportDocumentFinanceVatSalesSummary.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_vat"));
+                customReport.SetParameterValue("Report_FileName_Logo", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO"]);
+                customReport.SetParameterValue("Report_FileName_Logo_Small", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO_SMALL"]);
+                customReport.SetParameterValue("Report Filter", filterHumanReadable);
+
+
+                string query = String.Format(@"SELECT cfOid as Oid, fdVat as Vat, ftDocumentTypeDesignation AS DocumentTypeDesignation, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax, SUM(fdTotalFinal) AS TotalFinal
+                                FROM view_documentfinance
+                                WHERE fdVat IS NOT NULL AND cfOid IS NOT NULL
+                                AND (ftDocumentTypeAcronym = 'FT' OR ftDocumentTypeAcronym = 'FS'  OR ftDocumentTypeAcronym = 'FR') AND fmOid IN (select Oid From fin_documentfinancemaster where Oid = fmOid and DocumentStatusStatus <> 'A')
+                                AND fmOid NOT IN (select DocumentParent From fin_documentfinancemaster where DocumentParent = fmOid AND DocumentStatusStatus <> 'A' AND (ftDocumentTypeAcronym = 'NC' OR ftDocumentTypeAcronym = 'ND' ))
+                                AND {0}
+                                GROUP BY cfOid, fdVat, ftDocumentTypeDesignation", filter);
+
+                //Prepare and Declare FRBOGenericCollections 
+                FRBOGenericCollection<FRBODocumentFinanceVatSalesSummary> GCDocumentFinanceVatSalesSummary = new FRBOGenericCollection<FRBODocumentFinanceVatSalesSummary>("", 0, query);
+
+                foreach (var item in GCDocumentFinanceVatSalesSummary)
+                {
+                    item.Vat = Convert.ToDecimal(FrameworkUtils.DecimalToString(item.Vat, GlobalFramework.CurrentCultureNumberFormat, "0"));
+                }
+
+                //Get Default defaultCurrency
+             cfg_configurationcurrency defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
+                //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
+                cfg_configurationcurrency configurationCurrency;
+                configurationCurrency = (cfg_configurationcurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
+                customReport.SetParameterValue("Currency", configurationCurrency.Acronym);
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(GCDocumentFinanceVatSalesSummary, "DocumentFinanceVatSalesSummary");
+                if (customReport.GetDataSource("DocumentFinanceVatSalesSummary") != null) customReport.GetDataSource("DocumentFinanceVatSalesSummary").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
+        public static void ProcessReportVatSalesByClassResumed(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
+        {
+            try
+            {
+                //Move This to CustomReport SubClasses ex Filename, Params, DataSources etc
+                string reportFile = GetReportFilePath("ReportDocumentFinanceVatSalesByClassSummary.frx");
+                CustomReport customReport = new CustomReport(reportFile, FILENAME_TEMPLATE_BASE_SIMPLE, 1);
+                //Report Parameters
+                customReport.SetParameterValue("Report Title", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_vat_by_article_class"));
+                customReport.SetParameterValue("Report_FileName_Logo", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO"]);
+                customReport.SetParameterValue("Report_FileName_Logo_Small", GlobalFramework.PreferenceParameters["REPORT_FILENAME_LOGO_SMALL"]);
+                customReport.SetParameterValue("Report Filter", filterHumanReadable);
+
+
+                string query = String.Format(@"SELECT cfOid as Oid, fdVat as Vat, acDesignation AS ArticleClassDesignation, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax, SUM(fdTotalFinal) AS TotalFinal
+                                FROM view_documentfinance
+                                WHERE arClass IS NOT NULL AND cfOid IS NOT NULL
+                                AND fmOid NOT IN (select DocumentParent From fin_documentfinancemaster where DocumentParent = fmOid AND DocumentStatusStatus <> 'A' AND (ftDocumentTypeAcronym = 'NC' OR ftDocumentTypeAcronym = 'ND' ))
+                                AND fmOid IN (SELECT Oid FROM fin_documentfinancemaster WHERE Oid = fmOid and DocumentStatusStatus <> 'A' AND (ftDocumentTypeAcronym = 'FT' OR ftDocumentTypeAcronym = 'FS'  OR ftDocumentTypeAcronym = 'FR'))
+                                AND {0}
+                                GROUP BY cfOid, fdVat, acDesignation", filter);
+
+                //Prepare and Declare FRBOGenericCollections 
+                FRBOGenericCollection<FRBODocumentFinanceVatSalesByClassSummary> GCDocumentFinanceVatSalesByClassSummary = new FRBOGenericCollection<FRBODocumentFinanceVatSalesByClassSummary>("", 0, query);
+
+
+
+                foreach (var item in GCDocumentFinanceVatSalesByClassSummary)
+                {
+                    item.Vat = Convert.ToDecimal(FrameworkUtils.DecimalToString(item.Vat, GlobalFramework.CurrentCultureNumberFormat, "0"));
+                }
+
+                //Get Default defaultCurrency
+                cfg_configurationcurrency defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
+                //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
+                cfg_configurationcurrency configurationCurrency;
+                configurationCurrency = (cfg_configurationcurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), defaultCurrency.Oid);
+                customReport.SetParameterValue("Currency", configurationCurrency.Acronym);
+
+                //Prepare and Enable DataSources
+                customReport.RegisterData(GCDocumentFinanceVatSalesByClassSummary, "DocumentFinanceVatSalesByClassSummary");
+                if (customReport.GetDataSource("DocumentFinanceVatSalesByClassSummary") != null) customReport.GetDataSource("DocumentFinanceVatSalesByClassSummary").Enabled = true;
+
+                //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
+                customReport.Process(pViewMode);
+                customReport.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+            }
+        }
+
         public static void ProcessReportSystemAudit(CustomReportDisplayMode pViewMode, string filter, string filterHumanReadable)
         {
             try
@@ -946,18 +1258,26 @@ namespace logicpos.financial.library.Classes.Reports
                 //Prepare and Declare FRBOGenericCollections
                 FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails> gcCustomerBalanceDetails = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceDetails>(filter);
                 FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceSummary> gcCustomerBalanceSummary = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceSummary>();
-
+                erp_customer customer = null;
+                List<erp_customer> customersList = new List<erp_customer>();
+                bool printTotalBalance = true;
                 // Decrypt Phase
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     foreach (var item in gcCustomerBalanceDetails)
                     {
+
                         if (item.EntityName != null) item.EntityName = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityName);
                         if (item.EntityFiscalNumber != null) item.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(item.EntityFiscalNumber);
-
+                       
+                        if (item.EntityOid != null) customer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), Guid.Parse(item.EntityOid));
+                        if (!customersList.Contains(customer))
+                        {
+                            customersList.Add(customer);
+                        }
                         foreach (var summary in gcCustomerBalanceSummary)
                         {
-                            if (summary.Oid.Equals(item.EntityOid))
+                            if (summary.Oid != null && summary.Oid.Equals(item.EntityOid))
                             {
                                 item.Balance = summary.Balance;
                                 item.CustomerSinceDate = summary.CustomerSinceDate;
@@ -966,11 +1286,16 @@ namespace logicpos.financial.library.Classes.Reports
                         }
                     }
                 }
+                if (customersList.Count > 1) printTotalBalance = false;
+                FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceSummary> gcCustomerBalanceSummaryTotal = new FRBOGenericCollection<FRBODocumentFinanceCustomerBalanceSummary>(string.Format("(EntityOid = '{0}')", customer.Oid));
+                customReport.SetParameterValue("PrintTotalBalance", printTotalBalance);
+                customReport.SetParameterValue("TotalCreditFinal", gcCustomerBalanceSummaryTotal.List[0].TotalCredit);
+                customReport.SetParameterValue("TotalDebitFinal", gcCustomerBalanceSummaryTotal.List[0].TotalDebit);
+                customReport.SetParameterValue("TotalBalanceFinal", gcCustomerBalanceSummaryTotal.List[0].Balance);
 
                 //Prepare and Enable DataSources
                 customReport.RegisterData(gcCustomerBalanceDetails, "CustomerBalanceDetails");
                 if (customReport.GetDataSource("CustomerBalanceDetails") != null) customReport.GetDataSource("CustomerBalanceDetails").Enabled = true;
-
                 //customReport.ReportInfo.Name = FILL THIS WITH REPORT NAME;
                 customReport.Process(pViewMode);
                 customReport.Dispose();
@@ -1067,7 +1392,7 @@ namespace logicpos.financial.library.Classes.Reports
 
                         foreach (var summary in gcCustomerBalanceSummary)
                         {
-                            if (summary.Oid.Equals(customerBalance.EntityOid))
+                            if (summary.Oid != null && summary.Oid.Equals(customerBalance.EntityOid))
                             {
                                 if (!string.IsNullOrEmpty(customerBalance.EntityOid))
                                 {
@@ -1280,10 +1605,17 @@ namespace logicpos.financial.library.Classes.Reports
                 {
                     groupHeaderBand.Condition = groupCondition;
                     groupHeaderBandText.Text = groupTitle;
+                    if (groupTitle == "[DocumentFinanceDetail.ArticleVat]")
+                    {
+
+                        groupHeaderBandText.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rates") + ": " + groupTitle + "%";
+                        string documentNodeFilter = " AND (ftSaftDocumentType = 1 AND (fmDocumentStatusStatus = 'N' OR fmDocumentStatusStatus = 'F' OR fmDocumentStatusStatus = 'A'))";
+                        filter += documentNodeFilter;
+                    }
                 }
                 else
                 {
-                    _log.Error("Error cant find Report Objects");
+                    _log.Error("Error cant find Report Objects"); 
                 }
 
                 //Prepare and Declare FRBOGenericCollections for non grouped and gouped reports
@@ -1351,8 +1683,7 @@ namespace logicpos.financial.library.Classes.Reports
                                         /* Setting to 998 to avoid Payed FT being grouped with other Payment Method created */
                                         item.PaymentMethodOrd = 998;
                                         item.PaymentMethodCode = 998;
-                                    }
-                                }
+                                    }                                }
                             }
 
                             /* IN009086 - when document has no area */
@@ -1488,6 +1819,119 @@ namespace logicpos.financial.library.Classes.Reports
                 _log.Error(ex.Message, ex);
             }
             return result;
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        //Barcode labels
+        public static void ProcessReportBarcodeLabel(CustomReportDisplayMode pViewMode, fin_articleserialnumber pArticleSerialNumber, string pFooter, bool pBigSize, List<fin_articleserialnumber> pListArticleSerialNumber = null)
+        {
+            string reportFile = (!pBigSize)
+                   ? GetReportFilePath("BarCodeTemplate_100x50.frx")
+                   : GetReportFilePath("BarCodeTemplate_40x30.frx")
+               ;
+
+            //Get template from selected article
+            if(pArticleSerialNumber != null && pArticleSerialNumber.Article.TemplateBarCode != null)
+            {
+                reportFile = pArticleSerialNumber.Article.TemplateBarCode.FileTemplate.ToString();
+            }
+            else if(pListArticleSerialNumber != null && pListArticleSerialNumber.Count > 0 && pListArticleSerialNumber[0].Article.TemplateBarCode != null)
+            {
+                reportFile = pListArticleSerialNumber[0].Article.TemplateBarCode.FileTemplate.ToString();
+            }
+            CustomReport customReport = new CustomReport(reportFile, "", 1);
+            if (string.IsNullOrEmpty(pFooter)) pFooter = GlobalFramework.PreferenceParameters["COMPANY_WEBSITE"];
+
+            //Report Parameters
+            //customReport.SetParameterValue("SerialNumber", pArticleSerialNumber.SerialNumber);
+            //customReport.SetParameterValue("ArticleName", pArticleSerialNumber.Article.Designation);
+            //customReport.SetParameterValue("ArticleRef", pArticleSerialNumber.Article.Code);
+            //customReport.SetParameterValue("footerText", pFooter
+
+            List<FRBOArticleSerialNumber> fRBOArticleSerialNumbers = new List<FRBOArticleSerialNumber>();
+     
+            if (GlobalFramework.PluginSoftwareVendor != null)
+            {
+                if (pListArticleSerialNumber != null)
+                {
+                    foreach(var item in pListArticleSerialNumber)
+                    {
+                        fRBOArticleSerialNumbers.Add(new FRBOArticleSerialNumber() { SerialNumber = item.SerialNumber, ArticleName = item.Article.Designation, ArticleRef = "ref." + item.Article.Code, footerText = pFooter, Oid = item.Oid.ToString() });
+                    }                    
+                }
+                else
+                {
+                    fRBOArticleSerialNumbers.Add(new FRBOArticleSerialNumber() { SerialNumber = pArticleSerialNumber.SerialNumber, ArticleName = pArticleSerialNumber.Article.Designation, ArticleRef = "ref." + pArticleSerialNumber.Article.Code, footerText = pFooter, Oid = pArticleSerialNumber.Oid.ToString() });
+                }        
+            }
+            //Prepare and Enable DataSources
+            customReport.RegisterData(fRBOArticleSerialNumbers, "ArticleSerialNumber");
+            //customReport.MaxPages = 1;
+            //Scripts - Dont Delete this Comment, may be usefull if we remove Script from Report File
+            //Print X Records per Data Band
+            FastReport.DataBand dataBand = (DataBand)customReport.FindObject("Data1");
+            int dataBandRec = 1;
+            //Used to Break Page on X Recs, Usefull to leave open space for Report Summary
+            int dataBandMaxRecs = 30;
+
+            dataBand.BeforePrint += delegate
+            {
+                var barcodeObject = (dataBand.Objects[0] as FastReport.Barcode.BarcodeObject);
+                barcodeObject.Text = (dataBand.DataSource.CurrentRow as FRBOArticleSerialNumber).SerialNumber;
+                barcodeObject.AutoSize = false;
+            };
+           
+
+            dataBand.AfterPrint += delegate
+            {
+                Console.WriteLine(string.Format("dataBandRec.RowNo:[{0}], dataBandMaxRecs:[{1}], , dataBand.RowNo[{2}], report.Pages.Count[{3}]", dataBandRec, dataBandMaxRecs, dataBand.RowNo, customReport.Pages.Count));
+                if (dataBandRec == dataBandMaxRecs)
+                {
+                    dataBandRec = 1;
+                    dataBand.StartNewPage = true;
+                }
+                else
+                {
+                    dataBandRec++;
+                    dataBand.StartNewPage = false;
+                };
+            };
+
+            if (customReport.GetDataSource("ArticleSerialNumber") != null) customReport.GetDataSource("ArticleSerialNumber").Enabled = true;
+            var dataSource = customReport.GetDataSource("ArticleSerialNumber");
+
+            customReport.Dictionary.SystemVariables.FindByName("PreparedPages").Value = (customReport.PreparedPages != null) ? customReport.PreparedPages.Count : 0;
+            //Call Report Prepare
+            customReport.Prepare(true);
+            if (!FrameworkUtils.IsLinux)
+            {
+                customReport.ShowPrepared(true);
+            }
+            else
+            {
+                string dateTimeFileFormat = SettingsApp.FileFormatDateTime;
+                string dateTime = FrameworkUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
+                string fileName = string.Format("print_{0}{1}{2}", dateTime, "barCodeLabel", ".pdf");
+                fileName = fileName.Replace('/', '-').Replace(' ', '_');
+                fileName = FrameworkUtils.OSSlash(string.Format(@"{0}{1}", GlobalFramework.Path["temp"], fileName));
+                FastReport.Export.Pdf.PDFExport export = new FastReport.Export.Pdf.PDFExport();
+                try
+                {
+                    customReport.Export(export, fileName);
+                }
+                catch (Exception ex)
+                {
+                    _log.Error("Error printing barcode label :: fileName [ " + fileName + " ]: " + ex.Message, ex);
+                }
+
+                System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName)));
+            }
+                
+            //customReport.Process(CustomReportDisplayMode.Print);
+
+            customReport.Dispose();
+
+            //customReport.Print();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

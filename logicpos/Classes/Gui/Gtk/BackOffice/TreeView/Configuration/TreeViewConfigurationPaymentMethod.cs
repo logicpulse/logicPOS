@@ -42,6 +42,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
             CriteriaOperator criteria = pXpoCriteria;
+            if (pXpoCriteria != null)
+            {
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+            }
+            else
+            {
+                criteria = CriteriaOperator.Parse($"(DeletedAt IS NULL)");
+            }
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             //Call Base Initializer

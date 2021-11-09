@@ -7,6 +7,8 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
+using System.IO;
+using Image = Gtk.Image;
 
 namespace logicpos
 {
@@ -25,7 +27,7 @@ namespace logicpos
         //Non Ui
         sys_userdetail _selectedUserDetail;
 
-        public StartupWindow(String pBackgroundImage)
+        public StartupWindow(String pBackgroundImage, bool needToUpdate)
             : base(pBackgroundImage)
         {
             //Build Window
@@ -33,6 +35,12 @@ namespace logicpos
 
             //InitPlataform
             InitPlataformParameters();
+
+            //show changelog
+            if (needToUpdate)
+            {
+                Utils.ShowChangeLog(this);
+            }
 
             //Show Notifications to all users after Show UI, here we dont have a logged user Yet
             Utils.ShowNotifications(this);
@@ -148,7 +156,7 @@ namespace logicpos
                     }
 
                     //NumberPadPin
-                    _numberPadPin = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height), true, NumberPadPinVisibleWindow, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
+                    _numberPadPin = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height),false, true, NumberPadPinVisibleWindow, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
                     //Create and Assign local touchButtonKeyPasswordReset Reference to numberPadPin.ButtonKeyResetPassword
                     //TouchButtonIcon touchButtonKeyPasswordReset = new TouchButtonIcon("touchButtonKeyPasswordReset_Green", System.Drawing.Color.Transparent, numberPadPinButtonPasswordResetImageFileName, numberPadPinButtonPasswordResetIconSize, numberPadPinButtonPasswordResetSize.Width, numberPadPinButtonPasswordResetSize.Height) { Sensitive = false };
                     //_numberPadPin.ButtonKeyResetPassword = touchButtonKeyPasswordReset;
@@ -217,10 +225,15 @@ namespace logicpos
                     }
 
                     //Label Version
-                    string appVersion = string.Format(logicpos.App.SettingsApp.AppSoftwareVersionFormat, FrameworkUtils.ProductVersion);
-                    if(GlobalFramework.LicenceReseller != null && GlobalFramework.LicenceReseller.ToString().ToLower() != "logicpulse" && GlobalFramework.LicenceReseller.ToString().ToLower() != "")
+                    string appVersion = "";
+                    if(GlobalFramework.LicenceReseller != null && GlobalFramework.LicenceReseller.ToString().ToLower() != "Logicpulse" && GlobalFramework.LicenceReseller.ToString().ToLower() != "")
                     {
-                        appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
+                        //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
+                        appVersion = string.Format("Powered by {0}© Vers. {1}", GlobalFramework.LicenceReseller, FrameworkUtils.ProductVersion);
+                    }
+                    else
+                    {
+                        appVersion = string.Format(logicpos.App.SettingsApp.AppSoftwareVersionFormat, FrameworkUtils.ProductVersion);
                     }
                     Label labelVersion = new Label(appVersion);
                     Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
@@ -247,7 +260,28 @@ namespace logicpos
                         fix.Put(buttonDeveloper, 10, 10);
                         buttonDeveloper.Clicked += buttonDeveloper_Clicked;
                     }
+                    //LOGO
+                    if (GlobalFramework.PluginLicenceManager != null)
+                    {
+                        string fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logicPOS_logicpulse_login.png"));
 
+                        if (!string.IsNullOrEmpty(GlobalFramework.LicenceReseller) && GlobalFramework.LicenceReseller == "NewTech")
+                        {
+                            fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_logicpulse_login.png"), "NT");
+                        }
+                            
+                       // var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, (GlobalApp.ScreenSize.Width - 550), (GlobalApp.ScreenSize.Height - 550));
+                       // Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
+                        //Image imageLogo = new Image(pixbufImageLogo);
+
+                        //fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 430, 80);
+                    }
+                    else
+                    {
+                        Image imageLogo = new Image(Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]));
+                        fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 430, 80);
+                    }
+                    //string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]);
                     ScreenArea.Add(fix);
 
                     //Force EntryPin to be the Entry with Focus

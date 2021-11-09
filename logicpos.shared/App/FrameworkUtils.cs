@@ -356,15 +356,18 @@ namespace logicpos.shared.App
             decimal priceTax = 0.0m;
 
             // Get priceTax Based on AppOperationMode : in retail mode VatOnTable is always null
-            if (SettingsApp.AppMode == AppOperationMode.Default && !GlobalFramework.AppUseBackOfficeMode)
+            if (SettingsApp.AppMode == AppOperationMode.Default)
             {
+				//Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
                 // Default : Restaurants with dual Tax ex Normal, TakeAway
-                priceTax = (pTaxSellType == TaxSellType.Normal) ? pArticle.VatOnTable.Value : pArticle.VatDirectSelling.Value;
+                if (pTaxSellType == TaxSellType.Normal && pArticle.VatOnTable != null) priceTax = pArticle.VatOnTable.Value;
+                else if (pArticle.VatDirectSelling != null) priceTax = pArticle.VatDirectSelling.Value;
             }
             else if (SettingsApp.AppMode == AppOperationMode.Retail)
             {
                 // Mono priceTax 
-                priceTax = pArticle.VatDirectSelling.Value;
+                if (pArticle.VatDirectSelling != null)
+                    priceTax = pArticle.VatDirectSelling.Value;
             }
 
             //Default Price, used when others are less or equal to zero
@@ -526,15 +529,7 @@ namespace logicpos.shared.App
             //Init RSACryptoServiceProvider with Key
             RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
 
-            try
-            {
-                rsaCryptoServiceProvider.FromXmlString(pPrivateKey);
-            }
-            catch(Exception ex)
-            {
-                _log.Debug(ex.Message);
-            }
-      
+            rsaCryptoServiceProvider.FromXmlString(pPrivateKey);
 
             //SHA1 Sign 
             byte[] signature = rsaCryptoServiceProvider.SignData(pMessage, CryptoConfig.MapNameToOID("SHA1"));
@@ -811,21 +806,28 @@ namespace logicpos.shared.App
 
         public static Guid GetGuidFromQuery(Session pSession, string pSql)
         {
-            var resultField = pSession.ExecuteScalar(pSql);
-
-            if (resultField != null)
+            try
             {
-                if (resultField.GetType() == typeof(string))
-                {
-                    return new Guid((string)resultField);
-                }
-                else if (resultField.GetType() == typeof(Guid))
-                {
-                    return (Guid)resultField;
-                }
-            }
+                var resultField = pSession.ExecuteScalar(pSql);
 
-            return Guid.Empty;
+                if (resultField != null)
+                {
+                    if (resultField.GetType() == typeof(string))
+                    {
+                        return new Guid((string)resultField);
+                    }
+                    else if (resultField.GetType() == typeof(Guid))
+                    {
+                        return (Guid)resultField;
+                    }
+                }
+
+                return Guid.Empty;
+            }
+            catch
+            {
+                return Guid.Empty;
+            }
         }
 
         public static XPGuidObject GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
@@ -1698,6 +1700,7 @@ namespace logicpos.shared.App
                 resultPermissions.Add("BACKOFFICE_MAN_SYSTEM_POS_MENU", true);
                 resultPermissions.Add("BACKOFFICE_MAN_SYSTEM_QUIT_MENU", true);
                 resultPermissions.Add("BACKOFFICE_MAN_SYSTEM_NOTIFICATION_MENU", true);
+                resultPermissions.Add("BACKOFFICE_MAN_SYSTEM_CHANGELOG_MENU", true);
 
                 if (pUser != null)
                 {

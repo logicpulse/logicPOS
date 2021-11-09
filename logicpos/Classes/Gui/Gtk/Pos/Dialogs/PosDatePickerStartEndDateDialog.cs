@@ -42,10 +42,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
             DateTime dateTimeStart = firstDayOfMonth;
             DateTime dateTimeEnd = lastDayOfMonth.AddHours(23).AddMinutes(59).AddSeconds(59);
-    
+
             InitUI(pDialogFlags, dateTimeStart, dateTimeEnd);
         }
-            
+
         public PosDatePickerStartEndDateDialog(Window pSourceWindow, DialogFlags pDialogFlags, DateTime pDateStart, DateTime pDateEnd)
             : base(pSourceWindow, pDialogFlags)
         {
@@ -71,17 +71,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart, SettingsApp.RegexDate, true);
             _entryBoxDateStart.EntryValidation.Text = _dateStart.ToString(SettingsApp.DateFormat);
             _entryBoxDateStart.EntryValidation.Validate();
-            _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;    
+            _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;
+            _entryBoxDateStart.EntryValidation.Changed += entryBoxDateStartEntryValidation_Changed;
             //Init DateEntry End
             _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd, SettingsApp.RegexDate, true);
             _entryBoxDateEnd.EntryValidation.Text = _dateEnd.ToString(SettingsApp.DateFormat);
             _entryBoxDateEnd.EntryValidation.Validate();
             _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;
+            _entryBoxDateEnd.EntryValidation.Changed += entryBoxDateEndEntryValidation_Changed;
 
             VBox vbox = new VBox(true, 0) { WidthRequest = 290 };
             vbox.PackStart(_entryBoxDateStart, true, true, 2);
             vbox.PackStart(_entryBoxDateEnd, true, true, 2);
-            
+
             _fixedContent.Put(vbox, 0, 0);
 
             //ActionArea Buttons
@@ -100,10 +102,32 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
         }
 
+        private void entryBoxDateEndEntryValidation_Changed(object sender, EventArgs e)
+        {
+            try
+            {
+                _dateEnd = Convert.ToDateTime(_entryBoxDateEnd.EntryValidation.Text).AddHours(23).AddMinutes(59).AddSeconds(59);
+                Validate();
+            }
+            catch { _buttonOk.Sensitive = false; }
+        }
+
+        private void entryBoxDateStartEntryValidation_Changed(object sender, EventArgs e)
+        {
+            try
+            {
+                _dateStart = Convert.ToDateTime(_entryBoxDateStart.EntryValidation.Text);
+                Validate();
+            }
+            catch { _buttonOk.Sensitive = false; }
+
+        }
+
         private void entryBoxDateStart_ClosePopup(object sender, EventArgs e)
         {
             _dateStart = _entryBoxDateStart.Value;
             Validate();
+
         }
 
         private void entryBoxDateEnd_ClosePopup(object sender, EventArgs e)
@@ -114,7 +138,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void Validate()
         {
-            _buttonOk.Sensitive = (_dateStart < _dateEnd); 
+            _buttonOk.Sensitive = (_dateStart < _dateEnd);
         }
     }
 }

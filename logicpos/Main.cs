@@ -13,6 +13,7 @@ using System.Globalization;
 using System.Threading;
 using logicpos.datalayer.Enums;
 using System.IO;
+using logicpos.financial.library.Classes.Stocks;
 
 //Log4Net
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -30,62 +31,45 @@ namespace logicpos
         private static string appGuid = "bfb677c2-a44a-46f8-93ab-d2d6a54e0b53";
         private static SingleProgramInstance _SingleProgramInstance = new SingleProgramInstance(appGuid);
 
+        private static Thread loadingThread;
+
+        public static Dialog DialogLoading;
+
         [STAThread]
         public static void Main(string[] args)
         {
             try
             {
                 // Show current Configuration File
-                 _log.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+                _log.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 
                 /* IN009203 - Mutex block */
                 using (_SingleProgramInstance)
                 {
                     // Init Settings Main Config Settings
                     GlobalFramework.Settings = ConfigurationManager.AppSettings;
-                    
-                    //IN009296 BackOffice - Mudar o idioma da aplicação
-                    SetCulture();
 
                     // BootStrap Paths
                     InitPaths();
-
-                    // Init PluginContainer
-                    GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
-
-                    // PluginSoftwareVendor
-                    GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
-                    if (GlobalFramework.PluginSoftwareVendor != null)
-                    {
-                        // Show Loaded Plugin
-                        _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
-                        // Init Plugin
-                        SettingsApp.InitSoftwareVendorPluginSettings();
-                        // Check if all Resources are Embedded
-                        GlobalFramework.PluginSoftwareVendor.ValidateEmbeddedResources();
-                    }
-                    else
-                    {
-                        // Show Loaded Plugin
-                        _log.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
-                    }
-
-                    // Try to Get LicenceManager IntellilockPlugin if in Release 
-                    if (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger)
-                    {
-                        GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
-                        // Show Loaded Plugin
-                        if (GlobalFramework.PluginLicenceManager != null)
-                        {
-                            _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
-                        }
-                    }
 
                     // Required before LicenseRouter
                     Application.Init();
 
                     //Render GTK Theme : In Start to Style UI in BootStrap Dialogs Error
                     Theme.ParseTheme(true, false);
+
+                    /* Show "loading" */
+                    _log.Debug("void StartApp() :: Show 'loading'");
+                    DialogLoading = Utils.GetThreadDialog(new Window("POS start loading"), true);
+                    loadingThread = new Thread(() => DialogLoading.Run());
+                    loadingThread.Start();
+
+                    //Start Loading plugins / resources
+                    FirstSteps();
+
+                    // Flush pending events to keep the GUI reponsive
+                    while (Gtk.Application.EventsPending())
+                        Gtk.Application.RunIteration();
 
                     /* IN009203 - prevent lauching multiple instances of application */
                     if (_SingleProgramInstance.IsSingleInstance)
@@ -102,7 +86,6 @@ namespace logicpos
                             //logicpos.shared.App.CustomRegion.RegisterCustomRegion();
                             //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
                         }
-
                         Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"));
                         return;
                     }
@@ -113,12 +96,69 @@ namespace logicpos
                 _log.Error(ex.Message, ex);
             }
         }
-        
+
+        private static void FirstSteps()
+        {
+            try
+            {
+                //IN009296 BackOffice - Mudar o idioma da aplicação
+                SetCulture();
+
+                // Init PluginContainer
+                GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
+
+                // PluginSoftwareVendor
+                GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
+                if (GlobalFramework.PluginSoftwareVendor != null)
+                {
+                    // Show Loaded Plugin
+                    _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                    // Init Plugin
+                    SettingsApp.InitSoftwareVendorPluginSettings();
+                    // Check if all Resources are Embedded
+                    GlobalFramework.PluginSoftwareVendor.ValidateEmbeddedResources();
+                }
+                else
+                {
+                    // Show Loaded Plugin
+                    _log.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
+                }
+
+              
+
+
+                // Init Stock Module
+                GlobalFramework.StockManagementModule = (GlobalFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+
+                // Try to Get LicenceManager IntellilockPlugin if in Release 
+                if (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger)
+                {
+                    GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
+                    // Show Loaded Plugin
+                    if (GlobalFramework.PluginLicenceManager != null)
+                    {
+                        _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                    }
+                }
+
+                loadingThread.Abort();
+
+                DialogLoading.Destroy();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex.Message, ex);
+                loadingThread.Abort();
+                DialogLoading.Destroy();
+            }
+
+        }
+
         /// <summary>
         /// Start application.
-		/// Please see IN009005 and IN009034 for details.
+        /// Please see IN009005 and IN009034 for details.
         /// </summary>
-		private static void StartApp()
+        private static void StartApp()
         {
 
 
@@ -130,19 +170,19 @@ namespace logicpos
             }
             else
             {
-                    bool dbExists = Utils.checkIfDbExists();
-                    // Boot LogicPos without pass in LicenseRouter
-                    _log.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
-                    /* IN009005: creating a new thread for app start up */
-                    System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartFrontOffice));
-                    GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.ThreadDialogReadyEvent));
-                    thread.Start();
+                bool dbExists = Utils.checkIfDbExists();
+                // Boot LogicPos without pass in LicenseRouter
+                _log.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
+                /* IN009005: creating a new thread for app start up */
+                System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartFrontOffice));
+                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.ThreadDialogReadyEvent));
+                thread.Start();
 
-                    /* Show "loading" */
-                    _log.Debug("void StartApp() :: Show 'loading'");
-                    GlobalApp.DialogThreadWork = Utils.GetThreadDialog(new Window("POS start up"), dbExists);
-                    GlobalApp.DialogThreadWork.Run();
-                    /* IN009005: end */              
+                /* Show "loading" */
+                _log.Debug("void StartApp() :: Show 'loading'");
+                GlobalApp.DialogThreadWork = Utils.GetThreadDialog(new Window("POS start up"), dbExists);
+                GlobalApp.DialogThreadWork.Run();
+                /* IN009005: end */
 
 
             }
@@ -175,6 +215,7 @@ namespace logicpos
             GlobalFramework.Path.Add("cache", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCache"]));
             GlobalFramework.Path.Add("plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]));
             GlobalFramework.Path.Add("documents", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathDocuments"]));
+            GlobalFramework.Path.Add("certificates", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]));
             //Create Directories
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"])));
@@ -206,25 +247,23 @@ namespace logicpos
         //IN009296 BackOffice - Mudar o idioma da aplicação
         public static void SetCulture()
         {
-            
             try
             {
                 if (!Utils.IsLinux)
                 {
                     string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
                     GlobalFramework.SessionXpo = Utils.SessionXPO();
-                    string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();                    
+                    string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
                     if (!Utils.getCultureFromOS(getCultureFromDB))
                     {
                         GlobalFramework.CurrentCulture = new CultureInfo("pt-PT");
-                        GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"]; 
+                        GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                     }
                     else
                     {
                         GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
                         GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
                     }
-                        
                 }
             }
             catch
@@ -242,7 +281,7 @@ namespace logicpos
                 }
 
                 _log.Error(String.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
-            }            
+            }
         }
     }
 }

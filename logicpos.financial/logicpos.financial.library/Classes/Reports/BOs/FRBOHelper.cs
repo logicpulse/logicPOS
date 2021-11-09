@@ -143,7 +143,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     notes += documentFinanceMasterView.Notes;
                     documentFinanceMasterView.Notes = notes;
                 }
-
+				//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+                documentFinanceMasterView.ATDocQRCode = documentFinanceMaster.ATDocQRCode;
                 /* Add ATDocCodeID to Notes field */
                 if (!string.IsNullOrEmpty(documentFinanceMasterView.ATDocCodeID))
                 {

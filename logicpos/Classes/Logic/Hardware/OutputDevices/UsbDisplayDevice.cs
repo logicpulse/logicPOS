@@ -69,7 +69,16 @@ namespace logicpos.Classes.Logic.Hardware
                     _communicationManager.CurrentTransmissionType = PCComm.CommunicationManager.TransmissionType.Hex;
                     _communicationManager.PortName = COM;
                     // Start With OpenPort
-                    OpenPort();
+					//Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
+                    try
+                    {
+                        OpenPort();
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error("Error opening Port: " + COM + ": " + ex.Message);
+                    }
+                    
 
                     //message = string.Format("UsbDisplayDevice: Device Not Found VID:{0} PID:{1}", pVid, pPid);
                     //_log.Error(message);
@@ -131,9 +140,9 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
-                    );
+                //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                //    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
+                //    );
                 _log.Error(ex.Message, ex);
                 return false;
             }

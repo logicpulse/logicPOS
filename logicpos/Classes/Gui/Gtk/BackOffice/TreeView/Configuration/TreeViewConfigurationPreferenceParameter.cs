@@ -37,6 +37,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure Criteria/XPCollection/Model : pXpoCriteria Parameter sent by BO
             CriteriaOperator criteria = pXpoCriteria;
+            if (pXpoCriteria != null)
+            {
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+            }
+            else
+            {
+                criteria = CriteriaOperator.Parse($"(DeletedAt IS NULL)");
+            }
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             this.RecordAfterUpdate += TreeViewConfigurationPreferenceParameter_RecordAfterUpdate;

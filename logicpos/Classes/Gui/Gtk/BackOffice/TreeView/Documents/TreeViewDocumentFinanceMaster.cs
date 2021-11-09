@@ -290,8 +290,15 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = pXpoCriteria;            
-
+            CriteriaOperator criteria = pXpoCriteria;
+            if (pXpoCriteria != null)
+            {
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+            }
+            else
+            {
+                criteria = CriteriaOperator.Parse($"(DeletedAt IS NULL)");
+            }
             //New Sort collection for pagination created (3/7/19) IN009223 IN009227
             SortingCollection sortCollection = new SortingCollection(sortProperty);
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = SettingsApp.PaginationRowsPerPage * base.CurrentPageNumber, Sorting = sortCollection };

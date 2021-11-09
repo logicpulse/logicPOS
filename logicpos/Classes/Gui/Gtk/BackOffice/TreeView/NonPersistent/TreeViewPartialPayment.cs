@@ -53,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             /*07*/
             columnProperties.Add(new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Visible = false });
             /*08*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity") { Type = typeof(Int16), Visible = false });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity") { Type = typeof(Decimal), Visible = false });
             /*09*/
             columnProperties.Add(new GenericTreeViewColumnProperty("UnitMeasure") { Type = typeof(String), Visible = false });
             /*10*/
@@ -110,6 +110,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Start Loop
             foreach (var item in articleBag)
             {
+				//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+                decimal remainQuantity = item.Value.Quantity;
                 article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
                 if (article.Type.HavePrice)
                 {
@@ -117,26 +119,49 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     for (int i = 0; i < item.Value.Quantity; i++)
                     {
-                        //Column Fields
-                        dataRow[0] = item.Key.ArticleOid;
-                        dataRow[1] = item.Value.Code;
-                        dataRow[2] = item.Key.Designation;
-                        dataRow[3] = item.Value.PriceFinal;
-                        dataRow[4] = item.Key.Vat;
-                        dataRow[5] = item.Key.Discount;
-                        dataRow[6] = configurationPlace.Designation;
-                        dataRow[7] = item.Key.Price;
-                        dataRow[8] = 1;
-                        dataRow[9] = item.Value.UnitMeasure;
-                        dataRow[10] = item.Value.PlaceOid;
-                        dataRow[11] = item.Value.TableOid;
-                        dataRow[12] = item.Value.PriceType;
-                        dataRow[13] = item.Value.Token1;
-                        dataRow[14] = item.Value.Token2;
-                        dataRow[15] = string.Empty;
-
+                        if(remainQuantity >= 1)
+                        {
+                            //Column Fields
+                            dataRow[0] = item.Key.ArticleOid;
+                            dataRow[1] = item.Value.Code;
+                            dataRow[2] = item.Key.Designation;
+                            dataRow[3] = item.Value.PriceFinal;
+                            dataRow[4] = item.Key.Vat;
+                            dataRow[5] = item.Key.Discount;
+                            dataRow[6] = configurationPlace.Designation;
+                            dataRow[7] = item.Key.Price;
+                            dataRow[8] = 1;
+                            dataRow[9] = item.Value.UnitMeasure;
+                            dataRow[10] = item.Value.PlaceOid;
+                            dataRow[11] = item.Value.TableOid;
+                            dataRow[12] = item.Value.PriceType;
+                            dataRow[13] = item.Value.Token1;
+                            dataRow[14] = item.Value.Token2;
+                            dataRow[15] = string.Empty;
+                        }
+                        else
+                        {
+                            //Column Fields
+                            dataRow[0] = item.Key.ArticleOid;
+                            dataRow[1] = item.Value.Code;
+                            dataRow[2] = item.Key.Designation;
+                            dataRow[3] = item.Value.PriceFinal * remainQuantity;
+                            dataRow[4] = item.Key.Vat;
+                            dataRow[5] = item.Key.Discount;
+                            dataRow[6] = configurationPlace.Designation;
+                            dataRow[7] = item.Key.Price;
+                            dataRow[8] = remainQuantity;
+                            dataRow[9] = item.Value.UnitMeasure;
+                            dataRow[10] = item.Value.PlaceOid;
+                            dataRow[11] = item.Value.TableOid;
+                            dataRow[12] = item.Value.PriceType;
+                            dataRow[13] = item.Value.Token1;
+                            dataRow[14] = item.Value.Token2;
+                            dataRow[15] = string.Empty;
+                        }
                         //Add Row
                         resultDataTable.Rows.Add(dataRow);
+                        remainQuantity--;
                     }
                 }
             }

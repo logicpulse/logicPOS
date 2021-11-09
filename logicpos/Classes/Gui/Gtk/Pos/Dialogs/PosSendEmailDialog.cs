@@ -42,7 +42,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _attachmentFileNames = attachmentFileNames;
 
             // EntryBoxValidationSubject
-            _entryBoxValidationSubject = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_subject"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxValidationSubject = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_subject"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericEmail, false);
             if (!string.IsNullOrEmpty(pSubject))
             {
                 _entryBoxValidationSubject.EntryValidation.Text = pSubject;
@@ -58,7 +58,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // EntryBoxValidationBcc
             _entryBoxValidationBcc = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_bcc"), KeyboardMode.AlfaNumeric, SettingsApp.RegexEmail, false);
 
-            _entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_body"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, true) { HeightRequest = 280 };
+            _entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_body"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericEmail, true) { HeightRequest = 280 };
             if (!string.IsNullOrEmpty(pBody))
             {
                 _entryBoxValidationMultiLine.EntryMultiline.Value.Text = pBody;

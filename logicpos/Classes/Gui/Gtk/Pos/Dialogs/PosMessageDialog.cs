@@ -90,13 +90,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Removed to be Transparent - CHANGE COLOR ex to System.Drawing.Color.Aqua to View TextView to Position
             _textviewLog.ModifyBase(StateType.Insensitive, Utils.ColorToGdkColor(System.Drawing.Color.Transparent));
 
+
             TextBuffer _textBuffer = _textviewLog.Buffer;
             _textBuffer.InsertAtCursor(pMessage);
 
             ScrolledWindow scrolledWindowTextviewLog = new ScrolledWindow();
-            scrolledWindowTextviewLog.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-            scrolledWindowTextviewLog.SetSizeRequest(sizeTextView.Width, sizeTextView.Height);
+            //scrolledWindowTextviewLog.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+            scrolledWindowTextviewLog.SetSizeRequest(sizeTextView.Width, sizeTextView.Height);            
             scrolledWindowTextviewLog.Add(_textviewLog);
+            scrolledWindowTextviewLog.Vadjustment.Value = scrolledWindowTextviewLog.Vadjustment.Upper ;
+
 
             //Init Content
             Fixed fixedContent = new Fixed();
@@ -107,6 +110,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 Gdk.Pixbuf pixBuf = Utils.FileToPixBuf(fileImageDialog);
                 Image imageDialog = new Image(pixBuf);
+
+
                 scrolledWindowTextviewLog.WidthRequest -= pixBuf.Width;
                 fixedContent.Put(imageDialog, 10, 10);
                 fixedContent.Put(scrolledWindowTextviewLog, pixBuf.Width + 25, 10);

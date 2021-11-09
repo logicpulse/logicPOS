@@ -9,6 +9,7 @@ using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,6 +17,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 //TK016231 - Backoffice - Importação/Exportação clientes/artigos 
 namespace logicpos
@@ -24,6 +26,8 @@ namespace logicpos
     {
         private static string _fileExtension;
         private static readonly System.Drawing.Size _sizeDialog = new System.Drawing.Size(800, 300);
+        private static Thread _threadImport;
+        private static Thread _threadExport;
 
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         // Import/Export XLS 
@@ -73,7 +77,7 @@ namespace logicpos
                         if (!string.IsNullOrEmpty(pathBackups))
                         {
                             fileName = Path.ChangeExtension(fileNamePacked, _fileExtension);
-                            ReadExcel(fileName, pSourceWindow, pImportFrom);                           
+                            ReadExcel(fileName, pSourceWindow, pImportFrom);
                         }
                         else
                         {
@@ -235,17 +239,36 @@ namespace logicpos
                 }
                 if (dtResult != null)
                 {
+                    int result = 0;
                     switch (pImportFrom)
                     {
                         case ImportExportFileOpen.OpenExcelArticles:
-                            SaveArticles(dtResult, pSourceWindow);
+                            _threadImport = new Thread(() => result = SaveArticles(dtResult, pSourceWindow));
+                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_import_articles"));
+                            _threadImport.Abort();
+                            //SaveArticles(dtResult, pSourceWindow);
                             break;
                         case ImportExportFileOpen.OpenExcelCostumers:
-                            SaveCostumers(dtResult, pSourceWindow);
+                            _threadImport = new Thread(() => result = SaveCostumers(dtResult, pSourceWindow));
+                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_import_customers"));
+                            _threadImport.Abort();
+                            //SaveCostumers(dtResult, pSourceWindow);
                             break;
 
                         default:
                             break;
+                    }
+                    if(result == 1)
+                    {
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_successfully"));
+                    }
+                    else if(result == -1)
+                    {
+                       Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_partial_import"));
+                    }
+                    else
+                    {
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_error"));
                     }
                 }
             }
@@ -290,8 +313,9 @@ namespace logicpos
         }
 
 
-        public static void SaveArticles(DataTable dtImport, Gtk.Window pSourceWindow)
+        public static int SaveArticles(DataTable dtImport, Gtk.Window pSourceWindow)
         {
+            var result = 0;
             string queryOrderedString = "SELECT * FROM fin_article";
             int indexDesignation = 0;
             bool flagImport = false;
@@ -320,120 +344,138 @@ namespace logicpos
 
             try
             {
-
-                string dc = articlesInDb.ResultSet[1].Rows[2].Values[0].ToString();
+                //string dc = articlesInDb.ResultSet[1].Rows[2].Values[0].ToString();
                 fin_article article = new fin_article();
                 bool firstRow = true;
                 foreach (DataRow row in dtImport.Rows)
                 {
-                    //Ignore firse row that contains column names
-                    if (firstRow)
-                    {
-                        firstRow = false;
-                        continue;
-                    }
-                    Guid oid = Guid.NewGuid();
-                    Guid oidFamily = Guid.NewGuid();
-                    Guid oidSubFamily = Guid.NewGuid();
 
-                    article.Disabled = false;
-                    article.Notes = null;
-                    string articleCreatedAt = dateTime;
-                    string articleCreatedBy = GlobalFramework.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
-                    article.CreatedWhere = null;
-                    string articleUpdatedAt = dateTime;
-                    string articleUpdatedBy = articleCreatedBy;
-                    article.UpdatedWhere = null;
-                    article.ButtonImage = null;
-                    var count = row.ItemArray.GetValue(4).ToString().Length;
-                    if (row.ItemArray.GetValue(4).ToString() != "") {
-                        var priceF = row.ItemArray.GetValue(4).ToString();   
-                        article.Price1 = Convert.ToDecimal(priceF);
-                    }
-                    else
-                    {
-                        article.Price1 = 0;
-                    }
-                    article.Price1Promotion = 0;
-                    article.Price2 = 0;
-                    article.Price2Promotion = 0;
-                    article.Price3 = 0;
-                    article.Price3Promotion = 0;
-                    article.Price4 = 0;
-                    article.Price4Promotion = 0;
-                    article.Price5 = 0;
-                    article.Price5Promotion = 0;
-                    article.Discount = 0;
-                    article.DefaultQuantity = 0;
-                    string articleFavorite = "0";
-                    string articleType = "edf4841e-e451-4c7b-9bd0-ee02860ba937";
-                    string articleClass = "6924945d-f99e-476b-9c4d-78fb9e2b30a3";
-                    string articleUnitMeasure = "4c81aa20-98ec-4497-b740-165cdb5fa395";
-                    string articleUnitSize = "18f564aa-7da5-4a1c-9091-8014638b818c";
-                    string articleVatOnTable = "cee00590-7317-41b8-af46-66560401096b";
-                    string articleVatDirectSelling = "cee00590-7317-41b8-af46-66560401096b";
-
-                    if (row.ItemArray.GetValue(0).ToString() != "") { article.Code = row.ItemArray.GetValue(0).ToString(); } else { article.Code = (Convert.ToInt32(GetLastCodeFromTable("fin_article")) + 10).ToString(); }
-                    
-                    if (row.ItemArray.GetValue(0).ToString() != "" && row.ItemArray.GetValue(0).ToString().Any(char.IsDigit)) { 
-                        
-                        article.Ord = Convert.ToUInt32(Regex.Match(row.ItemArray.GetValue(0).ToString(), @"\d+").Value.ToString());
-                    }
-                    else 
-                    { 
-                        article.Ord = (Convert.ToUInt32(GetLastCodeFromTable("fin_article")) + 10); 
-                    }                    
-                    article.Designation = row.ItemArray.GetValue(1).ToString();
                     try
                     {
-                        //Verifica se a Familia existe, se não existe, cria
-                        if (row.ItemArray.GetValue(2) != null || row.ItemArray.GetValue(2).ToString() != "")
+                        //Ignore firse row that contains column names
+                        if (firstRow)
                         {
-                            string sql = string.Format("SELECT OID FROM fin_articlefamily where Designation = '{0}'", row.ItemArray.GetValue(2));
-                            var sqlquery = GlobalFramework.SessionXpo.ExecuteScalar(sql);
-                            if (sqlquery == null && row.ItemArray.GetValue(2) != null)
-                            {
-                                string tableName = "fin_articlefamily";
-                                string lastCode = (Convert.ToInt32(GetLastCodeFromTable(tableName)) + 10).ToString();
+                            firstRow = false;
+                            continue;
+                        }
+                        Guid oid = Guid.NewGuid();
+                        Guid oidFamily = Guid.NewGuid();
+                        Guid oidSubFamily = Guid.NewGuid();
 
-                                string sqlInsertFamily = string.Format(@"INSERT INTO fin_articlefamily (oid, createdat, createdby, 
+                        article.Disabled = false;
+                        article.Notes = null;
+                        string articleCreatedAt = dateTime;
+                        string articleCreatedBy = GlobalFramework.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
+                        article.CreatedWhere = null;
+                        string articleUpdatedAt = dateTime;
+                        string articleUpdatedBy = articleCreatedBy;
+                        article.UpdatedWhere = null;
+                        article.ButtonImage = null;
+                        var count = row.ItemArray.GetValue(4).ToString().Length;
+                        if (row.ItemArray.GetValue(4).ToString() != "")
+                        {
+                            var priceF = row.ItemArray.GetValue(4).ToString();
+                            article.Price1 = Convert.ToDecimal(priceF);
+                        }
+                        else
+                        {
+                            article.Price1 = 0;
+                        }
+                        article.Price1Promotion = 0;
+                        article.Price2 = 0;
+                        article.Price2Promotion = 0;
+                        article.Price3 = 0;
+                        article.Price3Promotion = 0;
+                        article.Price4 = 0;
+                        article.Price4Promotion = 0;
+                        article.Price5 = 0;
+                        article.Price5Promotion = 0;
+                        article.Discount = 0;
+                        article.DefaultQuantity = 0;
+                        string articleFavorite = "0";
+                        string articleType = "edf4841e-e451-4c7b-9bd0-ee02860ba937";
+                        string articleClass = "6924945d-f99e-476b-9c4d-78fb9e2b30a3";
+                        string articleUnitMeasure = "4c81aa20-98ec-4497-b740-165cdb5fa395";
+                        string articleUnitSize = "18f564aa-7da5-4a1c-9091-8014638b818c";
+                        string articleVatOnTable = "cee00590-7317-41b8-af46-66560401096b";
+                        string articleVatDirectSelling = "cee00590-7317-41b8-af46-66560401096b";
+                        string articleVatExemptionReason = "f60f97c0-390e-4d76-90d7-204b6ea57949";
+
+                        string sql = "";
+
+
+
+                        if (row.ItemArray.GetValue(0).ToString() != "") { article.Code = row.ItemArray.GetValue(0).ToString(); } else { article.Code = (Convert.ToInt32(GetLastCodeFromTable("fin_article")) + 10).ToString(); }
+
+                        if (row.ItemArray.GetValue(0).ToString() != "" && row.ItemArray.GetValue(0).ToString().Any(char.IsDigit))
+                        {
+
+                            article.Ord = Convert.ToUInt32(Regex.Match(row.ItemArray.GetValue(0).ToString(), @"\d+").Value.ToString());
+                        }
+                        else
+                        {
+                            article.Ord = (Convert.ToUInt32(GetLastCodeFromTable("fin_article")) + 10);
+                        }
+                        article.Designation = row.ItemArray.GetValue(1).ToString();
+                        try
+                        {
+                            if (row.ItemArray.GetValue(5) != null || row.ItemArray.GetValue(5).ToString() != "")
+                            {
+                                sql = string.Format("SELECT OID FROM fin_configurationvatrate where Value = '{0}'", Convert.ToDecimal(row.ItemArray.GetValue(5)).ToString("F").Replace(",", "."));
+                                articleVatOnTable = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                                articleVatDirectSelling = articleVatOnTable;
+                            }
+
+                            //Verifica se a Familia existe, se não existe, cria
+                            if (row.ItemArray.GetValue(2) != null || row.ItemArray.GetValue(2).ToString() != "")
+                            {
+                                sql = string.Format("SELECT OID FROM fin_articlefamily where Designation = '{0}'", row.ItemArray.GetValue(2));
+                                var sqlquery = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                                if (sqlquery == null && row.ItemArray.GetValue(2) != null)
+                                {
+                                    string tableName = "fin_articlefamily";
+                                    string lastCode = (Convert.ToInt32(GetLastCodeFromTable(tableName)) + 10).ToString();
+
+                                    string sqlInsertFamily = string.Format(@"INSERT INTO fin_articlefamily (oid, createdat, createdby, 
                                                         updatedat, updatedby, Ord, Code, Designation) values (
                                                          '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')",
-                                                            oidFamily, articleCreatedAt, articleCreatedBy, articleUpdatedAt,
-                                                            articleUpdatedBy, lastCode, lastCode, row.ItemArray.GetValue(2));
-                                GlobalFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
-                                articleFamily = oidFamily.ToString();
+                                                                oidFamily, articleCreatedAt, articleCreatedBy, articleUpdatedAt,
+                                                                articleUpdatedBy, lastCode, lastCode, row.ItemArray.GetValue(2));
+                                    GlobalFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
+                                    articleFamily = oidFamily.ToString();
+                                }
+                                else { articleFamily = sqlquery.ToString(); }
                             }
-                            else { articleFamily = sqlquery.ToString(); }
-                        }
-                        else articleFamily = null;
+                            else articleFamily = null;
 
 
-                        //Verifica se a Sub Familia existe, se não existe, cria
-                        if (row.ItemArray.GetValue(3) != null)
-                        {
-                            string sql = string.Format("SELECT OID FROM fin_articlesubfamily where Designation = '{0}'", row.ItemArray.GetValue(3));
-                            var sqlquery = GlobalFramework.SessionXpo.ExecuteScalar(sql);
-                            if (sqlquery == null && row.ItemArray.GetValue(3) != null)
+                            //Verifica se a Sub Familia existe, se não existe, cria
+                            if (row.ItemArray.GetValue(3) != null)
                             {
-                                string tableName = "fin_articlesubfamily";
-                                string lastCode = (Convert.ToInt32(GetLastCodeFromTable(tableName)) + 10).ToString();
-                                string sqlInsertFamily = string.Format(@"INSERT INTO fin_articlesubfamily (oid, createdat, createdby, 
+                                sql = string.Format("SELECT OID FROM fin_articlesubfamily where Designation = '{0}'", row.ItemArray.GetValue(3));
+                                var sqlquery = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                                if (sqlquery == null && row.ItemArray.GetValue(3) != null)
+                                {
+                                    string tableName = "fin_articlesubfamily";
+                                    string lastCode = (Convert.ToInt32(GetLastCodeFromTable(tableName)) + 10).ToString();
+                                    string sqlInsertFamily = string.Format(@"INSERT INTO fin_articlesubfamily (oid, createdat, createdby, 
                                                         updatedat, updatedby, Ord, Code, Designation, Family) values (
                                                          '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
-                                                            oidSubFamily, articleCreatedAt, articleCreatedBy, articleUpdatedAt,
-                                                            articleUpdatedBy, lastCode, lastCode, row.ItemArray.GetValue(3), articleFamily);
-                                GlobalFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
-                                articleSubFamily = oidSubFamily.ToString();
+                                                                oidSubFamily, articleCreatedAt, articleCreatedBy, articleUpdatedAt,
+                                                                articleUpdatedBy, lastCode, lastCode, row.ItemArray.GetValue(3), articleFamily);
+                                    GlobalFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
+                                    articleSubFamily = oidSubFamily.ToString();
+                                }
+                                else { articleSubFamily = sqlquery.ToString(); }
                             }
-                            else { articleSubFamily = sqlquery.ToString(); }
-                        }
-                        else articleSubFamily = null;
+                            else articleSubFamily = null;
+                            try
+                            {
 
-                        if (!articlesInDbCollection.ContainsKey(row.ItemArray.GetValue(1).ToString()))
-                        {
-                            string user = GlobalFramework.LoggedUser.ToString();
-                            string sql = string.Format(@"insert into fin_article (Oid, Notes, CreatedAt, CreatedBy, CreatedWhere, UpdatedAt, 
+                                if (!articlesInDbCollection.ContainsKey(row.ItemArray.GetValue(1).ToString()))
+                                {
+                                    string user = GlobalFramework.LoggedUser.ToString();
+                                    sql = string.Format(@"insert into fin_article (Oid, Notes, CreatedAt, CreatedBy, CreatedWhere, UpdatedAt, 
                                                 UpdatedBy, UpdatedWhere, ButtonImage, Price1, Price1Promotion, Price2, Price2Promotion,
                                                 Price3, Price3Promotion, Price4, Price4Promotion, Price5, Price5Promotion, Discount, DefaultQuantity, 
                                                 Type, Class, UnitMeasure, UnitSize, VatOnTable, 
@@ -441,45 +483,64 @@ namespace logicpos
                                                 values('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}'
                                                 ,'{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{22}','{23}','{24}'
                                                 ,'{25}','{26}','{27}','{28}','{29}','{30}','{31}','{32}')", oid, article.Notes, articleCreatedAt, articleCreatedBy,
-                                                        article.CreatedWhere, articleUpdatedAt, articleUpdatedBy, article.UpdatedWhere,
-                                                        article.ButtonImage, article.Price1, article.Price1Promotion, article.Price2, article.Price2Promotion,
-                                                        article.Price3, article.Price3Promotion, article.Price4, article.Price4Promotion, article.Price5,
-                                                        article.Price5Promotion, article.Discount, article.DefaultQuantity, articleFavorite, articleType,
-                                                        articleClass, articleUnitMeasure, articleUnitSize, articleVatOnTable, articleVatDirectSelling,
-                                                        article.Code, article.Ord, article.Designation, articleFamily, articleSubFamily).Replace("''", "NULL");
-                            GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
-                        }
-                        else
-                        {
-                            string Eoid = articlesInDbCollection[(row.ItemArray.GetValue(1).ToString())].ToString();
-                            string sql = string.Format(@"update fin_article set Notes='{1}', 
+                                                                article.CreatedWhere, articleUpdatedAt, articleUpdatedBy, article.UpdatedWhere,
+                                                                article.ButtonImage, article.Price1, article.Price1Promotion, article.Price2, article.Price2Promotion,
+                                                                article.Price3, article.Price3Promotion, article.Price4, article.Price4Promotion, article.Price5,
+                                                                article.Price5Promotion, article.Discount, article.DefaultQuantity, articleFavorite, articleType,
+                                                                articleClass, articleUnitMeasure, articleUnitSize, articleVatOnTable, articleVatDirectSelling,
+                                                                article.Code, article.Ord, article.Designation, articleFamily, articleSubFamily).Replace("''", "NULL");
+                                    GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
+                                }
+                                else
+                                {
+                                    string Eoid = articlesInDbCollection[(row.ItemArray.GetValue(1).ToString())].ToString();
+                                    sql = string.Format(@"update fin_article set Notes='{1}', 
                                                 UpdatedAt='{5}',UpdatedBy='{6}', UpdatedWhere='{7}', Price1='{9}',
                                                 code='{28}', ord='{29}', Designation='{30}', family='{31}', subfamily='{32}' WHERE OID='{33}'", oid, article.Notes, articleCreatedAt, articleCreatedBy,
-                                                        article.CreatedWhere, articleUpdatedAt, articleUpdatedBy, article.UpdatedWhere,
-                                                        article.ButtonImage, article.Price1, article.Price1Promotion, article.Price2, article.Price2Promotion,
-                                                        article.Price3, article.Price3Promotion, article.Price4, article.Price4Promotion, article.Price5,
-                                                        article.Price5Promotion, article.Discount, article.DefaultQuantity, articleFavorite, articleType,
-                                                        articleClass, articleUnitMeasure, articleUnitSize, articleVatOnTable, articleVatDirectSelling,
-                                                        article.Code, article.Ord, article.Designation, articleFamily, articleSubFamily, Eoid).Replace("''", "NULL");
-                            GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
+                                                                article.CreatedWhere, articleUpdatedAt, articleUpdatedBy, article.UpdatedWhere,
+                                                                article.ButtonImage, article.Price1, article.Price1Promotion, article.Price2, article.Price2Promotion,
+                                                                article.Price3, article.Price3Promotion, article.Price4, article.Price4Promotion, article.Price5,
+                                                                article.Price5Promotion, article.Discount, article.DefaultQuantity, articleFavorite, articleType,
+                                                                articleClass, articleUnitMeasure, articleUnitSize, articleVatOnTable, articleVatDirectSelling,
+                                                                article.Code, article.Ord, article.Designation, articleFamily, articleSubFamily, Eoid).Replace("''", "NULL");
+                                    GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _log.Error("Error:  " + ex.Message, ex);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _log.Error("Error:  " + ex.Message, ex);
+                            flagImport = true;
                         }
                     }
                     catch (Exception ex)
                     {
                         _log.Error("Error:  " + ex.Message, ex);
-                        flagImport = true;
                     }
+
                 }
-                if (!flagImport) { Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_successfully")); }
-                else { Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_partial_import")); }
+
+                if (!flagImport) { return 1; }
+                else { return -1; }
+
             }
-            catch
+            catch (Exception ex)
             {
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_error"));
+                _log.Error("Error:  " + ex.Message, ex);
+                return result;
+            }
+            finally
+            {
+                //Notify WakeupMain and Call ReadyEvent
+                GlobalApp.DialogThreadNotify.WakeupMain();
             }
         }
 
-        public static void SaveCostumers(DataTable dtImport, Gtk.Window pSourceWindow)
+        public static int SaveCostumers(DataTable dtImport, Gtk.Window pSourceWindow)
         {
             int indexFiscalNumber = 0;
             bool flagImport = false;
@@ -556,7 +617,7 @@ namespace logicpos
                                                 ,'{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}')", oid, costumerCreatedAt, costumerCreatedBy, costumer.CreatedWhere,
                                                 costumerUpdatedAt, costumerUpdatedBy, costumer.UpdatedWhere, costumer.Code, costumer.Ord, costumer.Name,
                                                 costumer.Address, costumer.Locality, costumer.ZipCode, costumer.City, costumer.Phone,
-                                                costumer.MobilePhone, costumer.Email, customerType, priceType, country, costumer.FiscalNumber, oid.ToString().Replace("-","").Substring(0,21)
+                                                costumer.MobilePhone, costumer.Email, customerType, priceType, country, costumer.FiscalNumber, oid.ToString().Replace("-", "").Substring(0, 21)
                                                 ).Replace("''", "NULL");
                             GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
                         }
@@ -579,21 +640,33 @@ namespace logicpos
                         flagImport = true;
                     }
                 }
-                if (!flagImport) { Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_successfully")); }
-                else { Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_partial_import")); }
+                if (!flagImport) { return 1; }
+                else { return -1; }
             }
             catch
             {
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_error"));
+                return 0;
+            }
+            finally
+            {
+                GlobalApp.DialogThreadNotify.WakeupMain();
             }
         }
 
         public static void CreateDataTableFromDB(string path, Gtk.Window pSourceWindow, ImportExportFileOpen pImportFrom)
         {
             DataTable importFromDBdataTable = new DataTable();
-            string queryOrderedString = @"SELECT t1.Code, t1.Designation, t2.Designation As Family, t3.Designation As SubFamily, t1.Price1
-                                        FROM fin_article t1 , fin_articlefamily t2 , fin_articlesubfamily t3 
-                                        WHERE t1.Family = t2.Oid AND t1.SubFamily = t3.Oid";
+
+            string queryOrderedString = @"SELECT t1.Code, t1.Designation, t2.Designation As Family, t3.Designation As SubFamily, t1.Price1, t4.Value AS VAT
+                                        FROM fin_article t1 , fin_articlefamily t2 , fin_articlesubfamily t3,  fin_configurationvatrate t4
+                                        WHERE t1.Family = t2.Oid AND t1.SubFamily = t3.Oid AND t1.VatOnTable = t4.Oid";
+
+            if (SettingsApp.AppMode == AppOperationMode.Retail)
+            {
+                queryOrderedString = @"SELECT t1.Code, t1.Designation, t2.Designation As Family, t3.Designation As SubFamily, t1.Price1, t4.Value AS VAT
+                                        FROM fin_article t1 , fin_articlefamily t2 , fin_articlesubfamily t3,  fin_configurationvatrate t4
+                                        WHERE t1.Family = t2.Oid AND t1.SubFamily = t3.Oid AND t1.VatDirectSelling = t4.Oid";
+            }
 
             string queryCostumerString = "SELECT Code, FiscalNumber, Name, Address, Locality, ZipCode, City, Phone, MobilePhone, Email FROM erp_customer";
 
@@ -612,12 +685,13 @@ namespace logicpos
             int indexFamily = 0;
             int indexSubFamily = 0;
             int indexPrice = 0;
+            int indexVAT = 0;
 
             try
             {
-                    switch (pImportFrom)
-                    {
-                        case ImportExportFileOpen.ExportArticles:
+                switch (pImportFrom)
+                {
+                    case ImportExportFileOpen.ExportArticles:
                         var articlesInDb = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(queryOrderedString);
 
                         for (int w = 0; w < articlesInDb.ResultSet[0].Rows.Length; w++)
@@ -646,7 +720,12 @@ namespace logicpos
                             {
                                 importFromDBdataTable.Columns.Add(articlesInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
                                 indexPrice = w;
-                            }                        
+                            }
+                            if (articlesInDb.ResultSet[0].Rows[w].Values[0].Equals("VAT"))
+                            {
+                                importFromDBdataTable.Columns.Add(articlesInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexVAT = w;
+                            }
 
                         }
                         for (int j = 0; j < articlesInDb.ResultSet[1].Rows.Length; j++)
@@ -655,74 +734,83 @@ namespace logicpos
                             articlesInDb.ResultSet[1].Rows[j].Values[indexDesignation] == null ? "" : articlesInDb.ResultSet[1].Rows[j].Values[indexDesignation].ToString(),
                             articlesInDb.ResultSet[1].Rows[j].Values[indexFamily] == null ? "" : articlesInDb.ResultSet[1].Rows[j].Values[indexFamily].ToString(),
                             articlesInDb.ResultSet[1].Rows[j].Values[indexSubFamily] == null ? "" : articlesInDb.ResultSet[1].Rows[j].Values[indexSubFamily].ToString(),
-                            articlesInDb.ResultSet[1].Rows[j].Values[indexPrice] == null ? "" : articlesInDb.ResultSet[1].Rows[j].Values[indexPrice].ToString()
+                            articlesInDb.ResultSet[1].Rows[j].Values[indexPrice] == null ? "" : articlesInDb.ResultSet[1].Rows[j].Values[indexPrice].ToString(),
+                            articlesInDb.ResultSet[1].Rows[j].Values[indexVAT] == null ? "" : articlesInDb.ResultSet[1].Rows[j].Values[indexVAT].ToString()
                             );
                         }
-                        
+                        bool result = false;
+                        _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_articles"));
+                        if (result)
+                        {
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
+                        }
+                        else
+                        {
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
+                        }
+                        break;
 
-                        ExportExcel(importFromDBdataTable, path, true, pSourceWindow);
-                            break;
+                    case ImportExportFileOpen.ExportCustomers:
 
-                        case ImportExportFileOpen.ExportCustomers:
+                        var customersInDb = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(queryCostumerString);
 
-                            var customersInDb = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(queryCostumerString);
-
-                            for (int w = 0; w < customersInDb.ResultSet[0].Rows.Length; w++)
+                        for (int w = 0; w < customersInDb.ResultSet[0].Rows.Length; w++)
+                        {
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Code"))
                             {
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Code"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexCode = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("FiscalNumber"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexFiscalNumber = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Name"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexName = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Address"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexAddress = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Locality"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexLocality = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("ZipCode"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexZipCode = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("City"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexCity = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Phone"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexPhone = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("MobilePhone"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexMobilePhone = w;
-                                }
-                                if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Email"))
-                                {
-                                    importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
-                                    indexEmail = w;
-                                }
-
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexCode = w;
                             }
-                            for (int j = 2; j < customersInDb.ResultSet[1].Rows.Length; j++)
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("FiscalNumber"))
                             {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexFiscalNumber = w;
+                            }
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Name"))
+                            {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexName = w;
+                            }
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Address"))
+                            {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexAddress = w;
+                            }
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Locality"))
+                            {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexLocality = w;
+                            }
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("ZipCode"))
+                            {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexZipCode = w;
+                            }
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("City"))
+                            {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexCity = w;
+                            }
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Phone"))
+                            {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexPhone = w;
+                            }
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("MobilePhone"))
+                            {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexMobilePhone = w;
+                            }
+                            if (customersInDb.ResultSet[0].Rows[w].Values[0].Equals("Email"))
+                            {
+                                importFromDBdataTable.Columns.Add(customersInDb.ResultSet[0].Rows[w].Values[0].ToString(), typeof(string));
+                                indexEmail = w;
+                            }
+
+                        }
+                        for (int j = 2; j < customersInDb.ResultSet[1].Rows.Length; j++)
+                        {
                             importFromDBdataTable.Rows.Add(customersInDb.ResultSet[1].Rows[j].Values[indexCode],
                             customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, SettingsApp.SecretKey),
                             customersInDb.ResultSet[1].Rows[j].Values[indexName] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexName].ToString(), true, SettingsApp.SecretKey),
@@ -733,13 +821,24 @@ namespace logicpos
                             customersInDb.ResultSet[1].Rows[j].Values[indexPhone] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexPhone].ToString(), true, SettingsApp.SecretKey),
                             customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone].ToString(), true, SettingsApp.SecretKey),
                             customersInDb.ResultSet[1].Rows[j].Values[indexEmail] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexEmail].ToString(), true, SettingsApp.SecretKey));
-                            }
-                            ExportExcel(importFromDBdataTable, path, true, pSourceWindow);
-                            break;
+                        }
+                        result = false;
+                        _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_customers"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_articles"));
+                        if (result)
+                        {
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
+                        }
+                        else
+                        {
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
+                        }
+                        break;
 
-                        default:
-                            break;
-                    
+                    default:
+                        break;
+
                 }
             }
             catch (Exception ex)
@@ -751,13 +850,13 @@ namespace logicpos
         }
 
 
-
         public static bool ExportExcel(DataTable dtExport, string path, bool openFile, Gtk.Window pSourceWindow)
         {
-            if (dtExport != null && dtExport.Rows.Count > 0)
+            try
             {
-                try
+                if (dtExport != null && dtExport.Rows.Count > 0)
                 {
+
                     _log.Debug("FileName: " + path);
 
                     XLWorkbook wb = new XLWorkbook();
@@ -768,21 +867,23 @@ namespace logicpos
                     {
                         System.Diagnostics.Process.Start(path);
                     }
-                    Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
                     return true;
                 }
-                catch (Exception ex)
+                else
                 {
-                    _log.Error("ExportExcel: Error creating file " + ex.Message, ex);
-                    Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_export_error"));
+                    _log.Debug("ExportExcel: DataTable has no rows to export");
                     return false;
                 }
+
             }
-            else
+            catch (Exception ex)
             {
-                _log.Debug("ExportExcel: DataTable has no rows to export");
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
+                _log.Error("ExportExcel: Error creating file " + ex.Message, ex);
                 return false;
+            }
+            finally
+            {
+                GlobalApp.DialogThreadNotify.WakeupMain();
             }
         }
     }

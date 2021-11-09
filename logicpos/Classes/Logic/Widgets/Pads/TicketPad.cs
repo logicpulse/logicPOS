@@ -2,6 +2,7 @@
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.shared.Classes.Orders;
 using System;
@@ -37,8 +38,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Helper Methods
         public void SelectTableOrder(Guid pTableOid)
         {
+			//TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
             OrderMain currentOrderMain = null;
-
+			if(pTableOid == SettingsApp.XpoOidConfigurationPlaceTableDefaultOpenTable){
+            	var configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), SettingsApp.XpoOidConfigurationPlaceTableDefaultOpenTable);
+            	if (configurationPlace == null) { 
+                    pTableOid = ((pos_configurationplacetable)FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid; 
+                }
+			}
             //Try to Get OrderMain Object From TableId Parameter
             if (GlobalFramework.SessionApp.OrdersMain.Count > 0)
             {
@@ -80,6 +87,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Update PosMainWindow Components
             GlobalApp.WindowPos.TablePadArticle.Sensitive = true;
+            _ticketList.UpdateArticleBag();
+            _ticketList.UpdateTicketListOrderButtons();
+            _ticketList.UpdateOrderStatusBar();
         }
     }
 }

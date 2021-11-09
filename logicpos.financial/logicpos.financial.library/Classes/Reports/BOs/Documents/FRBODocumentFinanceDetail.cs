@@ -38,12 +38,23 @@
             }
             set { }
         }
+		//Layout talões PT - Preço Unitário em vez de Preço sem IVA [IN:016509]
+        [FRBO(Hide = true)]
+        public decimal UnitPrice
+        {
+            get
+            {
+                decimal totalTax = (this.ArticlePriceWithDiscount * this.Vat) / 100;
+                return (this.ArticlePriceWithDiscount + totalTax) / this.Quantity;
+            }
+            set { }
+        }
 
-        //// Enums
-        //public PriceType PriceType { get; set; }
-        //// Navigation Properties
-        //public fin_documentfinancemaster DocumentMaster { get; set; }
-        //public fin_article Article { get; set; }
-        //public fin_configurationvatrate VatRate { get; set; }
-    }
+            //// Enums
+            //public PriceType PriceType { get; set; }
+            //// Navigation Properties
+            //public fin_documentfinancemaster DocumentMaster { get; set; }
+            //public fin_article Article { get; set; }
+            //public fin_configurationvatrate VatRate { get; set; }
+        }
 }

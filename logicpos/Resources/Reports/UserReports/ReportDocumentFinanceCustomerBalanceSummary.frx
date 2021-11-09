@@ -54,7 +54,7 @@
         <TextObject     Name="ValueEntityName"      Left="186.55"  Width="204.80"  Height="18.9" Text="[CustomerBalanceSummary.EntityName]"                    HorzAlign="Left"   VertAlign="Center" Wysiwyg="false" Style="DataFont" Trimming="EllipsisCharacter" WordWrap="false"/>
         <TextObject     Name="ValueGlobalCredit"    Left="391.35"  Width="108.95"  Height="18.9" Text="[FormatNumber([CustomerBalanceSummary.TotalCredit],2)]" HorzAlign="Right"  VertAlign="Center" Wysiwyg="false" Style="DataFont"/>
         <TextObject     Name="ValueGlobalDebit"     Left="500.30"  Width="108.95"  Height="18.9" Text="[FormatNumber([CustomerBalanceSummary.TotalDebit],2)]"  HorzAlign="Right"  VertAlign="Center" Wysiwyg="false" Style="DataFont"/>
-        <TextObject     Name="ValueFinalBalance"    Left="609.25"  Width="108.95"  Height="18.9" Text="[Format(&quot;{0:#,##0.00;(#,##0.00);'0,00'}&quot;,ToDouble(ToDouble([CustomerBalanceSummary.TotalCredit]) - ToDouble([CustomerBalanceSummary.TotalDebit])))]" HorzAlign="Right" VertAlign="Center" Wysiwyg="false" Style="DataFont"  Padding="1px,10px,1px,1px">
+        <TextObject     Name="ValueFinalBalance"    Left="609.25"  Width="108.95"  Height="18.9" Text="[Format(&quot;{0:#,##0.00'}&quot;,ToDouble(ToDouble([CustomerBalanceSummary.TotalCredit]) - ToDouble([CustomerBalanceSummary.TotalDebit])))]" HorzAlign="Right" VertAlign="Center" Wysiwyg="false" Style="DataFont"  Padding="1px,10px,1px,1px">
           <Highlight>
             <Condition Expression="ToDouble(ToDouble([CustomerBalanceSummary.TotalCredit]) - ToDouble([CustomerBalanceSummary.TotalDebit])) &lt; 0"/>
           </Highlight>
@@ -70,7 +70,7 @@
       <TextObject      Name="ValueGlobalRecordCountFinal"                 Left="609.25" Top="18.9" Width="108.95" Height="18.9" Text="[RecordCountFinal]"                   HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont"/>
       <TextObject      Name="ValueGlobalTotalCreditFinal"                 Left="609.25" Top="37.8" Width="108.95" Height="18.9" Text="[FormatNumber([TotalCreditFinal],2)]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont"/>
       <TextObject      Name="ValueGlobalTotalDebitFinal"                  Left="609.25" Top="56.7" Width="108.95" Height="18.9" Text="[FormatNumber([TotalDebitFinal],2)]"  HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont"/>
-      <TextObject      Name="ValueGlobalCustomerBalanceDetailsTotalFinal" Left="609.25" Top="75.6" Width="108.95" Height="18.9" Text="[Format(&quot;{0:#,##0.00;(#,##0.00);'0,00'}&quot;,ToDouble([TotalCreditFinal]-[TotalDebitFinal]))]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont" UseLocale="false">
+      <TextObject      Name="ValueGlobalCustomerBalanceDetailsTotalFinal" Left="609.25" Top="75.6" Width="108.95" Height="18.9" Text="[Format(&quot;{0:#,##0.00'}&quot;,ToDouble([TotalCreditFinal]-[TotalDebitFinal]))]" HorzAlign="Right" VertAlign="Center" Wysiwyg="true" Style="DataFont" UseLocale="false">
         <Highlight>
           <Condition Expression="ToDouble([TotalCreditFinal]-[TotalDebitFinal]) &lt; 0"/>
         </Highlight>

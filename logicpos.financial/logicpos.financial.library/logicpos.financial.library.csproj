@@ -9,9 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>logicpos.financial.library</RootNamespace>
     <AssemblyName>LogicposFinancialLibrary</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,11 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v20.1, Version=20.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DevExpress.Data.20.1.6\lib\net452\DevExpress.Data.v20.1.dll</HintPath>
+    <Reference Include="DevExpress.Data.v20.1, Version=20.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\DevExpress.Data.v20.1.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.Xpo.v20.1, Version=20.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\DevExpress.Xpo.20.1.6\lib\net452\DevExpress.Xpo.v20.1.dll</HintPath>
+    <Reference Include="DevExpress.Xpo.v20.1, Version=20.1.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\DevExpress.Xpo.v20.1.dll</HintPath>
     </Reference>
     <Reference Include="FastReport.Mono, Version=2014.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -58,9 +62,22 @@
       <HintPath>..\..\libs\Patagames.Pdf.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
@@ -74,6 +91,7 @@
     <Compile Include="App\GlobalFramework.cs" />
     <Compile Include="App\SettingsApp.cs" />
     <Compile Include="Classes\Finance\ExtendValue.cs" />
+    <Compile Include="Classes\Finance\IStockManagementModule.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocument.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocumentParameter.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocumentSeries.cs" />
@@ -104,7 +122,11 @@
     </Compile>
     <Compile Include="Classes\Reports\BOs\Articles\FRBOArticle.cs" />
     <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleFamily.cs" />
+    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleSerialNumber.cs" />
     <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockMovementView.cs" />
+    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockSupplierView.cs" />
+    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockView.cs" />
+    <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleStockWareHouseView.cs" />
     <Compile Include="Classes\Reports\BOs\Articles\FRBOArticleSubFamily.cs" />
     <Compile Include="Classes\Reports\BOs\Customers\FRBOCustomer.cs" />
     <Compile Include="Classes\Reports\BOs\Customers\FRBOCustomerType.cs" />
@@ -119,6 +141,8 @@
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceMasterView.cs" />
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePaymentDocumentView.cs" />
     <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinancePaymentView.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceVatSalesByClassSummary.cs" />
+    <Compile Include="Classes\Reports\BOs\Documents\FRBODocumentFinanceVatSalesSummary.cs" />
     <Compile Include="Classes\Reports\BOs\FRBOAttribute.cs" />
     <Compile Include="Classes\Reports\BOs\FRBOBaseObject.cs" />
     <Compile Include="Classes\Reports\BOs\FRBOGenericCollection.cs" />
@@ -176,6 +200,10 @@
     <ProjectReference Include="..\..\logicpos.plugins\logicpos.plugin.contracts\logicpos.plugin.contracts.csproj">
       <Project>{43c879d1-31ae-424f-91d1-92cf286d5497}</Project>
       <Name>logicpos.plugin.contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\logicpos.plugins\logicpos.plugin.library\logicpos.plugin.library.csproj">
+      <Project>{5601EF61-D598-4D93-83AD-7A55BF627708}</Project>
+      <Name>logicpos.plugin.library</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\logicpos.resources\logicpos.resources.csproj">
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>

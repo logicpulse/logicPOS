@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="03/11/2021 09:50:30" ReportInfo.Modified="03/16/2021 11:20:03" ReportInfo.CreatorVersion="2020.3.10.0" PrintSettings.Duplex="Simplex">
+  <Dictionary>
+    <BusinessObjectDataSource Name="ArticleSerialNumber" ReferenceName="ArticleSerialNumber" DataType="null" Enabled="true">
+      <Column Name="SerialNumber" DataType="System.String"/>
+      <Column Name="ArticleName" DataType="System.String"/>
+      <Column Name="ArticleRef" DataType="System.String"/>
+      <Column Name="footerText" DataType="System.String"/>
+    </BusinessObjectDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1" PaperWidth="105" PaperHeight="53" LeftMargin="0" TopMargin="0" RightMargin="0" BottomMargin="0" FirstPageSource="15" OtherPagesSource="15" LastPageSource="15" Guides="0,170.1,151.2,151.2,151.2,151.2,0,0,0,0,0,0,0" Watermark.Font="Arial, 60pt" Watermark.ShowTextOnTop="false">
+    <DataBand Name="Data1" Width="396.9" Height="193.16" BeforePrintEvent="Data1_BeforePrint" AfterPrintEvent="Data1_AfterPrint" Guides="113.4,113.4,113.4,113.4,94.5,94.5" DataSource="ArticleSerialNumber">
+      <BarcodeObject Name="Barcode" Left="113.4" Top="12.85" Width="189" Height="75.6" EvenStylePriority="UseAll" AutoSize="false" DataColumn="ArticleSerialNumber.SerialNumber" Text="WO0457R20192000120" Zoom="0" AsBitmap="true" Barcode="Code128" Barcode.AutoEncode="true"/>
+      <TextObject Name="ArticleName" Left="15.12" Top="98.66" Width="374.22" Height="45.36" Text="[ArticleSerialNumber.ArticleName]" HorzAlign="Center" Font="Arial, 16.25pt"/>
+      <TextObject Name="ArticleRef" Left="15.12" Top="143.64" Width="374.22" Height="26.46" Text="[ArticleSerialNumber.ArticleRef]" HorzAlign="Center" Font="Arial, 14.75pt, style=Bold, Italic"/>
+      <TextObject Name="footerText" Left="15.12" Top="170.1" Width="374.22" Height="20.79" Text="[ArticleSerialNumber.footerText]" HorzAlign="Center" Font="Arial, 13.75pt"/>
+      <LineObject Name="Line1" Left="15.12" Top="98.28" Width="378"/>
+      <LineObject Name="Line2" Left="15.12" Top="168.21" Width="378"/>
+      <TextObject Name="SNLabel" Left="111.51" Top="73.71" Width="37.8" Height="15.12" Text="SN:" Font="Arial, 10pt"/>
+    </DataBand>
+  </ReportPage>
+</Report>

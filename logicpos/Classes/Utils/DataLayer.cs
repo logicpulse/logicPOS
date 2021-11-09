@@ -21,309 +21,227 @@ namespace logicpos
         /// <param name="DatabaseType"></param>
         /// <param name="DatabaseName"></param>
         /// <returns></returns>
-        public static bool CreateDatabaseSchema(string pXpoConnectionString, DatabaseType pDatabaseType, string pDatabaseName)
+        public static bool CreateDatabaseSchema(string pXpoConnectionString, DatabaseType pDatabaseType, string pDatabaseName, out bool needToUpdate)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            bool result = false;
-            string xpoConnectionString = pXpoConnectionString;
-            DatabaseType databaseType = pDatabaseType;
-            string databaseTypeString = Enum.GetName(typeof(DatabaseType), GlobalFramework.DatabaseType);
-            string databaseName = pDatabaseName;
-            IDataLayer xpoDataLayer = null;
-            bool onErrorsDropDatabase = true;
-            string sql = string.Empty;
-            object resultCmd;
-            Hashtable commands = new Hashtable();
-            string commandSeparator = ";";
-            bool databaseExists = false;
-            Session xpoSession;
-            Dictionary<string, string> replace = GetReplaceables(pDatabaseType);
-
-            string sqlDatabaseSchema = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchema, databaseTypeString));
-            string sqlDatabaseSchemaLinux = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchemaLinux, databaseTypeString));
-            string sqlDatabaseUpdate = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseUpdate, databaseTypeString));
-            string sqlDatabaseUpdateLinux = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseUpdateLinux, databaseTypeString));
-            //string sqlDatabaseOtherDatabaseType = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString)); /* IN009045: Not in use */
-            string sqlDatabaseOtherCommon = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommon);
-            /* IN008024 and after IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
-            // string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), SettingsApp.CustomAppOperationMode.AppOperationTheme.ToLower());
-            string sqlDatabaseOtherCommonPluginsSoftwareVendor = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
-            string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
-            string sqlDatabaseData = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseData);
-            string sqlDatabaseDataDemo = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseDataDemo);
-            string sqlDatabaseViews = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseViews);
-            bool useDatabaseDataDemo = Convert.ToBoolean(GlobalFramework.Settings["useDatabaseDataDemo"]);
-
-            string version = FrameworkUtils.ProductVersion.Replace("v", "");
-            //string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-            string osVersion = FrameworkUtils.OSVersion();
-            switch (databaseType)
-            {
-                case DatabaseType.SQLite:
-                case DatabaseType.MonoLite:
-                    //connectionstring = string.Format(GlobalFramework.Settings["xpoConnectionString"], databaseName);
-                    commands.Add("check_version", string.Format(@"SELECT name FROM sqlite_master WHERE type='table' AND name='sys_databaseversion';"));
-                    commands.Add("create_version", string.Format(@"CREATE TABLE [sys_databaseversion] ([Version] [varchar](20)); INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
-                    commands.Add("select_version", string.Format(@"SELECT version FROM sys_databaseversion;"));
-                    commands.Add("insert_version", string.Format(@"INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
-                    commands.Add("update_version", string.Format(@"UPDATE sys_databaseversion SET version = '{0}';", version));
-                    break;
-                case DatabaseType.MSSqlServer:
-                    //Required to Remove DataBase Name From Connection String
-                    xpoConnectionString = xpoConnectionString.Replace(string.Format("Initial Catalog={0};", pDatabaseName), string.Empty);
-                    commands.Add("select_schema", string.Format(@"SELECT name FROM sys.databases WHERE name = '{0}' AND name NOT IN ('master', 'tempdb', 'model', 'msdb');", databaseName));
-                    commands.Add("create_database", string.Format(@"IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = '{0}') CREATE DATABASE {0};", databaseName));
-                    commands.Add("use_database", string.Format(@"USE {0};", databaseName));
-                    commands.Add("drop_database", string.Format(@"USE master; IF EXISTS(SELECT name FROM sys.databases WHERE name = '{0}') DROP DATABASE {0};", databaseName));
-
-                    commands.Add("check_version", string.Format(@"USE {0}; SELECT name FROM sys.objects WHERE object_id = OBJECT_ID(N'[sys_databaseversion]') AND type in (N'U');", databaseName));
-                    commands.Add("create_version", string.Format(@"USE {0}; CREATE TABLE [sys_databaseversion] ([Version] [varchar](20) NOT NULL) ON [PRIMARY]; INSERT INTO sys_databaseversion (version) VALUES ('{1}');", databaseName, version));
-                    commands.Add("select_version", string.Format(@"USE {0}; SELECT version FROM sys_databaseversion;", databaseName));
-                    commands.Add("insert_version", string.Format(@"USE {0}; INSERT INTO sys_databaseversion (version) VALUES ('{1}');", databaseName, version));
-                    commands.Add("update_version", string.Format(@"USE {0}; UPDATE sys_databaseversion SET version = '{1}';", databaseName, version));
-                    //ByPass Default commandSeparator ;
-                    commandSeparator = "GO";
-                    break;
-                case DatabaseType.MySql:
-                    //Required to Remove DataBase Name From Connection String
-                    xpoConnectionString = xpoConnectionString.Replace(string.Format("database={0};", pDatabaseName), string.Empty);
-                    commands.Add("select_schema", string.Format(@"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';", databaseName));
-                    commands.Add("create_database", string.Format(@"CREATE DATABASE IF NOT EXISTS {0} CHARACTER SET utf8 COLLATE utf8_bin /*!40100 DEFAULT CHARACTER SET utf8*/;", databaseName));
-                    commands.Add("use_database", string.Format(@"USE {0};", databaseName));
-                    commands.Add("drop_database", string.Format(@"DROP DATABASE IF EXISTS {0};", databaseName));
-
-                    commands.Add("check_version", string.Format(@"USE {0}; SELECT table_name FROM information_schema.tables WHERE table_name = 'sys_databaseversion' LIMIT 1;", databaseName));
-                    commands.Add("create_version", string.Format(@"USE {0}; CREATE TABLE sys_databaseversion (Version varchar(10) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8; INSERT INTO sys_databaseversion (Version) VALUES ('{1}');", databaseName, version));
-                    commands.Add("select_version", string.Format(@"USE {0}; SELECT version FROM sys_databaseversion;", databaseName));
-                    commands.Add("insert_version", string.Format(@"USE {0}; INSERT INTO sys_databaseversion (Version) VALUES ('{1}');", databaseName, version));
-                    commands.Add("update_version", string.Format(@"USE {0}; UPDATE sys_databaseversion SET Version = '{1}' WHERE Version = 'OLD_VERSION';", databaseName, version));
-                    break;
-            }
-
-            //Get DataLayer
             try
             {
-                xpoDataLayer = XpoDefault.GetDataLayer(xpoConnectionString, AutoCreateOption.None);
-            }
-            catch (Exception ex)
-            {
-                log.Error(string.Format("CreateDatabaseSchema(): {0}", ex.Message), ex);
-                throw;
-            }
 
-            //Init Session
-            xpoSession = new Session(xpoDataLayer);
+                needToUpdate = false;
+                bool result = false;
+                string xpoConnectionString = pXpoConnectionString;
+                DatabaseType databaseType = pDatabaseType;
+                string databaseTypeString = Enum.GetName(typeof(DatabaseType), GlobalFramework.DatabaseType);
+                string databaseName = pDatabaseName;
+                IDataLayer xpoDataLayer = null;
+                bool onErrorsDropDatabase = true;
+                string sql = string.Empty;
+                object resultCmd;
+                Hashtable commands = new Hashtable();
+                string commandSeparator = ";";
+                bool databaseExists = false;
+                Session xpoSession;
+                Dictionary<string, string> replace = GetReplaceables(pDatabaseType);
 
-            //Start CreateDatabaseSchema Process
-            try
-            {
+                string sqlDatabaseSchema = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchema, databaseTypeString));
+                string sqlDatabaseSchemaLinux = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchemaLinux, databaseTypeString));
+                string sqlDatabaseUpdate = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseUpdate, databaseTypeString));
+                string sqlDatabaseUpdateLinux = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseUpdateLinux, databaseTypeString));
+                //string sqlDatabaseOtherDatabaseType = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString)); /* IN009045: Not in use */
+                string sqlDatabaseOtherCommon = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommon);
+                /* IN008024 and after IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
+                // string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), SettingsApp.CustomAppOperationMode.AppOperationTheme.ToLower());
+                string sqlDatabaseOtherCommonPluginsSoftwareVendor = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
+                string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
+                string sqlDatabaseData = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseData);
+                string sqlDatabaseDataDemo = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseDataDemo);
+                string sqlDatabaseViews = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseViews);
+                bool useDatabaseDataDemo = Convert.ToBoolean(GlobalFramework.Settings["useDatabaseDataDemo"]);
+
+                string version = FrameworkUtils.ProductVersion.Replace("v", "");
+                //string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+                string osVersion = FrameworkUtils.OSVersion();
                 switch (databaseType)
                 {
                     case DatabaseType.SQLite:
                     case DatabaseType.MonoLite:
-                        string filename = string.Format("{0}.db", databaseName);
-                        databaseExists = (File.Exists(filename) && new FileInfo(filename).Length > 0);
-                        log.Debug(string.Format("DatabaseExists: [{0}], databaseName: [{1}]", databaseExists, string.Format("{0}.db", databaseName)));
+                        //connectionstring = string.Format(GlobalFramework.Settings["xpoConnectionString"], databaseName);
+                        commands.Add("check_version", string.Format(@"SELECT name FROM sqlite_master WHERE type='table' AND name='sys_databaseversion';"));
+                        commands.Add("create_version", string.Format(@"CREATE TABLE [sys_databaseversion] ([Version] [varchar](20)); INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
+                        commands.Add("select_version", string.Format(@"SELECT version FROM sys_databaseversion;"));
+                        commands.Add("insert_version", string.Format(@"INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
+                        commands.Add("update_version", string.Format(@"UPDATE sys_databaseversion SET version = '{0}';", version));
                         break;
                     case DatabaseType.MSSqlServer:
+                        //Required to Remove DataBase Name From Connection String
+                        xpoConnectionString = xpoConnectionString.Replace(string.Format("Initial Catalog={0};", pDatabaseName), string.Empty);
+                        commands.Add("select_schema", string.Format(@"SELECT name FROM sys.databases WHERE name = '{0}' AND name NOT IN ('master', 'tempdb', 'model', 'msdb');", databaseName));
+                        commands.Add("create_database", string.Format(@"IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = '{0}') CREATE DATABASE {0};", databaseName));
+                        commands.Add("use_database", string.Format(@"USE {0};", databaseName));
+                        commands.Add("drop_database", string.Format(@"USE master; IF EXISTS(SELECT name FROM sys.databases WHERE name = '{0}') DROP DATABASE {0};", databaseName));
+
+                        commands.Add("check_version", string.Format(@"USE {0}; SELECT name FROM sys.objects WHERE object_id = OBJECT_ID(N'[sys_databaseversion]') AND type in (N'U');", databaseName));
+                        commands.Add("create_version", string.Format(@"USE {0}; CREATE TABLE [sys_databaseversion] ([Version] [varchar](20) NOT NULL) ON [PRIMARY]; INSERT INTO sys_databaseversion (version) VALUES ('{1}');", databaseName, version));
+                        commands.Add("select_version", string.Format(@"USE {0}; SELECT version FROM sys_databaseversion;", databaseName));
+                        commands.Add("insert_version", string.Format(@"USE {0}; INSERT INTO sys_databaseversion (version) VALUES ('{1}');", databaseName, version));
+                        commands.Add("update_version", string.Format(@"USE {0}; UPDATE sys_databaseversion SET version = '{1}';", databaseName, version));
+                        //ByPass Default commandSeparator ;
+                        commandSeparator = "GO";
+                        break;
                     case DatabaseType.MySql:
-                    default:
-                        sql = commands["select_schema"].ToString();
-                        //log.Debug(string.Format("ExecuteScalar: [{0}]", sql));
-                        resultCmd = xpoSession.ExecuteScalar(sql);
-                        log.Debug(string.Format("Use Database resultCmd: [{0}]", resultCmd));
-                        databaseExists = ((string)resultCmd == databaseName);
-                        log.Debug(string.Format("DatabaseExists:[{0}] [{1}]", databaseName, databaseExists));
+                        //Required to Remove DataBase Name From Connection String
+                        xpoConnectionString = xpoConnectionString.Replace(string.Format("database={0};", pDatabaseName), string.Empty);
+                        commands.Add("select_schema", string.Format(@"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';", databaseName));
+                        commands.Add("create_database", string.Format(@"CREATE DATABASE IF NOT EXISTS {0} CHARACTER SET utf8 COLLATE utf8_bin /*!40100 DEFAULT CHARACTER SET utf8*/;", databaseName));
+                        commands.Add("use_database", string.Format(@"USE {0};", databaseName));
+                        commands.Add("drop_database", string.Format(@"DROP DATABASE IF EXISTS {0};", databaseName));
+
+                        commands.Add("check_version", string.Format(@"USE {0}; SELECT table_name FROM information_schema.tables WHERE table_name = 'sys_databaseversion' LIMIT 1;", databaseName));
+                        commands.Add("create_version", string.Format(@"USE {0}; CREATE TABLE sys_databaseversion (Version varchar(10) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8; INSERT INTO sys_databaseversion (Version) VALUES ('{1}');", databaseName, version));
+                        commands.Add("select_version", string.Format(@"USE {0}; SELECT version FROM sys_databaseversion;", databaseName));
+                        commands.Add("insert_version", string.Format(@"USE {0}; INSERT INTO sys_databaseversion (Version) VALUES ('{1}');", databaseName, version));
+                        commands.Add("update_version", string.Format(@"USE {0}; UPDATE sys_databaseversion SET Version = '{1}' WHERE Version = 'OLD_VERSION';", databaseName, version));
                         break;
                 }
-                //FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(CurrentAppFileName);
-                //CurrentAppVersion = fvi.FileVersion;
 
-                //Create Database and Data
-                if (!databaseExists)
+                //Get DataLayer
+                try
                 {
-                    log.Debug(string.Format("Creating {0} Database: [{1}]", databaseType, databaseName));
-
-                    //Always Delete Old appsession.json file when Create new Database
-                    if (File.Exists(Utils.GetSessionFileName()))
-                    {
-                        File.Delete(Utils.GetSessionFileName());
-                    }
-
-                    if (pDatabaseType != DatabaseType.SQLite && pDatabaseType != DatabaseType.MonoLite)
-                    {
-                        sql = commands["create_database"].ToString();
-                        log.Debug(string.Format("ExecuteScalar create_database: [{0}]", sql));
-                        resultCmd = xpoSession.ExecuteScalar(sql);
-                        log.Debug(string.Format("Create Database resultCmd: [{0}]", resultCmd));
-
-                        sql = commands["use_database"].ToString();
-                        log.Debug(string.Format("ExecuteScalar use_database: [{0}]", sql));
-                        resultCmd = xpoSession.ExecuteScalar(sql);
-                        log.Debug(string.Format("Use Database resultCmd: [{0}]", resultCmd));
-                    }
-
-                    //Restore Script Files
-
-                    //Schema
-                    result = ProcessDump(xpoSession, sqlDatabaseSchema, commandSeparator, replace);
-                    //Data
-                    if (result)
-                    {
-                        result = ProcessDump(xpoSession, sqlDatabaseData, ";", replace);
-                    }
-                    //DataDemo
-                    if (useDatabaseDataDemo && result)
-                    {
-                        result = ProcessDump(xpoSession, sqlDatabaseDataDemo, ";", replace);
-                    }
-                    //Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
-                    if (result)
-                    {
-                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, ";", replace);
-                    }
-                    //Views
-                    if (result)
-                    {
-                        result = ProcessDump(xpoSession, sqlDatabaseViews, ";", replace);
-                    }
-                    //Directory Scripts
-                    //Process Other Files: DatabaseOtherDatabaseType
-                    /* IN009045: not in use */
-                    /*if (result)
-                    {
-                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherDatabaseType, ";", replace);//commandSeparator
-                    }*/
-                    //Process Other Files: DatabaseOtherCommon
-                    if (result)
-                    {
-                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommon, ";", replace); /* IN009045 */
-                    }
-                    ////Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
-                    //if (result)
-                    //{
-                    //    result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, commandSeparator, replace);
-                    //}
-                    //Process Other Files: DatabaseOtherCommonAppMode
-                    /* IN009045 and IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
-                    /*if (result)
-                    {
-                        result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonAppMode, ";", replace);
-                    }*/
-
-                    //Clean ConfigurationPreferenceParameter
-                    string sqlConfigurationPreferenceParameter = @"UPDATE cfg_configurationpreferenceparameter SET Value = NULL WHERE (Token = 'COMPANY_COUNTRY' OR Token = 'COMPANY_COUNTRY_CODE2' OR Token = 'SYSTEM_CURRENCY' OR Token = 'COMPANY_COUNTRY_OID' OR Token = 'SYSTEM_CURRENCY_OID')";
-                    if (result && Debugger.IsAttached == true)
-                    {
-                        xpoSession.ExecuteScalar(sqlConfigurationPreferenceParameter);
-                    }
-                    else
-                    {
-                        sqlConfigurationPreferenceParameter = string.Format("{0} {1}", sqlConfigurationPreferenceParameter, "OR (FormPageNo = 1 AND FormType = 1 AND Token <> 'COMPANY_TAX_ENTITY')");
-                        xpoSession.ExecuteScalar(sqlConfigurationPreferenceParameter);
-                    }
-
-                    sql = commands["check_version"].ToString();
-                    log.Debug(string.Format("ExecuteScalar check_version: [{0}]", sql));
-                    resultCmd = xpoSession.ExecuteScalar(sql);
-                    log.Debug(string.Format("check_version resultCmd: [{0}]", resultCmd));
-
-                    //Se cria tabela database_version, faz update
-                    if (resultCmd == null)
-                    {
-                        sql = commands["create_version"].ToString();
-                        log.Debug(string.Format("ExecuteScalar create_version: [{0}]", sql));
-                        resultCmd = xpoSession.ExecuteScalar(sql);
-                        log.Debug(string.Format("create_version resultCmd: [{0}]", resultCmd));
-
-                        if (osVersion == "unix")
-                        {
-                            result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
-                        }
-                        else
-                        {
-                            result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
-                        }
-
-                        if (result)
-                        {
-                            sql = commands["update_version"].ToString().Replace("OLD_VERSION", resultCmd.ToString());
-                            log.Debug(string.Format("ExecuteScalar update_version: [{0}]", sql));
-                            resultCmd = xpoSession.ExecuteScalar(sql);
-                            log.Debug(string.Format("update_version resultCmd: [{0}]", resultCmd));
-                        }
-                    }
-
-                    else
-                    {
-                        sql = commands["insert_version"].ToString();
-                        log.Debug(string.Format("ExecuteScalar insert_version: [{0}]", sql));
-                        resultCmd = xpoSession.ExecuteScalar(sql);
-                        log.Debug(string.Format("insert_version resultCmd: [{0}]", resultCmd));
-                    }
+                    xpoDataLayer = XpoDefault.GetDataLayer(xpoConnectionString, AutoCreateOption.None);
                 }
-                else
+                catch (Exception ex)
                 {
-                    sql = commands["check_version"].ToString();
-                    log.Debug(string.Format("ExecuteScalar check_version: [{0}]", sql));
-                    resultCmd = xpoSession.ExecuteScalar(sql);
-                    log.Debug(string.Format("check_version resultCmd: [{0}]", resultCmd));
+                    log.Error(string.Format("CreateDatabaseSchema(): {0}", ex.Message), ex);
+                    throw;
+                }
 
-                    if (resultCmd == null)
+                //Init Session
+                xpoSession = new Session(xpoDataLayer);
+
+                //Start CreateDatabaseSchema Process
+                try
+                {
+                    switch (databaseType)
                     {
-                        sql = commands["create_version"].ToString();
-                        log.Debug(string.Format("ExecuteScalar create_version: [{0}]", sql));
-                        resultCmd = xpoSession.ExecuteQuery(sql);
-                        log.Debug(string.Format("create_version resultCmd: [{0}]", resultCmd));
+                        case DatabaseType.SQLite:
+                        case DatabaseType.MonoLite:
+                            string filename = string.Format("{0}.db", databaseName);
+                            databaseExists = (File.Exists(filename) && new FileInfo(filename).Length > 0);
+                            log.Debug(string.Format("DatabaseExists: [{0}], databaseName: [{1}]", databaseExists, string.Format("{0}.db", databaseName)));
+                            break;
+                        case DatabaseType.MSSqlServer:
+                        case DatabaseType.MySql:
+                        default:
+                            sql = commands["select_schema"].ToString();
+                            //log.Debug(string.Format("ExecuteScalar: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteScalar(sql);
+                            log.Debug(string.Format("Use Database resultCmd: [{0}]", resultCmd));
+                            databaseExists = ((string)resultCmd == databaseName);
+                            log.Debug(string.Format("DatabaseExists:[{0}] [{1}]", databaseName, databaseExists));
+                            break;
+                    }
+                    //FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(CurrentAppFileName);
+                    //CurrentAppVersion = fvi.FileVersion;
 
-                        if (osVersion == "unix")
+                    //Create Database and Data
+                    if (!databaseExists)
+                    {
+                        log.Debug(string.Format("Creating {0} Database: [{1}]", databaseType, databaseName));
+
+                        //Always Delete Old appsession.json file when Create new Database
+                        if (File.Exists(Utils.GetSessionFileName()))
                         {
-                            result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
+                            File.Delete(Utils.GetSessionFileName());
+                        }
+
+                        if (pDatabaseType != DatabaseType.SQLite && pDatabaseType != DatabaseType.MonoLite)
+                        {
+                            sql = commands["create_database"].ToString();
+                            log.Debug(string.Format("ExecuteScalar create_database: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteScalar(sql);
+                            log.Debug(string.Format("Create Database resultCmd: [{0}]", resultCmd));
+
+                            sql = commands["use_database"].ToString();
+                            log.Debug(string.Format("ExecuteScalar use_database: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteScalar(sql);
+                            log.Debug(string.Format("Use Database resultCmd: [{0}]", resultCmd));
+                        }
+
+                        //Restore Script Files
+
+                        //Schema
+                        result = ProcessDump(xpoSession, sqlDatabaseSchema, commandSeparator, replace);
+                        //Data
+                        if (result)
+                        {
+                            result = ProcessDump(xpoSession, sqlDatabaseData, ";", replace);
+                        }
+                        //DataDemo
+                        if (useDatabaseDataDemo && result)
+                        {
+                            result = ProcessDump(xpoSession, sqlDatabaseDataDemo, ";", replace);
+                        }
+                        //Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
+                        if (result)
+                        {
+                            result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, ";", replace);
+                        }
+                        //Views
+                        if (result)
+                        {
+                            result = ProcessDump(xpoSession, sqlDatabaseViews, ";", replace);
+                        }
+                        //Directory Scripts
+                        //Process Other Files: DatabaseOtherDatabaseType
+                        /* IN009045: not in use */
+                        /*if (result)
+                        {
+                            result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherDatabaseType, ";", replace);//commandSeparator
+                        }*/
+                        //Process Other Files: DatabaseOtherCommon
+                        if (result)
+                        {
+                            result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommon, ";", replace); /* IN009045 */
+                        }
+                        ////Process Other Files: DatabaseOtherCommonPluginsSoftwareVendor
+                        //if (result)
+                        //{
+                        //    result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonPluginsSoftwareVendor, commandSeparator, replace);
+                        //}
+                        //Process Other Files: DatabaseOtherCommonAppMode
+                        /* IN009045 and IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
+                        /*if (result)
+                        {
+                            result = ProcessDumpDirectory(xpoSession, sqlDatabaseOtherCommonAppMode, ";", replace);
+                        }*/
+
+                        //Clean ConfigurationPreferenceParameter
+                        string sqlConfigurationPreferenceParameter = @"UPDATE cfg_configurationpreferenceparameter SET Value = NULL WHERE (Token = 'COMPANY_COUNTRY' OR Token = 'COMPANY_COUNTRY_CODE2' OR Token = 'SYSTEM_CURRENCY' OR Token = 'COMPANY_COUNTRY_OID' OR Token = 'SYSTEM_CURRENCY_OID')";
+                        if (result && Debugger.IsAttached == true)
+                        {
+                            xpoSession.ExecuteScalar(sqlConfigurationPreferenceParameter);
                         }
                         else
                         {
-                            result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
+                            sqlConfigurationPreferenceParameter = string.Format("{0} {1}", sqlConfigurationPreferenceParameter, "OR (FormPageNo = 1 AND FormType = 1 AND Token <> 'COMPANY_TAX_ENTITY')");
+                            xpoSession.ExecuteScalar(sqlConfigurationPreferenceParameter);
                         }
 
-                        if (result)
-                        {
-                            sql = commands["update_version"].ToString().Replace("OLD_VERSION", resultCmd.ToString());
-                            log.Debug(string.Format("ExecuteScalar update_version: [{0}]", sql));
-                            resultCmd = xpoSession.ExecuteScalar(sql);
-                            log.Debug(string.Format("update_version resultCmd: [{0}]", resultCmd));
-                        }
-                    }
-                    else
-                    {
-                        sql = commands["select_version"].ToString();
-                        log.Debug(string.Format("ExecuteScalar select_version: [{0}]", sql));
+                        sql = commands["check_version"].ToString();
+                        log.Debug(string.Format("ExecuteScalar check_version: [{0}]", sql));
                         resultCmd = xpoSession.ExecuteScalar(sql);
-                        log.Debug(string.Format("select_version resultCmd: [{0}]", resultCmd));
 
-                        bool needToUpdate = false;
-                        try
+                        log.Debug(string.Format("check_version resultCmd: [{0}]", resultCmd));
+
+                        //Se cria tabela database_version, faz update
+                        if (resultCmd == null)
                         {
-                            string[] tmpNew = version.Split('.');
-                            long tmpNewVer = int.Parse(tmpNew[0]) * 10000000 + int.Parse(tmpNew[1]) * 10000 + int.Parse(tmpNew[2]);
-
-                            string[] tmpOld = resultCmd.ToString().Split('.');
-                            long tmpOldVer = int.Parse(tmpOld[0]) * 10000000 + int.Parse(tmpOld[1]) * 10000 + int.Parse(tmpOld[2]);
-
-                            if (tmpNewVer > tmpOldVer)
-                            {
-                                needToUpdate = true;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            log.Error(ex.Message, ex);
-                        }
-
-                        if (needToUpdate || osVersion == "unix")
-                        {      //update                           
+                            sql = commands["create_version"].ToString();
+                            log.Debug(string.Format("ExecuteScalar create_version: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteScalar(sql);
+                            log.Debug(string.Format("create_version resultCmd: [{0}]", resultCmd));
 
                             if (osVersion == "unix")
                             {
@@ -342,30 +260,124 @@ namespace logicpos
                                 log.Debug(string.Format("update_version resultCmd: [{0}]", resultCmd));
                             }
                         }
+
+                        else
+                        {
+                            sql = commands["insert_version"].ToString();
+                            log.Debug(string.Format("ExecuteScalar insert_version: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteScalar(sql);
+                            log.Debug(string.Format("insert_version resultCmd: [{0}]", resultCmd));
+                        }
                     }
+                    else
+                    {
+                        sql = commands["check_version"].ToString();
+                        log.Debug(string.Format("ExecuteScalar check_version: [{0}]", sql));
+                        resultCmd = xpoSession.ExecuteScalar(sql);
+                        log.Debug(string.Format("check_version resultCmd: [{0}]", resultCmd));
 
-                    log.Debug(string.Format("{0} Database: [{1}] Already Exist! Skip Creating Database", databaseType, databaseName));
-                    result = false;
-                    return false;
+                        if (resultCmd == null)
+                        {
+                            sql = commands["create_version"].ToString();
+                            log.Debug(string.Format("ExecuteScalar create_version: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteQuery(sql);
+                            log.Debug(string.Format("create_version resultCmd: [{0}]", resultCmd));
+
+                            if (osVersion == "unix")
+                            {
+                                result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
+                            }
+                            else
+                            {
+                                result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
+                            }
+
+                            if (result)
+                            {
+                                sql = commands["update_version"].ToString().Replace("OLD_VERSION", resultCmd.ToString());
+                                log.Debug(string.Format("ExecuteScalar update_version: [{0}]", sql));
+                                resultCmd = xpoSession.ExecuteScalar(sql);
+                                log.Debug(string.Format("update_version resultCmd: [{0}]", resultCmd));
+                            }
+                        }
+                        else
+                        {
+                            sql = commands["select_version"].ToString();
+                            log.Debug(string.Format("ExecuteScalar select_version: [{0}]", sql));
+                            resultCmd = xpoSession.ExecuteScalar(sql);
+                            log.Debug(string.Format("select_version resultCmd: [{0}]", resultCmd));
+
+                            needToUpdate = false;
+                            try
+                            {
+                                string[] tmpNew = version.Split('.');
+                                long tmpNewVer = int.Parse(tmpNew[0]) * 10000000 + int.Parse(tmpNew[1]) * 10000 + int.Parse(tmpNew[2]);
+
+                                string[] tmpOld = resultCmd.ToString().Split('.');
+                                long tmpOldVer = int.Parse(tmpOld[0]) * 10000000 + int.Parse(tmpOld[1]) * 10000 + int.Parse(tmpOld[2]);
+
+                                if (tmpNewVer > tmpOldVer)
+                                {
+                                    needToUpdate = true;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                log.Error(ex.Message, ex);
+                            }
+
+                            if (needToUpdate || osVersion == "unix")
+                            {      //update                           
+
+                                if (osVersion == "unix")
+                                {
+                                    result = ProcessDump(xpoSession, sqlDatabaseUpdateLinux, commandSeparator, replace);
+                                }
+                                else
+                                {
+                                    result = ProcessDump(xpoSession, sqlDatabaseUpdate, commandSeparator, replace);
+                                }
+
+                                if (result)
+                                {
+                                    sql = commands["update_version"].ToString().Replace("OLD_VERSION", resultCmd.ToString());
+                                    log.Debug(string.Format("ExecuteScalar update_version: [{0}]", sql));
+                                    resultCmd = xpoSession.ExecuteScalar(sql);
+                                    log.Debug(string.Format("update_version resultCmd: [{0}]", resultCmd));
+                                }
+                            }
+                        }
+
+                        log.Debug(string.Format("{0} Database: [{1}] Already Exist! Skip Creating Database", databaseType, databaseName));
+                        result = false;
+                        return false;
+                    }
                 }
+                catch (Exception ex)
+                {
+                    log.Error(ex.Message, ex);
+                    result = false;
+                }
+
+                //If detect errors Drop Incompleted Database
+                //if (onErrorsDropDatabase && !result)
+                //{
+                //    //Drop Database 
+                //    sql = commands["drop_database"].ToString();
+                //    log.Debug(string.Format("ExecuteScalar drop_database: [{0}]", sql));
+                //    resultCmd = xpoSession.ExecuteScalar(sql);
+                //    log.Debug(string.Format("drop_database resultCmd: [{0}]", resultCmd));
+                //}
+
+                return result;
             }
-            catch (Exception ex)
+            catch(Exception Ex)
             {
-                log.Error(ex.Message, ex);
-                result = false;
+                log.Error(Ex.Message, Ex);
+                needToUpdate = false;
+                return false;
             }
-
-            //If detect errors Drop Incompleted Database
-            //if (onErrorsDropDatabase && !result)
-            //{
-            //    //Drop Database 
-            //    sql = commands["drop_database"].ToString();
-            //    log.Debug(string.Format("ExecuteScalar drop_database: [{0}]", sql));
-            //    resultCmd = xpoSession.ExecuteScalar(sql);
-            //    log.Debug(string.Format("drop_database resultCmd: [{0}]", resultCmd));
-            //}
-
-            return result;
+            
         }
 
         /// <summary>
@@ -431,6 +443,9 @@ namespace logicpos
                         result.Add("DATE_FORMAT(dmDateStart, '%Y-%m-%d') AS DateDay,", "strftime('%Y-%m-%d', dmDateStart) AS DateDay,");
                         //view_usercommission
                         result.Add("DATE_FORMAT(fmDate, '%Y-%m-%d') AS DateDay,", "strftime('%Y-%m-%d', fmDate) AS DateDay,");
+                        //view_articlestocksupplier && view_articlestock
+                        result.Add("DATE_FORMAT(stm.Date, '%Y-%m-%d') AS stmDateDay,", "strftime('%Y-%m-%d', stm.Date) AS stmDateDay,");
+                        result.Add("DATE_FORMAT(stk.CreatedAt, '%Y-%m-%d') AS stkDateDay,", "strftime('%Y-%m-%d', stk.CreatedAt) AS stkDateDay,");
                         break;
                     case DatabaseType.MSSqlServer:
                         //Replace content
@@ -450,6 +465,9 @@ namespace logicpos
                         result.Add("DATE_FORMAT(dmDateStart, '%Y-%m-%d') AS DateDay,", "CONVERT(VARCHAR(19), dmDateStart, 23) AS DateDay,");
                         //view_usercommission
                         result.Add("DATE_FORMAT(fmDate, '%Y-%m-%d') AS DateDay,", "CONVERT(VARCHAR(19), fmDate, 23) AS DateDay,");
+                        //view_articlestocksupplier && view_articlestock
+                        result.Add("DATE_FORMAT(stm.Date, '%Y-%m-%d') AS stmDateDay,", "CONVERT(VARCHAR(19), stm.Date, 23) AS stmDateDay,");
+                        result.Add("DATE_FORMAT(stk.CreatedAt, '%Y-%m-%d') AS stkDateDay,", "CONVERT(VARCHAR(19), stk.CreatedAt, 23) AS stkDateDay,");
                         //ByPass Default commandSeparator ;
                         commandSeparator = "GO";
                         break;
@@ -541,10 +559,12 @@ namespace logicpos
                                         string table = executeCommand.Split('[', ']')[1];
                                         string commandSql = executeCommand.Split('[', ']')[2];
                                         string column = executeCommand.Split('[', ']')[3];
+                                        string columnType = executeCommand.Split('[', ']')[4];
                                         bool columExists = isColumnExists(table, column, pXpoSession);
                                         if (!columExists && commandSql == " ADD ")
                                         {
-                                            result = pXpoSession.ExecuteNonQuery(executeCommand);
+                                            string sqlCommandAfter = "alter table " + table + " ADD " + column + columnType;
+                                            result = pXpoSession.ExecuteNonQuery(sqlCommandAfter);
                                         }
                                     }
                                     catch(Exception ex)
@@ -560,14 +580,14 @@ namespace logicpos
                             }
                             catch (Exception ex)
                             {
-                                /* IN009021 */
-                                //pXpoSession.RollbackTransaction();
+                          
 
                                 string errorMessage = string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: Error executing Sql Command: [{0}]{1}Exception: [{2}]", executeCommand, Environment.NewLine, ex.Message);
                                 log.Error(string.Format("{0} : {1}", errorMessage, ex.Message), ex);
-                                Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
-
-                                return false;
+                                //Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
+                                /* IN009021 */
+                                //pXpoSession.RollbackTransaction();
+                                //return false;
                             };
                         };
                     }

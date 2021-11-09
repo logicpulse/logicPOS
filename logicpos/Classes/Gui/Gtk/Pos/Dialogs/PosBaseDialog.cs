@@ -494,7 +494,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileActionHelp = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_help.png");
             string fileActionCloneDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ");
             string fileActionOpenDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png");
-            string fileActionSendEmailDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png");
+            string fileActionSendEmailDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_dialog_send_email.png");
+            string fileActionCleanFilter = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_clean_filter.png");
 
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());
@@ -551,6 +552,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 case PosBaseDialogButtonType.SendEmailDocument:
                     buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_send_email_document");
                     buttonImage = fileActionSendEmailDocument;
+                    break;
+                case PosBaseDialogButtonType.CleanFilter:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter_clear");
+                    buttonImage = fileActionCleanFilter;
                     break;
                 default:
                     break;
@@ -595,7 +600,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string fileActionCloneDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_clone_document.png ");
             string fileActionOpenDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_open_document.png");
             string fileActionSendEmailDocument = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_send_email.png");
-
+            string fileActionCleanFilter = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_clean_filter.png");
+            
             //Assign ButtonType to Name, Override After Switch
             string buttonName = (pButtonName != string.Empty) ? pButtonName : string.Format("touchButton{0}_DialogActionArea", pButtonType.ToString());
             string buttonLabel = string.Empty;
@@ -651,6 +657,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 case PosBaseDialogButtonType.SendEmailDocument:
                     buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_send_email_document");
                     buttonImage = fileActionSendEmailDocument;
+                    break;
+                case PosBaseDialogButtonType.CleanFilter:
+                    buttonLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter_clear");
+                    buttonImage = fileActionCleanFilter;
                     break;
                 default:
                     break;

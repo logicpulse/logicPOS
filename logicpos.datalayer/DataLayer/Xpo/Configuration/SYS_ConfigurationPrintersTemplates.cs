@@ -52,12 +52,25 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<Boolean>("FinancialTemplate", ref fFinancialTemplate, value); }
         }
 
+        Boolean fIsBarCode;
+        public Boolean IsBarCode
+        {
+            get { return fIsBarCode; }
+            set { SetPropertyValue<Boolean>("IsBarCode", ref fIsBarCode, value); }
+        }
+
 
         //ConfigurationPrintersTemplates One <> Many Article
         [Association(@"ConfigurationPrintersTemplatesReferencesArticle", typeof(fin_article))]
         public XPCollection<fin_article> Articles
         {
             get { return GetCollection<fin_article>("Articles"); }
+        }
+
+        [Association(@"ConfigurationPrintersBarCodeTemplatesReferencesArticle", typeof(fin_article))]
+        public XPCollection<fin_article> ArticlesBarCode
+        {
+            get { return GetCollection<fin_article>("ArticlesBarCode"); }
         }
 
         //ConfigurationPrintersTemplates One <> Many Article
@@ -88,7 +101,6 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get { return GetCollection<fin_documentfinancetype>("DocumentsType"); }
         }
-
 
 
         //....

@@ -352,9 +352,9 @@ namespace PCComm
             catch (Exception ex)
             {
                 //DisplayData(MessageType.Error, ex.Message);
-                //return false;
+                return false;
                 // Forward Exception to me handled Outside
-                throw ex;
+                //throw ex;
             }
         }
         #endregion

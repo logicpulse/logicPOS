@@ -396,8 +396,9 @@ namespace logicpos.datalayer.DataLayer.Xpo
                 var reportType2 = new rpt_reporttype(_session) { Ord = 20, Code = 20, Designation = "ReportType #2", ResourceString = "reporttype_label_type2" }; reportType2.Save();
                 /* IN009072 */
                 //var reportType3 = new rpt_reporttype(_session) { Ord = 30, Code = 30, Designation = "ReportType #3", ResourceString = "reporttype_label_type3" }; reportType3.Save();
-                var reportType4 = new rpt_reporttype(_session) { Ord = 40, Code = 30, Designation = "ReportType #4", ResourceString = "reporttype_label_type4" }; reportType4.Save();
-                var reportType5 = new rpt_reporttype(_session) { Ord = 50, Code = 30, Designation = "ReportType #5", ResourceString = "reporttype_label_type5" }; reportType5.Save();
+                var reportType4 = new rpt_reporttype(_session) { Ord = 40, Code = 40, Designation = "ReportType #4", ResourceString = "reporttype_label_type4" }; reportType4.Save();
+                var reportType5 = new rpt_reporttype(_session) { Ord = 50, Code = 50, Designation = "ReportType #5", ResourceString = "reporttype_label_type5" }; reportType5.Save();
+                var reportType6 = new rpt_reporttype(_session) { Ord = 60, Code = 60, Designation = "ReportType #6", ResourceString = "reporttype_label_type6" }; reportType6.Save();
 
                 //Report
                 XPCollection xpcReport = new XPCollection(_session, typeof(rpt_report));

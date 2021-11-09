@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.IO;
 //IN:009268 VAT INFO CHECKER AND AUTO-COMPLETE FIELDS
 namespace logicpos
 {   
@@ -84,8 +85,11 @@ namespace logicpos
                     info.CountryCode = CleanInput(response["countryCode"].InnerText);
                     info.VatNumber = CleanInput(response["vatNumber"].InnerText);
 					//IN009346 - Correção - Update de Info via NIF para União Europeia
-                    info.Name = CleanInput(response["name"].InnerText);
+                    info.Name = CleanInput(response["name"].InnerText).Replace("Ã‡","ç").Replace('?', 'ç').Replace('Æ', 'ã').Replace('¢', 'ó').Replace('¡', 'í');
                     info.Name = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(info.Name.ToLower());
+
+                    //StreamWriter name = new StreamWriter(info.Name, false, Encoding.UTF8);
+                    //info.Name = name.ToString();
 
                     info.Address = CleanInput(response["address"].InnerText);
                     info.Address = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(info.Address.ToLower());

@@ -155,6 +155,7 @@ namespace logicpos.shared
                 foreach (var item in removeItems)
                 {
                     _ordersMain.Remove(item);
+                    break;
                 }
             }
             if (!GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp._currentOrderMainOid))

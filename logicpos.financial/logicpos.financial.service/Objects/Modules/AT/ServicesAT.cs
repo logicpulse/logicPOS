@@ -3,6 +3,7 @@ using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.service.App;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Security;
@@ -21,6 +22,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
         //WebService and Files
         //Pub
+        
         private bool _validCerificates = false;
         public bool ValidCerificates
         {
@@ -30,11 +32,13 @@ namespace logicpos.financial.service.Objects.Modules.AT
         private bool _wayBillMode;
         private Uri _urlWebService;
         private Uri _urlSoapAction;
+        //Change this to test Mode
+        private bool testMode = false;
         private string _appPath = string.Empty;
         private string _postData;
         private string _pathSaveSoap;
-private string _pathSaveSoapResult;
-private string _pathSaveSoapResultError;
+        private string _pathSaveSoapResult;
+        private string _pathSaveSoapResultError;
         private string _pathPublicKey;
         private string _pathCertificate;
         private string _atPasswordCertificate;
@@ -61,6 +65,8 @@ private string _pathSaveSoapResultError;
         private string _sampleWBMovementType = "GT";
         //Sample Document Details : Shared for Documents and DocumentWayBill
         private string _sampleXXCustomerTaxID = "508278155";//299999998 | 111111111
+
+        
         //XPObjects
         private fin_documentfinancemaster _documentMaster;
 
@@ -72,9 +78,99 @@ private string _pathSaveSoapResultError;
             set { _soapResult = value; }
         }
 
+        private static string GetServicesATFilePublicKey(bool pTestMode)
+        {
+            return (pTestMode)
+                ? string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATTestModeFilePublicKey"])
+                : string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATProdModeFilePublicKey"])
+            ;
+        }
+
+        private static string GetServicesATFileCertificate(bool pTestMode)
+        {
+            return (pTestMode)
+                ? string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATTestModeFileCertificate"])
+                : string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATProdModeFileCertificate"])
+            ;
+        }
+
+        private static string GetServicesATTaxRegistrationNumber(bool pTestMode)
+        {
+            return (pTestMode)
+                ? "599999993"
+                : GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+        }
+
+        private static string GetServicesATAccountFiscalNumber(bool pTestMode)
+        {
+            //GlobalFramework.Settings["servicesATProdModeAccountFiscalNumber"];
+            return (pTestMode)
+                ? "599999993/0037"
+                : GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
+        }
+
+        private static string GetServicesATAccountPassword(bool pTestMode)
+        {
+            //GlobalFramework.Settings["servicesATProdModeAccountPassword"];
+            return (pTestMode)
+                ? "testes1234"
+                : GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
+        }
+
+        private static string GetServicesATCertificatePassword(bool pTestMode)
+        {
+            //GlobalFramework.Settings["servicesATProdModeCertificatePassword"];
+            return (pTestMode)
+                ? "TESTEwebservice"
+                : GlobalFramework.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // AT Web Services : Documents
+
+        private static Uri GetServicesATDCUri(bool pTestMode)
+        {
+            return (pTestMode)
+                ? new Uri("https://servicos.portaldasfinancas.gov.pt:700/fews/faturas")
+                : new Uri("https://servicos.portaldasfinancas.gov.pt:400/fews/faturas")
+            ;
+        }
+
+        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        // AT Web Services : DocumentsWayBill
+
+        private static Uri GetServicesATWBUri(bool pTestMode, bool pAgricultural)
+        {
+            if (!pAgricultural)
+            {
+                //Normal Mode : Documentos de transporte:
+                return (pTestMode)
+                    ? new Uri("https://servicos.portaldasfinancas.gov.pt:701/sgdtws/documentosTransporte")
+                    : new Uri("https://servicos.portaldasfinancas.gov.pt:401/sgdtws/documentosTransporte")
+                ;
+            }
+            else
+            {
+                //Agricultural Mode : Guias de aquisição de produtos de produtores agrícolas:
+                return (pTestMode)
+                    ? new Uri("https://servicos.portaldasfinancas.gov.pt:702/sgdtws/GuiasAquisicaoProdAgricola")
+                    : new Uri("https://servicos.portaldasfinancas.gov.pt:402/sgdtws/GuiasAquisicaoProdAgricola")
+                ;
+            }
+        }
+        //DocumentsWayBill(Agricultural)
+        public static Uri ServicesATUriDocumentsWayBill { get { return GetServicesATWBUri(false, false); } }
+        public static Uri ServicesATUriDocumentsWayBillSOAPAction = new Uri("https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/");
+
+        public static Uri ServicesATUriDocuments { get { return GetServicesATDCUri(false); } }
+        public static Uri ServicesATUriDocumentsSOAPAction = new Uri("http://servicos.portaldasfinancas.gov.pt/faturas/RegisterInvoice");
+
         //Constructor
         public ServicesAT(fin_documentfinancemaster pFinanceMaster)
         {
+            //Init Settings Main Config Settings
+            GlobalFramework.Settings = ConfigurationManager.AppSettings;
+            
             //Parameters
             _documentMaster = pFinanceMaster;
             //Prepare Local Vars : Must be WayBill and Not a InvoiceWayBill, InvoiceWayBill always are processed like normal Documents
@@ -82,22 +178,22 @@ private string _pathSaveSoapResultError;
             //https://www.portugal-a-programar.pt/forums/topic/57734-utilizar-webservices-da-at/?do=findComment&comment=598210
             //https://info.portaldasfinancas.gov.pt/infofaqs/listafaqs.aspx?subarea=263
             //Caso a fatura seja emitida por via eletrónica, (...) e contenha os elementos referidos no art 36º do CIVA, assim como todos os elementos que devam constar do documento de transporte, fica o remetente (proprietário dos bens) dispensado de comunicação à AT.
-            _wayBillMode = (_documentMaster.DocumentType.WayBill && _documentMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill);
+            _wayBillMode = (_documentMaster.DocumentType.WayBill);
 
             //Init WebService parameters and Files
             _pathSaveSoap = string.Format(@"{0}{1}", GlobalFramework.Path["temp"], "soapsend.xml");
             _pathSaveSoapResult = string.Format(@"{0}{1}", GlobalFramework.Path["temp"], "soapresult.xml");
             _pathSaveSoapResultError = string.Format(@"{0}{1}", GlobalFramework.Path["temp"], "soapresult_error.xml");
-            _urlWebService = (!_wayBillMode) ? SettingsApp.ServicesATUriDocuments : SettingsApp.ServicesATUriDocumentsWayBill;
-            _urlSoapAction = (!_wayBillMode) ? SettingsApp.ServicesATUriDocumentsSOAPAction : SettingsApp.ServicesATUriDocumentsWayBillSOAPAction;
-            _pathPublicKey = SettingsApp.ServicesATFilePublicKey;
-            _pathCertificate = SettingsApp.ServicesATFileCertificate;
+            _urlWebService = (!_wayBillMode) ? GetServicesATDCUri(false) : GetServicesATWBUri(testMode, false);
+            _urlSoapAction = (!_wayBillMode) ? ServicesATUriDocumentsSOAPAction : ServicesATUriDocumentsWayBillSOAPAction;
+            _pathPublicKey = GetServicesATFilePublicKey(testMode);
+            _pathCertificate = GetServicesATFileCertificate(testMode);
             // Get TestMode/Production Configuration
-            _atAccountFiscalNumber = SettingsApp.ServicesATAccountFiscalNumber;
-            _atAccountPassword = SettingsApp.ServicesATAccountPassword;
+            _atAccountFiscalNumber = GetServicesATAccountFiscalNumber(testMode);
+            _atAccountPassword = GetServicesATAccountPassword(testMode);
             // Values from PrefsDB and VendorPlugin
-            _atTaxRegistrationNumber = SettingsApp.ServicesATTaxRegistrationNumber;
-            _atPasswordCertificate = SettingsApp.ServicesATCertificatePassword;
+            _atTaxRegistrationNumber = GetServicesATTaxRegistrationNumber(testMode);
+            _atPasswordCertificate = GetServicesATCertificatePassword(testMode);
 
             //Override Default Paths: If Works in Service mode need FullPath to Files, and a user running service, to bypass windows service user
             if (!Environment.UserInteractive)
@@ -366,7 +462,7 @@ private string _pathSaveSoapResultError;
             sb.Append("    <ns2:InvoiceNo>" + _documentMaster.DocumentNumber + "</ns2:InvoiceNo>");
             sb.Append("    <ns2:InvoiceDate>" + _documentMaster.DocumentDate + "</ns2:InvoiceDate>");
             sb.Append("    <ns2:InvoiceType>" + _documentMaster.DocumentType.Acronym + "</ns2:InvoiceType>");
-            sb.Append("    <ns2:InvoiceStatus>N</ns2:InvoiceStatus>");
+            sb.Append("    <ns2:InvoiceStatus>" + _documentMaster.DocumentStatusStatus + "</ns2:InvoiceStatus>");
             //Generated Content
             sb.Append(sbContentCustomerTax);
             sb.Append(sbContentLinesAndDocumentTotals);
@@ -574,7 +670,7 @@ private string _pathSaveSoapResultError;
                 //Prepare Request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_urlWebService);
                 request.Headers.Add("SOAPAction", _urlSoapAction.ToString());
-                if (SettingsApp.ServicesATRequestTimeout > 0) request.Timeout = SettingsApp.ServicesATRequestTimeout;
+                if (Convert.ToInt32(ConfigurationManager.AppSettings["servicesATRequestTimeout"]) > 0) request.Timeout = Convert.ToInt32(ConfigurationManager.AppSettings["servicesATRequestTimeout"]);
 
                 // Old Method : without Using VendorPlugin
                 //X509Certificate2 cert = new X509Certificate2();
@@ -584,7 +680,7 @@ private string _pathSaveSoapResultError;
                 //cert.Import(_pathCertificate, _atPasswordCertificate, X509KeyStorageFlags.Exportable);
 
                 // New Method : Import Certificate From VendorPlugin
-                X509Certificate2 cert = GlobalFramework.PluginSoftwareVendor.ImportCertificate(SettingsApp.ServiceATEnableTestMode, _pathCertificate);
+                X509Certificate2 cert = GlobalFramework.PluginSoftwareVendor.ImportCertificate(testMode, _pathCertificate);
 
                 // Output Certificate 
                 Utils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));
@@ -728,6 +824,7 @@ private string _pathSaveSoapResultError;
 
             try
             {
+                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), _documentMaster.Oid);
                 //Always Add to sys_systemauditat Log
                 SystemAuditATWSType systemAuditATWSType = (!_wayBillMode) ? SystemAuditATWSType.Document : SystemAuditATWSType.DocumentWayBill;
                 var systemAuditATWS = new sys_systemauditat(GlobalFramework.SessionXpo)
@@ -738,28 +835,28 @@ private string _pathSaveSoapResultError;
                     ReturnCode = Convert.ToInt16(pSoapResult.ReturnCode),
                     ReturnMessage = pSoapResult.ReturnMessage,
                     ReturnRaw = pSoapResult.ReturnRaw,
-                    DocumentNumber = _documentMaster.DocumentNumber,
+                    DocumentNumber = documentMaster.DocumentNumber,
                     ATDocCodeID = pSoapResult.ATDocCodeID,
-                    DocumentMaster = _documentMaster
+                    DocumentMaster = documentMaster
                 };
                 systemAuditATWS.Save();
 
                 //Always Add to fin_documentfinancemaster ATAudit
-                _documentMaster.ATAudit.Add(systemAuditATWS);
-                _documentMaster.Save();
+                documentMaster.ATAudit.Add(systemAuditATWS);
+                documentMaster.Save();
 
                 //Assign OK Result
                 if (pSoapResult.ReturnCode == "0")
                 {
                     //Assign to ATValidResult to Document Master
-                    _documentMaster.ATValidAuditResult = systemAuditATWS;
+                    documentMaster.ATValidAuditResult = systemAuditATWS;
                     //Assign ATDocCodeID
-                    if (_wayBillMode) _documentMaster.ATDocCodeID = pSoapResult.ATDocCodeID;
+                    if (_wayBillMode) documentMaster.ATDocCodeID = pSoapResult.ATDocCodeID;
                     //Disable Resend if Enabled (Used when document is Cancelled)
-                    if (_documentMaster.ATResendDocument) _documentMaster.ATResendDocument = false;
+                    if (documentMaster.ATResendDocument) documentMaster.ATResendDocument = false;
                     //Override Default Document Date
-                    _documentMaster.MovementStartTime = _movementStartTime;
-                    _documentMaster.Save();
+                    documentMaster.MovementStartTime = _movementStartTime;
+                    documentMaster.Save();
 
                     //Assign True to Result 
                     result = true;

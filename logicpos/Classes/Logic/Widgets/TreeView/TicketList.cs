@@ -191,8 +191,23 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    i++;
                 //}
                 decimal oldValueQnt = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity));
-                ChangeQuantity(oldValueQnt + defaultQuantity);
-                UpdateTicketListButtons();
+                if (Utils.CheckStocks())
+                {
+                    if (!Utils.ShowMessageMinimumStock(_sourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
+                    {
+                        ChangeQuantity(oldValueQnt + defaultQuantity);
+                        UpdateTicketListButtons();
+                    }
+                    else
+                    {
+                        UpdateTicketListButtons();
+                    }
+                }
+                else
+                {
+                    ChangeQuantity(oldValueQnt + defaultQuantity);
+                    UpdateTicketListButtons();
+                }
             }
             catch (Exception ex)
             {
@@ -208,9 +223,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 decimal oldValueQnt = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
                 decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(_sourceWindow, oldValueQnt);
-
+                bool showMessage;
                 if (newValueQnt > 0)
                 {
+                    if (Utils.CheckStocks()) 
+                    {
+                        if (!Utils.ShowMessageMinimumStock(_sourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, newValueQnt, out showMessage))
+                        {
+                            if (showMessage)
+                            {
+                                newValueQnt = oldValueQnt;
+                                return;
+                            }
+                        }
+                    }
                     ChangeQuantity(newValueQnt);
                 }
                 UpdateTicketListButtons();
@@ -311,14 +337,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 // If OrderTicket and has a ThermalPrinter connected
                 // Impressoras - Diferenciação entre Tipos [TK:016249]
                 GlobalFramework.UsingThermalPrinter = true;
-                if (orderTicket != null && GlobalFramework.LoggedTerminal.Printer != null &&
-                    GlobalFramework.LoggedTerminal.ThermalPrinter != null &&
+                if (GlobalFramework.LoggedTerminal.ThermalPrinter != null &&
                     GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
                     orderTicket.OrderDetail.Count != 0)
                 {
                     //public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
                     //IN009239 - This avoids orders being printed when in use of ParkingTicketModule
-                    if (!GlobalFramework.AppUseParkingTicketModule)
+					//Opção para imprimir ou não o ticket
+                    //bool printTicket = true;
+                    //printTicket = Convert.ToBoolean(GlobalFramework.Settings["printTicket"]);
+
+					//Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
+                    if (!GlobalFramework.AppUseParkingTicketModule && Utils.PrintTicket())
                     {
                         // TK016249 Impressoras - Diferenciação entre Tipos 
                         FrameworkCalls.PrintOrderRequest(_sourceWindow, GlobalFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
@@ -426,7 +456,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
-            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SettingsApp.RegexAlfaNumeric, true);
+            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -445,7 +475,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png");
-            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SettingsApp.RegexInteger, true);
+            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -596,7 +626,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 decimal quantity = Convert.ToDecimal(result[0]) / 1000;
                 // Use ChangeQuantity to Change/Update Quantity in TicketList
                 //_currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = quantity;
-                ChangeQuantity(quantity);
+                if (Utils.CheckStocks())
+                {
+                    if(Utils.ShowMessageMinimumStock(_sourceWindow, _currentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, quantity))
+                    {
+                        ChangeQuantity(quantity);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    ChangeQuantity(quantity);
+                }
                 //_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity);
                 //_log.Debug(string.Format("Quantity: {0}", _listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)));
             }

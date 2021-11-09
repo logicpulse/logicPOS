@@ -37,10 +37,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
             columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
             columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
-            //To Test XPGuidObject InitialValue (InitialValue = xArticleFamily) : ArticleFamily xArticleFamily = (ArticleFamily)FrameworkUtils.GetXPGuidObjectFromSession(GlobalFramework.SessionXpoBackoffice, typeof(ArticleFamily), new Guid("471d8c1e-45c1-4dbe-8526-349c20bd53ef"));
-            columnProperties.Add(new GenericTreeViewColumnProperty("Family") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_family"), ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("SubFamily") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_subfamily"), ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Type") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_type"), ChildName = "Designation" });
             columnProperties.Add(new GenericTreeViewColumnProperty("TotalStock")
             {
                 Query = "SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;",
@@ -55,13 +51,26 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //    Xalign = 1.0F
                 //}
             });
+            //To Test XPGuidObject InitialValue (InitialValue = xArticleFamily) : ArticleFamily xArticleFamily = (ArticleFamily)FrameworkUtils.GetXPGuidObjectFromSession(GlobalFramework.SessionXpoBackoffice, typeof(ArticleFamily), new Guid("471d8c1e-45c1-4dbe-8526-349c20bd53ef"));
+            columnProperties.Add(new GenericTreeViewColumnProperty("IsComposed") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article")});
+			//Artigos Compostos [IN:016522]
+            columnProperties.Add(new GenericTreeViewColumnProperty("Family") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_family"), ChildName = "Designation" });
+            columnProperties.Add(new GenericTreeViewColumnProperty("SubFamily") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_subfamily"), ChildName = "Designation" });
+            columnProperties.Add(new GenericTreeViewColumnProperty("Type") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_type"), ChildName = "Designation" });            
             columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
 
             //Configure Criteria/XPCollection/Model
             //Default Criteria with XpoOidUndefinedRecord
             CriteriaOperator criteria = pXpoCriteria;
             // Override Criteria adding XpoOidHiddenRecordsFilter
-            criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) OR (Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
+            if (pXpoCriteria != null)
+            {
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+            }
+            else
+            {
+                criteria = CriteriaOperator.Parse($"(DeletedAt IS NULL)");
+            }
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);

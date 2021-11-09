@@ -1,6 +1,7 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
 using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using System;
@@ -27,6 +28,34 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             get { return _entryValidation; }
             set { _entryValidation = value; }
         }
+		//Artigos Compostos [IN:016522]
+        private EntryValidation _entryCodeValidation;
+        public EntryValidation EntryCodeValidation
+        {
+            get { return _entryCodeValidation; }
+            set { _entryCodeValidation = value; }
+        }
+
+        private EntryValidation _qtdEntryValidation;
+        public EntryValidation EntryQtdValidation
+        {
+            get { return _qtdEntryValidation; }
+            set { _qtdEntryValidation = value; }
+        }
+
+        private int _entryNumber;
+        public int EntryNumber
+        {
+            get { return _entryNumber; }
+            set { _entryNumber = value; }
+        }
+
+        private fin_article _article;
+        public fin_article Article
+        {
+            get { return _article; }
+            set { _article = value; }
+        }
 
         //Constructor/OverLoads
         public XPOEntryBoxSelectRecordValidation(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pRule)
@@ -41,11 +70,16 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         public XPOEntryBoxSelectRecordValidation(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pCurrentValue, CriteriaOperator pCriteriaOperator, string pRule, bool pRequired)
             : this(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldValidateValue, pCurrentValue, pCriteriaOperator, KeyboardMode.None, pRule, pRequired) { }
 
-        public XPOEntryBoxSelectRecordValidation(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pCurrentValue, CriteriaOperator pCriteriaOperator, KeyboardMode pKeyboardMode, string pRule, bool pRequired)
-            : base(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldValidateValue, pCurrentValue, pCriteriaOperator)
+        public XPOEntryBoxSelectRecordValidation(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pCurrentValue, CriteriaOperator pCriteriaOperator, string pRule, bool pRequired, bool pBOSource)
+           : this(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldValidateValue, pCurrentValue, pCriteriaOperator, KeyboardMode.None, pRule, pRequired, pBOSource) { }
+
+        public XPOEntryBoxSelectRecordValidation(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pCurrentValue, CriteriaOperator pCriteriaOperator, KeyboardMode pKeyboardMode, string pRule, bool pRequired, bool pBOSource = false, string pFieldValidateValueCode = "", string pFieldValidateValueQtd = "", int pEntryNumber = 0)
+            : base(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldValidateValue, pCurrentValue, pCriteriaOperator, pBOSource)
         {
+            _entryNumber = pEntryNumber;
+
             //Entry: Required to Assign BaseClass _label Reference to EntryValidation.Label :)
-            _entryValidation = new EntryValidation(pSourceWindow, pKeyboardMode, pRule, pRequired) { Label = _label };
+            _entryValidation = new EntryValidation(pSourceWindow, pKeyboardMode, pRule, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
 
             //Start Validated
             _entryValidation.Validate(GetValue(pFieldValidateValue));
@@ -55,8 +89,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             {
                 _entryValidation.Validate(GetValue(pFieldValidateValue));
             };
+			//Artigos Compostos [IN:016522]
+            if (pBOSource && pEntryNumber > 0)
+            {
+                _entryCodeValidation = new EntryValidation(pSourceWindow, pKeyboardMode, pFieldValidateValueCode, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
 
-            InitEntry(_entryValidation);
+                _qtdEntryValidation = new EntryValidation(pSourceWindow, KeyboardMode.None, pFieldValidateValueQtd, pRequired) { Label = _label, Label2 = _label2, Label3 = _label3 };
+
+                InitEntryBOSource(_entryCodeValidation,_entryValidation, _qtdEntryValidation);                
+            }
+            else
+            {
+                InitEntry(_entryValidation);
+            }
+            
             //Init Keyboard
             InitKeyboard(_entryValidation);
         }

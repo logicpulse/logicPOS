@@ -119,13 +119,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         if (!report.Disabled)
                         {
-                            // Generate Insert for userpermissionitem and userpermissionitem
+                            bool reportSensitive = true;
                             userpermissionitemToken = report.Token;
-                            userpermissionitemGuid = Guid.NewGuid();
-                            userpermissionprofileGuid = Guid.NewGuid();
-                            userpermissionitemInsert.Add(string.Format(templatePermissionItem, userpermissionitemGuid, _userpermissionitemOrdAndCode, userpermissionitemToken, report.Designation.Replace(" de ", " - ")));
-                            userpermissionprofileInsert.Add(string.Format(userpermissionprofileItem, userpermissionprofileGuid, userpermissionitemGuid));
-                            _userpermissionitemOrdAndCode += 10;
+                            //Prevent Reports to non-licenced Module stocks
+                            if (report.ReportType.Oid == Guid.Parse("751c9e56-26bb-4fc8-8110-6c1e3b7c84e6") && report.Token != "REPORT_LIST_STOCK_MOVEMENTS" && !GlobalFramework.LicenceModuleStocks)
+                            {
+                                reportSensitive = false;
+                            }
+
+                            if (reportSensitive)
+                            {
+                                // Generate Insert for userpermissionitem and userpermissionitem                               
+                                userpermissionitemGuid = Guid.NewGuid();
+                                userpermissionprofileGuid = Guid.NewGuid();
+                                userpermissionitemInsert.Add(string.Format(templatePermissionItem, userpermissionitemGuid, _userpermissionitemOrdAndCode, userpermissionitemToken, report.Designation.Replace(" de ", " - ")));
+                                userpermissionprofileInsert.Add(string.Format(userpermissionprofileItem, userpermissionprofileGuid, userpermissionitemGuid));
+                                _userpermissionitemOrdAndCode += 10;
+                            }
 
                             // Get common resource for all 3 types of Financial Reports
                             Tuple<string, string> tuppleResourceString = CustomReport.GetResourceString(report.ResourceString);
@@ -148,7 +158,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //_log.Debug(String.Format("Label: [{0}]", buttonLabel));
 
                             // Add Child Menu
-                            accordionChilds.Add(userpermissionitemToken, new AccordionNode(buttonLabel)
+                            accordionChilds.Add(userpermissionitemToken, new AccordionNode(buttonLabel, reportSensitive)
                             {
                                 Clicked = PrintReportRouter
                             });

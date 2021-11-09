@@ -591,10 +591,13 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Customer <> ParentDocument.Customer (And ConferenceDocument)
-
+				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
                 if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument)
                 {
-                    ResultAdd(FinanceValidationError.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
+                    if (!SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice))
+                    {
+                        ResultAdd(FinanceValidationError.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
+                    }                       
                 }
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -694,7 +697,12 @@ namespace logicpos.financial.library.Classes.Finance
                 //If has a ParentDocument, Check if is a Valid One for current document type, else trigger Error
                 if (documentParent != null && !validParentDocuments.Contains<Guid>(documentParent.DocumentType.Oid))
                 {
-                    ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_PARENT_DOCUMENT_INVALID);
+                    //If Moçambique Ignore - Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
+                    if (SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                    {
+                        ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_PARENT_DOCUMENT_INVALID);
+                    }
+                       
                 }
 
                 //ParentDocuments: Credit Note

@@ -84,7 +84,7 @@ namespace logicpos.Classes.Formatters
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
-            string result = string.Empty; ;
+            string result = string.Empty; 
 
             try
             {

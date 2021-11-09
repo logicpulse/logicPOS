@@ -9,6 +9,7 @@ using logicpos.financial.service.Test.Modules.AT;
 using logicpos.financial.servicewcf;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
+using Microsoft.Win32;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace logicpos.financial.service
         static void Main(string[] args)
         {
             //Init Settings Main Config Settings
-            GlobalFramework.Settings = ConfigurationManager.AppSettings;
+           GlobalFramework.Settings = ConfigurationManager.AppSettings;
 
             //Base Bootstrap Init from LogicPos
             Init();
@@ -150,13 +151,20 @@ namespace logicpos.financial.service
                 {
                     _log.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
 
-                    Utils.Log(xpoConnectionString);
+
+                    var connectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
+                    { ConnectionString = xpoConnectionString };
+                    if (connectionStringBuilder.ContainsKey("password")) { connectionStringBuilder["password"] = "*****"; };
+                    _log.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
+
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
-                    if(XpoDefault.DataLayer != null)
-                    Utils.Log("DataLayer...");
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
-                    if (GlobalFramework.SessionXpo != null)
-                        Utils.Log("SessionXpo...");
+
+                    //if (XpoDefault.DataLayer != null)
+                    ////Utils.Log("DataLayer...");
+                    ////GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    //if (GlobalFramework.SessionXpo != null)
+                    //    //Utils.Log("SessionXpo...");
                 }
                 catch (Exception ex)
                 {
@@ -173,17 +181,38 @@ namespace logicpos.financial.service
 
                 //PreferenceParameters
                 GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
-                Utils.Log("GetPreferencesParameters...");
+
+                //Check parameters in debug
+                //try
+                //{
+                //    foreach (var pref in GlobalFramework.PreferenceParameters)
+                //    {
+                //        _log.Debug(string.Format(pref.Key + ": " + pref.Value));
+                //    }
+                //}catch(Exception Ex) { _log.Debug(Ex.Message); }
+
                 //CultureInfo/Localization
-                string culture = GlobalFramework.PreferenceParameters["CULTURE"];
+               string culture = GlobalFramework.PreferenceParameters["CULTURE"];
                 if (!string.IsNullOrEmpty(culture))
                 {
                     /* IN006018 and IN007009 */
                     //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 }
                 
-                GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
-                if(GlobalFramework.CurrentCulture != null) Utils.Log("CULTURE...");
+                GlobalFramework.CurrentCulture = new CultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
+                if (GlobalFramework.CurrentCulture == null)
+                {
+                    //Get Culture from DB
+                    string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
+                    string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                    GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                    if(GlobalFramework.CurrentCulture != null)
+                    _log.Debug(GlobalFramework.CurrentCulture.DisplayName);
+                    else
+                    {
+                        _log.Debug("No culture loaded");
+                    }
+                }
                 //Always use en-US NumberFormat because of MySql Requirements
                 GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
 
@@ -204,6 +233,11 @@ namespace logicpos.financial.service
                 {
                     throw new Exception($"Error! Invalid Parameters Met! Required parameters missing! Check parameters: AccountFiscalNumber: [{SettingsApp.ServicesATAccountFiscalNumber}], ATAccountPassword: [{SettingsApp.ServicesATAccountPassword}], TaxRegistrationNumber: [{SettingsApp.ServicesATTaxRegistrationNumber}]");
                 }
+                if (!Utils.IsLinux)
+                {
+                    SystemEvents.PowerModeChanged += OnPowerChange;
+                }
+                
             }
             catch (Exception ex)
             {
@@ -397,7 +431,7 @@ namespace logicpos.financial.service
         {
             if (SettingsApp.ServiceTimerEnabled)
             {
-                _log.Debug("Service StartTimer");
+                _log.Debug("Service StartTimer to " + SettingsApp.ServiceTimer.Hour + ":" + SettingsApp.ServiceTimer.Minute);
                 DateTime nowTime = DateTime.Now;
                 DateTime oneAmTime = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, SettingsApp.ServiceTimer.Hour, SettingsApp.ServiceTimer.Minute, 0, 0);
                 if (nowTime > oneAmTime)
@@ -424,22 +458,48 @@ namespace logicpos.financial.service
         {
             if (!_timerRunningTasks)
             {
-
-                Stop();
+                
+                StopTimer();
+                //Stop();
                 //Started Running Tasks
                 _timerRunningTasks = true;
 
                 _log.Debug(String.Format("Send Documents to AT"));
-                //if (SettingsApp.ServiceATSendDocuments || SettingsApp.ServiceATSendDocumentsWayBill)
-                //{
+				//Financial.service - Correções no envio de documentos AT [IN:014494]
+				//Now only works in prodution
+                if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocuments"]) || Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocumentsWayBill"]))
+                {
                     _log.Debug(String.Format("ServiceATSendDocuments True"));
                     Utils.ServiceSendPendentDocuments();
-                //}
+                }
 
                 //Finished Running Tasks
                 _timerRunningTasks = false;
                 StartTimer();
             }
+        }
+
+        private static void OnPowerChange(object s, PowerModeChangedEventArgs e)
+        {
+            try
+            {
+                switch (e.Mode)
+                {
+                    case PowerModes.Resume:
+                        StartTimer();
+                        _log.Debug("Windows Resume");
+                        break;
+                    case PowerModes.Suspend:
+                        StopTimer();
+                        _log.Debug("Windows Suspend");
+                        break;
+                }
+            }
+            catch (Exception Ex)
+            {
+                _log.Error("Erro ao suspender/retomar sessão no Windows" + Ex.Message);
+            }
+
         }
     }
 }

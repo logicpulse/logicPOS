@@ -15,10 +15,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         private sys_userdetail _selectedUserDetail;
         private NumberPadPin _numberPadPin;
+        private bool _notLoginAuth;
 
-        public PosPinPadDialog(Window pSourceWindow, DialogFlags pDialogFlags, sys_userdetail pUserDetail)
+        public PosPinPadDialog(Window pSourceWindow, DialogFlags pDialogFlags, sys_userdetail pUserDetail, bool pNotLoginAuth = false)
             : base(pSourceWindow, pDialogFlags)
         {
+            _notLoginAuth = pNotLoginAuth;
             //Dialog compile time preferences
             Boolean showCancel = false;
             int DialogHeight = (showCancel) ? 465 : 440;//465 : 400;
@@ -35,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             //NumberPadPin
-            _numberPadPin = new NumberPadPin(pSourceWindow, "numberPadPin", System.Drawing.Color.Transparent, fontNumberPadPinButtonKeysTextAndLabel, "12" ,Color.White, Color.Black, 100, 67);
+            _numberPadPin = new NumberPadPin(pSourceWindow, "numberPadPin", System.Drawing.Color.Transparent, fontNumberPadPinButtonKeysTextAndLabel, "12" ,Color.White, Color.Black, 100, 67, _notLoginAuth);
             _numberPadPin.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
 
             fixedContent.Put(_numberPadPin, 0, 0);
@@ -67,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         void ButtonKeyOK_Clicked(object sender, EventArgs e)
         {
-            bool finishedJob = _numberPadPin.ProcessPassword(this, _selectedUserDetail);
+            bool finishedJob = _numberPadPin.ProcessPassword(this, _selectedUserDetail, _notLoginAuth);
             if (finishedJob) Respond(ResponseType.Ok);
         }
 
