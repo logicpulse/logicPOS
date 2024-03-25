@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SkiaSharp</name>
+    </assembly>
+    <members>
+        <member name="T:SkiaSharp.Internals.IPlatformLock">
+            <summary>
+            Abstracts a platform dependant lock implementation
+            </summary>
+        </member>
+        <member name="T:SkiaSharp.Internals.PlatformLock">
+            <summary>
+            Helper class to create a IPlatformLock instance, by default according to the current platform
+            but also client toolkits can plugin their own implementation.
+            </summary>
+        </member>
+        <member name="M:SkiaSharp.Internals.PlatformLock.Create">
+            <summary>
+            Creates a platform lock
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:SkiaSharp.Internals.PlatformLock.Factory">
+            <summary>
+            The factory for creating platform locks
+            </summary>
+            <remarks>
+            Use this to plugin your own lock implementation.  Must be set
+            before using other SkiaSharp functionality that causes the lock
+            to be created (currently only used by SkiaSharps internal
+            HandleDictionary).
+            </remarks>
+        </member>
+        <member name="M:SkiaSharp.Internals.PlatformLock.DefaultFactory">
+            <summary>
+            Default platform lock factory
+            </summary>
+            <returns>A reference to a new platform lock implementation</returns>
+        </member>
+        <member name="T:SkiaSharp.Internals.PlatformLock.ReadWriteLock">
+            <summary>
+            Non-Windows platform lock uses ReaderWriteLockSlim
+            </summary>
+        </member>
+        <member name="T:SkiaSharp.Internals.PlatformLock.NonAlertableWin32Lock">
+            <summary>
+            Windows platform lock uses Win32 CRITICAL_SECTION
+            </summary>
+        </member>
+        <member name="M:SkiaSharp.HandleDictionary.GetInstance``1(System.IntPtr,``0@)">
+            <summary>
+            Retrieve the living instance if there is one, or null if not.
+            </summary>
+            <returns>The instance if it is alive, or null if there is none.</returns>
+        </member>
+        <member name="M:SkiaSharp.HandleDictionary.GetOrAddObject``1(System.IntPtr,System.Boolean,System.Boolean,System.Func{System.IntPtr,System.Boolean,``0})">
+            <summary>
+            Retrieve or create an instance for the native handle.
+            </summary>
+            <returns>The instance, or null if the handle was null.</returns>
+        </member>
+        <member name="M:SkiaSharp.HandleDictionary.GetInstanceNoLocks``1(System.IntPtr,``0@)">
+            <summary>
+            Retrieve the living instance if there is one, or null if not. This does not use locks.
+            </summary>
+            <returns>The instance if it is alive, or null if there is none.</returns>
+        </member>
+        <member name="M:SkiaSharp.HandleDictionary.RegisterHandle(System.IntPtr,SkiaSharp.SKObject)">
+            <summary>
+            Registers the specified instance with the dictionary.
+            </summary>
+        </member>
+        <member name="M:SkiaSharp.HandleDictionary.DeregisterHandle(System.IntPtr,SkiaSharp.SKObject)">
+            <summary>
+            Removes the registered instance from the dictionary.
+            </summary>
+        </member>
+        <member name="M:SkiaSharp.SKAutoCanvasRestore.Restore">
+            <summary>
+            Perform the restore now, instead of waiting for the Dispose.
+            Will only do this once.
+            </summary>
+        </member>
+    </members>
+</doc>

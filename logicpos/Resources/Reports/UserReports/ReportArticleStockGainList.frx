@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<inherited BaseReport="TemplateBaseSimple.frx" ScriptLanguage="CSharp" ReferencedAssemblies="System.dll&#13;&#10;System.Drawing.dll&#13;&#10;System.Windows.Forms.dll&#13;&#10;System.Data.dll&#13;&#10;System.Xml.dll&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe&#13;&#10;logicpos.exe" ReportInfo.Name="FT FT001012016S01/1" ReportInfo.Author="logicPos v1.0.0.0" ReportInfo.Created="12/31/2014 10:16:52" ReportInfo.Modified="05/18/2023 09:23:55" ReportInfo.CreatorVersion="2014.1.14.0" PrintSettings.CopyNames="Original">
+	<ScriptText>
+		using System;
+		using System.Collections;
+		using System.Collections.Generic;
+		using System.ComponentModel;
+		using System.Windows.Forms;
+		using System.Drawing;
+		using System.Data;
+		using FastReport;
+		using FastReport.Data;
+		using FastReport.Dialog;
+		using FastReport.Barcode;
+		using FastReport.Table;
+		using FastReport.Utils;
+		namespace FastReport
+		{
+		public class ReportScript
+
+		{
+
+		private decimal sum = 0;
+		private decimal valorizacao = 0;
+		private decimal totalPrecoCompra = 0;
+		private decimal lucro = 0;
+		private DataSourceBase _ds;
+
+		private void PageHeader1_BeforePrint(object sender, EventArgs e)
+		{
+		PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo_Small&quot;);
+		}
+
+
+		private void Data1_BeforePrint(object sender, EventArgs e)
+		{
+
+		sum += (Decimal)Report.GetColumnValue("ArticleStockSupplier.ArticleStockQuantity");
+		if((Decimal)Report.GetColumnValue("ArticleStockSupplier.ArticleStockQuantity") > 0)
+		{
+		valorizacao += (Decimal)Report.GetColumnValue("ArticleStockSupplier.ArticleStockQuantity") *((Decimal)Report.GetColumnValue("ArticleStockSupplier.Price") - (Decimal)Report.GetColumnValue("ArticleStockSupplier.ArticleStockPurchasedPrice"));
+		totalPrecoCompra += (Decimal)Report.GetColumnValue("ArticleStockSupplier.ArticleStockQuantity") *((Decimal)Report.GetColumnValue("ArticleStockSupplier.ArticleStockPurchasedPrice"));
+		}
+		else
+		{
+		lucro += ((Decimal)Report.GetColumnValue("ArticleStockSupplier.ArticleStockQuantity") * -1) * valorizacao;
+		}
+
+		if((Decimal)Report.GetColumnValue("ArticleStockSupplier.ArticleStockQuantity") < 0){
+		    Data2.Visible = false;
+		}else{
+		
+            Data2.Visible = true;
+		}
+		}
+
+
+		private void Data1_AfterPrint(object sender, EventArgs e)
+		{
+
+		sum = 0;
+		valorizacao = 0;
+		totalPrecoCompra = 0;
+		}
+
+		}
+		}
+	</ScriptText>
+  <Styles>
+    <Style Name="EvenRow" Border.Lines="Bottom" Border.TopLine.Color="Gainsboro" Border.BottomLine.Color="Gainsboro" Fill.Color="WhiteSmoke" Font="Calibri, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BoxBorder" Border.Lines="All" Border.Color="Silver" Fill="Glass" Fill.Color="WhiteSmoke" Fill.Blend="0.2" Fill.Hatch="true" Font="Calibri, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="DataLevel1Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Calibri, 15.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Calibri, 12pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataLevel2Font" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Calibri, 9.75pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFont" Border.Lines="All" Fill="Glass" Fill.Color="Transparent" Fill.Blend="0.2" Fill.Hatch="true" Font="Calibri, 8pt" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFontBold" Font="Calibri, 8pt, style=Bold" ApplyBorder="false" ApplyFill="false" ApplyTextFill="false"/>
+    <Style Name="DataFontNegative" TextFill.Color="Red" Font="Calibri, 8pt" ApplyBorder="false" ApplyFill="false"/>
+    <Style Name="BackgroundColor1" Font="Calibri, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+    <Style Name="BackgroundColor2" Fill.Color="Gainsboro" Font="Calibri, 10pt" ApplyBorder="false" ApplyTextFill="false" ApplyFont="false"/>
+  </Styles>
+  <Dictionary>
+    <BusinessObjectDataSource Name="ArticleStockSupplier" ReferenceName="ArticleStockSupplier" DataType="null" Enabled="true">
+      <Column Name="Oid" DataType="System.String"/>
+      <Column Name="ArticleFamilyOrd" DataType="System.UInt32"/>
+      <Column Name="ArticleFamilyCode" DataType="System.UInt32"/>
+      <Column Name="ArticleFamilyDesignation" DataType="System.String"/>
+      <Column Name="ArticleSubFamily" DataType="System.String"/>
+      <Column Name="ArticleSubFamilyOrd" DataType="System.UInt32"/>
+      <Column Name="ArticleSubFamilyCode" DataType="System.UInt32"/>
+      <Column Name="ArticleSubFamilyDesignation" DataType="System.String"/>
+      <Column Name="Article" DataType="System.String"/>
+      <Column Name="ArticleOrd" DataType="System.UInt32"/>
+      <Column Name="ArticleCode" DataType="System.String"/>
+      <Column Name="ArticleCodeDealer" DataType="System.String"/>
+      <Column Name="ArticleDesignation" DataType="System.String"/>
+      <Column Name="ArticleStockDate" DataType="System.DateTime"/>
+      <Column Name="ArticleStockDateDay" DataType="System.String"/>
+      <Column Name="ArticleStockCostumer" DataType="System.String"/>
+      <Column Name="ArticleStockPurchasedPrice" DataType="System.Decimal"/>
+      <Column Name="ArticleStockQuantity" DataType="System.Decimal"/>
+      <Column Name="ArticleStockWarehouse" DataType="System.String"/>
+      <Column Name="ArticleStockLocation" DataType="System.String"/>
+      <Column Name="ArticleStockSerialNumber" DataType="System.String"/>
+      <Column Name="ArticleStockCostumerName" DataType="System.String"/>
+      <Column Name="ArticleStockDocumentNumber" DataType="System.String"/>
+      <Column Name="ArticleStockCurrency" DataType="System.String"/>
+      <Column Name="ConfigurationUnitMeasureaumAcronym" DataType="System.String"/>
+      <Column Name="ConfigurationUnitMeasureDesignation" DataType="System.String"/>
+    </BusinessObjectDataSource>
+    <Parameter Name="Report Title" DataType="System.String"/>
+    <Parameter Name="Report SubTitle" DataType="System.String"/>
+    <Parameter Name="Report Master OID" DataType="System.Guid"/>
+    <Total Name="DataSum" TotalType="Count" Evaluator="Data2"/>
+  </Dictionary>
+  <inherited Name="Page1">
+    <inherited Name="PageHeader1" Border.Lines="Bottom">
+      <inherited Name="PictureCompanyLogo"/>
+      <inherited Name="TextReportTitle" Height="47.25" Text="[Report Title]" VertAlign="Center"/>
+    </inherited>
+    <GroupHeaderBand Name="GroupHeader1" ZOrder="0" Top="51.67" Width="718.2" Height="28.35" Condition="[ArticleStockSupplier.ArticleDesignation]">
+      <TextObject Name="TextGroupHeader1" Width="708.75" Height="22.68" Text="[ArticleStockSupplier.ArticleDesignation]" VertAlign="Center" Style="DataLevel1Font"/>
+      <DataBand Name="Data2" Top="142.05" Width="718.2" Height="21.19" CanGrow="true" EvenStyle="EvenRow" DataSource="ArticleStockSupplier" BeforePrintEvent="Data1_BeforePrint">
+        <TextObject Name="Text14" Left="66.15" Width="66.15" Height="18.9" CanGrow="true" Text="[ArticleStockSupplier.ArticleCode]" Format="Custom" Format.Format="G" HorzAlign="Right" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text28" Left="623.7" Width="94.5" Height="18.9" Text="[FormatNumber([ArticleStockSupplier.ArticleStockQuantity],2)] [ArticleStockSupplier.ConfigurationUnitMeasureaumAcronym]" HorzAlign="Right" VertAlign="Center" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text31" Left="132.3" Width="163.96" Height="18.9" CanGrow="true" Text="[ArticleStockSupplier.ArticleDesignation]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <TextObject Name="Text32" Width="66.15" Height="18.9" Text="[ArticleStockSupplier.ArticleStockDateDay]" Format="Custom" Format.Format="" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text34" Left="519.75" Width="94.5" Height="18.9" Text="[FormatNumber([ArticleStockSupplier.ArticleStockPurchasedPrice],2)] [ArticleStockSupplier.ArticleStockCurrency]" HorzAlign="Right" VertAlign="Center" Trimming="EllipsisCharacter" Style="DataFontBold"/>
+        <TextObject Name="Text37" Left="434.7" Width="97.81" Height="18.9" CanGrow="true" Text="[ArticleStockSupplier.Price]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <TextObject Name="Text39" Left="302.4" Width="145.06" Height="18.9" CanGrow="true" Text="[ArticleStockSupplier.ArticleStockCostumerName]" Format="Number" Format.UseLocale="true" VertAlign="Center" WordWrap="false" Trimming="EllipsisCharacter" Style="DataFont"/>
+        <DataHeaderBand Name="DataHeader1" Top="82.68" Width="718.2" Height="56.7" Border.Lines="Top">
+          <TextObject Name="Text26" Left="66.15" Top="37.8" Width="66.15" Height="18.9" Text="[Res(&quot;global_article_code&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text27" Left="623.7" Top="37.8" Width="94.5" Height="18.9" Text="[Res(&quot;global_quantity_acronym&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text30" Left="132.3" Top="37.8" Width="163.96" Height="18.9" Text="[Res(&quot;global_designation&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text33" Top="37.8" Width="66.15" Height="18.9" Text="[Res(&quot;global_date&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text35" Left="519.75" Top="37.8" Width="94.5" Height="18.9" Text="[Res(&quot;global_purchase_price&quot;)]" HorzAlign="Right" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text36" Left="434.7" Top="37.8" Width="97.81" Height="18.9" Text="[Res(&quot;global_price&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+          <TextObject Name="Text38" Left="302.4" Top="37.8" Width="145.06" Height="18.9" Text="[Res(&quot;global_supplier&quot;)]" VertAlign="Bottom" Style="DataFontBold"/>
+        </DataHeaderBand>
+        <Sort>
+          <Sort Expression="[ArticleStockSupplier.ArticleStockCostumerName]"/>
+        </Sort>
+      </DataBand>
+		<GroupFooterBand Name="GroupFooter1" Top="145.48" Width="718.2" Height="18.9"  AfterPrintEvent="Data1_AfterPrint">
+			<TextObject Name="Text29" Width="718.2" Height="18.9" HorzAlign="Right" VertAlign="Center" Text="[Res(&quot;global_total_stock&quot;)] : [sum]&#13;&#10;" Wysiwyg="true" Style="DataFontBold"/>
+			<TextObject Name="Text44" Width="600.2" Height="18.9" HorzAlign="Right" VertAlign="Center" Text="[Res(&quot;report_stock_gain&quot;)] : [valorizacao]&#13;&#10;" Wysiwyg="true" Style="DataFontBold"/>
+			<TextObject Name="Text44" Width="450.2" Height="18.9" HorzAlign="Right" VertAlign="Center" Text="[Res(&quot;global_total_per_item&quot;)] [Res(&quot;global_purchase_price&quot;)]  : [totalPrecoCompra]&#13;&#10;" Wysiwyg="true" Style="DataFontBold"/>
+		</GroupFooterBand>
+    </GroupHeaderBand>
+    <inherited Name="PageFooter1" Top="187.47">
+      <inherited Name="TextFooter1"/>
+      <inherited Name="Text1"/>
+    </inherited>
+  </inherited>
+</inherited>
