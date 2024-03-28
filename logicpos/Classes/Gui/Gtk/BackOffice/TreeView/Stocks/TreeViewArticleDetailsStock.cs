@@ -133,7 +133,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     this.Refresh();
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
         }
 
         private void TreeViewArticleDetailsStock_Edited(object o, EditedArgs args)

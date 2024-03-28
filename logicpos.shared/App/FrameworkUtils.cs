@@ -4,7 +4,6 @@ using DevExpress.Xpo.DB;
 using DevExpress.Xpo.Metadata;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Classes.Others;
@@ -139,7 +138,7 @@ namespace logicpos.shared.App
         public static Dictionary<DateTime, bool> GetHolidays()
         {
             if (holidaysDic == null)
-                holidaysDic= GetHolidays(DateTime.Now.Year);
+                holidaysDic = GetHolidays(DateTime.Now.Year);
 
             return holidaysDic;
         }
@@ -358,7 +357,7 @@ namespace logicpos.shared.App
             // Get priceTax Based on AppOperationMode : in retail mode VatOnTable is always null
             if (SettingsApp.AppMode == AppOperationMode.Default)
             {
-				//Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
+                //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
                 // Default : Restaurants with dual Tax ex Normal, TakeAway
                 if (pTaxSellType == TaxSellType.Normal && pArticle.VatOnTable != null) priceTax = pArticle.VatOnTable.Value;
                 else if (pArticle.VatDirectSelling != null) priceTax = pArticle.VatDirectSelling.Value;
@@ -518,7 +517,7 @@ namespace logicpos.shared.App
             if (ConfigurationManager.AppSettings["cultureFinancialRules"] == "pt-AO")
                 return SHA1SignMessage(pPrivateKeyAO, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
 
-            else 
+            else
                 return SHA1SignMessage(pPrivateKeyPT, Encoding.UTF8.GetBytes(pEncryptData), pDebug);
         }
 
@@ -1213,7 +1212,7 @@ namespace logicpos.shared.App
             return (result);
         }
 
-         public static bool IsLinux
+        public static bool IsLinux
         {
             get
             {

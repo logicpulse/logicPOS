@@ -68,7 +68,6 @@ namespace logicpos
             string result = cipherString;
 
             if (cipherString == null) return result;
-
             try
             {
                 byte[] keyArray;
@@ -96,7 +95,7 @@ namespace logicpos
                 tdes.Clear();
                 result = UTF8Encoding.UTF8.GetString(resultArray);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // If STOP Here in this BreakPoint, maybe you are working on Internal Solution with a Opensource ACME Plugin/Database or ViceVersa
                 // If so, delete AcmeSoftwareVendorPlugin.* plugins and Debug Again

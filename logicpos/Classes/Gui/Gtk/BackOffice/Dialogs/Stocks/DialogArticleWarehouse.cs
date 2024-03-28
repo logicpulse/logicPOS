@@ -312,25 +312,25 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 _entryBoxArticleSerialNumber.Sensitive = false;
                 return;
 
-                if (_selectedArticle.ArticleSerialNumber.Count > 0)
-                {
-                    Guid currentOid = Guid.Empty;
-                    if (_selectedArticle != null)
-                    {
-                        currentOid = _selectedArticle.Oid;
+                //if (_selectedArticle.ArticleSerialNumber.Count > 0)
+                //{
+                //    Guid currentOid = Guid.Empty;
+                //    if (_selectedArticle != null)
+                //    {
+                //        currentOid = _selectedArticle.Oid;
 
-                        //SortProperty sortProperty = new SortProperty("Article", DevExpress.Xpo.DB.SortingDirection.Ascending);
-                        CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("Article = '{0}'", currentOid));
-                        _entryBoxArticleSerialNumber.CriteriaOperator = criteria;
-                        _entryBoxArticleSerialNumber.Sensitive = true;
-                        return;
-                    }
-                }
-                else
-                {
-                    _entryBoxArticleSerialNumber.Value = null;
-                    _entryBoxArticleSerialNumber.Sensitive = false;
-                }
+                //        //SortProperty sortProperty = new SortProperty("Article", DevExpress.Xpo.DB.SortingDirection.Ascending);
+                //        CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("Article = '{0}'", currentOid));
+                //        _entryBoxArticleSerialNumber.CriteriaOperator = criteria;
+                //        _entryBoxArticleSerialNumber.Sensitive = true;
+                //        return;
+                //    }
+                //}
+                //else
+                //{
+                //    _entryBoxArticleSerialNumber.Value = null;
+                //    _entryBoxArticleSerialNumber.Sensitive = false;
+                //}
 
 
             }

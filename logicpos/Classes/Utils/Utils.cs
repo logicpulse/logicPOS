@@ -3396,7 +3396,7 @@ namespace logicpos
                 port.Close();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _log.Debug(string.Format("Port already in use: [{0}]", portName));
                 return false;
