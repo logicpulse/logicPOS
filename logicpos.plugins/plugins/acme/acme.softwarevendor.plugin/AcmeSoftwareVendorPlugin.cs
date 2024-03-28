@@ -191,7 +191,8 @@ namespace acme.softwarevendor.plugin
         {
             if (IsValidSecretKey(secretKey))
             {
-                return FrameworkUtils.SignDataToSHA1Base64(SettingsApp.RsaPrivateKey, encryptData, debug);
+                throw new NotImplementedException();
+                //return FrameworkUtils.SignDataToSHA1Base64(SettingsApp.RsaPrivateKey, encryptData, debug); -> tchial0
             }
             else
             {
@@ -389,6 +390,96 @@ namespace acme.softwarevendor.plugin
             cert.Import(pathCertificate, password, X509KeyStorageFlags.Exportable);
             
             return cert;
+        }
+
+        public int GetDocumentsPadLengthAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetDateTimeFormatDocumentDateAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetDateTimeFormatCombinedDateTimeAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFinanceFinalConsumerFiscalNumberAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetFinanceFinalConsumerFiscalNumberDisplayAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetDecimalFormatSAFTAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetDecimalFormatGrossTotalSAFTAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetSaftProductIDAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetSaftProductCompanyTaxIDAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetSaftSoftwareCertificateNumberAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetSaftVersionPrefixAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetSaftVersionAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetHashControlAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetTaxAccountingBasisAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetSaftCurrencyCodeAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetFinanceRuleSimplifiedInvoiceMaxTotalAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetFinanceRuleSimplifiedInvoiceMaxTotalServicesAO()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetFinanceRuleRequiredCustomerDetailsAboveValueAO()
+        {
+            throw new NotImplementedException();
         }
     }
 }
