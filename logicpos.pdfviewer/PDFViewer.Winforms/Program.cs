@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WindowsFormsApp1
@@ -16,7 +13,11 @@ namespace WindowsFormsApp1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1("C://SVN//logicpos//trunk//src//logicpos//logicpos_pos_opensource//docs//docs//index.pdf",1980/2,1000));
+
+            var width = 1980 / 2;
+            var height = 1000;
+
+            Application.Run(new PDFViewer("index.pdf", width,height));
         }
     }
 }
