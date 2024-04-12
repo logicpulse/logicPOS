@@ -42,10 +42,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             _XPGuidObject = pXPGuidObject;
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
             cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)_dataSourceRow;
             // Default windowHeight, InputTypes can Override this in Switch             
-            if (Utils.IsLinux)
+            if (logicpos.Utils.IsLinux)
             {
                 _windowHeight = 391;
             }
@@ -219,7 +219,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         xpoComboBoxInputType.Changed += delegate
                         {
                             entryValue.Text = getCulturesValues[xpoComboBoxInputType.Active];
-                            if (Utils.IsLinux)
+                            if (logicpos.Utils.IsLinux)
                             {
                                 SaveSettings(getCulturesValues[xpoComboBoxInputType.Active].ToString());
                             }
@@ -241,11 +241,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             fileChooser.SetFilename(dataSourceRow.Value);
                             if (_XPGuidObject != null && _XPGuidObject.Oid == Guid.Parse("9bc7099e-d2ef-43dc-b761-ef1a33c6f07a"))
                             {
-                                fileChooser.Filter = Utils.GetFileFilterBMPImages();
+                                fileChooser.Filter = logicpos.Utils.GetFileFilterBMPImages();
                             }
                             else
                             {
-                                fileChooser.Filter = Utils.GetFileFilterImages();
+                                fileChooser.Filter = logicpos.Utils.GetFileFilterImages();
                             }
                            
                         }

@@ -16,9 +16,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             /* IN009039 */
             
-            if (Utils.IsLinux) SetSizeRequest(500, 373);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 373);
             else SetSizeRequest(500, 353);
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationplacemovementtype"), pDialogMode);
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationplacemovementtype"), pDialogMode);
             InitUI();
             InitNotes();
             ShowAll();

@@ -120,7 +120,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _textEntry = new EntryValidation();
             _textEntry.ModifyFont(fontDescriptiontextEntry);
             //Change Selected Text, when looses entry focus
-            _textEntry.ModifyBase(StateType.Active, Utils.ColorToGdkColor(Color.Gray));
+            _textEntry.ModifyBase(StateType.Active, logicpos.Utils.ColorToGdkColor(Color.Gray));
             //Final Pack KeyBoard + TextEntry
             VBox vboxResult = new VBox(false, _spacing);
             vboxResult.PackStart(_textEntry);
@@ -144,7 +144,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                 }
             }
         }
@@ -189,8 +189,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             //Bypass Normal with Uppercase Letters, when Caps Enabled and Key only have UI Label1
                             if (_isCapsEnabled && currentKey.L1.UnicodeId != null && currentKey.L2 != null && currentKey.L2.Glyph != null)
                             {
-                                charKey = Utils.UnicodeHexadecimalStringToChar(currentKey.L1.UnicodeId);
-                                if (Utils.IsLetter(charKey) && currentKey.UIKey.LabelL2 == null)
+                                charKey = logicpos.Utils.UnicodeHexadecimalStringToChar(currentKey.L1.UnicodeId);
+                                if (logicpos.Utils.IsLetter(charKey) && currentKey.UIKey.LabelL2 == null)
                                 {
                                     currentKey.UIKey.LabelL1.Text = currentKey.L2.Glyph;
                                 };
@@ -202,8 +202,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             //Show Uppercase Letters, when Caps Enabled and Key only have UI Label1
                             if (currentKey.L1.UnicodeId != null && currentKey.L2 != null && currentKey.L2.Glyph != null)
                             {
-                                charKey = Utils.UnicodeHexadecimalStringToChar(currentKey.L1.UnicodeId);
-                                if (Utils.IsLetter(charKey) && currentKey.UIKey.LabelL2 == null) currentKey.UIKey.LabelL1.Text = currentKey.L2.Glyph;
+                                charKey = logicpos.Utils.UnicodeHexadecimalStringToChar(currentKey.L1.UnicodeId);
+                                if (logicpos.Utils.IsLetter(charKey) && currentKey.UIKey.LabelL2 == null) currentKey.UIKey.LabelL1.Text = currentKey.L2.Glyph;
                             }
                             break;
                         case ModifierKeys.Alt:
@@ -255,14 +255,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (_activeModifierKey != ModifierKeys.Shift)
                         {
                             //ExChange Font Color, Highlight L1
-                            currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
-                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
+                            currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
+                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
                         }
                         else
                         {
                             //ExChange Font Color, Highlight L2
-                            currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
-                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
+                            currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
+                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
                         };
                     };
                 }
@@ -373,7 +373,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                     };
                     break;
                 //Show/Hide Number Lock
@@ -429,12 +429,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         vKeyProperties = vKey.Properties.L1;
                     }
                     //If Caps enabled and is Letter, change to Level 2 (Uppercase)
-                    else if (_isCapsEnabled && Utils.IsLetter(Utils.UnicodeHexadecimalStringToChar(vKeyProperties.UnicodeId)))
+                    else if (_isCapsEnabled && logicpos.Utils.IsLetter(logicpos.Utils.UnicodeHexadecimalStringToChar(vKeyProperties.UnicodeId)))
                     {
                         vKeyProperties = vKey.Properties.L2;
                     };
                     //Get unicodeChar from UnicodeId after Caps
-                    _unicodeChar = Utils.UnicodeHexadecimalStringToChar(vKeyProperties.UnicodeId);
+                    _unicodeChar = logicpos.Utils.UnicodeHexadecimalStringToChar(vKeyProperties.UnicodeId);
                     //Modifie _unicodeChar Keys ex Culture Decimal Separator . with , [3,15 = Key NumberPad .]
                     //if (vKey.Properties.RowIndex == 3 && vKey.Properties.ColIndex == 15) _unicodeChar = (char) GlobalFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
                     //Always Disable Modifiers Keys After Use
@@ -480,7 +480,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Diacritical
                         if (_activeDiacritical != null)
                         {
-                            _stringChar += Convert.ToString(Utils.UnicodeHexadecimalStringToChar(_activeDiacritical));
+                            _stringChar += Convert.ToString(logicpos.Utils.UnicodeHexadecimalStringToChar(_activeDiacritical));
                             //Convert Diacritial chars to ISO chars to work with Validations and Peristence Database
                             _stringChar = ReplaceDiacritial(_stringChar);
                             //Reset activeDiacritical

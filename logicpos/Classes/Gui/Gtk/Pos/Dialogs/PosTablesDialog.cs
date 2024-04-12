@@ -17,8 +17,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     public partial class PosTablesDialog : PosBaseDialog
     {
         //Sizes
-        private Size _sizePosSmallButtonScroller = Utils.StringToSize(GlobalFramework.Settings["sizePosSmallButtonScroller"]);
-        private Size _sizePosTableButton = Utils.StringToSize(GlobalFramework.Settings["sizePosTableButton"]);
+        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosSmallButtonScroller"]);
+        private Size _sizePosTableButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosTableButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
         private String _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");

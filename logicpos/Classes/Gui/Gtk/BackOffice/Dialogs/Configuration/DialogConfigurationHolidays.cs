@@ -13,9 +13,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationHolidays(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialog_configuration_holydays"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialog_configuration_holydays"));
             
-            if(Utils.IsLinux) SetSizeRequest(400, 508);
+            if(logicpos.Utils.IsLinux) SetSizeRequest(400, 508);
             else SetSizeRequest(400, 488);
             InitUI();
             InitNotes();

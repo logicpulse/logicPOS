@@ -58,8 +58,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         public DialogArticleWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode dialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, dialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehose_management"));
-            _treeViewXPO_ArticleWarehouse = Utils.GetGenericTreeViewXPO<TreeViewArticleWarehouse>(pSourceWindow);
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehose_management"));
+            _treeViewXPO_ArticleWarehouse = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleWarehouse>(pSourceWindow);
             _treeViewXPO_StockMov = pTreeView;
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
             {

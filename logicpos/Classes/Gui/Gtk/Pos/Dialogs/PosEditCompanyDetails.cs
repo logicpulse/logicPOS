@@ -297,7 +297,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     foreach (var item in _dictionaryObjectBag)
                     {
-                        changed = Utils.CheckIfFieldChanged(item.Key.Value, item.Value.EntryValidation.Text);
+                        changed = logicpos.Utils.CheckIfFieldChanged(item.Key.Value, item.Value.EntryValidation.Text);
                         //_log.Debug(string.Format("FieldDb:[{0}], FieldInput:[{1}], changed: [{2}]", item.Key.Value, item.Value.EntryValidation.Text, changed));
                         if (changed)
                         {
@@ -343,7 +343,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     configurationValues.Add("xpoOidConfigurationCountrySystemCountry", _entryBoxSelectSystemCountry.Value.Oid.ToString());
                     configurationValues.Add("xpoOidConfigurationCountrySystemCountryCountryCode2", _entryBoxSelectSystemCountry.Value.Code2);
                     configurationValues.Add("xpoOidConfigurationCurrencySystemCurrency", _entryBoxSelectSystemCurrency.Value.Oid.ToString());
-                    Utils.AddUpdateSettings(configurationValues);
+                    logicpos.Utils.AddUpdateSettings(configurationValues);
 
                     //Require to assign to SettingsApp Singleton : Now Working in InitPlataformParameters() to prevent save to config catch and this code is never be executed
                     //SettingsApp.ConfigurationSystemCountry = _entryBoxSelectSystemCountry.Value;

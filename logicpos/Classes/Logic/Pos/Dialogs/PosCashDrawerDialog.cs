@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         string movementAmountMoney = FrameworkUtils.DecimalToStringCurrency(_movementAmountMoney);
                         string totalAmountInCashDrawer = FrameworkUtils.DecimalToStringCurrency(_totalAmountInCashDrawer);
                         
-                        Utils.ShowMessageTouch(
+                        logicpos.Utils.ShowMessageTouch(
                             this, DialogFlags.Modal, new Size(500, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                             string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_money_out_error"), movementAmountMoney, totalAmountInCashDrawer)
                         );
@@ -165,13 +165,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_selectedCashDrawerButton != null)
             {
                 //Toggle Button Off
-                _selectedCashDrawerButton.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(_colorBaseDialogDefaultButtonBackground));
+                _selectedCashDrawerButton.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorBaseDialogDefaultButtonBackground));
             }
 
             //In the End Change reference to new Seleted Button
             _selectedCashDrawerButton = pButton;
             //Toggle Button On
-            _selectedCashDrawerButton.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(Utils.Lighten(_colorBaseDialogDefaultButtonBackground, 0.50f)));
+            _selectedCashDrawerButton.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(logicpos.Utils.Lighten(_colorBaseDialogDefaultButtonBackground, 0.50f)));
 
             //Validate
             ValidateDialog();
@@ -238,7 +238,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   , FrameworkUtils.DecimalToStringCurrency(_movementAmountMoney)
                   , FrameworkUtils.DecimalToStringCurrency(diference)
                 );
-                Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 450), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 450), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
 
                 return false;
             }

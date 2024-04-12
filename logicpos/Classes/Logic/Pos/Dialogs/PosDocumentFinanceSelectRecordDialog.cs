@@ -697,7 +697,7 @@ WHERE
                 }
 
                 if (
-                        (args.ResponseId == _responseTypePrint && !Utils.ShowMessageTouchRequiredValidPrinter(_dialogFinanceDocumentsResponse, _printerChoosed))
+                        (args.ResponseId == _responseTypePrint && !logicpos.Utils.ShowMessageTouchRequiredValidPrinter(_dialogFinanceDocumentsResponse, _printerChoosed))
                         || args.ResponseId == _responseTypePrintAs
                     )
                 {
@@ -825,7 +825,7 @@ WHERE
                         }
 
                         // Call Dialog
-                        ResponseType dialogResponse = Utils.ShowMessageTouch(_dialogFinanceDocumentsResponse, DialogFlags.Modal, new Size(700, 440), MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_question"),
+                        ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_dialogFinanceDocumentsResponse, DialogFlags.Modal, new Size(700, 440), MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_question"),
                             string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_clone_documents_confirmation"), documentList)
                         );
 
@@ -839,7 +839,7 @@ WHERE
 
                             //IN009255 Usabilidade - Opção de Copiar Documentos não apresenta mensagem de sucesso ao usuário. 
                             //Mensagem de sucesso clone
-                            Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_clone_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_clone_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"));
                         }
                     }
                     //SendEmail Documents
@@ -1253,11 +1253,11 @@ WHERE
                 {
                     if (document.SourceOrderMain != null)
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_cant_open_title")), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_dialog_cant_open_document"), document.DocumentNumber));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_cant_open_title")), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_dialog_cant_open_document"), document.DocumentNumber));
                     }
                     else if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                     }
                     else
                     {
@@ -1269,15 +1269,15 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                     }
                     else if (File.Exists(item))
                     {
-                        if(Utils.IsLinux)
+                        if(logicpos.Utils.IsLinux)
                         {
                             System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, item)));
                         }
-                        else if (Utils.UsePosPDFViewer() == true && !Utils.IsLinux)
+                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
                             string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, item));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
@@ -1348,7 +1348,7 @@ WHERE
                 List<Dictionary<string, string>> tokensDictionaryList = new List<Dictionary<string, string>>();
                 tokensDictionaryList.Add(GlobalFramework.PreferenceParameters);
                 tokensDictionaryList.Add(customTokensDictionary);
-                mailBody = Utils.replaceTextTokens(mailBodyTemplate, tokensDictionaryList);
+                mailBody = logicpos.Utils.replaceTextTokens(mailBodyTemplate, tokensDictionaryList);
 
                 PosSendEmailDialog dialog = new PosSendEmailDialog(
                     pSourceWindow,
@@ -1569,7 +1569,7 @@ WHERE
                         string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
 
                         //Call Request Motive Dialog
-                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, SettingsApp.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse = logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), documentMaster.DocumentNumber), string.Empty, SettingsApp.RegexAlfaNumericExtendedForMotive, true);
 
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
@@ -2194,7 +2194,7 @@ WHERE
             if (args.ResponseId != ResponseType.Close)
             {
                 if (
-                        (args.ResponseId == _responseTypePrint && !Utils.ShowMessageTouchRequiredValidPrinter(_dialogFinanceDocumentsResponse, _printerChoosed))
+                        (args.ResponseId == _responseTypePrint && !logicpos.Utils.ShowMessageTouchRequiredValidPrinter(_dialogFinanceDocumentsResponse, _printerChoosed))
                         || args.ResponseId == _responseTypePrintAs
                     )
                 {
@@ -2485,7 +2485,7 @@ WHERE
                     {
                         string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_default.png");
 
-                        dialogResponse = Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SettingsApp.RegexAlfaNumericExtendedForMotive, true);
+                        dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SettingsApp.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
                             //_log.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
@@ -2557,7 +2557,7 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                     }
                     else documents.Add(ProcessFinanceDocument.GenerateDocumentFinancePaymentPDFIfNotExists(document));
                 }
@@ -2566,11 +2566,11 @@ WHERE
                 {
                     if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
                     {
-                        Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                        logicpos.Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                     }
                     else if (File.Exists(item))
                     {
-                        if (Utils.UsePosPDFViewer() == true && !Utils.IsLinux)
+                        if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
                             string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, item));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
@@ -2609,7 +2609,7 @@ WHERE
                 }
 
                 string infoMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_info_show_ignored_cancelled_documents"), ignoredDocumentsMessage);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 400), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), infoMessage);
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 400), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), infoMessage);
             }
         }
 

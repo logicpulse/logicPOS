@@ -13,9 +13,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationKeyboard(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationkeyboard"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationkeyboard"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 520);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 520);
             else SetSizeRequest(500, 500);
             InitUI();
             InitNotes();

@@ -185,7 +185,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     (_dataSourceRow as fin_articlestock).Save();
                     _log.Debug("Sock Moviment In Changed with sucess");
 
-                    ResponseType responseType = Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), GlobalFramework.ServerVersion));
+                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), GlobalFramework.ServerVersion));
                 }
 
             }
@@ -197,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
         private void AttachPDFButton_Clicked(object sender, EventArgs e)
         {
-            FileFilter fileFilterPDF = Utils.GetFileFilterPDF();
+            FileFilter fileFilterPDF = logicpos.Utils.GetFileFilterPDF();
             Pos.Dialogs.PosFilePickerDialog dialog = new Pos.Dialogs.PosFilePickerDialog(this, DialogFlags.DestroyWithParent, fileFilterPDF, FileChooserAction.Open);
             ResponseType response = (ResponseType)dialog.Run();
             if (response == ResponseType.Ok)

@@ -27,9 +27,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"));
             _warehouseLocationCollection = new List<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>>();
-            if (Utils.IsLinux) SetSizeRequest(500, 373);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 373);
             else SetSizeRequest(500, 450);
             InitUI();
             InitNotes();
@@ -106,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 
                 _scrolledWindow = new ScrolledWindow();
                 _scrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindow.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindow.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
                 _scrolledWindow.ShadowType = ShadowType.None;
 
                 if (_Warehouse != null && _Warehouse.WarehouseLocation.Count > 0)
@@ -186,7 +186,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         {
             try
             {
-                ResponseType responseType = Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
 
                 if (responseType == ResponseType.Yes)
                 {

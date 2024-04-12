@@ -769,7 +769,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!_skipRecordDelete && _allowRecordDelete)
             {
-                ResponseType response = response = Utils.ShowMessageTouch(
+                ResponseType response = response = logicpos.Utils.ShowMessageTouch(
                       GlobalApp.WindowBackOffice,
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       MessageType.Question,
@@ -786,8 +786,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         {
                             (_dataSourceRow as fin_article).Disabled = true;
                             (_dataSourceRow as fin_article).DeletedAt = DateTime.Now;
-                            (_dataSourceRow as fin_article).Designation = Utils.RandomString();
-                            (_dataSourceRow as fin_article).Code = Utils.RandomString();
+                            (_dataSourceRow as fin_article).Designation = logicpos.Utils.RandomString();
+                            (_dataSourceRow as fin_article).Code = logicpos.Utils.RandomString();
                             (_dataSourceRow as fin_article).Save();
 
                             //if ((_dataSourceRow as fin_article).IsComposed)
@@ -852,7 +852,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         _log.Error("void Delete() :: Class '" + _dataSourceRow.GetType().Name + "' : " + ex.Message, ex);
                         String message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
-                        Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                     }
                 }
             }
@@ -1179,7 +1179,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     registerHasReferences = true;
 
                     _log.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"));
-                    Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_referenced_record_message"), className, code));
+                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_referenced_record_message"), className, code));
                 }
                 return registerHasReferences;
             }
@@ -1284,7 +1284,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         getCultureFromDB = GlobalFramework.Settings["customCultureResourceDefinition"];
 
                                     }
-                                    if (!Utils.getCultureFromOS(getCultureFromDB))
+                                    if (!logicpos.Utils.getCultureFromOS(getCultureFromDB))
                                     {
                                         GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
                                         GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
@@ -1296,7 +1296,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
                                         CustomResources.UpdateLanguage(getCultureFromDB);
                                     }
-                                    Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), GlobalFramework.Settings["customCultureResourceDefinition"]));
+                                    logicpos.Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), GlobalFramework.Settings["customCultureResourceDefinition"]));
 
                                 }
                                 //IN009296 ENDS

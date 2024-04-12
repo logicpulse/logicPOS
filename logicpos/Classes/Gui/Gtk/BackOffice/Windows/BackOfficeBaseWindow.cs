@@ -52,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public BackOfficeBaseWindow()
             : base(WindowType.Toplevel)
         {
-            Title = Utils.GetWindowTitle("BackOfficeBaseWindow");
+            Title = logicpos.Utils.GetWindowTitle("BackOfficeBaseWindow");
             SetPosition(WindowPosition.Center);
             Fullscreen();
             InitUI();
@@ -64,7 +64,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void InitUI()
         {
             //Init Local Vars
-            GlobalApp.boScreenSize = Utils.GetScreenSize();
+            GlobalApp.boScreenSize = logicpos.Utils.GetScreenSize();
             uint borderWidth = 5;
             System.Drawing.Size sizeIconDashboard = new System.Drawing.Size(30, 30);
             System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
@@ -102,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             string fontBackOfficeStatusBar = GlobalFramework.Settings["fontPosStatusBar"];
             string fileImageBackOfficeLogoLong = FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logo_backoffice_long.png");
-            string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]);
+            string fileImageBackOfficeLogo = logicpos.Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]);
 
             //Colors
             System.Drawing.Color colorBackOfficeContentBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeContentBackground"]);
@@ -111,24 +111,24 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             System.Drawing.Color colorBackOfficeStatusBarFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeStatusBarFont"]);
             System.Drawing.Color colorBackOfficeStatusBarBottomBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeStatusBarBottomBackground"]);
             System.Drawing.Color colorLabelReseller = System.Drawing.Color.White;
-            ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeContentBackground));
+            ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBackOfficeContentBackground));
 
             //Icon
             string fileImageAppIcon = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], SettingsApp.AppIcon));
-            if (File.Exists(fileImageAppIcon)) Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
+            if (File.Exists(fileImageAppIcon)) Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
             //Start Pack UI
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //StatusBar
             EventBox eventBoxStatusBar = new EventBox() { HeightRequest = 38 };
-            eventBoxStatusBar.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeStatusBarBackground));
+            eventBoxStatusBar.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBackOfficeStatusBarBackground));
 
             //Reseller
             _reseller = new Label();
             _reseller.Text = string.Format(" Powered by {0}©", GlobalFramework.LicenceReseller);
             _reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
-            _reseller.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
+            _reseller.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
             _reseller.Justify = Justification.Left;
             
             //Logo
@@ -157,19 +157,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Active Content
             _labelActiveContent = new Label() { WidthRequest = 300 };
             _labelActiveContent.ModifyFont(fontDescriptionStatusBar);
-            _labelActiveContent.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
+            _labelActiveContent.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
             _labelActiveContent.SetAlignment(0.0F, 0.5F);
 
             //TerminalInfo : Terminal : User
             _labelTerminalInfo = new Label(string.Format("{0} : {1}", GlobalFramework.LoggedTerminal.Designation, GlobalFramework.LoggedUser.Name));
             _labelTerminalInfo.ModifyFont(fontDescriptionStatusBar);
-            _labelTerminalInfo.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
+            _labelTerminalInfo.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
             _labelTerminalInfo.SetAlignment(0.5F, 0.5F);
 
             //Clock
             _labelClock = new Label(FrameworkUtils.CurrentDateTime(_clockFormat));
             _labelClock.ModifyFont(fontDescriptionStatusBar);
-            _labelClock.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
+            _labelClock.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBackOfficeStatusBarFont));
             _labelClock.SetAlignment(1.0F, 0.5F);
 
             //Pack HBox StatusBar
@@ -193,7 +193,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             if (GlobalFramework.AppUseBackOfficeMode)
             {
-                EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
+                EventBox eventBoxMinimize = logicpos.Utils.GetMinimizeEventBox();
                 eventBoxMinimize.ButtonReleaseEvent += delegate {
                     Iconify();
                 };
@@ -220,7 +220,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Accordion and HouseFix
             _fixAccordion = new Fixed() { HasWindow = true, BorderWidth = borderWidth };
-            _fixAccordion.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBackOfficeAccordionFixBackground));
+            _fixAccordion.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBackOfficeAccordionFixBackground));
             _fixAccordion.Put(_dashboardButton, 0, 0);
             _fixAccordion.Add(_dashboardButton);
                         
@@ -284,7 +284,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         {
                             _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
+                            _labelUpdate.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
                             _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 165);
                             _fixAccordion.Add(_labelUpdate);
@@ -295,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         {
                             _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
+                            _labelUpdate.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
                             _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 160);
                             _fixAccordion.Add(_labelUpdate);
@@ -309,7 +309,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         {
                             _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
+                            _labelUpdate.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
                             _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 165);
                             _fixAccordion.Add(_labelUpdate);
@@ -320,7 +320,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         {
                             _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            _labelUpdate.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
+                            _labelUpdate.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(FrameworkUtils.StringToColor("61, 61, 61")));
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
                             _fixAccordion.Put(_labelUpdate, 5, GlobalApp.boScreenSize.Height - 200);
                             _fixAccordion.Add(_labelUpdate);

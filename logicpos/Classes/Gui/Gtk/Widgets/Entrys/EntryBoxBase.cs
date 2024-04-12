@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             String fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
             int padding = 2;
             //This
-            this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+            this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
             this.BorderWidth = (uint)padding;
             //VBox
             _vbox = new VBox(false, padding);
@@ -106,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 String fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
                 int padding = 2;
                 //This
-                this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
                 this.BorderWidth = (uint)padding;
                 //VBox
                 _vbox = new VBox(false, padding);
@@ -144,7 +144,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
                 }
 
-                this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
                 //this.BorderWidth = (uint)padding;
                 //VBox
                 _vbox = new VBox(false, padding);
@@ -183,7 +183,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
 
 
-                this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
                 //this.BorderWidth = (uint)padding;
                 //VBox
                 _vbox = new VBox(false, padding);
@@ -195,11 +195,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label.SetAlignment(0, 2.5F);
                 _label2 = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code") + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
-                _label2.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(validLabel));
+                _label2.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(validLabel));
                 _label2.SetAlignment(0, 0.5F);
                 _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity"));
                 _label3.ModifyFont(fontDescriptionLabel);
-                _label3.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(validLabel));
+                _label3.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(validLabel));
                 _label3.SetAlignment(0, 0.5F);
                 //Child Entrys
                 _fontDescription = Pango.FontDescription.FromString(fontEntry);
@@ -312,7 +312,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             if (keyboardMode == KeyboardMode.AlfaNumeric || keyboardMode == KeyboardMode.Alfa || keyboardMode == KeyboardMode.Numeric)
             {
-                string input = Utils.GetVirtualKeyBoardInput(_sourceWindow, keyboardMode, text, rule);
+                string input = logicpos.Utils.GetVirtualKeyBoardInput(_sourceWindow, keyboardMode, text, rule);
 
                 if (input != null)
                 {

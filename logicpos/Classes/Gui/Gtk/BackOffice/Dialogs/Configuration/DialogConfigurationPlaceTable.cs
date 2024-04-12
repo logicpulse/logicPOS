@@ -14,9 +14,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationPlaceTable(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationplacetable"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationplacetable"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 373);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 373);
             else SetSizeRequest(500, 353);
             InitUI();
             InitNotes();

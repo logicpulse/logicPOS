@@ -14,7 +14,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogArticleFamily(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_articlefamily"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_articlefamily"));
             SetSizeRequest(500, 535);
             InitUI();
             InitNotes();
@@ -59,8 +59,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fileChooserFrameImagePreviewButtonImage.ShadowType = ShadowType.None;
                 fileChooserFrameImagePreviewButtonImage.Add(fileChooserImagePreviewButtonImage);
                 fileChooserButtonImage.SetFilename(((fin_articlefamily)DataSourceRow).ButtonImage);
-                fileChooserButtonImage.Filter = Utils.GetFileFilterImages();
-                fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
+                fileChooserButtonImage.Filter = logicpos.Utils.GetFileFilterImages();
+                fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
                 BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_image"), fileChooserButtonImage);
                 HBox hboxfileChooserAndimagePreviewButtonImage = new HBox(false, _boxSpacing);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(boxfileChooserButtonImage, true, true, 0);

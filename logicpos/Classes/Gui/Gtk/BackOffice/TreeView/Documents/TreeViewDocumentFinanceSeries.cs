@@ -129,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 else
                 {
-                    ResponseType responseType = Utils.ShowMessageTouch(
+                    ResponseType responseType = logicpos.Utils.ShowMessageTouch(
                         _sourceWindow,
                         DialogFlags.Modal,
                         new Size(600, 400),
@@ -195,7 +195,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         ResponseType responseType = ResponseType.No;
                         if (resultAcronym.ResponseType == ResponseType.Ok && sqlCheckExistingSeriesResultInt > 0)
                         {
-                            responseType = Utils.ShowMessageTouch(
+                            responseType = logicpos.Utils.ShowMessageTouch(
                                 GlobalApp.WindowStartup,
                                 DialogFlags.Modal,
                                 MessageType.Question,
@@ -227,7 +227,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             //Show Error to User, Outside of Framework (Non UI)
                             else
                             {
-                                Utils.ShowMessageTouch(
+                                logicpos.Utils.ShowMessageTouch(
                                     pSourceWindow,
                                     DialogFlags.Modal,
                                     MessageType.Error,
@@ -261,7 +261,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         public static logicpos.Utils.ResponseText PosConfirmAcronymSeriesDialog(Window pSourceWindow, fin_documentfinanceyears pDocumentFinanceYear, DataTable pTerminals, string pInitialValue)
         {
-            logicpos.Utils.ResponseText result = new Utils.ResponseText();
+            logicpos.Utils.ResponseText result = new logicpos.  Utils.ResponseText();
             FrameworkCallsResult frameworkCallsResult;
 
             try

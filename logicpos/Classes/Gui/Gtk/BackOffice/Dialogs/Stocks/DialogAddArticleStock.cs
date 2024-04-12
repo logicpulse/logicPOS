@@ -118,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Load();
                 //Init VBOX
                 _vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-                _vbox.ModifyBase(StateType.Normal, Utils.ColorToGdkColor(Color.White));
+                _vbox.ModifyBase(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
                 _articleEntryWidgetCollection = new List<VBox>();
                 //_articleCollection = new List<fin_article>();
                 _articleCollection = new Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>>();
@@ -165,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _viewport = new Viewport() { ShadowType = ShadowType.None };
 
 
-                _viewport.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _viewport.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
                 _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, SettingsApp.RegexAlfaNumericArticleCode, SettingsApp.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
@@ -278,20 +278,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _vbox.PackStart(_entryBoxNotes, false, false, 0);
                 _vbox.PackStart(_vboxArticles, false, false, 0);
 
-                _vbox.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
-                _vbox.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _vbox.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _vbox.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
                 //_vbox.PackStart(_entryBoxQuantity, false, false, 0);
 
                 _viewport.Add(_vbox);
                 _scrolledWindowView.Add(_viewport);
 
-                this.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
-                this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                this.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
 
                 //Append Tab
                 _notebook.AppendPage(_scrolledWindowView, new Label("Inserir Artigos"));
-                _notebook.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
-                _notebook.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _notebook.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _notebook.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
             }
             catch (Exception ex)
             {
@@ -332,13 +332,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         SelectedAssocietedArticles = _articleCollection[entryArticleSelected.Value as fin_article].Item2[entrySerialNumberSelected];
 
-                        entrySerialNumberSelected.Text = Utils.OpenNewSerialNumberCompositePopUpWindow(this, entryArticleSelected.Value, out SelectedAssocietedArticles, entrySerialNumberSelected.Text, SelectedAssocietedArticles);
+                        entrySerialNumberSelected.Text = logicpos.Utils.OpenNewSerialNumberCompositePopUpWindow(this, entryArticleSelected.Value, out SelectedAssocietedArticles, entrySerialNumberSelected.Text, SelectedAssocietedArticles);
                     }
                 }
 
                 else if (entryArticleSelected.Value != null && (entryArticleSelected.Value as fin_article).IsComposed)
                 {
-                    entrySerialNumberSelected.Text = Utils.OpenNewSerialNumberCompositePopUpWindow(this, entryArticleSelected.Value, out SelectedAssocietedArticles, "");
+                    entrySerialNumberSelected.Text = logicpos.Utils.OpenNewSerialNumberCompositePopUpWindow(this, entryArticleSelected.Value, out SelectedAssocietedArticles, "");
                 }
 
                 fin_article selectedArticle = new fin_article();
@@ -376,7 +376,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void AttachPDFButton_Clicked(object sender, EventArgs e)
         {
-            FileFilter fileFilterPDF = Utils.GetFileFilterPDF();
+            FileFilter fileFilterPDF = logicpos.Utils.GetFileFilterPDF();
             PosFilePickerDialog dialog = new PosFilePickerDialog(this, DialogFlags.DestroyWithParent, fileFilterPDF, FileChooserAction.Open);
             ResponseType response = (ResponseType)dialog.Run();
             if (response == ResponseType.Ok)
@@ -594,7 +594,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         ValidateDialog();
                         return;
@@ -888,7 +888,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }
@@ -1195,7 +1195,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public static void AttachPDFtoStockMoviment(Window pSourceWindow)
         {
 
-            FileFilter fileFilterBackups = Utils.GetFileFilterBackups();
+            FileFilter fileFilterBackups = logicpos.Utils.GetFileFilterBackups();
             PosFilePickerDialog dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
             ResponseType response = (ResponseType)dialog.Run();
             if (response == ResponseType.Ok)

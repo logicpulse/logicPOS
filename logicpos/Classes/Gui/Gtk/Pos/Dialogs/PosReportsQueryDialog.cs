@@ -197,7 +197,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 
             }
-            else if (Utils.IsLinux) {
+            else if (logicpos.Utils.IsLinux)
+            {
                 actionAreaButtons.Add(new ActionAreaButton(_buttonExportXls, _responseTypeExportXls));
                 actionAreaButtons.Add(new ActionAreaButton(_buttonExportPdf, _responseTypeExportPdf));
             }

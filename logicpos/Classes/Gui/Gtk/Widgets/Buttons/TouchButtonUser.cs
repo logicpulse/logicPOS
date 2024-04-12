@@ -30,13 +30,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             {
                 base.ChangeFont(pFont, Color.Green);
                 //Override default button color
-                if (_buttonColor != Color.Transparent) _buttonColor = Utils.Lighten(_buttonColor, 0.50F);
+                if (_buttonColor != Color.Transparent) _buttonColor = logicpos.Utils.Lighten(_buttonColor, 0.50F);
             }
             else
             {
                 base.ChangeFont(pFont, Color.Black);
                 //Override default button color
-                if (_buttonColor != Color.Transparent) _buttonColor = Utils.Darken(_buttonColor, 0.50F);
+                if (_buttonColor != Color.Transparent) _buttonColor = logicpos.Utils.Darken(_buttonColor, 0.50F);
             }
         }
     }

@@ -10,8 +10,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         private const int _BUTTON_INNER_BORDER = 7;
         private const int _BUTTON_TEXT_OVERLAY_INNER_MARGIN = 0;
         private const int _BUTTON_TEXT_ALPHA_OVERLAY = 250;
-        private bool _useCachedImages = Utils.UseCache();
-        private bool _useVatAutocompletee = Utils.UseVatAutocomplete();
+        private bool _useCachedImages = logicpos.Utils.UseCache();
+        private bool _useVatAutocompletee = logicpos.Utils.UseVatAutocomplete();
         private string _pathCache = FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"]));
 
         public Widget widget;
@@ -45,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             }
 
             //create pixBuf + gtkImage
-            Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(bitmap);
+            Gdk.Pixbuf pixBuf = logicpos.Utils.ImageToPixbuf(bitmap);
             Image gtkImage = new Image(pixBuf);
             //free resources
             bitmap.Dispose();
@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                         };
 #pragma warning restore
 
-                        imageButton = Utils.ResizeAndCrop(imageButton, targetImageSize);
+                        imageButton = logicpos.Utils.ResizeAndCrop(imageButton, targetImageSize);
                         System.Drawing.Graphics.FromImage(bitmap).DrawImage(imageButton, 0, 0);
 
 #pragma warning disable
@@ -129,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                         };
 #pragma warning restore
 
-                        imageOverlay = Utils.ResizeAndCrop(imageOverlay, targetImageSize);
+                        imageOverlay = logicpos.Utils.ResizeAndCrop(imageOverlay, targetImageSize);
                         System.Drawing.Graphics.FromImage(bitmap).DrawImage(imageOverlay, 0, 0);
 
 #pragma warning disable
@@ -155,7 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 transpRectangle.Height = fontSize * 2;
                 transpRectangle.X = _BUTTON_TEXT_OVERLAY_INNER_MARGIN * 2;
                 transpRectangle.Y = targetImageSize.Height - transpRectangle.Height - (_BUTTON_TEXT_OVERLAY_INNER_MARGIN * 2);
-                Utils.ImageTextOverlay(bitmap, labelText, transpRectangle, System.Drawing.Color.Black, "Arial", fontSize, _BUTTON_TEXT_ALPHA_OVERLAY);
+                logicpos.Utils.ImageTextOverlay(bitmap, labelText, transpRectangle, System.Drawing.Color.Black, "Arial", fontSize, _BUTTON_TEXT_ALPHA_OVERLAY);
 
 #pragma warning disable
                 if (debug) bitmap.Save(FrameworkUtils.OSSlash(GlobalFramework.Path["temp"] + @"touchbuttonImage6_" + stringResolution + "_textoverlay.png"));

@@ -249,12 +249,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _labelChangeValue = new Label(FrameworkUtils.DecimalToStringCurrency(0));
 
                 //Colors
-                labelTotal.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
-                labelDelivery.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
-                labelChange.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
-                _labelTotalValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.White));
-                _labelDeliveryValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.White));
-                _labelChangeValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.White));
+                labelTotal.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
+                labelDelivery.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
+                labelChange.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
+                _labelTotalValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
+                _labelDeliveryValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
+                _labelChangeValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
 
                 //Alignments
                 labelTotal.SetAlignment(0, 0.5F);
@@ -291,7 +291,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //TotalPannel
                 EventBox eventboxTotalPannel = new EventBox();
                 eventboxTotalPannel.BorderWidth = 4;
-                eventboxTotalPannel.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorPosPaymentsDialogTotalPannelBackground));
+                eventboxTotalPannel.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorPosPaymentsDialogTotalPannelBackground));
                 eventboxTotalPannel.Add(tableTotalPannel);
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

@@ -10,7 +10,6 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.resources.Resources.Localization;
 using MySql.Data.MySqlClient;
 using System;
 using System.Drawing;
@@ -165,7 +164,7 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupSQLite(fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupSQLite(fileName));
-                        Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                        logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                         break;
                     case DatabaseType.MSSqlServer:
                         fileName = GetBackupFileName(_fileExtension, systemBackup.Version, "");
@@ -173,7 +172,7 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupMSSqlServer(fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupMSSqlServer(Path.GetFileName(fileName), SessionXpoForBackupPurposes));
-                        Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                        logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                         break;
                     case DatabaseType.MySql:
                         fileName = GetBackupFileName(_fileExtension, systemBackup.Version, "");
@@ -181,12 +180,12 @@ namespace logicpos.Classes.DataLayer
                         //resultBackup = BackupMySql(_backupConnectionString, fileName);
                         //Thread
                         thread = new Thread(() => backupResult = BackupMySql(_backupConnectionString, fileName));
-                        Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                        logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                         break;
                     default:
                         break;
                 }
-				/* IN007007 */
+                /* IN007007 */
                 _log.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", GlobalFramework.DatabaseType, fileName, backupResult));
 
                 if (_debug) _log.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", GlobalFramework.DatabaseType, fileName, backupResult));
@@ -237,7 +236,7 @@ namespace logicpos.Classes.DataLayer
                         ));
 
                         //Moved to Thread Outside > Only Show if not in Silence Mode
-                        if (pSourceWindow != null) Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
+                        if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
                     }
                     else
                     {
@@ -254,7 +253,7 @@ namespace logicpos.Classes.DataLayer
                         // Show only when "Silent Mode" is on
                         if (pSourceWindow != null)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
+                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
                         }
 
                         _log.Debug($"DataBaseBackup.Backup(Window pSourceWindow): {string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
@@ -263,7 +262,7 @@ namespace logicpos.Classes.DataLayer
                 else
                 {
                     //Moved to Thread Outside > Only Show if not in Silence Mode
-                    if (pSourceWindow != null) Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error"), Path.GetFileName(fileName)));
+                    if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error"), Path.GetFileName(fileName)));
                 }
                 /* IN009164 */
                 SessionXpoForBackupPurposes.Disconnect();
@@ -310,12 +309,12 @@ namespace logicpos.Classes.DataLayer
                         {
                             //#EQUAL#1
                             string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                             return false;
                         }
                         break;
                     case DataBaseRestoreFrom.ChooseFromFilePickerDialog:
-                        FileFilter fileFilterBackups = Utils.GetFileFilterBackups();
+                        FileFilter fileFilterBackups = logicpos.Utils.GetFileFilterBackups();
                         PosFilePickerDialog dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open);
                         ResponseType response = (ResponseType)dialog.Run();
                         if (response == ResponseType.Ok)
@@ -423,7 +422,7 @@ namespace logicpos.Classes.DataLayer
                     {
                         //#EQUAL#1
                         string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+                        logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                         return false;
                     }
                 }
@@ -457,20 +456,20 @@ namespace logicpos.Classes.DataLayer
                     //resultRestore = RestoreSQLite(pFileName);
                     //Thread
                     thread = new Thread(() => resultRestore = RestoreSQLite(pFileName));
-                    Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                    logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                     break;
                 case DatabaseType.MSSqlServer:
                     //string FileName = GetBackupFileName(_fileExtension, pSystemBackup.Version, pFileName);
                     //Non Thread
                     //resultRestore = RestoreMSSqlServer(_backupConnectionString, pFileName);
                     thread = new Thread(() => resultRestore = RestoreMSSqlServer(_backupConnectionString, pFileName));
-                    Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                    logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                     break;
                 case DatabaseType.MySql:
                     //Non Thread
                     //resultRestore = RestoreMySql(_backupConnectionString, pFileName);
                     thread = new Thread(() => resultRestore = RestoreMySql(_backupConnectionString, pFileName));
-                    Utils.ThreadStart(pSourceWindow, thread, backupProcess);
+                    logicpos.Utils.ThreadStart(pSourceWindow, thread, backupProcess);
                     break;
                 default:
                     break;
@@ -481,11 +480,11 @@ namespace logicpos.Classes.DataLayer
 
             if (resultRestore)
             {
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_successfully"), pFileNamePacked));
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_successfully"), pFileNamePacked));
             }
             else
             {
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error"), pFileNamePacked));
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error"), pFileNamePacked));
             }
 
             return resultRestore;
@@ -630,7 +629,7 @@ namespace logicpos.Classes.DataLayer
 
         public static void ShowRequestBackupDialog(Window pSourceWindow)
         {
-            ResponseType responseType = Utils.ShowMessageTouch(
+            ResponseType responseType = logicpos.Utils.ShowMessageTouch(
               pSourceWindow,
               DialogFlags.Modal,
               MessageType.Question,

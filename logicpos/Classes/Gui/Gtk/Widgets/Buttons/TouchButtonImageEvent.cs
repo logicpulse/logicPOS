@@ -57,9 +57,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                   _imageDefault.Height - (_BUTTON_TEXT_OVERLAY_INNER_MARGIN * 2)
                 );
                 //Final Image
-                _imageDefault = Utils.ImageTextOverlay(_imageDefault, pLabel, transpRectangle, System.Drawing.Color.White, _fontName, _fontSize, _BUTTON_TEXT_ALPHA_OVERLAY);
+                _imageDefault = logicpos.Utils.ImageTextOverlay(_imageDefault, pLabel, transpRectangle, System.Drawing.Color.White, _fontName, _fontSize, _BUTTON_TEXT_ALPHA_OVERLAY);
                 //Assign PixBuf
-                _pixbufDefault = Utils.ImageToPixbuf(_imageDefault);
+                _pixbufDefault = logicpos.Utils.ImageToPixbuf(_imageDefault);
             }
 
             if (File.Exists(pImageClicked))
@@ -74,9 +74,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                   _imageDefault.Width - (_BUTTON_TEXT_OVERLAY_INNER_MARGIN * 2) - pPaddingLeft - pPaddingRight,
                   _imageDefault.Height - (_BUTTON_TEXT_OVERLAY_INNER_MARGIN * 2)
                 );        //Final Image
-                _imageClicked = Utils.ImageTextOverlay(_imageClicked, pLabel, transpRectangle, System.Drawing.Color.White, _fontName, _fontSize, _BUTTON_TEXT_ALPHA_OVERLAY);
+                _imageClicked = logicpos.Utils.ImageTextOverlay(_imageClicked, pLabel, transpRectangle, System.Drawing.Color.White, _fontName, _fontSize, _BUTTON_TEXT_ALPHA_OVERLAY);
                 //Assign PixBuf
-                _pixbufClicked = Utils.ImageToPixbuf(_imageClicked);
+                _pixbufClicked = logicpos.Utils.ImageToPixbuf(_imageClicked);
             }
 
             if (_imageDefault != null)

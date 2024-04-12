@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_listMode == TicketListMode.OrderMain)
             {
-                ResponseType responseType = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message__pos_order_cancel"));
+                ResponseType responseType = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message__pos_order_cancel"));
 
                 if (responseType == ResponseType.Yes)
                 {
@@ -117,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Always Change to OrderMain ListMode before Update Model
                         _listMode = TicketListMode.Ticket;
                         orderMain.CleanSessionOrder();
-                        Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
+                        Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = logicpos.Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = logicpos.Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
                         _treeView.ModifyBase(StateType.Normal, colorListMode);
                         //UpdateModel();
                         UpdateOrderStatusBar();
@@ -191,9 +191,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    i++;
                 //}
                 decimal oldValueQnt = Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity));
-                if (Utils.CheckStocks())
+                if (logicpos.Utils.CheckStocks())
                 {
-                    if (!Utils.ShowMessageMinimumStock(_sourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
+                    if (!logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
                     {
                         ChangeQuantity(oldValueQnt + defaultQuantity);
                         UpdateTicketListButtons();
@@ -226,9 +226,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 bool showMessage;
                 if (newValueQnt > 0)
                 {
-                    if (Utils.CheckStocks()) 
+                    if (logicpos.Utils.CheckStocks()) 
                     {
-                        if (!Utils.ShowMessageMinimumStock(_sourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, newValueQnt, out showMessage))
+                        if (!logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, newValueQnt, out showMessage))
                         {
                             if (showMessage)
                             {
@@ -348,7 +348,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //printTicket = Convert.ToBoolean(GlobalFramework.Settings["printTicket"]);
 
 					//Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
-                    if (!GlobalFramework.AppUseParkingTicketModule && Utils.PrintTicket())
+                    if (!GlobalFramework.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
                     {
                         // TK016249 Impressoras - Diferenciação entre Tipos 
                         FrameworkCalls.PrintOrderRequest(_sourceWindow, GlobalFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
@@ -382,7 +382,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Request Finish Open Ticket
                 if (_listStoreModelTotalItemsTicketListMode > 0)
                 {
-                    ResponseType dialogResponse = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_close_open_ticket"));
+                    ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_close_open_ticket"));
                     if (dialogResponse != ResponseType.Ok)
                     {
                         return;
@@ -456,7 +456,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
-            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -475,7 +475,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png");
-            logicpos.Utils.ResponseText dialogResponse = Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -526,7 +526,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
-                        Utils.ShowMessageTouch(
+                        logicpos.Utils.ShowMessageTouch(
                             GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                             resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_table_is_not_free")
                         );
@@ -626,9 +626,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 decimal quantity = Convert.ToDecimal(result[0]) / 1000;
                 // Use ChangeQuantity to Change/Update Quantity in TicketList
                 //_currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity = quantity;
-                if (Utils.CheckStocks())
+                if (logicpos.Utils.CheckStocks())
                 {
-                    if(Utils.ShowMessageMinimumStock(_sourceWindow, _currentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, quantity))
+                    if(logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, _currentOrderDetails.Lines[_listStoreModelSelectedIndex].ArticleOid, quantity))
                     {
                         ChangeQuantity(quantity);
                     }

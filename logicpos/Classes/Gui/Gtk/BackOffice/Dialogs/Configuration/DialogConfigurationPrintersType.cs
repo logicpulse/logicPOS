@@ -14,9 +14,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             _dialogMode = pDialogMode;
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinterstype"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinterstype"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 403);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 403);
             else SetSizeRequest(500, 383);
             InitUI();
             InitNotes();

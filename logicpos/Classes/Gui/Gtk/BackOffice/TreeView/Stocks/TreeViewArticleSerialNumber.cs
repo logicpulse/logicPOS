@@ -97,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             sortingCollection.Add(new SortProperty("UpdatedAt", DevExpress.Xpo.DB.SortingDirection.Descending));
 
             int TopReturnedObj = 50;
-            if(pSourceWindow.Title != Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")))
+            if(pSourceWindow.Title != logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")))
             {
                 TopReturnedObj = 100000000;
             }

@@ -9,7 +9,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         void buttonSetup_Clicked(object sender, EventArgs e)
         {
-            Utils.ShowMessageUnderConstruction();
+            logicpos.Utils.ShowMessageUnderConstruction();
         }
 
         void buttonCash_Clicked(object sender, EventArgs e)
@@ -19,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 var resultOpenDoor = PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
                 if (!resultOpenDoor)
                 {
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
                 }
             }
         }

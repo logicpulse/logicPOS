@@ -89,13 +89,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         }
 
         public DialogArticleStock(Window pSourceWindow)
-            : base(pSourceWindow, Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, DialogMode.Update, null)
+            : base(pSourceWindow, logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, DialogMode.Update, null)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"));
-            _treeViewXPO_ArticleDetails = Utils.GetGenericTreeViewXPO<TreeViewArticleDetailsStock>(this);
-            _treeViewXPO_ArticleHistory = Utils.GetGenericTreeViewXPO<TreeViewArticleSerialNumber>(this, GenericTreeViewNavigatorMode.Default, GenericTreeViewMode.CheckBox);
-            _treeViewXPO_ArticleWarehouse = Utils.GetGenericTreeViewXPO<TreeViewArticleWarehouse>(this);
-            _treeViewXPO_StockMov = Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this);
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"));
+            _treeViewXPO_ArticleDetails = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleDetailsStock>(this);
+            _treeViewXPO_ArticleHistory = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleSerialNumber>(this, GenericTreeViewNavigatorMode.Default, GenericTreeViewMode.CheckBox);
+            _treeViewXPO_ArticleWarehouse = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleWarehouse>(this);
+            _treeViewXPO_StockMov = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this);
             _listArticleserialnumbers = new List<fin_articleserialnumber>();
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
             {
@@ -302,11 +302,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     if (File.Exists(fileToOpen))
                     {
-                        if (Utils.IsLinux)
+                        if (logicpos.Utils.IsLinux)
                         {
                             System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen)));
                         }
-                        else if (Utils.UsePosPDFViewer() == true && !Utils.IsLinux)
+                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
                             string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
@@ -339,11 +339,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     if (File.Exists(selecteRow.DocumentNumber + ".pdf"))
                     {
-                        if (Utils.IsLinux)
+                        if (logicpos.Utils.IsLinux)
                         {
                             System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf")));
                         }
-                        else if (Utils.UsePosPDFViewer() == true && !Utils.IsLinux)
+                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
                             string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf"));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
@@ -594,7 +594,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void DeleteArticleSerialNumber(fin_articleserialnumber pArticleSerialNumber)
         {
 
-            ResponseType responseType = Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+            ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
 
             var selectedRow = pArticleSerialNumber;
 
@@ -604,7 +604,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Check if is sold
                 if (selectedRow.StockMovimentOut != null || selectedRow.IsSold)
                 {
-                    Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único já foi vendido", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único já foi vendido", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
                     return;
                 }
 
@@ -637,7 +637,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     location.DeletedAt = DateTime.Now;
                     location.Save();
 
-                    selectedRow.SerialNumber = Utils.RandomString();
+                    selectedRow.SerialNumber = logicpos.Utils.RandomString();
                     selectedRow.Save();
 
                     _treeViewXPO_ArticleHistory.Refresh();
@@ -648,7 +648,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 else
                 {
-                    Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único está associado a outro(s) artigos", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único está associado a outro(s) artigos", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
                 }
             }
 
@@ -728,7 +728,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         pSelectedCollection.Add(item.ArticleSerialNumberChild);
                     }
                 }
-                selecteRow.SerialNumber = Utils.OpenNewSerialNumberCompositePopUpWindow(this, selecteRow, out pSelectedCollection, selecteRow.SerialNumber, pSelectedCollection);
+                selecteRow.SerialNumber = logicpos.Utils.OpenNewSerialNumberCompositePopUpWindow(this, selecteRow, out pSelectedCollection, selecteRow.SerialNumber, pSelectedCollection);
 
                 //Add modified items
                 int i = 0;
@@ -770,11 +770,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                        
                     if (File.Exists(fileToOpen))
                     {
-                        if (Utils.IsLinux)
+                        if (logicpos.Utils.IsLinux)
                         {
                             System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen)));
                         }
-                        else if (Utils.UsePosPDFViewer() == true && !Utils.IsLinux)
+                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
                             string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
@@ -807,11 +807,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     
                     if (File.Exists(selecteRow.StockMovimentIn.DocumentNumber + ".pdf"))
                     {
-                        if (Utils.IsLinux)
+                        if (logicpos.Utils.IsLinux)
                         {
                             System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf")));
                         }
-                        else if (Utils.UsePosPDFViewer() == true && !Utils.IsLinux)
+                        else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
                             string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf"));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
@@ -888,8 +888,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;  
                 Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
-                Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
-                Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
+                Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
+                Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
 
                 result = new TouchButtonIconWithText(pId, colorBaseDialogActionAreaButtonBackground, pLabel, fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height);
             }

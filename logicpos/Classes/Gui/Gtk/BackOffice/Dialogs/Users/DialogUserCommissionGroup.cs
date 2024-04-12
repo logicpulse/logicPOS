@@ -13,7 +13,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogUserCommissionGroup(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_user_commission_group"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_user_commission_group"));
             SetSizeRequest(500, 354);//332 sem o disabled
             InitUI();
             InitNotes();

@@ -184,6 +184,7 @@
     <Compile Include="Classes\Utils\GraphUtils.cs" />
     <Compile Include="Classes\Utils\SingleProgramInstance.cs" />
     <Compile Include="Classes\Utils\EuropeanVatInformation.cs" />
+    <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
     <Compile Include="IStockManagementModule.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -88,7 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _textviewLog.WrapMode = WrapMode.Word;
             _textviewLog.Sensitive = false;
             //Removed to be Transparent - CHANGE COLOR ex to System.Drawing.Color.Aqua to View TextView to Position
-            _textviewLog.ModifyBase(StateType.Insensitive, Utils.ColorToGdkColor(System.Drawing.Color.Transparent));
+            _textviewLog.ModifyBase(StateType.Insensitive, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.Transparent));
 
 
             TextBuffer _textBuffer = _textviewLog.Buffer;
@@ -108,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             String fileImageDialog = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pImageDialog);
             if (pImageDialog != string.Empty && File.Exists(fileImageDialog))
             {
-                Gdk.Pixbuf pixBuf = Utils.FileToPixBuf(fileImageDialog);
+                Gdk.Pixbuf pixBuf = logicpos.Utils.FileToPixBuf(fileImageDialog);
                 Image imageDialog = new Image(pixBuf);
 
 

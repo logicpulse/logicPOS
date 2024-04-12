@@ -16,8 +16,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         //Settings
         //Sizes
-        private Size _sizePosSmallButtonScroller = Utils.StringToSize(GlobalFramework.Settings["sizePosSmallButtonScroller"]);
-        private Size _sizePosUserButton = Utils.StringToSize(GlobalFramework.Settings["sizePosUserButton"]);
+        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosSmallButtonScroller"]);
+        private Size _sizePosUserButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosUserButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
         private String _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
@@ -115,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_selectedUserDetail.PasswordReset)
             {
                 //_log.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
                     string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), _selectedUserDetail.Name, SettingsApp.DefaultValueUserDetailAccessPin)
                 );
             }

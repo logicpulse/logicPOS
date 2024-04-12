@@ -13,9 +13,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationCurrency(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationcurrency"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationcurrency"));
             
-            if(Utils.IsLinux) SetSizeRequest(500, 463);
+            if(logicpos.Utils.IsLinux) SetSizeRequest(500, 463);
             else SetSizeRequest(500, 443);
             InitUI();
             InitNotes();

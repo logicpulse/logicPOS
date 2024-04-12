@@ -12,7 +12,6 @@ using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Utils;
 using logicpos.financial.library.Classes.WorkSession;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,6 @@ using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Threading;
 
 namespace logicpos
 {
@@ -126,7 +124,7 @@ namespace logicpos
 
                 //Check if Database Exists if Not Create it from Scripts
                 bool databaseCreated = false;
-                
+
                 if (!xpoCreateDatabaseAndSchema)
                 {
                     //Get result to check if DB is created (true)
@@ -134,7 +132,7 @@ namespace logicpos
                     {
                         // Launch Scripts
                         SettingsApp.firstBoot = true;
-                        databaseCreated = DataLayer.CreateDatabaseSchema(xpoConnectionString, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName, out needToUpdate);               
+                        databaseCreated = DataLayer.CreateDatabaseSchema(xpoConnectionString, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName, out needToUpdate);
                     }
                     catch (Exception ex)
                     {
@@ -269,7 +267,7 @@ namespace logicpos
                     culture = GlobalFramework.Settings["customCultureResourceDefinition"];
                 }
 
-          
+
 
                 //if (!string.IsNullOrEmpty(culture))
                 //{
@@ -369,7 +367,7 @@ namespace logicpos
                 //Hardware : Init WeighingBalance
                 if (GlobalFramework.LoggedTerminal.WeighingMachine != null)
                 {
-					//Protecções de integridade das BD's [IN:013327]
+                    //Protecções de integridade das BD's [IN:013327]
                     //Check if port is used by pole display
                     if (GlobalFramework.LoggedTerminal.WeighingMachine.PortName == GlobalFramework.LoggedTerminal.PoleDisplay.COM)
                     {
@@ -620,7 +618,7 @@ namespace logicpos
                     _log.Debug("StartupWindow " + windowImageFileName);
                     GlobalApp.WindowStartup = new StartupWindow(windowImageFileName, needToUpdate);
 
-     
+
                 }
                 catch (Exception ex)
                 {
@@ -686,7 +684,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error("void StartBackupTimer() :: _autoBackupFlowIsActive: [" + _autoBackupFlowIsEnabled + "] :: "  + ex.Message, ex);
+                _log.Error("void StartBackupTimer() :: _autoBackupFlowIsActive: [" + _autoBackupFlowIsEnabled + "] :: " + ex.Message, ex);
             }
         }
 

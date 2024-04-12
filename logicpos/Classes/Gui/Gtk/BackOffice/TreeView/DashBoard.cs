@@ -174,8 +174,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Imagem carregada aqui para o dashboard
                 string fileImageBack = FrameworkUtils.OSSlash(string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", GlobalFramework.Path["themes"], GlobalFramework.Settings["customCultureResourceDefinition"]));
                 System.Drawing.Image pImage = System.Drawing.Image.FromFile(fileImageBack);
-                Gdk.Pixbuf pixbuf = Utils.ImageToPixbuf(pImage);
-                _eventboxDashboard.Style = Utils.GetImageBackgroundDashboard(pixbuf);
+                Gdk.Pixbuf pixbuf = logicpos.Utils.ImageToPixbuf(pImage);
+                _eventboxDashboard.Style = logicpos.Utils.GetImageBackgroundDashboard(pixbuf);
                 //Buttons Configuração
                 botao1 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_ConfigurationPlaceTerminal_tab1_label"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileTerminalsIcon, sizeIcon, 105, 70);
                 botao2 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileFiscalYearIcon, sizeIcon, 105, 70);
@@ -226,25 +226,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
                 //Actions Configurações
-                botao1.Clicked += delegate { botao1.Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao1, null); };
-                botao2.Clicked += delegate { botao2.Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao2, null); };
-                botao3.Clicked += delegate { botao3.Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao3, null); };
-                botao4.Clicked += delegate { botao4.Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao4, null); };
+                botao1.Clicked += delegate { botao1.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao1, null); };
+                botao2.Clicked += delegate { botao2.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao2, null); };
+                botao3.Clicked += delegate { botao3.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao3, null); };
+                botao4.Clicked += delegate { botao4.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao4, null); };
 
                 //Actions Tabelas
-                botao5.Clicked += delegate { botao5.Content = Utils.GetGenericTreeViewXPO<TreeViewArticle>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao5, null); };
-                botao6.Clicked += delegate { botao6.Content = Utils.GetGenericTreeViewXPO<TreeViewCustomer>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao6, null); };
-                botao7.Clicked += delegate { botao7.Content = Utils.GetGenericTreeViewXPO<TreeViewUser>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao7, null); };
-                botao8.Clicked += delegate { botao8.Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao8, null); };
+                botao5.Clicked += delegate { botao5.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao5, null); };
+                botao6.Clicked += delegate { botao6.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao6, null); };
+                botao7.Clicked += delegate { botao7.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao7, null); };
+                botao8.Clicked += delegate { botao8.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao8, null); };
 
                 //Actions Documents
-                botao9.Clicked += delegate { Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 0); };
-                botao10.Clicked += delegate { Utils.startNewDocumentFromBackOffice(pSourceWindow); };
-                botao11.Clicked += delegate { Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 3); };
-                botao12.Clicked += delegate { Utils.OpenArticleStockDialog(_sourceWindow); };
+                botao9.Clicked += delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 0); };
+                botao10.Clicked += delegate { logicpos.Utils.startNewDocumentFromBackOffice(pSourceWindow); };
+                botao11.Clicked += delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 3); };
+                botao12.Clicked += delegate { logicpos.Utils.OpenArticleStockDialog(_sourceWindow); };
 
                 //Actions Reports
-                botao13.Clicked += delegate { Utils.startReportsMenuFromBackOffice(pSourceWindow); };
+                botao13.Clicked += delegate { logicpos.Utils.startReportsMenuFromBackOffice(pSourceWindow); };
                 botao14.Clicked += delegate { reportsClicked.PrintReportRouter
                     (botao14, null); };
                 botao15.Clicked += delegate { reportsClicked.PrintReportRouter(botao15, null); };
@@ -350,7 +350,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     currency.ToString());
 
                 label.ModifyFont(FontDescription.FromString("Trebuchet MS 16"));
-                label.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(white));
+                label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(white));
                 label.Justify = Justification.Right;
                 frame.Add(label);
                 hbox.PackStart(frame, false, false, 0);
@@ -368,7 +368,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 //w = 1;
                 selAno = new ComboBox(getYears);
-                selAno.ModifyFg(StateType.Selected, Utils.ColorToGdkColor(black));
+                selAno.ModifyFg(StateType.Selected, logicpos.Utils.ColorToGdkColor(black));
 
                 TreeIter iter;
                 selAno.Model.GetIterFirst(out iter);
@@ -405,7 +405,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     currency.ToString());
 
                    label.ModifyFont(FontDescription.FromString("Trebuchet MS 16"));
-                   label.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(white));
+                   label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(white));
                    label.Justify = Justification.Right;
                    frame.Add(label);
 
@@ -416,7 +416,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                    fix.Put(drawSalesGraphic(DateTime.Parse(selectedDate), true), 55, 485);
 
                };
-                if (Utils.IsLinux)
+                if (logicpos.Utils.IsLinux)
                 {
                     fix.Put(selAno, 220, 650);
                 }
@@ -433,7 +433,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             catch (Exception ex)
             {
                 _log.Error(ex.Message, ex);
-                Utils.ShowMessageTouchErrorRenderTheme(pSourceWindow, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
+                logicpos.Utils.ShowMessageTouchErrorRenderTheme(pSourceWindow, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
             }
         }
         /// <summary>

@@ -121,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 try
                 {
-                    Utils.SendMail(
+                    logicpos.Utils.SendMail(
                         //Logicpulse STMP
                         //"mail.logicpulse.com",
                         //"mario.monteiro@logicpulse.com",
@@ -142,12 +142,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         Body,
                         _attachmentFileNames
                         );
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_mail_sent_successfully"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_mail_sent_successfully"));
                 }
                 catch (Exception ex)
                 {
                     _log.Error(ex.Message, ex);
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                     // Keep Running
                     this.Run();
                 }

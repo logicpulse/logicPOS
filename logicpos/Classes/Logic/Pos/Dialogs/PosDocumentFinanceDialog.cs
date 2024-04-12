@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 if (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.Count > 0)
                 {
-                    ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_finance_dialog_confirm_cancel"));
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_finance_dialog_confirm_cancel"));
                     if (response == ResponseType.No)
                     {
                         //Keep Running
@@ -250,7 +250,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             object resultObject;
 
-            resultObject = Utils.SaveOrUpdateCustomer(
+            resultObject = logicpos.Utils.SaveOrUpdateCustomer(
                 this,
                 _pagePad2.EntryBoxSelectCustomerName.Value,
                 _pagePad2.EntryBoxSelectCustomerName.EntryValidation.Text,
@@ -277,7 +277,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 if (resultObject.GetType() == typeof(ConstraintViolationException))
                 {
                     Exception ex = (Exception)resultObject;
-                    ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
                 }
                 customer = null;
             }
@@ -418,7 +418,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                     && articleBag.TotalFinal > _pagePad2.EntryBoxSelectCustomerName.Value.CardCredit
                 )
                 {
-                    Utils.ShowMessageTouch(
+                    logicpos.Utils.ShowMessageTouch(
                         this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
                         string.Format(
                             resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), 
@@ -432,7 +432,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
                 if (result && ! FrameworkUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
                 {
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
                     result = false;
                 }
             }

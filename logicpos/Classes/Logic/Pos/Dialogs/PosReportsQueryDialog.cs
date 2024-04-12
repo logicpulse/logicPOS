@@ -162,7 +162,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (count <= 0)
                 {
 					/* IN009062 */
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_report_filter_no_records_with_criteria"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_report_filter_no_records_with_criteria"));
                     //Keep Running
                     this.Run();
                 }

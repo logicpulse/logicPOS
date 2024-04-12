@@ -201,7 +201,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxSelectConfigurationCurrency.ButtonSelectValue.Sensitive = _entryPaymentAmount.EntryValidation.Validated;
 
             /* IN009183 */
-            Utils.ValidateUpdateColors(_entryPaymentAmount.EntryValidation, _entryPaymentAmount.Label, (_validated && _diference >= 0));
+            logicpos.Utils.ValidateUpdateColors(_entryPaymentAmount.EntryValidation, _entryPaymentAmount.Label, (_validated && _diference >= 0));
             //_entryPaymentAmount.EntryValidation.Text = FrameworkUtils.DecimalToString(_paymentAmountEntry, GlobalFramework.CurrentCulture, SettingsApp.DecimalFormat); //FrameworkUtils.DecimalToString(_paymentAmountEntry);
             // _paymentAmountEntry = Math.Round(_paymentAmountEntry, decimalRoundTo);
 

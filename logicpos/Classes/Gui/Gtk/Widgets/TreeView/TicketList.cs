@@ -258,18 +258,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 this.BorderWidth = 10;
 
                 //Objects:EventBoxPosTicketList:EventBoxTotal
-                Gdk.Color eventBoxTotalBackgroundColor = Utils.StringToGdkColor(pThemeObject.EventBoxTotal.BackgroundColor);
+                Gdk.Color eventBoxTotalBackgroundColor = logicpos.Utils.StringToGdkColor(pThemeObject.EventBoxTotal.BackgroundColor);
                 //Objects:Columns
                 Pango.FontDescription columnsFontTitle = Pango.FontDescription.FromString(pThemeObject.Columns.FontTitle);
                 Pango.FontDescription columnsFontData = Pango.FontDescription.FromString(pThemeObject.Columns.FontData);
 
                 //Objects:EventBoxPosTicketList:EventBoxTotal:LabelLabelTotal
                 Pango.FontDescription labelLabelTotalFont = Pango.FontDescription.FromString(pThemeObject.EventBoxTotal.LabelLabelTotal.Font);
-                Gdk.Color labelLabelTotalFontColor = Utils.StringToGdkColor(pThemeObject.EventBoxTotal.LabelLabelTotal.FontColor);
+                Gdk.Color labelLabelTotalFontColor = logicpos.Utils.StringToGdkColor(pThemeObject.EventBoxTotal.LabelLabelTotal.FontColor);
                 float labelLabelTotalAlignmentX = Convert.ToSingle(pThemeObject.EventBoxTotal.LabelLabelTotal.AlignmentX);
                 //Objects:EventBoxPosTicketList:EventBoxTotal:LabelTotal
                 Pango.FontDescription labelTotalFont = Pango.FontDescription.FromString(pThemeObject.EventBoxTotal.LabelTotal.Font);
-                Gdk.Color labelTotalFontColor = Utils.StringToGdkColor(pThemeObject.EventBoxTotal.LabelTotal.FontColor);
+                Gdk.Color labelTotalFontColor = logicpos.Utils.StringToGdkColor(pThemeObject.EventBoxTotal.LabelTotal.FontColor);
                 float labelTotalAlignmentX = Convert.ToSingle(pThemeObject.EventBoxTotal.LabelTotal.AlignmentX);
 
                 //Objects:EventBoxPosTicketList:Columns:DesignationWidth
@@ -450,7 +450,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _currentOrderDetails = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
 
                 //Change BackGround Color ListMode
-                Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
+                Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = logicpos.Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = logicpos.Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
                 _treeView.ModifyBase(StateType.Normal, colorListMode);
 
                 //Ticket Mode
@@ -648,7 +648,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {                    
                     string message = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_invalid_code");
-                    Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
+                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
                     return;
                 }
             }
@@ -657,14 +657,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public void ArticleNotFound()
         {
             string message = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_invalid_code");
-            Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
+            logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
             return;
         }
 
         public void WsNotFound()
         {
             string message = string.Format("O Web service não se encontra em funcionamento");
-            Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Web Service não encontrado", message);
+            logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Web Service não encontrado", message);
             return;
         }
 
@@ -759,7 +759,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     //TODO: Implement VatExemptionReason in TicketList (Both Modes) 
                     //Guid vatExemptionReasonGuid = GetVatExemptionReason();
-                    Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_vatrate_free_article_detected"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_without_vat_exception_reason_detected"));
+                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_vatrate_free_article_detected"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_without_vat_exception_reason_detected"));
                     return;
                 }
 
@@ -767,14 +767,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (parkingTicketResult.AlreadyExit)
                 {
                     string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_already_exited"), parkingTicketResult.DateExits);
-                    Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), message);
+                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), message);
                     return;
                 }
                 //Check if ticket is already payed and show message
                 else if (parkingTicketResult.AlreadyPaid)
                 {
                     string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
-                    Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_paid"), message);
+                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_paid"), message);
                     return;
                 }
 
@@ -797,9 +797,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     bool showMessage;
-                    if (Utils.CheckStocks())
+                    if (logicpos.Utils.CheckStocks())
                     {
-                        if(!Utils.ShowMessageMinimumStock(_sourceWindow, pArticleOid, Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity, out showMessage)) { 
+                        if(!logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, pArticleOid, Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity, out showMessage)) { 
                             if(showMessage) return;
                         }
                     }
@@ -831,12 +831,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (parkingTicketResult.Ean.Length == 13)
                         {
                             message = string.Format(" Numero do ticket: {0}\n\n Data de Emissão: {1}\n Duração: {2} minuto(s)\n Descrição: {3}\n", parkingTicketResult.Ean, parkingTicketResult.Date, parkingTicketResult.Minutes, parkingTicketResult.Description);
-                            Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
+                            logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
                         }
                         else
                         {
                             message = string.Format(" Numero do cartão: {0} \n", parkingTicketResult.Ean);
-                            Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
+                            logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
                         }
 
                     }

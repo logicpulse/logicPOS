@@ -13,10 +13,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationVatRate(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationvatrate"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationvatrate"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 553);
-            else SetSizeRequest(500, 533);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 553);
+            else
+            {
+                SetSizeRequest(500, 533);
+            }
+
             InitUI();
             InitNotes();
             ShowAll();

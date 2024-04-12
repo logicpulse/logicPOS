@@ -154,7 +154,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         protected void InitObject(Dictionary<string, AccordionNode> pAccordionDefinition, string pNodePrivilegesTokenFormat)
         {
             //get values of backoffice screen to set accordion font text size 
-            GlobalApp.boScreenSize = Utils.GetScreenSize();
+            GlobalApp.boScreenSize = logicpos.Utils.GetScreenSize();
             _label = new Label();
             
             //Parameters
@@ -181,8 +181,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
                             System.Drawing.Image imageIcon;
                             imageIcon = System.Drawing.Image.FromFile(parentLevel.Value.GroupIcon.File.ToString());
-                            imageIcon = Utils.ResizeAndCrop(imageIcon, sizeIcon);
-                            Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(imageIcon);
+                            imageIcon = logicpos.Utils.ResizeAndCrop(imageIcon, sizeIcon);
+                            Gdk.Pixbuf pixBuf = logicpos.Utils.ImageToPixbuf(imageIcon);
                             Image gtkimageButton = new Image(pixBuf);
                             hboxParent.PackStart(gtkimageButton, false, false, 3);
                             imageIcon.Dispose();
@@ -352,9 +352,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {          
             //color
             System.Drawing.Color colNormal = pColorFont;
-            System.Drawing.Color colPrelight = Utils.Lighten(colNormal);
-            System.Drawing.Color colActive = Utils.Lighten(colPrelight);
-            System.Drawing.Color colInsensitive = Utils.Darken(colNormal);
+            System.Drawing.Color colPrelight = logicpos.Utils.Lighten(colNormal);
+            System.Drawing.Color colActive = logicpos.Utils.Lighten(colPrelight);
+            System.Drawing.Color colInsensitive = logicpos.Utils.Darken(colNormal);
             System.Drawing.Color colSelected = System.Drawing.Color.FromArgb(125, 0, 0);
 
             String _fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
@@ -377,11 +377,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (GlobalApp.boScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
                 else _label.ModifyFont(fontPosBackOfficeChild);
             }
-            _label.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colNormal));
-            _label.ModifyFg(StateType.Prelight, Utils.ColorToGdkColor(colPrelight));
-            _label.ModifyFg(StateType.Active, Utils.ColorToGdkColor(colActive));
-            _label.ModifyFg(StateType.Insensitive, Utils.ColorToGdkColor(colInsensitive));
-            _label.ModifyFg(StateType.Selected, Utils.ColorToGdkColor(colSelected));
+            _label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colNormal));
+            _label.ModifyFg(StateType.Prelight, logicpos.Utils.ColorToGdkColor(colPrelight));
+            _label.ModifyFg(StateType.Active, logicpos.Utils.ColorToGdkColor(colActive));
+            _label.ModifyFg(StateType.Insensitive, logicpos.Utils.ColorToGdkColor(colInsensitive));
+            _label.ModifyFg(StateType.Selected, logicpos.Utils.ColorToGdkColor(colSelected));
             
             _label.SetAlignment(0.0f, 0.5f);
         }

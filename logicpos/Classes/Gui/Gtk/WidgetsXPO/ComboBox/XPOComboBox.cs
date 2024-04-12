@@ -53,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         {
             //Required to Force Combo to be same Height has Entrys
             HeightRequest = 23;
-            if(Utils.IsLinux) HeightRequest = 32;
+            if(logicpos.Utils.IsLinux) HeightRequest = 32;
 
             //Parameters
             _xpoSession = pXpoSession;

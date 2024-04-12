@@ -27,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogUserDetail(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_user"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_user"));
             SetSizeRequest(500, 469);
 
             //Store References
@@ -242,7 +242,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (_dialogMode == DialogMode.Update && _isLoggedUser && _currentUserPermissionProfileGuid != _userDetail.Profile.Oid)
             {
                 _log.Debug(string.Format("Detected Change Logged User Profile: [{0}]", _userDetail.Profile.Designation));
-                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_profile_changed_request_logoff"));
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_profile_changed_request_logoff"));
             }
 
             //Detected Change in User Disabled: If user was Disabled, Force Logout User

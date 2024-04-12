@@ -63,7 +63,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (virtualKey.L2 != null) { _l2LabelText = virtualKey.L2.Glyph; } else { _l2LabelText = ""; };
 
             //Init Local Vars
-            Size sizeKeyboardPadDefaultKey = Utils.StringToSize(GlobalFramework.Settings["sizeKeyboardPadDefaultKey"]);
+            Size sizeKeyboardPadDefaultKey = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeKeyboardPadDefaultKey"]);
             String fontKeyboardPadPrimaryKey = GlobalFramework.Settings["fontKeyboardPadPrimaryKey"];
             String fontKeyboardPadSecondaryKey = GlobalFramework.Settings["fontKeyboardPadSecondaryKey"];
 
@@ -95,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     _labelL1.SetAlignment(1.00F, 0.5F);
                     break;
             }
-            _labelL1.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
+            _labelL1.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
             _labelL1.ModifyFont(fontDescriptionPrimaryKey);
             vbox.PackEnd(_labelL1);
             //HideL2 dont show L2
@@ -103,8 +103,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 _labelL2 = new Label();
                 _labelL2.Text = _l2LabelText;
-                _labelL1.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
-                _labelL2.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
+                _labelL1.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
+                _labelL2.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
                 _labelL1.ModifyFont(fontDescriptionSecondaryKey);
                 _labelL2.ModifyFont(fontDescriptionSecondaryKey);
                 _labelL1.SetAlignment(0.60F, 0.50F);

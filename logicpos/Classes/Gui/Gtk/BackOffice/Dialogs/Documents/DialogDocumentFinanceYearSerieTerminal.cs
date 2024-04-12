@@ -1,11 +1,10 @@
 ﻿using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.resources.Resources.Localization;
-using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
-using logicpos.Classes.Enums.Dialogs;
+using logicpos.datalayer.DataLayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -14,7 +13,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogDocumentFinanceYearSerieTerminal(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_documentfinanceseries"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_documentfinanceseries"));
             SetSizeRequest(500, 550);
             InitUI();
             InitNotes();

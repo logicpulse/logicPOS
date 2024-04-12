@@ -50,151 +50,151 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             dynamic themeButtons = pThemeButtons;
 
             //Buttons Shared for all Buttons
-            Size buttonsIconSize = Utils.StringToSize(themeButtons.IconSize);
+            Size buttonsIconSize = logicpos.Utils.StringToSize(themeButtons.IconSize);
             string buttonsFont = themeButtons.Font;
             Color buttonsFontColor = FrameworkUtils.StringToColor(themeButtons.FontColor);
 
             //Buttons:ButtonPrev
             string buttonPrevName = themeButtons.ButtonPrev.Name;
             string buttonPrevText = themeButtons.ButtonPrev.Text;
-            Position buttonPrevPosition = Utils.StringToPosition(themeButtons.ButtonPrev.Position);
-            Size buttonPrevSize = Utils.StringToSize(themeButtons.ButtonPrev.Size);
+            Position buttonPrevPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonPrev.Position);
+            Size buttonPrevSize = logicpos.Utils.StringToSize(themeButtons.ButtonPrev.Size);
             string buttonPrevImageFileName = themeButtons.ButtonPrev.ImageFileName;
             bool buttonPrevVisible = Convert.ToBoolean(themeButtons.ButtonPrev.Visible);
 
             //Buttons:ButtonNext
             string buttonNextName = themeButtons.ButtonNext.Name;
             string buttonNextText = themeButtons.ButtonNext.Text;
-            Position buttonNextPosition = Utils.StringToPosition(themeButtons.ButtonNext.Position);
-            Size buttonNextSize = Utils.StringToSize(themeButtons.ButtonNext.Size);
+            Position buttonNextPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonNext.Position);
+            Size buttonNextSize = logicpos.Utils.StringToSize(themeButtons.ButtonNext.Size);
             string buttonNextImageFileName = themeButtons.ButtonNext.ImageFileName;
             bool buttonNextVisible = Convert.ToBoolean(themeButtons.ButtonNext.Visible);
 
             //Buttons:ButtonDecrease
             string buttonDecreaseName = themeButtons.ButtonDecrease.Name;
             string buttonDecreaseText = themeButtons.ButtonDecrease.Text;
-            Position buttonDecreasePosition = Utils.StringToPosition(themeButtons.ButtonDecrease.Position);
-            Size buttonDecreaseSize = Utils.StringToSize(themeButtons.ButtonDecrease.Size);
+            Position buttonDecreasePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonDecrease.Position);
+            Size buttonDecreaseSize = logicpos.Utils.StringToSize(themeButtons.ButtonDecrease.Size);
             string buttonDecreaseImageFileName = themeButtons.ButtonDecrease.ImageFileName;
             bool buttonDecreaseVisible = Convert.ToBoolean(themeButtons.ButtonDecrease.Visible);
 
             //Buttons:ButtonIncrease
             string buttonIncreaseName = themeButtons.ButtonIncrease.Name;
             string buttonIncreaseText = themeButtons.ButtonIncrease.Text;
-            Position buttonIncreasePosition = Utils.StringToPosition(themeButtons.ButtonIncrease.Position);
-            Size buttonIncreaseSize = Utils.StringToSize(themeButtons.ButtonIncrease.Size);
+            Position buttonIncreasePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonIncrease.Position);
+            Size buttonIncreaseSize = logicpos.Utils.StringToSize(themeButtons.ButtonIncrease.Size);
             string buttonIncreaseImageFileName = themeButtons.ButtonIncrease.ImageFileName;
             bool buttonIncreaseVisible = Convert.ToBoolean(themeButtons.ButtonIncrease.Visible);
 
             //Buttons:ButtonDelete
             string buttonDeleteName = themeButtons.ButtonDelete.Name;
             string buttonDeleteText = themeButtons.ButtonDelete.Text;
-            Position buttonDeletePosition = Utils.StringToPosition(themeButtons.ButtonDelete.Position);
-            Size buttonDeleteSize = Utils.StringToSize(themeButtons.ButtonDelete.Size);
+            Position buttonDeletePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonDelete.Position);
+            Size buttonDeleteSize = logicpos.Utils.StringToSize(themeButtons.ButtonDelete.Size);
             string buttonDeleteImageFileName = themeButtons.ButtonDelete.ImageFileName;
             bool buttonDeleteVisible = Convert.ToBoolean(themeButtons.ButtonDelete.Visible);
 
             //Buttons:ButtonChangeQuantity
             string buttonChangeQuantityName = themeButtons.ButtonChangeQuantity.Name;
             string buttonChangeQuantityText = themeButtons.ButtonChangeQuantity.Text;
-            Position buttonChangeQuantityPosition = Utils.StringToPosition(themeButtons.ButtonChangeQuantity.Position);
-            Size buttonChangeQuantitySize = Utils.StringToSize(themeButtons.ButtonChangeQuantity.Size);
+            Position buttonChangeQuantityPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonChangeQuantity.Position);
+            Size buttonChangeQuantitySize = logicpos.Utils.StringToSize(themeButtons.ButtonChangeQuantity.Size);
             string buttonChangeQuantityImageFileName = themeButtons.ButtonChangeQuantity.ImageFileName;
             bool buttonChangeQuantityVisible = Convert.ToBoolean(themeButtons.ButtonChangeQuantity.Visible);
 
             //Buttons:ButtonChangePrice
             string buttonChangePriceName = themeButtons.ButtonChangePrice.Name;
             string buttonChangePriceText = themeButtons.ButtonChangePrice.Text;
-            Position buttonChangePricePosition = Utils.StringToPosition(themeButtons.ButtonChangePrice.Position);
-            Size buttonChangePriceSize = Utils.StringToSize(themeButtons.ButtonChangePrice.Size);
+            Position buttonChangePricePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonChangePrice.Position);
+            Size buttonChangePriceSize = logicpos.Utils.StringToSize(themeButtons.ButtonChangePrice.Size);
             string buttonChangePriceImageFileName = themeButtons.ButtonChangePrice.ImageFileName;
             bool buttonChangePriceVisible = Convert.ToBoolean(themeButtons.ButtonChangePrice.Visible);
 
             //Buttons:ButtonListMode
             string buttonListModeName = themeButtons.ButtonListMode.Name;
             string buttonListModeText = themeButtons.ButtonListMode.Text;
-            Position buttonListModePosition = Utils.StringToPosition(themeButtons.ButtonListMode.Position);
-            Size buttonListModeSize = Utils.StringToSize(themeButtons.ButtonListMode.Size);
+            Position buttonListModePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonListMode.Position);
+            Size buttonListModeSize = logicpos.Utils.StringToSize(themeButtons.ButtonListMode.Size);
             string buttonListModeImageFileName = themeButtons.ButtonListMode.ImageFileName;
             bool buttonListModeVisible = Convert.ToBoolean(themeButtons.ButtonListMode.Visible);
 
             //Buttons:ButtonListOrder
             string buttonListOrderName = themeButtons.ButtonListOrder.Name;
             string buttonListOrderText = themeButtons.ButtonListOrder.Text;
-            Position buttonListOrderPosition = Utils.StringToPosition(themeButtons.ButtonListOrder.Position);
-            Size buttonListOrderSize = Utils.StringToSize(themeButtons.ButtonListOrder.Size);
+            Position buttonListOrderPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonListOrder.Position);
+            Size buttonListOrderSize = logicpos.Utils.StringToSize(themeButtons.ButtonListOrder.Size);
             string buttonListOrderImageFileName = themeButtons.ButtonListOrder.ImageFileName;
             bool buttonListOrderVisible = Convert.ToBoolean(themeButtons.ButtonListOrder.Visible);
 
             //Buttons:ButtonSplitAccount
             string buttonSplitAccountName = themeButtons.ButtonSplitAccount.Name;
             string buttonSplitAccountText = themeButtons.ButtonSplitAccount.Text;
-            Position buttonSplitAccountPosition = Utils.StringToPosition(themeButtons.ButtonSplitAccount.Position);
-            Size buttonSplitAccountSize = Utils.StringToSize(themeButtons.ButtonSplitAccount.Size);
+            Position buttonSplitAccountPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonSplitAccount.Position);
+            Size buttonSplitAccountSize = logicpos.Utils.StringToSize(themeButtons.ButtonSplitAccount.Size);
             string buttonSplitAccountImageFileName = themeButtons.ButtonSplitAccount.ImageFileName;
             bool buttonSplitAccountVisible = Convert.ToBoolean(themeButtons.ButtonSplitAccount.Visible);
 
             //Buttons:ButtonMessages
             string buttonMessagesName = themeButtons.ButtonMessages.Name;
             string buttonMessagesText = themeButtons.ButtonMessages.Text;
-            Position buttonMessagesPosition = Utils.StringToPosition(themeButtons.ButtonMessages.Position);
-            Size buttonMessagesSize = Utils.StringToSize(themeButtons.ButtonMessages.Size);
+            Position buttonMessagesPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonMessages.Position);
+            Size buttonMessagesSize = logicpos.Utils.StringToSize(themeButtons.ButtonMessages.Size);
             string buttonMessagesImageFileName = themeButtons.ButtonMessages.ImageFileName;
             bool buttonMessagesVisible = Convert.ToBoolean(themeButtons.ButtonMessages.Visible);
 
             //Buttons:ButtonWeight
             string buttonWeightName = themeButtons.ButtonWeight.Name;
             string buttonWeightText = themeButtons.ButtonWeight.Text;
-            Position buttonWeightPosition = Utils.StringToPosition(themeButtons.ButtonWeight.Position);
-            Size buttonWeightSize = Utils.StringToSize(themeButtons.ButtonWeight.Size);
+            Position buttonWeightPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonWeight.Position);
+            Size buttonWeightSize = logicpos.Utils.StringToSize(themeButtons.ButtonWeight.Size);
             string buttonWeightImageFileName = themeButtons.ButtonWeight.ImageFileName;
             bool buttonWeightVisible = Convert.ToBoolean(themeButtons.ButtonWeight.Visible);
 
             //Buttons:ButtonGifts
             string buttonGiftsName = themeButtons.ButtonGifts.Name;
             string buttonGiftsText = themeButtons.ButtonGifts.Text;
-            Position buttonGiftsPosition = Utils.StringToPosition(themeButtons.ButtonGifts.Position);
-            Size buttonGiftsSize = Utils.StringToSize(themeButtons.ButtonGifts.Size);
+            Position buttonGiftsPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonGifts.Position);
+            Size buttonGiftsSize = logicpos.Utils.StringToSize(themeButtons.ButtonGifts.Size);
             string buttonGiftsImageFileName = themeButtons.ButtonGifts.ImageFileName;
             bool buttonGiftsVisible = Convert.ToBoolean(themeButtons.ButtonGifts.Visible);
 
             //Buttons:ButtonChangeTable
             string buttonChangeTableName = themeButtons.ButtonChangeTable.Name;
             string buttonChangeTableText = themeButtons.ButtonChangeTable.Text;
-            Position buttonChangeTablePosition = Utils.StringToPosition(themeButtons.ButtonChangeTable.Position);
-            Size buttonChangeTableSize = Utils.StringToSize(themeButtons.ButtonChangeTable.Size);
+            Position buttonChangeTablePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonChangeTable.Position);
+            Size buttonChangeTableSize = logicpos.Utils.StringToSize(themeButtons.ButtonChangeTable.Size);
             string buttonChangeTableImageFileName = themeButtons.ButtonChangeTable.ImageFileName;
             bool buttonChangeTableVisible = Convert.ToBoolean(themeButtons.ButtonChangeTable.Visible);
 
             //Buttons:ButtonSelectTable
             string buttonSelectTableName = themeButtons.ButtonSelectTable.Name;
             string buttonSelectTableText = themeButtons.ButtonSelectTable.Text;
-            Position buttonSelectTablePosition = Utils.StringToPosition(themeButtons.ButtonSelectTable.Position);
-            Size buttonSelectTableSize = Utils.StringToSize(themeButtons.ButtonSelectTable.Size);
+            Position buttonSelectTablePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonSelectTable.Position);
+            Size buttonSelectTableSize = logicpos.Utils.StringToSize(themeButtons.ButtonSelectTable.Size);
             string buttonSelectTableImageFileName = themeButtons.ButtonSelectTable.ImageFileName;
             bool buttonSelectTableVisible = Convert.ToBoolean(themeButtons.ButtonSelectTable.Visible);
 
             //Buttons:ButtonFinishOrder
             string buttonFinishOrderName = themeButtons.ButtonFinishOrder.Name;
             string buttonFinishOrderText = themeButtons.ButtonFinishOrder.Text;
-            Position buttonFinishOrderPosition = Utils.StringToPosition(themeButtons.ButtonFinishOrder.Position);
-            Size buttonFinishOrderSize = Utils.StringToSize(themeButtons.ButtonFinishOrder.Size);
+            Position buttonFinishOrderPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonFinishOrder.Position);
+            Size buttonFinishOrderSize = logicpos.Utils.StringToSize(themeButtons.ButtonFinishOrder.Size);
             string buttonFinishOrderImageFileName = themeButtons.ButtonFinishOrder.ImageFileName;
             bool buttonFinishOrderVisible = Convert.ToBoolean(themeButtons.ButtonFinishOrder.Visible);
 
             //Buttons:ButtonPayments
             string buttonPaymentsName = themeButtons.ButtonPayments.Name;
             string buttonPaymentsText = themeButtons.ButtonPayments.Text;
-            Position buttonPaymentsPosition = Utils.StringToPosition(themeButtons.ButtonPayments.Position);
-            Size buttonPaymentsSize = Utils.StringToSize(themeButtons.ButtonPayments.Size);
+            Position buttonPaymentsPosition = logicpos.Utils.StringToPosition(themeButtons.ButtonPayments.Position);
+            Size buttonPaymentsSize = logicpos.Utils.StringToSize(themeButtons.ButtonPayments.Size);
             string buttonPaymentsImageFileName = themeButtons.ButtonPayments.ImageFileName;
             bool buttonPaymentsVisible = Convert.ToBoolean(themeButtons.ButtonPayments.Visible);
 
             //Buttons:ButtonBarCode
             string buttonBarCodeName = themeButtons.ButtonBarCode.Name;
             string buttonBarCodeText = themeButtons.ButtonBarCode.Text;
-            Position buttonBarCodePosition = Utils.StringToPosition(themeButtons.ButtonBarCode.Position);
-            Size buttonBarCodeSize = Utils.StringToSize(themeButtons.ButtonBarCode.Size);
+            Position buttonBarCodePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonBarCode.Position);
+            Size buttonBarCodeSize = logicpos.Utils.StringToSize(themeButtons.ButtonBarCode.Size);
             string buttonBarCodeImageFileName = themeButtons.ButtonBarCode.ImageFileName;
             bool buttonBarCodeVisible = Convert.ToBoolean(themeButtons.ButtonBarCode.Visible);
 			
@@ -202,8 +202,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Buttons:ButtonCardCode
             string buttonCardCodeName = themeButtons.ButtonCardCode.Name;
             string buttonCardCodeText = themeButtons.ButtonCardCode.Text;
-            Position buttonCardCodePosition = Utils.StringToPosition(themeButtons.ButtonBarCode.Position);
-            Size buttonCardCodeSize = Utils.StringToSize(themeButtons.ButtonPayments.Size);
+            Position buttonCardCodePosition = logicpos.Utils.StringToPosition(themeButtons.ButtonBarCode.Position);
+            Size buttonCardCodeSize = logicpos.Utils.StringToSize(themeButtons.ButtonPayments.Size);
             string buttonCardCodeImageFileName = themeButtons.ButtonCardCode.ImageFileName;
             bool buttonCardCodeVisible = Convert.ToBoolean(themeButtons.ButtonCardCode.Visible);
             

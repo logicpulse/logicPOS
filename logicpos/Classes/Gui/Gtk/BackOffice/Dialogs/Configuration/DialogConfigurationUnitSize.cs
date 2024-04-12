@@ -13,9 +13,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationUnitSize(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationunitsize"));            
-            if (Utils.IsLinux) SetSizeRequest(500, 330);
-            else SetSizeRequest(500, 310);
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationunitsize"));
+            if (logicpos.Utils.IsLinux)
+                SetSizeRequest(500, 330);
+            else
+                SetSizeRequest(500, 310);
             InitUI();
             InitNotes();
             ShowAll();

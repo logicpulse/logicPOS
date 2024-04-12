@@ -8,62 +8,28 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
 {
     class EntryBoxValidationMultiLine : EntryBoxBase
     {
-        //Private Properties
-        private string _initialLabelText;
-        //Public
-        protected string _rule;
-        public string Rule
-        {
-            get { return _rule; }
-            set { _rule = value; }
-        }
-        //Public Properties
-        protected bool _required;
-        public bool Required
-        {
-            get { return _required; }
-            set { _required = value; }
-        }
-        protected int _length;
-        public int Length
-        {
-            get { return _length; }
-            set { _length = value; }
-        }
-        protected int _words;
-        public int Words
-        {
-            get { return _words; }
-            set { _words = value; }
-        } 
-        protected int _maxWords = 0;
-        public int MaxWords
-        {
-            get { return (_maxWords); }
-            set { _maxWords = value; }
-        }
-        protected int _maxLength = 0;
-        public int MaxLength
-        {
-            get { return _maxLength; }
-            set { _maxLength = value; }
-        }
+
+        private readonly string _initialLabelText;
+
+        public string Rule { get; set; }
+        public bool Required { get; set; }
+        public int Length { get; set; }
+        public int Words { get; set; }
+        public int MaxWords { get; set; }
+        public int MaxLength { get; set; }
+
         protected bool _validated;
         public bool Validated
         {
             get { return _validated; }
-            set { 
-                _validated = value; 
-                Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
+            set
+            {
+                _validated = value;
+                logicpos.Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
             }
         }
-        //Public Properties
-        private EntryMultiline _entryMultiline;
-        public EntryMultiline EntryMultiline
-        {
-            get { return _entryMultiline; }
-            set { _entryMultiline = value; }
-        }
+
+        public EntryMultiline EntryMultiline { get; set; }
 
         public EntryBoxValidationMultiLine(Window pSourceWindow, string pLabelText)
             : this(pSourceWindow, pLabelText, KeyboardMode.None, string.Empty, false)
@@ -77,40 +43,40 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
 
         public EntryBoxValidationMultiLine(Window pSourceWindow, string pLabelText, KeyboardMode pKeyboardMode, string pRule, bool pRequired, int pMaxLength, int pMaxWords)
             : base(pSourceWindow, pLabelText)
-        { 
+        {
             //Parameters
             _initialLabelText = pLabelText;
 
-            _entryMultiline = new EntryMultiline(pSourceWindow, pKeyboardMode) { BorderWidth = 2 };
-            _entryMultiline.TextView.WrapMode = WrapMode.WordChar;
-            _entryMultiline.TextView.ModifyFont(_fontDescription);
+            EntryMultiline = new EntryMultiline(pSourceWindow, pKeyboardMode) { BorderWidth = 2 };
+            EntryMultiline.TextView.WrapMode = WrapMode.WordChar;
+            EntryMultiline.TextView.ModifyFont(_fontDescription);
 
-            _rule = pRule;
-            _required = pRequired;
-            if (pMaxLength > 0) _maxLength = pMaxLength;
-            if (pMaxWords > 0) _maxWords = pMaxWords;
+            Rule = pRule;
+            Required = pRequired;
+            if (pMaxLength > 0) MaxLength = pMaxLength;
+            if (pMaxWords > 0) MaxWords = pMaxWords;
 
             //Pack It
-            _hbox.PackStart(_entryMultiline, true, true, 0);
+            _hbox.PackStart(EntryMultiline, true, true, 0);
             //Init Keyboard
-            InitKeyboard(_entryMultiline);
+            InitKeyboard(EntryMultiline);
             //Started Validate
             Validate();
 
             //Event here to have access to Label
-            _entryMultiline.Value.Changed += Value_Changed;
+            EntryMultiline.Value.Changed += Value_Changed;
         }
 
         void Value_Changed(object sender, EventArgs e)
         {
-            if (_maxLength > 0 || _maxWords > 0)
+            if (MaxLength > 0 || MaxWords > 0)
             {
-                ValidateMaxLenghtMaxWordsResult result = FrameworkUtils.ValidateMaxLenghtMaxWords(_entryMultiline.Value.Text, _initialLabelText, _maxLength, _maxWords);
+                ValidateMaxLenghtMaxWordsResult result = FrameworkUtils.ValidateMaxLenghtMaxWords(EntryMultiline.Value.Text, _initialLabelText, MaxLength, MaxWords);
                 //Only update if changes else infinite loop
-                if (_entryMultiline.Value.Text != result.Text) _entryMultiline.Value.Text = result.Text;
+                if (EntryMultiline.Value.Text != result.Text) EntryMultiline.Value.Text = result.Text;
                 Label.Text = result.LabelText;
-                _length = result.Length;
-                _words = result.Words;
+                Length = result.Length;
+                Words = result.Words;
             }
 
             //Now we can validate after ValidateMaxLenghtMaxWords Work
@@ -120,14 +86,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
         //Default FieldValidateValue is the Entry.Text
         public void Validate()
         {
-            Validate(_entryMultiline.Value.Text);
+            Validate(EntryMultiline.Value.Text);
         }
 
         public void Validate(string pValue)
         {
             //Default FieldValidateValue is the Entry.Text
-            Validated = FrameworkUtils.Validate(pValue, _rule, _required);
-            Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
+            Validated = FrameworkUtils.Validate(pValue, Rule, Required);
+            logicpos.Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
         }
     }
 }

@@ -112,7 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Label Status
             _labelStatus = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_password"));
             _labelStatus.ModifyFont(Pango.FontDescription.FromString(pFontLabelStatus));
-            _labelStatus.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(pFontColorLabelStatus));
+            _labelStatus.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(pFontColorLabelStatus));
             _labelStatus.SetAlignment(0.5F, 0.5f);
 
             //Initialize Buttons
@@ -292,7 +292,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (CryptographyUtils.SaltedString.ValidateSaltedString(pUserDetail.AccessPin, _entryPin.Text))
                         {
                             //Show Error Message
-                            ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_equal_error"));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_equal_error"));
                             ClearEntryPinStatusMessage(true);
                         }
                         else
@@ -311,7 +311,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             pUserDetail.PasswordResetDate = FrameworkUtils.CurrentDateTimeAtomic();
                             pUserDetail.Save();
                             FrameworkUtils.Audit("USER_CHANGE_PASSWORD", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_change_password"), pUserDetail.Name));
-                            ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_changed"));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_changed"));
                             //Start Application
                             ProcessLogin(pUserDetail);
                             //Finish Job usefull to PosPinDialog send Respond(ResponseType.Ok) when Done
@@ -319,7 +319,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                         else { 
                             //Show Error Message
-                            ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_confirmation_error"));
+                            ResponseType responseType = logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_password"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_password_confirmation_error"));
                             ClearEntryPinStatusMessage(true);
                             //Return to 
                             _mode = NumberPadPinMode.PasswordNew;
@@ -378,7 +378,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 if (resultObject != null && resultObject.GetType() == typeof(String) && CryptographyUtils.SaltedString.ValidateSaltedString(resultObject.ToString(), password))
                 {
-                    _entryPin.ModifyText(StateType.Normal, Utils.ColorToGdkColor(Color.Black));
+                    _entryPin.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.Black));
                     _entryPin.Visibility = false;
                     _entryPinShowStatus = false;
                     result = true;
@@ -386,7 +386,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 else
                 {
                     FrameworkUtils.Audit("USER_LOGIN_ERROR", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_login_error"), pUserDetail.Name));                    
-                    _entryPin.ModifyText(StateType.Normal, Utils.ColorToGdkColor(Color.Red));
+                    _entryPin.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.Red));
                     _entryPin.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "status_message_pin_error");
                     _entryPin.Visibility = true;
                     _entryPinShowStatus = true;
@@ -407,7 +407,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Clean Error Message
             if (_entryPinShowStatus || pForceClear)
             {
-                _entryPin.ModifyText(StateType.Normal, Utils.ColorToGdkColor(Color.Black));
+                _entryPin.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.Black));
                 _entryPin.Text = string.Empty;
                 _entryPin.Visibility = false;
                 _entryPinShowStatus = false;
@@ -473,9 +473,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //TK016235 BackOffice - Mode
             if (GlobalFramework.AppUseBackOfficeMode)
-                Utils.ShowBackOffice(_sourceWindow);
+                logicpos.Utils.ShowBackOffice(_sourceWindow);
             else
-                Utils.ShowFrontOffice(_sourceWindow);
+                logicpos.Utils.ShowFrontOffice(_sourceWindow);
         }
     }
 }

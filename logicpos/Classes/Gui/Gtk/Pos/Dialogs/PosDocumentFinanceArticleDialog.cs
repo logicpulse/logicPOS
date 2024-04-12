@@ -540,7 +540,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             else if ((pResponse == ResponseType.Ok && (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text))))
             {
-                Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
                 this.Run();
             }
 
@@ -613,11 +613,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             _entryBoxSelectArticle.Value = _article;
                             _entryBoxSelectArticle_ClosePopup(null, null);
 
-                            Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
                             this.Run();
                         }
 
@@ -625,7 +625,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Codigo ou designação vazias
                     if (string.IsNullOrEmpty(_entryBoxSelectArticleCode.Entry.Text) || string.IsNullOrEmpty(_entryBoxSelectArticle.Entry.Text))
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_insert_new_article_code_error"));
                         this.Run();
                     }
                 }
@@ -788,7 +788,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     else
                     {
-                        Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "article_type_without_price"));
+                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "article_type_without_price"));
                     }
 
                 }
@@ -932,7 +932,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     else
                     {
-                        Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "article_type_without_price"));
+                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_already_exited"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "article_type_without_price"));
                     }
 
                 }
@@ -1097,7 +1097,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         {
                             if (!string.IsNullOrEmpty(_dataSourceRow["SerialNumber"].ToString()) && (item.Value as ArticleBagProperties).SerialNumber.Contains(_dataSourceRow["SerialNumber"].ToString()) && _dialogMode != DialogMode.Update)
                             {
-                                Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "Artigo com o nº série: " + _dataSourceRow["SerialNumber"].ToString() + " Já foi inserido");
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.DestroyWithParent, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "Artigo com o nº série: " + _dataSourceRow["SerialNumber"].ToString() + " Já foi inserido");
                                 return false;
                             }
                         }
@@ -1141,7 +1141,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (!result)
                     {
                         // Show Message
-                        Utils.ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(this, currentQuantity, maxPossibleQuantity);
+                        logicpos.Utils.ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(this, currentQuantity, maxPossibleQuantity);
                     }
                 }                
             }
@@ -1170,10 +1170,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
   
                 //Check for Minimum stock
                 bool showMessage;
-                if (Utils.CheckStocks())
+                if (logicpos.Utils.CheckStocks())
                 {
 
-                    if (!Utils.ShowMessageMinimumStock(this, _article.Oid, currentQuantity, out showMessage))
+                    if (!logicpos.Utils.ShowMessageMinimumStock(this, _article.Oid, currentQuantity, out showMessage))
                     {
                         if (showMessage)
                         {

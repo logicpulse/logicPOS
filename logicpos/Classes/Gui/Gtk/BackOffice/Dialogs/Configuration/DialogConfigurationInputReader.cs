@@ -13,9 +13,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationInputReader(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationinputreader"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationinputreader"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 375);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 375);
             else SetSizeRequest(500, 355);
             InitUI();
             InitNotes();

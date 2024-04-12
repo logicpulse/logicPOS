@@ -25,8 +25,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 try
                 {
                     imageIcon = System.Drawing.Image.FromFile(image);
-                    imageIcon = Utils.ResizeAndCrop(imageIcon, sizeIcon);
-                    Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(imageIcon);
+                    imageIcon = logicpos.Utils.ResizeAndCrop(imageIcon, sizeIcon);
+                    Gdk.Pixbuf pixBuf = logicpos.Utils.ImageToPixbuf(imageIcon);
                     gtkimageButton = new Image(pixBuf);
                     imageIcon.Dispose();
                     pixBuf.Dispose();

@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_fileList.Contains(_entryBoxAddFile.Value))
             {
-                Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
+                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
             }
             else
             {
@@ -138,7 +138,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             try
             {
-                FileFilter fileFilter = Utils.GetFileFilterImages();
+                FileFilter fileFilter = logicpos.Utils.GetFileFilterImages();
 
                 //Get Current FileList Index Position
                 int currentFileListIndexPosition = -1;
@@ -162,7 +162,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (_fileList.Contains(dialog.FilePicker.Filename))
                     {
-                        Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
+                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
                     }
                     else
                     {

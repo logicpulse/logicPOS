@@ -64,15 +64,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             else
             {
                 Color colNormal = pColor;
-                Color colPrelight = Utils.Lighten(colNormal);
-                Color colActive = Utils.Lighten(colPrelight);
-                Color colInsensitive = Utils.Darken(colNormal);
+                Color colPrelight = logicpos.Utils.Lighten(colNormal);
+                Color colActive = logicpos.Utils.Lighten(colPrelight);
+                Color colInsensitive = logicpos.Utils.Darken(colNormal);
                 Color colSelected = Color.FromArgb(125, 0, 0);
-                pTargetEventBox.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colNormal));
-                pTargetEventBox.ModifyBg(StateType.Selected, Utils.ColorToGdkColor(colSelected));
-                pTargetEventBox.ModifyBg(StateType.Prelight, Utils.ColorToGdkColor(colPrelight));
-                pTargetEventBox.ModifyBg(StateType.Active, Utils.ColorToGdkColor(colActive));
-                pTargetEventBox.ModifyBg(StateType.Insensitive, Utils.ColorToGdkColor(colInsensitive));
+                pTargetEventBox.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colNormal));
+                pTargetEventBox.ModifyBg(StateType.Selected, logicpos.Utils.ColorToGdkColor(colSelected));
+                pTargetEventBox.ModifyBg(StateType.Prelight, logicpos.Utils.ColorToGdkColor(colPrelight));
+                pTargetEventBox.ModifyBg(StateType.Active, logicpos.Utils.ColorToGdkColor(colActive));
+                pTargetEventBox.ModifyBg(StateType.Insensitive, logicpos.Utils.ColorToGdkColor(colInsensitive));
             }
         }
     }

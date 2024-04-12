@@ -665,7 +665,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                             resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_source_finance_document"), 
                             creditedDocuments);
 
-                        Utils.ShowMessageTouch(
+                        logicpos.Utils.ShowMessageTouch(
                             this.SourceWindow.TransientFor, DialogFlags.Modal,
                             new System.Drawing.Size(550, 450),
                             MessageType.Info,

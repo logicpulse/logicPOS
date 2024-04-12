@@ -561,7 +561,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     //Show Message
                     if (_skipRecordDelete)
                     {
-                        Utils.ShowMessageTouchProtectedDeleteRecordMessage(_sourceWindow);
+                        logicpos.Utils.ShowMessageTouchProtectedDeleteRecordMessage(_sourceWindow);
                     }
                 };
             }
@@ -579,7 +579,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     //Show Message
                     if (_skipRecordUpdate)
                     {
-                        Utils.ShowMessageTouchProtectedUpdateRecordMessage(_sourceWindow);
+                        logicpos.Utils.ShowMessageTouchProtectedUpdateRecordMessage(_sourceWindow);
                     }
                 };
             }

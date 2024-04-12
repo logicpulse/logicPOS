@@ -528,11 +528,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 if (_validated && _validatedFunc)
                 {
-                    _label.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                    _label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationValidFont));
                 }
                 else
                 {
-                    _label.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
+                    _label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
                 }
             }
         }
@@ -576,15 +576,15 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (pIsValid)
             {
-                pCurrentWidget.ModifyText(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                pCurrentWidget.ModifyText(StateType.Active, Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                pCurrentWidget.ModifyBase(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidBackground));
+                pCurrentWidget.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                pCurrentWidget.ModifyText(StateType.Active, logicpos.Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                pCurrentWidget.ModifyBase(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationValidBackground));
             }
             else
             {
-                pCurrentWidget.ModifyText(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
-                pCurrentWidget.ModifyText(StateType.Active, Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
-                pCurrentWidget.ModifyBase(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationInvalidBackground));
+                pCurrentWidget.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
+                pCurrentWidget.ModifyText(StateType.Active, logicpos.Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
+                pCurrentWidget.ModifyBase(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationInvalidBackground));
             }
         }
     }

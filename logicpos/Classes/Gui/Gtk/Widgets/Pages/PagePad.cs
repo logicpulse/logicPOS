@@ -65,8 +65,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public void Init(List<PagePadPage> pPages)
         {
             string fontPagePadNavigatorButton = GlobalFramework.Settings["fontPagePadNavigatorButton"];
-            Size sizePagesPadNavigatorButton = Utils.StringToSize(GlobalFramework.Settings["sizePagesPadNavigatorButton"]);
-            Size sizePagesPadNavigatorButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizePagesPadNavigatorButtonIcon"]);
+            Size sizePagesPadNavigatorButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePagesPadNavigatorButton"]);
+            Size sizePagesPadNavigatorButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePagesPadNavigatorButtonIcon"]);
             string iconPrev = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_pagepad_prev.png"));
             string iconNext = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_pagepad_next.png"));
 
@@ -90,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 // Start Active Pad Button
                 page.NavigatorButton.Sensitive = (i == 1) ? true : false;
                 // Change color of current Button
-                if ((i == 1)) page.NavigatorButton.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(_colorPagePadHotButtonBackground));
+                if ((i == 1)) page.NavigatorButton.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorPagePadHotButtonBackground));
                 // Pack
                 navigatorButtons.PackStart(page.NavigatorButton, true, true, 2);
             }
@@ -186,7 +186,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 this.PackStart(_activePage);
                 _activePage.NavigatorButton.Sensitive = true;
                 // Change color of current Button
-                _activePage.NavigatorButton.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(_colorPagePadHotButtonBackground));
+                _activePage.NavigatorButton.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorPagePadHotButtonBackground));
                 //The Trick to Show when Hidden, ex Not Packed in Dialog Expose, this way we need to ShowAll here
                 if (_activePage.Visible == false) _activePage.ShowAll();
                 UpdateUI();

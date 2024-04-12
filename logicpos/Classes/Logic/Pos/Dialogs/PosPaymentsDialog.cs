@@ -52,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 					//TK016249 - Impressoras - Diferenciação entre Tipos
                     GlobalFramework.UsingThermalPrinter = true;
                     //SaveOrUpdateCustomer Before use _selectedCustomer (Can be null)
-                    resultObject = Utils.SaveOrUpdateCustomer(
+                    resultObject = logicpos.Utils.SaveOrUpdateCustomer(
                         this,
                         _selectedCustomer,
                         _entryBoxSelectCustomerName.EntryValidation.Text,
@@ -83,7 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             )
                         )
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                            logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                             //Prevent Parent Dialog Payments from Close
                             this.Run();
                         }
@@ -115,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     processArticleBag.GetClassTotals("S") > SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices)
                                 )
                             {
-                                responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_sourceWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog, processArticleBag.TotalFinal, SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal, processArticleBag.GetClassTotals("S"), SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices);
+                                responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice = logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_sourceWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog, processArticleBag.TotalFinal, SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal, processArticleBag.GetClassTotals("S"), SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices);
                                 //Override Back processDocumentType if Exceed FS Max Total
                                 if (responseTypeOverrideDefaultDocumentTypeSimplifiedInvoice == ResponseType.Yes)
                                 {
@@ -155,7 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                             )
                             {
-                                Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(this, processArticleBag.TotalFinal, SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue);
+                                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(this, processArticleBag.TotalFinal, SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue);
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -168,7 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                             )
                             {
-                                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), FrameworkUtils.DecimalToStringCurrency(_selectedCustomer.CardCredit), FrameworkUtils.DecimalToStringCurrency(processArticleBag.TotalFinal)));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), FrameworkUtils.DecimalToStringCurrency(_selectedCustomer.CardCredit), FrameworkUtils.DecimalToStringCurrency(processArticleBag.TotalFinal)));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -177,7 +177,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Check if Article Bag Full|Partial has Recharge Article and Valid customer Card
                             else if (!FrameworkUtils.IsCustomerCardValidForArticleBag(processArticleBag, _selectedCustomer))
                             {
-                                Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
+                                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
 
                                 //Prevent Parent Dialog Payments from Close
                                 this.Run();
@@ -230,7 +230,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     else if (resultObject.GetType() == typeof(ConstraintViolationException))
                     {
                         Exception ex = (Exception)resultObject;
-                        ResponseType response = Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
+                        ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -278,12 +278,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         )
                     )
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }else if (_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text == string.Empty || _entryBoxSelectCustomerName.EntryValidation.Text == string.Empty)
                     {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
+                        logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cant_create_cc_document_with_default_entity"));
                         //Prevent Parent Dialog Payments from Close
                         this.Run();
                     }
@@ -317,7 +317,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
-                Utils.ShowMessageTouch(
+                logicpos.Utils.ShowMessageTouch(
                     _sourceWindow,
                     DialogFlags.Modal,
                     new Size(600, 400),
@@ -534,11 +534,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Validate Change Value
                 if (_totalChange >= 0)
                 {
-                    _labelChangeValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.White));
+                    _labelChangeValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
                 }
                 else
                 {
-                    _labelChangeValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(_colorEntryValidationInvalidFont));
+                    _labelChangeValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorEntryValidationInvalidFont));
                 };
             }
             catch (Exception ex)
@@ -604,7 +604,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _entryBoxCustomerNotes.EntryValidation.Text = (_selectedCustomer.Notes != null) ? _selectedCustomer.Notes.ToString() : string.Empty;
                 }
                 //IN:009275 Use Euro VAT Info 
-                else if (Utils.UseVatAutocomplete())
+                else if (logicpos.Utils.UseVatAutocomplete())
                 {
                     string cod_FiscalNumber = string.Format("{0}{1}", cfg_configurationpreferenceparameter.GetCountryCode2, _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                     if(EuropeanVatInformation.Get(cod_FiscalNumber) != null)
@@ -1201,7 +1201,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         if (newValuePrice > decimal.Round((Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2))
                         {
-                            Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, "Valor Errado", "Valor inserido superior ao total");
+                            logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, "Valor Errado", "Valor inserido superior ao total");
                         }
                         else
                         {

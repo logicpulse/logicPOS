@@ -142,7 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _vboxArticles = new VBox(true, 0);
                 _scrolledWindowView = new ScrolledWindow();
                 _scrolledWindowView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindowView.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindowView.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
                 _scrolledWindowView.ShadowType = ShadowType.Out;
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
@@ -395,7 +395,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         ValidateDialog();
                         return;
@@ -622,7 +622,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }

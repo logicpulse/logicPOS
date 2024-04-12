@@ -43,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         void buttonReportUnderConstruction_Clicked(object sender, EventArgs e)
         {
-            Utils.ShowMessageUnderConstruction();
+            logicpos.Utils.ShowMessageUnderConstruction();
         }
 
         private List<string> GetReportsQueryDialogFilter(ReportsQueryDialogMode pReportsQueryDialogMode, string pDatabaseSourceObject)

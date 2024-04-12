@@ -38,8 +38,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     try
                     {
                         imageIcon = System.Drawing.Image.FromFile(icon);
-                        imageIcon = Utils.ResizeAndCrop(imageIcon, sizeIcon);
-                        Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(imageIcon);
+                        imageIcon = logicpos.Utils.ResizeAndCrop(imageIcon, sizeIcon);
+                        Gdk.Pixbuf pixBuf = logicpos.Utils.ImageToPixbuf(imageIcon);
                         Image gtkimageButton = new Image(pixBuf);
                         vbox.PackStart(gtkimageButton);
                         imageIcon.Dispose();
@@ -76,8 +76,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     try
                     {
                         imageIcon = System.Drawing.Image.FromFile(icon);
-                        imageIcon = Utils.ResizeAndCrop(imageIcon, sizeIcon);
-                        Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(imageIcon);
+                        imageIcon = logicpos.Utils.ResizeAndCrop(imageIcon, sizeIcon);
+                        Gdk.Pixbuf pixBuf = logicpos.Utils.ImageToPixbuf(imageIcon);
                         Image gtkimageButton = new Image(pixBuf);
                         if (GlobalApp.ScreenSize.Height == 800)
                         {
@@ -97,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     }
                 }
                 _label.ModifyFont(fontDescription);
-                _label.ModifyFg(StateType.Active, Utils.ColorToGdkColor(FrameworkUtils.StringToColor("0, 0, 0")));
+                _label.ModifyFg(StateType.Active, logicpos.Utils.ColorToGdkColor(FrameworkUtils.StringToColor("0, 0, 0")));
                 _label.SetAlignment(0.0f, 0.5f);
                 hbox.PackStart(_label, true, true, 0);
                 _widget = hbox;

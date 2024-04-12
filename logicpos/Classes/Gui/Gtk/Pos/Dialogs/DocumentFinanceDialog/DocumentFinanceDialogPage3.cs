@@ -134,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 )
             )
             {
-                Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(_posDocumentFinanceDialog, _articleBag.TotalFinal, SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue);
+                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(_posDocumentFinanceDialog, _articleBag.TotalFinal, SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue);
                 _validated = false;
             }
             //If Simplified Invoice, Check if Total Document and Total Services is Not Greater than Max Value
@@ -151,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             )
             {
                 //In New Finance Dialog Mode we cant change to Invoice-Payment
-                Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_posDocumentFinanceDialog, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog, _articleBag.TotalFinal, SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal, _articleBag.GetClassTotals("S"), SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices);
+                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_posDocumentFinanceDialog, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog, _articleBag.TotalFinal, SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal, _articleBag.GetClassTotals("S"), SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices);
                 _validated = false;
             }
             else

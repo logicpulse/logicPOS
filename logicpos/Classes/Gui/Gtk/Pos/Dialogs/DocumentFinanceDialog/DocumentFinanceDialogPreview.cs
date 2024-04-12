@@ -208,17 +208,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 HBox hbox = new HBox(false, 20);
 
                 EventBox eventboxTax = new EventBox() { VisibleWindow = debug };
-                eventboxTax.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(Color.LightGray));
+                eventboxTax.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.LightGray));
                 eventboxTax.Add(tableTax);
                 EventBox eventboxTotal = new EventBox() { VisibleWindow = debug };
-                eventboxTotal.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(Color.LightGray));
+                eventboxTotal.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.LightGray));
                 eventboxTotal.Add(tableTotal);
 
                 hbox.PackStart(eventboxTax, true, true, 0);
                 hbox.PackStart(eventboxTotal, false, false, 0);
 
                 EventBox eventbox = new EventBox() { VisibleWindow = debug, BorderWidth = padding };
-                eventbox.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(Color.LightCoral));
+                eventbox.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.LightCoral));
                 eventbox.Add(hbox);
 
                 _alignmentWindow = new Alignment(0.5f, 0.5f, 0.5f, 0.5f);

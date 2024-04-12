@@ -208,7 +208,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void InitUI_FilePicker()
         {
-            FileFilter fileFilter = Utils.GetFileFilterImages();
+            FileFilter fileFilter = logicpos.Utils.GetFileFilterImages();
 
             EntryBoxValidationFilePickerDialog entryFilePicker = new EntryBoxValidationFilePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file_image"), "", false, fileFilter);
             entryFilePicker.ClosePopup += delegate

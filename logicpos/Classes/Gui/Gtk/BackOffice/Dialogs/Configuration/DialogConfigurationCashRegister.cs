@@ -13,9 +13,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationCashRegister(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationcashregister"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationcashregister"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 620);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 620);
             else SetSizeRequest(500, 600);
             InitUI();
             InitNotes();

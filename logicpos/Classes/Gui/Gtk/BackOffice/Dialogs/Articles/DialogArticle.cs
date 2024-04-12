@@ -77,7 +77,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogArticle(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_article"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_article"));
 
             _entryCompositeLinesCollection = new List<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>>();
             _articlecompositions = new List<fin_articlecomposition>();
@@ -215,8 +215,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fileChooserFrameImagePreviewButtonImage.ShadowType = ShadowType.None;
                 fileChooserFrameImagePreviewButtonImage.Add(fileChooserImagePreviewButtonImage);
                 fileChooserButtonImage.SetFilename(((fin_article)DataSourceRow).ButtonImage);
-                fileChooserButtonImage.Filter = Utils.GetFileFilterImages();
-                fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
+                fileChooserButtonImage.Filter = logicpos.Utils.GetFileFilterImages();
+                fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
                 BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_image"), fileChooserButtonImage);
                 HBox hboxfileChooserAndimagePreviewButtonImage = new HBox(false, _boxSpacing);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(boxfileChooserButtonImage, true, true, 0);
@@ -476,7 +476,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 _scrolledWindowCompositionView = new ScrolledWindow();
                 _scrolledWindowCompositionView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindowCompositionView.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindowCompositionView.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
                 _scrolledWindowCompositionView.ShadowType = ShadowType.None;
                 _CompositionView = new Viewport();
 
@@ -528,7 +528,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 _scrolledWindowSerialNumbersView = new ScrolledWindow();
                 _scrolledWindowSerialNumbersView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindowSerialNumbersView.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindowSerialNumbersView.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
                 _scrolledWindowSerialNumbersView.ShadowType = ShadowType.None;
 
                 _notebook.AppendPage(_scrolledWindowSerialNumbersView, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number")));
@@ -905,7 +905,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         return;
                     }
@@ -934,7 +934,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), pXPOEntry.EntryNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"))) as GenericCRUDWidgetXPO);
                                 if (pXPOEntry.EntryQtdValidation.Validated) _genericCRUDWidgetXPO.Validated = false;
 
-                                Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_already"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                                logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_already"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                                 return;
                             }
                         }
@@ -1280,7 +1280,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }
@@ -1568,7 +1568,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             try
             {
-                ResponseType responseType = Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
 
                 if (responseType == ResponseType.Yes)
                 {

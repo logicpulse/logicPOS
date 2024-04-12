@@ -15,7 +15,7 @@ namespace logicpos.Classes.Logic.License
         private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static bool showDebug = true;
-        string hardwareID = string.Empty;
+        readonly string hardwareID = string.Empty;
 
         private bool _loadApp = false;
         public bool LoadApp
@@ -120,7 +120,7 @@ namespace logicpos.Classes.Logic.License
 
                             WriteByteArrayToFile(registredLicence, completeFilePath);
 
-                            Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_updated"));
+                            logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_updated"));
 
                             return;
                         }
@@ -132,7 +132,7 @@ namespace logicpos.Classes.Logic.License
                     //Detected Blocked Version : Code must be here to works with Online and Offline Mode
                     if (version == "LOGICPOS_BLOCK")
                     {
-                        Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_blocked"));
+                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_blocked"));
 
                         return;
                     }
@@ -189,11 +189,11 @@ namespace logicpos.Classes.Logic.License
 
                 /* IN009005 and IN009034: Show "loading" */
                 System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartPOSFrontOffice));
-                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.ThreadDialogReadyEvent));
+                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(logicpos.Utils.ThreadDialogReadyEvent));
                 thread.Start();
 
                 _log.Debug("LicenseRouter() :: Show 'loading'");
-                GlobalApp.DialogThreadWork = Utils.GetThreadDialog(new Window("POS start up"), Utils.checkIfDbExists());
+                GlobalApp.DialogThreadWork = logicpos.Utils.GetThreadDialog(new Window("POS start up"), logicpos.Utils.checkIfDbExists());
                 GlobalApp.DialogThreadWork.Run();
                 /* IN009005 and IN009034: end" */
 

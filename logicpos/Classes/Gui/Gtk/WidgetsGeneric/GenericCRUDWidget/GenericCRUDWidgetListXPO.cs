@@ -71,13 +71,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     string data = getBetween(ex.InnerException.Message, "(", ")");
                     String message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_duplicated_key"), data);
-                    Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), message);
+                    logicpos.Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), message);
                 }
                 //END IN009220
                 else
                 {
                     _log.Error(ex.Message, ex);
-                    ResponseType response = Utils.ShowMessageTouch(
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(
                         GlobalApp.WindowBackOffice,
                         DialogFlags.DestroyWithParent | DialogFlags.Modal,
                         MessageType.Warning, ButtonsType.Close,

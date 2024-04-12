@@ -509,7 +509,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     _entryBoxCustomerNotes.EntryValidation.Text = (_pagePad.Customer.Notes == null) ? string.Empty : _pagePad.Customer.Notes;
                 }
                 //IN:009275 Use Euro VAT Info 
-                else if (Utils.UseVatAutocomplete())
+                else if (logicpos.Utils.UseVatAutocomplete())
                 {
                     string cod_FiscalNumber = string.Format("{0}{1}", cfg_configurationpreferenceparameter.GetCountryCode2, _entryBoxSelectCustomerFiscalNumber.EntryValidation.Text);
                     var address = EuropeanVatInformation.Get(cod_FiscalNumber).Address.Split('\n');

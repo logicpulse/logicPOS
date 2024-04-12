@@ -157,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 //Initial Dialog Values
                 _selectedCashDrawerButton = buttonBag[initialButtonToken];
-                _selectedCashDrawerButton.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(Utils.Lighten(_colorBaseDialogDefaultButtonBackground, 0.50f)));
+                _selectedCashDrawerButton.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(logicpos.Utils.Lighten(_colorBaseDialogDefaultButtonBackground, 0.50f)));
                 _selectedMovementType = (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_worksessionmovementtype), _selectedCashDrawerButton.CurrentButtonOid);
                 _selectedMovementType.Token = initialButtonToken;
 

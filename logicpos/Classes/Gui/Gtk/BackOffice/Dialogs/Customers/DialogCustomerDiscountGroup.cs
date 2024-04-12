@@ -13,7 +13,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogCustomerDiscountGroup(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_customerdiscountgroup"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_customerdiscountgroup"));
             SetSizeRequest(500, 309);
             InitUI();
             InitNotes();

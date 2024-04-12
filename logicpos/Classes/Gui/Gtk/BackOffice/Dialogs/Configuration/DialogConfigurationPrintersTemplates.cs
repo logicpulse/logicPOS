@@ -13,9 +13,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationPrintersTemplates(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinterstype"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinterstype"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 520);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 520);
             else SetSizeRequest(500, 500);
             InitUI();
             InitNotes();
@@ -54,8 +54,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fileChooserFrameImagePreviewFileTemplate.ShadowType = ShadowType.None;
                 fileChooserFrameImagePreviewFileTemplate.Add(fileChooserImagePreviewFileTemplate);
                 fileChooserFileTemplate.SetFilename(((sys_configurationprinterstemplates)DataSourceRow).FileTemplate);
-                fileChooserFileTemplate.Filter = Utils.GetFileFilterTemplates();
-                fileChooserFileTemplate.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewFileTemplate.Pixbuf = Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewFileTemplate.WidthRequest, fileChooserImagePreviewFileTemplate.HeightRequest));
+                fileChooserFileTemplate.Filter = logicpos.Utils.GetFileFilterTemplates();
+                fileChooserFileTemplate.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewFileTemplate.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewFileTemplate.WidthRequest, fileChooserImagePreviewFileTemplate.HeightRequest));
                 BOWidgetBox boxfileChooserFileTemplate = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file"), fileChooserFileTemplate);
                 HBox hboxfileChooserAndimagePreviewFileTemplate = new HBox(false, _boxSpacing);
                 hboxfileChooserAndimagePreviewFileTemplate.PackStart(boxfileChooserFileTemplate, true, true, 0);

@@ -116,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_datesList.Contains(_entryBoxAddDate.Value))
             {
-                Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error"));
+                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error"));
             }
             else
             {
@@ -137,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Failled: Invalid Date Range
                 else
                 {
-                    Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
+                    logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
                         string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error_outside_range"), 
                             _allowedPeriodBegin.ToString(SettingsApp.DateFormat),
                             _allowedPeriodEnd.ToString(SettingsApp.DateFormat)

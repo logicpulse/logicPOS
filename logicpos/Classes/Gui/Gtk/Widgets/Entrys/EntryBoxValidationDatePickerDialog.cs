@@ -156,7 +156,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 _entryValidation.Validated = false;
             }
-            Utils.ValidateUpdateColors(_entryValidation, _entryValidation.Label, _entryValidation.Validated, _entryValidation.Label2, _entryValidation.Label3);
+            logicpos.Utils.ValidateUpdateColors(_entryValidation, _entryValidation.Label, _entryValidation.Validated, _entryValidation.Label2, _entryValidation.Label3);
         }
     }
 }

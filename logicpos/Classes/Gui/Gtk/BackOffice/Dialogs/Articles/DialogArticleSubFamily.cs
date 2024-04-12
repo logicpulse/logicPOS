@@ -1,11 +1,10 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.resources.Resources.Localization;
-using logicpos.Classes.Enums.Dialogs;
+using logicpos.datalayer.DataLayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -14,7 +13,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogArticleSubFamily(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_articlesubfamily"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_articlesubfamily"));
             SetSizeRequest(500, 445);
             InitUI();
             InitNotes();
@@ -65,8 +64,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 fileChooserFrameImagePreviewButtonImage.ShadowType = ShadowType.None;
                 fileChooserFrameImagePreviewButtonImage.Add(fileChooserImagePreviewButtonImage);
                 fileChooserButtonImage.SetFilename(((fin_articlesubfamily)DataSourceRow).ButtonImage);
-                fileChooserButtonImage.Filter = Utils.GetFileFilterImages();
-                fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
+                fileChooserButtonImage.Filter = logicpos.Utils.GetFileFilterImages();
+                fileChooserButtonImage.SelectionChanged += (sender, eventArgs) => fileChooserImagePreviewButtonImage.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf((sender as FileChooserButton).Filename, new System.Drawing.Size(fileChooserImagePreviewButtonImage.WidthRequest, fileChooserImagePreviewButtonImage.HeightRequest));
                 BOWidgetBox boxfileChooserButtonImage = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_image"), fileChooserButtonImage);
                 HBox hboxfileChooserAndimagePreviewButtonImage = new HBox(false, _boxSpacing);
                 hboxfileChooserAndimagePreviewButtonImage.PackStart(boxfileChooserButtonImage, true, true, 0);

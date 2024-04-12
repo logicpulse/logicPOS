@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             int padding = 3;
             //This
-            this.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+            this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
             this.BorderWidth = (uint)padding;
             //Font
             _fontDescription = Pango.FontDescription.FromString(fontEntry);

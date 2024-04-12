@@ -19,8 +19,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Initialize Members
             _connected = pIsConnected;
-            _pixbufStatusOn = Utils.FileToPixBuf(FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Other\connection_status_on.png"));
-            _pixbufStatusOff = Utils.FileToPixBuf(FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Other\connection_status_off.png"));
+            _pixbufStatusOn = logicpos.Utils.FileToPixBuf(FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Other\connection_status_on.png"));
+            _pixbufStatusOff = logicpos.Utils.FileToPixBuf(FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Other\connection_status_off.png"));
 
             _connectionStatusImage = new Image();
 

@@ -8,28 +8,23 @@ using System;
 using System.Collections;
 using System.Configuration;
 using System.Diagnostics;
-using logicpos.resources.Resources.Localization;
 using System.Globalization;
 using System.Threading;
-using logicpos.datalayer.Enums;
-using System.IO;
-using logicpos.financial.library.Classes.Stocks;
 
-//Log4Net
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
 namespace logicpos
 {
     class MainApp
     {
-        //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        // Use this to force Plugin with Debug Attach
-        private static bool forceShowPluginLicenceWithDebugger = false;
+        private static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+       
+        private static bool _forceShowPluginLicenceWithDebugger = false;
 
         /* IN009203 - Mutex */
-        private static string appGuid = "bfb677c2-a44a-46f8-93ab-d2d6a54e0b53";
-        private static SingleProgramInstance _SingleProgramInstance = new SingleProgramInstance(appGuid);
+        private static string _appGuid = "bfb677c2-a44a-46f8-93ab-d2d6a54e0b53";
+
+        private static SingleProgramInstance _singleProgramInstance = new SingleProgramInstance(_appGuid);
 
         private static Thread loadingThread;
 
@@ -41,10 +36,10 @@ namespace logicpos
             try
             {
                 // Show current Configuration File
-                _log.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+                _logger.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 
                 /* IN009203 - Mutex block */
-                using (_SingleProgramInstance)
+                using (_singleProgramInstance)
                 {
                     // Init Settings Main Config Settings
                     GlobalFramework.Settings = ConfigurationManager.AppSettings;
@@ -59,7 +54,7 @@ namespace logicpos
                     Theme.ParseTheme(true, false);
 
                     /* Show "loading" */
-                    _log.Debug("void StartApp() :: Show 'loading'");
+                    _logger.Debug("void StartApp() :: Show 'loading'");
                     DialogLoading = Utils.GetThreadDialog(new Window("POS start loading"), true);
                     loadingThread = new Thread(() => DialogLoading.Run());
                     loadingThread.Start();
@@ -72,7 +67,7 @@ namespace logicpos
                         Gtk.Application.RunIteration();
 
                     /* IN009203 - prevent lauching multiple instances of application */
-                    if (_SingleProgramInstance.IsSingleInstance)
+                    if (_singleProgramInstance.IsSingleInstance)
                     {/* No app instance is running, start it */
                         /* IN009034 */
                         StartApp();
@@ -93,7 +88,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -112,7 +107,7 @@ namespace logicpos
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
-                    _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                    _logger.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
                     // Init Plugin
                     SettingsApp.InitSoftwareVendorPluginSettings();
                     // Check if all Resources are Embedded
@@ -121,23 +116,23 @@ namespace logicpos
                 else
                 {
                     // Show Loaded Plugin
-                    _log.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
+                    _logger.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
                 }
 
-              
+
 
 
                 // Init Stock Module
                 GlobalFramework.StockManagementModule = (GlobalFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
 
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
-                if (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger)
+                if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)
                 {
                     GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
                     // Show Loaded Plugin
                     if (GlobalFramework.PluginLicenceManager != null)
                     {
-                        _log.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                        _logger.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
                     }
                 }
 
@@ -147,7 +142,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 loadingThread.Abort();
                 DialogLoading.Destroy();
             }
@@ -162,9 +157,9 @@ namespace logicpos
         {
 
 
-            if (GlobalFramework.PluginLicenceManager != null && (!Debugger.IsAttached || forceShowPluginLicenceWithDebugger))
+            if (GlobalFramework.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
             {
-                _log.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
+                _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
                 // Boot LogicPos after LicenceManager.IntellilockPlugin
                 LicenseRouter licenseRouter = new LicenseRouter();
             }
@@ -172,14 +167,14 @@ namespace logicpos
             {
                 bool dbExists = Utils.checkIfDbExists();
                 // Boot LogicPos without pass in LicenseRouter
-                _log.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
+                _logger.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
                 /* IN009005: creating a new thread for app start up */
                 System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartFrontOffice));
                 GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.ThreadDialogReadyEvent));
                 thread.Start();
 
                 /* Show "loading" */
-                _log.Debug("void StartApp() :: Show 'loading'");
+                _logger.Debug("void StartApp() :: Show 'loading'");
                 GlobalApp.DialogThreadWork = Utils.GetThreadDialog(new Window("POS start up"), dbExists);
                 GlobalApp.DialogThreadWork.Run();
                 /* IN009005: end */
@@ -194,7 +189,7 @@ namespace logicpos
         /// </summary>
         private static void StartFrontOffice()
         {
-            _log.Debug("void StartFrontOffice() :: StartApp: AppMode.FrontOffice");
+            _logger.Debug("void StartFrontOffice() :: StartApp: AppMode.FrontOffice");
 
             LogicPos logicPos = new LogicPos();
             logicPos.StartApp(AppMode.FrontOffice);
@@ -240,7 +235,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -280,7 +275,7 @@ namespace logicpos
                     GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
 
-                _log.Error(String.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
+                _logger.Error(String.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
             }
         }
     }

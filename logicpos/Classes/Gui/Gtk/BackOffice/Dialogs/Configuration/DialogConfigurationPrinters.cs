@@ -34,9 +34,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogConfigurationPrinters(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinters"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_dialogconfigurationprinters"));
             
-            if (Utils.IsLinux) SetSizeRequest(500, 480);
+            if (logicpos.Utils.IsLinux) SetSizeRequest(500, 480);
             else SetSizeRequest(500, 448);
             InitUI();
             InitNotes();
@@ -85,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 string getSelectedType = _xpoComboBoxPrinterType.ActiveText.Substring(0, 1);
                 //Preenche o conjunto de strings associado ás diferentes impressoras instaladas no sistema
                 var _printersOnSystem = ComboBoxPrinterSelect();
-                if (!Utils.IsLinux && _printersOnSystem.Length != 0 /*&& getSelectedType != "-"*/)
+                if (!logicpos.Utils.IsLinux && _printersOnSystem.Length != 0 /*&& getSelectedType != "-"*/)
                 {
                     //Designação para Windows será a escolha da impressora instalada no sistema
                     entryDesignation = new Entry();
