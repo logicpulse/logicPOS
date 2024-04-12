@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +16,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public abstract class EntryBoxBase : EventBox
     {
         //Log4Net
-        protected static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected
         protected Window _sourceWindow;
@@ -68,12 +69,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Parameters
             _sourceWindow = pSourceWindow;
             //Defaults
-            Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+            Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
             String fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
             String fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
             int padding = 2;
             //This
-            this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+            this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
             this.BorderWidth = (uint)padding;
             //VBox
             _vbox = new VBox(false, padding);
@@ -101,12 +102,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Parameters
                 _sourceWindow = pSourceWindow;
                 //Defaults
-                Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+                Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                 String fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
                 String fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
                 int padding = 2;
                 //This
-                this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
                 this.BorderWidth = (uint)padding;
                 //VBox
                 _vbox = new VBox(false, padding);
@@ -131,20 +132,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Parameters
                 _sourceWindow = pSourceWindow;
                 //Defaults
-                Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor("240, 240, 240");
-                Color validLabel = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
+                Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
+                Color validLabel = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
 
                 String fontLabel = "10";
                 String fontEntry = "9";
                 int padding = 2;
                 if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
                 {
-                    colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+                    colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                     fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
                     fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
                 }
 
-                this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
                 //this.BorderWidth = (uint)padding;
                 //VBox
                 _vbox = new VBox(false, padding);
@@ -169,21 +170,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Parameters
                 _sourceWindow = pSourceWindow;
                 //Defaults
-                Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor("240, 240, 240");
-                Color validLabel = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
+                Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
+                Color validLabel =GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
      
                 String fontLabel = "10";
                 String fontEntry = "9";
                 int padding = 2;
                 if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
                 {
-                    colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+                    colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                     fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
                     fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
                 }
 
 
-                this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+                this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
                 //this.BorderWidth = (uint)padding;
                 //VBox
                 _vbox = new VBox(false, padding);
@@ -195,11 +196,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label.SetAlignment(0, 2.5F);
                 _label2 = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code") + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
-                _label2.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(validLabel));
+                _label2.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label2.SetAlignment(0, 0.5F);
                 _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity"));
                 _label3.ModifyFont(fontDescriptionLabel);
-                _label3.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(validLabel));
+                _label3.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label3.SetAlignment(0, 0.5F);
                 //Child Entrys
                 _fontDescription = Pango.FontDescription.FromString(fontEntry);

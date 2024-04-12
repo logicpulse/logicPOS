@@ -12,7 +12,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewUser : GenericTreeViewXPO
+    internal class TreeViewUser : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewUser() { }
@@ -30,19 +30,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogUserDetail);
 
             // XPO column properties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Name") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_users"), Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Profile") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_profile"), ChildName = "Designation", MinWidth = 160 });
-            //columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_mobile_phone });
-            columnProperties.Add(new GenericTreeViewColumnProperty("FiscalNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            {
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Name") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_users"), Expand = true },
+                new GenericTreeViewColumnProperty("Profile") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_profile"), ChildName = "Designation", MinWidth = 160 },
+                //columnProperties.Add(new GenericTreeViewColumnProperty("MobilePhone") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_mobile_phone });
+                new GenericTreeViewColumnProperty("FiscalNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
 
             //configure criteria/xpcollection/model
             CriteriaOperator criteria = pXpoCriteria;
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {
@@ -66,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         }
 
         //LogOff User Before Delete
-        void TreeView_RecordBeforeDelete(object sender, EventArgs e)
+        private void TreeView_RecordBeforeDelete(object sender, EventArgs e)
         {
             sys_userdetail userDetail = (_dataSourceRow as sys_userdetail);
             //If User deleted Force Logout in Sytem

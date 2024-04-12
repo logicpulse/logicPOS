@@ -14,13 +14,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
     /// <summary>
     /// GenericTreeViewModel Model Static Helper Class
     /// </summary>
-    abstract class GenericTreeViewModel
+    internal abstract class GenericTreeViewModel
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Show SystemColumns in TreeView ex rowIndex, Oid
-        private static bool _showSystemColumns = false;
+        private static readonly bool _showSystemColumns = false;
 
         /// <summary>
         /// Helper to debug models
@@ -92,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                       }
                       catch (Exception ex)
                       {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                       };
                     };
                   };
@@ -118,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             GenericTreeViewMode _treeViewMode = pGenericTreeViewMode;
 
             ////Only Add System Columns RowIndex, RowCheckBox, and Oid if Not Created First Time, Skip when ReCreate Models
-            bool addSystemColumns = (_columnProperties[0].Name != "RowIndex") ? true : false;
+            bool addSystemColumns = (_columnProperties[0].Name != "RowIndex");
 
             if (addSystemColumns)
             {

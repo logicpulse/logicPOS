@@ -25,7 +25,7 @@
 
      private void PageHeader1_BeforePrint(object sender, EventArgs e)
      {
-          PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo_Small&quot;);
+          PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_loggero_Small&quot;);
      }
 
 

@@ -16,21 +16,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyearserieterminal), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         public UInt32 Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -39,7 +39,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceYears One <> Many DocumentFinanceYearSerieTerminal
-        fin_documentfinanceyears fFiscalYear;
+        private fin_documentfinanceyears fFiscalYear;
         [Association(@"DocumentFinanceYearsReferencesDocumentFinanceYearSerieTerminal")]
         public fin_documentfinanceyears FiscalYear
         {
@@ -48,7 +48,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceYearSerieTerminal
-        fin_documentfinancetype fDocumentType;
+        private fin_documentfinancetype fDocumentType;
         [Association(@"DocumentFinanceTypeReferencesDocumentFinanceYearSerieTerminal")]
         public fin_documentfinancetype DocumentType
         {
@@ -58,7 +58,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
 
         //DocumentFinanceSeries One <> Many DocumentFinanceYearSerieTerminal
-        fin_documentfinanceseries fDocumentSerie;
+        private fin_documentfinanceseries fDocumentSerie;
         [Association(@"DocumentFinanceSeriesReferencesDFYearSerieTerminal")]
         public fin_documentfinanceseries Serie
         {
@@ -68,7 +68,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
 
         //DocumentFinanceType One <> Many DocumentFinanceYearSerieTerminal
-        pos_configurationplaceterminal fTerminal;
+        private pos_configurationplaceterminal fTerminal;
         [Association(@"ConfigurationPlaceTerminalReferencesDFYearSerieTerminal")]
         public pos_configurationplaceterminal Terminal
         {
@@ -78,7 +78,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
 
         //ConfigurationPrinters One <> Many DocumentFinanceYearSerieTerminal
-        sys_configurationprinters fPrinter;
+        private sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersTerminalReferencesDFYearSerieTerminal")]
         public sys_configurationprinters Printer
         {
@@ -88,7 +88,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
 
         //ConfigurationPrintersTemplates One <> Many DocumentFinanceYearSerieTerminal
-        sys_configurationprinterstemplates fTemplate;
+        private sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesDFYearSerieTerminal")]
         public sys_configurationprinterstemplates Template
         {

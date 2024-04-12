@@ -12,7 +12,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
     public abstract class ThermalPrinterBaseTemplate
     {
         //Log4Net
-        protected static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected Members
         protected ThermalPrinterGeneric _thermalPrinterGeneric;
@@ -66,8 +66,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
         public virtual bool Print()
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 PrintHeader();
@@ -102,7 +101,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Align Center
                 _thermalPrinterGeneric.SetAlignCenter();
 
-                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_FILENAME_LOGO';";
+                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_FILENAME_loggerO';";
                 string result = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
 
                 string logo = string.Format(
@@ -156,7 +155,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 throw ex;
             }
         }
@@ -260,7 +259,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Error("void PrintBuffer() 1:: " + ex.Message, ex);
+                _logger.Error("void PrintBuffer() 1:: " + ex.Message, ex);
                 throw ex;
             }
         }

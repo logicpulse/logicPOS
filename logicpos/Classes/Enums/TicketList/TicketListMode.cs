@@ -1,6 +1,6 @@
 ﻿namespace logicpos.Classes.Enums.TicketList
 {
-    enum TicketListMode
+    internal enum TicketListMode
     {
         Ticket,
         OrderMain,

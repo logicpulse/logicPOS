@@ -10,7 +10,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
     //Now Entity is Required to be defined, since implementation of Table Prefix, else entity name is getted from object name without FRBO and returns invalid DB Object ex (FRBO)DocumentFinanceDetail
     [FRBO(Entity = "pfx_template")]
-    class FRBOTemplate : FRBOBaseObject
+    internal class FRBOTemplate : FRBOBaseObject
     {
         public int Code { get; set; }
         public string Designation { get; set; }

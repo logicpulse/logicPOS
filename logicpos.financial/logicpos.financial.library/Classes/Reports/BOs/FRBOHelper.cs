@@ -56,7 +56,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
     public class FRBOHelper
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Generate Fast Report Business Objects for ProcessReportFinanceDocument
@@ -186,7 +186,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -248,7 +248,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

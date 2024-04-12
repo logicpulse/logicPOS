@@ -10,7 +10,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 		#region Private fields
 		private int _totalRecords = 0;
 		private int _currentRecord = 0;
-		private Timer _onsearchTimer;
+		private readonly Timer _onsearchTimer;
 		#endregion
 
 		#region Public events and properties
@@ -65,9 +65,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 				{
 					_currentRecord = value;
 					SetInfoText();
-					if (CurrentRecordChanged != null)
-						CurrentRecordChanged(this, EventArgs.Empty);
-				}
+                    CurrentRecordChanged?.Invoke(this, EventArgs.Empty);
+                }
 			}
 		}
 
@@ -271,8 +270,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 
 		private void OnSearch()
 		{
-			if (NeedSearch != null)
-				NeedSearch(this, EventArgs.Empty);
+            NeedSearch?.Invoke(this, EventArgs.Empty);
         }
 		#endregion
 	}

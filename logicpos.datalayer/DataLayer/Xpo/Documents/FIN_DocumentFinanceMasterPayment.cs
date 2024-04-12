@@ -9,21 +9,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemasterpayment() : base() { }
         public fin_documentfinancemasterpayment(Session session) : base(session) { }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        decimal fCreditAmount;
+        private decimal fCreditAmount;
         public decimal CreditAmount
         {
             get { return fCreditAmount; }
             set { SetPropertyValue<decimal>("CreditAmount", ref fCreditAmount, value); }
         }
 
-        decimal fDebitAmount;
+        private decimal fDebitAmount;
         public decimal DebitAmount
         {
             get { return fDebitAmount; }
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinanceMaster
-        fin_documentfinancemaster fDocumentFinanceMaster;
+        private fin_documentfinancemaster fDocumentFinanceMaster;
         [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinanceMaster")]
         public fin_documentfinancemaster DocumentFinanceMaster
         {
@@ -40,7 +40,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinancePayment
-        fin_documentfinancepayment fDocumentFinancePayment;
+        private fin_documentfinancepayment fDocumentFinancePayment;
         [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinancePayment")]
         public fin_documentfinancepayment DocumentFinancePayment
         {
@@ -49,7 +49,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMasterPayment Many <> Many DocumentFinanceMaster
-        fin_documentfinancemaster fDocumentFinanceMasterCreditNote;
+        private fin_documentfinancemaster fDocumentFinanceMasterCreditNote;
         [Association(@"DocumentFinanceMasterPaymentReferencesDocumentFinanceMasterCreditNote")]
         public fin_documentfinancemaster DocumentFinanceMasterCreditNote
         {

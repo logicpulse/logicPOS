@@ -10,8 +10,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 	public class PdfToolStripZoomEx : PdfToolStrip
 	{
 		#region Private fields
-		private int _trackBarWidth = 104;
-		private int _trackBarHeight = 16;
+		private readonly int _trackBarWidth = 104;
+		private readonly int _trackBarHeight = 16;
 		private int _currentZoomLevel = 0;
 		private float[] _zoomLevel = { 8.33f, 12.5f, 25, 33.33f, 50, 66.67f, 75, 100, 125, 150, 200, 300, 400, 600, 800 };
 		#endregion

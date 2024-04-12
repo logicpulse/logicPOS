@@ -3,7 +3,7 @@ using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class LittleAddsWidget : VBox
+    internal class LittleAddsWidget : VBox
     {
         //Public
         private RadioButton _radioButton;

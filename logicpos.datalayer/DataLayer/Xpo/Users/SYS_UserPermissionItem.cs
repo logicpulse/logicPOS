@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_userpermissionitem), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fToken;
+        private string fToken;
         [Size(100)]
         [Indexed(Unique = true)]
         public String Token
@@ -40,7 +40,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<String>("Token", ref fToken, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Size(200)]
         [Indexed(Unique = true)]
         public string Designation
@@ -50,7 +50,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserPermissionGroup One <> Many UserPermissionItems
-        sys_userpermissiongroup fPermissionGroup;
+        private sys_userpermissiongroup fPermissionGroup;
         [Association(@"UserPermissionGroup-UserPermissionItem")]
         public sys_userpermissiongroup PermissionGroup
         {

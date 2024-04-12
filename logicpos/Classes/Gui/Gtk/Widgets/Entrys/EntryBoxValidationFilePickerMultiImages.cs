@@ -12,15 +12,15 @@ using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class EntryBoxValidationFilePickerMultiImages : EventBox
+    internal class EntryBoxValidationFilePickerMultiImages : EventBox
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private bool _debug = false;
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly bool _debug = false;
 
         //Private
-        private Window _sourceWindow;
-        private VBox _vbox;
+        private readonly Window _sourceWindow;
+        private readonly VBox _vbox;
         private int _maxImagesAllowed { get; set; }
         public int MaxImagesAllowed
         {
@@ -131,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (pAddFileNameToList) _fileList.Add(_entryBoxAddFile.Value);
         }
 
-        void Button_Clicked(object sender, EventArgs e)
+        private void Button_Clicked(object sender, EventArgs e)
         {
             TouchButtonIcon button = (TouchButtonIcon)sender;
             EntryBoxValidationButton entryBoxValidationButton = (button.Parent.Parent.Parent as EntryBoxValidationButton);
@@ -148,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (curentrEntryBox == entryBoxValidationButton)
                     {
                         currentFileListIndexPosition = i;
-                        if (_debug) _log.Debug(string.Format("Current file List Index [{0}]: [{1}]", currentFileListIndexPosition, _fileList[currentFileListIndexPosition]));
+                        if (_debug) _logger.Debug(string.Format("Current file List Index [{0}]: [{1}]", currentFileListIndexPosition, _fileList[currentFileListIndexPosition]));
                     }
                 }
 
@@ -182,11 +182,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
-        void buttonDelete_Clicked(object sender, EventArgs e)
+        private void buttonDelete_Clicked(object sender, EventArgs e)
         {
             TouchButtonIcon button = (TouchButtonIcon)sender;
             EntryBoxValidationButton entryBoxValidationButton = (button.Parent.Parent.Parent as EntryBoxValidationButton);
@@ -203,7 +203,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             for (int i = 0; i < _fileList.Count; i++)
             {
-                _log.Debug(string.Format("_filesList[{0}/{1}]", _fileList[i], _fileList.Count));
+                _logger.Debug(string.Format("_filesList[{0}/{1}]", _fileList[i], _fileList.Count));
             }
         }
 

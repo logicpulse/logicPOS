@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    interface IGenericTreeView
+    internal interface IGenericTreeView
     {
     }
 }

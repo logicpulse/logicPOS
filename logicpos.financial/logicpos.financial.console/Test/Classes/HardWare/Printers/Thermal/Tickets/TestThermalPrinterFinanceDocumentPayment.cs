@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 namespace logicpos.financial.console.Test.Classes.HardWare.Printer
 {
-    class TestThermalPrinterFinanceDocumentPayment
+    internal class TestThermalPrinterFinanceDocumentPayment
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static void Print(sys_configurationprinters pPrinter)
         {

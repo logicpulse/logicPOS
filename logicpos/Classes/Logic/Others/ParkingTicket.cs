@@ -13,7 +13,7 @@ namespace logicpos.Classes.Logic.Others
     // TK013134
     public class ParkingTicket
     {
-        log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // Constructor
         public ParkingTicket()
@@ -26,7 +26,7 @@ namespace logicpos.Classes.Logic.Others
         /// <param name="ean"></param>
         public void GetTicketDetailFromWS(string ean)
         {
-            _log.Debug("void GetTicketDetailFromWS([ " + ean + " ])");
+            _logger.Debug("void GetTicketDetailFromWS([ " + ean + " ])");
 
             Boolean hasOrder = null != GlobalApp.WindowPos.TicketList.CurrentOrderDetails.Lines;
             Boolean ticketExists = false;
@@ -103,7 +103,7 @@ namespace logicpos.Classes.Logic.Others
                 {
                     //accessTrackParkingTicketService.Url = System.Configuration.ConfigurationManager.AppSettings["wsParkingURL"].ToString();
                     //accessTrackParkingTicketService.Url = "http://localhost/wstimetrack/service.asmx".ToString();
-                    _log.Debug("ParkingTicket URL([ " + accessTrackParkingTicketService.Url + " ]) :: ");
+                    _logger.Debug("ParkingTicket URL([ " + accessTrackParkingTicketService.Url + " ]) :: ");
                     System.Data.DataTable accessTrackParkingTicketServiceResult = accessTrackParkingTicketService.getTicketInformation(ean);
 
                     /* Business rules defined that only one ticket will be created at a time */
@@ -115,7 +115,7 @@ namespace logicpos.Classes.Logic.Others
                 }
                 catch (WebException ex)
                 {
-                    _log.Error("ParkingTicketResult GetTicketInformation([ " + ean + " ]) :: " + ex.Message, ex);
+                    _logger.Error("ParkingTicketResult GetTicketInformation([ " + ean + " ]) :: " + ex.Message, ex);
                     GlobalApp.WindowPos.TicketList.WsNotFound();
                     parkingTicketResult = null;
                     // throw ex;
@@ -128,7 +128,7 @@ namespace logicpos.Classes.Logic.Others
                 {
                     DateTime localDate = DateTime.Now;
                     string dateNow = localDate.ToString();
-                    _log.Debug("ParkingTicket URL([ " + accessTrackParkingTicketService.Url + " ]) :: ");
+                    _logger.Debug("ParkingTicket URL([ " + accessTrackParkingTicketService.Url + " ]) :: ");
                     accessTrackParkingTicketService.addInCard(ean, dateNow);
                 }
                 string sql = "SELECT Price1 FROM[logicposdb].[dbo].[fin_article] where Oid = '32829702-33fa-48d5-917c-4c1db8720777'";

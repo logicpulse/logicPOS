@@ -12,8 +12,8 @@ namespace logicpos
 {   
     public class EuropeanVatInformation
     {
-		//Limpa caracteres inválidos que chegam do WebService
-        static string CleanInput(string strIn)
+        //Limpa caracteres inválidos que chegam do WebService
+        private static string CleanInput(string strIn)
         {
             // Replace invalid characters with empty strings.
             try

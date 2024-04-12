@@ -15,12 +15,12 @@ using System.Configuration;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogConfigurationPreferenceParameter : BOBaseDialog
+    internal class DialogConfigurationPreferenceParameter : BOBaseDialog
     {
-        private int _windowWidth = 500;
-        private int _windowHeightForTextComponent = 331;
+        private readonly int _windowWidth = 500;
+        private readonly int _windowHeightForTextComponent = 331;
         private int _windowHeight = 0;
-        private XPGuidObject _XPGuidObject;
+        private readonly XPGuidObject _XPGuidObject;
         public static void SaveSettings(string fieldName)
         {
             try
@@ -34,7 +34,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
         }
@@ -43,7 +43,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             _XPGuidObject = pXPGuidObject;
             this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
-            cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)_dataSourceRow;
             // Default windowHeight, InputTypes can Override this in Switch             
             if (logicpos.Utils.IsLinux)
             {
@@ -84,8 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Define Label for Value
                 bool valueRequired = (dataSourceRow.Required)
-                    ? dataSourceRow.Required
-                    : false;
+&& dataSourceRow.Required;
 
                 //Override Db Regex with ConfigurationSystemCountry RegExZipCode and RegExFiscalNumber
                 if (dataSourceRow.Token == "COMPANY_POSTALCODE") valueRegEx = SettingsApp.ConfigurationSystemCountry.RegExZipCode;
@@ -280,7 +278,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     && parameter.Token != "COMPANY_COUNTRY_CODE2"
                     && parameter.Token != "COMPANY_FISCALNUMBER"
                     && parameter.Token != "SYSTEM_CURRENCY"
-                    && parameter.Token != "REPORT_FILENAME_LOGO"
+                    && parameter.Token != "REPORT_FILENAME_loggerO"
                 //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION" 
                 //&& parameter.Token != "COMPANY_CIVIL_REGISTRATION_ID"
                 );
@@ -288,7 +286,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

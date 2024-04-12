@@ -12,7 +12,7 @@ namespace acme.softwarevendor.plugin
     public class AcmeSoftwareVendorPlugin : ISoftwareVendor
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string Name { get => "AcmeSoftwareVendorPlugin"; }
 
@@ -212,7 +212,7 @@ namespace acme.softwarevendor.plugin
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
 
@@ -231,7 +231,7 @@ namespace acme.softwarevendor.plugin
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
 
@@ -279,8 +279,8 @@ namespace acme.softwarevendor.plugin
 
                 if (debug)
                 {
-                    _log.Debug(string.Format("GetReportFileName templateContent: [{0}]", templateContent));
-                    _log.Debug(string.Format("GetReportFileName reportContent: [{0}]", reportContent));
+                    _logger.Debug(string.Format("GetReportFileName templateContent: [{0}]", templateContent));
+                    _logger.Debug(string.Format("GetReportFileName reportContent: [{0}]", reportContent));
                 }
 
                 // Save Temporary Template/Report
@@ -305,23 +305,19 @@ namespace acme.softwarevendor.plugin
              bool debug = false;
             string resourcePathLocation = "Resources/Reports/UserReports/";
             string resourceBaseLocation = "acme.softwarevendor.plugin.Resources.Reports.UserReports.{0}";
-            string resourceLocation = string.Empty;
             string[] files = Directory.GetFiles(resourcePathLocation, "*.frx");
             List<string> emmbededFilesMissing = new List<string>();
-            string fileName = string.Empty;
             var resources = GlobalFramework.PluginSoftwareVendor.GetType().Assembly.GetManifestResourceNames();
-            Stream stream = null;
-
             foreach (var item in files)
             {
-                fileName = item.Replace(resourcePathLocation, string.Empty);
-                resourceLocation = string.Format(resourceBaseLocation, fileName);
-                if (debug) _log.Debug(string.Format("fileName: [{0}], resourceLocation: [{1}]", fileName, resourceLocation));
+                string fileName = item.Replace(resourcePathLocation, string.Empty);
+                string resourceLocation = string.Format(resourceBaseLocation, fileName);
+                if (debug) _logger.Debug(string.Format("fileName: [{0}], resourceLocation: [{1}]", fileName, resourceLocation));
 
                 try
                 {
                     // Try Get Resource
-                    stream = GetType().Module.Assembly.GetManifestResourceStream(resourceLocation);
+                    Stream stream = GetType().Module.Assembly.GetManifestResourceStream(resourceLocation);
                     if (stream == null)
                     {
                         emmbededFilesMissing.Add(resourceLocation);
@@ -329,7 +325,7 @@ namespace acme.softwarevendor.plugin
                 }
                 catch (Exception ex)
                 {
-                    if (debug) _log.Error(ex.Message, ex);
+                    if (debug) _logger.Error(ex.Message, ex);
                 }
             }
 
@@ -349,7 +345,7 @@ namespace acme.softwarevendor.plugin
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -365,7 +361,7 @@ namespace acme.softwarevendor.plugin
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

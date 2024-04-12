@@ -8,36 +8,35 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-
-    class MoneyPad : Box
+    internal class MoneyPad : Box
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private decimal _decimalMoneyButtonL1Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL1Value"]);
-        private decimal _decimalMoneyButtonL2Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL2Value"]);
-        private decimal _decimalMoneyButtonL3Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL3Value"]);
-        private decimal _decimalMoneyButtonL4Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL4Value"]);
-        private decimal _decimalMoneyButtonL5Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL5Value"]);
-        private decimal _decimalMoneyButtonR1Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR1Value"]);
-        private decimal _decimalMoneyButtonR2Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR2Value"]);
-        private decimal _decimalMoneyButtonR3Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR3Value"]);
-        private decimal _decimalMoneyButtonR4Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR4Value"]);
-        private decimal _decimalMoneyButtonR5Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR5Value"]);
+        private readonly decimal _decimalMoneyButtonL1Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL1Value"]);
+        private readonly decimal _decimalMoneyButtonL2Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL2Value"]);
+        private readonly decimal _decimalMoneyButtonL3Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL3Value"]);
+        private readonly decimal _decimalMoneyButtonL4Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL4Value"]);
+        private readonly decimal _decimalMoneyButtonL5Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL5Value"]);
+        private readonly decimal _decimalMoneyButtonR1Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR1Value"]);
+        private readonly decimal _decimalMoneyButtonR2Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR2Value"]);
+        private readonly decimal _decimalMoneyButtonR3Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR3Value"]);
+        private readonly decimal _decimalMoneyButtonR4Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR4Value"]);
+        private readonly decimal _decimalMoneyButtonR5Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR5Value"]);
         //UI
-        private NumberPad _numberPad;
-        private EntryValidation _entryDeliveryValue;
-        private TouchButtonText _buttonKeyMBL1;
-        private TouchButtonText _buttonKeyMBL2;
-        private TouchButtonText _buttonKeyMBL3;
-        private TouchButtonText _buttonKeyMBL4;
-        private TouchButtonText _buttonKeyMBL5;
-        private TouchButtonText _buttonKeyMBR1;
-        private TouchButtonText _buttonKeyMBR2;
-        private TouchButtonText _buttonKeyMBR3;
-        private TouchButtonText _buttonKeyMBR4;
-        private TouchButtonText _buttonKeyMBR5;
+        private readonly NumberPad _numberPad;
+        private readonly EntryValidation _entryDeliveryValue;
+        private readonly TouchButtonText _buttonKeyMBL1;
+        private readonly TouchButtonText _buttonKeyMBL2;
+        private readonly TouchButtonText _buttonKeyMBL3;
+        private readonly TouchButtonText _buttonKeyMBL4;
+        private readonly TouchButtonText _buttonKeyMBL5;
+        private readonly TouchButtonText _buttonKeyMBR1;
+        private readonly TouchButtonText _buttonKeyMBR2;
+        private readonly TouchButtonText _buttonKeyMBR3;
+        private readonly TouchButtonText _buttonKeyMBR4;
+        private readonly TouchButtonText _buttonKeyMBR5;
         //Helper Vars
         private MoneyPadMode _moneyPadMode = MoneyPadMode.Money;
         private int _tempCursorPosition = 0;
@@ -147,15 +146,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event Handlers
 
-        void _entry_Changed(object sender, EventArgs e)
+        private void _entry_Changed(object sender, EventArgs e)
         {
             EntryValidation entry = (EntryValidation)sender;
             _validated = entry.Validated;
             _deliveryValue = FrameworkUtils.StringToDecimal(_entryDeliveryValue.Text);
-            if (EntryChanged != null) EntryChanged(sender, e);
+            EntryChanged?.Invoke(sender, e);
         }
 
-        void buttonKeyMB_Clicked(object sender, EventArgs e)
+        private void buttonKeyMB_Clicked(object sender, EventArgs e)
         {
             TouchButtonText button = (TouchButtonText)sender;
             decimal value = 0.0m;
@@ -198,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             AddMoney(value);
         }
 
-        void _numberPad_Clicked(object sender, EventArgs e)
+        private void _numberPad_Clicked(object sender, EventArgs e)
         {
             TouchButtonText button = (TouchButtonText)sender;
 

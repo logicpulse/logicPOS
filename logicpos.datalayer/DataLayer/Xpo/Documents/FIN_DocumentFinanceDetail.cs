@@ -10,14 +10,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancedetail() : base() { }
         public fin_documentfinancedetail(Session session) : base(session) { }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        string fCode;
+        private string fCode;
         //[Indexed(Unique = true)] - Can have equal Article.Codes with Diferent Properties
         public string Code
         {
@@ -25,21 +25,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         public string Designation
         {
             get { return fDesignation; }
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        Decimal fQuantity;
+        private Decimal fQuantity;
         public Decimal Quantity
         {
             get { return fQuantity; }
             set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
         }
 
-        string fUnitMeasure;
+        private string fUnitMeasure;
         [Size(35)]
         public string UnitMeasure
         {
@@ -47,21 +47,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("UnitMeasure", ref fUnitMeasure, value); }
         }
 
-        Decimal fPrice;
+        private Decimal fPrice;
         public Decimal Price
         {
             get { return fPrice; }
             set { SetPropertyValue<Decimal>("Price", ref fPrice, value); }
         }
 
-        Decimal fVat;
+        private Decimal fVat;
         public Decimal Vat
         {
             get { return fVat; }
             set { SetPropertyValue<Decimal>("Vat", ref fVat, value); }
         }
 
-        string fVatExemptionReasonDesignation;
+        private string fVatExemptionReasonDesignation;
         [Size(255)]
         public string VatExemptionReasonDesignation
         {
@@ -69,42 +69,42 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("VatExemptionReasonDesignation", ref fVatExemptionReasonDesignation, value); }
         }
 
-        Decimal fDiscount;
+        private Decimal fDiscount;
         public Decimal Discount
         {
             get { return fDiscount; }
             set { SetPropertyValue<Decimal>("Discount", ref fDiscount, value); }
         }
 
-        Decimal fTotalNet;
+        private Decimal fTotalNet;
         public Decimal TotalNet
         {
             get { return fTotalNet; }
             set { SetPropertyValue<Decimal>("TotalNet", ref fTotalNet, value); }
         }
 
-        Decimal fTotalGross;
+        private Decimal fTotalGross;
         public Decimal TotalGross
         {
             get { return fTotalGross; }
             set { SetPropertyValue<Decimal>("TotalGross", ref fTotalGross, value); }
         }
 
-        Decimal fTotalDiscount;
+        private Decimal fTotalDiscount;
         public Decimal TotalDiscount
         {
             get { return fTotalDiscount; }
             set { SetPropertyValue<Decimal>("TotalDiscount", ref fTotalDiscount, value); }
         }
 
-        Decimal fTotalTax;
+        private Decimal fTotalTax;
         public Decimal TotalTax
         {
             get { return fTotalTax; }
             set { SetPropertyValue<Decimal>("TotalTax", ref fTotalTax, value); }
         }
 
-        Decimal fTotalFinal;
+        private Decimal fTotalFinal;
         public Decimal TotalFinal
         {
             get { return fTotalFinal; }
@@ -112,7 +112,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Final Calculated Priced, Usefull to Clone Document ex From SourceDocuments in New Document Window
-        PriceType fPriceType;
+        private PriceType fPriceType;
         public PriceType PriceType
         {
             get { return fPriceType; }
@@ -120,7 +120,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Final Calculated Priced, Usefull to Clone Document ex From SourceDocuments in New Document Window
-        Decimal fPriceFinal;
+        private Decimal fPriceFinal;
         public Decimal PriceFinal
         {
             get { return fPriceFinal; }
@@ -128,7 +128,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Custom Properties
-        string fToken1;
+        private string fToken1;
         [Size(255)]
         public string Token1
         {
@@ -137,7 +137,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Custom Properties
-        string fToken2;
+        private string fToken2;
         [Size(255)]
         public string Token2
         {
@@ -146,7 +146,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Serial Number
-        string fSerialNumber;
+        private string fSerialNumber;
         [Size(255)]
         public string SerialNumber
         {
@@ -155,7 +155,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Serial Number
-        string fWarehouse;
+        private string fWarehouse;
         [Size(255)]
         public string Warehouse
         {
@@ -164,7 +164,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many DocumentFinanceDetail
-        fin_documentfinancemaster fDocumentMaster;
+        private fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesDocumentFinanceDetail")]
         public fin_documentfinancemaster DocumentMaster
         {
@@ -173,7 +173,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Article One <> Many DocumentOrderDetail
-        fin_article fArticle;
+        private fin_article fArticle;
         [Association(@"ArticleReferencesDocumentDocumentFinanceDetail")]
         public fin_article Article
         {
@@ -182,7 +182,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationVatRate One <> Many DocumentOrderDetail
-        fin_configurationvatrate fVatRate;
+        private fin_configurationvatrate fVatRate;
         [Association(@"ConfigurationVatRateReferencesDocumentDocumentFinanceDetail")]
         public fin_configurationvatrate VatRate
         {
@@ -191,7 +191,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationVatExemptionReason One <> Many DocumentOrderDetail
-        fin_configurationvatexemptionreason fVatExemptionReason;
+        private fin_configurationvatexemptionreason fVatExemptionReason;
         [Association(@"ConfigurationVatExemptionReasonReferencesDocumentDocumentFinanceDetail")]
         public fin_configurationvatexemptionreason VatExemptionReason
         {

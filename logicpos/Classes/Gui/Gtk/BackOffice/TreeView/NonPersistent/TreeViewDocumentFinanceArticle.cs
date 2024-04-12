@@ -15,7 +15,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewDocumentFinanceArticle : GenericTreeViewDataTable
+    internal class TreeViewDocumentFinanceArticle : GenericTreeViewDataTable
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewDocumentFinanceArticle() { }
@@ -37,77 +37,79 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int decimalsColumnWidth = 100;
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            /*00*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false });
-            /*01*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article.Code")
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                Type = typeof(fin_article),
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"),
-                ChildName = "Code",
-                MinWidth = 60,
-                MaxWidth = 150,
-                Alignment = 1.0F,
-                CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, ForegroundGdk = new Gdk.Color(255, 0, 0) }
-            });
-            /*02*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article.Designation") { Type = typeof(fin_article), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), ChildName = "Designation", MinWidth = 170, MaxWidth = 170 });
-            /*03*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity")
-            {
-                Type = typeof(Decimal),
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"),
-                MinWidth = 70,
-                MaxWidth = 100,
-                Alignment = 1.0F,
-                InitialValue = 1.0m,
-                CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
-            });
-            /*04: Used to store DefaultCurrency price, Set visible = true to show it, Default is Hidden */
-            columnProperties.Add(new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Title = string.Format("{0}{1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false });
-            /*05: Visible Display Value, In Current Selected Currency*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
-            /*06 IN009206*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
-            /*07 IN009206*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("VatExemptionReason.Acronym") { Type = typeof(fin_configurationvatexemptionreason), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason_acronym"), ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false });
-            /*08*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("ConfigurationVatRate.Value")
-            {
-                Type = typeof(fin_configurationvatrate),
-                ChildName = "Value",
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"),
-                MinWidth = 60,
-                MaxWidth = 60,
-                Alignment = 1.0F,
-                //TODO: Put to Work for SqlServer else appears has 23.0000 not 23.00
-                FormatProvider = new FormatterDecimal(),
-                CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
-            });
-            /*09*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("TotalNet") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
-            /*10*/ /* IN009206 */
-            columnProperties.Add(new GenericTreeViewColumnProperty("TotalFinal") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
-            //Other Invisible Fields
-            /*11*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Visible = false });
-            /*12*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false });
-            /*13*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Token1") { Type = typeof(string), Visible = false });  //MediaNova:ClassifiedID
-            /*14*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Token2") { Type = typeof(string), Visible = false });  //MediaNova:FriendlyID
-            /*15*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false });
-            /*16*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article.Family") { Type = typeof(fin_articlefamily), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_family"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false });
-            /*17*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article.Subfamily") { Type = typeof(fin_articlesubfamily), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_subfamily"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false });
-            /*18*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("SerialNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"), Type = typeof(string), Visible = true });
-            /*19*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Warehouse") { Type = typeof(string), Visible = false });
+                /*00*/
+                new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
+                /*01*/
+                new GenericTreeViewColumnProperty("Article.Code")
+                {
+                    Type = typeof(fin_article),
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"),
+                    ChildName = "Code",
+                    MinWidth = 60,
+                    MaxWidth = 150,
+                    Alignment = 1.0F,
+                    CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, ForegroundGdk = new Gdk.Color(255, 0, 0) }
+                },
+                /*02*/
+                new GenericTreeViewColumnProperty("Article.Designation") { Type = typeof(fin_article), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), ChildName = "Designation", MinWidth = 170, MaxWidth = 170 },
+                /*03*/
+                new GenericTreeViewColumnProperty("Quantity")
+                {
+                    Type = typeof(Decimal),
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"),
+                    MinWidth = 70,
+                    MaxWidth = 100,
+                    Alignment = 1.0F,
+                    InitialValue = 1.0m,
+                    CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
+                },
+                /*04: Used to store DefaultCurrency price, Set visible = true to show it, Default is Hidden */
+                new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Title = string.Format("{0}{1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false },
+                /*05: Visible Display Value, In Current Selected Currency*/
+                new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                /*06 IN009206*/
+                new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                /*07 IN009206*/
+                new GenericTreeViewColumnProperty("VatExemptionReason.Acronym") { Type = typeof(fin_configurationvatexemptionreason), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason_acronym"), ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false },
+                /*08*/
+                new GenericTreeViewColumnProperty("ConfigurationVatRate.Value")
+                {
+                    Type = typeof(fin_configurationvatrate),
+                    ChildName = "Value",
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"),
+                    MinWidth = 60,
+                    MaxWidth = 60,
+                    Alignment = 1.0F,
+                    //TODO: Put to Work for SqlServer else appears has 23.0000 not 23.00
+                    FormatProvider = new FormatterDecimal(),
+                    CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
+                },
+                /*09*/
+                new GenericTreeViewColumnProperty("TotalNet") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                /*10*/ /* IN009206 */
+                new GenericTreeViewColumnProperty("TotalFinal") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                //Other Invisible Fields
+                /*11*/
+                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Visible = false },
+                /*12*/
+                new GenericTreeViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false },
+                /*13*/
+                new GenericTreeViewColumnProperty("Token1") { Type = typeof(string), Visible = false },  //MediaNova:ClassifiedID
+                /*14*/
+                new GenericTreeViewColumnProperty("Token2") { Type = typeof(string), Visible = false },  //MediaNova:FriendlyID
+                /*15*/
+                new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false },
+                /*16*/
+                new GenericTreeViewColumnProperty("Article.Family") { Type = typeof(fin_articlefamily), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_family"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
+                /*17*/
+                new GenericTreeViewColumnProperty("Article.Subfamily") { Type = typeof(fin_articlesubfamily), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_subfamily"), ChildName = "Designation", MinWidth = 60, MaxWidth = 60, Visible = false },
+                /*18*/
+                new GenericTreeViewColumnProperty("SerialNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"), Type = typeof(string), Visible = true },
+                /*19*/
+                new GenericTreeViewColumnProperty("Warehouse") { Type = typeof(string), Visible = false }
+            };
             //init DataTable
             DataTable dataTable = GetDataTable(columnProperties, false);
 

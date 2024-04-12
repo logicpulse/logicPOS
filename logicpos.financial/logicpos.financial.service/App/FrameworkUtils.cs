@@ -3,7 +3,7 @@
     /// <summary>
     /// This force not using class confilt namespace when using FrameworkUtils
     /// </summary>
-    class FrameworkUtils  : logicpos.shared.App.FrameworkUtils
+    internal class FrameworkUtils  : logicpos.shared.App.FrameworkUtils
     {
     }
 }

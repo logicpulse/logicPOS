@@ -16,7 +16,7 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
 
 
         //Article One <> Many ArticleCompositions
-        fin_articleserialnumber fArticleSerialNumber;
+        private fin_articleserialnumber fArticleSerialNumber;
         [Association(@"ArticleCompositionReferencesArticleSerialNumber")]
         public fin_articleserialnumber ArticleSerialNumber
         {
@@ -24,7 +24,7 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
             set { SetPropertyValue<fin_articleserialnumber>("ArticleSerialNumber", ref fArticleSerialNumber, value); }
         }
 
-        fin_articleserialnumber fArticleSerialNumberhild;
+        private fin_articleserialnumber fArticleSerialNumberhild;
         public fin_articleserialnumber ArticleSerialNumberChild
         {
             get { return fArticleSerialNumberhild; }

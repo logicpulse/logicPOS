@@ -16,13 +16,13 @@ using System.Threading.Tasks;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosPricePickerDialog : PosBaseDialog
+    internal class PosPricePickerDialog : PosBaseDialog
     {
         //Moçambique 5/4/21
         //Private Members
         //UI
-        private Fixed _fixedContent;
-        private XPOComboBox _priceComboBox;
+        private readonly Fixed _fixedContent;
+        private readonly XPOComboBox _priceComboBox;
         //Public Properties
         private fin_article _article;
         
@@ -59,9 +59,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(buttonOk, ResponseType.Ok),
+                new ActionAreaButton(buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, _windowSize, _fixedContent, actionAreaButtons);
@@ -129,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //_priceComboBox.Changed += _priceComboBox_Changed;
             }catch(Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -140,8 +142,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public static string RequestPriceTypeValue(Window pSourceWindow, DialogFlags pDialogFlags, fin_article pArticle)
         {
-            ResponseType resultResponse;
-
             PosPricePickerDialog dialog;
 
             dialog = new PosPricePickerDialog(pSourceWindow, pDialogFlags, pArticle);
@@ -151,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 return PriceType;
             }
-            resultResponse = (ResponseType)response;
+
             dialog.Destroy();
 
             return "";

@@ -18,11 +18,11 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosEditCompanyDetails : PosBaseDialog
+    internal class PosEditCompanyDetails : PosBaseDialog
     {
         //Private UI
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonDataDemo;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonDataDemo;
         private ScrolledWindow _scrolledWindow;
         private EntryBoxValidation _entryBoxFiscalNumber;
         private EntryBoxValidation _entryBoxZipCode;
@@ -47,9 +47,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonDataDemo = new TouchButtonIconWithText("touchButtonDataDemo_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, "Demo", _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileDemoData, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = true };
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonDataDemo, ResponseType.Apply));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonDataDemo, ResponseType.Apply),
+                new ActionAreaButton(_buttonOk, ResponseType.Ok)
+            };
 
             //Init Content
             InitUI(useDataDemo);
@@ -173,7 +175,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //IN009295 Start POS - Capital Social com valor por defeito
                         if (item.Token == "COMPANY_STOCK_CAPITAL") item.Value = "1";
                         //Debug
-                        //_log.Debug(string.Format("Label: [{0}], RegEx: [{1}], Required: [{2}]", label, regEx, required));
+                        //_logger.Debug(string.Format("Label: [{0}], RegEx: [{1}], Required: [{2}]", label, regEx, required));
 
                         EntryBoxValidation entryBoxValidation = new EntryBoxValidation(
                             this,
@@ -203,7 +205,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //if (Debugger.IsAttached == true || useDatabaseDataDemo && !useDataDemo) { entryBoxValidation.EntryValidation.Text = item.Value; }
                         //if (Debugger.IsAttached == true)
                         //{
-                        //    if (debug) _log.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true, useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
+                        //    if (debug) _logger.Debug(String.Format("[{0}:{1}]:item.Value: [{2}], entryBoxValidation.EntryValidation.Text: [{3}]", Debugger.IsAttached == true, useDatabaseDataDemo, item.Value, entryBoxValidation.EntryValidation.Text));
                         //}
 
                         //Assign shared Event
@@ -245,11 +247,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
-        void EntryValidation_Changed(object sender, EventArgs e)
+        private void EntryValidation_Changed(object sender, EventArgs e)
         {
             try
             {
@@ -266,7 +268,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -283,7 +285,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -298,7 +300,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     foreach (var item in _dictionaryObjectBag)
                     {
                         changed = logicpos.Utils.CheckIfFieldChanged(item.Key.Value, item.Value.EntryValidation.Text);
-                        //_log.Debug(string.Format("FieldDb:[{0}], FieldInput:[{1}], changed: [{2}]", item.Key.Value, item.Value.EntryValidation.Text, changed));
+                        //_logger.Debug(string.Format("FieldDb:[{0}], FieldInput:[{1}], changed: [{2}]", item.Key.Value, item.Value.EntryValidation.Text, changed));
                         if (changed)
                         {
                             item.Key.Value = item.Value.EntryValidation.Text;
@@ -339,10 +341,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     //Change Configuration : Currently only working outside Debugger, to prevent errors changing config with VS using app.config 
                     //System.ArgumentException: O nome de ficheiro 'c:\svn\logicpos\trunk\src\logicpos\bin\debug\logicpos.exe.config' é inválido porque o mesmo nome de ficheiro já é referido pela hierarquia de configuração aberta
-                    Dictionary<string, string> configurationValues = new Dictionary<string, string>();
-                    configurationValues.Add("xpoOidConfigurationCountrySystemCountry", _entryBoxSelectSystemCountry.Value.Oid.ToString());
-                    configurationValues.Add("xpoOidConfigurationCountrySystemCountryCountryCode2", _entryBoxSelectSystemCountry.Value.Code2);
-                    configurationValues.Add("xpoOidConfigurationCurrencySystemCurrency", _entryBoxSelectSystemCurrency.Value.Oid.ToString());
+                    Dictionary<string, string> configurationValues = new Dictionary<string, string>
+                    {
+                        { "xpoOidConfigurationCountrySystemCountry", _entryBoxSelectSystemCountry.Value.Oid.ToString() },
+                        { "xpoOidConfigurationCountrySystemCountryCountryCode2", _entryBoxSelectSystemCountry.Value.Code2 },
+                        { "xpoOidConfigurationCurrencySystemCurrency", _entryBoxSelectSystemCurrency.Value.Oid.ToString() }
+                    };
                     logicpos.Utils.AddUpdateSettings(configurationValues);
 
                     //Require to assign to SettingsApp Singleton : Now Working in InitPlataformParameters() to prevent save to config catch and this code is never be executed
@@ -369,7 +373,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             catch (Exception ex)
             {
                 // This Error Occurs only id Debugger is Attached
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

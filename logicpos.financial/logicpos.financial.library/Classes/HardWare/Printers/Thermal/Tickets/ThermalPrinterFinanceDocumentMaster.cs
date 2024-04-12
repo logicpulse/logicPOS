@@ -16,11 +16,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
     public class ThermalPrinterFinanceDocumentMaster : ThermalPrinterBaseFinanceTemplate
     {
         //Parameters Properties
-        private fin_documentfinancemaster _documentMaster;
+        private readonly fin_documentfinancemaster _documentMaster;
         //Business Objects
-        private List<FRBODocumentFinanceMasterView> _documentFinanceMasterList;
-        private List<FRBODocumentFinanceDetail> _documentFinanceDetailList;
-        private List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
+        private readonly List<FRBODocumentFinanceMasterView> _documentFinanceMasterList;
+        private readonly List<FRBODocumentFinanceDetail> _documentFinanceDetailList;
+        private readonly List<FRBODocumentFinanceMasterTotalView> _documentFinanceMasterTotalList;
 
         public ThermalPrinterFinanceDocumentMaster(sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
             : base(pPrinter, pDocumentMaster.DocumentType, pCopyNames, pSecondCopy)
@@ -39,7 +39,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Debug("ThermalPrinterFinanceDocumentMaster(sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive) :: " + ex.Message, ex);
+                _logger.Debug("ThermalPrinterFinanceDocumentMaster(sys_configurationprinters pPrinter, fin_documentfinancemaster pDocumentMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive) :: " + ex.Message, ex);
                 throw ex;
             }
         }
@@ -107,7 +107,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                         }
                     }
-                }catch(Exception ex) { _log.Error("QRCode print error: " + ex.Message); }
+                }catch(Exception ex) { _logger.Error("QRCode print error: " + ex.Message); }
 
                 //Get Hash4Chars from Hash
                 string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(_documentMaster.Hash);
@@ -116,7 +116,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Debug("override void PrintContent() :: Thermal Printer: " + ex.Message, ex);
+                _logger.Debug("override void PrintContent() :: Thermal Printer: " + ex.Message, ex);
                 throw ex;
             }
         }
@@ -203,7 +203,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Debug("void PrintDocumentDetails() :: Thermal Printer: " + ex.Message, ex);
+                _logger.Debug("void PrintDocumentDetails() :: Thermal Printer: " + ex.Message, ex);
                 throw ex;
             }
         }
@@ -266,7 +266,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Debug("void PrintDocumentDetail(TicketTable pTicketTable, FRBODocumentFinanceDetail pFinanceDetail, string pPaddingLeftFormat) :: Thermal Printer: " + ex.Message, ex);
+                _logger.Debug("void PrintDocumentDetail(TicketTable pTicketTable, FRBODocumentFinanceDetail pFinanceDetail, string pPaddingLeftFormat) :: Thermal Printer: " + ex.Message, ex);
                 throw ex;
             }
         }
@@ -359,9 +359,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
 
                 //Configure Ticket Column Properties
-                List<TicketColumn> columns = new List<TicketColumn>();
-                columns.Add(new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left));
-                columns.Add(new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right));
+                List<TicketColumn> columns = new List<TicketColumn>
+                {
+                    new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left),
+                    new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right)
+                };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
                 TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormalBold);
@@ -383,7 +385,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Debug("void PrintMasterTotals() :: Thermal Printer: " + ex.Message, ex);
+                _logger.Debug("void PrintMasterTotals() :: Thermal Printer: " + ex.Message, ex);
                 throw ex;
             }
         }
@@ -415,11 +417,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
 
                 //Configure Ticket Column Properties
-                List<TicketColumn> columns = new List<TicketColumn>();
-                columns.Add(new TicketColumn("Designation", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left));
-                columns.Add(new TicketColumn("Tax", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_tax"), 8, TicketColumnsAlign.Right));
-                columns.Add(new TicketColumn("TotalBase", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_tax_base"), 12, TicketColumnsAlign.Right));
-                columns.Add(new TicketColumn("Total", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlign.Right));
+                List<TicketColumn> columns = new List<TicketColumn>
+                {
+                    new TicketColumn("Designation", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left),
+                    new TicketColumn("Tax", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_tax"), 8, TicketColumnsAlign.Right),
+                    new TicketColumn("TotalBase", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_tax_base"), 12, TicketColumnsAlign.Right),
+                    new TicketColumn("Total", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlign.Right)
+                };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
                 TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormal);
@@ -431,7 +435,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Debug("void PrintMasterTotalTax() :: Thermal Printer: " + ex.Message, ex);
+                _logger.Debug("void PrintMasterTotalTax() :: Thermal Printer: " + ex.Message, ex);
                 throw ex;
             }
         }
@@ -487,7 +491,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Debug("void PrintDocumenWayBillDetails() :: Thermal Printer: " + ex.Message, ex);
+                _logger.Debug("void PrintDocumenWayBillDetails() :: Thermal Printer: " + ex.Message, ex);
                 throw ex;
             }
         }

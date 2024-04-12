@@ -12,7 +12,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_warehouse() : base() { }
         public fin_warehouse(Session session) : base(session) { }
 
-        string fOrd;
+        private string fOrd;
         [Indexed(Unique = true)]
         public string Ord
         {
@@ -20,7 +20,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Ord", ref fOrd, value); }
         }
 
-        string fCode;
+        private string fCode;
         [Indexed(Unique = true)]
         public string Code
         {
@@ -28,7 +28,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -36,7 +36,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        bool fIsDefault;
+        private bool fIsDefault;
         [Indexed(Unique = true)]
         public bool IsDefault
         {

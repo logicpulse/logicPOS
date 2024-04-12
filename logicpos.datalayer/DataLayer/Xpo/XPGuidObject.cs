@@ -13,8 +13,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
     public abstract class XPGuidObject : XPCustomObject
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private static bool debug = false;
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly bool debug = false;
 
         public XPGuidObject() : base() { }
         public XPGuidObject(Session pSession) : base(pSession) { }
@@ -33,15 +33,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         // Assigned by Childs and Store Properties References
         protected Dictionary<string, PropertyInfo> _encryptedAttributes;
-
-        Boolean fDisabled;
+        private Boolean fDisabled;
         public Boolean Disabled
         {
             get { return fDisabled; }
             set { SetPropertyValue<Boolean>("Disabled", ref fDisabled, value); }
         }
 
-        String fNotes;
+        private String fNotes;
         [Size(SizeAttribute.Unlimited)]
         public String Notes
         {
@@ -49,63 +48,63 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<String>("Notes", ref fNotes, value); }
         }
 
-        DateTime fCreatedAt;
+        private DateTime fCreatedAt;
         public DateTime CreatedAt
         {
             get { return fCreatedAt; }
             set { SetPropertyValue<DateTime>("CreatedAt", ref fCreatedAt, value); }
         }
 
-        sys_userdetail fCreatedBy;
+        private sys_userdetail fCreatedBy;
         public sys_userdetail CreatedBy
         {
             get { return fCreatedBy; }
             set { SetPropertyValue<sys_userdetail>("CreatedBy", ref fCreatedBy, value); }
         }
 
-        pos_configurationplaceterminal fCreatedWhere;
+        private pos_configurationplaceterminal fCreatedWhere;
         public pos_configurationplaceterminal CreatedWhere
         {
             get { return fCreatedWhere; }
             set { SetPropertyValue<pos_configurationplaceterminal>("CreatedWhere", ref fCreatedWhere, value); }
         }
 
-        DateTime fUpdatedAt;
+        private DateTime fUpdatedAt;
         public DateTime UpdatedAt
         {
             get { return fUpdatedAt; }
             set { SetPropertyValue<DateTime>("UpdatedAt", ref fUpdatedAt, value); }
         }
 
-        sys_userdetail fUpdatedBy;
+        private sys_userdetail fUpdatedBy;
         public sys_userdetail UpdatedBy
         {
             get { return fUpdatedBy; }
             set { SetPropertyValue<sys_userdetail>("UpdatedBy", ref fUpdatedBy, value); }
         }
 
-        pos_configurationplaceterminal fUpdatedWhere;
+        private pos_configurationplaceterminal fUpdatedWhere;
         public pos_configurationplaceterminal UpdatedWhere
         {
             get { return fUpdatedWhere; }
             set { SetPropertyValue<pos_configurationplaceterminal>("UpdatedWhere", ref fUpdatedWhere, value); }
         }
 
-        DateTime fDeletedAt;
+        private DateTime fDeletedAt;
         public DateTime DeletedAt
         {
             get { return fDeletedAt; }
             set { SetPropertyValue<DateTime>("DeletedAt", ref fDeletedAt, value); }
         }
 
-        sys_userdetail fDeletedBy;
+        private sys_userdetail fDeletedBy;
         public sys_userdetail DeletedBy
         {
             get { return fDeletedBy; }
             set { SetPropertyValue<sys_userdetail>("DeletedBy", ref fDeletedBy, value); }
         }
 
-        pos_configurationplaceterminal fDeletedWhere;
+        private pos_configurationplaceterminal fDeletedWhere;
         public pos_configurationplaceterminal DeletedWhere
         {
             get { return fDeletedWhere; }
@@ -224,7 +223,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             if (_encryptedAttributes != null && _encryptedAttributes.Count > 0)
             {
                 // Call SharedEncryptedDecryptProperties
-                if (debug) _log.Debug($"OnLoaded: [{this.GetType().Name}]");
+                if (debug) _logger.Debug($"OnLoaded: [{this.GetType().Name}]");
                 // DecryptProperties
                 DecryptProperties();
             }
@@ -243,7 +242,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         // Other events that may be Usefull
         //protected override void OnChanged(string propertyName, object oldValue, object newValue)
         //{
-        //    if (debug) _log.Debug($"OnChanged: [{this.GetType().Name}], propertyName: [{propertyName}]");
+        //    if (debug) _logger.Debug($"OnChanged: [{this.GetType().Name}], propertyName: [{propertyName}]");
         //
         //    if (_encryptedAttributes != null && _encryptedAttributes.Count > 0)
         //    {
@@ -253,7 +252,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //        // Call SharedEncryptedDecryptProperties
         //        if (propertyName.Equals("OptimisticLockFieldInDataLayer") && newValue.GetType() == typeof(string))
         //        {
-        //            _log.Debug($"OnChanged: [{this.GetType().Name}]");
+        //            _logger.Debug($"OnChanged: [{this.GetType().Name}]");
         //            SharedEncryptedDecryptProperties(false);
         //        }
         //    }
@@ -302,7 +301,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
                             if (referenceValue != null)
                             {
-                                if (debug) _log.Debug(string.Format("Added Property: [{0}], PropertyValue: [{1}]", propName, referenceValue));
+                                if (debug) _logger.Debug(string.Format("Added Property: [{0}], PropertyValue: [{1}]", propName, referenceValue));
                             }
                         }
                     }
@@ -332,8 +331,6 @@ namespace logicpos.datalayer.DataLayer.Xpo
         /// <param name="encrypt">Encrypt = True, Decrypt = false</param>
         private void SharedEncryptedDecryptProperties(bool encrypt)
         {
-            string sourcePropertValue = string.Empty;
-            object targetPropertValue = null;
             string modeString = (encrypt) ? "Encrypting" : "Decrypting";
             Type propertyType;
 
@@ -346,7 +343,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                     if (_encryptedAttributes[attr.Key] != null && _encryptedAttributes[attr.Key].GetValue(this, null) != null)
                     {
                         // Get value from Property (Plain or Encrypted value)
-                        sourcePropertValue = _encryptedAttributes[attr.Key].GetValue(this, null).ToString();
+                        string sourcePropertValue = _encryptedAttributes[attr.Key].GetValue(this, null).ToString();
                         // Get Type
                         propertyType = _encryptedAttributes[attr.Key].GetValue(this, null).GetType();
 
@@ -355,6 +352,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                         {
                             try
                             {
+                                object targetPropertValue;
                                 // Encrypted
                                 if (encrypt)
                                 {
@@ -374,11 +372,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
                                 _isEncrypted = encrypt;
 
                                 // Show Log
-                                if (debug) _log.Debug(string.Format("{0} Property type :[{1}]: [{2}], value: [{3}] to [{4}]", modeString, propertyType, attr.Key, sourcePropertValue, targetPropertValue));
+                                if (debug) _logger.Debug(string.Format("{0} Property type :[{1}]: [{2}], value: [{3}] to [{4}]", modeString, propertyType, attr.Key, sourcePropertValue, targetPropertValue));
                             }
                             catch (Exception ex)
                             {
-                                _log.Debug(ex.Message, ex);
+                                _logger.Debug(ex.Message, ex);
                             }
                         }
                     }
@@ -401,8 +399,6 @@ namespace logicpos.datalayer.DataLayer.Xpo
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
             Dictionary<string, PropertyInfo> result = new Dictionary<string, PropertyInfo>();
-            string key = string.Empty;
-
             try
             {
                 PropertyInfo[] props = type.GetProperties();
@@ -416,7 +412,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                         // Add Only Encrypted properties
                         if ((onlyEncrypted && (attribute[0] as XPGuidObjectAttribute).Encrypted) || !onlyEncrypted)
                         {
-                            key = (forceLowerCaseKeys) ? prop.Name.ToLower() : prop.Name;
+                            string key = (forceLowerCaseKeys) ? prop.Name.ToLower() : prop.Name;
                             result.Add(key, prop);
                         }
                     }

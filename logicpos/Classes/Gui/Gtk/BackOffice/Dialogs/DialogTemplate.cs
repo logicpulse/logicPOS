@@ -8,7 +8,7 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogTemplate : BOBaseDialog
+    internal class DialogTemplate : BOBaseDialog
     {
         public DialogTemplate(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
@@ -148,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -158,12 +158,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             GenericCRUDWidgetXPO genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget("Designation") as GenericCRUDWidgetXPO);
 
-            _log.Debug(string.Format("Field: [{0}]", genericCRUDWidgetXPO.FieldName));
-            _log.Debug(string.Format("FieldType: [{0}]", genericCRUDWidgetXPO.FieldType));
-            _log.Debug(string.Format("Label.Text: [{0}]", genericCRUDWidgetXPO.Label.Text));
-            _log.Debug(string.Format("Source: [{0}]", genericCRUDWidgetXPO.DataSourceRow));
-            _log.Debug(string.Format("Source.Designation: [{0}]", (genericCRUDWidgetXPO.DataSourceRow as fin_articlefamily).Designation));
-            _log.Debug(string.Format("Widget.Value: [{0}]", (genericCRUDWidgetXPO.Widget as Entry).Text));
+            _logger.Debug(string.Format("Field: [{0}]", genericCRUDWidgetXPO.FieldName));
+            _logger.Debug(string.Format("FieldType: [{0}]", genericCRUDWidgetXPO.FieldType));
+            _logger.Debug(string.Format("Label.Text: [{0}]", genericCRUDWidgetXPO.Label.Text));
+            _logger.Debug(string.Format("Source: [{0}]", genericCRUDWidgetXPO.DataSourceRow));
+            _logger.Debug(string.Format("Source.Designation: [{0}]", (genericCRUDWidgetXPO.DataSourceRow as fin_articlefamily).Designation));
+            _logger.Debug(string.Format("Widget.Value: [{0}]", (genericCRUDWidgetXPO.Widget as Entry).Text));
         }
         */
     }

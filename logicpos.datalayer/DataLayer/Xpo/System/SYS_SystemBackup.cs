@@ -10,21 +10,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systembackup() : base() { }
         public sys_systembackup(Session session) : base(session) { }
 
-        DatabaseType fDataBaseType;
+        private DatabaseType fDataBaseType;
         public DatabaseType DataBaseType
         {
             get { return fDataBaseType; }
             set { SetPropertyValue<DatabaseType>("DataBaseType", ref fDataBaseType, value); }
         }
 
-        UInt32 fVersion;
+        private UInt32 fVersion;
         public UInt32 Version
         {
             get { return fVersion; }
             set { SetPropertyValue<UInt32>("Version", ref fVersion, value); }
         }
 
-        string fFileName;
+        private string fFileName;
         [Indexed(Unique = true), Size(255)]
         public string FileName
         {
@@ -32,7 +32,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FileName", ref fFileName, value); }
         }
 
-        string fFileNamePacked;
+        private string fFileNamePacked;
         [Indexed(Unique = true), Size(255)]
         public string FileNamePacked
         {
@@ -40,14 +40,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FileNamePacked", ref fFileNamePacked, value); }
         }
 
-        string fFilePath;
+        private string fFilePath;
         public string FilePath
         {
             get { return fFilePath; }
             set { SetPropertyValue<string>("FilePath", ref fFilePath, value); }
         }
 
-        string fFileHash;
+        private string fFileHash;
         [Size(255)]
         public string FileHash
         {
@@ -55,14 +55,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FileHash", ref fFileHash, value); }
         }
 
-        sys_userdetail fUser;
+        private sys_userdetail fUser;
         public sys_userdetail User
         {
             get { return fUser; }
             set { SetPropertyValue<sys_userdetail>("User", ref fUser, value); }
         }
 
-        pos_configurationplaceterminal fTerminal;
+        private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }

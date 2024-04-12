@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class CheckButtonBoxGroup : EntryBoxBase
+    internal class CheckButtonBoxGroup : EntryBoxBase
     {
-        private bool _debug = false;
+        private readonly bool _debug = false;
 
         //Full Buttons List
         private List<CheckButtonExtended> _buttons = new List<CheckButtonExtended>();
@@ -24,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             get { return _items; }
             set { _items = value; }
         }
-        private List<int> _itemsList = new List<int>();
+        private readonly List<int> _itemsList = new List<int>();
         public List<int> ItemsList
         {
             get {
@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Vbox.PackStart(eventBox);
         }
 
-        void checkButtonExtended_Clicked(object sender, EventArgs e)
+        private void checkButtonExtended_Clicked(object sender, EventArgs e)
         {
             try
             {
@@ -89,19 +89,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Debug Items
                 if (_debug)
                 {
-                    _log.Debug(Environment.NewLine);
+                    _logger.Debug(Environment.NewLine);
                     foreach (var item in _items)
                     {
-                        _log.Debug(string.Format("item[{0}]: [{1}]", item.Key, item.Value.Label));
+                        _logger.Debug(string.Format("item[{0}]: [{1}]", item.Key, item.Value.Label));
                     }
                 }
 
                 //If Assigned Redirect to Caller
-                if (Clicked != null) Clicked(sender, e);
+                Clicked?.Invoke(sender, e);
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 

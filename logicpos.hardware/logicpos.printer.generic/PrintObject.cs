@@ -10,9 +10,8 @@ namespace logicpos.printer.generic
     public class PrintObject : IComparable<PrintObject>
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        int _objectType = 0; //0 canvas //1 text //2 image //3 barcode
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private int _objectType = 0; //0 canvas //1 text //2 image //3 barcode
 
         public int ObjectType
         {
@@ -20,29 +19,28 @@ namespace logicpos.printer.generic
             set { _objectType = value; }
         }
 
-        string _text = string.Empty;
+        private string _text = string.Empty;
         public string Text
         {
             get { return _text; }
             set { _text = value; }
         }
 
-        int index = 0;
+        private int index = 0;
         public int Index
         {
             get { return index; }
             set { index = value; }
         }
 
-
-        double _fontSize = 0;
+        private double _fontSize = 0;
         public double FontSize
         {
             get { return _fontSize; }
             set { _fontSize = value; }
         }
 
-        string _fontStyle = "normal";
+        private string _fontStyle = "normal";
         /// <summary>
         /// Normal; Bold; Italic
         /// </summary>
@@ -52,7 +50,7 @@ namespace logicpos.printer.generic
             set { _fontStyle = value; }
         }
 
-        string _style = "Normal";
+        private string _style = "Normal";
         /// <summary>
         /// Normal; Bold; Italic
         /// </summary>
@@ -62,7 +60,7 @@ namespace logicpos.printer.generic
             set { _style = value; }
         }
 
-        string _type = "";
+        private string _type = "";
         /// <summary>
         /// Normal; Bold; Italic
         /// </summary>
@@ -72,7 +70,7 @@ namespace logicpos.printer.generic
             set { _type = value; }
         }
 
-        string _text_Align = "Justify";
+        private string _text_Align = "Justify";
 
         /// <summary>
         /// "Center" , "Justify", "Left", "Right"
@@ -83,50 +81,50 @@ namespace logicpos.printer.generic
             set { _text_Align = value; }
         }
 
-
-        int _posX = 0;
+        private int _posX = 0;
         public int PosX
         {
             get { return _posX; }
             set { _posX = value; }
         }
 
-        int _posY = 0;
+        private int _posY = 0;
         public int PosY
         {
             get { return _posY; }
             set { _posY = value; }
         }
 
-        int _width = 0;
+        private int _width = 0;
         public int Width
         {
             get { return _width; }
             set { _width = value; }
         }
 
-        int _height = 0;
+        private int _height = 0;
         public int Height
         {
             get { return _height; }
             set { _height = value; }
         }
 
-        int _firstProductPosition = 0;
+        private int _firstProductPosition = 0;
         public int FirstProductPosition
         {
             get { return _firstProductPosition; }
             set { _firstProductPosition = value; }
         }
 
-        int _line = -1;
+        private int _line = -1;
 
         public int Line
         {
             get { return _line; }
             set { _line = value; }
         }
-        int _col = -1;
+
+        private int _col = -1;
 
         public int Col
         {
@@ -134,7 +132,7 @@ namespace logicpos.printer.generic
             set { _col = value; }
         }
 
-        string _value = string.Empty;
+        private string _value = string.Empty;
 
         public string Value
         {
@@ -142,7 +140,7 @@ namespace logicpos.printer.generic
             set { _value = value; }
         }
 
-        string _barcodeType = string.Empty;
+        private string _barcodeType = string.Empty;
 
         public string BarcodeType
         {
@@ -150,7 +148,7 @@ namespace logicpos.printer.generic
             set { _barcodeType = value; }
         }
 
-        string _textLocation = string.Empty;
+        private string _textLocation = string.Empty;
 
         public string TextLocation
         {
@@ -200,10 +198,9 @@ namespace logicpos.printer.generic
                 switch (elem.Name)
                 {
                     case "zIndex":
-                        int index = 0;
                         try
                         {
-                            index = Convert.ToInt32(elem.InnerText);
+                            int index = Convert.ToInt32(elem.InnerText);
                         }
                         catch { }
                         break;
@@ -366,16 +363,13 @@ namespace logicpos.printer.generic
 
         public void printTicket(DataTable dataLoop, DataTable dataStatic, string pDriver, string pPrinterName, string pathXml)
         {
-            _log.Debug($"BO printTicket {pDriver}:pPrinterName{pPrinterName}");
+            _logger.Debug($"BO printTicket {pDriver}:pPrinterName{pPrinterName}");
 
             int coluneSize = 8;
             int LineSize = 20;
-
-            string strXml = string.Empty;
-
             XmlDocument xml = new XmlDocument();
 
-            strXml = GetXmlString(pathXml);
+            string strXml = GetXmlString(pathXml);
             xml.LoadXml(strXml);
 
 
@@ -409,7 +403,7 @@ namespace logicpos.printer.generic
                     break;
             }
 
-            _log.Debug("EO printTicket");
+            _logger.Debug("EO printTicket");
         }
 
         private string GetXmlString(string strFile)
@@ -436,10 +430,12 @@ namespace logicpos.printer.generic
             XmlDocument xmlDoc = new XmlDocument();
 
             //load all reserved strings and values from POS database
-            Hashtable ReserverHValues = new Hashtable();
-            ReserverHValues.Add("[DateTime]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
-            ReserverHValues.Add("[Date]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
-            ReserverHValues.Add("[Time]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
+            Hashtable ReserverHValues = new Hashtable
+            {
+                { "[DateTime]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") },
+                { "[Date]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") },
+                { "[Time]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") }
+            };
 
 
             foreach (DictionaryEntry pair in ReserverHValues)
@@ -457,12 +453,14 @@ namespace logicpos.printer.generic
             XmlDocument xmlDoc = new XmlDocument();
 
             //load all reserved strings and values from POS database
-            Hashtable ReserverHValues = new Hashtable();
-            ReserverHValues.Add("[DateTime]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"));
-            ReserverHValues.Add("[Date]", DateTime.Now.ToString("dd/MM/yyyy"));
-            ReserverHValues.Add("[Time]", DateTime.Now.ToString("HH:mm:ss"));
-            ReserverHValues.Add("º", "");
-            ReserverHValues.Add("ª", "");
+            Hashtable ReserverHValues = new Hashtable
+            {
+                { "[DateTime]", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") },
+                { "[Date]", DateTime.Now.ToString("dd/MM/yyyy") },
+                { "[Time]", DateTime.Now.ToString("HH:mm:ss") },
+                { "º", "" },
+                { "ª", "" }
+            };
 
 
             foreach (DictionaryEntry pair in ReserverHValues)
@@ -513,7 +511,7 @@ namespace logicpos.printer.generic
             }
             catch (Exception ex)
             {
-                _log.Error("void OpenDoor(string pDriver, string pPrinterName, int m, int t1, int t2) :: " + ex.Message, ex);
+                _logger.Error("void OpenDoor(string pDriver, string pPrinterName, int m, int t1, int t2) :: " + ex.Message, ex);
             }
         }
     }

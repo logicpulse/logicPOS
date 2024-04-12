@@ -10,6 +10,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
@@ -20,17 +21,23 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosPaymentsDialog
+    internal partial class PosPaymentsDialog
     {
         //Commmon Button Event
-        void buttonCheck_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
-        void buttonMB_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
-        void buttonCredit_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+        private void buttonCheck_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+
+        private void buttonMB_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+
+        private void buttonCredit_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+
         /* IN009142 */
-        void buttonDebitCard_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
-        void buttonVisa_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
-        void buttonCurrentAccount_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
-        void buttonCustomerCard_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+        private void buttonDebitCard_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+
+        private void buttonVisa_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+
+        private void buttonCurrentAccount_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
+
+        private void buttonCustomerCard_Clicked(object sender, EventArgs e) { AssignPaymentMethod(sender); }
 
         //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
         private decimal newValuePrice = 0.00m;
@@ -204,8 +211,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                                 {
                                     _processFinanceDocumentParameter.DocumentParent = conferenceDocument.Oid;
-                                    _processFinanceDocumentParameter.OrderReferences = new List<fin_documentfinancemaster>();
-                                    _processFinanceDocumentParameter.OrderReferences.Add(conferenceDocument);
+                                    _processFinanceDocumentParameter.OrderReferences = new List<fin_documentfinancemaster>
+                                    {
+                                        conferenceDocument
+                                    };
                                 }
 
                                 // PreventPersistFinanceDocument : Used in SplitPayments, to get ProcessFinanceDocumentParameter and Details without PreventPersistFinanceDocument
@@ -305,9 +314,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
-                string errorMessage = string.Empty;
-
+                _logger.Error(ex.Message, ex);
+                string errorMessage;
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
@@ -331,7 +339,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void buttonMoney_Clicked(object sender, EventArgs e)
+        private void buttonMoney_Clicked(object sender, EventArgs e)
         {
             //Settings
             int decimalRoundTo = SettingsApp.DecimalRoundTo;
@@ -412,7 +420,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void _entryBoxCountry_EntryValidation_FocusGrabbed(object sender, EventArgs e)
+        private void _entryBoxCountry_EntryValidation_FocusGrabbed(object sender, EventArgs e)
         {
             EntryValidation entryValidation = (EntryValidation)sender;
             //Initialize Country DeafultValue
@@ -457,7 +465,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Enable Sender
             _selectedPaymentMethodButton = (TouchButtonBase)pSender;
             _selectedPaymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), _selectedPaymentMethodButton.CurrentButtonOid);
-            //_log.Debug(string.Format("AssignPaymentMethod: ButtonName: [{0}], PaymentMethodToken: [{1}]", _selectedPaymentMethodButton.Name, _selectedPaymentMethod.Token));
+            //_logger.Debug(string.Format("AssignPaymentMethod: ButtonName: [{0}], PaymentMethodToken: [{1}]", _selectedPaymentMethodButton.Name, _selectedPaymentMethod.Token));
 
             if (_selectedPaymentMethod.Token == "MONEY")
             {
@@ -534,16 +542,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Validate Change Value
                 if (_totalChange >= 0)
                 {
-                    _labelChangeValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
+                    _labelChangeValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
                 }
                 else
                 {
-                    _labelChangeValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorEntryValidationInvalidFont));
+                    _labelChangeValue.ModifyFg(StateType.Normal, _colorEntryValidationInvalidFont.ToGdkColor());
                 };
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -678,7 +686,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             finally
             {
@@ -735,7 +743,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             finally
             {
@@ -752,7 +760,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 //Init Variables
                 decimal totalDocument = (_articleBagPartialPayment == null) ? _articleBagFullPayment.TotalFinal : _articleBagPartialPayment.TotalFinal;
-                bool isFinalConsumerEntity = (_selectedCustomer != null && _selectedCustomer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity) ? true : false;
+                bool isFinalConsumerEntity = (_selectedCustomer != null && _selectedCustomer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 // Encrypt pFieldValue to use in Sql Filter
                 string fiscalNumberFilterValue = string.Empty;
@@ -897,7 +905,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -905,7 +913,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Update Address And FiscalNumber Require Fields
         private void UpdateCustomerAddressAndFiscalNumberRequireFields()
         {
-            bool isFinalConsumerEntity = (_selectedCustomer != null && _selectedCustomer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity) ? true : false;
+            bool isFinalConsumerEntity = (_selectedCustomer != null && _selectedCustomer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
             bool isSingularEntity = (
                 isFinalConsumerEntity ||
                 _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
@@ -1036,10 +1044,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 else if (_dialogPartialPayment.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
                 {
-                    actionAreaButtonOk.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0) ? true : false;
+                    actionAreaButtonOk.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0);
 					
 					//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
-                    actionAreaButtonChangePrice.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0) ? true : false;
+                    actionAreaButtonChangePrice.Button.Sensitive = (_dialogPartialPayment.GenericTreeView.MarkedCheckBoxs > 0);
                     
 					//Get Indexes
                     int indexColumnCheckBox = _dialogPartialPayment.GenericTreeView.DataSource.Columns.IndexOf("CheckBox");
@@ -1065,7 +1073,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _dialogPartialPayment.Destroy();
         }
 
-        void dialogPartialPayment_Response(object o, ResponseArgs args)
+        private void dialogPartialPayment_Response(object o, ResponseArgs args)
         {
             PosSelectRecordDialog<DataTable, DataRow, TreeViewPartialPayment>
               dialog = (PosSelectRecordDialog<DataTable, DataRow, TreeViewPartialPayment>)o;
@@ -1134,7 +1142,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     //Always get values from DataTable, this way we have Types :)
                     Guid itemGuid = (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")];
-                    //_log.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
+                    //_logger.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
 
                     //Prepare articleBag Key and Props
                     articleBagKey = new ArticleBagKey(
@@ -1165,7 +1173,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return false;
@@ -1213,7 +1221,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             //Always get values from DataTable, this way we have Types :)
                             Guid itemGuid = (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")];
-                            //_log.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
+                            //_logger.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
 
                             //Calculate values with new price
                             decimal vatRate = (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")];
@@ -1255,7 +1263,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return false;

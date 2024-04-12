@@ -33,14 +33,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             CodeInternal = FrameworkUtils.GuidToStringId(Oid.ToString());
         }
 
-        UInt32 _Ord;
+        private UInt32 _Ord;
         public UInt32 Ord
         {
             get { return _Ord; }
             set { SetPropertyValue<UInt32>("Ord", ref _Ord, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -48,7 +48,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        String fCodeInternal;
+        private String fCodeInternal;
         [Indexed(Unique = true), Size(30)]
         public String CodeInternal
         {
@@ -56,7 +56,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<String>("CodeInternal", ref fCodeInternal, value); }
         }
 
-        string fName;
+        private string fName;
         [Size(512)]
         [XPGuidObject(Encrypted = true)]
         public string Name
@@ -65,7 +65,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Name", ref fName, value); }
         }
 
-        string fResidence;
+        private string fResidence;
         [Size(512)]
         [XPGuidObject(Encrypted = true)]
         public string Residence
@@ -74,7 +74,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Residence", ref fResidence, value); }
         }
 
-        string fLocality;
+        private string fLocality;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Locality
@@ -83,7 +83,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Locality", ref fLocality, value); }
         }
 
-        string fZipCode;
+        private string fZipCode;
         [XPGuidObject(Encrypted = true)]
         public string ZipCode
         {
@@ -91,7 +91,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ZipCode", ref fZipCode, value); }
         }
 
-        string fCity;
+        private string fCity;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string City
@@ -100,7 +100,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("City", ref fCity, value); }
         }
 
-        string fDateOfContract;
+        private string fDateOfContract;
         [XPGuidObject(Encrypted = true)]
         public string DateOfContract
         {
@@ -108,7 +108,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DateOfContract", ref fDateOfContract, value); }
         }
 
-        string fPhone;
+        private string fPhone;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Phone
@@ -117,7 +117,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Phone", ref fPhone, value); }
         }
 
-        string fMobilePhone;
+        private string fMobilePhone;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string MobilePhone
@@ -126,7 +126,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("MobilePhone", ref fMobilePhone, value); }
         }
 
-        string fEmail;
+        private string fEmail;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Email
@@ -135,7 +135,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Email", ref fEmail, value); }
         }
 
-        string fFiscalNumber;
+        private string fFiscalNumber;
         //[Indexed(Unique = true)]
         [XPGuidObject(Encrypted = true)]
         public string FiscalNumber
@@ -144,21 +144,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FiscalNumber", ref fFiscalNumber, value); }
         }
 
-        string fLanguage;
+        private string fLanguage;
         public string Language
         {
             get { return fLanguage; }
             set { SetPropertyValue<string>("Language", ref fLanguage, value); }
         }
 
-        string fAssignedSeating;
+        private string fAssignedSeating;
         public string AssignedSeating
         {
             get { return fAssignedSeating; }
             set { SetPropertyValue<string>("AssignedSeating", ref fAssignedSeating, value); }
         }
 
-        string fAccessPin;
+        private string fAccessPin;
         [Size(255)]
         [Indexed(Unique = true)]
         public string AccessPin
@@ -167,21 +167,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("AccessPin", ref fAccessPin, value); }
         }
 
-        string fAccessCardNumber;
+        private string fAccessCardNumber;
         public string AccessCardNumber
         {
             get { return fAccessCardNumber; }
             set { SetPropertyValue<string>("AccessCardNumber", ref fAccessCardNumber, value); }
         }
 
-        string fLogin;
+        private string fLogin;
         public string Login
         {
             get { return fLogin; }
             set { SetPropertyValue<string>("Login", ref fLogin, value); }
         }
 
-        string fPassword;
+        private string fPassword;
         [Size(255)]
         public string Password
         {
@@ -189,49 +189,49 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Password", ref fPassword, value); }
         }
 
-        Boolean fPasswordReset;
+        private Boolean fPasswordReset;
         public Boolean PasswordReset
         {
             get { return fPasswordReset; }
             set { SetPropertyValue<Boolean>("PasswordReset", ref fPasswordReset, value); }
         }
 
-        DateTime fPasswordResetDate;
+        private DateTime fPasswordResetDate;
         public DateTime PasswordResetDate
         {
             get { return fPasswordResetDate; }
             set { SetPropertyValue<DateTime>("PasswordResetDate", ref fPasswordResetDate, value); }
         }
 
-        string fBaseConsumption;
+        private string fBaseConsumption;
         public string BaseConsumption
         {
             get { return fBaseConsumption; }
             set { SetPropertyValue<string>("BaseConsumption", ref fBaseConsumption, value); }
         }
 
-        string fBaseOffers;
+        private string fBaseOffers;
         public string BaseOffers
         {
             get { return fBaseOffers; }
             set { SetPropertyValue<string>("BaseOffers", ref fBaseOffers, value); }
         }
 
-        string fPVPOffers;
+        private string fPVPOffers;
         public string PVPOffers
         {
             get { return fPVPOffers; }
             set { SetPropertyValue<string>("PVPOffers", ref fPVPOffers, value); }
         }
 
-        string fRemarks;
+        private string fRemarks;
         public string Remarks
         {
             get { return fRemarks; }
             set { SetPropertyValue<string>("Remarks", ref fRemarks, value); }
         }
 
-        string fButtonImage;
+        private string fButtonImage;
         [Size(255)]
         public string ButtonImage
         {
@@ -240,7 +240,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserProfile One <> Many User
-        sys_userprofile fProfile;
+        private sys_userprofile fProfile;
         [Association(@"UserProfileReferencesUserDetail")]
         public sys_userprofile Profile
         {
@@ -249,7 +249,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //CommissionGroup One <> Many User
-        pos_usercommissiongroup fCommissionGroup;
+        private pos_usercommissiongroup fCommissionGroup;
         [Association(@"UserCommissionGroupReferencesUserDetail")]
         public pos_usercommissiongroup CommissionGroup
         {

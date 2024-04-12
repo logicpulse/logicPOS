@@ -15,21 +15,22 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosDocumentFinancePrintDialog : PosBaseDialog
+    internal class PosDocumentFinancePrintDialog : PosBaseDialog
     {
         //UI
         private VBox _vboxContent;
         private CheckButtonBoxGroup _checkButtonCopyNamesBoxGroup;
         private CheckButtonBox _checkButtonBoxSecondCopy;
         private EntryBoxValidation _entryBoxValidationBoxMotive;
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+
         //Properties
-        int _printCopies = 0;
-        private bool _requestMotive = false;
+        private int _printCopies = 0;
+        private readonly bool _requestMotive = false;
         private bool _secondCopy = false;
         //Parameters
-        private fin_documentfinancemaster _documentFinanceMaster;
+        private readonly fin_documentfinancemaster _documentFinanceMaster;
 
         public PosDocumentFinancePrintDialog(Window pSourceWindow, DialogFlags pDialogFlags, fin_documentfinancemaster pDocumentFinanceMaster)
             : base(pSourceWindow, pDialogFlags)
@@ -49,9 +50,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             //Call 
             InitUI();
@@ -66,11 +69,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             _vboxContent = new VBox(false, 0);
 
-            Dictionary<string, bool> buttonGroup = new Dictionary<string, bool>();
-            buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title1"), (_printCopies >= 1));
-            buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title2"), (_printCopies >= 2));
-            buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title3"), (_printCopies >= 3));
-            buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title4"), (_printCopies >= 4));
+            Dictionary<string, bool> buttonGroup = new Dictionary<string, bool>
+            {
+                { resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title1"), (_printCopies >= 1) },
+                { resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title2"), (_printCopies >= 2) },
+                { resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title3"), (_printCopies >= 3) },
+                { resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title4"), (_printCopies >= 4) }
+            };
             //Not Used Anymore
             //buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title5, (_printCopies >= 5));
             //buttonGroup.Add(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_copy_title6, (_printCopies >= 6));
@@ -107,7 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             UpdateUI();
         }
 
-        void checkButtonBox1_Clicked(object sender, EventArgs e)
+        private void checkButtonBox1_Clicked(object sender, EventArgs e)
         {
             //Force CheckBox1 to be always Active if is not in SecondCopy Mode
             if (_checkButtonBoxSecondCopy != null && !_checkButtonBoxSecondCopy.Active)/* IN009074 */
@@ -116,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void checkButtonBoxSecondCopy_Clicked(object sender, EventArgs e)
+        private void checkButtonBoxSecondCopy_Clicked(object sender, EventArgs e)
         {
             _secondCopy = _checkButtonBoxSecondCopy.Active;
             //Update and Validate
@@ -124,12 +129,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Validate();
         }
 
-        void checkButtonCopyNamesBoxGroup_Clicked(object sender, EventArgs e)
+        private void checkButtonCopyNamesBoxGroup_Clicked(object sender, EventArgs e)
         {
             Validate();
         }
 
-        void EntryValidation_Changed(object sender, EventArgs e)
+        private void EntryValidation_Changed(object sender, EventArgs e)
         {
             Validate();
         }
@@ -252,7 +257,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     "SELECT Printed FROM fin_documentfinancemaster WHERE Oid = '{0}';", 
                     pDocumentFinanceMaster.Oid)
                 );
-                bool printed = (sqlResPrinted != null) ? Convert.ToBoolean(sqlResPrinted) : false;
+                bool printed = (sqlResPrinted != null) && Convert.ToBoolean(sqlResPrinted);
 
                 //Call Re-Print Dialog
                 if (printed)

@@ -18,7 +18,7 @@ using System.Threading;
 
 namespace logicpos.financial.console
 {
-    class Program
+    internal class Program
     {
         //Log4Net basics with a Console Application (c#)
         //http://geekswithblogs.net/MarkPearl/archive/2012/01/30/log4net-basics-with-a-console-application-c.aspx
@@ -26,12 +26,12 @@ namespace logicpos.financial.console
         //[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static SortedList<string, Action> _testActions;
-        private static string _line = string.Empty;
+        private static readonly string _line = string.Empty;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //Init Settings Main Config Settings
             GlobalFramework.Settings = ConfigurationManager.AppSettings;
@@ -74,9 +74,11 @@ namespace logicpos.financial.console
                 GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
 
                 // Init Paths
-                GlobalFramework.Path = new Hashtable();
-                GlobalFramework.Path.Add("temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]));
-                GlobalFramework.Path.Add("saftpt", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathSaftPt"]));
+                GlobalFramework.Path = new Hashtable
+                {
+                    { "temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]) },
+                    { "saftpt", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathSaftPt"]) }
+                };
                 //Create Directories
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["saftpt"])));
@@ -90,13 +92,13 @@ namespace logicpos.financial.console
                 //Init XPO Connector DataLayer
                 try
                 {
-                    _log.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
+                    _logger.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     throw;
                 }
 
@@ -130,7 +132,7 @@ namespace logicpos.financial.console
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -155,83 +157,100 @@ namespace logicpos.financial.console
                 GlobalApp.PrinterExportPDF = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.XpoOidPrinterExportPDF);
                 GlobalApp.PrinterThermal = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.XpoOidPrinterThermal);
 
-                if (GlobalFramework.LoggedTerminal == null) _log.Debug("Invalid Printer. Working Without Printer");
+                if (GlobalFramework.LoggedTerminal == null) _logger.Debug("Invalid Printer. Working Without Printer");
                 //Override Licence
                 GlobalFramework.LicenceCompany = "Logicpulse : Demonstração";
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         private static void InitTestActions()
         {
             // Init Dictionary
-            _testActions = new SortedList<string, Action>();
+            _testActions = new SortedList<string, Action>
+            {
+                // Add Tests
+                //FrameworkUtils
+                //_testActions.Add("01) FrameworkUtils.CurrentDateTimeAtomic()", () => FrameworkUtils.CurrentDateTimeAtomic());
 
-            // Add Tests
-            //FrameworkUtils
-            //_testActions.Add("01) FrameworkUtils.CurrentDateTimeAtomic()", () => FrameworkUtils.CurrentDateTimeAtomic());
+                //WebService
+                {
+                    "01) TestWSInterface.GetSecurityToken()",
+                    () =>
+                    TestWSInterface.GetSecurityToken()
+                },
 
-            //WebService
-            _testActions.Add("01) TestWSInterface.GetSecurityToken()", () => 
-                TestWSInterface.GetSecurityToken()
-            );
-
-/*
-            //ArticleBag
-            _testActions.Add("02) TestArticleBag.ShowArticleBag()", () => 
-                TestArticleBag.ShowArticleBag()
-            );
-            //PersistFinanceDocument
-            _testActions.Add("03) TestProcessFinanceDocument.PersistFinanceDocument(Empty)", () => 
-                TestProcessFinanceDocument.PersistFinanceDocumentMinimal(Guid.Empty)
-            );
-            _testActions.Add("04) TestProcessFinanceDocument.PersistFinanceDocument(SimplifiedInvoice)", () => 
-                TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice)
-            );
-            _testActions.Add("05) TestProcessFinanceDocument.PersistFinanceDocument(Invoice)", () => 
-                TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeInvoice)
-            );
-            _testActions.Add("06) TestProcessFinanceDocument.PersistFinanceDocument(CreditNote)", () => 
-                TestProcessFinanceDocument.PersistFinanceDocumentCreditNote(SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
-            );
-            _testActions.Add("07) TestProcessFinanceDocument.PersistFinanceDocument(ConsignationInvoice)", () => 
-                TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice)
-            );
-            //PersistFinanceDocumentPayment
-            _testActions.Add("08) TestProcessFinanceDocument.PersistFinanceDocumentPayment()", () => 
-                TestProcessFinanceDocument.PersistFinanceDocumentPayment()
-            );
-            //Test PDF
-            _testActions.Add("09) TestCustomReport.DocumentMasterCreatePDF()", () => 
-                TestCustomReport.DocumentMasterCreatePDF()
-            );
-*/
-            //OpenDoor
-            _testActions.Add("02) TestThermalPrinterGeneric.OpenDoor()", () => 
-                TestThermalPrinterGeneric.OpenDoor(GlobalApp.PrinterThermal)
-            );
-            //Thermal Printer test Documents
-            _testActions.Add("03) TestThermalPrinterGeneric.Print()", () => 
-                TestThermalPrinterGeneric.Print(GlobalApp.PrinterThermal)
-            );
-            _testActions.Add("04) TestThermalPrinterFinanceDocument.Print()", () => 
-                TestThermalPrinterFinanceDocumentMaster.Print(GlobalApp.PrinterThermal)
-            );
-            _testActions.Add("05) TestThermalPrinterFinanceDocumentPayment.Print()", () => 
-                TestThermalPrinterFinanceDocumentPayment.Print(GlobalApp.PrinterThermal)
-            );
-            _testActions.Add("06) TestThermalPrinterInternalDocumentOrderRequest.Print()", () => 
-                TestThermalPrinterInternalDocumentOrderRequest.Print(GlobalApp.PrinterThermal)
-            );
-            _testActions.Add("07) TestThermalPrinterInternalDocumentCashDrawer.Print()", () => 
-                TestThermalPrinterInternalDocumentCashDrawer.Print(GlobalApp.PrinterThermal)
-            );
-            _testActions.Add("08) TestThermalPrinterInternalDocumentWorkSession.Print()", () => 
-                TestThermalPrinterInternalDocumentWorkSession.Print(GlobalApp.PrinterThermal)
-            );
+                /*
+                            //ArticleBag
+                            _testActions.Add("02) TestArticleBag.ShowArticleBag()", () => 
+                                TestArticleBag.ShowArticleBag()
+                            );
+                            //PersistFinanceDocument
+                            _testActions.Add("03) TestProcessFinanceDocument.PersistFinanceDocument(Empty)", () => 
+                                TestProcessFinanceDocument.PersistFinanceDocumentMinimal(Guid.Empty)
+                            );
+                            _testActions.Add("04) TestProcessFinanceDocument.PersistFinanceDocument(SimplifiedInvoice)", () => 
+                                TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice)
+                            );
+                            _testActions.Add("05) TestProcessFinanceDocument.PersistFinanceDocument(Invoice)", () => 
+                                TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeInvoice)
+                            );
+                            _testActions.Add("06) TestProcessFinanceDocument.PersistFinanceDocument(CreditNote)", () => 
+                                TestProcessFinanceDocument.PersistFinanceDocumentCreditNote(SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
+                            );
+                            _testActions.Add("07) TestProcessFinanceDocument.PersistFinanceDocument(ConsignationInvoice)", () => 
+                                TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice)
+                            );
+                            //PersistFinanceDocumentPayment
+                            _testActions.Add("08) TestProcessFinanceDocument.PersistFinanceDocumentPayment()", () => 
+                                TestProcessFinanceDocument.PersistFinanceDocumentPayment()
+                            );
+                            //Test PDF
+                            _testActions.Add("09) TestCustomReport.DocumentMasterCreatePDF()", () => 
+                                TestCustomReport.DocumentMasterCreatePDF()
+                            );
+                */
+                //OpenDoor
+                {
+                    "02) TestThermalPrinterGeneric.OpenDoor()",
+                    () =>
+                    TestThermalPrinterGeneric.OpenDoor(GlobalApp.PrinterThermal)
+                },
+                //Thermal Printer test Documents
+                {
+                    "03) TestThermalPrinterGeneric.Print()",
+                    () =>
+                    TestThermalPrinterGeneric.Print(GlobalApp.PrinterThermal)
+                },
+                {
+                    "04) TestThermalPrinterFinanceDocument.Print()",
+                    () =>
+                    TestThermalPrinterFinanceDocumentMaster.Print(GlobalApp.PrinterThermal)
+                },
+                {
+                    "05) TestThermalPrinterFinanceDocumentPayment.Print()",
+                    () =>
+                    TestThermalPrinterFinanceDocumentPayment.Print(GlobalApp.PrinterThermal)
+                },
+                {
+                    "06) TestThermalPrinterInternalDocumentOrderRequest.Print()",
+                    () =>
+                    TestThermalPrinterInternalDocumentOrderRequest.Print(GlobalApp.PrinterThermal)
+                },
+                {
+                    "07) TestThermalPrinterInternalDocumentCashDrawer.Print()",
+                    () =>
+                    TestThermalPrinterInternalDocumentCashDrawer.Print(GlobalApp.PrinterThermal)
+                },
+                {
+                    "08) TestThermalPrinterInternalDocumentWorkSession.Print()",
+                    () =>
+                    TestThermalPrinterInternalDocumentWorkSession.Print(GlobalApp.PrinterThermal)
+                }
+            };
         }
 
         private static void InitMain()

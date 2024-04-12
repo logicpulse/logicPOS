@@ -10,7 +10,7 @@ namespace logicpos
     public class EntryValidation : EntryTouch
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Reference parent EntryBox Label
         private Label _label;
@@ -90,7 +90,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -128,7 +128,7 @@ namespace logicpos
             Utils.ValidateUpdateColors(this, _label, _validated, _label2, _label3);
         }
 
-        void EntryValidation_Changed(object sender, EventArgs e)
+        private void EntryValidation_Changed(object sender, EventArgs e)
         {
             if (_maxLength > 0 || _maxWords > 0)
             {

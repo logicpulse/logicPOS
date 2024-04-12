@@ -11,13 +11,13 @@ namespace Patagames.Pdf.Net.Controls.WinForms
     /// <seealso href="https://pdfium.patagames.com/c-pdf-library/">Printing PDF Files With C#</seealso>
     public class PdfPrintDocument : PrintDocument
 	{
-		#region Private members
-		PdfDocument _pdfDoc;
-		int _pageForPrint;
-		IntPtr _printHandle;
-		IntPtr _docForPrint;
-		bool _useDP;
-		int _scale = 100;
+        #region Private members
+        private PdfDocument _pdfDoc;
+        private int _pageForPrint;
+        private IntPtr _printHandle;
+        private IntPtr _docForPrint;
+        private readonly bool _useDP;
+        private int _scale = 100;
 		#endregion;
 
 		#region Public events
@@ -124,9 +124,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms
 		/// <param name="rotation">The page rotation.</param>
 		protected virtual void OnBeforeRenderPage(PdfPage page, double width, double height, PageRotate rotation)
 		{
-			if (BeforeRenderPage != null)
-				BeforeRenderPage(this, new BeforeRenderPageEventArgs(page, width, height, rotation));
-		}
+            BeforeRenderPage?.Invoke(this, new BeforeRenderPageEventArgs(page, width, height, rotation));
+        }
 
         /// <summary>
         /// Raises the System.Drawing.Printing.PrintDocument.BeginPrint event. It is called
@@ -239,12 +238,10 @@ namespace Patagames.Pdf.Net.Controls.WinForms
 			{
 				if (hdc != IntPtr.Zero)
 					e.Graphics.ReleaseHdc(hdc);
-				hdc = IntPtr.Zero;
-				if (currentPage != IntPtr.Zero)
+                if (currentPage != IntPtr.Zero)
 					Pdfium.FPDF_ClosePage(currentPage);
-				currentPage = IntPtr.Zero;
-			}
-		}
+            }
+        }
 
 		#endregion
 

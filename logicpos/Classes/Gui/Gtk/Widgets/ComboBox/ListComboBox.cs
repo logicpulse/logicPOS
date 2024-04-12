@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class ListComboBox : ComboBox
+    internal class ListComboBox : ComboBox
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Private Members
         private ListStore _comboBoxListStore;
@@ -105,8 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             SetActiveIter(currentItemIter);
         }
 
-
-        void ListComboBox_Changed(object sender, System.EventArgs e)
+        private void ListComboBox_Changed(object sender, System.EventArgs e)
         {
             ListComboBox combo = sender as ListComboBox;
             if (sender == null) return;
@@ -117,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 _value = (string)combo.Model.GetValue(iter, 1);
             };
-            //_log.Debug(string.Format("_value: [{0}]", _value));
+            //_logger.Debug(string.Format("_value: [{0}]", _value));
         }
     }
 }

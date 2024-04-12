@@ -25,7 +25,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {
     //Genertic Types T1:XPGuidObject Childs (Ex Customer), T2:GenericTreeView Childs (ex TreeViewConfigurationCountry)
-    class XPOEntryBoxSelectRecord<T1, T2> : EntryBoxBase
+    internal class XPOEntryBoxSelectRecord<T1, T2> : EntryBoxBase
         //Generic Type T1 Constrained to XPGuidObject BaseClass or XPGuidObject SubClass Objects (New)
         where T1 : XPGuidObject, new()
         //Generic Type T2 Constrained to GenericTreeView BaseClass or GenericTreeView SubClass Objects (New)
@@ -181,7 +181,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     _entry.Text = string.Empty;
                 }
             }
@@ -265,7 +265,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     _entry.Text = string.Empty;
                 }
             }
@@ -327,8 +327,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 {
                     sortProp = "DocumentNumber";
                 }
-                SortingCollection sortCollection = new SortingCollection();
-                sortCollection.Add(new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending));
+                SortingCollection sortCollection = new SortingCollection
+                {
+                    new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending)
+                };
                 if(pCriteria == null) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
                 dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(value), pCriteria, sortCollection, int.MaxValue, false, true);
@@ -413,7 +415,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 else
                 {
                     string invalidFieldMessage = string.Format("Invalid Field DisplayValue:[{0}] on XPGuidObject:[{1}]", _fieldDisplayValue, _value.GetType().Name);
-                    _log.Error(invalidFieldMessage);
+                    _logger.Error(invalidFieldMessage);
                     //value = invalidFieldMessage;
                 }
                 
@@ -501,7 +503,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 _value = (T1)FrameworkUtils.GetXPGuidObject(typeof(T1), articleOid);
                 propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
-                object value = null;
+                object value;
                 if (propertyInfo != null)
                 {
                     // Get value from XPGuidObject Instance
@@ -510,7 +512,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 else
                 {
                     string invalidFieldMessage = string.Format("Invalid Field DisplayValue:[{0}] on XPGuidObject:[{1}]", _fieldDisplayValue, _value.GetType().Name);
-                    _log.Error(invalidFieldMessage);
+                    _logger.Error(invalidFieldMessage);
                     value = invalidFieldMessage;
                 }
                 if (value != null && value.GetType() == typeof(fin_articleserialnumber))
@@ -582,7 +584,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
         /// <summary>
@@ -621,7 +623,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             else
             {
                 string invalidFieldMessage = string.Format("Invalid Field DisplayValue:[{0}] on XPGuidObject:[{1}]", _fieldDisplayValue, _value.GetType().Name);
-                _log.Error(invalidFieldMessage);
+                _logger.Error(invalidFieldMessage);
                 value = invalidFieldMessage;
             }
             if (value != null && value.GetType() == typeof(fin_articleserialnumber))
@@ -792,34 +794,22 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
         private void OnOpenPopup()
         {
-            if (OpenPopup != null)
-            {
-                OpenPopup(this, EventArgs.Empty);
-            }
+            OpenPopup?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnClosePopup()
         {
-            if (ClosePopup != null)
-            {
-                ClosePopup(this, EventArgs.Empty);
-            }
+            ClosePopup?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnCleanArticleEvent()
         {
-            if (CleanArticleEvent != null)
-            {
-                CleanArticleEvent(this, EventArgs.Empty);
-            }
+            CleanArticleEvent?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnAddNewEntryEvent()
         {
-            if (AddNewEntryEvent != null)
-            {
-                AddNewEntryEvent(this, EventArgs.Empty);
-            }
+            AddNewEntryEvent?.Invoke(this, EventArgs.Empty);
         }
     }
 }

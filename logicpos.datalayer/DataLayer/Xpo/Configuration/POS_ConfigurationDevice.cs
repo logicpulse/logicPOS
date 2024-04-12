@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationdevice), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -39,14 +39,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fType;
+        private string fType;
         public string Type
         {
             get { return fType; }
             set { SetPropertyValue<string>("Type", ref fType, value); }
         }
 
-        string fProperties;
+        private string fProperties;
         [Size(SizeAttribute.Unlimited)]
         public string Properties
         {
@@ -55,7 +55,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlaceTerminal <> Many ConfigurationDevice
-        pos_configurationplaceterminal fPlaceTerminal;
+        private pos_configurationplaceterminal fPlaceTerminal;
         [Association(@"ConfigurationPlaceTerminalReferencesConfigurationDevice")]
         public pos_configurationplaceterminal PlaceTerminal
         {

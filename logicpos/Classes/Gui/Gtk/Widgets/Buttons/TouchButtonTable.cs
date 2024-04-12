@@ -7,6 +7,7 @@ using logicpos.shared;
 using logicpos.datalayer.Enums;
 using System;
 using System.Drawing;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 {
@@ -46,8 +47,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             _tableStatus = pTableStatus;
 
             //Settings
-            _colorPosTablePadTableTableStatusOpenButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosTablePadTableTableStatusOpenButtonBackground"]);
-            _colorPosTablePadTableTableStatusReservedButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosTablePadTableTableStatusReservedButtonBackground"]);
+            _colorPosTablePadTableTableStatusOpenButtonBackground = GlobalFramework.Settings["colorPosTablePadTableTableStatusOpenButtonBackground"].StringToColor();
+            _colorPosTablePadTableTableStatusReservedButtonBackground = GlobalFramework.Settings["colorPosTablePadTableTableStatusReservedButtonBackground"].StringToColor();
 
             //Initialize UI Components
             VBox vbox = new VBox(true, 5) { BorderWidth = 5 };
@@ -60,8 +61,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             labelDateTableOpenOrClosed.ModifyFont(fontDescDateTableOpenOrClosed);
             //Label for Total or Status 
             _labelTotalOrStatus = new Label(string.Empty);
-            _eventBoxTotalOrStatus = new EventBox();
-            _eventBoxTotalOrStatus.Add(_labelTotalOrStatus);
+            _eventBoxTotalOrStatus = new EventBox
+            {
+                _labelTotalOrStatus
+            };
             //_eventBoxTotalOrStatus.CanFocus = false;
             //If click in EventBox call button Click Event
             _eventBoxTotalOrStatus.ButtonPressEvent += delegate { Click(); };
@@ -73,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             //Pack Final Widget
             _widget = vbox;
 
-            //_log.Debug(string.Format("pLabelText:[{0}], _tableStatus: [{1}]", pLabelText, _tableStatus));
+            //_logger.Debug(string.Format("pLabelText:[{0}], _tableStatus: [{1}]", pLabelText, _tableStatus));
             switch (_tableStatus)
             {
                 case TableStatus.Free:
@@ -98,7 +101,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         {
             //Get Target Table
             pos_configurationplacetable xTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
-            //_log.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
+            //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
 
             if (pTableStatus == TableStatus.Reserved)
             {
@@ -116,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 xTable.TableStatus = TableStatus.Free;
                 FrameworkUtils.Audit("TABLE_UNRESERVED", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_unreserved"), xTable.Designation));
             }
-            //_log.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
+            //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
             //Update Status State  
             _tableStatus = pTableStatus;
             //Persist in DB

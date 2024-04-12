@@ -15,7 +15,7 @@ namespace logicpos.shared.App
     public class DocumentType
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static readonly DocumentType TRANSPORT_DOCUMENT  = new DocumentType(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gt"), SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide, logicpos.shared.Enums.DocumentType.WayBill, "GT", false, true,  0, true,    true, true, 2, false);
         public static readonly DocumentType CREDIT_SLIP         = new DocumentType(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_nc"), SettingsApp.XpoOidDocumentFinanceTypeCreditNote,          logicpos.shared.Enums.DocumentType.Invoice, "NC", false, false, 1, false,   true, true, 1, false);
@@ -50,7 +50,7 @@ namespace logicpos.shared.App
         /// <param name="designation"></param>
         /// <param name="oid"></param>
         /// <param name="documentTypeGlobal"></param>
-        DocumentType(string designation, Guid oid, logicpos.shared.Enums.DocumentType documentTypeGlobal, string acronym, bool payed, bool credit, int creditDebit, bool wayBill, bool wsAtDocument, bool saftAuditFile, int saftDocumentType, bool stockMode)
+        private DocumentType(string designation, Guid oid, logicpos.shared.Enums.DocumentType documentTypeGlobal, string acronym, bool payed, bool credit, int creditDebit, bool wayBill, bool wsAtDocument, bool saftAuditFile, int saftDocumentType, bool stockMode)
         {
             Designation         = designation;
             Oid                 = oid;

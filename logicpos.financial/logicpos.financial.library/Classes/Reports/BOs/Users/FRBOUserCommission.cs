@@ -20,7 +20,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Users
     [FRBO(Entity = "view_usercommission",
         Group = "DateDay,UserOid,UserOrd,UserCode,UserName,ArticleOid,Code,Designation,UnitMeasure,Price,Vat,Discount,CommissionValue",
         Order = "DateDay,UserName,Designation")]
-    class FRBOUserCommission : FRBOBaseObject
+    internal class FRBOUserCommission : FRBOBaseObject
     {
         [FRBO(Field = "UserOid")]
         //Primary Oid (Required)

@@ -14,7 +14,7 @@ namespace logicpos
         #region "Declarations"
 
         // *** Lock for thread-safe access to file and local cache ***
-        private object _lock = new object();
+        private readonly object _lock = new object();
 
         // *** File name ***
         private string _fileName = null;
@@ -33,8 +33,8 @@ namespace logicpos
         private bool _autoFlush = false;
 
         // *** Local cache ***
-        private Dictionary<string, Dictionary<string, string>> _sections = new Dictionary<string, Dictionary<string, string>>();
-        private Dictionary<string, Dictionary<string, string>> _modified = new Dictionary<string, Dictionary<string, string>>();
+        private readonly Dictionary<string, Dictionary<string, string>> _sections = new Dictionary<string, Dictionary<string, string>>();
+        private readonly Dictionary<string, Dictionary<string, string>> _modified = new Dictionary<string, Dictionary<string, string>>();
 
         // *** Local cache modified flag ***
         private bool _cacheModified = false;
@@ -179,10 +179,8 @@ namespace logicpos
             string TmpFileName = Path.ChangeExtension(_fileName, "$n$");
 
             // *** Copy content of original file to temporary file, replace modified values ***
-            StreamWriter sw = null;
-
             // *** Create the temporary file ***
-            sw = new StreamWriter(TmpFileName);
+            StreamWriter sw = new StreamWriter(TmpFileName);
 
             try
             {
@@ -328,7 +326,6 @@ namespace logicpos
             {
                 // *** Cleanup: close files ***                  
                 if (sw != null) sw.Close();
-                sw = null;
             }
         }
 

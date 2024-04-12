@@ -12,7 +12,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewDocumentOrderTicket : GenericTreeViewXPO
+    internal class TreeViewDocumentOrderTicket : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewDocumentOrderTicket() { }
@@ -31,11 +31,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ticket_number"), MinWidth = 50 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_name"), ChildName = "Name", MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_terminal_name"), ChildName = "Designation", MinWidth = 100 });
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            {
+                new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ticket_number"), MinWidth = 50 },
+                new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_name"), ChildName = "Name", MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
+            };
 
             //Sort Order
             SortProperty[] sortProperty = new SortProperty[1];
@@ -43,10 +45,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = pXpoCriteria;
+            CriteriaOperator criteria;
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {

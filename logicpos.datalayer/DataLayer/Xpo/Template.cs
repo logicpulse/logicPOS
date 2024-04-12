@@ -15,7 +15,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public Template(Session session) : base(session) { }
 
         //This Can be Optional
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
@@ -23,7 +23,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //This Can be Optional
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {

@@ -13,9 +13,9 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosCashDialog
+    internal partial class PosCashDialog
     {
-        void _touchButtonStartStopWorkSessionPeriodDay_Clicked(object sender, EventArgs e)
+        private void _touchButtonStartStopWorkSessionPeriodDay_Clicked(object sender, EventArgs e)
         {
             //Stop WorkSessionPeriodDay
             if (GlobalFramework.WorkSessionPeriodDay != null && GlobalFramework.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
@@ -76,10 +76,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 string openOrderTables = string.Empty;
                 pos_configurationplacetable currentOpenOrderTable;
-                Guid tableOid = Guid.Empty;
                 foreach (SelectStatementResultRow row in xPSelectDataTables.Data)
                 {
-                    tableOid = new Guid(row.Values[xPSelectDataTables.GetFieldIndex("PlaceTable")].ToString());
+                    Guid tableOid = new Guid(row.Values[xPSelectDataTables.GetFieldIndex("PlaceTable")].ToString());
                     currentOpenOrderTable = GlobalFramework.SessionXpo.GetObjectByKey<pos_configurationplacetable>(tableOid);
                     openOrderTables += string.Format("{0}{1}", currentOpenOrderTable.Designation, " ");
                 }
@@ -105,10 +104,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 string openTerminals = string.Empty;
                 pos_configurationplaceterminal currentOpenSessionTerminal;
-                Guid terminalOid = Guid.Empty;
                 foreach (SelectStatementResultRow row in xPSelectDataTerminals.Data)
                 {
-                    terminalOid = new Guid(row.Values[xPSelectDataTerminals.GetFieldIndex("Terminal")].ToString());
+                    Guid terminalOid = new Guid(row.Values[xPSelectDataTerminals.GetFieldIndex("Terminal")].ToString());
                     currentOpenSessionTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_configurationplaceterminal>(terminalOid);
                     openTerminals += string.Format("{0}{1} - {2}", Environment.NewLine, currentOpenSessionTerminal.Designation, row.Values[xPSelectDataTerminals.GetFieldIndex("Designation")].ToString());
                 }
@@ -145,8 +143,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             return true;
         }
-		//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
-        void _touchButtonCashDrawer_Clicked(object sender, EventArgs e)
+
+        //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
+        private void _touchButtonCashDrawer_Clicked(object sender, EventArgs e)
         {
             bool result;
             //Update UI
@@ -162,18 +161,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Get Fresh XPO Objects, Prevent Deleted Object Bug
                 pos_worksessionperiod workSessionPeriodDay = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodDay.Oid);
                 pos_worksessionperiod workSessionPeriodTerminal = GlobalFramework.WorkSessionPeriodTerminal;
-                decimal addedMoney = 0.00m;
                 var originalMovType = dialogCashDrawer.MovementType;
-
-                bool newMoviment = false;
-
+                decimal addedMoney;
                 switch (dialogCashDrawer.MovementType.Token)
                 {
                     case "CASHDRAWER_OPEN":
-                        newMoviment = false;
                         //Start Terminal Period
                         result = ProcessWorkSessionPeriod.SessionPeriodOpen(WorkSessionPeriodType.Terminal, dialogCashDrawer.MovementDescription);
-                 
+
                         if (result)
                         {
                             //Update UI
@@ -184,15 +179,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
                             workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
 
-                             result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
-                              workSessionPeriodTerminal,
-                              originalMovType,
-                              GlobalFramework.LoggedUser,
-                              GlobalFramework.LoggedTerminal,
-                              FrameworkUtils.CurrentDateTimeAtomic(),
-                              dialogCashDrawer.TotalAmountInCashDrawer,
-                              dialogCashDrawer.MovementDescription
-                            );
+                            result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
+                             workSessionPeriodTerminal,
+                             originalMovType,
+                             GlobalFramework.LoggedUser,
+                             GlobalFramework.LoggedTerminal,
+                             FrameworkUtils.CurrentDateTimeAtomic(),
+                             dialogCashDrawer.TotalAmountInCashDrawer,
+                             dialogCashDrawer.MovementDescription
+                           );
 
                             logicpos.Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 280), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_open_successfully"));
 
@@ -222,13 +217,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Check if is added money
                         if (dialogCashDrawer.MovementAmountMoney >= 0 && dialogCashDrawer.MovementAmountMoney != dialogCashDrawer.TotalAmountInCashDrawer)
                         {
-                            //if 1 ADD if -1 REMOVE
-                            int addRemoveMoney = 1;
-                            //Add or Remove Text String for print ticket
-                            string moneyInOutLabel = "";
-                            string moneyInOutLabelAudit = "";
-                            string audit = "";
 
+                            //if 1 ADD if -1 REMOVE
+                            int addRemoveMoney;
+                            //Add or Remove Text String for print ticket
+                            string moneyInOutLabel;
+                            string moneyInOutLabelAudit;
+                            string audit;
                             //Added money to total amount
                             if (dialogCashDrawer.TotalAmountInCashDrawer > dialogCashDrawer.MovementAmountMoney)
                             {
@@ -286,8 +281,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                         dialogCashDrawer.MovementDescription)
                                     );
                                 }
-                     
-                                newMoviment = true;
                             }
                         }
 
@@ -295,19 +288,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         break;
 
                     case "CASHDRAWER_CLOSE":
-                        
-                        newMoviment = false;
+
 
                         //Check if is added money
                         if (dialogCashDrawer.MovementAmountMoney >= 0 && dialogCashDrawer.MovementAmountMoney != dialogCashDrawer.TotalAmountInCashDrawer)
                         {
-                            //if 1 ADD if -1 REMOVE
-                            int addRemoveMoney = 1;
-                            //Add or Remove Text String for print ticket
-                            string moneyInOutLabel = "";
-                            string moneyInOutLabelAudit = "";
-                            string audit = "";
 
+                            //if 1 ADD if -1 REMOVE
+                            int addRemoveMoney;
+                            //Add or Remove Text String for print ticket
+                            string moneyInOutLabel;
+                            string moneyInOutLabelAudit;
+                            string audit;
                             //Added money to total amount
                             if (dialogCashDrawer.TotalAmountInCashDrawer > dialogCashDrawer.MovementAmountMoney)
                             {
@@ -367,9 +359,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                         dialogCashDrawer.MovementDescription)
                                     );
                                 }
-
-                      
-                                newMoviment = true;
                             }
                         }
                         //workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(GlobalFramework.WorkSessionPeriodTerminal.Oid);
@@ -378,7 +367,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         result = ProcessWorkSessionPeriod.SessionPeriodClose(workSessionPeriodTerminal);
 
                         if (result)
-                        {                              
+                        {
                             //Update UI
                             GlobalApp.WindowPos.UpdateWorkSessionUI();
                             GlobalApp.WindowPos.LabelCurrentTable.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "status_message_open_cashdrawer");
@@ -388,7 +377,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             //dialogCashDrawer.TotalAmountInCashDrawer -= dialogCashDrawer.MovementAmountMoney;
 
-       
+
                             //Add CASHDRAWER_CLOSE Movement to Day Period
                             result = ProcessWorkSessionMovement.PersistWorkSessionMovement(
                               workSessionPeriodTerminal,
@@ -414,7 +403,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 //PrintWorkSessionMovement
                                 FrameworkCalls.PrintWorkSessionMovement(dialogCashDrawer, GlobalFramework.LoggedTerminal.ThermalPrinter, workSessionPeriodTerminal);
                             }
-     
+
                             //GlobalFramework.WorkSessionPeriodTerminal = null;
                         }
                         break;
@@ -501,7 +490,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     dialogCashDrawer.MovementDescription)
                                 );
                             }
-               
+
                             //ShowMessage
                             logicpos.Utils.ShowMessageTouch(dialogCashDrawer, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"));
                         }
@@ -522,7 +511,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             dialogCashDrawer.Destroy();
 
             //TODO: Remove Comments
-            //_log.Debug(string.Format("ProcessWorkSessionPeriod: [{0}]", ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount(GlobalFramework.WorkSessionPeriodDay)));
+            //_logger.Debug(string.Format("ProcessWorkSessionPeriod: [{0}]", ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount(GlobalFramework.WorkSessionPeriodDay)));
             //if (GlobalFramework.WorkSessionPeriodDay != null) ProcessWorkSessionPeriod.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodDay, true);
             //if (GlobalFramework.WorkSessionPeriodTerminal != null) ProcessWorkSessionPeriod.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true);
         }
@@ -573,7 +562,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
               resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_worksession_day_close_successfully") :
               resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_worksession_terminal_close_successfully")
             ;
-            string messageTotalSummary = string.Empty;
             //used to store number of payments used, to increase dialog window size
             int workSessionPeriodTotalCount = 0;
             //Window Height Helper vars  
@@ -589,7 +577,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string totalMoneyIn = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cashdrawer_money_in"), FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyIn"]));
             string totalMoneyOut = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cashdrawer_money_out"), FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyOut"]));
             //Init Message
-            messageTotalSummary = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}", Environment.NewLine, totalMoneyInCashDrawerOnOpen, totalMoneyInCashDrawer, totalMoneyIn, totalMoneyOut);
+            string messageTotalSummary = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}", Environment.NewLine, totalMoneyInCashDrawerOnOpen, totalMoneyInCashDrawer, totalMoneyIn, totalMoneyOut);
 
             //Get Payments Totals
             try
@@ -619,7 +607,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

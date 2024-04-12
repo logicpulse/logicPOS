@@ -9,14 +9,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemnotification() : base() { }
         public sys_systemnotification(Session session) : base(session) { }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        string fMessage;
+        private string fMessage;
         [Size(SizeAttribute.Unlimited)]
         public string Message
         {
@@ -24,42 +24,42 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Message", ref fMessage, value); }
         }
 
-        Boolean fReaded;
+        private Boolean fReaded;
         public Boolean Readed
         {
             get { return fReaded; }
             set { SetPropertyValue<Boolean>("Readed", ref fReaded, value); }
         }
 
-        DateTime fDateRead;
+        private DateTime fDateRead;
         public DateTime DateRead
         {
             get { return fDateRead; }
             set { SetPropertyValue<DateTime>("DateRead", ref fDateRead, value); }
         }
 
-        sys_userdetail fUserTarget;
+        private sys_userdetail fUserTarget;
         public sys_userdetail UserTarget
         {
             get { return fUserTarget; }
             set { SetPropertyValue<sys_userdetail>("UserTarget", ref fUserTarget, value); }
         }
 
-        pos_configurationplaceterminal fTerminalTarget;
+        private pos_configurationplaceterminal fTerminalTarget;
         public pos_configurationplaceterminal TerminalTarget
         {
             get { return fTerminalTarget; }
             set { SetPropertyValue<pos_configurationplaceterminal>("TerminalTarget", ref fTerminalTarget, value); }
         }
 
-        sys_userdetail fUserLastRead;
+        private sys_userdetail fUserLastRead;
         public sys_userdetail UserLastRead
         {
             get { return fUserLastRead; }
             set { SetPropertyValue<sys_userdetail>("UserLastRead", ref fUserLastRead, value); }
         }
 
-        pos_configurationplaceterminal fTerminalLastRead;
+        private pos_configurationplaceterminal fTerminalLastRead;
         public pos_configurationplaceterminal TerminalLastRead
         {
             get { return fTerminalLastRead; }
@@ -67,7 +67,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //SystemNotificationType One <> Many SystemNotification
-        sys_systemnotificationtype fNotificationType;
+        private sys_systemnotificationtype fNotificationType;
         [Association(@"SystemNotificationTypeReferencesSystemNotification")]
         public sys_systemnotificationtype NotificationType
         {

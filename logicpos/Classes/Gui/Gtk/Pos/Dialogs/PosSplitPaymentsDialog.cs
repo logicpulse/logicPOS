@@ -3,6 +3,7 @@ using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
 using System;
@@ -11,22 +12,22 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosSplitPaymentsDialog : PosBaseDialog
+    internal partial class PosSplitPaymentsDialog : PosBaseDialog
     {
-        private ArticleBag _articleBag;
-        private TicketList _ticketList;
+        private readonly ArticleBag _articleBag;
+        private readonly TicketList _ticketList;
 
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
-        private TouchButtonIconWithText _buttonTableRemoveSplit;
-        private TouchButtonIconWithText _buttonTableAddSplit;
-        private ResponseType _responseTypeRemoveSplit = (ResponseType)11;
-        private ResponseType _responseTypeAddSplit = (ResponseType)10;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonTableRemoveSplit;
+        private readonly TouchButtonIconWithText _buttonTableAddSplit;
+        private readonly ResponseType _responseTypeRemoveSplit = (ResponseType)11;
+        private readonly ResponseType _responseTypeAddSplit = (ResponseType)10;
         // Strore Total per Split
         private decimal _totalPerSplit;
         // UI
-        private VBox _vbox;
-        private List<TouchButtonSplitPayment> _splitPaymentButtons = new List<TouchButtonSplitPayment>();
+        private readonly VBox _vbox;
+        private readonly List<TouchButtonSplitPayment> _splitPaymentButtons = new List<TouchButtonSplitPayment>();
         // Settings
         private string _fontSplitPaymentTouchButtonSplitPayment;
         private int _intSplitPaymentTouchButtonSplitPaymentHeight;
@@ -76,11 +77,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             { Sensitive = true };
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonTableRemoveSplit, _responseTypeRemoveSplit));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonTableAddSplit, _responseTypeAddSplit));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonTableRemoveSplit, _responseTypeRemoveSplit),
+                new ActionAreaButton(_buttonTableAddSplit, _responseTypeAddSplit),
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             // Init Start SplitButtons : After Action Buttons
             for (int i = 0; i < _intSplitPaymentStartClients; i++)
@@ -106,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception)
             {
-                _log.Debug(string.Format("Error in Config value fontSplitPaymentTouchButtonSplitPayment: [{0}]", _fontSplitPaymentTouchButtonSplitPayment));
+                _logger.Debug(string.Format("Error in Config value fontSplitPaymentTouchButtonSplitPayment: [{0}]", _fontSplitPaymentTouchButtonSplitPayment));
                 _fontSplitPaymentTouchButtonSplitPayment = "Bold 12";
             }
 
@@ -117,19 +120,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception)
             {
-                _log.Debug(string.Format("Error in Config value intSplitPaymentTouchButtonSplitPaymentHeight: [{0}]", _intSplitPaymentTouchButtonSplitPaymentHeight));
+                _logger.Debug(string.Format("Error in Config value intSplitPaymentTouchButtonSplitPaymentHeight: [{0}]", _intSplitPaymentTouchButtonSplitPaymentHeight));
                 _intSplitPaymentTouchButtonSplitPaymentHeight = 72;
             }
 
             // Settings : colorSplitPaymentTouchButtonFilledDataBackground
             try
             {
-                _colorSplitPaymentTouchButtonFilledDataBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorSplitPaymentTouchButtonFilledDataBackground"]);
+                _colorSplitPaymentTouchButtonFilledDataBackground = GlobalFramework.Settings["colorSplitPaymentTouchButtonFilledDataBackground"].StringToColor();
             }
             catch (Exception)
             {
-                _log.Debug(string.Format("Error in Config value colorSplitPaymentTouchButtonFilledDataBackground: [{0}]", _colorSplitPaymentTouchButtonFilledDataBackground));
-                _colorSplitPaymentTouchButtonFilledDataBackground = FrameworkUtils.StringToColor("72,  84,  96");
+                _logger.Debug(string.Format("Error in Config value colorSplitPaymentTouchButtonFilledDataBackground: [{0}]", _colorSplitPaymentTouchButtonFilledDataBackground));
+                _colorSplitPaymentTouchButtonFilledDataBackground = ("72,  84,  96").StringToColor();
             }
 
             // Settings : intSplitPaymentStartClients
@@ -139,7 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception)
             {
-                _log.Debug(string.Format("Error in Config value SPLIT_PAYMENT_START_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_START_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentStartClients = 2;
             }
@@ -151,7 +154,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception)
             {
-                _log.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MIN_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MIN_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentMinClients = 2;
             }
@@ -163,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception)
             {
-                _log.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MAX_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MAX_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentMaxClients = 10;
             }

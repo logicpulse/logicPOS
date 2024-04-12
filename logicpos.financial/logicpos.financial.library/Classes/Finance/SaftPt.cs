@@ -17,7 +17,7 @@ namespace logicpos.financial.library.Classes.Finance
     public class SaftPt
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Private Members
         private static XmlWriter _xmlWriter;
@@ -28,15 +28,15 @@ namespace logicpos.financial.library.Classes.Finance
         private static DateTime _documentDateEnd;
 
         //Settings
-        private static string _dateTimeFormatDocumentDate = SettingsApp.DateTimeFormatDocumentDate;
+        private static readonly string _dateTimeFormatDocumentDate = SettingsApp.DateTimeFormatDocumentDate;
         //Custom Number Format
-        private static string _decimalTaxFormat = SettingsApp.DecimalFormatGrossTotalSAFTPT;
-        private static string _decimalFormat = SettingsApp.DecimalFormatSAFTPT;
-        private static string _decimalFormatTotals = SettingsApp.DecimalFormatGrossTotalSAFTPT;
+        private static readonly string _decimalTaxFormat = SettingsApp.DecimalFormatGrossTotalSAFTPT;
+        private static readonly string _decimalFormat = SettingsApp.DecimalFormatSAFTPT;
+        private static readonly string _decimalFormatTotals = SettingsApp.DecimalFormatGrossTotalSAFTPT;
         //Default Customer
-        private static erp_customer _defaultCustomer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+        private static readonly erp_customer _defaultCustomer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
         //Default Currency
-        private static cfg_configurationcurrency _defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
+        private static readonly cfg_configurationcurrency _defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
 
         public static string ExportSaftPt()
         {
@@ -111,7 +111,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 throw new Exception("ERROR_EXPORTING_SAFT", ex);
             }
         }
@@ -172,7 +172,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -195,7 +195,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -217,7 +217,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -239,7 +239,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -262,7 +262,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -284,7 +284,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -372,7 +372,7 @@ namespace logicpos.financial.library.Classes.Finance
                     , _documentDateStart.ToString(SettingsApp.DateTimeFormat)
                     , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
                 );
-                //_log.Debug(string.Format("sql: [{0}]", sql));
+                //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                 //Used to Add Default Customer if not in Query, Required to Always have a Default Customer for ex to Documents that Donta Have a Customer (NULL), like Conference Documents, etc
                 MasterFiles_Customer_DefaultCustomer();
@@ -412,7 +412,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -432,7 +432,7 @@ namespace logicpos.financial.library.Classes.Finance
                 , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
                 , SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity
             );
-            //_log.Debug(string.Format("sqlCheckDefaultCustomer: [{0}]", sqlCheckDefaultCustomer));
+            //_logger.Debug(string.Format("sqlCheckDefaultCustomer: [{0}]", sqlCheckDefaultCustomer));
 
             //<NumberOfEntries>
             object customerCount = GlobalFramework.SessionXpo.ExecuteScalar(sqlCheckDefaultCustomer);
@@ -498,7 +498,7 @@ namespace logicpos.financial.library.Classes.Finance
                     , _documentDateStart.ToString(SettingsApp.DateTimeFormat)
                     , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
                 );
-                //_log.Debug(string.Format("sql: [{0}]", sql));
+                //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                 XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
@@ -522,7 +522,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -562,7 +562,7 @@ namespace logicpos.financial.library.Classes.Finance
                 ;"
                 , SettingsApp.XpoOidUndefinedRecord
                 );
-                //_log.Debug(string.Format("sql: [{0}]", sql));
+                //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                 XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sql);
                 foreach (SelectStatementResultRow row in xPSelectData.Data)
@@ -583,7 +583,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -597,7 +597,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
         }
@@ -613,7 +613,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -628,7 +628,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -703,7 +703,7 @@ namespace logicpos.financial.library.Classes.Finance
                     , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
                     , documentNodeFilter
                 );
-                //_log.Debug(string.Format("SaftDocumentType:[{0}]: sqlNumberOfEntries: [{1}]", pSaftDocumentType, sqlNumberOfEntries));
+                //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlNumberOfEntries: [{1}]", pSaftDocumentType, sqlNumberOfEntries));
 
                 //<NumberOfEntries>
                 object numberOfEntries = GlobalFramework.SessionXpo.ExecuteScalar(sqlNumberOfEntries);
@@ -741,7 +741,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                         //<TotalDebit>
                         string sqlTotalDebit = string.Format(sqlTotalDebitTotalCredit, 0);
-                        //_log.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalDebit: [{1}]", pSaftDocumentType, sqlTotalDebit));
+                        //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalDebit: [{1}]", pSaftDocumentType, sqlTotalDebit));
 
                         object totalDebit = GlobalFramework.SessionXpo.ExecuteScalar(sqlTotalDebit);
                         if (totalDebit == null) totalDebit = 0;
@@ -749,7 +749,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                         //<TotalCredit>
                         string sqlTotalCredit = string.Format(sqlTotalDebitTotalCredit, 1);
-                        //_log.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", pSaftDocumentType, sqlTotalCredit));
+                        //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", pSaftDocumentType, sqlTotalCredit));
                         object totalCredit = GlobalFramework.SessionXpo.ExecuteScalar(sqlTotalCredit);
                         if (totalCredit == null) totalCredit = 0;
                         WriteElement("TotalCredit", FrameworkUtils.DecimalToString(Convert.ToDecimal(totalCredit), GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
@@ -781,7 +781,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                         //<TotalDebit>
                         string sqlTotalQuantity = string.Format(sqlTotalQuantityIssued, 0);
-                        //_log.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalQuantityIssued: [{1}]", pSaftDocumentType, sqlTotalQuantityIssued));
+                        //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalQuantityIssued: [{1}]", pSaftDocumentType, sqlTotalQuantityIssued));
 
                         object totalQuantity = GlobalFramework.SessionXpo.ExecuteScalar(sqlTotalQuantity);
                         if (totalQuantity == null)
@@ -803,7 +803,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -945,7 +945,7 @@ namespace logicpos.financial.library.Classes.Finance
                     , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
                     , pdocumentNodeFilter
                 );
-                //_log.Debug(string.Format("SaftDocumentType:[{0}] sql: [{1}]", pSaftDocumentType, sql));
+                //_logger.Debug(string.Format("SaftDocumentType:[{0}] sql: [{1}]", pSaftDocumentType, sql));
 
                 Guid guidDocumentMaster;
                 //Declare Vars for Currency/ExchangeRate
@@ -1022,7 +1022,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
                             catch (Exception ex)
                             {
-                                _log.Error(ex.Message, ex);
+                                _logger.Error(ex.Message, ex);
                             };
                             break;
 
@@ -1043,7 +1043,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
                             catch (Exception ex)
                             {
-                                _log.Error(ex.Message, ex);
+                                _logger.Error(ex.Message, ex);
                             }
                             break;
 
@@ -1064,7 +1064,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
                             catch (Exception ex)
                             {
-                                _log.Error(ex.Message, ex);
+                                _logger.Error(ex.Message, ex);
                             }
                             break;
                     }
@@ -1140,7 +1140,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1274,7 +1274,7 @@ namespace logicpos.financial.library.Classes.Finance
                 ";
 
                 string sql = string.Format(SqlQuery, pDocumentMaster.ToString());
-                //_log.Debug(string.Format("sql: [{0}]", sql));
+                //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                 //Init Local Vars
                 string nodeNameCreditOrDebitAmount;
@@ -1397,7 +1397,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -1434,7 +1434,7 @@ namespace logicpos.financial.library.Classes.Finance
                         "
                         , pDocumentMasterDetail.ToString()
                     );
-                    //_log.Debug(string.Format("sql: [{0}]", sql));
+                    //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                     XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sql);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
@@ -1449,7 +1449,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
         }
@@ -1489,7 +1489,7 @@ namespace logicpos.financial.library.Classes.Finance
                     "
                         , pDocumentMasterDetail.ToString()
                     );
-                    //_log.Debug(string.Format("sql: [{0}]", sql));
+                    //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                     XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sql);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
@@ -1504,7 +1504,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
         }
@@ -1536,7 +1536,7 @@ namespace logicpos.financial.library.Classes.Finance
                     , _documentDateStart.ToString(SettingsApp.DateTimeFormat)
                     , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
                 );
-                //_log.Debug(string.Format("SaftDocumentType:[{0}]: sqlNumberOfEntries: [{1}]", SaftDocumentType.Payments, sqlNumberOfEntries));
+                //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlNumberOfEntries: [{1}]", SaftDocumentType.Payments, sqlNumberOfEntries));
 
                 //<NumberOfEntries>
                 object numberOfEntries = GlobalFramework.SessionXpo.ExecuteScalar(sqlNumberOfEntries);
@@ -1565,7 +1565,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //<TotalDebit>
                 string sqlTotalDebit = string.Format(sqlTotalDebitTotalCredit, "Debit");
-                //_log.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalDebit: [{1}]", SaftDocumentType.Payments, sqlTotalDebit));
+                //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalDebit: [{1}]", SaftDocumentType.Payments, sqlTotalDebit));
 
                 object totalDebit = GlobalFramework.SessionXpo.ExecuteScalar(sqlTotalDebit);
                 if (totalDebit == null) totalDebit = 0;
@@ -1573,7 +1573,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //<TotalCredit>
                 string sqlTotalCredit = string.Format(sqlTotalDebitTotalCredit, "Credit");
-                //_log.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", SaftDocumentType.Payments, sqlTotalCredit));
+                //_logger.Debug(string.Format("SaftDocumentType:[{0}]: sqlTotalCredit: [{1}]", SaftDocumentType.Payments, sqlTotalCredit));
                 object totalCredit = GlobalFramework.SessionXpo.ExecuteScalar(sqlTotalCredit);
                 if (totalCredit == null) totalCredit = 0;
                 WriteElement("TotalCredit", FrameworkUtils.DecimalToString(Convert.ToDecimal(totalCredit), GlobalFramework.CurrentCultureNumberFormat, _decimalFormat));
@@ -1587,7 +1587,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1686,7 +1686,7 @@ namespace logicpos.financial.library.Classes.Finance
                     , _documentDateStart.ToString(SettingsApp.DateTimeFormat)
                     , _documentDateEnd.ToString(SettingsApp.DateTimeFormat)
                 );
-                //_log.Debug(string.Format("SaftDocumentType:[{0}] sql: [{1}]", SaftDocumentType.Payments, sql));
+                //_logger.Debug(string.Format("SaftDocumentType:[{0}] sql: [{1}]", SaftDocumentType.Payments, sql));
 
                 Guid guidFinanceDocumentPayment;
                 decimal currencyAmount;
@@ -1762,7 +1762,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1813,7 +1813,7 @@ namespace logicpos.financial.library.Classes.Finance
                 ";
 
                 string sql = string.Format(SqlQuery, pFinanceDocumentPayment.ToString());
-                //_log.Debug(string.Format("sql: [{0}]", sql));
+                //_logger.Debug(string.Format("sql: [{0}]", sql));
 
                 bool isCredit = false;
                 string nodeNameCreditOrDebitAmount;
@@ -1872,7 +1872,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -1900,7 +1900,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

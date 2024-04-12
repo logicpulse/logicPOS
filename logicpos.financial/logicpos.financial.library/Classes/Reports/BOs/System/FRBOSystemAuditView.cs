@@ -10,7 +10,7 @@ FROM
 namespace logicpos.financial.library.Classes.Reports.BOs.System
 {
     [FRBO(Entity = "view_systemaudit")]
-    class FRBOSystemAuditView : FRBOBaseObject
+    internal class FRBOSystemAuditView : FRBOBaseObject
     {
         // SystemAudit
         [FRBO(Field = "sauOid")]

@@ -6,6 +6,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Extensions;
 using System;
 using System.IO;
 using Image = Gtk.Image;
@@ -15,7 +16,7 @@ namespace logicpos
     public partial class StartupWindow : PosBaseWindow
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //UI
         private NumberPadPin _numberPadPin;
         private TablePad _tablePadUser;
@@ -24,8 +25,9 @@ namespace logicpos
             get { return _tablePadUser; }
             set { _tablePadUser = value; }
         }
+
         //Non Ui
-        sys_userdetail _selectedUserDetail;
+        private sys_userdetail _selectedUserDetail;
 
         public StartupWindow(String pBackgroundImage, bool needToUpdate)
             : base(pBackgroundImage)
@@ -80,11 +82,11 @@ namespace logicpos
                 SettingsApp.ConfigurationSystemCountry = (cfg_configurationcountry)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
                 SettingsApp.ConfigurationSystemCurrency = (cfg_configurationcurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
 
-                _log.Debug(String.Format("Using System Country: [{0}], Currency: [{1}]", SettingsApp.ConfigurationSystemCountry.Designation, SettingsApp.ConfigurationSystemCurrency.Designation));
+                _logger.Debug(String.Format("Using System Country: [{0}], Currency: [{1}]", SettingsApp.ConfigurationSystemCountry.Designation, SettingsApp.ConfigurationSystemCurrency.Designation));
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -106,17 +108,17 @@ namespace logicpos
                     //Objects:LabelVersion
                     Position labelVersionPosition = Utils.StringToPosition(themeWindow.Objects.LabelVersion.Position);
                     string labelVersionFont = themeWindow.Objects.LabelVersion.Font;
-                    Color labelVersionFontColor = Utils.StringToGdkColor(themeWindow.Objects.LabelVersion.FontColor);
+                    Color labelVersionFontColor = (themeWindow.Objects.LabelVersion.FontColor as string).StringToGdkColor();
                     //Objects:NumberPadPin
                     Position numberPadPinPosition = Utils.StringToPosition(themeWindow.Objects.NumberPadPin.Position);
                     System.Drawing.Size numberPadPinButtonSize = Utils.StringToSize(themeWindow.Objects.NumberPadPin.ButtonSize);
                     string numberPadPinFont = themeWindow.Objects.NumberPadPin.Font;
-                    System.Drawing.Color numberPadPinFontColor = FrameworkUtils.StringToColor(themeWindow.Objects.NumberPadPin.FontColor);
+                    System.Drawing.Color numberPadPinFontColor = (themeWindow.Objects.NumberPadPin.FontColor as string).StringToColor();
                     uint numberPadPinRowSpacingSystemButtons = Convert.ToUInt16(themeWindow.Objects.NumberPadPin.RowSpacingSystemButtons);
                     uint numberPadPinRowSpacingLabelStatus = Convert.ToUInt16(themeWindow.Objects.NumberPadPin.RowSpacingLabelStatus);
                     //Objects:NumberPadPin:LabelStatus
                     string numberPadPinLabelStatusFont = themeWindow.Objects.NumberPadPin.LabelStatus.Font;
-                    System.Drawing.Color numberPadPinLabelStatusFontColor = FrameworkUtils.StringToColor(themeWindow.Objects.NumberPadPin.LabelStatus.FontColor);
+                    System.Drawing.Color numberPadPinLabelStatusFontColor = (themeWindow.Objects.NumberPadPin.LabelStatus.FontColor as string).StringToColor();
                     //Objects:NumberPadPin:Size (EventBox)
                     bool NumberPadPinVisibleWindow = Convert.ToBoolean(themeWindow.Objects.NumberPadPin.VisibleWindow);
                     System.Drawing.Size numberPadPinSize = Utils.StringToSize(themeWindow.Objects.NumberPadPin.Size);
@@ -145,9 +147,8 @@ namespace logicpos
                     Fixed fix = new Fixed();
 
                     //Place Minimize EventBox
-                    bool _showMinimize = (!string.IsNullOrEmpty(GlobalFramework.Settings["appShowMinimize"])) 
-                        ? Convert.ToBoolean(GlobalFramework.Settings["appShowMinimize"])
-                        : false;
+                    bool _showMinimize = (!string.IsNullOrEmpty(GlobalFramework.Settings["appShowMinimize"]))
+&& Convert.ToBoolean(GlobalFramework.Settings["appShowMinimize"]);
                     if (_showMinimize)
                     {
                         EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
@@ -263,11 +264,11 @@ namespace logicpos
                     //LOGO
                     if (GlobalFramework.PluginLicenceManager != null)
                     {
-                        string fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logicPOS_logicpulse_login.png"));
+                        string fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png"));
 
                         if (!string.IsNullOrEmpty(GlobalFramework.LicenceReseller) && GlobalFramework.LicenceReseller == "NewTech")
                         {
-                            fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_logicpulse_login.png"), "NT");
+                            fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png"), "NT");
                         }
                             
                        // var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, (GlobalApp.ScreenSize.Width - 550), (GlobalApp.ScreenSize.Height - 550));
@@ -298,7 +299,7 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     Utils.ShowMessageTouchErrorRenderTheme(this, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
                 }
             }
@@ -308,7 +309,7 @@ namespace logicpos
             }
         }
 
-        void buttonDeveloper_Clicked(object sender, EventArgs e)
+        private void buttonDeveloper_Clicked(object sender, EventArgs e)
         {
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test UI Components
@@ -339,22 +340,22 @@ namespace logicpos
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test Unpack In Linux
-            //Utils.ZipUnPack("/media/lpdev/LogicPosBackups/mysql_logicposdb29_450_20151203_125525.bak", "/media/lpdev/LogicPosBackups");
+            //Utils.ZipUnPack("/media/lpdev/LogicPosBackups/mysql_loggericposdb29_450_20151203_125525.bak", "/media/lpdev/LogicPosBackups");
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //#1 SelectRecord : Test SelectRecord
             //UsingSelectRecordTreeViewWithCheckBox usingSelectRecordTreeViewWithCheckBox = new UsingSelectRecordTreeViewWithCheckBox(this);
             //DataTable dataTable;
             //DataTable dataTable = usingSelectRecordTreeViewWithCheckBox.SelectRecordDialog();
-            //_log.Debug(string.Format("dataTable.Rows.Count: [{0}]", dataTable.Rows.Count));
+            //_logger.Debug(string.Format("dataTable.Rows.Count: [{0}]", dataTable.Rows.Count));
 
             //#2 SelectRecord : Test SelectRecord With Helper and Custom Sql :)
             //dataTable = PosSelectRecordDialog<DataTable, DataRow, TreeViewTerminalSeries>.GetSelected(this);
-            //if (dataTable != null) _log.Debug(string.Format("dataTable.Rows.Count: [{0}]", dataTable.Rows.Count));
+            //if (dataTable != null) _logger.Debug(string.Format("dataTable.Rows.Count: [{0}]", dataTable.Rows.Count));
 
             //#3 SelectRecord : Test SelectRecord With Helper and Custom Sql :) - Dont have records to Show
             //dataTable = PosSelectRecordDialog<DataTable, DataRow, TreeViewDocumentFinanceArticle>.GetSelected(this);
-            //if (dataTable != null) _log.Debug(string.Format("dataTable.Rows.Count: [{0}]", dataTable.Rows.Count));
+            //if (dataTable != null) _logger.Debug(string.Format("dataTable.Rows.Count: [{0}]", dataTable.Rows.Count));
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Create FiscalYear
@@ -368,14 +369,14 @@ namespace logicpos
             //logicpos.Utils.GetInputTextResponse getInputTextResponse = Utils.GetInputText(this, DialogFlags.Modal, "Acronym", "Acronym", "2015001", SettingsApp.RegexDocumentSeriesAcronym, true);
             //if (getInputTextResponse.ResponseType == ResponseType.Ok)
             //{
-            //    _log.Debug(string.Format("Acronym: [{0}]", getInputTextResponse.InputText));
+            //    _logger.Debug(string.Format("Acronym: [{0}]", getInputTextResponse.InputText));
             //}
 
             //Document Series Get And Confirm Acronym Dialog
             //logicpos.Utils.ResponseText result = TreeViewDocumentFinanceSeries.PosConfirmAcronymSeriesDialog(this, "2015S");
             //if (result.ResponseType == ResponseType.Ok)
             //{
-            //    _log.Debug(string.Format("Acronym: [{0}]", result.Text));
+            //    _logger.Debug(string.Format("Acronym: [{0}]", result.Text));
             //}
 
             //Get Current Active FinanceYear
@@ -383,7 +384,7 @@ namespace logicpos
             //if (currentDocumentFinanceYear != null)
             //{
             //    bool result = TreeViewDocumentFinanceSeries.UICreateDocumentFinanceYearSeriesTerminal(this, currentDocumentFinanceYear);
-            //    _log.Debug(string.Format("Result: [{0}]", result));
+            //    _logger.Debug(string.Format("Result: [{0}]", result));
             //}
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -394,34 +395,34 @@ namespace logicpos
             //{
             //    documentFinanceMaster.DocumentType.PrintRequestMotive = true;
             //    PosDocumentFinancePrintDialog.PrintDialogResponse response = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(this, documentFinanceMaster);
-            //    //_log.Debug(string.Format("response: [{0}]", response));
+            //    //_logger.Debug(string.Format("response: [{0}]", response));
             //}
 
             //DONT FORGET ToggleAction TEST DocumentMasterCreatePDF
             //Guid guidOid = new Guid("70c9cf6d-c212-4e3a-9c3a-641bb81da85c");
             //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), guidOid);
             //string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
-            //_log.Debug(string.Format("fileName: [{0}]", fileName));
+            //_logger.Debug(string.Format("fileName: [{0}]", fileName));
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //UtilsDays with Holidays
 
             /*
             List<DateTime> utilDays = FrameworkUtils.GetUtilDays(DateTime.Now.AddDays(-15));
-            _log.Debug(string.Format("GetUtilDays: [{0}]", utilDays.Count));
+            _logger.Debug(string.Format("GetUtilDays: [{0}]", utilDays.Count));
             UtilsDays Without Holidays
             utilDays = FrameworkUtils.GetUtilDays(DateTime.Now.AddDays(-15), true);
-            _log.Debug(string.Format("GetUtilDays: [{0}]", utilDays.Count));
+            _logger.Debug(string.Format("GetUtilDays: [{0}]", utilDays.Count));
             Count Holidays
             Dictionary<DateTime,bool> holidays = FrameworkUtils.GetHolidays();
-            _log.Debug(string.Format("Holidays: [{0}]", holidays.Count));
+            _logger.Debug(string.Format("Holidays: [{0}]", holidays.Count));
             Test Is Holiday
-            _log.Debug(string.Format("Message: [{0}]", FrameworkUtils.IsHoliday(new DateTime(2016, 4, 25))));
-            _log.Debug(string.Format("Message: [{0}]", FrameworkUtils.IsHoliday(new DateTime(2016, 7, 11))));
-            _log.Debug(string.Format("Message: [{0}]", FrameworkUtils.IsHoliday(new DateTime(2016, 8, 11))));
+            _logger.Debug(string.Format("Message: [{0}]", FrameworkUtils.IsHoliday(new DateTime(2016, 4, 25))));
+            _logger.Debug(string.Format("Message: [{0}]", FrameworkUtils.IsHoliday(new DateTime(2016, 7, 11))));
+            _logger.Debug(string.Format("Message: [{0}]", FrameworkUtils.IsHoliday(new DateTime(2016, 8, 11))));
 
             DateTime result = FrameworkUtils.GetDateTimeBackUtilDays(DateTime.Now, 15, true);
-            _log.Debug(string.Format("GetDateTimeBackUtilDays: [{0}]", result.ToString(SettingsApp.DateFormat)));
+            _logger.Debug(string.Format("GetDateTimeBackUtilDays: [{0}]", result.ToString(SettingsApp.DateFormat)));
             */
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -429,10 +430,10 @@ namespace logicpos
 
             /*
             DateTime dateFilterFrom = FrameworkUtils.GetDateTimeBackUtilDays(FrameworkUtils.CurrentDateTimeAtomicMidnight(), 5, true);
-            _log.Debug(string.Format("dateFilterFrom: [{0}]", dateFilterFrom));
+            _logger.Debug(string.Format("dateFilterFrom: [{0}]", dateFilterFrom));
 
             int documentBackUtilDays = FrameworkUtils.GetUtilDays(new DateTime(2016, 1, 4), true).Count;
-            _log.Debug(string.Format("documentBackUtilDays: [{0}]", documentBackUtilDays));
+            _logger.Debug(string.Format("documentBackUtilDays: [{0}]", documentBackUtilDays));
             */
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -443,7 +444,7 @@ namespace logicpos
             userDetail.Profile.Permissions.Reload();
             GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions(userDetail);
             bool BACKOFFICE_ACCESS = FrameworkUtils.HasPermissionTo("BACKOFFICE_ACCESS");
-            _log.Debug(string.Format("HasPermissionTo(BACKOFFICE_ACCESS) : [{0}]", BACKOFFICE_ACCESS));
+            _logger.Debug(string.Format("HasPermissionTo(BACKOFFICE_ACCESS) : [{0}]", BACKOFFICE_ACCESS));
             */
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -463,7 +464,7 @@ namespace logicpos
             DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
             //From DocumentFinanceTypeList
             //bool result = FrameworkUtils.IsDocumentMasterChildOfDocumentType(documentFinanceMaster, documentFinanceTypeList);
-            //_log.Debug(string.Format("IsDocumentMasterChildOfDocumentType: [{0}]", result));
+            //_logger.Debug(string.Format("IsDocumentMasterChildOfDocumentType: [{0}]", result));
             //From SaftDocumentType
             bool wayBillMode = 
                 true && 
@@ -473,7 +474,7 @@ namespace logicpos
                 ! FrameworkUtils.IsDocumentMasterChildOfDocumentType(documentFinanceMaster, SaftDocumentType.MovementOfGoods)
             );
 
-            _log.Debug(string.Format("wayBillMode: [{0}]", wayBillMode));
+            _logger.Debug(string.Format("wayBillMode: [{0}]", wayBillMode));
             */
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -483,7 +484,7 @@ namespace logicpos
             string notificationTypeSaftDocumentTypeMovementOfGoods = "80a03838-0937-4ae3-921f-75a1e358f7bf";
             int defaultBackDaysForInvoice = 5;
             SystemNotification systemNotification = FrameworkUtils.ProcessFinanceDocumentToInvoice(GlobalFramework.SessionXpo, new Guid(notificationTypeSaftDocumentTypeMovementOfGoods), SaftDocumentType.MovementOfGoods, "(DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
-            _log.Debug(string.Format("Message: [{0}]", systemNotification.Message));
+            _logger.Debug(string.Format("Message: [{0}]", systemNotification.Message));
             */
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -491,40 +492,40 @@ namespace logicpos
 
             //string filePath = SettingsApp.ProtectedFilesFileName;
             //Dictionary<string, string> files = FrameworkUtils.CSVFileToDictionary(filePath);
-            //_log.Debug(string.Format("Message: [{0}]", files));
+            //_logger.Debug(string.Format("Message: [{0}]", files));
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test Protected files after BootStrap, Boot and Try to Change Or Delete File
 
             //string file = "Resources/Reports/UserReports/ReportDocumentFinance.frx";
             //bool result = GlobalApp.ProtectedFiles.IsValidFile(file);
-            //_log.Debug(string.Format("[{0}] IsValidFile: [{1}]", file, result));
+            //_logger.Debug(string.Format("[{0}] IsValidFile: [{1}]", file, result));
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test ProcessFinanceDocument.GetLastDocumentDateTime
 
             /*
             DateTime result = ProcessFinanceDocument.GetLastDocumentDateTime();
-            _log.Debug(string.Format("result: [{0}]", result));
-            _log.Debug(string.Format("result: [{0}]", (DateTime.Now < result)));
+            _logger.Debug(string.Format("result: [{0}]", result));
+            _logger.Debug(string.Format("result: [{0}]", (DateTime.Now < result)));
 
             DocumentFinanceYearSerieTerminal documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(SettingsApp.XpoOidDocumentFinanceTypeInvoice);
-            _log.Debug(string.Format("Terminal: [{0}], Serie: [{1}], SerieTerminal: [{2}]", documentFinanceYearSerieTerminal.Terminal.Designation, documentFinanceYearSerieTerminal.Serie.Designation, documentFinanceYearSerieTerminal.Designation));
-            _log.Debug(string.Format("Terminal: [{0}], Serie: [{1}]", documentFinanceYearSerieTerminal.Terminal.Designation, documentFinanceYearSerieTerminal.Designation));
-            _log.Debug(string.Format("result: [{0}]", result.Date));
-            _log.Debug(string.Format("result: [{0}]", (DateTime.Now < result)));
+            _logger.Debug(string.Format("Terminal: [{0}], Serie: [{1}], SerieTerminal: [{2}]", documentFinanceYearSerieTerminal.Terminal.Designation, documentFinanceYearSerieTerminal.Serie.Designation, documentFinanceYearSerieTerminal.Designation));
+            _logger.Debug(string.Format("Terminal: [{0}], Serie: [{1}]", documentFinanceYearSerieTerminal.Terminal.Designation, documentFinanceYearSerieTerminal.Designation));
+            _logger.Debug(string.Format("result: [{0}]", result.Date));
+            _logger.Debug(string.Format("result: [{0}]", (DateTime.Now < result)));
 
             documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(SettingsApp.XpoOidDocumentFinanceTypeCreditNote);
             result = ProcessFinanceDocument.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceYearSerieTerminal.Serie.Oid));
-            _log.Debug(string.Format("Terminal: [{0}], Serie: [{1}], SerieTerminal: [{2}]", documentFinanceYearSerieTerminal.Terminal.Designation, documentFinanceYearSerieTerminal.Serie.Designation, documentFinanceYearSerieTerminal.Designation));
-            _log.Debug(string.Format("result: [{0}]", result.Date));
-            _log.Debug(string.Format("result: [{0}]", (DateTime.Now < result)));
+            _logger.Debug(string.Format("Terminal: [{0}], Serie: [{1}], SerieTerminal: [{2}]", documentFinanceYearSerieTerminal.Terminal.Designation, documentFinanceYearSerieTerminal.Serie.Designation, documentFinanceYearSerieTerminal.Designation));
+            _logger.Debug(string.Format("result: [{0}]", result.Date));
+            _logger.Debug(string.Format("result: [{0}]", (DateTime.Now < result)));
             
             documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(SettingsApp.XpoOidDocumentFinanceTypeDebitNote);
             result = ProcessFinanceDocument.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceYearSerieTerminal.Serie.Oid));
-            _log.Debug(string.Format("Terminal: [{0}], Serie: [{1}], SerieTerminal: [{2}]", documentFinanceYearSerieTerminal.Terminal.Designation, documentFinanceYearSerieTerminal.Serie.Designation, documentFinanceYearSerieTerminal.Designation));
-            _log.Debug(string.Format("Date: [{0}]", result.Date));
-            _log.Debug(string.Format("result: [{0}]", (DateTime.Now < result)));
+            _logger.Debug(string.Format("Terminal: [{0}], Serie: [{1}], SerieTerminal: [{2}]", documentFinanceYearSerieTerminal.Terminal.Designation, documentFinanceYearSerieTerminal.Serie.Designation, documentFinanceYearSerieTerminal.Designation));
+            _logger.Debug(string.Format("Date: [{0}]", result.Date));
+            _logger.Debug(string.Format("result: [{0}]", (DateTime.Now < result)));
             */
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -542,10 +543,10 @@ namespace logicpos
             processFinanceDocumentParameter.DocumentDateTime = FrameworkUtils.CurrentDateTimeAtomic().AddDays(-5);
             //Simulate ProcessFinanceDocument Test
             DateTime documentDateTime = (processFinanceDocumentParameter.DocumentDateTime != DateTime.MinValue) ? processFinanceDocumentParameter.DocumentDateTime : FrameworkUtils.CurrentDateTimeAtomic();
-            _log.Debug(string.Format("documentDateTime: [{0}]", documentDateTime));
+            _logger.Debug(string.Format("documentDateTime: [{0}]", documentDateTime));
             //Get ResponseType Result, Silence is dont have Errors
             ResponseType responseType = Utils.ShowMessageTouchCheckIfFinanceDocumentHasValiDocumentDate(this, processFinanceDocumentParameter);
-            _log.Debug(string.Format("responseType: [{0}]", responseType));
+            _logger.Debug(string.Format("responseType: [{0}]", responseType));
             */
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -562,13 +563,13 @@ namespace logicpos
                 "FIELD_#1", "FIELD_#2", "FIELD_#3",
                 "DEBUG_#1", "DEBUG_#2", "DEBUG_#3"
             };
-            _log.Debug("INFO_");
+            _logger.Debug("INFO_");
             List<string> result = FrameworkUtils.FilterList(messageList, search);
-            _log.Debug("ERROR_, WARNING_");
+            _logger.Debug("ERROR_, WARNING_");
             result = FrameworkUtils.FilterList(messageList, searchList);
-            _log.Debug("DEBUG_, WARNING_");
+            _logger.Debug("DEBUG_, WARNING_");
             result = FrameworkUtils.FilterList(messageList, new List<string> { "DEBUG_", "WARNING_" });
-            _log.Debug("FIELD_");
+            _logger.Debug("FIELD_");
             result = FrameworkUtils.FilterList(messageList, "FIELD_");
             */
 
@@ -590,7 +591,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 //return resultResponse;
             }
             finally
@@ -616,7 +617,7 @@ namespace logicpos
                     documentFinanceMasterNew.EntityName = "NEW";
                     //UPDATE
                     DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)uowSession.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
-                    _log.Debug(string.Format("DataLayer: [{0}]", documentFinanceMaster.Session.DataLayer));
+                    _logger.Debug(string.Format("DataLayer: [{0}]", documentFinanceMaster.Session.DataLayer));
                     documentFinanceMaster.Printed = false;
                     documentFinanceMaster.EntityName = "false";
                     uowSession.CommitChanges();
@@ -626,7 +627,7 @@ namespace logicpos
                 catch (Exception ex)
                 {
                     uowSession.RollbackTransaction();
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
 
@@ -634,17 +635,17 @@ namespace logicpos
 
             //On Save Modify Right Values with Bad Values
             DocumentFinanceMaster documentFinanceMasterChange = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
-            _log.Debug(string.Format("DataLayer: [{0}]", documentFinanceMasterChange.Session.DataLayer));
+            _logger.Debug(string.Format("DataLayer: [{0}]", documentFinanceMasterChange.Session.DataLayer));
             documentFinanceMasterChange.EntityLocality = "true";
-            _log.Debug(string.Format("Printed: [{0}], EntityName: [{1}]", 
+            _logger.Debug(string.Format("Printed: [{0}], EntityName: [{1}]", 
                 documentFinanceMasterChange.Printed, 
                 documentFinanceMasterChange.EntityName
             ));
             //documentFinanceMasterChange.Save();
 
             DocumentFinanceMaster documentFinanceMasterCheck = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
-            _log.Debug(string.Format("DataLayer: [{0}]", documentFinanceMasterCheck.Session.DataLayer));
-            _log.Debug(string.Format("Printed: [{0}], EntityName: [{1}], EntityLocality: [{2}]", 
+            _logger.Debug(string.Format("DataLayer: [{0}]", documentFinanceMasterCheck.Session.DataLayer));
+            _logger.Debug(string.Format("Printed: [{0}], EntityName: [{1}], EntityLocality: [{2}]", 
                 documentFinanceMasterCheck.Printed, 
                 documentFinanceMasterCheck.EntityName,
                 documentFinanceMasterCheck.EntityLocality
@@ -658,7 +659,7 @@ namespace logicpos
             ProcessArticleStockParameter response =  PosArticleStockDialog.GetProcessArticleStockParameter(this);
             if (response != null)
             {
-                _log.Debug(string.Format("Message: [{0}]", response.Article.Designation));
+                _logger.Debug(string.Format("Message: [{0}]", response.Article.Designation));
                 ProcessArticleStock.Add(ProcessArticleStockMode.In, response);
             }
             */
@@ -670,7 +671,7 @@ namespace logicpos
             //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
             //if (dialogResponse.ResponseType == ResponseType.Ok)
             //{
-            //    _log.Debug(String.Format("BarCode: [{0}]", dialogResponse.Text));
+            //    _logger.Debug(String.Format("BarCode: [{0}]", dialogResponse.Text));
             //}
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -678,14 +679,14 @@ namespace logicpos
 
             //cfg_configurationcountry countryPT = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
             //cfg_configurationcountry countryAO = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
-            //_log.Debug(String.Format("countryPT: [{0}], [{1}]", countryPT.Designation, countryPT.Code2));
-            //_log.Debug(String.Format("countryAO: [{0}], [{1}]", countryAO.Designation, countryAO.Code2));
+            //_logger.Debug(String.Format("countryPT: [{0}], [{1}]", countryPT.Designation, countryPT.Code2));
+            //_logger.Debug(String.Format("countryAO: [{0}], [{1}]", countryAO.Designation, countryAO.Code2));
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test PosLicenceDialog 
 
             //LicenceDetails licenceDetails = PosLicenceDialog.GetLicenseDetails(this, "92A4-67CE-A9C0-7503-B245-2228");
-            //_log.Debug(String.Format("Message: [{0}]", licenceDetails.LicenseName));
+            //_logger.Debug(String.Format("Message: [{0}]", licenceDetails.LicenseName));
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             // Test Thread Dialog 
@@ -730,19 +731,19 @@ namespace logicpos
             //        Service1Client serviceClient = new Service1Client();
             //        //GetData
             //        var result = serviceClient.GetData(14);
-            //        _log.Debug(string.Format("Test GetData Service Result: {0}", result));
+            //        _logger.Debug(string.Format("Test GetData Service Result: {0}", result));
             //        //SendDocuments
             //        var resultResultObject = serviceClient.SendDocument(new Guid("c708ad97-a5fb-46ee-b241-a73cb13242ac"));
             //        if (resultResultObject != null)
             //        {
-            //            _log.Debug("Test AT WebService ResultObject:");
-            //            _log.Debug(string.Format("ReturnCode: {0}", resultResultObject.ReturnCode));
-            //            _log.Debug(string.Format("ReturnMessage: {0}", resultResultObject.ReturnMessage));
-            //            _log.Debug(string.Format("ReturnRaw: {0}", resultResultObject.ReturnRaw));
+            //            _logger.Debug("Test AT WebService ResultObject:");
+            //            _logger.Debug(string.Format("ReturnCode: {0}", resultResultObject.ReturnCode));
+            //            _logger.Debug(string.Format("ReturnMessage: {0}", resultResultObject.ReturnMessage));
+            //            _logger.Debug(string.Format("ReturnRaw: {0}", resultResultObject.ReturnRaw));
             //        }
             //        else
             //        {
-            //            _log.Error(String.Format("Error null resultResultObject: [{0}]", resultResultObject));
+            //            _logger.Error(String.Format("Error null resultResultObject: [{0}]", resultResultObject));
             //        }
 
             //        // Always Close Client
@@ -750,12 +751,12 @@ namespace logicpos
             //    }
             //    catch (Exception ex)
             //    {
-            //        _log.Error(ex.Message, ex);
+            //        _logger.Error(ex.Message, ex);
             //    }
             //}
             //else
             //{
-            //    _log.Debug(string.Format("EndpointAddress OffLine, Please check URI: {0}", endpointAddress));
+            //    _logger.Debug(string.Format("EndpointAddress OffLine, Please check URI: {0}", endpointAddress));
             //}
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -769,11 +770,11 @@ namespace logicpos
             //    //Property
             //    object o3 = FrameworkUtils.GetPropertyValueFromType(typeof(SettingsApp), "FinanceRuleSimplifiedInvoiceMaxTotal");
             //    //Output
-            //    _log.Debug(string.Format("Message: [{0}]:[{1}]:[{2}]", o1.ToString(), o2.ToString(), o3.ToString()));
+            //    _logger.Debug(string.Format("Message: [{0}]:[{1}]:[{2}]", o1.ToString(), o2.ToString(), o3.ToString()));
             //}
             //catch (Exception ex)
             //{
-            //    _log.Error(ex.Message, ex);
+            //    _logger.Error(ex.Message, ex);
             //}
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -813,7 +814,7 @@ namespace logicpos
             //}
             //catch (Exception ex)
             //{
-            //    _log.Error(ex.Message, ex);
+            //    _logger.Error(ex.Message, ex);
             //}
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -824,7 +825,7 @@ namespace logicpos
             //Dictionary<string, PropertyInfo> attributes = XPGuidObject.GetXPGuidObjectAttributes(typeof(erp_customer), false);
             //foreach (var item in attributes)
             //{
-            //    _log.Debug($"[{item.Key}]=[{item.Value}]");
+            //    _logger.Debug($"[{item.Key}]=[{item.Value}]");
             //}
         }
     }

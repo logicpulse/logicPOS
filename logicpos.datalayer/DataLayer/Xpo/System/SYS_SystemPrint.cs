@@ -9,29 +9,29 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemprint() : base() { }
         public sys_systemprint(Session session) : base(session) { }
 
-        DateTime fDate;
+        private DateTime fDate;
         public DateTime Date
         {
             get { return fDate; }
             set { SetPropertyValue<DateTime>("Date", ref fDate, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         public string Designation
         {
             get { return fDesignation; }
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fCopyNames;
+        private string fCopyNames;
         [Size(50)]
         public string CopyNames
         {
             get { return fCopyNames; }
             set { SetPropertyValue<string>("CopyNames", ref fCopyNames, value); }
         }
-  
-        int fPrintCopies;
+
+        private int fPrintCopies;
         [Size(50)]
         public int PrintCopies
         {
@@ -39,7 +39,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<int>("PrintCopies", ref fPrintCopies, value); }
         }
 
-        string fPrintMotive;
+        private string fPrintMotive;
         [Size(255)]
         public string PrintMotive
         {
@@ -48,21 +48,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //2ª Via
-        bool fSecondPrint;
+        private bool fSecondPrint;
         public bool SecondPrint
         {
             get { return fSecondPrint; }
             set { SetPropertyValue<bool>("SecondPrint", ref fSecondPrint, value); }
         }
-        
-        sys_userdetail fUserDetail;
+
+        private sys_userdetail fUserDetail;
         public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
             set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
         }
 
-        pos_configurationplaceterminal fTerminal;
+        private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
@@ -70,7 +70,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many SystemPrint
-        fin_documentfinancemaster fDocumentMaster;
+        private fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesSystemPrint")]
         public fin_documentfinancemaster DocumentMaster
         {
@@ -79,7 +79,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinancePayment One <> Many SystemPrint
-        fin_documentfinancepayment fDocumentPayment;
+        private fin_documentfinancepayment fDocumentPayment;
         [Association(@"DocumentFinancePaymentReferencesSystemPrint")]
         public fin_documentfinancepayment DocumentPayment
         {

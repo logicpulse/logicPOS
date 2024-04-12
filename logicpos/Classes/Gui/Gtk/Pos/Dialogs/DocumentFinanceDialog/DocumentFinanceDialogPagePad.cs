@@ -7,7 +7,7 @@ using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
-    class DocumentFinanceDialogPagePad : PagePad
+    internal class DocumentFinanceDialogPagePad : PagePad
     {
         private Window _sourceWindow;
         public Window SourceWindow

@@ -6,10 +6,10 @@ using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class EntryBoxValidationFilePickerDialog : EntryBoxValidationButton
+    internal class EntryBoxValidationFilePickerDialog : EntryBoxValidationButton
     {
         //Private Properties
-        private FileFilter _fileFilter;
+        private readonly FileFilter _fileFilter;
         //Public Properties
         private string _fileName;
         public string Value
@@ -52,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -60,10 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Custom Events
         private void OnClosePopup()
         {
-            if (ClosePopup != null)
-            {
-                ClosePopup(this, EventArgs.Empty);
-            }
+            ClosePopup?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -19,8 +19,8 @@ using System;
 
 namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 {
-    [FRBO(Entity = "view_documentfinance")]    
-    class FRBODocumentFinanceVatSalesByClassSummary : FRBOBaseObject
+    [FRBO(Entity = "view_documentfinance")]
+    internal class FRBODocumentFinanceVatSalesByClassSummary : FRBOBaseObject
     {
         [FRBO(Field = "fdVat")]
         //Primary Oid (Required)

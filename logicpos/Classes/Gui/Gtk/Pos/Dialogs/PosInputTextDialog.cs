@@ -15,7 +15,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     /// ex in PosConfirmAcronymSeriesDialog Method
     /// </summary>
 
-    class PosInputTextDialog : PosBaseDialog
+    internal class PosInputTextDialog : PosBaseDialog
     {
         protected VBox _vbox;
         public VBox VBoxContent
@@ -88,9 +88,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             };
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(buttonOk, ResponseType.Ok),
+                new ActionAreaButton(buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, pWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);

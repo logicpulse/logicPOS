@@ -25,7 +25,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             InitEncryptedAttributes<fin_documentfinancemaster>();
         }
 
-        DateTime fDate;
+        private DateTime fDate;
         public DateTime Date
         {
             get { return fDate; }
@@ -34,7 +34,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         /*BOF: SAF-T(PT)*/
         //used for InvoiceNo (SalesInvoices) DocumentNumber(MovementOfGoods), DocumentNumber(WorkingDocuments)
-        string fDocumentNumber;
+        private string fDocumentNumber;
         [Size(50)]
         [Indexed(Unique = true)]
         public string DocumentNumber
@@ -48,7 +48,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //A - Documento Anulado
         //R - Documento de Resumo doutros documentos criados noutras aplicações e gerado nesta aplicaçãoi
         //F - Documento Faturado
-        string fDocumentStatusStatus;
+        private string fDocumentStatusStatus;
         [Size(1)]
         public string DocumentStatusStatus
         {
@@ -56,7 +56,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentStatusStatus", ref fDocumentStatusStatus, value); }
         }
 
-        string fDocumentStatusDate;
+        private string fDocumentStatusDate;
         [Size(19)]
         public string DocumentStatusDate
         {
@@ -64,7 +64,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentStatusDate", ref fDocumentStatusDate, value); }
         }
 
-        string fDocumentStatusReason;
+        private string fDocumentStatusReason;
         [Size(50)]
         public string DocumentStatusReason
         {
@@ -73,7 +73,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Used to Store 30Chars Codes for SAF-T
-        string fDocumentStatusUser;
+        private string fDocumentStatusUser;
         [Size(30)]
         public string DocumentStatusUser
         {
@@ -84,7 +84,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //P - Documento Produzido na Aplicação
         //I - Documento Integrado e produzido noutra aplicação 
         //M - Documento proveniente de recuperação ou de emissão manual
-        string fSourceBilling;
+        private string fSourceBilling;
         [Size(1)]
         public string SourceBilling
         {
@@ -92,7 +92,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("SourceBilling", ref fSourceBilling, value); }
         }
 
-        string fHash;
+        private string fHash;
         [Size(172)]
         public string Hash
         {
@@ -100,7 +100,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Hash", ref fHash, value); }
         }
 
-        string fHashControl;
+        private string fHashControl;
         [Size(40)]
         public string HashControl
         {
@@ -109,7 +109,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //used for InvoiceDate (SalesInvoices) MovementDate(MovementOfGoods), WorkDate(WorkingDocuments)
-        string fDocumentDate;
+        private string fDocumentDate;
         [Size(19)]
         public string DocumentDate
         {
@@ -117,21 +117,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentDate", ref fDocumentDate, value); }
         }
 
-        int fSelfBillingIndicator;
+        private int fSelfBillingIndicator;
         public int SelfBillingIndicator
         {
             get { return fSelfBillingIndicator; }
             set { SetPropertyValue<int>("SelfBillingIndicator", ref fSelfBillingIndicator, value); }
         }
 
-        int fCashVATSchemeIndicator;
+        private int fCashVATSchemeIndicator;
         public int CashVatSchemeIndicator
         {
             get { return fCashVATSchemeIndicator; }
             set { SetPropertyValue<int>("CashVATSchemeIndicator", ref fCashVATSchemeIndicator, value); }
         }
 
-        int fThirdPartiesBillingIndicator;
+        private int fThirdPartiesBillingIndicator;
         public int ThirdPartiesBillingIndicator
         {
             get { return fThirdPartiesBillingIndicator; }
@@ -139,7 +139,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Used to Store 30Chars Codes for SAF-T
-        string fDocumentCreatorUser;
+        private string fDocumentCreatorUser;
         [Size(30)]
         public string DocumentCreatorUser
         {
@@ -147,7 +147,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentCreatorUser", ref fDocumentCreatorUser, value); }
         }
 
-        string fEACCode;
+        private string fEACCode;
         [Size(5)]
         public string EACCode
         {
@@ -155,7 +155,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EACCode", ref fEACCode, value); }
         }
 
-        string fSystemEntryDate;
+        private string fSystemEntryDate;
         [Size(50)]
         public string SystemEntryDate
         {
@@ -163,7 +163,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("SystemEntryDate", ref fSystemEntryDate, value); }
         }
 
-        string fTransactionID;
+        private string fTransactionID;
         [Size(70)]
         public string TransactionID
         {
@@ -172,7 +172,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //MovementOfGoods: ShipTo
-        string fShipToDeliveryID;
+        private string fShipToDeliveryID;
         [Size(255)]
         public string ShipToDeliveryID
         {
@@ -180,14 +180,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToDeliveryID", ref fShipToDeliveryID, value); }
         }
 
-        DateTime fShipToDeliveryDate;
+        private DateTime fShipToDeliveryDate;
         public DateTime ShipToDeliveryDate
         {
             get { return fShipToDeliveryDate; }
             set { SetPropertyValue<DateTime>("ShipToDeliveryDate", ref fShipToDeliveryDate, value); }
         }
 
-        string fShipToWarehouseID;
+        private string fShipToWarehouseID;
         [Size(50)]
         public string ShipToWarehouseID
         {
@@ -195,7 +195,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToWarehouseID", ref fShipToWarehouseID, value); }
         }
 
-        string fShipToLocationID;
+        private string fShipToLocationID;
         [Size(30)]
         public string ShipToLocationID
         {
@@ -203,7 +203,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToLocationID", ref fShipToLocationID, value); }
         }
 
-        string fShipToBuildingNumber;
+        private string fShipToBuildingNumber;
         [Size(10)]
         public string ShipToBuildingNumber
         {
@@ -211,7 +211,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToBuildingNumber", ref fShipToBuildingNumber, value); }
         }
 
-        string fShipToStreetName;
+        private string fShipToStreetName;
         [Size(90)]
         public string ShipToStreetName
         {
@@ -219,7 +219,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToStreetName", ref fShipToStreetName, value); }
         }
 
-        string fShipToAddressDetail;
+        private string fShipToAddressDetail;
         [Size(100)]
         public string ShipToAddressDetail
         {
@@ -227,7 +227,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToAddressDetail", ref fShipToAddressDetail, value); }
         }
 
-        string fShipToCity;
+        private string fShipToCity;
         [Size(50)]
         public string ShipToCity
         {
@@ -235,7 +235,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToCity", ref fShipToCity, value); }
         }
 
-        string fShipToPostalCode;
+        private string fShipToPostalCode;
         [Size(20)]
         public string ShipToPostalCode
         {
@@ -243,7 +243,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToPostalCode", ref fShipToPostalCode, value); }
         }
 
-        string fShipToRegion;
+        private string fShipToRegion;
         [Size(50)]
         public string ShipToRegion
         {
@@ -251,7 +251,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipToRegion", ref fShipToRegion, value); }
         }
 
-        string fShipToCountry;
+        private string fShipToCountry;
         [Size(5)]
         public string ShipToCountry
         {
@@ -260,7 +260,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //MovementOfGoods: ShipFrom
-        string fShipFromDeliveryID;
+        private string fShipFromDeliveryID;
         [Size(255)]
         public string ShipFromDeliveryID
         {
@@ -268,14 +268,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromDeliveryID", ref fShipFromDeliveryID, value); }
         }
 
-        DateTime fShipFromDeliveryDate;
+        private DateTime fShipFromDeliveryDate;
         public DateTime ShipFromDeliveryDate
         {
             get { return fShipFromDeliveryDate; }
             set { SetPropertyValue<DateTime>("ShipFromDeliveryDate", ref fShipFromDeliveryDate, value); }
         }
 
-        string fShipFromWarehouseID;
+        private string fShipFromWarehouseID;
         [Size(50)]
         public string ShipFromWarehouseID
         {
@@ -283,7 +283,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromWarehouseID", ref fShipFromWarehouseID, value); }
         }
 
-        string fShipFromLocationID;
+        private string fShipFromLocationID;
         [Size(30)]
         public string ShipFromLocationID
         {
@@ -291,7 +291,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromLocationID", ref fShipFromLocationID, value); }
         }
 
-        string fShipFromBuildingNumber;
+        private string fShipFromBuildingNumber;
         [Size(10)]
         public string ShipFromBuildingNumber
         {
@@ -299,7 +299,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromBuildingNumber", ref fShipFromBuildingNumber, value); }
         }
 
-        string fShipFromStreetName;
+        private string fShipFromStreetName;
         [Size(90)]
         public string ShipFromStreetName
         {
@@ -307,7 +307,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromStreetName", ref fShipFromStreetName, value); }
         }
 
-        string fShipFromAddressDetail;
+        private string fShipFromAddressDetail;
         [Size(100)]
         public string ShipFromAddressDetail
         {
@@ -315,7 +315,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromAddressDetail", ref fShipFromAddressDetail, value); }
         }
 
-        string fShipFromCity;
+        private string fShipFromCity;
         [Size(50)]
         public string ShipFromCity
         {
@@ -323,7 +323,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromCity", ref fShipFromCity, value); }
         }
 
-        string fShipFromPostalCode;
+        private string fShipFromPostalCode;
         [Size(20)]
         public string ShipFromPostalCode
         {
@@ -331,7 +331,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromPostalCode", ref fShipFromPostalCode, value); }
         }
 
-        string fShipFromRegion;
+        private string fShipFromRegion;
         [Size(50)]
         public string ShipFromRegion
         {
@@ -339,7 +339,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ShipFromRegion", ref fShipFromRegion, value); }
         }
 
-        string fShipFromCountry;
+        private string fShipFromCountry;
         [Size(5)]
         public string ShipFromCountry
         {
@@ -348,14 +348,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //MovementOfGoods: Common to ShipTo/ShipFrom
-        DateTime fMovementStartTime;
+        private DateTime fMovementStartTime;
         public DateTime MovementStartTime
         {
             get { return fMovementStartTime; }
             set { SetPropertyValue<DateTime>("MovementStartTime", ref fMovementStartTime, value); }
         }
 
-        DateTime fMovementEndTime;
+        private DateTime fMovementEndTime;
         public DateTime MovementEndTime
         {
             get { return fMovementEndTime; }
@@ -364,63 +364,63 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         /*EOF: SAF-T(PT)*/
 
-        decimal fTotalNet;
+        private decimal fTotalNet;
         public decimal TotalNet
         {
             get { return fTotalNet; }
             set { SetPropertyValue<decimal>("TotalNet", ref fTotalNet, value); }
         }
 
-        decimal fTotalGross;
+        private decimal fTotalGross;
         public decimal TotalGross
         {
             get { return fTotalGross; }
             set { SetPropertyValue<decimal>("TotalGross", ref fTotalGross, value); }
         }
 
-        decimal fTotalDiscount;
+        private decimal fTotalDiscount;
         public decimal TotalDiscount
         {
             get { return fTotalDiscount; }
             set { SetPropertyValue<decimal>("TotalDiscount", ref fTotalDiscount, value); }
         }
 
-        decimal fTotalTax;
+        private decimal fTotalTax;
         public decimal TotalTax
         {
             get { return fTotalTax; }
             set { SetPropertyValue<decimal>("TotalTax", ref fTotalTax, value); }
         }
 
-        decimal fTotalFinal;
+        private decimal fTotalFinal;
         public decimal TotalFinal
         {
             get { return fTotalFinal; }
             set { SetPropertyValue<decimal>("TotalFinal", ref fTotalFinal, value); }
         }
 
-        decimal fTotalFinalRound;
+        private decimal fTotalFinalRound;
         public decimal TotalFinalRound
         {
             get { return fTotalFinalRound; }
             set { SetPropertyValue<decimal>("TotalFinalRound", ref fTotalFinalRound, value); }
         }
 
-        decimal fTotalDelivery;
+        private decimal fTotalDelivery;
         public decimal TotalDelivery
         {
             get { return fTotalDelivery; }
             set { SetPropertyValue<decimal>("TotalDelivery", ref fTotalDelivery, value); }
         }
 
-        decimal fTotalChange;
+        private decimal fTotalChange;
         public decimal TotalChange
         {
             get { return fTotalChange; }
             set { SetPropertyValue<decimal>("TotalChange", ref fTotalChange, value); }
         }
 
-        string fExternalDocument;
+        private string fExternalDocument;
         [Size(50)]
         public string ExternalDocument
         {
@@ -428,28 +428,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ExternalDocument", ref fExternalDocument, value); }
         }
 
-        decimal fDiscount;
+        private decimal fDiscount;
         public decimal Discount
         {
             get { return fDiscount; }
             set { SetPropertyValue<decimal>("Discount", ref fDiscount, value); }
         }
 
-        decimal fDiscountFinancial;
+        private decimal fDiscountFinancial;
         public decimal DiscountFinancial
         {
             get { return fDiscountFinancial; }
             set { SetPropertyValue<decimal>("DiscountFinancial", ref fDiscountFinancial, value); }
         }
 
-        decimal fExchangeRate;
+        private decimal fExchangeRate;
         public decimal ExchangeRate
         {
             get { return fExchangeRate; }
             set { SetPropertyValue<decimal>("ExchangeRate", ref fExchangeRate, value); }
         }
 
-        Guid fEntityOid;
+        private Guid fEntityOid;
         public Guid EntityOid
         {
             get { return fEntityOid; }
@@ -457,7 +457,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Used to Store 30Chars Codes for SAF-T
-        string fEntityInternalCode;
+        private string fEntityInternalCode;
         [Size(30)]
         public string EntityInternalCode
         {
@@ -465,7 +465,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EntityInternalCode", ref fEntityInternalCode, value); }
         }
 
-        string fEntityName;
+        private string fEntityName;
         //[XPGuidObject(Encrypted = true)]
         public string EntityName
         {
@@ -473,7 +473,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EntityName", ref fEntityName, value); }
         }
 
-        string fEntityAddress;
+        private string fEntityAddress;
         //[XPGuidObject(Encrypted = true)]
         public string EntityAddress
         {
@@ -481,7 +481,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EntityAddress", ref fEntityAddress, value); }
         }
 
-        string fEntityLocality;
+        private string fEntityLocality;
         //[XPGuidObject(Encrypted = true)]
         public string EntityLocality
         {
@@ -489,7 +489,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EntityLocality", ref fEntityLocality, value); }
         }
 
-        string fEntityZipCode;
+        private string fEntityZipCode;
         [Size(10)]
         //[XPGuidObject(Encrypted = true)]
         public string EntityZipCode
@@ -498,7 +498,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EntityZipCode", ref fEntityZipCode, value); }
         }
 
-        string fEntityCity;
+        private string fEntityCity;
         //[XPGuidObject(Encrypted = true)]
         public string EntityCity
         {
@@ -506,7 +506,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EntityCity", ref fEntityCity, value); }
         }
 
-        string fEntityCountry;
+        private string fEntityCountry;
         [Size(5)]
         //[XPGuidObject(Encrypted = true)]
         public string EntityCountry
@@ -515,14 +515,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EntityCountry", ref fEntityCountry, value); }
         }
 
-        Guid fEntityCountryOid;
+        private Guid fEntityCountryOid;
         public Guid EntityCountryOid
         {
             get { return fEntityCountryOid; }
             set { SetPropertyValue<Guid>("EntityCountryOid", ref fEntityCountryOid, value); }
         }
 
-        string fEntityFiscalNumber;
+        private string fEntityFiscalNumber;
         //[XPGuidObject(Encrypted = true)]
         public string EntityFiscalNumber
         {
@@ -530,42 +530,42 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FiscalNumber", ref fEntityFiscalNumber, value); }
         }
 
-        Boolean fPayed;
+        private Boolean fPayed;
         public Boolean Payed
         {
             get { return fPayed; }
             set { SetPropertyValue<Boolean>("Payed", ref fPayed, value); }
         }
 
-        DateTime fPayedDate;
+        private DateTime fPayedDate;
         public DateTime PayedDate
         {
             get { return fPayedDate; }
             set { SetPropertyValue<DateTime>("PayedDate", ref fPayedDate, value); }
         }
 
-        Boolean fPrinted;
+        private Boolean fPrinted;
         public Boolean Printed
         {
             get { return fPrinted; }
             set { SetPropertyValue<Boolean>("Printed", ref fPrinted, value); }
         }
 
-        fin_documentordermain fSourceOrderMain;
+        private fin_documentordermain fSourceOrderMain;
         public fin_documentordermain SourceOrderMain
         {
             get { return fSourceOrderMain; }
             set { SetPropertyValue<fin_documentordermain>("SourceOrderMain", ref fSourceOrderMain, value); }
         }
 
-        fin_documentfinancemaster fDocumentParent;
+        private fin_documentfinancemaster fDocumentParent;
         public fin_documentfinancemaster DocumentParent
         {
             get { return fDocumentParent; }
             set { SetPropertyValue<fin_documentfinancemaster>("DocumentParent", ref fDocumentParent, value); }
         }
 
-        fin_documentfinancemaster fDocumentChild;
+        private fin_documentfinancemaster fDocumentChild;
         public fin_documentfinancemaster DocumentChild
         {
             get { return fDocumentChild; }
@@ -573,16 +573,17 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //WayBill Code
-        string fATDocCodeID;
+        private string fATDocCodeID;
         [Size(200)]
         public string ATDocCodeID
         {
             get { return fATDocCodeID; }
             set { SetPropertyValue<string>("ATDocCodeID", ref fATDocCodeID, value); }
         }
-		//
+
+        //
         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-        string fATCUD;
+        private string fATCUD;
         [Size(200)]
         public string ATCUD
         {
@@ -591,7 +592,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //QRCode image
-        string fATDocQRCode;
+        private string fATDocQRCode;
         [Size(200)]
         public string ATDocQRCode
         {
@@ -600,14 +601,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //AT WebServices
-        sys_systemauditat fATValidAuditResult;
+        private sys_systemauditat fATValidAuditResult;
         public sys_systemauditat ATValidAuditResult
         {
             get { return fATValidAuditResult; }
             set { SetPropertyValue<sys_systemauditat>("ATValidAuditResult", ref fATValidAuditResult, value); }
         }
 
-        Boolean fATResendDocument;
+        private Boolean fATResendDocument;
         public Boolean ATResendDocument
         {
             get { return fATResendDocument; }
@@ -636,7 +637,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceMaster
-        fin_documentfinancetype fDocumentType;
+        private fin_documentfinancetype fDocumentType;
         [Association(@"DocumentFinanceTypeReferencesDocumentFinanceMaster")]
         public fin_documentfinancetype DocumentType
         {
@@ -645,7 +646,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinanceMaster
-        fin_documentfinanceseries fDocumentSerie;
+        private fin_documentfinanceseries fDocumentSerie;
         [Association(@"DocumentFinanceSeriesReferencesDocumentFinanceMaster")]
         public fin_documentfinanceseries DocumentSerie
         {
@@ -654,7 +655,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPaymentMethod One <> Many DocumentFinanceMaster
-        fin_configurationpaymentmethod fPaymentMethod;
+        private fin_configurationpaymentmethod fPaymentMethod;
         [Association(@"ConfigurationPaymentMethodReferencesDocumentFinanceMaster")]
         public fin_configurationpaymentmethod PaymentMethod
         {
@@ -663,7 +664,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPaymentCondition One <> Many DocumentFinanceMaster
-        fin_configurationpaymentcondition fPaymentCondition;
+        private fin_configurationpaymentcondition fPaymentCondition;
         [Association(@"ConfigurationPaymentConditionReferencesDocumentFinanceMaster")]
         public fin_configurationpaymentcondition PaymentCondition
         {
@@ -672,7 +673,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationCurrency One <> Many DocumentFinanceMaster
-        cfg_configurationcurrency fCurrency;
+        private cfg_configurationcurrency fCurrency;
         [Association(@"ConfigurationCurrencyReferencesDocumentFinanceMaster")]
         public cfg_configurationcurrency Currency
         {

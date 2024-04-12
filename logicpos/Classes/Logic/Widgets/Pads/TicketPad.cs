@@ -10,13 +10,13 @@ using System.Linq;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    partial class TicketPad
+    internal partial class TicketPad
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Tables Button
-        void buttonKeySelectTable_Clicked(object sender, EventArgs e)
+        private void buttonKeySelectTable_Clicked(object sender, EventArgs e)
         {
             PosTablesDialog dialog = new PosTablesDialog(this.SourceWindow, DialogFlags.DestroyWithParent);
             ResponseType response = (ResponseType)dialog.Run();

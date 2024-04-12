@@ -25,8 +25,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
     public class BackOfficeMainWindow : BackOfficeBaseWindow
     {
         //Config
-        string _privilegesBackOfficeMenuOperation = string.Format("{0}_{1}", SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, "MENU");
-        //protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly string _privilegesBackOfficeMenuOperation = string.Format("{0}_{1}", SettingsApp.PrivilegesBackOfficeCRUDOperationPrefix, "MENU");
+        //protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //ForBackOfficeMode
 
         public BackOfficeMainWindow(bool empty)
@@ -38,7 +38,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public BackOfficeMainWindow()
         {
             //Info
-            _log.Debug("BackOfficeMainWindow(): Create object BackOfficeMainWindow");
+            _logger.Debug("BackOfficeMainWindow(): Create object BackOfficeMainWindow");
 
             if (!GlobalFramework.AppUseBackOfficeMode)
             {
@@ -58,7 +58,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             this.Shown += BackOfficeMainWindow_Show;
         }
 
-        void BackOfficeMainWindow_Show(object sender, EventArgs e)
+        private void BackOfficeMainWindow_Show(object sender, EventArgs e)
         {
             if (_activeUserDetail != GlobalFramework.LoggedUser)
             {
@@ -166,13 +166,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         private Dictionary<string, AccordionNode> GetAccordionDefinition()
         {
-            _log.Debug("GetAccordionDefinition Begin");
+            _logger.Debug("GetAccordionDefinition Begin");
 
             //Init accordionDefinition
             Dictionary<string, AccordionNode> accordionDefinition = null;
@@ -219,22 +219,29 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
 
                 ////TK016235 BackOffice - Mode - Finance Documents for backoffice mode
-                Dictionary<string, AccordionNode> _accordionChildDocuments = new Dictionary<string, AccordionNode>();
-                _accordionChildDocuments.Add("DocumentsNew", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_new_finance_documents")) { Clicked = delegate { logicpos.Utils.startNewDocumentFromBackOffice(this); } });
-                _accordionChildDocuments.Add("DocumentsShow", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_record_finance_documents")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 1); } });
-                _accordionChildDocuments.Add("DocumentsPay", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 2); } });
-                _accordionChildDocuments.Add("DocumentsPayments", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_payments")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 3); } });
-                _accordionChildDocuments.Add("DocumentsCurrentAccount", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 4); } });
+                Dictionary<string, AccordionNode> _accordionChildDocuments = new Dictionary<string, AccordionNode>
+                {
+                    { "DocumentsNew", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_new_finance_documents")) { Clicked = delegate { logicpos.Utils.startNewDocumentFromBackOffice(this); } } },
+                    { "DocumentsShow", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_record_finance_documents")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 1); } } },
+                    { "DocumentsPay", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 2); } } },
+                    { "DocumentsPayments", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_payments")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 3); } } },
+                    { "DocumentsCurrentAccount", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(this, 4); } } }
+                };
                 //_accordionChildDocuments.Add("DocumentsListall", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_resume_finance_documents")) {  Content = Utils.GetGenericTreeViewXPO<DashBoard>(this) }); ;
                 logicpos.Utils util = new logicpos.Utils();
                 util._accordionChildDocumentsTemp = _accordionChildDocuments;
-                Dictionary<string, AccordionNode> _accordionChildReports = new Dictionary<string, AccordionNode>();
-                _accordionChildReports.Add("DocumentsReports", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reports")) { Clicked = delegate { logicpos.Utils.startReportsMenuFromBackOffice(this); } });
+                Dictionary<string, AccordionNode> _accordionChildReports = new Dictionary<string, AccordionNode>
+                {
+                    { "DocumentsReports", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reports")) { Clicked = delegate { logicpos.Utils.startReportsMenuFromBackOffice(this); } } }
+                };
 
                 //Articles
-                Dictionary<string, AccordionNode> _accordionChildArticles = new Dictionary<string, AccordionNode>();
-                //, Clicked = testClickedEventHandlerFromOutside }
-                _accordionChildArticles.Add("ArticleFamily", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_families")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this) }); ;
+                Dictionary<string, AccordionNode> _accordionChildArticles = new Dictionary<string, AccordionNode>
+                {
+                    //, Clicked = testClickedEventHandlerFromOutside }
+                    { "ArticleFamily", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_families")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleFamily>(this) } }
+                };
+;
                 _accordionChildArticles.Add("ArticleSubFamily", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_subfamilies")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleSubFamily>(this) });
                 _accordionChildArticles.Add("Article", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_articles")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(this) });
                 _accordionChildArticles.Add("ArticleType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_types")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleType>(this) });
@@ -244,42 +251,50 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _accordionChildArticles.Add("ArticleStock", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")) { /*Content = Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this),*/ Clicked = delegate { logicpos.Utils.OpenArticleStockDialog(this); } });
 
                 //Customers
-                Dictionary<string, AccordionNode> _accordionChildCustomers = new Dictionary<string, AccordionNode>();
-                _accordionChildCustomers.Add("Customer", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customers")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(this, criteriaOperatorCustomer) });
-                _accordionChildCustomers.Add("CustomerType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer_types")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomerType>(this) });
-                _accordionChildCustomers.Add("CustomerDiscountGroup", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer_discount_groups")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomerDiscountGroup>(this) });
+                Dictionary<string, AccordionNode> _accordionChildCustomers = new Dictionary<string, AccordionNode>
+                {
+                    { "Customer", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customers")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(this, criteriaOperatorCustomer) } },
+                    { "CustomerType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer_types")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomerType>(this) } },
+                    { "CustomerDiscountGroup", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer_discount_groups")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomerDiscountGroup>(this) } }
+                };
 
                 //Users
-                Dictionary<string, AccordionNode> _accordionChildUsers = new Dictionary<string, AccordionNode>();
-                _accordionChildUsers.Add("UserDetail", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_users")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(this) });
-                //Commented by Mario: Not Usefull, UserPermissionProfile has same funtionality
-                //_accordionChildUsers.Add("UserProfile", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_profile) { Content = Utils.GetGenericTreeViewXPO<TreeViewUserProfile>(this) });
-                //WARNING: Works with diferent constructs, its still need to be improved : new TreeViewUserProfilePermissions(this)
-                _accordionChildUsers.Add("UserPermissionProfile", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_permissions")) { Content = new TreeViewUserProfilePermissions(this) });
-                _accordionChildUsers.Add("UserCommissionGroup", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_commission_groups")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUserCommissionGroup>(this) });
+                Dictionary<string, AccordionNode> _accordionChildUsers = new Dictionary<string, AccordionNode>
+                {
+                    { "UserDetail", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_users")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(this) } },
+                    //Commented by Mario: Not Usefull, UserPermissionProfile has same funtionality
+                    //_accordionChildUsers.Add("UserProfile", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_profile) { Content = Utils.GetGenericTreeViewXPO<TreeViewUserProfile>(this) });
+                    //WARNING: Works with diferent constructs, its still need to be improved : new TreeViewUserProfilePermissions(this)
+                    { "UserPermissionProfile", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_permissions")) { Content = new TreeViewUserProfilePermissions(this) } },
+                    { "UserCommissionGroup", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_commission_groups")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUserCommissionGroup>(this) } }
+                };
                 //Moved to Custom Toolbar
                 //_accordionChildUsers.Add("System_ApplyPrivileges", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_apply_privileges) { Clicked = delegate { Accordion.UpdateMenuPrivileges(); } });
 
                 //Documents
-                Dictionary<string, AccordionNode> _accordionDocuments = new Dictionary<string, AccordionNode>();
-                _accordionDocuments.Add("DocumentFinanceYears", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_years")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(this) });
-                _accordionDocuments.Add("DocumentFinanceSeries", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_series")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceSeries>(this) });
-                _accordionDocuments.Add("DocumentFinanceType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceType>(this) });
-                //_accordionDocuments.Add("DocumentFinanceYearSerieTerminal", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_yearsseriesterminal) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYearSerieTerminal>(this) });
-                _accordionDocuments.Add("ConfigurationVatRate", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rates")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatRate>(this) });
-                _accordionDocuments.Add("ConfigurationVatExemptionReason", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatExceptionReason>(this) });
-                _accordionDocuments.Add("ConfigurationPaymentCondition", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_conditions")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentCondition>(this) });
-                _accordionDocuments.Add("ConfigurationPaymentMethod", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_methods")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentMethod>(this) });
+                Dictionary<string, AccordionNode> _accordionDocuments = new Dictionary<string, AccordionNode>
+                {
+                    { "DocumentFinanceYears", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_years")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(this) } },
+                    { "DocumentFinanceSeries", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_series")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceSeries>(this) } },
+                    { "DocumentFinanceType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceType>(this) } },
+                    //_accordionDocuments.Add("DocumentFinanceYearSerieTerminal", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_yearsseriesterminal) { Content = Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYearSerieTerminal>(this) });
+                    { "ConfigurationVatRate", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rates")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatRate>(this) } },
+                    { "ConfigurationVatExemptionReason", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationVatExceptionReason>(this) } },
+                    { "ConfigurationPaymentCondition", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_conditions")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentCondition>(this) } },
+                    { "ConfigurationPaymentMethod", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_methods")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPaymentMethod>(this) } }
+                };
 
                 //AuxiliarTables
-                Dictionary<string, AccordionNode> _accordionChildAuxiliarTables = new Dictionary<string, AccordionNode>();
-                //_accordionChildAuxiliarTables.Add("ConfigurationCashRegister", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cash_registers) { Content = Utils.GetGenericTreeView<TreeViewConfigurationCashRegister>(this) });
-                _accordionChildAuxiliarTables.Add("ConfigurationCountry", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_country")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationCountry>(this) });
-                _accordionChildAuxiliarTables.Add("ConfigurationCurrency", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCurrency")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationCurrency>(this) });
-                //_accordionChildAuxiliarTables.Add("ConfigurationDevice", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_devices) { Content = Utils.GetGenericTreeView<TreeViewConfigurationDevice>(this) });
-                //_accordionChildAuxiliarTables.Add("ConfigurationKeyboard", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_keyboards) { Content = Utils.GetGenericTreeView<TreeViewConfigurationKeyboard>(this) });
-                //_accordionChildAuxiliarTables.Add("ConfigurationMaintenance", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_maintenance) { Content = Utils.GetGenericTreeView<TreeViewConfigurationMaintenance>(this) });
-                _accordionChildAuxiliarTables.Add("ConfigurationPlace", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_places")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) });
+                Dictionary<string, AccordionNode> _accordionChildAuxiliarTables = new Dictionary<string, AccordionNode>
+                {
+                    //_accordionChildAuxiliarTables.Add("ConfigurationCashRegister", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cash_registers) { Content = Utils.GetGenericTreeView<TreeViewConfigurationCashRegister>(this) });
+                    { "ConfigurationCountry", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_country")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationCountry>(this) } },
+                    { "ConfigurationCurrency", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCurrency")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationCurrency>(this) } },
+                    //_accordionChildAuxiliarTables.Add("ConfigurationDevice", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_devices) { Content = Utils.GetGenericTreeView<TreeViewConfigurationDevice>(this) });
+                    //_accordionChildAuxiliarTables.Add("ConfigurationKeyboard", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_keyboards) { Content = Utils.GetGenericTreeView<TreeViewConfigurationKeyboard>(this) });
+                    //_accordionChildAuxiliarTables.Add("ConfigurationMaintenance", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_maintenance) { Content = Utils.GetGenericTreeView<TreeViewConfigurationMaintenance>(this) });
+                    { "ConfigurationPlace", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_places")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlace>(this) } }
+                };
                 /* IN009035 */
                 string configurationPlaceTableLabel = SettingsApp.IsDefaultTheme ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_place_tables") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders");
                 _accordionChildAuxiliarTables.Add("ConfigurationPlaceTable", new AccordionNode(configurationPlaceTableLabel) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(this) });
@@ -291,27 +306,33 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
 
                 //Devices
-                Dictionary<string, AccordionNode> _accordionDevices = new Dictionary<string, AccordionNode>();
-                _accordionDevices.Add("ConfigurationPrintersType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersType")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) });
-                _accordionDevices.Add("ConfigurationPrinters", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrinters")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) });
-                _accordionDevices.Add("ConfigurationInputReader", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationInputReader")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationInputReader>(this) });
-                _accordionDevices.Add("ConfigurationPoleDisplay", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPoleDisplay")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPoleDisplay>(this) });
-                _accordionDevices.Add("ConfigurationWeighingMachine", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationWeighingMachine")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationWeighingMachine>(this) });
+                Dictionary<string, AccordionNode> _accordionDevices = new Dictionary<string, AccordionNode>
+                {
+                    { "ConfigurationPrintersType", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersType")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersType>(this) } },
+                    { "ConfigurationPrinters", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrinters")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(this) } },
+                    { "ConfigurationInputReader", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationInputReader")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationInputReader>(this) } },
+                    { "ConfigurationPoleDisplay", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPoleDisplay")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPoleDisplay>(this) } },
+                    { "ConfigurationWeighingMachine", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationWeighingMachine")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationWeighingMachine>(this) } }
+                };
                 // Deprecated
                 //_accordionPrinters.Add("ConfigurationPrintersTemplates", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationPrintersTemplates) { Content = Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrintersTemplates>(this) });
                 //_accordionPrinters.Add("ExternalApp_Composer", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_callposcomposer) { Content = null, ExternalAppFileName = SettingsApp.ExecutableComposer });
 
                 //Configuration
-                Dictionary<string, AccordionNode> _accordionChildConfiguration = new Dictionary<string, AccordionNode>();
-                _accordionChildConfiguration.Add("ConfigurationPreferenceParameterCompany", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_preferenceparameter_company")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterCompany) });
-                _accordionChildConfiguration.Add("ConfigurationPreferenceParameterSystem", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_preferenceparameter_system")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterSystem) });
-                _accordionChildConfiguration.Add("ConfigurationPlaceTerminal", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_places_terminals")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(this) });
+                Dictionary<string, AccordionNode> _accordionChildConfiguration = new Dictionary<string, AccordionNode>
+                {
+                    { "ConfigurationPreferenceParameterCompany", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_preferenceparameter_company")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterCompany) } },
+                    { "ConfigurationPreferenceParameterSystem", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_preferenceparameter_system")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(this, criteriaConfigurationPreferenceParameterSystem) } },
+                    { "ConfigurationPlaceTerminal", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_places_terminals")) { Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(this) } }
+                };
 
 
                 //import                
-                Dictionary<string, AccordionNode> _accordionChildImport = new Dictionary<string, AccordionNode>();
-                _accordionChildImport.Add("System_Import_Articles", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_import_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.OpenExcelArticles); } });
-                _accordionChildImport.Add("System_Import_Costumers", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_import_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.OpenExcelCostumers); } });
+                Dictionary<string, AccordionNode> _accordionChildImport = new Dictionary<string, AccordionNode>
+                {
+                    { "System_Import_Articles", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_import_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.OpenExcelArticles); } } },
+                    { "System_Import_Costumers", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_import_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.OpenExcelCostumers); } } }
+                };
 
 
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
@@ -329,10 +350,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _accordionChildExport.Add("System_Export_Articles", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportArticles); } });
                 _accordionChildExport.Add("System_Export_Costumers", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportCustomers); } });
                 //System
-                Dictionary<string, AccordionNode> _accordionChildSystem = new Dictionary<string, AccordionNode>();
-                /* IN006001 - "System" > "Notification" menu option */
-                _accordionChildSystem.Add("System_Notification", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_notification")) { Clicked = delegate { logicpos.Utils.ShowNotifications(this, true); } });
-                _accordionChildSystem.Add("System_ChangeLog", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "change_log")) { Clicked = delegate { logicpos.Utils.ShowChangeLog(this); } });
+                Dictionary<string, AccordionNode> _accordionChildSystem = new Dictionary<string, AccordionNode>
+                {
+                    /* IN006001 - "System" > "Notification" menu option */
+                    { "System_Notification", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_notification")) { Clicked = delegate { logicpos.Utils.ShowNotifications(this, true); } } },
+                    { "System_ChangeLog", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "change_logger")) { Clicked = delegate { logicpos.Utils.ShowChangeLog(this); } } }
+                };
                 // Add Menu Items Based On Plugins PluginSoftwareVendor
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
@@ -340,7 +363,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _accordionChildSystem.Add("System_DataBaseRestore_FromSystem", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_database_restore")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.SystemBackup); } });
                     _accordionChildSystem.Add("System_DataBaseRestore_FromFile", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_database_restore_from_file")) { Clicked = delegate { DataBaseBackup.Restore(this, DataBaseRestoreFrom.ChooseFromFilePickerDialog); } });
                 }
-                _accordionChildSystem.Add("System_Menu", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_application_logout_user")) { Clicked = ClickedSystemLogout });
+                _accordionChildSystem.Add("System_Menu", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_application_loggerout_user")) { Clicked = ClickedSystemLogout });
                 //                _accordionChildSystem.Add("System_Pos", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_pos) { Clicked = ClickedSystemPos });
                 //_accordionChildSystem.Add("System_Quit", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quit")) { Clicked = delegate { LogicPos.Quit(this); } });
 
@@ -382,11 +405,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //    _accordionChildSystemPOSMainWindow.Add("System_Pos", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_pos")) { Clicked = ClickedSystemPos });
                 //    accordionDefinition.Add("TopMenuPOSMainWindow", new AccordionNode(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_pos")) { Childs = _accordionChildSystemPOSMainWindow, GroupIcon = new Image("Assets/Images/Icons/Accordion/pos_backoffice_sistema.png") });
                 //}
-                _log.Debug("GetAccordionDefinition End");
+                _logger.Debug("GetAccordionDefinition End");
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return accordionDefinition;
@@ -417,7 +440,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private void testClickedEventHandlerFromOutside(object sender, EventArgs e)
         {
-            _log.Debug(string.Format("testClickedEventHandlerFromOutside(): [{0}]", "id1.2"));
+            _logger.Debug(string.Format("testClickedEventHandlerFromOutside(): [{0}]", "id1.2"));
         }
     }
 }

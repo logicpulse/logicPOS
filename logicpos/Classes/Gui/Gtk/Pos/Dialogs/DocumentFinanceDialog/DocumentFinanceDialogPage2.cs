@@ -17,15 +17,15 @@ using System.Collections;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
-    class DocumentFinanceDialogPage2 : PagePadPage
+    internal class DocumentFinanceDialogPage2 : PagePadPage
     {
-        private Session _session;
-        private DocumentFinanceDialogPagePad _pagePad;
-        private PosDocumentFinanceDialog _posDocumentFinanceDialog;
-        private cfg_configurationcountry _intialValueConfigurationCountry;
-        
+        private readonly Session _session;
+        private readonly DocumentFinanceDialogPagePad _pagePad;
+        private readonly PosDocumentFinanceDialog _posDocumentFinanceDialog;
+        private readonly cfg_configurationcountry _intialValueConfigurationCountry;
+
         //Used to store Customer PriceType before change it by user, used to compare PriceType after select other (old and new)
-        PriceType _currentCustomerPriceType = PriceType.Price1;
+        private PriceType _currentCustomerPriceType = PriceType.Price1;
         //Articles TreeView Reference
         private TreeViewDocumentFinanceArticle _treeViewArticles;
         //UI Object References from other pages
@@ -75,73 +75,73 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             set { _enableGetCustomerDetails = value; }
         }
         //UI
-        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerName;
+        private readonly XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerName;
         public XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> EntryBoxSelectCustomerName
         {
             get { return _entryBoxSelectCustomerName; }
         }
 
-        private EntryBoxValidation _entryBoxCustomerAddress;
+        private readonly EntryBoxValidation _entryBoxCustomerAddress;
         public EntryBoxValidation EntryBoxCustomerAddress
         {
             get { return _entryBoxCustomerAddress; }
         }
 
-        private EntryBoxValidation _entryBoxCustomerLocality;
+        private readonly EntryBoxValidation _entryBoxCustomerLocality;
         public EntryBoxValidation EntryBoxCustomerLocality
         {
             get { return _entryBoxCustomerLocality; }
         }
 
-        private EntryBoxValidation _entryBoxCustomerZipCode;
+        private readonly EntryBoxValidation _entryBoxCustomerZipCode;
         public EntryBoxValidation EntryBoxCustomerZipCode
         {
             get { return _entryBoxCustomerZipCode; }
         }
 
-        private EntryBoxValidation _entryBoxCustomerCity;
+        private readonly EntryBoxValidation _entryBoxCustomerCity;
         public EntryBoxValidation EntryBoxCustomerCity
         {
             get { return _entryBoxCustomerCity; }
         }
 
-        private XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCustomerCountry;
+        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCustomerCountry;
         public XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> EntryBoxSelectCustomerCountry
         {
             get { return _entryBoxSelectCustomerCountry; }
         }
 
-        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerFiscalNumber;
+        private readonly XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerFiscalNumber;
         public XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> EntryBoxSelectCustomerFiscalNumber
         {
             get { return _entryBoxSelectCustomerFiscalNumber; }
         }
 
-        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerCardNumber;
+        private readonly XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerCardNumber;
         public XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> EntryBoxSelectCustomerCardNumber
         {
             get { return _entryBoxSelectCustomerCardNumber; }
         }
 
-        private EntryBoxValidation _entryBoxCustomerDiscount;
+        private readonly EntryBoxValidation _entryBoxCustomerDiscount;
         public EntryBoxValidation EntryBoxCustomerDiscount
         {
             get { return _entryBoxCustomerDiscount; }
         }
 
-        private EntryBoxValidation _entryBoxCustomerPhone;
+        private readonly EntryBoxValidation _entryBoxCustomerPhone;
         public EntryBoxValidation EntryBoxCustomerPhone
         {
             get { return _entryBoxCustomerPhone; }
         }
 
-        private EntryBoxValidation _entryBoxCustomerEmail;
+        private readonly EntryBoxValidation _entryBoxCustomerEmail;
         public EntryBoxValidation EntryBoxCustomerEmail
         {
             get { return _entryBoxCustomerEmail; }
         }
 
-        private EntryBoxValidation _entryBoxCustomerNotes;
+        private readonly EntryBoxValidation _entryBoxCustomerNotes;
         public EntryBoxValidation EntryBoxCustomerNotes
         {
             get { return _entryBoxCustomerNotes; }
@@ -174,8 +174,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
          
             erp_customer customer = null;
-            SortingCollection sortCollection = new SortingCollection();
-            sortCollection.Add(new SortProperty("Name", DevExpress.Xpo.DB.SortingDirection.Ascending));
+            SortingCollection sortCollection = new SortingCollection
+            {
+                new SortProperty("Name", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
             ICollection collectionCustomers = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
 
@@ -314,7 +316,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
 
-        void _entryBoxSelectCustomerFiscalNumber_Changed(object sender, EventArgs e)
+        private void _entryBoxSelectCustomerFiscalNumber_Changed(object sender, EventArgs e)
         {
             if (_enableGetCustomerDetails)
             {
@@ -462,7 +464,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                     //Call StoreCurrentCustomer to Store CurrentCustomer before change _entryBoxSelectCustomerName.Value
                     if (_currentCustomerPriceType != (PriceType)_pagePad.Customer.PriceType.EnumValue)
                     {
-                        //_log.Debug(String.Format("Diferent Customer PriceTypes Detected: [{0}], Current:[{1}], Last: [{2}]", _pagePad.Customer.Name, (PriceType)_pagePad.Customer.PriceType.EnumValue, _currentCustomerPriceType));
+                        //_logger.Debug(String.Format("Diferent Customer PriceTypes Detected: [{0}], Current:[{1}], Last: [{2}]", _pagePad.Customer.Name, (PriceType)_pagePad.Customer.PriceType.EnumValue, _currentCustomerPriceType));
                         //Call UpdateCurrentCustomerPriceType to Update Article Prices
                         ChangedCustomerPriceType();
                     }
@@ -593,7 +595,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             finally
             {
@@ -618,7 +620,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 if (_currentCustomerPriceType != PriceType.Price1)
                 {
                     _currentCustomerPriceType = PriceType.Price1;
-                    //if (_pagePad.Customer != null) _log.Debug(String.Format("PriceTypes Restored to Defaults: [{0}], Current:[{1}], Last: [{2}]", _pagePad.Customer.Name, (PriceType)_pagePad.Customer.PriceType.EnumValue, _currentCustomerPriceType));
+                    //if (_pagePad.Customer != null) _logger.Debug(String.Format("PriceTypes Restored to Defaults: [{0}], Current:[{1}], Last: [{2}]", _pagePad.Customer.Name, (PriceType)_pagePad.Customer.PriceType.EnumValue, _currentCustomerPriceType));
                 }
 
                 //Clear Reference
@@ -663,7 +665,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             finally
             {
@@ -680,8 +682,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             {
                 //Init Variables
                 decimal totalDocument = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > 0) ? _pagePad3.ArticleBag.TotalFinal : 0.0m;
-                bool isFinalConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity) ? true : false;
-                bool isHiddenConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.FiscalNumber == SettingsApp.FinanceFinalConsumerFiscalNumber) ? true : false;
+                bool isFinalConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                bool isHiddenConsumerEntity = (_pagePad.Customer != null && _pagePad.Customer.FiscalNumber == SettingsApp.FinanceFinalConsumerFiscalNumber);
                 bool isSingularEntity = (isFinalConsumerEntity || FiscalNumber.IsSingularEntity(_entryBoxSelectCustomerFiscalNumber.EntryValidation.Text, _entryBoxSelectCustomerCountry.Value.Code2));
                 bool isInvoice = false;
                 bool isSimplifiedInvoice = false;
@@ -939,7 +941,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -950,7 +952,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             try
             {
                 bool isRequiredAllCustomerDetails = (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.TotalFinal > SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue);
-                bool isFinalConsumerEntity = (_entryBoxSelectCustomerName.Value != null && _entryBoxSelectCustomerName.Value.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity) ? true : false;
+                bool isFinalConsumerEntity = (_entryBoxSelectCustomerName.Value != null && _entryBoxSelectCustomerName.Value.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                 bool isSingularEntity = (
                     isFinalConsumerEntity ||
                     _entryBoxSelectCustomerFiscalNumber.EntryValidation.Validated &&
@@ -1021,7 +1023,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1062,7 +1064,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1077,7 +1079,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             {
                 _currentCustomerPriceType = PriceType.Price1;
             }
-            //_log.Debug(String.Format("_currentCustomerPriceType: [{0}]", _currentCustomerPriceType));
+            //_logger.Debug(String.Format("_currentCustomerPriceType: [{0}]", _currentCustomerPriceType));
         }
 
         //Detect PriceType Change

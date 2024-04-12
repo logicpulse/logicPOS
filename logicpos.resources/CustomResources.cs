@@ -5,7 +5,7 @@ namespace logicpos.resources
 {
     public class CustomResources
     {
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static ResXResourceSet rsxr;
 
@@ -61,7 +61,7 @@ namespace logicpos.resources
             }
             catch (System.Exception ex)
             {
-                _log.Error("", ex);
+                _logger.Error("", ex);
             }
             return value;
         }
@@ -107,7 +107,7 @@ namespace logicpos.resources
             }
             catch (System.Exception ex)
             {
-                _log.Error("", ex);
+                _logger.Error("", ex);
             }
 
         }

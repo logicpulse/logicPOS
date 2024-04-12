@@ -17,7 +17,7 @@ namespace logicpos.financial.servicewcf
     public class Service1 : IService1
     {
         //Log4Net
-        protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string GetData(int value)
         {
@@ -42,8 +42,7 @@ namespace logicpos.financial.servicewcf
 
         public ServicesATSoapResult SendDocument(Guid pDocumentMaster)
         {
-            ServicesATSoapResult result = null;
-
+            ServicesATSoapResult result;
             try
             {
                 fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), pDocumentMaster);
@@ -85,7 +84,7 @@ namespace logicpos.financial.servicewcf
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 if (Environment.UserInteractive) { Utils.Log(ex.Message); }
                 //Send Error Message : 210 is All Exceptions Errors
                 result = new ServicesATSoapResult("210", ex.Message);

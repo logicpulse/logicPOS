@@ -11,13 +11,14 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    class GenericTreeViewSearch : Box
+    internal class GenericTreeViewSearch : Box
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public bool flagMore = false;
         public bool flagFilter = false;
@@ -28,14 +29,15 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         private Window _sourceWindow;
         private TreeView _treeView;
         private List<GenericTreeViewColumnProperty> _columnProperties;
-        private Boolean _isCaseSensitivity = false;
+        private readonly Boolean _isCaseSensitivity = false;
         //UI
         private EntryBoxValidation _entryBoxSearchCriteria;
+
         //WIP: private TouchButtonIconWithText _buttonSearchAdvanced;
-        
-        
+
+
         //Public Properties
-        TreeModelFilter _listStoreModelFilter;
+        private TreeModelFilter _listStoreModelFilter;
         public TreeModelFilter ListStoreModelFilter
         {
             get { return _listStoreModelFilter; }
@@ -88,7 +90,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Settings
             String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
             Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
-            Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
+            Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault;
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
             //WIP: String fileIconSearchAdvanced = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_search_advanced.png");
@@ -185,11 +187,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Events
         public event EventHandler Clicked;
 
-
-        void ActionAreaButton_Clicked(object sender, EventArgs e)
+        private void ActionAreaButton_Clicked(object sender, EventArgs e)
         {
             //Send this and Not sender, to catch base object
-            if (Clicked != null) Clicked(this, e);
+            Clicked?.Invoke(this, e);
         }
 
         /// <summary>
@@ -263,7 +264,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                     }
                 }
                 ++i;

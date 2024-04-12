@@ -16,21 +16,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(rpt_reporttype), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         public UInt32 Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -38,7 +38,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fResourceString;
+        private string fResourceString;
         [Indexed(Unique = true)]
         public string ResourceString
         {
@@ -46,7 +46,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ResourceString", ref fResourceString, value); }
         }
 
-        string fMenuIcon;
+        private string fMenuIcon;
         [Size(255)]
         public string MenuIcon
         {

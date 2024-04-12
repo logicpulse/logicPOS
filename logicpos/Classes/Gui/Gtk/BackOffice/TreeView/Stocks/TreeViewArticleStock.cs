@@ -14,7 +14,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewArticleStock : GenericTreeViewXPO
+    internal class TreeViewArticleStock : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewArticleStock() { }
@@ -36,34 +36,35 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movement"), MinWidth = 100, FormatProvider = new FormatterStockMovement(), });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100, FormatProvider = new FormatterDate(), });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Customer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_entity"), ChildName = "Name", DecryptValue = true, MinWidth = 125 }) ;
-            columnProperties.Add(new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 125 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), ChildName = "Designation", MinWidth = 125 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity")
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"),
-                MinWidth = 100,
-                //Alignment = 1.0F,
-                FormatProvider = new FormatterDecimal(),
-                //CellRenderer = new CellRendererText()
-                //{
-                //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
-                //    Alignment = Pango.Alignment.Right,
-                //    Xalign = 1.0F
-                //}
-            });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
+                new GenericTreeViewColumnProperty("Quantity") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movement"), MinWidth = 100, FormatProvider = new FormatterStockMovement(), },
+                new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100, FormatProvider = new FormatterDate(), },
+                new GenericTreeViewColumnProperty("Customer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_entity"), ChildName = "Name", DecryptValue = true, MinWidth = 125 },
+                new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 125 },
+                new GenericTreeViewColumnProperty("Article") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), ChildName = "Designation", MinWidth = 125 },
+                new GenericTreeViewColumnProperty("Quantity")
+                {
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"),
+                    MinWidth = 100,
+                    //Alignment = 1.0F,
+                    FormatProvider = new FormatterDecimal(),
+                    //CellRenderer = new CellRendererText()
+                    //{
+                    //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
+                    //    Alignment = Pango.Alignment.Right,
+                    //    Xalign = 1.0F
+                    //}
+                },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = pXpoCriteria;
-
+            CriteriaOperator criteria;
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {

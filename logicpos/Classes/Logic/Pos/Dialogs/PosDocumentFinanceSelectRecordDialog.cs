@@ -28,75 +28,79 @@ using System.Threading;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosDocumentFinanceSelectRecordDialog
+    internal partial class PosDocumentFinanceSelectRecordDialog
     {
         //Reference to selecte Printer (Print | PrintAs Response)
         private sys_configurationprinters _printerChoosed;
         //Store Reference to Generic Printer
-        private sys_configurationprinters _printerGeneric;
+        private readonly sys_configurationprinters _printerGeneric;
         //ResponseType (Above 10)
         //DialogFinanceMaster ResponseTypes
         /* IN009223 and IN009227: related to "DialogResponseType" */
-        private ResponseType _responseTypePrint = (ResponseType)DialogResponseType.Print;
-        private ResponseType _responseTypePrintAs = (ResponseType)DialogResponseType.PrintAs;
-        private ResponseType _responseTypePayCurrentAcountsDocument = (ResponseType)DialogResponseType.PayCurrentAcountsDocument;
-        private ResponseType _responseTypeNewDocument = (ResponseType)DialogResponseType.NewDocument;
-        private ResponseType _responseTypePayInvoice = (ResponseType)DialogResponseType.PayInvoice;
-        private ResponseType _responseTypeCancelDocument = (ResponseType)DialogResponseType.CancelDocument;
-        private ResponseType _responseTypeOpenDocument = (ResponseType)DialogResponseType.OpenDocument;
-        private ResponseType _responseTypeCloneDocument = (ResponseType)DialogResponseType.CloneDocument;
-        private ResponseType _responseTypeSendEmailDocument = (ResponseType)DialogResponseType.SendEmailDocument;
+        private readonly ResponseType _responseTypePrint = (ResponseType)DialogResponseType.Print;
+        private readonly ResponseType _responseTypePrintAs = (ResponseType)DialogResponseType.PrintAs;
+        private readonly ResponseType _responseTypePayCurrentAcountsDocument = (ResponseType)DialogResponseType.PayCurrentAcountsDocument;
+        private readonly ResponseType _responseTypeNewDocument = (ResponseType)DialogResponseType.NewDocument;
+        private readonly ResponseType _responseTypePayInvoice = (ResponseType)DialogResponseType.PayInvoice;
+        private readonly ResponseType _responseTypeCancelDocument = (ResponseType)DialogResponseType.CancelDocument;
+        private readonly ResponseType _responseTypeOpenDocument = (ResponseType)DialogResponseType.OpenDocument;
+        private readonly ResponseType _responseTypeCloneDocument = (ResponseType)DialogResponseType.CloneDocument;
+        private readonly ResponseType _responseTypeSendEmailDocument = (ResponseType)DialogResponseType.SendEmailDocument;
 
         //Store list of Master and PaymentDocuments, created in TreeModelForEachTask_ActionGetFinanceDocumentsList/ActionGetPaymentDocumentsList
         private List<fin_documentfinancemaster> _listSelectFinanceMasterDocuments;
         private List<fin_documentfinancepayment> _listSelectFinancePaymentDocuments;
-        private List<fin_documentfinancemaster> _listMarkedFinanceMasterDocuments = new List<fin_documentfinancemaster>();
-        private List<fin_documentfinancepayment> _listMarkedFinancePaymentDocuments = new List<fin_documentfinancepayment>();
+        private readonly List<fin_documentfinancemaster> _listMarkedFinanceMasterDocuments = new List<fin_documentfinancemaster>();
+        private readonly List<fin_documentfinancepayment> _listMarkedFinancePaymentDocuments = new List<fin_documentfinancepayment>();
         private string _selectRecordWindowTitle;
-        string _afterFilterTitle = null;
+        private string _afterFilterTitle = null;
         //Permissions
-        private bool permissionFinanceDocumentCancelDocument = FrameworkUtils.HasPermissionTo("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
+        private readonly bool permissionFinanceDocumentCancelDocument = FrameworkUtils.HasPermissionTo("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
         //Require reference to use in TransientFor inside the TreeModelForEachTask_ActionPrintDocuments
         private PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> _dialogFinanceDocumentsResponse;
         //Used to Store Button that Call dialogFinanceMaster, usefull for ex to get buttonToken :)
         private TouchButtonIconWithText _dialogFinanceMasterCallerButton;
+
         //Used to store Checked Documents Customer Oid, to prevent choose Diferent Customers for Payments
-        Guid _selectedDocumentEntityOid = new Guid();
+        private Guid _selectedDocumentEntityOid = new Guid();
+
         //UI
         //Reference for dialogDocumentFinanceMaster 
-        PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> _dialogDocumentFinanceMaster;
+        private PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> _dialogDocumentFinanceMaster;
+
         //Shared/Common for all Modes
 
         /// <summary>
         /// Button test 4/7/19: IN009223 IN009227
         /// </summary>
-        ActionAreaButton _actionAreaButtonMore;
-        string windowTitleDefault;
-        
-        CriteriaOperator criteriaOperatorFilter = null;
+        private ActionAreaButton _actionAreaButtonMore;
+        private string windowTitleDefault;
+        private CriteriaOperator criteriaOperatorFilter = null;
 
         // IN009223 IN009227
         public XPCollection DataSourceBeforeFilter { get; private set; }
         private CriteriaOperator CriteriaOperatorBase = null;
-        ActionAreaButton _actionAreaButtonFilter;
+        private ActionAreaButton _actionAreaButtonFilter;
+        private ActionAreaButton _actionAreaButtonPrintDocument;
+        private ActionAreaButton _actionAreaButtonPrintDocumentAs;
+        private ActionAreaButton _actionAreaButtonClose;
 
-        ActionAreaButton _actionAreaButtonPrintDocument;
-        ActionAreaButton _actionAreaButtonPrintDocumentAs;
-        ActionAreaButton _actionAreaButtonClose;
         //FinanceMasterDocuments
-        ActionAreaButton _actionAreaButtonPayCurrentAcountsDocument;
-        ActionAreaButton _actionAreaButtonNewDocument;
-        ActionAreaButton _actionAreaButtonPayInvoice;
-        ActionAreaButton _actionAreaButtonCancelDocument;
+        private ActionAreaButton _actionAreaButtonPayCurrentAcountsDocument;
+        private ActionAreaButton _actionAreaButtonNewDocument;
+        private ActionAreaButton _actionAreaButtonPayInvoice;
+        private ActionAreaButton _actionAreaButtonCancelDocument;
+
         //FinancePaymentDocuments
-        ActionAreaButton _actionAreaButtonPrintPayment;
-        ActionAreaButton _actionAreaButtonPrintPaymentAs;
-        ActionAreaButton _actionAreaButtonOpenDocument;
-        ActionAreaButton _actionAreaButtonCloneDocument;
-        ActionAreaButton _actionAreaButtonSendEmailDocument;
-        ActionAreaButton _actionAreaButtonCancelPayment;
+        private ActionAreaButton _actionAreaButtonPrintPayment;
+        private ActionAreaButton _actionAreaButtonPrintPaymentAs;
+        private ActionAreaButton _actionAreaButtonOpenDocument;
+        private ActionAreaButton _actionAreaButtonCloneDocument;
+        private ActionAreaButton _actionAreaButtonSendEmailDocument;
+        private ActionAreaButton _actionAreaButtonCancelPayment;
+
         //Public Members
-        decimal _totalDialogFinanceMasterDocuments = 0;
+        private decimal _totalDialogFinanceMasterDocuments = 0;
 		
 		// IN009223 IN009227
         private ReportsQueryDialogMode _filterChoice;
@@ -110,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //FinanceMaster: Click Event
 
-        void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)
         {
             _dialogFinanceMasterCallerButton = (sender as TouchButtonIconWithText);
 
@@ -466,20 +470,14 @@ WHERE
             _dialogDocumentFinanceMaster.Destroy();
         }
 
-        void dialogDocumentFinanceMaster_CheckBoxToggled(object sender, EventArgs e)
+        private void dialogDocumentFinanceMaster_CheckBoxToggled(object sender, EventArgs e)
         {
             bool itemChecked;
-            decimal documentValue = 0.0m;
-            decimal documentDebit = 0.0m;
-            fin_documentfinancemaster documentFinanceMaster = null;
-            bool validMarkedDocumentTypesForCloneSensitive = false;
-            bool validMarkedDocumentTypesForSendEmailSensitive = false;
-
             try
             {
                 //WorkStation : Store Session Open/Close Status, some operations must be disable when Session is Closed, like Payment Operations
                 bool hasOpenWorkStation = (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
-
+                fin_documentfinancemaster documentFinanceMaster;
                 //Default Mode 
                 if (_dialogDocumentFinanceMaster.GenericTreeViewMode == GenericTreeViewMode.Default)
                 {
@@ -520,19 +518,19 @@ WHERE
                         if (itemChecked)
                         {
                             _listMarkedFinanceMasterDocuments.Add(documentFinanceMaster);
-                            //_log.Debug(string.Format("_listMarkedFinanceMasterDocuments count: [{0}], Added: [{1}]", _listMarkedFinanceMasterDocuments.Count, documentFinanceMaster.DocumentNumber));
+                            //_logger.Debug(string.Format("_listMarkedFinanceMasterDocuments count: [{0}], Added: [{1}]", _listMarkedFinanceMasterDocuments.Count, documentFinanceMaster.DocumentNumber));
                         }
                         else
                         {
                             _listMarkedFinanceMasterDocuments.Remove(documentFinanceMaster);
-                            //_log.Debug(string.Format("_listMarkedFinanceMasterDocuments count: [{0}], Removed: [{1}]", _listMarkedFinanceMasterDocuments.Count, documentFinanceMaster.DocumentNumber));
+                            //_logger.Debug(string.Format("_listMarkedFinanceMasterDocuments count: [{0}], Removed: [{1}]", _listMarkedFinanceMasterDocuments.Count, documentFinanceMaster.DocumentNumber));
                         }
 
                         // Get Sensitive for Clone : Required for actionAreaButtonCloneDocument.Button.Sensitive
-                        validMarkedDocumentTypesForCloneSensitive = GetSensitiveForCloneDocuments(_listMarkedFinanceMasterDocuments);
+                        bool validMarkedDocumentTypesForCloneSensitive = GetSensitiveForCloneDocuments(_listMarkedFinanceMasterDocuments);
 
                         // Get Sensitive for SendEmail
-                        validMarkedDocumentTypesForSendEmailSensitive = GetSensitiveForSendEmailDocuments(_listMarkedFinanceMasterDocuments);
+                        bool validMarkedDocumentTypesForSendEmailSensitive = GetSensitiveForSendEmailDocuments(_listMarkedFinanceMasterDocuments);
 
                         //Customer Protection (Payments) to prevent Choosing Diferent Customers in MultiSelect
                         if (_dialogFinanceMasterCallerButton.Token == "FT_UNPAYED")
@@ -552,6 +550,7 @@ WHERE
                         /* IN009166 - as defined, only non-canceled documents must be part of the calculus for selected documents */
                         if (!"A".Equals(documentFinanceMaster.DocumentStatusStatus))
                         {
+                            decimal documentValue;
                             //Get documentValue from Document.TotalFinal to Increment/Decrement base on Credit Bool, ex Credit=True Value=100 else if Credit=False Value=-100
                             if (documentFinanceMaster.DocumentType.Credit)
                             {
@@ -582,8 +581,7 @@ WHERE
         fin_documentfinancemaster DocFinMaster
     WHERE 
         DocFinMaster.Oid = '{0}';", documentFinanceMaster.Oid);
-
-                                    documentDebit = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(sql));
+                                    decimal documentDebit = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(sql));
                                     /* IN009166 - forced to use "TotalFinalRound" and not "TotalFinal" instead */
                                     documentValue = (documentDebit != 0) ? documentDebit : documentFinanceMaster.TotalFinal;
                                 }
@@ -670,14 +668,14 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //FinanceMaster: DialogDocumentFinanceMaster Response
 
-        void dialogFinanceMasterDocuments_Response(object o, ResponseArgs args)
+        private void dialogFinanceMasterDocuments_Response(object o, ResponseArgs args)
         {
             //Get Sender Reference : require for use Transient
             _dialogFinanceDocumentsResponse = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>)o;
@@ -892,7 +890,7 @@ WHERE
                 else if (args.ResponseId == _responseTypePayInvoice)
                 {
                     //USE PAYMENTS DIALOG and IF RETURNS OK REFRESH TREE
-                    _log.Debug("ResponseId == _responseTypePayInvoice");
+                    _logger.Debug("ResponseId == _responseTypePayInvoice");
                 }// IN009223 IN009227 - Begin
                 else if (args.ResponseId == (ResponseType)DialogResponseType.LoadMore)
                 {
@@ -1041,7 +1039,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return false;
         }
@@ -1142,7 +1140,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return resultDocument;
             }
         }
@@ -1205,7 +1203,6 @@ WHERE
         )
         {
             //Local Vars
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> parentDialog = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>)pSourceWindow;
             fin_documentfinancepayment resultDocument = null;
             List<fin_documentfinancemaster> listInvoices = new List<fin_documentfinancemaster>();
             List<fin_documentfinancemaster> listCreditNotes = new List<fin_documentfinancemaster>();
@@ -1227,7 +1224,7 @@ WHERE
             }
             catch (ProcessFinanceDocumentValidationException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return resultDocument;
             }
         }
@@ -1291,7 +1288,7 @@ WHERE
             }
             catch (ProcessFinanceDocumentValidationException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1312,8 +1309,6 @@ WHERE
             // Get Customer from first Document
             erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), pDocuments[0].EntityOid);
             string customerEmail = (customer.Email != null) ? customer.Email : string.Empty;
-            string subject = string.Empty;
-            string mailBody = string.Empty;
             string documentList = string.Empty;
 
             try
@@ -1339,16 +1334,20 @@ WHERE
 
                 // Do the same for Payments
                 // Dont forget ResponseType responseType
-                subject = GlobalFramework.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT"];
+                string subject = GlobalFramework.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT"];
                 string mailBodyTemplate = GlobalFramework.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_BODY"];
 
-                Dictionary<string, string> customTokensDictionary = new Dictionary<string, string>();
-                customTokensDictionary.Add("DOCUMENT_LIST", documentList);
+                Dictionary<string, string> customTokensDictionary = new Dictionary<string, string>
+                {
+                    { "DOCUMENT_LIST", documentList }
+                };
                 // Prepare List of Dictionaries to send to replaceTextTokens
-                List<Dictionary<string, string>> tokensDictionaryList = new List<Dictionary<string, string>>();
-                tokensDictionaryList.Add(GlobalFramework.PreferenceParameters);
-                tokensDictionaryList.Add(customTokensDictionary);
-                mailBody = logicpos.Utils.replaceTextTokens(mailBodyTemplate, tokensDictionaryList);
+                List<Dictionary<string, string>> tokensDictionaryList = new List<Dictionary<string, string>>
+                {
+                    GlobalFramework.PreferenceParameters,
+                    customTokensDictionary
+                };
+                string mailBody = logicpos.Utils.replaceTextTokens(mailBodyTemplate, tokensDictionaryList);
 
                 PosSendEmailDialog dialog = new PosSendEmailDialog(
                     pSourceWindow,
@@ -1368,7 +1367,7 @@ WHERE
             }
             catch (ProcessFinanceDocumentValidationException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return ResponseType.None;
             }
         }
@@ -1426,7 +1425,7 @@ WHERE
             }
             catch (ProcessFinanceDocumentValidationException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1445,11 +1444,12 @@ WHERE
         )
         {
             //Local Vars
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> parentDialog = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>)pSourceWindow;
             List<fin_documentfinancemaster> resultDocument = new List<fin_documentfinancemaster>();
 
-            SortingCollection articleDetailSortingCollection = new SortingCollection();
-            articleDetailSortingCollection.Add(new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending));
+            SortingCollection articleDetailSortingCollection = new SortingCollection
+            {
+                new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
 
             try
             {
@@ -1530,7 +1530,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1545,7 +1545,7 @@ WHERE
         private void CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments)
         {
 
-            _log.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments)");
+            _logger.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments)");
 
             //SAF-T Notes
             //4.1: Documentos comerciais a clientes (SalesInvoices);
@@ -1573,7 +1573,7 @@ WHERE
 
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
-                            //_log.Debug(string.Format("DocumentNumber:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.DocumentNumber, document.DocumentStatusStatus, dialogResponse.InputText));
+                            //_logger.Debug(string.Format("DocumentNumber:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.DocumentNumber, document.DocumentStatusStatus, dialogResponse.InputText));
                             currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
                             documentMaster.DocumentStatusStatus = "A";
                             documentMaster.DocumentStatusDate = currentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
@@ -1648,7 +1648,7 @@ WHERE
                                     documentMaster.ATResendDocument = true;                                                         //WIP: CancellWayBills : 
                                 }
 
-                                _log.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: AT Document Cancellation Process: real time process cancelled by user [" + documentMaster.DocumentNumber + "]");
+                                _logger.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: AT Document Cancellation Process: real time process cancelled by user [" + documentMaster.DocumentNumber + "]");
                                 ignoredDocuments.Add(string.Format("{0} [{1}]", documentMaster.DocumentNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_in_at_ws_call_status")));
                             }
                             try
@@ -1657,7 +1657,7 @@ WHERE
                                 if (!ProcessArticleStockMode.None.Equals(documentMaster.DocumentType.StockMode))
                                 {
                                     //Process Stock : Restore Stock after Cancelling Documents
-                                    _log.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: Process Stock : restoring stock after cancelling [" + documentMaster.DocumentNumber + "] document");
+                                    _logger.Debug("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: Process Stock : restoring stock after cancelling [" + documentMaster.DocumentNumber + "] document");
                                     if (GlobalFramework.LicenceModuleStocks && GlobalFramework.StockManagementModule != null)
                                     {
                                         GlobalFramework.StockManagementModule.Add(documentMaster, true);
@@ -1670,7 +1670,7 @@ WHERE
                             }
                             catch (Exception ex)
                             {
-                                _log.Error("Error processing stocks :: " + ex.Message, ex);
+                                _logger.Error("Error processing stocks :: " + ex.Message, ex);
                             }
 
                             documentMaster.Save();
@@ -1696,7 +1696,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: " + ex.Message, ex);
+                _logger.Error("void PosDocumentFinanceSelectRecordDialog.CallCancelFinanceMasterDocumentsDialog(Window pDialog, List<fin_documentfinancemaster> pListSelectDocuments) :: " + ex.Message, ex);
             }
         }
 
@@ -1720,7 +1720,6 @@ WHERE
         )
         {
             //Local Vars
-            PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster> parentDialog = (PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentFinanceMaster>)pSourceWindow;
             fin_documentfinancepayment resultDocument = null;
             List<fin_documentfinancemaster> listInvoices = new List<fin_documentfinancemaster>();
             List<fin_documentfinancemaster> listCreditNotes = new List<fin_documentfinancemaster>();
@@ -1742,7 +1741,7 @@ WHERE
             }
             catch (ProcessFinanceDocumentValidationException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return resultDocument;
             }
         }
@@ -1757,7 +1756,7 @@ WHERE
         /// <returns>It returns "bool isCancellable"</returns>
         private bool CanCancelFinanceMasterDocument(fin_documentfinancemaster pDocumentFinanceMaster)
         {
-            _log.Debug("bool PosDocumentFinanceSelectRecordDialog.CanCancelFinanceMasterDocument(fin_documentfinancemaster pDocumentFinanceMaster)");
+            _logger.Debug("bool PosDocumentFinanceSelectRecordDialog.CanCancelFinanceMasterDocument(fin_documentfinancemaster pDocumentFinanceMaster)");
 
             bool isCancellable = false;
             DateTime currentDateDay = FrameworkUtils.CurrentDateTimeAtomicMidnight();
@@ -1770,17 +1769,17 @@ WHERE
                 isCancellable = true;
                 if ((pDocumentFinanceMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice && pDocumentFinanceMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoice))
                 {/* IN009083 - if invoice products are already in transport */
-                    _log.Debug("Moçambique : Document Type not Invoice or Simplified Invoice");
+                    _logger.Debug("Moçambique : Document Type not Invoice or Simplified Invoice");
                     return false;
                 }
                 if (!pDocumentFinanceMaster.DocumentType.WayBill && IsAlreadyReceivedByAT(pDocumentFinanceMaster.Oid))
                 {/* IN009083 - if fiscal document was already received by AT */
-                    _log.Debug("CanCancelFinanceMasterDocument() :: document was already received successfully by AT: " + pDocumentFinanceMaster.DocumentNumber);
+                    _logger.Debug("CanCancelFinanceMasterDocument() :: document was already received successfully by AT: " + pDocumentFinanceMaster.DocumentNumber);
                     return false;
                 }
                 else if (pDocumentFinanceMaster.DocumentType.WayBill && pDocumentFinanceMaster.ShipFromDeliveryDate <= DateTime.Now)
                 {/* IN009083 - if invoice products are already in transport */
-                    _log.Debug("CanCancelFinanceMasterDocument() :: products are already in transport: " + pDocumentFinanceMaster.DocumentNumber);
+                    _logger.Debug("CanCancelFinanceMasterDocument() :: products are already in transport: " + pDocumentFinanceMaster.DocumentNumber);
                     return false;
                 }
             }
@@ -1792,12 +1791,12 @@ WHERE
 
                 if (!pDocumentFinanceMaster.DocumentType.WayBill && IsAlreadyReceivedByAT(pDocumentFinanceMaster.Oid))
                 {/* IN009083 - if fiscal document was already received by AT */
-                    _log.Debug("CanCancelFinanceMasterDocument() :: document was already received successfully by AT: " + pDocumentFinanceMaster.DocumentNumber);
+                    _logger.Debug("CanCancelFinanceMasterDocument() :: document was already received successfully by AT: " + pDocumentFinanceMaster.DocumentNumber);
                     return false;
                 }
                 else if (pDocumentFinanceMaster.DocumentType.WayBill && pDocumentFinanceMaster.ShipFromDeliveryDate <= DateTime.Now)
                 {/* IN009083 - if invoice products are already in transport */
-                    _log.Debug("CanCancelFinanceMasterDocument() :: products are already in transport: " + pDocumentFinanceMaster.DocumentNumber);
+                    _logger.Debug("CanCancelFinanceMasterDocument() :: products are already in transport: " + pDocumentFinanceMaster.DocumentNumber);
                     return false;
                 }
 
@@ -1809,7 +1808,7 @@ WHERE
                     /* IN009083 - if found one simple dependent, returns */
                     if (xPSelectDataFinanceMaster.Data.Length > 0)
                     {
-                        _log.Debug("CanCancelFinanceMasterDocument() :: linked documents found: " + xPSelectDataFinanceMaster.Data.Length);
+                        _logger.Debug("CanCancelFinanceMasterDocument() :: linked documents found: " + xPSelectDataFinanceMaster.Data.Length);
                         return false;
                     }
                 }
@@ -1821,7 +1820,7 @@ WHERE
                     /* IN009083 - has payments */
                     if (xPSelectDataFinancePayment.Data.Length > 0)
                     {
-                        _log.Debug("CanCancelFinanceMasterDocument() :: document has payments: " + xPSelectDataFinancePayment.Data.Length);
+                        _logger.Debug("CanCancelFinanceMasterDocument() :: document has payments: " + xPSelectDataFinancePayment.Data.Length);
                         return false;
                     }
                 }
@@ -1853,7 +1852,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error("bool PosDocumentFinanceSelectRecordDialog.IsAlreadyReceivedByAT(Guid oid) :: " + ex.Message, ex);
+                _logger.Error("bool PosDocumentFinanceSelectRecordDialog.IsAlreadyReceivedByAT(Guid oid) :: " + ex.Message, ex);
             }
 
             return result;
@@ -1879,7 +1878,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return false;
         }
@@ -1928,7 +1927,7 @@ WHERE
                 }
                 else if (dialogWorkSessionPeriods.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
                 {
-                    actionAreaButtonPrint.Button.Sensitive = (dialogWorkSessionPeriods.GenericTreeView.MarkedCheckBoxs > 0) ? true : false;
+                    actionAreaButtonPrint.Button.Sensitive = (dialogWorkSessionPeriods.GenericTreeView.MarkedCheckBoxs > 0);
                 }
             };
 
@@ -2001,7 +2000,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return false;
         }
@@ -2023,7 +2022,7 @@ WHERE
             //Dont Disable First and Last button (New and Close)
             for (int i = 2; i < pDialog.ActionAreaButtons.Count - 1; i++)
             {
-                //_log.Debug(string.Format("index[{0}], Label[{1}]", i, pDialog.ActionAreaButtons[i].Button.Name));
+                //_logger.Debug(string.Format("index[{0}], Label[{1}]", i, pDialog.ActionAreaButtons[i].Button.Name));
                 pDialog.ActionAreaButtons[i].Button.Sensitive = false;
             }
         }
@@ -2145,12 +2144,12 @@ WHERE
             if (itemChecked)
                     {
                         _listMarkedFinancePaymentDocuments.Add(documentFinancePayment);
-                //_log.Debug(string.Format("_listMarkedFinancePaymentDocuments count: [{0}], Added: [{1}]", _listMarkedFinancePaymentDocuments.Count, documentFinancePayment.PaymentRefNo));
+                //_logger.Debug(string.Format("_listMarkedFinancePaymentDocuments count: [{0}], Added: [{1}]", _listMarkedFinancePaymentDocuments.Count, documentFinancePayment.PaymentRefNo));
             }
                     else
                     {
                         _listMarkedFinancePaymentDocuments.Remove(documentFinancePayment);
-                //_log.Debug(string.Format("_listMarkedFinancePaymentDocuments count: [{0}], Removed: [{1}]", _listMarkedFinancePaymentDocuments.Count, documentFinancePayment.PaymentRefNo));
+                //_logger.Debug(string.Format("_listMarkedFinancePaymentDocuments count: [{0}], Removed: [{1}]", _listMarkedFinancePaymentDocuments.Count, documentFinancePayment.PaymentRefNo));
             }
             // Get Sensitive for SendEmail
             validMarkedDocumentTypesForSendEmailSensitive = GetSensitiveForSendEmailDocuments(_listMarkedFinancePaymentDocuments);
@@ -2159,9 +2158,9 @@ WHERE
                     {
                         _actionAreaButtonPrintPayment.Button.Sensitive = true;
                         _actionAreaButtonPrintPaymentAs.Button.Sensitive = true;
-                        _actionAreaButtonCancelPayment.Button.Sensitive = (permissionFinanceDocumentCancelDocument) ? true : false;
-                        _actionAreaButtonOpenDocument.Button.Sensitive = (permissionFinanceDocumentCancelDocument) ? true : false;
-                        _actionAreaButtonSendEmailDocument.Button.Sensitive = (validMarkedDocumentTypesForSendEmailSensitive) ? true : false;
+                        _actionAreaButtonCancelPayment.Button.Sensitive = (permissionFinanceDocumentCancelDocument);
+                        _actionAreaButtonOpenDocument.Button.Sensitive = (permissionFinanceDocumentCancelDocument);
+                        _actionAreaButtonSendEmailDocument.Button.Sensitive = (validMarkedDocumentTypesForSendEmailSensitive);
                     }
                     else
                     {
@@ -2415,7 +2414,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return false;
         }
@@ -2433,7 +2432,7 @@ WHERE
             //Dont Disable First and Last button (New and Close)
             for (int i = 1; i < pDialog.ActionAreaButtons.Count - 1; i++)
             {
-                //_log.Debug(string.Format("index[{0}], Label[{1}]", i, pDialog.ActionAreaButtons[i].Button.Name));
+                //_logger.Debug(string.Format("index[{0}], Label[{1}]", i, pDialog.ActionAreaButtons[i].Button.Name));
                 pDialog.ActionAreaButtons[i].Button.Sensitive = false;
             }
         }
@@ -2459,7 +2458,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return false;
         }
@@ -2488,7 +2487,7 @@ WHERE
                         dialogResponse =  logicpos.Utils.GetInputText(pDialog, DialogFlags.Modal, fileWindowIcon, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cancel_document_input_text_label"), document.PaymentRefNo), string.Empty, SettingsApp.RegexAlfaNumericExtendedForMotive, true);
                         if (dialogResponse.ResponseType == ResponseType.Ok)
                         {
-                            //_log.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
+                            //_logger.Debug(string.Format("PaymentRefNo:[{0}], DocumentStatusStatus:[{1}], reason:[{2}]", document.PaymentRefNo, document.PaymentStatus, dialogResponse.InputText));
                             currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
                             document.PaymentStatus = "A";
                             document.PaymentStatusDate = currentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
@@ -2502,7 +2501,7 @@ WHERE
                             //Removed Payed BIT to all DocumentPayment Documents (FT and NC)
                             foreach (fin_documentfinancemasterpayment documentPayment in document.DocumentPayment)
                             {
-                                _log.Debug(string.Format("{0} : Set Payed to false: [{0}]", documentPayment.DocumentFinanceMaster.DocumentNumber));
+                                _logger.Debug(string.Format("{0} : Set Payed to false: [{0}]", documentPayment.DocumentFinanceMaster.DocumentNumber));
                                 documentPayment.DocumentFinanceMaster.Payed = false;
                                 documentPayment.DocumentFinanceMaster.Save();
                             }
@@ -2525,7 +2524,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -2587,7 +2586,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -2663,7 +2662,7 @@ WHERE
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2689,11 +2688,11 @@ WHERE
                     }
                 }
 
-                result = (customerList.Count > 1) ? false : true;
+                result = customerList.Count <= 1;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2716,11 +2715,11 @@ WHERE
                     }
                 }
 
-                result = (customerList.Count > 1) ? false : true;
+                result = customerList.Count <= 1;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

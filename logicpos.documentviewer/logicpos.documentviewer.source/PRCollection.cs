@@ -85,8 +85,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
             if (!this.ContainsKey(page))
             {
                 ProcessNew(page); //Add new page into collection
-                if (PaintBackground != null)
-                    PaintBackground(this, new EventArgs<Rectangle>(pageRect));
+                PaintBackground?.Invoke(this, new EventArgs<Rectangle>(pageRect));
             }
 
 			if ((renderFlags & (RenderFlags.FPDF_THUMBNAIL | RenderFlags.FPDF_HQTHUMBNAIL)) != 0)

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    class GenericTreeViewXPO : GenericTreeView<XPCollection, XPGuidObject>
+    internal class GenericTreeViewXPO : GenericTreeView<XPCollection, XPGuidObject>
     {
         private Type _xpoGuidObjectType;
         public Type XPObjectType
@@ -51,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
           Type pDialogType
         )
         {
-            if (_debug) _log.Debug("InitObject Begin(" + pSourceWindow + "," + pColumnProperties + "," + pXpoCollection + "," + pXpoDefaultValue + "," + pDialogType + "," + pGenericTreeViewMode + "," + pGenericTreeViewNavigatorMode);
+            if (_debug) _logger.Debug("InitObject Begin(" + pSourceWindow + "," + pColumnProperties + "," + pXpoCollection + "," + pXpoDefaultValue + "," + pDialogType + "," + pGenericTreeViewMode + "," + pGenericTreeViewNavigatorMode);
 
             //Parameters
             _sourceWindow = pSourceWindow;
@@ -61,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 _dataSourceRow = pXpoDefaultValue;
             }
-            _guidDefaultValue = (_dataSourceRow != null) ? _dataSourceRow.Oid : default(Guid);
+            _guidDefaultValue = (_dataSourceRow != null) ? _dataSourceRow.Oid : default;
             _xpoGuidObjectType = pXpoCollection.ObjectType;
             _dialogType = pDialogType;
             _columnProperties = pColumnProperties;
@@ -80,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     throw;
                 }
             }
@@ -97,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _listStoreModel.Foreach(new TreeModelForeachFunc(TreeModelForEachTask));
 
             //Initialize UI
-            if (_debug) _log.Debug("InitObject Before InitUI");
+            if (_debug) _logger.Debug("InitObject Before InitUI");
             InitUI();
 
             //Prepare CRUD Privileges
@@ -111,7 +111,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             // Help to Debug some Kind of Types Privileges
             //if (this.GetType().Equals(typeof(TreeViewConfigurationInputReader)))
             //{
-            //    _log.Debug($"BREAK {typeof(TreeViewConfigurationInputReader)}");
+            //    _logger.Debug($"BREAK {typeof(TreeViewConfigurationInputReader)}");
             //}
 
             //Assign CRUD permissions to private members, Overriding Defaults
@@ -132,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Always have a valid cursor, in first Record or in pDefaultValue
             SetInitialCursorPosition();
 
-            if (_debug) _log.Debug("InitObject End");
+            if (_debug) _logger.Debug("InitObject End");
         }
 
 
@@ -142,7 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
           GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode
         )
         {
-            if (_debug) _log.Debug("InitObject Begin(" + pSourceWindow + ","  + pGenericTreeViewMode + "," + pGenericTreeViewNavigatorMode);
+            if (_debug) _logger.Debug("InitObject Begin(" + pSourceWindow + ","  + pGenericTreeViewMode + "," + pGenericTreeViewNavigatorMode);
 
             //Parameters
             _sourceWindow = pSourceWindow;
@@ -154,7 +154,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _modelFirstCustomFieldIndex = (_treeViewMode == GenericTreeViewMode.Default) ? 1 : 2;
 
             //Initialize UI
-            //if (_debug) _log.Debug("InitObject Before InitUI");
+            //if (_debug) _logger.Debug("InitObject Before InitUI");
             InitUiDashBoard();
 
             //Update Navigator Permissions
@@ -166,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Always have a valid cursor, in first Record or in pDefaultValue
             //SetInitialCursorPosition();
 
-            if (_debug) _log.Debug("InitObject End");
+            if (_debug) _logger.Debug("InitObject End");
         }
 
         /// <summary>
@@ -184,7 +184,6 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Parameters
             XPCollection _XpCollection = pDataSource;
             List<GenericTreeViewColumnProperty> _columnProperties = pColumnProperties;
-            GenericTreeViewMode _treeViewMode = pGenericTreeViewMode;
 
             //Initialize Model and Column Properties
             ListStore model = GenericTreeViewModel.InitModel(_columnProperties, pGenericTreeViewMode);
@@ -215,7 +214,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
                     //if (fieldName == "Ord" || fieldName == "Code")
                     //{
-                    //    _log.Debug("BREAK");
+                    //    _logger.Debug("BREAK");
                     //}
 
                     try
@@ -368,14 +367,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             // Try to get ResourceString Value, this is required to replace value, but only if it a valid resourceString (not replaced yet after update)
                             // After an Update and Refresh it turns into a string(non resource token), this protection prevents the replace double with a null resourceString, 
                             // leaving tree cell value with an empty value
-                            bool checkIfResourceStringExist = (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], columnValues[i].ToString()) != null) ? true : false;
+                            bool checkIfResourceStringExist = (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], columnValues[i].ToString()) != null);
                             // Only Replace resourceString if value is resourceString is not Yet been replaced, ex after an update
-                            //_log.Debug(string.Format("columnValues[i]#1: [{0}]", columnValues[i]));
+                            //_logger.Debug(string.Format("columnValues[i]#1: [{0}]", columnValues[i]));
                             if (checkIfResourceStringExist)
                             {
                                 columnValues[i] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], columnValues[i].ToString());
                             }
-                            //_log.Debug(string.Format("columnValues[i]#2: [{0}]", columnValues[i]));
+                            //_logger.Debug(string.Format("columnValues[i]#2: [{0}]", columnValues[i]));
                         }
                     }
                     catch (Exception ex)
@@ -440,11 +439,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 };
             };
 
-            if (_debug) _log.Debug(string.Format("GetDataRowColumnValue: fieldName:[{0}], fieldValue:[{1}], fieldType:[{2}]", fieldName, fieldValue, fieldValue.GetType()));
+            if (_debug) _logger.Debug(string.Format("GetDataRowColumnValue: fieldName:[{0}], fieldValue:[{1}], fieldType:[{2}]", fieldName, fieldValue, fieldValue.GetType()));
 
             return fieldValue;
         }
@@ -455,7 +454,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             foreach (GenericTreeViewColumnProperty column in _columnProperties)
             {
-                //if (_debug) _log.Debug(string.Format("column.Name: [{0}], column.Type: [{1}]", column.Name, column.Type));
+                //if (_debug) _logger.Debug(string.Format("column.Name: [{0}], column.Type: [{1}]", column.Name, column.Type));
                 if (column.InitialValue != null)
                 {
                     //If is a XPGuidObject
@@ -493,7 +492,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Remove from Model
             //FIX DOUBLEDELETE in Cloned Documents (Search for FIX DOUBLEDELETE)
             _listStoreModel.Remove(ref _treeIterModel);
-            if (_debug) _log.Debug(string.Format("XPCollection Count: [{0}]", _dataSource.Count));
+            if (_debug) _logger.Debug(string.Format("XPCollection Count: [{0}]", _dataSource.Count));
         }
 
         public override bool ShowDialog<T>(T pDataObject, DialogMode pDialogMode)
@@ -509,7 +508,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return (result);
@@ -538,7 +537,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -550,11 +549,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         {
             if (!HasEventRecordBeforeDelete())
             {
-                //_log.Debug("Create RecordBeforeDelete Event");
+                //_logger.Debug("Create RecordBeforeDelete Event");
 
                 RecordBeforeDelete += delegate
                 {
-                    //_log.Debug("Create RecordBeforeDelete Triggered");
+                    //_logger.Debug("Create RecordBeforeDelete Triggered");
 
                     //Prevent Delete Protected Records, assigning TreeView Base SkipRecordDelete
                     _skipRecordDelete = (_protectedRecords.Count > 0 && _protectedRecords.Contains(_dataSourceRow.Oid));
@@ -568,11 +567,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!HasEventRecordBeforeUpdate())
             {
-                //_log.Debug("Create RecordBeforeUpdate Event");
+                //_logger.Debug("Create RecordBeforeUpdate Event");
 
                 RecordBeforeUpdate += delegate
                 {
-                    //_log.Debug("Create RecordBeforeUpdate Triggered");
+                    //_logger.Debug("Create RecordBeforeUpdate Triggered");
 
                     //Prevent Update Protected Records, assigning TreeView Base SkipRecordUpdate
                     _skipRecordUpdate = (_protectedRecords.Count > 0 && _protectedRecords.Contains(_dataSourceRow.Oid));

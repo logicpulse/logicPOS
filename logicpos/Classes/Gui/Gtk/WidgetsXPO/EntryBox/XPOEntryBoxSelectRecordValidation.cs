@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {
-    class XPOEntryBoxSelectRecordValidation<T1, T2> : XPOEntryBoxSelectRecord<T1, T2>
+    internal class XPOEntryBoxSelectRecordValidation<T1, T2> : XPOEntryBoxSelectRecord<T1, T2>
         //Generic Type T1 Constrained to XPGuidObject BaseClass or XPGuidObject SubClass Objects (New)
         where T1 : XPGuidObject, new()
         //Generic Type T2 Constrained to GenericTreeViewXPO BaseClass or GenericTreeViewXPO SubClass Objects (New)

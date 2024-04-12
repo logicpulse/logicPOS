@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(string.Format("InitObject() : Error load image [{0}]: {1}", image, ex.Message), ex);
+                    _logger.Error(string.Format("InitObject() : Error load image [{0}]: {1}", image, ex.Message), ex);
                 }
             }
             widget = gtkimageButton;

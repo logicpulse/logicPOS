@@ -5,7 +5,7 @@ using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    class GenericCRUDWidgetDataTable : GenericCRUDWidget<DataRow>
+    internal class GenericCRUDWidgetDataTable : GenericCRUDWidget<DataRow>
     {
         public GenericCRUDWidgetDataTable(Widget pWidget, DataRow pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
             : base(pWidget, pDataSourceRow, pFieldName, pValidationRule, pRequired)

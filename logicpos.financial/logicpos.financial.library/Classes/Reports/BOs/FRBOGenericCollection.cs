@@ -14,11 +14,11 @@ namespace logicpos.financial.library.Classes.Reports.BOs
       where T : FRBOBaseObject, new()
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private bool _debug = false;
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly bool _debug = false;
 
         //Used to Store if Object Has Attributes Defined or Not
-        bool _objectHaveAttributes;
+        private readonly bool _objectHaveAttributes;
 
         private List<T> _list = new List<T>();
         public List<T> List
@@ -39,7 +39,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
         public FRBOGenericCollection(string pFilter, string pGroup, string pOrder, string pFields, int pLimit, string pQuery)
         {
             //Assign Attributes Defined
-            _objectHaveAttributes = ((typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute) != null) ? true : false;
+            _objectHaveAttributes = ((typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute) != null);
 
             string sqlQuery = pQuery;
 
@@ -134,7 +134,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
                             //if (fieldName.Equals("SourceOrderMain") && string.IsNullOrEmpty(fieldValue.ToString()))
                             //{
-                            //    _log.Debug(String.Format("fieldName: [{0}], fieldValue: [{1}]", fieldName, fieldValue));
+                            //    _logger.Debug(String.Format("fieldName: [{0}], fieldValue: [{1}]", fieldName, fieldValue));
                             //}
 
                             //Fix for MSSqlServer that detects UInt32 has Decimal, this way we convert it into UInt32 before above SetValue
@@ -167,7 +167,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                                 // Debug purpose helper
                                 //if(propertyInfo.PropertyType == typeof(sys_userdetail) || propertyInfo.PropertyType == typeof(pos_configurationplaceterminal))
                                 //{
-                                //    _log.Debug(String.Format("fieldName: [{0}], fieldValue: [{1}]", fieldName, fieldValue));
+                                //    _logger.Debug(String.Format("fieldName: [{0}], fieldValue: [{1}]", fieldName, fieldValue));
                                 //}
                             }
 
@@ -178,8 +178,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                         {
                             // Intentionnaly Commented ex
                             // Prevent Showing Conversion Error, Only Occur in Sales Per Day(Detailled/Group) Report, Minor problem, it Show Good Values
-                            //_log.Error(string.Format("fieldName: [{0}], fieldType: [{1}], fieldTypeDB: [{2}], fieldValue: [{3}]", fieldName, fieldType, fieldTypeDB, fieldValue));
-                            //_log.Error(ex.Message, ex);
+                            //_logger.Error(string.Format("fieldName: [{0}], fieldType: [{1}], fieldTypeDB: [{2}], fieldValue: [{3}]", fieldName, fieldType, fieldTypeDB, fieldValue));
+                            //_logger.Error(ex.Message, ex);
                         }
                     }
                     //Add genericTypeObject to Collection :)
@@ -188,8 +188,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
-                _log.Error(string.Format("Error sqlQuery: [{0}]", sqlQuery));
+                _logger.Error(ex.Message, ex);
+                _logger.Error(string.Format("Error sqlQuery: [{0}]", sqlQuery));
             }
         }
 
@@ -228,11 +228,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
             //Do not use Declared Fields Flag else we skip inheited properties from Base Type (ex Oid,Disabled) //BindingFlags.DeclaredOnly
             PropertyInfo[] propertyInfos = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);//BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly
-            string attributeField = null;
-            bool attributeHide = false;
-            string mappedFieldName = String.Empty;
 
-            if (_debug) _log.Debug(string.Format("Class Name: {0}", typeof(T)));
+            if (_debug) _logger.Debug(string.Format("Class Name: {0}", typeof(T)));
             fieldList = new List<string>();
             foreach (PropertyInfo pInfo in propertyInfos)
             {
@@ -241,8 +238,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 {
                     //Attributes Working Block
                     //Always Reset attributeField and attributeHide
-                    attributeField = null;
-                    attributeHide = false;
+                    string attributeField = null;
+                    bool attributeHide = false;
                     //Assign Object Attributes "Field" and "Hide" into attributeField and attributeHide objects
                     var attributes = pInfo.GetCustomAttributes(false);
                     foreach (var attribute in attributes)
@@ -251,30 +248,30 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                         if (attribute.GetType() == typeof(FRBOAttribute))
                         {
                             attributeField = ((attribute as FRBOAttribute).Field != null) ? Convert.ToString((attribute as FRBOAttribute).Field) : null;
-                            attributeHide = ((attribute as FRBOAttribute).Hide == true) ? true : false;
+                            attributeHide = ((attribute as FRBOAttribute).Hide == true);
                         }
                     }
-                    if (_debug) _log.Debug(string.Format("Name: [{0}], PropertyType[{1}], attributeField[{2}], attributeHide[{3}]", pInfo.Name, pInfo.PropertyType, attributeField, attributeHide));
+                    if (_debug) _logger.Debug(string.Format("Name: [{0}], PropertyType[{1}], attributeField[{2}], attributeHide[{3}]", pInfo.Name, pInfo.PropertyType, attributeField, attributeHide));
 
                     //If not a Hidden Property, Add it to filedList
                     if (attributeHide == false)
                     {
                         //Get Mapped FieldName (Field Attribute AS Property Name) ex Select "fmOid AS Oid" (QueryField AS FRBOPropertyField)
                         //or Not Mapped Name (Object Property Name) ex "Oid"
-                        mappedFieldName = (attributeField != null) ? string.Format("{0} AS {1}", attributeField, pInfo.Name) : pInfo.Name;
+                        string mappedFieldName = (attributeField != null) ? string.Format("{0} AS {1}", attributeField, pInfo.Name) : pInfo.Name;
                         //Add final FieldName from Attributes or Object Property
                         fieldList.Add(mappedFieldName);
                     }
                     else
                     {
-                        //_log.Debug(string.Format("pInfo.Name[{0}].Hide =  [{1}] = ", pInfo.Name, attributeHide));
+                        //_logger.Debug(string.Format("pInfo.Name[{0}].Hide =  [{1}] = ", pInfo.Name, attributeHide));
                     }
                 }
             }
 
             //Finally Convert Generated fieldList into Comma Delimited, Ready to Query Database
             resultFields = string.Join(",", fieldList.ToArray());
-            if (_debug) _log.Debug(string.Format("fields: [{0}]", resultFields));
+            if (_debug) _logger.Debug(string.Format("fields: [{0}]", resultFields));
 
             return resultFields;
         }
@@ -344,7 +341,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
             //Finally Generate SqlQuery        
             string sqlQuery = string.Format("SELECT {0} FROM {1}{2}{3}{4};", sqlFields, sqlEntity, sqlFilter, sqlGroup, sqlOrder);
-            if (_debug) _log.Debug(string.Format("sqlQuery: [{0}]", sqlQuery));
+            if (_debug) _logger.Debug(string.Format("sqlQuery: [{0}]", sqlQuery));
 
             return sqlQuery;
         }

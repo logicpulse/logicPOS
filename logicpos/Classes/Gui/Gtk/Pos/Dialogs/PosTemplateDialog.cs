@@ -14,14 +14,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     //ResponseType response = (ResponseType) dialog.Run();
     //if (response == ResponseType.Ok)
     //{
-    //  _log.Debug("ResponseType.Ok");
+    //  _logger.Debug("ResponseType.Ok");
     //}
     //dialog.Destroy();
 
     /// <summary>
     /// Base Class for all Pos Dialogs
     /// </summary>
-    class PosTemplateDialog : PosBaseDialog
+    internal class PosTemplateDialog : PosBaseDialog
     {
         public PosTemplateDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
@@ -40,9 +40,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(buttonOk, ResponseType.Ok),
+                new ActionAreaButton(buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);

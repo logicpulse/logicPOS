@@ -16,25 +16,25 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosPayInvoicesDialog : PosBaseDialog
+    internal class PosPayInvoicesDialog : PosBaseDialog
     {
         //Non UI
-        private bool _debug = false;
+        private readonly bool _debug = false;
         //Total amount to pay for selected documents, never change
-        private decimal _paymentAmountTotal;
+        private readonly decimal _paymentAmountTotal;
         private decimal _paymentAmountEntry;
         //Value in Default Currency [EUR], used has return valur for dialog in PayInvoices( method
         private decimal _payedAmount;
         public decimal PayedAmount { get { return _payedAmount; } }
-        private int _noOfInvoices;
+        private readonly int _noOfInvoices;
         private bool _validated;
         private decimal _diference;
         //Default is always 1, same has default currency
         private decimal _exchangeRate = 1;
         //UI
         private Fixed _fixedContent;
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
         //UI Components
         private XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> _entryBoxSelectConfigurationPaymentMethod;
         public XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> EntryBoxSelectConfigurationPaymentMethod
@@ -85,9 +85,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 			_buttonOk.Sensitive = false;
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Content
             InitUI();
@@ -194,7 +196,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Update Payed amount in default currency, must divided by ExchangeRate, inputs are always in selected Currency 
             _payedAmount = _paymentAmountEntry / _exchangeRate;
-            if (_debug) _log.Debug(string.Format("_payedAmount/_paymentAmountTotal: [{0}/{1}]", FrameworkUtils.DecimalToStringCurrency(_payedAmount), FrameworkUtils.DecimalToStringCurrency(_paymentAmountTotal)));
+            if (_debug) _logger.Debug(string.Format("_payedAmount/_paymentAmountTotal: [{0}/{1}]", FrameworkUtils.DecimalToStringCurrency(_payedAmount), FrameworkUtils.DecimalToStringCurrency(_paymentAmountTotal)));
 
             //Block Change of Currency to prevent conversion problems
             _entryBoxSelectConfigurationCurrency.EntryValidation.Sensitive = _entryPaymentAmount.EntryValidation.Validated;
@@ -238,11 +240,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
-        void _entryBoxSelectConfigurationCurrency_Changed(object sender, EventArgs e)
+        private void _entryBoxSelectConfigurationCurrency_Changed(object sender, EventArgs e)
         {
             //Update ExchangeRate Reference
             _exchangeRate = _entryBoxSelectConfigurationCurrency.Value.ExchangeRate;

@@ -14,7 +14,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewArticleWarehouse : GenericTreeViewXPO
+    internal class TreeViewArticleWarehouse : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewArticleWarehouse() { }
@@ -36,28 +36,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Warehouse") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), Expand = true });
-
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Location") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), Expand = true });
-
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
-
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("ArticleSerialNumber") {ChildName = "SerialNumber", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), Expand = true });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"), Expand = true });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
-
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            {
+                new GenericTreeViewColumnProperty("Warehouse") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), Expand = true },
+                new GenericTreeViewColumnProperty("Location") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), Expand = true },
+                new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("ArticleSerialNumber") { ChildName = "SerialNumber", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), Expand = true },
+                new GenericTreeViewColumnProperty("Quantity") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
             //Configure Criteria/XPCollection/Model
             //Default Criteria with XpoOidUndefinedRecord
-            CriteriaOperator criteria = pXpoCriteria;
             // Override Criteria adding XpoOidHiddenRecordsFilter
-            criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (Disabled = 0 OR Disabled IS NULL) AND (Quantity <> 0) AND (Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
+            CriteriaOperator criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (Disabled = 0 OR Disabled IS NULL) AND (Quantity <> 0) AND (Oid NOT LIKE '{shared.App.SettingsApp.XpoOidHiddenRecordsFilter}')");
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
 
@@ -68,8 +59,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
 
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria) { TopReturnedObjects = TopReturnedObj * base.CurrentPageNumber };
-            var sortingCollection = new SortingCollection();
-            sortingCollection.Add(new SortProperty("Warehouse", DevExpress.Xpo.DB.SortingDirection.Ascending));
+            var sortingCollection = new SortingCollection
+            {
+                new SortProperty("Warehouse", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
             xpoCollection.Sorting = sortingCollection;
 
             //Call Base Initializer

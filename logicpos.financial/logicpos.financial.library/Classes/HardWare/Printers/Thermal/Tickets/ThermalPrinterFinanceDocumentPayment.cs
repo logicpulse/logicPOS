@@ -14,10 +14,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
     public class ThermalPrinterFinanceDocumentPayment : ThermalPrinterBaseFinanceTemplate
     {
         //Parameters Properties
-        private fin_documentfinancepayment _documentFinancePayment = null;
+        private readonly fin_documentfinancepayment _documentFinancePayment = null;
         //Business Objects
-        private List<FRBODocumentFinancePaymentView> _documentFinancePaymentList;
-        private List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
+        private readonly List<FRBODocumentFinancePaymentView> _documentFinancePaymentList;
+        private readonly List<FRBODocumentFinancePaymentDocumentView> _documentFinancePaymentDocumentList;
 
         public ThermalPrinterFinanceDocumentPayment(sys_configurationprinters pPrinter, fin_documentfinancepayment pDocumentFinancePayment, List<int> pCopyNames, bool pSecondCopy)
             : base(pPrinter, pDocumentFinancePayment.DocumentType, pCopyNames, pSecondCopy)
@@ -83,12 +83,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         {
             try
             {
-                List<TicketColumn> columns = new List<TicketColumn>();
-                columns.Add(new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), 11, TicketColumnsAlign.Left));
-                columns.Add(new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number_acronym"), 0, TicketColumnsAlign.Left));
-                columns.Add(new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
-                columns.Add(new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
-                columns.Add(new TicketColumn("Payed", "L", 1, TicketColumnsAlign.Right, typeof(bool)));
+                List<TicketColumn> columns = new List<TicketColumn>
+                {
+                    new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), 11, TicketColumnsAlign.Left),
+                    new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number_acronym"), 0, TicketColumnsAlign.Left),
+                    new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("Payed", "L", 1, TicketColumnsAlign.Right, typeof(bool))
+                };
                 //Prepare Table with Padding
                 DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);
                 TicketTable ticketTable = new TicketTable(dataTable, columns, _maxCharsPerLineNormal - _ticketTablePaddingLeftLength);
@@ -166,9 +168,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 dataTable.Rows.Add(dataRow);
 
                 //Configure Ticket Column Properties
-                List<TicketColumn> columns = new List<TicketColumn>();
-                columns.Add(new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left));
-                columns.Add(new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right));
+                List<TicketColumn> columns = new List<TicketColumn>
+                {
+                    new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left),
+                    new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right)
+                };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
                 TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormalBold);

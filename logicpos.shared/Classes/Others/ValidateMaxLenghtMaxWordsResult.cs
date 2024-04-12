@@ -3,25 +3,28 @@
     //Response Objects
     public class ValidateMaxLenghtMaxWordsResult
     {
-        int _length = 0;
+        private int _length = 0;
         public int Length
         {
             get { return _length; }
             set { _length = value; }
         }
-        int _words = 0;
+
+        private int _words = 0;
         public int Words
         {
             get { return _words; }
             set { _words = value; }
         }
-        string _labelText = string.Empty;
+
+        private string _labelText = string.Empty;
         public string LabelText
         {
             get { return _labelText; }
             set { _labelText = value; }
         }
-        string _text = string.Empty;
+
+        private string _text = string.Empty;
         public string Text
         {
             get { return _text; }

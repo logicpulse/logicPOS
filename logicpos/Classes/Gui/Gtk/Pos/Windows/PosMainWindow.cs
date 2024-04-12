@@ -6,31 +6,29 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
+using logicpos.Extensions;
 using System;
 using System.Collections;
 using System.Drawing;
-using System.IO;
-using System.Threading;
 using Image = Gtk.Image;
 
 namespace logicpos
 {
     public partial class PosMainWindow : PosBaseWindow
     {
-     
-        //Files
-        private string _fileBaseButtonOverlay = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_overlay.png");
-        
-		/* IN006045 */
-        //private string _clockFormat = GlobalFramework.Settings["dateTimeFormatStatusBar"];
-        private string _clockFormat = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
 
-        private Color _colorPosNumberPadLeftButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosNumberPadLeftButtonBackground"]);
-        private Color _colorPosNumberRightButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosNumberRightButtonBackground"]);
-        private Color _colorPosHelperBoxsBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosHelperBoxsBackground"]);
+        //Files
+        private readonly string _fileBaseButtonOverlay = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_overlay.png");
+
+        /* IN006045 */
+        //private string _clockFormat = GlobalFramework.Settings["dateTimeFormatStatusBar"];
+        private readonly string _clockFormat = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
+
+        private readonly Color _colorPosNumberPadLeftButtonBackground = GlobalFramework.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
+        private readonly Color _colorPosNumberRightButtonBackground = GlobalFramework.Settings["colorPosNumberRightButtonBackground"].StringToColor();
+        private readonly Color _colorPosHelperBoxsBackground = GlobalFramework.Settings["colorPosHelperBoxsBackground"].StringToColor();
         //UI
-        private Fixed _fixedWindow;
+        private readonly Fixed _fixedWindow;
         private Label _labelClock;
         private TextView _textviewLog;
         private TicketList _ticketList;
@@ -54,7 +52,7 @@ namespace logicpos
         }
         private TicketPad _ticketPad;
         //Others
-        private uint _borderWidth = 5;
+        private readonly uint _borderWidth = 5;
 
         //Public Properties
         private TablePad _tablePadFamily;
@@ -112,22 +110,22 @@ namespace logicpos
         {
             try
             {
-				/* IN009005 */
+                /* IN009005 */
                 //GlobalApp.DialogThreadNotify.WakeupMain();
 
                 _fixedWindow = new Fixed();
 
                 //New Thread InitUI 
-				/* IN009005 */
-				//Thread thread = new Thread(new ThreadStart(InitUI));
+                /* IN009005 */
+                //Thread thread = new Thread(new ThreadStart(InitUI));
                 //GlobalApp.DialogThreadNotify = new ThreadNotify (new ReadyEvent (Utils.ThreadDialogReadyEvent));
-				//thread.Start();
-				InitUI();
+                //thread.Start();
+                InitUI();
 
                 //Use Startup Window, not this Window, because it is not visible, it is in construction mode
-				/* IN009005 */
-				//GlobalApp.DialogThreadWork = Utils.GetThreadDialog(GlobalApp.WindowStartup);
-				//GlobalApp.DialogThreadWork.Run();
+                /* IN009005 */
+                //GlobalApp.DialogThreadWork = Utils.GetThreadDialog(GlobalApp.WindowStartup);
+                //GlobalApp.DialogThreadWork.Run();
 
                 //Call - To Update start _labelCurrentTable.Text
                 _ticketList.UpdateOrderStatusBar();
@@ -147,9 +145,8 @@ namespace logicpos
                 this.ScreenArea.Add(_fixedWindow);
 
                 //Place Minimize EventBox : After InitUI, to be placed Above all Other
-                bool _showMinimize = (!string.IsNullOrEmpty(GlobalFramework.Settings["appShowMinimize"])) 
-                    ? Convert.ToBoolean(GlobalFramework.Settings["appShowMinimize"])
-                    : false;
+                bool _showMinimize = (!string.IsNullOrEmpty(GlobalFramework.Settings["appShowMinimize"]))
+                    && Convert.ToBoolean(GlobalFramework.Settings["appShowMinimize"]);
                 if (_showMinimize)
                 {
                     EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
@@ -169,23 +166,23 @@ namespace logicpos
                 if (GlobalFramework.LoggedTerminal.BarcodeReader != null || GlobalFramework.LoggedTerminal.CardReader != null)
                 {
                     GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
-                }                
+                }
 
-                _log.Debug("PosMainWindow(String pBackgroundImage) :: Completed!"); /* IN009008 */
+                _logger.Debug("PosMainWindow(String pBackgroundImage) :: Completed!"); /* IN009008 */
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         private void InitUI()
         {
 
-            _log.Debug("void InitUI() :: Initializing UI for POS Main Window..."); /* IN009008 */
+            _logger.Debug("void InitUI() :: Initializing UI for POS Main Window..."); /* IN009008 */
 
             //Init Theme Object
-            Predicate <dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
+            Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
             dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
             //Shared error Message
@@ -210,30 +207,33 @@ namespace logicpos
                     //After InitUIEventBoxPosTicketList, require _ticketList initialized
                     InitUiEventboxToolbar(themeWindow);
 
-                    _log.Debug("void InitUI() :: POS Main Window theme rendering completed!"); /* IN009008 */
+                    _logger.Debug("void InitUI() :: POS Main Window theme rendering completed!"); /* IN009008 */
                     //Notify Thread End
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
                     //Check if fiscal year was created
                     try
                     {
-                        SortingCollection sortCollection = new SortingCollection();
-                        sortCollection.Add(new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending));
+                        SortingCollection sortCollection = new SortingCollection
+                        {
+                            new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending)
+                        };
                         CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
                         ICollection collectionDocumentFinanceSeries = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
                         if (collectionDocumentFinanceSeries.Count == 0)
                         {
                             Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
                         }
-                    }catch(Exception ex)
-                    {
-                        _log.Error("Error checking fiscal year existance " + ex.Message);
                     }
-                    
+                    catch (Exception ex)
+                    {
+                        _logger.Error("Error checking fiscal year existance " + ex.Message);
+                    }
+
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     Utils.ShowMessageTouchErrorRenderTheme(this, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
                 }
             }
@@ -245,24 +245,24 @@ namespace logicpos
 
         private void InitUIEventBoxImageLogo(dynamic pThemeWindow)
         {
-            _log.Debug("void InitUIEventBoxImageLogo(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
+            _logger.Debug("void InitUIEventBoxImageLogo(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
             //Objects:EventBoxImageLogo
             Position eventBoxImageLogoPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxImageLogo.Position);
             Size eventBoxImageLogoSize = Utils.StringToSize(themeWindow.Objects.EventBoxImageLogo.Size);
             bool eventBoxImageLogoVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.Visible);
             bool eventBoxImageLogoVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.VisibleWindow);
-            Gdk.Color eventBoxImageLogoBackgroundColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxImageLogo.BackgroundColor);
+            Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
             //LOGO
             Image imageLogo = new Image(Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]));
             if (GlobalFramework.PluginLicenceManager != null)
             {
-                string fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logicPOS_logicpulse_login.png"));
+                string fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png"));
 
                 if (!string.IsNullOrEmpty(GlobalFramework.LicenceReseller) && GlobalFramework.LicenceReseller == "NewTech")
                 {
-                    fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_logicpulse_login.png"), "NT");
+                    fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png"), "NT");
                 }
 
                 //var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
@@ -278,15 +278,15 @@ namespace logicpos
             eventBoxImageLogo.VisibleWindow = eventBoxImageLogoVisibleWindow;
             if (eventBoxImageLogoVisibleWindow) eventBoxImageLogo.ModifyBg(Gtk.StateType.Normal, eventBoxImageLogoBackgroundColor);
             if (eventBoxImageLogoVisible) _fixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
-         
+
             eventBoxImageLogo.Add(imageLogo);
             eventBoxImageLogo.ButtonPressEvent += eventBoxImageLogo_ButtonPressEvent;
-            
+
         }
 
         private void InitUIEventBoxStatusBar1(dynamic pThemeWindow)
         {
-            _log.Debug("void InitUIEventBoxStatusBar1(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
+            _logger.Debug("void InitUIEventBoxStatusBar1(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -296,16 +296,16 @@ namespace logicpos
             Size eventBoxStatusBar1Size = Utils.StringToSize(themeWindow.Objects.EventBoxStatusBar1.Size);
             bool eventBoxStatusBar1Visible = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar1.Visible);
             bool eventBoxStatusBar1VisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar1.VisibleWindow);
-            Gdk.Color eventBoxStatusBar1BackgroundColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxStatusBar1.BackgroundColor);
+            Gdk.Color eventBoxStatusBar1BackgroundColor = (themeWindow.Objects.EventBoxStatusBar1.BackgroundColor as string).StringToGdkColor();
 
             //Objects:EventBoxStatusBar1:LabelTerminalInfo
             Pango.FontDescription labelTerminalInfoFont = Pango.FontDescription.FromString(themeWindow.Objects.EventBoxStatusBar1.LabelTerminalInfo.Font);
-            Gdk.Color labelTerminalInfoFontColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxStatusBar1.LabelTerminalInfo.FontColor);
+            Gdk.Color labelTerminalInfoFontColor = (themeWindow.Objects.EventBoxStatusBar1.LabelTerminalInfo.FontColor as string).StringToGdkColor();
             float labelTerminalInfoAlignmentX = Convert.ToSingle(themeWindow.Objects.EventBoxStatusBar1.LabelTerminalInfo.AlignmentX);
 
             //Objects:EventBoxStatusBar1:LabelClock
             Pango.FontDescription labelClockFont = Pango.FontDescription.FromString(themeWindow.Objects.EventBoxStatusBar1.LabelClock.Font);
-            Gdk.Color labelClockFontColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxStatusBar1.LabelClock.FontColor);
+            Gdk.Color labelClockFontColor = (themeWindow.Objects.EventBoxStatusBar1.LabelClock.FontColor as string).StringToGdkColor();
             float labelClockAlignmentX = Convert.ToSingle(themeWindow.Objects.EventBoxStatusBar1.LabelClock.AlignmentX);
 
             //UI
@@ -338,7 +338,7 @@ namespace logicpos
 
         private void InitUIEventBoxStatusBar2(dynamic pThemeWindow)
         {
-            _log.Debug("void InitUIEventBoxStatusBar2(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
+            _logger.Debug("void InitUIEventBoxStatusBar2(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -348,26 +348,26 @@ namespace logicpos
             Size eventBoxStatusBar2Size = Utils.StringToSize(themeWindow.Objects.EventBoxStatusBar2.Size);
             bool eventBoxStatusBar2Visible = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar2.Visible);
             bool eventBoxStatusBar2VisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxStatusBar2.VisibleWindow);
-            Gdk.Color eventBoxStatusBar2BackgroundColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxStatusBar2.BackgroundColor);
+            Gdk.Color eventBoxStatusBar2BackgroundColor = (themeWindow.Objects.EventBoxStatusBar2.BackgroundColor as string).StringToGdkColor();
 
             //Objects:EventBoxStatusBar2:LabelCurrentTableLabel
             Pango.FontDescription labelCurrentTableLabelFont = Pango.FontDescription.FromString(themeWindow.Objects.EventBoxStatusBar2.LabelCurrentTableLabel.Font);
-            Gdk.Color labelCurrentTableLabelFontColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxStatusBar2.LabelCurrentTableLabel.FontColor);
+            Gdk.Color labelCurrentTableLabelFontColor = (themeWindow.Objects.EventBoxStatusBar2.LabelCurrentTableLabel.FontColor as string).StringToGdkColor();
             float labelCurrentTableLabelAlignmentX = Convert.ToSingle(themeWindow.Objects.EventBoxStatusBar2.LabelCurrentTableLabel.AlignmentX);
 
             //Objects:EventBoxStatusBar2:LabelCurrentTable
             Pango.FontDescription labelCurrentTableFont = Pango.FontDescription.FromString(themeWindow.Objects.EventBoxStatusBar2.LabelCurrentTable.Font);
-            Gdk.Color labelCurrentTableFontColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxStatusBar2.LabelCurrentTable.FontColor);
+            Gdk.Color labelCurrentTableFontColor = (themeWindow.Objects.EventBoxStatusBar2.LabelCurrentTable.FontColor as string).StringToGdkColor();
             float labelCurrentTableAlignmentX = Convert.ToSingle(themeWindow.Objects.EventBoxStatusBar2.LabelCurrentTable.AlignmentX);
 
             //Objects:EventBoxStatusBar2:LabelTotalTableLabel
             Pango.FontDescription labelTotalTableLabelFont = Pango.FontDescription.FromString(themeWindow.Objects.EventBoxStatusBar2.LabelTotalTableLabel.Font);
-            Gdk.Color labelTotalTableLabelFontColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxStatusBar2.LabelTotalTableLabel.FontColor);
+            Gdk.Color labelTotalTableLabelFontColor = (themeWindow.Objects.EventBoxStatusBar2.LabelTotalTableLabel.FontColor as string).StringToGdkColor();
             float labelTotalTableLabelAlignmentX = Convert.ToSingle(themeWindow.Objects.EventBoxStatusBar2.LabelTotalTableLabel.AlignmentX);
 
             //Objects:EventBoxStatusBar2:LabelTotalTable
             Pango.FontDescription labelTotalTableFont = Pango.FontDescription.FromString(themeWindow.Objects.EventBoxStatusBar2.LabelTotalTable.Font);
-            Gdk.Color labelTotalTableFontColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxStatusBar2.LabelTotalTable.FontColor);
+            Gdk.Color labelTotalTableFontColor = (themeWindow.Objects.EventBoxStatusBar2.LabelTotalTable.FontColor as string).StringToGdkColor();
             float labelTotalTableAlignmentX = Convert.ToSingle(themeWindow.Objects.EventBoxStatusBar2.LabelTotalTable.AlignmentX);
 
             //UI
@@ -424,7 +424,7 @@ namespace logicpos
 
         private void InitUIButtonFavorites(dynamic pThemeWindow)
         {
-            _log.Debug("void InitUIButtonFavorites(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
+            _logger.Debug("void InitUIButtonFavorites(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -449,7 +449,7 @@ namespace logicpos
 
         private void InitUITablePads(dynamic pThemeWindow)
         {
-            _log.Debug("void InitUITablePads(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
+            _logger.Debug("void InitUITablePads(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //VARS
@@ -519,18 +519,18 @@ namespace logicpos
                     (Disabled IS NULL or Disabled <> 1)
             ";
             _tablePadFamily = new TablePad(
-                sqlTablePadFamily, 
-                "ORDER BY Ord", 
-                "", 
-                Guid.Empty, 
+                sqlTablePadFamily,
+                "ORDER BY Ord",
+                "",
+                Guid.Empty,
                 true,
-                tablePadFamilyTableConfig.Rows, 
-                tablePadFamilyTableConfig.Columns, 
-                "buttonFamilyId", 
-                Color.Transparent, 
-                tablePadFamilyButtonSize.Width, 
-                tablePadFamilyButtonSize.Height, 
-                TablePadFamilyButtonPrev, 
+                tablePadFamilyTableConfig.Rows,
+                tablePadFamilyTableConfig.Columns,
+                "buttonFamilyId",
+                Color.Transparent,
+                tablePadFamilyButtonSize.Width,
+                tablePadFamilyButtonSize.Height,
+                TablePadFamilyButtonPrev,
                 TablePadFamilyButtonNext
             );
             _tablePadFamily.SourceWindow = this;
@@ -565,18 +565,18 @@ namespace logicpos
             ";
             String filterTablePadSubFamily = " AND (Family = '" + TablePadFamily.SelectedButtonOid + "')";
             _tablePadSubFamily = new TablePad(
-                sqlTablePadSubFamily, 
-                "ORDER BY Ord", 
-                filterTablePadSubFamily, 
-                Guid.Empty, 
-                true, 
-                tablePadSubFamilyTableConfig.Rows, 
-                tablePadSubFamilyTableConfig.Columns, 
-                "buttonSubFamilyId", 
-                Color.Transparent, 
-                tablePadSubFamilyButtonSize.Width, 
-                tablePadSubFamilyButtonSize.Height, 
-                TablePadSubFamilyButtonPrev, 
+                sqlTablePadSubFamily,
+                "ORDER BY Ord",
+                filterTablePadSubFamily,
+                Guid.Empty,
+                true,
+                tablePadSubFamilyTableConfig.Rows,
+                tablePadSubFamilyTableConfig.Columns,
+                "buttonSubFamilyId",
+                Color.Transparent,
+                tablePadSubFamilyButtonSize.Width,
+                tablePadSubFamilyButtonSize.Height,
+                TablePadSubFamilyButtonPrev,
                 TablePadSubFamilyButtonNext
             );
             _tablePadSubFamily.SourceWindow = this;
@@ -610,20 +610,21 @@ namespace logicpos
             ";
             String filterTablePadArticle = " AND (SubFamily = '" + TablePadSubFamily.SelectedButtonOid + "')";
             _tablePadArticle = new TablePadArticle(
-                sql, 
-                "ORDER BY Ord", 
-                filterTablePadArticle, 
-                Guid.Empty, 
+                sql,
+                "ORDER BY Ord",
+                filterTablePadArticle,
+                Guid.Empty,
                 false,
-                tablePadArticleTableConfig.Rows, 
-                tablePadArticleTableConfig.Columns, 
-                "buttonArticleId", 
-                Color.Transparent, 
-                tablePadArticleButtonSize.Width, 
-                tablePadArticleButtonSize.Height, 
-                TablePadArticleButtonPrev, 
+                tablePadArticleTableConfig.Rows,
+                tablePadArticleTableConfig.Columns,
+                "buttonArticleId",
+                Color.Transparent,
+                tablePadArticleButtonSize.Width,
+                tablePadArticleButtonSize.Height,
+                TablePadArticleButtonPrev,
                 TablePadArticleButtonNext
-            ) { Sensitive = false };
+            )
+            { Sensitive = false };
             _tablePadArticle.SourceWindow = this;
             _tablePadArticle.Clicked += _tablePadArticle_Clicked;
             //Put
@@ -637,7 +638,7 @@ namespace logicpos
 
         private void InitUiEventboxToolbar(dynamic pThemeWindow)
         {
-            _log.Debug("void InitUiEventboxToolbar(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
+            _logger.Debug("void InitUiEventboxToolbar(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventboxToolbar
@@ -646,13 +647,13 @@ namespace logicpos
             Size eventboxToolbarButtonSize = Utils.StringToSize(themeWindow.Objects.EventboxToolbar.ButtonSize);
             Size eventboxToolbarIconSize = Utils.StringToSize(themeWindow.Objects.EventboxToolbar.IconSize);
             string eventboxToolbarFont = themeWindow.Objects.EventboxToolbar.Font;
-            System.Drawing.Color eventboxToolbarFontColor = FrameworkUtils.StringToColor(themeWindow.Objects.EventboxToolbar.FontColor);
+            Color eventboxToolbarFontColor = (themeWindow.Objects.EventboxToolbar.FontColor as string).StringToColor();
             bool eventboxToolbarVisible = Convert.ToBoolean(themeWindow.Objects.EventboxToolbar.Visible);
             bool eventboxToolbarVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventboxToolbar.VisibleWindow);
 
-            Gdk.Color eventboxToolbarBackgroundColor = Utils.StringToGdkColor(themeWindow.Objects.EventboxToolbar.BackgroundColor);
+            Gdk.Color eventboxToolbarBackgroundColor = (themeWindow.Objects.EventboxToolbar.BackgroundColor as string).StringToGdkColor();
 
-            //_log.Debug("after eventboxToolbarBackgroundColor");
+            //_logger.Debug("after eventboxToolbarBackgroundColor");
 
             //Objects:EventboxToolbar:ButtonApplicationClose
             string buttonApplicationCloseName = themeWindow.Objects.EventboxToolbar.Buttons.ButtonApplicationClose.Name;
@@ -716,7 +717,7 @@ namespace logicpos
             if (eventboxToolbarVisibleWindow) eventboxToolbar.ModifyBg(Gtk.StateType.Normal, eventboxToolbarBackgroundColor);
             if (eventboxToolbarVisible) _fixedWindow.Put(eventboxToolbar, eventboxToolbarPosition.X, eventboxToolbarPosition.Y);
 
-            //_log.Debug("Local Func to Get Shared Buttons");
+            //_logger.Debug("Local Func to Get Shared Buttons");
             //Local Func to Get Shared Buttons
             Func<string, string, string, TouchButtonIconWithText> getButton = (pName, pText, pImageFileName)
                 => new TouchButtonIconWithText(
@@ -746,7 +747,7 @@ namespace logicpos
             //Pack Buttons
             HBox hboxToolbar = new HBox(false, 0);
             hboxToolbar.BorderWidth = 10;
-            
+
             if (buttonApplicationCloseVisible) hboxToolbar.PackStart(_touchButtonPosToolbarApplicationClose, false, false, 0);
             if (buttonBackOfficeVisible) hboxToolbar.PackStart(_touchButtonPosToolbarBackOffice, false, false, 0);
             if (buttonShowSystemDialogVisible) hboxToolbar.PackStart(_touchButtonPosToolbarShowSystemDialog, false, false, 0);
@@ -787,13 +788,13 @@ namespace logicpos
 
         private void InitUIEventBoxPosTicketPad(dynamic pThemeWindow)
         {
-            _log.Debug("void InitUIEventBoxPosTicketPad(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
+            _logger.Debug("void InitUIEventBoxPosTicketPad(dynamic pThemeWindow) :: Starting..."); /* IN009008 */
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventBoxPosTicketPad
             Position eventBoxPosTicketPadPosition = Utils.StringToPosition(themeWindow.Objects.EventBoxPosTicketPad.Position);
             Size eventBoxPosTicketPadSize = Utils.StringToSize(themeWindow.Objects.EventBoxPosTicketPad.Size);
-            Gdk.Color eventBoxPosTicketPadBackgroundColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxPosTicketPad.BackgroundColor);
+            Gdk.Color eventBoxPosTicketPadBackgroundColor = (themeWindow.Objects.EventBoxPosTicketPad.BackgroundColor as string).StringToGdkColor();
             bool eventBoxPosTicketPadVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketPad.Visible);
             bool eventBoxPosTicketPadVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketPad.VisibleWindow);
 
@@ -803,7 +804,8 @@ namespace logicpos
                 _ticketList,
                 themeWindow.Objects.EventBoxPosTicketPad.Buttons,
                 eventBoxPosTicketPadPosition
-             ) { Sensitive = false };
+             )
+            { Sensitive = false };
 
             _ticketPad.SourceWindow = this;
             EventBox eventBoxPosTicketPad = new EventBox() { VisibleWindow = eventBoxPosTicketPadVisibleWindow, WidthRequest = eventBoxPosTicketPadSize.Width, HeightRequest = eventBoxPosTicketPadSize.Height };
@@ -814,7 +816,7 @@ namespace logicpos
 
         private void InitUIEventBoxPosTicketList(dynamic pThemeWindow)
         {
-            _log.Debug("void InitUIEventBoxPosTicketList(dynamic pThemeWindow) :: Starting...");
+            _logger.Debug("void InitUIEventBoxPosTicketList(dynamic pThemeWindow) :: Starting...");
             dynamic themeWindow = pThemeWindow;
 
             //Objects:EventBoxPosTicketList
@@ -822,7 +824,7 @@ namespace logicpos
             Size eventBoxPosTicketListSize = Utils.StringToSize(themeWindow.Objects.EventBoxPosTicketList.Size);
             bool eventBoxPosTicketListVisible = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketList.Visible);
             bool eventBoxPosTicketListVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxPosTicketList.VisibleWindow);
-            Gdk.Color eventBoxPosTicketListBackgroundColor = Utils.StringToGdkColor(themeWindow.Objects.EventBoxPosTicketList.BackgroundColor);
+            Gdk.Color eventBoxPosTicketListBackgroundColor = (themeWindow.Objects.EventBoxPosTicketList.BackgroundColor as string).StringToGdkColor();
 
             //UI
 
@@ -833,7 +835,7 @@ namespace logicpos
 
             //Get ThemeObject to send to TicketList Constructor
             dynamic themeEventBoxPosTicketList = themeWindow.Objects.EventBoxPosTicketList;
-            _ticketList = new TicketList(themeEventBoxPosTicketList) { SourceWindow = this};
+            _ticketList = new TicketList(themeEventBoxPosTicketList) { SourceWindow = this };
             eventBoxPosTicketList.Add(_ticketList);
             if (eventBoxPosTicketListVisible) _fixedWindow.Put(eventBoxPosTicketList, eventBoxPosTicketListPosition.X, eventBoxPosTicketListPosition.Y);
         }

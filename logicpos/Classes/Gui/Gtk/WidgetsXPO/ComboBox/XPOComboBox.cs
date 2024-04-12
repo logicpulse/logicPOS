@@ -11,19 +11,20 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {
-    class XPOComboBox : ComboBox
+    internal class XPOComboBox : ComboBox
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Private Members to Store Parameters
-        Session _xpoSession;
-        Type _xpoObjectType;
-        String _fieldLabel;
+        private Session _xpoSession;
+        private Type _xpoObjectType;
+        private String _fieldLabel;
+
         //Private Members
-        XPCollection _XpCollection;
-        Dictionary<Guid, TreeIter> _treeInterDictionary;
-        ListStore _comboBoxListStore;
+        private XPCollection _XpCollection;
+        private Dictionary<Guid, TreeIter> _treeInterDictionary;
+        private ListStore _comboBoxListStore;
 
         //Public Properties
         private XPGuidObject _value;
@@ -153,7 +154,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             SetActiveIter(currentItemIter);
         }
 
-        void XPOComboBox_Changed(object sender, EventArgs e)
+        private void XPOComboBox_Changed(object sender, EventArgs e)
         {
             XPOComboBox combo = sender as XPOComboBox;
             if (sender == null) return;

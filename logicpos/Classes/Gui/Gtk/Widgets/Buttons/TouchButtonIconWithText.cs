@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.Extensions;
 using System;
 using System.IO;
 
@@ -47,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(string.Format("InitObject(): Error load icon from file [{0}]: {1}", icon, ex.Message), ex);
+                        _logger.Error(string.Format("InitObject(): Error load icon from file [{0}]: {1}", icon, ex.Message), ex);
                     }
                 }
                 vbox.PackStart(_label);
@@ -93,11 +94,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(string.Format("InitObject(): Error load icon from file [{0}]: {1}", icon, ex.Message), ex);
+                        _logger.Error(string.Format("InitObject(): Error load icon from file [{0}]: {1}", icon, ex.Message), ex);
                     }
                 }
                 _label.ModifyFont(fontDescription);
-                _label.ModifyFg(StateType.Active, logicpos.Utils.ColorToGdkColor(FrameworkUtils.StringToColor("0, 0, 0")));
+                _label.ModifyFg(StateType.Active, "0, 0, 0".StringToColor().ToGdkColor());
                 _label.SetAlignment(0.0f, 0.5f);
                 hbox.PackStart(_label, true, true, 0);
                 _widget = hbox;

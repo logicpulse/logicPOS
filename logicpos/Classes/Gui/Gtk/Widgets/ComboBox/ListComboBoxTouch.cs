@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class ListComboBoxTouch : EntryBoxBase
+    internal class ListComboBoxTouch : EntryBoxBase
     {
         //Public Properties
         private ListComboBox _listComboBox;

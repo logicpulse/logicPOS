@@ -8,7 +8,7 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogConfigurationPrintersType : BOBaseDialog
+    internal class DialogConfigurationPrintersType : BOBaseDialog
     {
         public DialogConfigurationPrintersType(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
@@ -71,11 +71,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Disable Components
-                entryToken.Sensitive = (_dialogMode == DialogMode.Update) ? false : true;
+                entryToken.Sensitive = _dialogMode != DialogMode.Update;
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

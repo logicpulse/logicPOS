@@ -2,10 +2,10 @@
 
 namespace logicpos.App
 {
-    class LicenceManagement
+    internal class LicenceManagement
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static bool IsLicensed { get { return GetIsLicensed(); } }
         public static bool CanPrint { get { return GetCanPrint(); } }
@@ -28,7 +28,7 @@ namespace logicpos.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -50,7 +50,7 @@ namespace logicpos.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

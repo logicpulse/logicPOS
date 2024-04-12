@@ -15,12 +15,12 @@ namespace logicpos.Classes.Logic.Hardware
     public class UsbDisplayDevice
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private const bool _debug = false;
         private UsbDevice _usbDevice;
-        private UsbEndpointWriter _usbWriter;
-        private CommunicationManager _communicationManager;
+        private readonly UsbEndpointWriter _usbWriter;
+        private readonly CommunicationManager _communicationManager;
         private ErrorCode _usbErrorCode = ErrorCode.None;
         private int _charactersPerLine = 20;
         private uint _standByInSeconds;
@@ -76,18 +76,18 @@ namespace logicpos.Classes.Logic.Hardware
                     }
                     catch (Exception ex)
                     {
-                        _log.Error("Error opening Port: " + COM + ": " + ex.Message);
+                        _logger.Error("Error opening Port: " + COM + ": " + ex.Message);
                     }
                     
 
                     //message = string.Format("UsbDisplayDevice: Device Not Found VID:{0} PID:{1}", pVid, pPid);
-                    //_log.Error(message);
+                    //_logger.Error(message);
                     //throw new Exception("UsbDisplayDevice(int pVid, int pPid, WriteEndpointID pWriteEndpointID) :: " + message);
                 }
                 else
                 {
                     message = string.Format("UsbDisplayDevice: Device Found VID:{0} PID:{1}", pVid, pPid);
-                    _log.Debug(message);
+                    _logger.Debug(message);
                 }
 
                 // If this is a "whole" usb device (libusb-win32, linux libusb)
@@ -128,7 +128,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                _log.Error((_usbErrorCode != ErrorCode.None ? _usbErrorCode + ":" : string.Empty) + ex.Message);
+                _logger.Error((_usbErrorCode != ErrorCode.None ? _usbErrorCode + ":" : string.Empty) + ex.Message);
             }
         }
 
@@ -143,7 +143,7 @@ namespace logicpos.Classes.Logic.Hardware
                 //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                 //    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
                 //    );
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
         }
@@ -195,7 +195,7 @@ namespace logicpos.Classes.Logic.Hardware
                     {
                         Close();
                         // Write that output to the console.
-                        _log.Error((string.IsNullOrEmpty(UsbDevice.LastErrorString)) ? _usbErrorCode.ToString() : UsbDevice.LastErrorString);
+                        _logger.Error((string.IsNullOrEmpty(UsbDevice.LastErrorString)) ? _usbErrorCode.ToString() : UsbDevice.LastErrorString);
                         //throw new Exception(UsbDevice.LastErrorString);
                     }
                 }
@@ -206,7 +206,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -304,10 +304,9 @@ namespace logicpos.Classes.Logic.Hardware
 
         private bool UpdateClock()
         {
-            bool result = true;
-
             _writeAfterSecondsRemain = _writeAfterSecondsRemain - 1000;
-            //_log.Debug(string.Format("_writeAfterSecondsRemain: [{0}]", _writeAfterSecondsRemain));
+            bool result;
+            //_logger.Debug(string.Format("_writeAfterSecondsRemain: [{0}]", _writeAfterSecondsRemain));
 
             if (_writeAfterSecondsRemain <= 0)
             {
@@ -573,7 +572,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 

@@ -7,7 +7,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
     public class TouchButtonImageEvent : EventBox
     {
         //Log4Net
-        protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Constants
         private const int _BUTTON_TEXT_OVERLAY_INNER_MARGIN = 10;
@@ -16,13 +16,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         public event ButtonPressEventHandler Clicked;
 
         //Active and Reference Image
-        private Image _image;
-        private System.Drawing.Image _imageDefault;
-        private System.Drawing.Image _imageClicked;
-        private Gdk.Pixbuf _pixbufDefault;
-        private Gdk.Pixbuf _pixbufClicked;
-        private string _fontName;
-        private int _fontSize;
+        private readonly Image _image;
+        private readonly System.Drawing.Image _imageDefault;
+        private readonly System.Drawing.Image _imageClicked;
+        private readonly Gdk.Pixbuf _pixbufDefault;
+        private readonly Gdk.Pixbuf _pixbufClicked;
+        private readonly string _fontName;
+        private readonly int _fontSize;
 
         public TouchButtonImageEvent(
           String pName,
@@ -91,13 +91,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             ButtonReleaseEvent += TouchButtonImageEvent_ButtonReleaseEvent;
         }
 
-        void TouchButtonImageEvent_ButtonPressEvent(object o, ButtonPressEventArgs args)
+        private void TouchButtonImageEvent_ButtonPressEvent(object o, ButtonPressEventArgs args)
         {
             _image.Pixbuf = _pixbufClicked;
-            if (Clicked != null) Clicked(o, args);
+            Clicked?.Invoke(o, args);
         }
 
-        void TouchButtonImageEvent_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
+        private void TouchButtonImageEvent_ButtonReleaseEvent(object o, ButtonReleaseEventArgs args)
         {
             _image.Pixbuf = _pixbufDefault;
         }

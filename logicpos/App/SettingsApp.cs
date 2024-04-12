@@ -90,7 +90,7 @@ namespace logicpos.App
 
         //Theme File Format : ex.: {theme}_{default}_{default}_{1024}x{768}.xml (LOWERCASE) - {0}: appTheme, {1}: appOperationModeToken, {2}: Width, {3}: Height
         //private static string FileFormatThemeFile = "theme_{0}_{1}_{2}x{3}.xml";//Deprecated
-        private static string FileFormatThemeFile = "theme_{0}_{1}.xml";
+        private static readonly string FileFormatThemeFile = "theme_{0}_{1}.xml";
         public static string FileTheme { get { return GetFileTheme(); } }
 
         //Database Script Files
@@ -174,71 +174,72 @@ namespace logicpos.App
 
         private static List<string> GetProtectedFilesList()
         {
-            List<string> result = new List<string>();
-
-            //result.Add(@"Assets\Themes\Default\Backgrounds\Dialogs\dialog_default.jpg");
-            //result.Add(@"Assets\Themes\Default\Backgrounds\Dialogs\dialog_tables.jpg");
-            //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_pos_1024x768.jpg");
-            //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_pos_800x600.jpg");
-            //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_startup_1024x768.jpg");
-            //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_startup_800x600.jpg");
-            //result.Add(@"Assets\Themes\Default\Images\logo_backoffice.png");
-            //result.Add(@"Assets\Themes\Default\Images\logo_pos.png");
-            //result.Add(@"Assets\Themes\theme_default_default_1024x768.xml");
-            //result.Add(@"Assets\Themes\theme_default_default_800x600.xml");
-            //result.Add(@"Assets\Themes\theme_default_retail_1024x768.xml");
-            //result.Add(@"Assets\Themes\theme_default_retail_800x600.xml");
-            //result.Add(@"Resources\Database\databasedata.sql");
-            //result.Add(@"Resources\Database\databasedatademo.sql");
-            //result.Add(@"Resources\Database\databaseviews.sql");
-            //result.Add(@"Resources\Database\MSSqlServer\databaseschema.sql");
-            //result.Add(@"Resources\Database\MySql\databaseschema.sql");
-            //result.Add(@"Resources\Database\Other\configurationpreferenceparameter.sql");
-            //result.Add(@"Resources\Database\Other\Country\AO\configurationcurrency.sql");
-            //result.Add(@"Resources\Database\Other\Country\AO\configurationholidays.sql");
-            //result.Add(@"Resources\Database\Other\Country\AO\configurationprinters.sql");
-            //result.Add(@"Resources\Database\Other\Country\AO\configurationvatrate.sql");
-            //result.Add(@"Resources\Database\Other\Country\AO\customer.sql");
-            //result.Add(@"Resources\Database\Other\Country\MZ\configurationcurrency.sql");
-            //result.Add(@"Resources\Database\Other\Country\MZ\configurationholidays.sql");
-            //result.Add(@"Resources\Database\Other\Country\MZ\configurationprinters.sql");
-            //result.Add(@"Resources\Database\Other\Country\MZ\configurationvatrate.sql");
-            //result.Add(@"Resources\Database\Other\Country\MZ\customer.sql");
-            //result.Add(@"Resources\Database\SQLite\databaseschema.sql");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_abertura_caixa.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_abertura_de_caixa_e_entrada_saida_numerario.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_artigo.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_consulta_mesa.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_consulta_mesa_pantera.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_documento_fiscal.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_entrada_conta_corrente.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_fecho_caixa.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_recibo.ticket");
-            //result.Add(@"Resources\Hardware\Printers\Templates\template_ticket.ticket");
-            //result.Add(@"Resources\Keyboards\163.xml");
-            result.Add(@"Resources\Reports\UserReports\ReportArticle.frx");
-            result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.frx");
-            /// <summary>
-            ///     This change refers to "ENH201810#04".
-            /// </summary>
-            /// <remarks>
-            ///     <para>DESCRIPTION: This code change covers MZ and AO invoice layout enhancement, based on "CurrentCulture" settings.</para>
-            ///     <para>ISSUE: all prices greater than million were being cut on invoice.</para>
-            ///     <para>CAUSE: there was no proper locale based invoice files.</para>
-            ///     <para>SOLUTION: It was created a file for each of those specific locale settings, based on original files. 
-            ///     For example: based on "ReportDocumentFinance.frx" it was created "ReportDocumentFinance_pt-MZ.frx".
-            ///     </para>
-            /// </remarks>
-            /// <example>
-            ///     "Preço" value: 35 000 000,00
-            ///     Shows the value:  000 000,00
-            /// </example>
-            //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-PT.frx");
-            //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-MZ.frx");
-            //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-AO.frx");
-            result.Add(@"Resources\Reports\UserReports\ReportDocumentFinancePayment.frx");
-            result.Add(@"Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx");
-            result.Add(@"Resources\Reports\UserReports\ReportTest.frx");
+            List<string> result = new List<string>
+            {
+                //result.Add(@"Assets\Themes\Default\Backgrounds\Dialogs\dialog_default.jpg");
+                //result.Add(@"Assets\Themes\Default\Backgrounds\Dialogs\dialog_tables.jpg");
+                //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_pos_1024x768.jpg");
+                //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_pos_800x600.jpg");
+                //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_startup_1024x768.jpg");
+                //result.Add(@"Assets\Themes\Default\Backgrounds\Windows\window_startup_800x600.jpg");
+                //result.Add(@"Assets\Themes\Default\Images\logo_backoffice.png");
+                //result.Add(@"Assets\Themes\Default\Images\logo_pos.png");
+                //result.Add(@"Assets\Themes\theme_default_default_1024x768.xml");
+                //result.Add(@"Assets\Themes\theme_default_default_800x600.xml");
+                //result.Add(@"Assets\Themes\theme_default_retail_1024x768.xml");
+                //result.Add(@"Assets\Themes\theme_default_retail_800x600.xml");
+                //result.Add(@"Resources\Database\databasedata.sql");
+                //result.Add(@"Resources\Database\databasedatademo.sql");
+                //result.Add(@"Resources\Database\databaseviews.sql");
+                //result.Add(@"Resources\Database\MSSqlServer\databaseschema.sql");
+                //result.Add(@"Resources\Database\MySql\databaseschema.sql");
+                //result.Add(@"Resources\Database\Other\configurationpreferenceparameter.sql");
+                //result.Add(@"Resources\Database\Other\Country\AO\configurationcurrency.sql");
+                //result.Add(@"Resources\Database\Other\Country\AO\configurationholidays.sql");
+                //result.Add(@"Resources\Database\Other\Country\AO\configurationprinters.sql");
+                //result.Add(@"Resources\Database\Other\Country\AO\configurationvatrate.sql");
+                //result.Add(@"Resources\Database\Other\Country\AO\customer.sql");
+                //result.Add(@"Resources\Database\Other\Country\MZ\configurationcurrency.sql");
+                //result.Add(@"Resources\Database\Other\Country\MZ\configurationholidays.sql");
+                //result.Add(@"Resources\Database\Other\Country\MZ\configurationprinters.sql");
+                //result.Add(@"Resources\Database\Other\Country\MZ\configurationvatrate.sql");
+                //result.Add(@"Resources\Database\Other\Country\MZ\customer.sql");
+                //result.Add(@"Resources\Database\SQLite\databaseschema.sql");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_abertura_caixa.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_abertura_de_caixa_e_entrada_saida_numerario.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_artigo.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_consulta_mesa.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_consulta_mesa_pantera.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_documento_fiscal.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_entrada_conta_corrente.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_fecho_caixa.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_recibo.ticket");
+                //result.Add(@"Resources\Hardware\Printers\Templates\template_ticket.ticket");
+                //result.Add(@"Resources\Keyboards\163.xml");
+                @"Resources\Reports\UserReports\ReportArticle.frx",
+                @"Resources\Reports\UserReports\ReportDocumentFinance.frx",
+                /// <summary>
+                ///     This change refers to "ENH201810#04".
+                /// </summary>
+                /// <remarks>
+                ///     <para>DESCRIPTION: This code change covers MZ and AO invoice layout enhancement, based on "CurrentCulture" settings.</para>
+                ///     <para>ISSUE: all prices greater than million were being cut on invoice.</para>
+                ///     <para>CAUSE: there was no proper locale based invoice files.</para>
+                ///     <para>SOLUTION: It was created a file for each of those specific locale settings, based on original files. 
+                ///     For example: based on "ReportDocumentFinance.frx" it was created "ReportDocumentFinance_pt-MZ.frx".
+                ///     </para>
+                /// </remarks>
+                /// <example>
+                ///     "Preço" value: 35 000 000,00
+                ///     Shows the value:  000 000,00
+                /// </example>
+                //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-PT.frx");
+                //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-MZ.frx");
+                //result.Add(@"Resources\Reports\UserReports\ReportDocumentFinance.pt-AO.frx");
+                @"Resources\Reports\UserReports\ReportDocumentFinancePayment.frx",
+                @"Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx",
+                @"Resources\Reports\UserReports\ReportTest.frx"
+            };
             //result.Add(@"Resources\Reports\UserReports\TemplateBase.frx");
             //result.Add(@"Resources\Reports\UserReports\TemplateBaseSimple.frx");
 
@@ -304,7 +305,7 @@ namespace logicpos.App
         {
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-            string result = String.Empty;
+            string result;
 
             /* Custom scripts */
             try

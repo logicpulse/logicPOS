@@ -15,8 +15,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         //Override Parent Template
         public override bool Print()
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 //Call Base Template PrintHeader

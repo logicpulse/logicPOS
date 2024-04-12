@@ -4,21 +4,22 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    class GenericTreeViewNavigator<T1, T2> : Box
+    internal class GenericTreeViewNavigator<T1, T2> : Box
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Private Members
-        private Window _sourceWindow;
-        private GenericTreeView<T1, T2> _genericTreeView;
-        private GenericTreeViewNavigatorMode _navigatorMode;
+        private readonly Window _sourceWindow;
+        private readonly GenericTreeView<T1, T2> _genericTreeView;
+        private readonly GenericTreeViewNavigatorMode _navigatorMode;
 
         //Public Properties
         private HBox _hboxExtraSlot;
@@ -167,7 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             // Help to Debug some Kind of Types
             //if (_genericTreeView.GetType().Equals(typeof(TreeViewConfigurationPreferenceParameter)))
             //{
-            //    _log.Debug($"BREAK {typeof(TreeViewConfigurationPreferenceParameter)}");
+            //    _logger.Debug($"BREAK {typeof(TreeViewConfigurationPreferenceParameter)}");
             //}
 
             //Initialize Buttons     
@@ -227,7 +228,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 String fileIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pIcon);
                 String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
-                Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
+                Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
                 Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
                 Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
 
@@ -235,7 +236,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return (result);
         }
@@ -302,7 +303,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

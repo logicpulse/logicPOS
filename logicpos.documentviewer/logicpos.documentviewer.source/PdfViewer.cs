@@ -22,7 +22,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         #region Private fields
         private int _dpi = -1;
         private SelectInfo _selectInfo = new SelectInfo() { StartPage = -1 };
-        private SortedDictionary<int, List<HighlightInfo>> _highlightedText = new SortedDictionary<int, List<HighlightInfo>>();
+        private readonly SortedDictionary<int, List<HighlightInfo>> _highlightedText = new SortedDictionary<int, List<HighlightInfo>>();
         private bool _mousePressed = false;
         private bool _mousePressedInLink = false;
         private bool _isShowSelection = false;
@@ -30,8 +30,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         private Point _panToolInitialScrollPosition;
         private Point _panToolInitialMousePosition;
 
-        private PdfForms _fillForms;
-        private List<Rectangle> _selectedRectangles = new List<Rectangle>();
+        private readonly PdfForms _fillForms;
+        private readonly List<Rectangle> _selectedRectangles = new List<Rectangle>();
         private Pen _pageBorderColorPen;
         private Pen _pageSeparatorColorPen;
         private Pen _currentPageHighlightColorPen;
@@ -94,9 +94,9 @@ namespace Patagames.Pdf.Net.Controls.WinForms
             }
         }
 
-        private PRCollection _prPages = new PRCollection();
+        private readonly PRCollection _prPages = new PRCollection();
         private Timer _invalidateTimer = null;
-        private Font _loadingFont = new Font("Tahoma", 10);
+        private readonly Font _loadingFont = new Font("Tahoma", 10);
 
         private bool _skipOnResize = false;
         private bool _loadedByViewer = true;
@@ -115,7 +115,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         private bool _scrollPointSaved;
 
         private enum SmoothSelection { None, ByCharacter, ByLine }
-        private SmoothSelection _smoothSelection;
+        private readonly SmoothSelection _smoothSelection;
         #endregion
 
         #region Events
@@ -278,8 +278,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnAfterDocumentChanged(EventArgs e)
         {
-            if (AfterDocumentChanged != null)
-                AfterDocumentChanged(this, e);
+            AfterDocumentChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -289,8 +288,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <returns>True if changing should be canceled, False otherwise</returns>
         protected virtual bool OnBeforeDocumentChanged(DocumentClosingEventArgs e)
         {
-            if (BeforeDocumentChanged != null)
-                BeforeDocumentChanged(this, e);
+            BeforeDocumentChanged?.Invoke(this, e);
             return e.Cancel;
         }
 
@@ -300,8 +298,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnDocumentLoaded(EventArgs e)
         {
-            if (DocumentLoaded != null)
-                DocumentLoaded(this, e);
+            DocumentLoaded?.Invoke(this, e);
         }
 
         /// <summary>
@@ -311,8 +308,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <returns>True if closing should be canceled, False otherwise</returns>
         protected virtual bool OnDocumentClosing(DocumentClosingEventArgs e)
         {
-            if (DocumentClosing != null)
-                DocumentClosing(this, e);
+            DocumentClosing?.Invoke(this, e);
             return e.Cancel;
         }
 
@@ -322,8 +318,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnDocumentClosed(EventArgs e)
         {
-            if (DocumentClosed != null)
-                DocumentClosed(this, e);
+            DocumentClosed?.Invoke(this, e);
         }
 
         /// <summary>
@@ -332,8 +327,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnSizeModeChanged(EventArgs e)
         {
-            if (SizeModeChanged != null)
-                SizeModeChanged(this, e);
+            SizeModeChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -342,8 +336,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnPageBackColorChanged(EventArgs e)
         {
-            if (PageBackColorChanged != null)
-                PageBackColorChanged(this, e);
+            PageBackColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -352,8 +345,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnPageMarginChanged(EventArgs e)
         {
-            if (PageMarginChanged != null)
-                PageMarginChanged(this, e);
+            PageMarginChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -362,8 +354,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnPageBorderColorChanged(EventArgs e)
         {
-            if (PageBorderColorChanged != null)
-                PageBorderColorChanged(this, e);
+            PageBorderColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -372,8 +363,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnTextSelectColorChanged(EventArgs e)
         {
-            if (TextSelectColorChanged != null)
-                TextSelectColorChanged(this, e);
+            TextSelectColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -382,8 +372,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnFormHighlightColorChanged(EventArgs e)
         {
-            if (FormHighlightColorChanged != null)
-                FormHighlightColorChanged(this, e);
+            FormHighlightColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -392,8 +381,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnZoomChanged(EventArgs e)
         {
-            if (ZoomChanged != null)
-                ZoomChanged(this, e);
+            ZoomChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -402,8 +390,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnSelectionChanged(EventArgs e)
         {
-            if (SelectionChanged != null)
-                SelectionChanged(this, e);
+            SelectionChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -412,8 +399,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnViewModeChanged(EventArgs e)
         {
-            if (ViewModeChanged != null)
-                ViewModeChanged(this, e);
+            ViewModeChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -422,8 +408,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnPageSeparatorColorChanged(EventArgs e)
         {
-            if (PageSeparatorColorChanged != null)
-                PageSeparatorColorChanged(this, e);
+            PageSeparatorColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -432,8 +417,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnShowPageSeparatorChanged(EventArgs e)
         {
-            if (ShowPageSeparatorChanged != null)
-                ShowPageSeparatorChanged(this, e);
+            ShowPageSeparatorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -442,8 +426,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnCurrentPageChanged(EventArgs e)
         {
-            if (CurrentPageChanged != null)
-                CurrentPageChanged(this, e);
+            CurrentPageChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -452,8 +435,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnCurrentPageHighlightColorChanged(EventArgs e)
         {
-            if (CurrentPageHighlightColorChanged != null)
-                CurrentPageHighlightColorChanged(this, e);
+            CurrentPageHighlightColorChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -462,8 +444,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnShowCurrentPageHighlightChanged(EventArgs e)
         {
-            if (ShowCurrentPageHighlightChanged != null)
-                ShowCurrentPageHighlightChanged(this, e);
+            ShowCurrentPageHighlightChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -472,8 +453,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnPageAlignChanged(EventArgs e)
         {
-            if (PageAlignChanged != null)
-                PageAlignChanged(this, e);
+            PageAlignChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -482,8 +462,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An PdfBeforeLinkClickedEventArgs that contains the event data.</param>
         protected virtual void OnBeforeLinkClicked(PdfBeforeLinkClickedEventArgs e)
         {
-            if (BeforeLinkClicked != null)
-                BeforeLinkClicked(this, e);
+            BeforeLinkClicked?.Invoke(this, e);
         }
 
         /// <summary>
@@ -492,8 +471,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An PdfAfterLinkClickedEventArgs that contains the event data.</param>
         protected virtual void OnAfterLinkClicked(PdfAfterLinkClickedEventArgs e)
         {
-            if (AfterLinkClicked != null)
-                AfterLinkClicked(this, e);
+            AfterLinkClicked?.Invoke(this, e);
         }
 
         /// <summary>
@@ -502,8 +480,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnRenderFlagsChanged(EventArgs e)
         {
-            if (RenderFlagsChanged != null)
-                RenderFlagsChanged(this, e);
+            RenderFlagsChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -512,8 +489,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnTilesCountChanged(EventArgs e)
         {
-            if (TilesCountChanged != null)
-                TilesCountChanged(this, e);
+            TilesCountChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -522,8 +498,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnHighlightedTextChanged(EventArgs e)
         {
-            if (HighlightedTextChanged != null)
-                HighlightedTextChanged(this, e);
+            HighlightedTextChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -532,8 +507,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnMouseModeChanged(EventArgs e)
         {
-            if (MouseModeChanged != null)
-                MouseModeChanged(this, e);
+            MouseModeChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -542,8 +516,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnShowLoadingIconChanged(EventArgs e)
         {
-            if (ShowLoadingIconChanged != null)
-                ShowLoadingIconChanged(this, e);
+            ShowLoadingIconChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -552,8 +525,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnUseProgressiveRenderChanged(EventArgs e)
         {
-            if (UseProgressiveRenderChanged != null)
-                UseProgressiveRenderChanged(this, e);
+            UseProgressiveRenderChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -562,8 +534,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnLoadingIconTextChanged(EventArgs e)
         {
-            if (LoadingIconTextChanged != null)
-                LoadingIconTextChanged(this, e);
+            LoadingIconTextChanged?.Invoke(this, e);
         }
 
         /// <summary>
@@ -572,8 +543,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">An System.EventArgs that contains the event data.</param>
         protected virtual void OnFormsBlendModeChanged(EventArgs e)
         {
-            if (FormsBlendModeChanged != null)
-                FormsBlendModeChanged(this, e);
+            FormsBlendModeChanged?.Invoke(this, e);
         }
         #endregion
 
@@ -1562,7 +1532,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         public Rectangle CalcActualRect(int index)
         {
             if (_renderRects == null)
-                return default(Rectangle);
+                return default;
 
             var rect = RFTR(_renderRects[index]);
             rect.X += AutoScrollPosition.X;
@@ -3545,7 +3515,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
             e.NeedPause = _prPages.IsNeedPause(sender as PdfPage);
         }
 
-        void Pages_CurrentPageChanged(object sender, EventArgs e)
+        private void Pages_CurrentPageChanged(object sender, EventArgs e)
         {
             if (ViewMode == ViewModes.SinglePage || ViewMode == ViewModes.TilesLine)
             {
@@ -3556,12 +3526,12 @@ namespace Patagames.Pdf.Net.Controls.WinForms
             Invalidate();
         }
 
-        void Pages_PageInserted(object sender, PageCollectionChangedEventArgs e)
+        private void Pages_PageInserted(object sender, PageCollectionChangedEventArgs e)
         {
             UpdateLayout();
         }
 
-        void Pages_PageDeleted(object sender, PageCollectionChangedEventArgs e)
+        private void Pages_PageDeleted(object sender, PageCollectionChangedEventArgs e)
         {
             UpdateLayout();
 

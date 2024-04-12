@@ -16,7 +16,7 @@ using System.Linq;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosSplitPaymentsDialog
+    internal partial class PosSplitPaymentsDialog
     {
         protected override void OnResponse(ResponseType pResponse)
         {
@@ -52,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -99,10 +99,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (processFinanceDocumentParameter != null)
                 {
-                    if (debug) _log.Debug(Environment.NewLine);
+                    if (debug) _logger.Debug(Environment.NewLine);
                     foreach (var item in touchButtonSplitPayment.ArticleBag)
                     {
-                        if (debug) _log.Debug(string.Format("\t[{0}],[{1}],[{2}]", item.Key.Designation, item.Value.Quantity, item.Value.TotalFinal));
+                        if (debug) _logger.Debug(string.Format("\t[{0}],[{1}],[{2}]", item.Key.Designation, item.Value.Quantity, item.Value.TotalFinal));
                     }
 
                     erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), processFinanceDocumentParameter.Customer);
@@ -121,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -143,7 +143,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 // Event
                 touchButtonSplitPayment.Clicked += TouchButtonSplitPayment_Clicked;
                 // Check Label and Position
-                if (debug) _log.Debug(string.Format("AddSplitButton: [{0}]", _splitPaymentButtons[_splitPaymentButtons.Count - 1].LabelText));
+                if (debug) _logger.Debug(string.Format("AddSplitButton: [{0}]", _splitPaymentButtons[_splitPaymentButtons.Count - 1].LabelText));
                 // Call Update And Calculate Methods only on Last of PaymentStartClients
                 if (callUpdateAndCalculateMethods)
                 {
@@ -155,7 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -167,7 +167,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 // Store Index Position before Removes
                 int lastIndex = _splitPaymentButtons.Count - 1;
-                if (debug) _log.Debug(string.Format("RemoveSplitButton: [{0}]", _splitPaymentButtons[lastIndex].LabelText));
+                if (debug) _logger.Debug(string.Format("RemoveSplitButton: [{0}]", _splitPaymentButtons[lastIndex].LabelText));
                 // Store Reference to Delete After remove From List
                 TouchButtonSplitPayment touchButtonSplitPayment = _splitPaymentButtons[lastIndex];
                 _splitPaymentButtons.Remove(touchButtonSplitPayment);
@@ -179,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -230,7 +230,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         // Modulo
                         articleQuantityCheckModulo = article.Value.Quantity % articleQuantityCheck;
 
-                        if (debug) _log.Debug(string.Format("#{0} Designation: [{1}], PriceFinal: [{2}], Quantity: [{3}]:[{4}]:[{5}]:[{6}]:[{7}]",
+                        if (debug) _logger.Debug(string.Format("#{0} Designation: [{1}], PriceFinal: [{2}], Quantity: [{3}]:[{4}]:[{5}]:[{6}]:[{7}]",
                             t, article.Key.Designation, article.Value.PriceFinal, article.Value.Quantity, articleQuantity, articleQuantityRemain, articleQuantityCheck, articleQuantityCheckModulo)
                             );
 
@@ -298,7 +298,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -309,7 +309,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             foreach (SplitPaymentArticleComparable item in arrayList)
             {
                 result += item.priceFinal;
-                //if (showLog) _log.Debug(string.Format("\t{0}\t{1}\t{2}", result, item.designation, item.price));
+                //if (showLog) _logger.Debug(string.Format("\t{0}\t{1}\t{2}", result, item.designation, item.price));
             }
 
             return result;
@@ -329,7 +329,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // If have 
                     if (item.ProcessFinanceDocumentParameter != null)
                     {
-                        if (debug) _log.Debug(string.Format("TotalFinal: [#{0}]:[{1}]", i,
+                        if (debug) _logger.Debug(string.Format("TotalFinal: [#{0}]:[{1}]", i,
                             FrameworkUtils.DecimalToStringCurrency(item.ProcessFinanceDocumentParameter.ArticleBag.TotalFinal).PadLeft(padLeftChars, ' ')
                         ));
 
@@ -353,7 +353,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     // Get Current working orderMain
                     OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-                    if (debug) _log.Debug(string.Format("Working on currentOrderMain.PersistentOid: [{0}]", currentOrderMain.PersistentOid));
+                    if (debug) _logger.Debug(string.Format("Working on currentOrderMain.PersistentOid: [{0}]", currentOrderMain.PersistentOid));
                     //Get OrderDetail
                     OrderDetail currentOrderDetails = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].OrderDetails;
 
@@ -365,7 +365,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
         }
@@ -380,13 +380,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 TouchButtonSplitPayment touchButtonSplitPayment = (TouchButtonSplitPayment)sender;
-                if (debug) _log.Debug(string.Format("TouchButtonSplitPayment Clicked: [{0}]", touchButtonSplitPayment.LabelText));
+                if (debug) _logger.Debug(string.Format("TouchButtonSplitPayment Clicked: [{0}]", touchButtonSplitPayment.LabelText));
 
                 foreach (var item in touchButtonSplitPayment.ArticleBag)
                 {
                     checkTotal += item.Value.PriceFinal * item.Value.Quantity;
                 }
-                if (debug) _log.Debug(string.Format("touchButtonSplitPayment.ArticleBag: Total: [{0}]", checkTotal));
+                if (debug) _logger.Debug(string.Format("touchButtonSplitPayment.ArticleBag: Total: [{0}]", checkTotal));
 
                 //Arredondamento de valores na divisão de contas gera perdas no valor e quantidade [IN:005944]
                 //if (_articleBag.TotalFinal < checkTotal * _splitPaymentButtons.Count && touchButtonSplitPayment == _splitPaymentButtons[_splitPaymentButtons.Count - 1])
@@ -426,7 +426,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

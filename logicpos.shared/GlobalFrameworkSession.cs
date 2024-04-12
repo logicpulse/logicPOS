@@ -14,7 +14,7 @@ namespace logicpos.shared
     public class GlobalFrameworkSession
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Private Members
         private String _file;
@@ -35,11 +35,11 @@ namespace logicpos.shared
             set { _sessionUpdatedAt = value; }
         }
 
-        private Dictionary<Guid, DateTime> _loggedUsers;
+        private Dictionary<Guid, DateTime> _loggergedUsers;
         public Dictionary<Guid, DateTime> LoggedUsers
         {
-            get { return _loggedUsers; }
-            set { _loggedUsers = value; }
+            get { return _loggergedUsers; }
+            set { _loggergedUsers = value; }
         }
 
         private Guid _currentOrderMainOid;
@@ -72,7 +72,7 @@ namespace logicpos.shared
             //Default
             _currentOrderMainOid = Guid.Empty;
             _sessionDateStart = FrameworkUtils.CurrentDateTimeAtomic();
-            _loggedUsers = new Dictionary<Guid, DateTime>();
+            _loggergedUsers = new Dictionary<Guid, DateTime>();
             _ordersMain = new Dictionary<Guid, OrderMain>();
         }
 
@@ -88,7 +88,7 @@ namespace logicpos.shared
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     return false;
                 }
             }
@@ -103,7 +103,7 @@ namespace logicpos.shared
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     return false;
                 }
             }
@@ -122,13 +122,13 @@ namespace logicpos.shared
                 foreach (Guid item in GlobalFramework.SessionApp.LoggedUsers.Keys)
                 {
                     sys_userdetail user = (sys_userdetail)FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), item);
-                    FrameworkUtils.Audit("USER_LOGOUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_used_forced_logout"), user.Name));
+                    FrameworkUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_used_forced_loggerout"), user.Name));
                 }
                 GlobalFramework.SessionApp.LoggedUsers.Clear();
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -201,7 +201,7 @@ namespace logicpos.shared
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -217,7 +217,7 @@ namespace logicpos.shared
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

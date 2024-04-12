@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using logicpos.Extensions;
 using System;
 using System.Drawing;
 
@@ -48,15 +49,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             SetFont(pFont);
             //color
             Color colNormal = pColorFont;
-            Color colPrelight = logicpos.Utils.Lighten(colNormal);
-            Color colActive = logicpos.Utils.Lighten(colPrelight);
-            Color colInsensitive = logicpos.Utils.Darken(colNormal);
+            Color colPrelight = colNormal.Lighten();
+            Color colActive = colPrelight.Lighten();
+            Color colInsensitive = colNormal.Lighten();
             Color colSelected = Color.FromArgb(125, 0, 0);
-            _label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colNormal));
-            _label.ModifyFg(StateType.Prelight, logicpos.Utils.ColorToGdkColor(colPrelight));
-            _label.ModifyFg(StateType.Active, logicpos.Utils.ColorToGdkColor(colActive));
-            _label.ModifyFg(StateType.Insensitive, logicpos.Utils.ColorToGdkColor(colInsensitive));
-            _label.ModifyFg(StateType.Selected, logicpos.Utils.ColorToGdkColor(colSelected));
+            _label.ModifyFg(StateType.Normal, colNormal.ToGdkColor());
+            _label.ModifyFg(StateType.Prelight, colPrelight.ToGdkColor());
+            _label.ModifyFg(StateType.Active, colActive.ToGdkColor());
+            _label.ModifyFg(StateType.Insensitive,colInsensitive.ToGdkColor());
+            _label.ModifyFg(StateType.Selected, colSelected.ToGdkColor());
         }
     }
 }

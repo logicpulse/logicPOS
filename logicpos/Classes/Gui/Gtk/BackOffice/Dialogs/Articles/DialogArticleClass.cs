@@ -7,7 +7,7 @@ using logicpos.datalayer.DataLayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogArticleClass : BOBaseDialog
+    internal class DialogArticleClass : BOBaseDialog
     {
         public DialogArticleClass(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
@@ -66,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

@@ -24,10 +24,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
     //TODO: Or Create Function to Get Field from List like GetGenericCRUDWidget(string pFieldName) and Loop and Return it, Or null
 
     //T (XPGuidObject|DataRow)
-    abstract class GenericCRUDWidgetList<T> : List<GenericCRUDWidget<T>>
+    internal abstract class GenericCRUDWidgetList<T> : List<GenericCRUDWidget<T>>
     {
         //Log4Net
-        protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Private Members
         protected Dictionary<T, bool> _modifiedDataSourceRowObjects;
@@ -56,7 +56,6 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (pSource == null && pTarget == null)
             {
-                result = false;
             }
             if (pSource != null)
             {
@@ -77,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 result = false;
             };
-            //_log.Debug(string.Format("Modified:[{0}] pSource:[{1}], pTarget:[{2}], pType:[{3}]", result, pSource, pTarget, pType));
+            //_logger.Debug(string.Format("Modified:[{0}] pSource:[{1}], pTarget:[{2}], pType:[{3}]", result, pSource, pTarget, pType));
             return result;
         }
 
@@ -132,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     //if (debug && item.Widget.GetType() == typeof(XPOComboBox))
                     //if (debug && item.Widget.GetType() == typeof(XPOEntryBoxSelectRecord<fin_article,TreeViewArticle>))
                     //{
-                    //    _log.Debug(string.Format("item.FieldName:[{0}], item.Widget.GetType():[{1}], item.FieldType:[{2}], item.FieldProperty:[{3}], item.Required:[{4}], item.ValidationRule:[{5}], item.Validated: [{6}]", item.FieldName, item.Widget.GetType(), item.FieldType, item.FieldProperty, item.Required, item.ValidationRule, item.Validated));
+                    //    _logger.Debug(string.Format("item.FieldName:[{0}], item.Widget.GetType():[{1}], item.FieldType:[{2}], item.FieldProperty:[{3}], item.Required:[{4}], item.ValidationRule:[{5}], item.Validated: [{6}]", item.FieldName, item.Widget.GetType(), item.FieldType, item.FieldProperty, item.Required, item.ValidationRule, item.Validated));
                     //}
 
                     //Widgets Validation With RegEX Rule
@@ -142,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         {
                             result = false;
                             currentFieldLabel = (item.Label != null) ? item.Label.Text : string.Format("[{0}]", item.FieldName);
-                            //_log.Debug(string.Format("ValidateRecord(): Validation Error in item.Field:[{0}] currentFieldLabel:[{1}]", item.FieldName, currentFieldLabel));
+                            //_logger.Debug(string.Format("ValidateRecord(): Validation Error in item.Field:[{0}] currentFieldLabel:[{1}]", item.FieldName, currentFieldLabel));
                             invalidFields += string.Format("{0}{1}{2}", Environment.NewLine, "* ", currentFieldLabel);
                         }
                     }
@@ -194,9 +193,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //Fire Event
                 OnBeforeUpdate();
             };
-
-            bool result = false;
             bool modified = false;
+
+            bool result;
             try
             {
                 //Initalize Modified Dictionary
@@ -283,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 item.SetMemberValue(Convert.ChangeType((item.Widget as XPOComboBox).Value, item.FieldType));
                             }
-                            //_log.Debug(string.Format("UpdateRecord(): [{0}] [{1}]==[{2}] [{3}]", item.Field, item.Source.GetMemberValue(item.Field), (item.Widget as XPOComboBox).Value, item.FieldType));
+                            //_logger.Debug(string.Format("UpdateRecord(): [{0}] [{1}]==[{2}] [{3}]", item.Field, item.Source.GetMemberValue(item.Field), (item.Widget as XPOComboBox).Value, item.FieldType));
                         }
 
                         //FileChooserButton
@@ -307,7 +306,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 if (!String.IsNullOrEmpty((item.Widget as EntryBoxValidation).EntryValidation.Text))
                                 {
-                                    //_log.Debug(string.Format("Message1: [{0}/{1}/{2}/{3}]", item.FieldType, item.FieldName, (item.Widget as EntryBoxValidation).EntryValidation.Text, GlobalFramework.CurrentCultureNumberFormat));
+                                    //_logger.Debug(string.Format("Message1: [{0}/{1}/{2}/{3}]", item.FieldType, item.FieldName, (item.Widget as EntryBoxValidation).EntryValidation.Text, GlobalFramework.CurrentCultureNumberFormat));
                                     //Extra protection to convert string to Decimal, else may occur errors when work with en-US
                                     if (item.FieldType == typeof(decimal))
                                     {
@@ -396,7 +395,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         //Check Modified
                         if (modified)
                         {
-                            //_log.Debug(string.Format("UpdateRecord(): Modified Object.Field: {0}{1}", item.Source.GetType().Name, item.Field));
+                            //_logger.Debug(string.Format("UpdateRecord(): Modified Object.Field: {0}{1}", item.Source.GetType().Name, item.Field));
                             try
                             {
                                 //Add DataSourceRowObject to Modified Objects Stack
@@ -405,7 +404,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             }
                             catch (Exception ex)
                             {
-                                _log.Error(string.Format("UpdateRecord(): Error! Saving Field [{0}]/[{1}]: {0}", item.FieldName, item.DataSourceRow.ToString(), ex.Message), ex);
+                                _logger.Error(string.Format("UpdateRecord(): Error! Saving Field [{0}]/[{1}]: {0}", item.FieldName, item.DataSourceRow.ToString(), ex.Message), ex);
                                 result = false;
                             };
                         };
@@ -424,7 +423,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 logicpos.Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                 result = false;
             }
@@ -527,32 +526,32 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Custom CRUD EventHandlers
         private void OnBeforeInsert()
         {
-            if (BeforeInsert != null) { BeforeInsert(this, EventArgs.Empty); }
+            BeforeInsert?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnAfterInsert()
         {
-            if (AfterInsert != null) { AfterInsert(this, EventArgs.Empty); }
+            AfterInsert?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnBeforeUpdate()
         {
-            if (BeforeUpdate != null) { BeforeUpdate(this, EventArgs.Empty); }
+            BeforeUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnAfterUpdate()
         {
-            if (AfterUpdate != null) { AfterUpdate(this, EventArgs.Empty); }
+            AfterUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnBeforeValidate()
         {
-            if (BeforeValidate != null) { BeforeValidate(this, EventArgs.Empty); }
+            BeforeValidate?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnAfterValidate()
         {
-            if (AfterValidate != null) { AfterValidate(this, EventArgs.Empty); }
+            AfterValidate?.Invoke(this, EventArgs.Empty);
         }
     }
 }

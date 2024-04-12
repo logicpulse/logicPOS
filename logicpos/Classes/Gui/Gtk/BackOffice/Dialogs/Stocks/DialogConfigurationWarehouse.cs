@@ -11,18 +11,19 @@ using System.Drawing;
 using System;
 using System.Collections.Generic;
 using logicpos.shared.Classes.Utils;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 {
-    class DialogConfigurationWarehouse : BOBaseDialog
+    internal class DialogConfigurationWarehouse : BOBaseDialog
     {
-        private ICollection<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>> _warehouseLocationCollection;
+        private readonly ICollection<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>> _warehouseLocationCollection;
         private fin_warehouse _Warehouse;
-        private fin_warehouselocation _Warehouselocation;
+        private readonly fin_warehouselocation _Warehouselocation;
         private ScrolledWindow _scrolledWindow;
         private VBox vboxTab2;
-        private string iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
-        private string iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+        private readonly string iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+        private readonly string iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
 
         public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
@@ -63,7 +64,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
                 if (_dataSourceRow == null) _Warehouse = new fin_warehouse();
                 else _Warehouse = (_dataSourceRow as fin_warehouse);
@@ -106,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 
                 _scrolledWindow = new ScrolledWindow();
                 _scrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindow.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindow.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _scrolledWindow.ShadowType = ShadowType.None;
 
                 if (_Warehouse != null && _Warehouse.WarehouseLocation.Count > 0)
@@ -130,7 +131,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -178,7 +179,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
             }
             catch (Exception ex)
             {
-                _log.Error("Error populating Locations Entrys : " + ex.Message);
+                _logger.Error("Error populating Locations Entrys : " + ex.Message);
             }
         }
 
@@ -218,7 +219,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
             }
             catch (Exception ex)
             {
-                _log.Error("Error clear warehouse location Entrys : " + ex.Message);
+                _logger.Error("Error clear warehouse location Entrys : " + ex.Message);
             }
         }
     }

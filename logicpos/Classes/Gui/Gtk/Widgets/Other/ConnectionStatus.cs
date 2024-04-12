@@ -5,9 +5,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     public class ConnectionStatus : EventBox
     {
-        private Image _connectionStatusImage;
-        private Gdk.Pixbuf _pixbufStatusOn = null;
-        private Gdk.Pixbuf _pixbufStatusOff = null;
+        private readonly Image _connectionStatusImage;
+        private readonly Gdk.Pixbuf _pixbufStatusOn = null;
+        private readonly Gdk.Pixbuf _pixbufStatusOff = null;
         private bool _connected = false;
         public bool Connected
         {

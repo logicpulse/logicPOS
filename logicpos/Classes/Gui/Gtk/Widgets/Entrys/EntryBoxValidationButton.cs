@@ -6,7 +6,7 @@ using System;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class EntryBoxValidationButton : EntryBoxBase
+    internal class EntryBoxValidationButton : EntryBoxBase
     {
         protected EntryValidation _entryValidation;
         public EntryValidation EntryValidation

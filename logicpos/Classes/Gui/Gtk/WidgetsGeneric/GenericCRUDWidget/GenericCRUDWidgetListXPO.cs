@@ -8,9 +8,9 @@ using System.Diagnostics;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    class GenericCRUDWidgetListXPO : GenericCRUDWidgetList<XPGuidObject>
+    internal class GenericCRUDWidgetListXPO : GenericCRUDWidgetList<XPGuidObject>
     {
-        private Session _session;
+        private readonly Session _session;
 
         //Constructor
         public GenericCRUDWidgetListXPO(Session pSession)
@@ -35,18 +35,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         }
         public override bool Save()
         {
-            bool debug = (Debugger.IsAttached) ? true : false;
-            bool result = true;
-
+            bool debug = (Debugger.IsAttached);
+            bool result;
             try
             {
                 //BeginTransaction
-                if (debug) _log.Debug("UpdateRecord(): BeginTransaction");
+                if (debug) _logger.Debug("UpdateRecord(): BeginTransaction");
                 _session.BeginTransaction();
 
                 foreach (var item in _modifiedDataSourceRowObjects)
                 {
-                    if (debug) _log.Debug(string.Format("UpdateRecord(): Saving Modified XPGuidObjects item.Key:[{0}]", item.Key));
+                    if (debug) _logger.Debug(string.Format("UpdateRecord(): Saving Modified XPGuidObjects item.Key:[{0}]", item.Key));
                     //// Required to Encrypt Properties Before Save, Required for New Records Problem, it works with Update Too
                     //item.Key.EncryptProperties();
                     // Now we can Trigger Save on XPGuidObject
@@ -55,12 +54,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     // Catch cfg_configurationpreferenceparameter : Usefull to Debug some Types
                     //if (item.Key.GetType().Equals(typeof(cfg_configurationpreferenceparameter)))
                     //{
-                    //    _log.Debug("GenericCRUDWidgetListXPO: Catched#1");
+                    //    _logger.Debug("GenericCRUDWidgetListXPO: Catched#1");
                     //}
                 }
 
                 //CommitTransaction 
-                if (debug) _log.Debug("UpdateRecord(): CommitTransaction");
+                if (debug) _logger.Debug("UpdateRecord(): CommitTransaction");
                 _session.CommitTransaction();
                 result = true;
             }
@@ -76,7 +75,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //END IN009220
                 else
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     ResponseType response = logicpos.Utils.ShowMessageTouch(
                         GlobalApp.WindowBackOffice,
                         DialogFlags.DestroyWithParent | DialogFlags.Modal,
@@ -86,19 +85,19 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         );
                 }                
                 //RollbackTransaction
-                //_log.Debug("UpdateRecord(): RollbackTransaction");
+                //_logger.Debug("UpdateRecord(): RollbackTransaction");
                 try
                 {
                     _session.RollbackTransaction();
                 }
                 catch (Exception ex2)
                 {
-                    _log.Error(ex.Message, ex2);
+                    _logger.Error(ex.Message, ex2);
                 }
 
                 foreach (var item in _modifiedDataSourceRowObjects)
                 {
-                    if (debug) _log.Debug(string.Format("UpdateRecord(): Reloading Modified XPGuidObjects item.Key:[{0}]", item.Key));
+                    if (debug) _logger.Debug(string.Format("UpdateRecord(): Reloading Modified XPGuidObjects item.Key:[{0}]", item.Key));
                     item.Key.Reload();
                 }
 

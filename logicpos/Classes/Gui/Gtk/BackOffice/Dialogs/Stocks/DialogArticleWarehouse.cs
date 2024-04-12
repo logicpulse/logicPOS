@@ -21,21 +21,21 @@ using logicpos.datalayer.DataLayer.Xpo.Documents;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
-    class DialogArticleWarehouse : BOBaseDialog
+    internal class DialogArticleWarehouse : BOBaseDialog
     {
         //UI
-        VBox _vboxTab2;
-        fin_article _selectedArticle;
-        XPOComboBox xpoComboBoxArticle;
-        XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _articleBoxSelectRecord;
-        XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumber;
-        XPOComboBox xpoComboBoxArticleSerialNumber;
-        BOWidgetBox boxQuantity;
-        Entry entryQuantity;
-        Entry entrySerialNumber;
-        XPOComboBox xpoComboBoxWarehouse;
-        XPOComboBox xpoComboBoxWarehouseLocation;
-        bool _modifyArticle;
+        private readonly VBox _vboxTab2;
+        private fin_article _selectedArticle;
+        private readonly XPOComboBox xpoComboBoxArticle;
+        private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _articleBoxSelectRecord;
+        private XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumber;
+        private readonly XPOComboBox xpoComboBoxArticleSerialNumber;
+        private BOWidgetBox boxQuantity;
+        private Entry entryQuantity;
+        private readonly Entry entrySerialNumber;
+        private XPOComboBox xpoComboBoxWarehouse;
+        private XPOComboBox xpoComboBoxWarehouseLocation;
+        private bool _modifyArticle;
 
         private TouchButtonIconWithText _buttonInsert;
         public TouchButtonIconWithText ButtonInsert
@@ -50,10 +50,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             set { _navigator = value; }
         }
 
-        GenericTreeViewXPO _treeViewXPO_StockMov;
-        GenericTreeViewXPO _treeViewXPO_ArticleWarehouse;
+        private readonly GenericTreeViewXPO _treeViewXPO_StockMov;
+        private readonly GenericTreeViewXPO _treeViewXPO_ArticleWarehouse;
 
-        private ICollection<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>> _entryCompositeLinesCollection;
+        private readonly ICollection<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>> _entryCompositeLinesCollection;
 
         public DialogArticleWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode dialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, dialogMode, pXPGuidObject)
@@ -186,7 +186,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -209,7 +209,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -243,9 +243,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
         private void XpoComboBoxArticleSerialNumber_Changed(object sender, EventArgs e)
         {
-            EntryValidation entry = (EntryValidation)sender;
-            Guid currentOid = Guid.Empty;
-
             if (_entryBoxArticleSerialNumber.Value != null)
             {
                 entryQuantity.Text = "1";
@@ -283,7 +280,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             }
             catch (System.Exception ex)
             {
-                //_log.Error(ex.Message, ex);
+                //_logger.Error(ex.Message, ex);
             }
         }
 
@@ -336,7 +333,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

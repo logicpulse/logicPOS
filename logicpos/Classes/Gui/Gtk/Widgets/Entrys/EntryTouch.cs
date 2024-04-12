@@ -10,7 +10,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public abstract class EntryTouch : Entry
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Parameters
         protected Window _sourceWindow;

@@ -8,10 +8,10 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 {
-    class XPOAccordion : Accordion
+    internal class XPOAccordion : Accordion
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public XPOAccordion(string pTableParent, string pTableChild, string pTableChildWhereField, string pNodePrivilegesTokenFormat)
         {
@@ -31,26 +31,24 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             string sqlTableChild = string.Format(@"SELECT Oid AS id, Designation AS label, ResourceString AS resource FROM {0} WHERE (Disabled IS NULL or Disabled  <> 1) AND ({1} = '{2}') ORDER BY Ord;", pTableChild, pTableChildWhereField, "{0}");
             if (debug)
             {
-                _log.Debug(string.Format("InitDefinition(): sqlTableParent: [{0}]", sqlTableParent));
-                _log.Debug(string.Format("InitDefinition(): sqlTableChild: [{0}]", sqlTableChild));
+                _logger.Debug(string.Format("InitDefinition(): sqlTableParent: [{0}]", sqlTableParent));
+                _logger.Debug(string.Format("InitDefinition(): sqlTableChild: [{0}]", sqlTableChild));
             }
 
             //Get XPSelectData for Parent and Child
             XPSelectData xPSelectDataParent = FrameworkUtils.GetSelectedDataFromQuery(sqlTableParent);
             XPSelectData xPSelectDataChild;
-            //Initialize Vars
-            string parentId = string.Empty, parentLabel = string.Empty, parentResource = string.Empty;
-            string childId = string.Empty, childLabel = string.Empty, childResource = string.Empty;
             Dictionary<string, AccordionNode> _accordionChilds = new Dictionary<string, AccordionNode>();
 
             //Start Render Accordion Parent Nodes
             foreach (SelectStatementResultRow parentRow in xPSelectDataParent.Data)
             {
-                parentId = parentRow.Values[xPSelectDataParent.GetFieldIndex("id")].ToString();
-                parentLabel = parentRow.Values[xPSelectDataParent.GetFieldIndex("label")].ToString();
+                //Initialize Vars
+                string parentId = parentRow.Values[xPSelectDataParent.GetFieldIndex("id")].ToString();
+                string parentLabel = parentRow.Values[xPSelectDataParent.GetFieldIndex("label")].ToString();
                 if (parentRow.Values[xPSelectDataParent.GetFieldIndex("resource")] != null)
                 {
-                    parentResource = parentRow.Values[xPSelectDataParent.GetFieldIndex("resource")].ToString();
+                    string parentResource = parentRow.Values[xPSelectDataParent.GetFieldIndex("resource")].ToString();
                     //Bypass default db label with Resources Localization Label
                     if (Resx
                         .ResourceManager.GetString(parentResource) != null)
@@ -65,11 +63,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 //Start Render Accordion Parent Childs
                 foreach (SelectStatementResultRow childRow in xPSelectDataChild.Data)
                 {
-                    childId = childRow.Values[xPSelectDataChild.GetFieldIndex("id")].ToString();
-                    childLabel = childRow.Values[xPSelectDataChild.GetFieldIndex("label")].ToString();
+                    string childId = childRow.Values[xPSelectDataChild.GetFieldIndex("id")].ToString();
+                    string childLabel = childRow.Values[xPSelectDataChild.GetFieldIndex("label")].ToString();
                     if (childRow.Values[xPSelectDataChild.GetFieldIndex("resource")] != null)
                     {
-                        childResource = childRow.Values[xPSelectDataChild.GetFieldIndex("resource")].ToString();
+                        string childResource = childRow.Values[xPSelectDataChild.GetFieldIndex("resource")].ToString();
                         //Bypass default db label with Resources Localization Label
                         if (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], childResource) != null)
                             childLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], childResource);

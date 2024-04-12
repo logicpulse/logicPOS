@@ -17,7 +17,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //This Can be Optional
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
@@ -25,7 +25,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //This Can be Optional
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -33,7 +33,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fCode2;
+        private string fCode2;
         //Required 5 Chars to use PT-AC (Ex Açores Country Region)
         [Indexed(Unique = true), Size(5)]//2
         public string Code2
@@ -42,7 +42,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Code2", ref fCode2, value); }
         }
 
-        string fCode3;
+        private string fCode3;
         //Required 6 Chars to use PRT-AC (Ex Açores Country Region)
         [Indexed(Unique = true), Size(6)]//3
         public string Code3
@@ -51,7 +51,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Code3", ref fCode3, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -59,14 +59,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fCapital;
+        private string fCapital;
         public string Capital
         {
             get { return fCapital; }
             set { SetPropertyValue<string>("Capital", ref fCapital, value); }
         }
 
-        string fTLD;
+        private string fTLD;
         [Size(10)]
         public string TLD
         {
@@ -74,7 +74,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("TLD", ref fTLD, value); }
         }
 
-        string fCurrency;
+        private string fCurrency;
         [Size(20)]
         public string Currency
         {
@@ -82,7 +82,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Currency", ref fCurrency, value); }
         }
 
-        string fCurrencyCode;
+        private string fCurrencyCode;
         [Size(3)]
         public string CurrencyCode
         {
@@ -90,15 +90,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("CurrencyCode", ref fCurrencyCode, value); }
         }
 
-        string fRegExFiscalNumber;
+        private string fRegExFiscalNumber;
         [Size(255)]
         public string RegExFiscalNumber
         {
             get { return fRegExFiscalNumber; }
             set { SetPropertyValue<string>("RegExFiscalNumber", ref fRegExFiscalNumber, value); }
         }
-        
-        string fRegExZipCode;
+
+        private string fRegExZipCode;
         [Size(255)]
         public string RegExZipCode
         {

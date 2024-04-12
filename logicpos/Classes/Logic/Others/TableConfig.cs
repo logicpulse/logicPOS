@@ -2,14 +2,14 @@
 {
     public class TableConfig
     {
-        uint _rows;
+        private uint _rows;
         public uint Rows
         {
             get { return _rows; }
             set { _rows = value; }
         }
 
-        uint _columns;
+        private uint _columns;
         public uint Columns
         {
             get { return _columns; }

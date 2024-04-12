@@ -11,12 +11,12 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 	/// </summary>
 	public class PdfToolStripSearch : PdfToolStrip
 	{
-		#region Private fields
-		PdfSearch _search = null;
-		List<PdfSearch.FoundText> _foundText = new List<PdfSearch.FoundText>();
-		List<PdfSearch.FoundText> _forHighlight = new List<PdfSearch.FoundText>();
-		object _syncFoundText = new object();
-		Timer _foundTextTimer;
+        #region Private fields
+        private PdfSearch _search = null;
+        private readonly List<PdfSearch.FoundText> _foundText = new List<PdfSearch.FoundText>();
+        private readonly List<PdfSearch.FoundText> _forHighlight = new List<PdfSearch.FoundText>();
+        private readonly object _syncFoundText = new object();
+        private readonly Timer _foundTextTimer;
 		#endregion
 
 		#region Public Properties
@@ -193,7 +193,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 			_foundTextTimer_Tick(_foundTextTimer, EventArgs.Empty);
 		}
 
-		int _sleepCnt = 0;
+        private int _sleepCnt = 0;
 		private void Search_FoundTextAdded(object sender, EventArguments.FoundTextAddedEventArgs e)
 		{
 			lock (_syncFoundText)

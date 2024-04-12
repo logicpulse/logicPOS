@@ -8,7 +8,7 @@ namespace logicpos
 {
     public class SingleProgramInstance : IDisposable
     {
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _loggerger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private readonly Mutex _mutex;
         private bool _owned = false;
 
@@ -16,11 +16,9 @@ namespace logicpos
         {
             if (Utils.IsLinux == false)
             {
-                var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-
                 _mutex = new Mutex(
                     initiallyOwned: true,
-                    name: assemblyName,
+                    name: CurrentAssemblyName,
                     createdNew: out _owned
                     );
             }
@@ -30,11 +28,13 @@ namespace logicpos
             }
         }
 
+        private string CurrentAssemblyName => Assembly.GetExecutingAssembly().GetName().Name;
+
         public SingleProgramInstance(string identifier)
         {
             if (Utils.IsLinux == false)
             {
-                var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + identifier;
+                var assemblyName = CurrentAssemblyName + identifier;
 
                 _mutex = new Mutex(
                     initiallyOwned: true,
@@ -52,6 +52,7 @@ namespace logicpos
         {
             ReleaseMutex();
         }
+
         public bool IsSingleInstance => _owned;
 
         private Process[] GetCurrentAssemblyProcesses()
@@ -107,7 +108,7 @@ namespace logicpos
             }
             catch (Exception exception)
             {
-                _logger.Error("SingleProgramInstance release:  ", exception);
+                _loggerger.Error("SingleProgramInstance release:  ", exception);
             }
         }
 

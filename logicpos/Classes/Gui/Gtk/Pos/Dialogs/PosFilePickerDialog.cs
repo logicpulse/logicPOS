@@ -11,13 +11,13 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosFilePickerDialog : PosBaseDialog
+    internal class PosFilePickerDialog : PosBaseDialog
     {
         //Private Members
-        private FileFilter _fileFilter;
-        private FileChooserAction _fileChooserAction;
+        private readonly FileFilter _fileFilter;
+        private readonly FileChooserAction _fileChooserAction;
         //UI
-        private Fixed _fixedContent;
+        private readonly Fixed _fixedContent;
         //Public Properties
         private FileChooserWidget _filePicker;
         public FileChooserWidget FilePicker
@@ -60,9 +60,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(buttonOk, ResponseType.Ok),
+                new ActionAreaButton(buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, _windowSize, _fixedContent, actionAreaButtons);

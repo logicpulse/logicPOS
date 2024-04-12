@@ -22,7 +22,7 @@ namespace logicpos.datalayer.Enums
     public class CustomAppOperationMode
     { 
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static readonly CustomAppOperationMode  UNDEFINED      = new CustomAppOperationMode(string.Empty, string.Empty, string.Empty, string.Empty);
         public static readonly CustomAppOperationMode  DEFAULT        = new CustomAppOperationMode("Default", "pt", "databasedatademo.sql", "Default");
@@ -44,7 +44,7 @@ namespace logicpos.datalayer.Enums
         public string DatabaseDemoFileName { get; private set; }
         public string AppOperationTheme { get; private set; }
 
-        CustomAppOperationMode(string appOperationModeToken, string customCultureDefaultCountryPrefix, string databaseDemoFileName, string appOperationTheme)
+        private CustomAppOperationMode(string appOperationModeToken, string customCultureDefaultCountryPrefix, string databaseDemoFileName, string appOperationTheme)
         {
             AppOperationModeToken = appOperationModeToken;
             CustomCultureDefaultCountryPrefix = customCultureDefaultCountryPrefix;

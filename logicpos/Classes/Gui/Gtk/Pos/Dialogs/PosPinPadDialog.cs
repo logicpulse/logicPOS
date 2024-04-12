@@ -11,11 +11,11 @@ using logicpos.Classes.Enums.Widgets;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosPinPadDialog : PosBaseDialog
+    internal class PosPinPadDialog : PosBaseDialog
     {
-        private sys_userdetail _selectedUserDetail;
-        private NumberPadPin _numberPadPin;
-        private bool _notLoginAuth;
+        private readonly sys_userdetail _selectedUserDetail;
+        private readonly NumberPadPin _numberPadPin;
+        private readonly bool _notLoginAuth;
 
         public PosPinPadDialog(Window pSourceWindow, DialogFlags pDialogFlags, sys_userdetail pUserDetail, bool pNotLoginAuth = false)
             : base(pSourceWindow, pDialogFlags)
@@ -48,8 +48,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
                 //ActionArea
-                actionAreaButtons = new ActionAreaButtons();
-                actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
+                actionAreaButtons = new ActionAreaButtons
+                {
+                    new ActionAreaButton(buttonCancel, ResponseType.Cancel)
+                };
             }
             else
             {
@@ -67,14 +69,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
         }
 
-        void ButtonKeyOK_Clicked(object sender, EventArgs e)
+        private void ButtonKeyOK_Clicked(object sender, EventArgs e)
         {
             bool finishedJob = _numberPadPin.ProcessPassword(this, _selectedUserDetail, _notLoginAuth);
             if (finishedJob) Respond(ResponseType.Ok);
         }
 
         //Removed : Conflited with Change Password, When we Implement Default Enter Key in All Dilogs, It Trigger Twice
-        void PosPinPadDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void PosPinPadDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             //if (args.Event.Key.ToString().Equals("Return"))
             //{

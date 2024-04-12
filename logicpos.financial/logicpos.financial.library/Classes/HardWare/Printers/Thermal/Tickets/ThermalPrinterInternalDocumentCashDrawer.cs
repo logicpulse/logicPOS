@@ -8,9 +8,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
     public class ThermalPrinterInternalDocumentCashDrawer : ThermalPrinterBaseInternalTemplate
     {
-        private decimal _totalAmountInCashDrawer = 0.0m;
-        private decimal _movementAmount = 0.0m;
-        private string _movementDescription = string.Empty;
+        private readonly decimal _totalAmountInCashDrawer = 0.0m;
+        private readonly decimal _movementAmount = 0.0m;
+        private readonly string _movementDescription = string.Empty;
         
         public ThermalPrinterInternalDocumentCashDrawer(sys_configurationprinters pPrinter, string pTicketTitle, decimal pTotalAmountInCashDrawer)
             : this(pPrinter, pTicketTitle, pTotalAmountInCashDrawer, 0.0m) { }

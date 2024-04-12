@@ -14,13 +14,13 @@ using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
-    class DocumentFinanceDialogPage1 : PagePadPage
+    internal class DocumentFinanceDialogPage1 : PagePadPage
     {
-        private Session _session;
-        private DocumentFinanceDialogPagePad _pagePad;
-        private PosDocumentFinanceDialog _posDocumentFinanceDialog;
-        private cfg_configurationcountry _intialValueConfigurationCountry;
-        private VBox _vbox;
+        private readonly Session _session;
+        private readonly DocumentFinanceDialogPagePad _pagePad;
+        private readonly PosDocumentFinanceDialog _posDocumentFinanceDialog;
+        private readonly cfg_configurationcountry _intialValueConfigurationCountry;
+        private readonly VBox _vbox;
         private TreeViewDocumentFinanceArticle _treeViewArticles;
         //UI Object References from other pages
         //Required PagePage1 to be public to be assigned in PosDocumentFinanceDialog InitPages
@@ -48,52 +48,52 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             set { _pagePad5 = value; }
         }
         //UI EntryBox
-        private XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> _entryBoxSelectDocumentFinanceType;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> _entryBoxSelectDocumentFinanceType;
         public XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> EntryBoxSelectDocumentFinanceType
         {
             get { return _entryBoxSelectDocumentFinanceType; }
         }
-        private XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition> _entryBoxSelectConfigurationPaymentCondition;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition> _entryBoxSelectConfigurationPaymentCondition;
         public XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition> EntryBoxSelectConfigurationPaymentCondition
         {
             get { return _entryBoxSelectConfigurationPaymentCondition; }
         }
-        private XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> _entryBoxSelectConfigurationPaymentMethod;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> _entryBoxSelectConfigurationPaymentMethod;
         public XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> EntryBoxSelectConfigurationPaymentMethod
         {
             get { return _entryBoxSelectConfigurationPaymentMethod; }
         }
-        private XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency> _entryBoxSelectConfigurationCurrency;
+        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency> _entryBoxSelectConfigurationCurrency;
         public XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency> EntryBoxSelectConfigurationCurrency
         {
             get { return _entryBoxSelectConfigurationCurrency; }
         }
-        private XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectSourceDocumentFinance;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectSourceDocumentFinance;
         public XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> EntryBoxSelectSourceDocumentFinance
         {
             get { return _entryBoxSelectSourceDocumentFinance; }
         }
-        private XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectCopyDocumentFinance;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectCopyDocumentFinance;
         public XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> EntryBoxSelectCopyDocumentFinance
         {
             get { return _entryBoxSelectCopyDocumentFinance; }
         }
-        private EntryBoxValidation _entryBoxDocumentMasterNotes;
+        private readonly EntryBoxValidation _entryBoxDocumentMasterNotes;
         public EntryBoxValidation EntryBoxDocumentMasterNotes
         {
             get { return _entryBoxDocumentMasterNotes; }
         }
-        private EntryBoxValidation _entryBoxReason;
+        private readonly EntryBoxValidation _entryBoxReason;
         public EntryBoxValidation EntryBoxReason
         {
             get { return _entryBoxReason; }
         }
 
         //Private Initial SelectedValues
-        private fin_documentfinancetype _defaultValueDocumentFinanceType;
-        private fin_configurationpaymentcondition _defaultValueConfigurationPaymentCondition;
-        private fin_configurationpaymentmethod _defaultValueConfigurationPaymentMethod;
-        private cfg_configurationcurrency _defaultValueConfigurationCurrency;
+        private readonly fin_documentfinancetype _defaultValueDocumentFinanceType;
+        private readonly fin_configurationpaymentcondition _defaultValueConfigurationPaymentCondition;
+        private readonly fin_configurationpaymentmethod _defaultValueConfigurationPaymentMethod;
+        private readonly cfg_configurationcurrency _defaultValueConfigurationCurrency;
 
         //Constructor
         public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName)
@@ -436,7 +436,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             //Finally 
@@ -448,7 +448,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void _entryBoxSelectSourceDocumentFinance_ClosePopup(object sender, EventArgs e)
+        private void _entryBoxSelectSourceDocumentFinance_ClosePopup(object sender, EventArgs e)
         {
             XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> selectRecordValidation = (XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster>)sender;
 
@@ -507,7 +507,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -570,7 +570,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Hide Cancelled and Invoiced Documents from Source
             string filterBase = "(Disabled IS NULL OR Disabled  <> 1) AND (DocumentStatusStatus <> 'A' AND DocumentStatusStatus <> 'F') {0}";
             string filterDocs = string.Empty;
-            string filter = string.Empty;
             Guid[] listDocumentTypes = FrameworkUtils.GetDocumentTypeValidSourceDocuments(_entryBoxSelectDocumentFinanceType.Value.Oid);
 
             //Generate Filter Docs from listDocumentTypes Array
@@ -606,8 +605,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Add filterDocs if filterDocs is not Empty
             if (filterDocs != string.Empty) filterDocs = string.Format("AND ({0})", filterDocs);
 
-            filter = string.Format(filterBase, filterDocs);
-            if (debug) _log.Debug(string.Format("GetDocumentFinanceTypeSourceDocumentCriteria.Filter: [{0}]", filter));
+            string filter = string.Format(filterBase, filterDocs);
+            if (debug) _logger.Debug(string.Format("GetDocumentFinanceTypeSourceDocumentCriteria.Filter: [{0}]", filter));
 
             //Generate Final Result Criteria
             CriteriaOperator result = CriteriaOperator.Parse(filter);
@@ -760,8 +759,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 DataRow dataRow;
 
                 //Require same Order as SourceDocument - Line
-                SortingCollection sortCollection = new SortingCollection();
-                sortCollection.Add(new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending));
+                SortingCollection sortCollection = new SortingCollection
+                {
+                    new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending)
+                };
                 sourceDocument.DocumentDetail.Sorting = sortCollection;
                 //Star Loop
                 foreach (var item in addToTree)
@@ -801,7 +802,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             finally
             {

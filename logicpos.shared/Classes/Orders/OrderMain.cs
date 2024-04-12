@@ -15,7 +15,7 @@ namespace logicpos.shared.Classes.Orders
     public class OrderMain
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Public Properties
         private int _currentTicketId;
@@ -166,8 +166,6 @@ namespace logicpos.shared.Classes.Orders
             fin_documentordermain xOrderMain;
             Session _sessionXpo = pSession;
             bool isInUOW = (_sessionXpo.GetType() == typeof(UnitOfWork));
-            //Result
-            fin_documentorderticket xOrderTicket = null;
 
             //Get current Working Order from SessionApp
             OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
@@ -200,7 +198,6 @@ namespace logicpos.shared.Classes.Orders
             _persistentOid = GetOpenTableFieldValueGuid(_table.Oid, "Oid");
             _orderStatus = (OrderStatus)GetOpenTableFieldValue(_table.Oid, "OrderStatus");
             _updatedAt = FrameworkUtils.CurrentDateTimeAtomic();
-            Guid orderTicketOid = Guid.Empty;
             //Insert
             if (_persistentOid == Guid.Empty)
             {
@@ -235,11 +232,12 @@ namespace logicpos.shared.Classes.Orders
             //if (pTicketDrecrease)
             //{
             //var sql = string.Format(@"SELECT * FROM fin_documentorderticket WHERE TicketId = '{0}' AND OrderMain = '{1}';", currentOrderMain.CurrentTicketId, currentOrderMain.PersistentOid);
-            //_log.Debug(string.Format("sql: [{0}]", sql));
+            //_logger.Debug(string.Format("sql: [{0}]", sql));
             string sql = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);
-            //_log.Debug(string.Format("sql: [{0}]", sql));
-            orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql);
-            xOrderTicket = (fin_documentorderticket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
+            //_logger.Debug(string.Format("sql: [{0}]", sql));
+            Guid orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql);
+            //Result
+            fin_documentorderticket xOrderTicket = (fin_documentorderticket)datalayer.App.GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
 
             //xOrderTicket = (fin_documentorderticket)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
             if (xOrderTicket != null)
@@ -274,16 +272,14 @@ namespace logicpos.shared.Classes.Orders
             fin_documentorderdetail xOrderDetailLine;
             fin_article xArticle;
             uint itemOrd = 0;
-            decimal priceTax = 0;
-
             foreach (OrderDetailLine line in currentOrderTicket.OrderDetails.Lines)
             {
                 //Use Order in print tickets etc
                 itemOrd++;
                 xArticle = (fin_article)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_article), line.ArticleOid);
                 //Get PriceTax from TaxSellType
-                priceTax = (taxSellType == TaxSellType.Normal) ? xArticle.VatOnTable.Value : xArticle.VatDirectSelling.Value;
-				//Edit/cancel orders lindote 10/07/2020
+                decimal priceTax = (taxSellType == TaxSellType.Normal) ? xArticle.VatOnTable.Value : xArticle.VatDirectSelling.Value;
+                //Edit/cancel orders lindote 10/07/2020
                 //Get order ticket Oid from DB
                 string sql3 = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);                
                 orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql3);
@@ -437,8 +433,10 @@ namespace logicpos.shared.Classes.Orders
             if (!pTicketDrecrease)
             {
                 _currentTicketId += 1;
-                currentOrderMain.OrderTickets = new Dictionary<int, OrderTicket>();
-                currentOrderMain.OrderTickets.Add(currentOrderMain.CurrentTicketId, new OrderTicket(this, _table.PriceType));
+                currentOrderMain.OrderTickets = new Dictionary<int, OrderTicket>
+                {
+                    { currentOrderMain.CurrentTicketId, new OrderTicket(this, _table.PriceType) }
+                };
             }
 
 
@@ -448,8 +446,8 @@ namespace logicpos.shared.Classes.Orders
             return xOrderTicket;
 
             //Debug
-            //_log.Debug(string.Format("FinishOrder(): xOrderMain.Oid [{0}]", xOrderMain.Oid));
-            //_log.Debug(string.Format("FinishOrder(): _table.OrderMainId [{0}], _currentTicketId [{1}], _table.Name [{2}]", _table.OrderMainId, _currentTicketId, _table.Name));
+            //_logger.Debug(string.Format("FinishOrder(): xOrderMain.Oid [{0}]", xOrderMain.Oid));
+            //_logger.Debug(string.Format("FinishOrder(): _table.OrderMainId [{0}], _currentTicketId [{1}], _table.Name [{2}]", _table.OrderMainId, _currentTicketId, _table.Name));
         }
 
         /// <summary>
@@ -498,7 +496,7 @@ namespace logicpos.shared.Classes.Orders
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             /* METHOD 3 : When we Change table it dont Update GlobalDiscounts
@@ -586,7 +584,7 @@ namespace logicpos.shared.Classes.Orders
             }
             catch (Exception ex)
             {
-              _log.Error(ex.Message, ex);
+              _logger.Error(ex.Message, ex);
             }
             */
 
@@ -631,7 +629,7 @@ namespace logicpos.shared.Classes.Orders
                     _globalTotalDiscount += line.TotalDiscount;
                     _globalTotalTax += line.TotalTax;
                     _globalTotalFinal += line.TotalFinal;
-                    if (debug) _log.Debug(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", line.Article.Oid, line.Designation, line.Price, line.Quantity, line.Discount, line.Vat));
+                    if (debug) _logger.Debug(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", line.Article.Oid, line.Designation, line.Price, line.Quantity, line.Discount, line.Vat));
                   }
                   _globalLastUser = ticket.UpdatedBy;
                   _globalLastTerminal = ticket.UpdatedWhere;
@@ -666,14 +664,14 @@ namespace logicpos.shared.Classes.Orders
               currentTable.Save();
 
               //Debug
-              //_log.Debug(string.Format("GetGlobalOrderSummary(): _table.Id:[{0}], _table.Name:[{1}]", _table.Id, _table.Name));
-              //_log.Debug(string.Format("GetGlobalOrderSummary(): _globalTotalGross [{0}]", _globalTotalGross));
-              //_log.Debug(string.Format("GetGlobalOrderSummary(): _globalTotalTax [{0}]", _globalTotalTax));
-              //_log.Debug(string.Format("GetGlobalOrderSummary(): _globalTotalDiscount [{0}]", _globalTotalDiscount));
-              //_log.Debug(string.Format("GetGlobalOrderSummary(): _globalTotalFinal [{0}]", _globalTotalFinal));
-              //_log.Debug(string.Format("GetGlobalOrderSummary(): _globalNumOfTickets [{0}]", _globalNumOfTickets));
-              //if (_globalLastUser != null) _log.Debug(string.Format("GetGlobalOrderSummary(): _globalLastUser.Name [{0}]", _globalLastUser.Name));
-              //if (_globalLastTerminal != null) _log.Debug(string.Format("GetGlobalOrderSummary(): _globalLastTerminal.Designation [{0}]", _globalLastTerminal.Designation));
+              //_logger.Debug(string.Format("GetGlobalOrderSummary(): _table.Id:[{0}], _table.Name:[{1}]", _table.Id, _table.Name));
+              //_logger.Debug(string.Format("GetGlobalOrderSummary(): _globalTotalGross [{0}]", _globalTotalGross));
+              //_logger.Debug(string.Format("GetGlobalOrderSummary(): _globalTotalTax [{0}]", _globalTotalTax));
+              //_logger.Debug(string.Format("GetGlobalOrderSummary(): _globalTotalDiscount [{0}]", _globalTotalDiscount));
+              //_logger.Debug(string.Format("GetGlobalOrderSummary(): _globalTotalFinal [{0}]", _globalTotalFinal));
+              //_logger.Debug(string.Format("GetGlobalOrderSummary(): _globalNumOfTickets [{0}]", _globalNumOfTickets));
+              //if (_globalLastUser != null) _logger.Debug(string.Format("GetGlobalOrderSummary(): _globalLastUser.Name [{0}]", _globalLastUser.Name));
+              //if (_globalLastTerminal != null) _logger.Debug(string.Format("GetGlobalOrderSummary(): _globalLastTerminal.Designation [{0}]", _globalLastTerminal.Designation));
             }
             */
         }
@@ -686,7 +684,7 @@ namespace logicpos.shared.Classes.Orders
             iResult = (oResult != null) ? Convert.ToInt16(oResult) : -1;
 
             //Debug
-            //_log.Debug(string.Format("GetOpenTableFieldValue(): field:[{0}], result:[{1}], sql:[{2}]", pField, iResult, sql));
+            //_logger.Debug(string.Format("GetOpenTableFieldValue(): field:[{0}], result:[{1}], sql:[{2}]", pField, iResult, sql));
 
             return iResult;
         }
@@ -699,7 +697,7 @@ namespace logicpos.shared.Classes.Orders
             iResult = (oResult != null) ? new Guid(Convert.ToString(oResult)) : Guid.Empty;
 
             //Debug
-            //_log.Debug(string.Format("GetOpenTableFieldValueGuid(): field:[{0}], result:[{1}], sql:[{2}]", pField, iResult, sql));
+            //_logger.Debug(string.Format("GetOpenTableFieldValueGuid(): field:[{0}], result:[{1}], sql:[{2}]", pField, iResult, sql));
 
             return iResult;
         }
@@ -716,8 +714,10 @@ namespace logicpos.shared.Classes.Orders
             _globalTotalTax = 0;
             _globalTotalFinal = 0;
             _globalTotalTickets = 0;
-            _orderTickets = new Dictionary<int, OrderTicket>();
-            _orderTickets.Add(_currentTicketId, new OrderTicket(this, _table.PriceType));
+            _orderTickets = new Dictionary<int, OrderTicket>
+            {
+                { _currentTicketId, new OrderTicket(this, _table.PriceType) }
+            };
             GlobalFramework.SessionApp.Write();
         }
 
@@ -752,7 +752,7 @@ namespace logicpos.shared.Classes.Orders
         /// <param name="session"></param>
         public void CheckForDuplicatedArticleInArticleBag(Session session)
         {
-            _log.Debug("OrderMain.CheckForDuplicatedArticleInArticleBag(Session session)");
+            _logger.Debug("OrderMain.CheckForDuplicatedArticleInArticleBag(Session session)");
 
             Session _sessionXpo = session;
             fin_documentordermain xOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);

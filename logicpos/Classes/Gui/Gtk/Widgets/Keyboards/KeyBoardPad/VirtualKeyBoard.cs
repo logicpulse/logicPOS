@@ -11,10 +11,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public class VirtualKeyBoard
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Public Properties
-        List<List<VirtualKey>> _internalKeyBoard = new List<List<VirtualKey>>();
+        private List<List<VirtualKey>> _internalKeyBoard = new List<List<VirtualKey>>();
         public List<List<VirtualKey>> KeyBoard
         {
             get { return (_internalKeyBoard); }
@@ -105,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(string.Format("AddKey(): {0}", ex.Message), ex);
+                _logger.Error(string.Format("AddKey(): {0}", ex.Message), ex);
             }
 
             return (result);

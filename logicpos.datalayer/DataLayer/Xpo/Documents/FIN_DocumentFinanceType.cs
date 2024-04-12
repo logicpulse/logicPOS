@@ -17,14 +17,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinancetype), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -32,7 +32,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -40,7 +40,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fAcronym;
+        private string fAcronym;
         [Size(4)]
         public string Acronym
         {
@@ -48,21 +48,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Acronym", ref fAcronym, value); }
         }
 
-        Int32 fAcronymLastSerie;
+        private Int32 fAcronymLastSerie;
         public Int32 AcronymLastSerie
         {
             get { return fAcronymLastSerie; }
             set { SetPropertyValue<Int32>("AcronymLastSerie", ref fAcronymLastSerie, value); }
         }
 
-        string fResourceString;
+        private string fResourceString;
         public string ResourceString
         {
             get { return fResourceString; }
             set { SetPropertyValue<string>("ResourceString", ref fResourceString, value); }
         }
 
-        string fResourceStringReport;
+        private string fResourceStringReport;
         public string ResourceStringReport
         {
             get { return fResourceStringReport; }
@@ -70,21 +70,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Default Value when create new DocumentMaster
-        Boolean fPayed;
+        private Boolean fPayed;
         public Boolean Payed
         {
             get { return fPayed; }
             set { SetPropertyValue<Boolean>("Payed", ref fPayed, value); }
         }
 
-        Boolean fCredit;
+        private Boolean fCredit;
         public Boolean Credit
         {
             get { return fCredit; }
             set { SetPropertyValue<Boolean>("Credit", ref fCredit, value); }
         }
 
-        Int32 fCreditDebit;
+        private Int32 fCreditDebit;
         public Int32 CreditDebit
         {
             get { return fCreditDebit; }
@@ -92,35 +92,35 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Number of Copies to Print, ex 2, Generate Original, Duplicate, Note: this is not the number of copies to print in document
-        Int32 fPrintCopies;
+        private Int32 fPrintCopies;
         public Int32 PrintCopies
         {
             get { return fPrintCopies; }
             set { SetPropertyValue<Int32>("PrintCopies", ref fPrintCopies, value); }
         }
 
-        Boolean fPrintRequestMotive;
+        private Boolean fPrintRequestMotive;
         public Boolean PrintRequestMotive
         {
             get { return fPrintRequestMotive; }
             set { SetPropertyValue<Boolean>("PrintRequestMotive", ref fPrintRequestMotive, value); }
         }
 
-        Boolean fPrintRequestConfirmation;
+        private Boolean fPrintRequestConfirmation;
         public Boolean PrintRequestConfirmation
         {
             get { return fPrintRequestConfirmation; }
             set { SetPropertyValue<Boolean>("PrintRequestConfirmation", ref fPrintRequestConfirmation, value); }
         }
 
-        Boolean fPrintOpenDrawer;
+        private Boolean fPrintOpenDrawer;
         public Boolean PrintOpenDrawer
         {
             get { return fPrintOpenDrawer; }
             set { SetPropertyValue<Boolean>("PrintOpenDrawer", ref fPrintOpenDrawer, value); }
         }
 
-        Boolean fWayBill;
+        private Boolean fWayBill;
         public Boolean WayBill
         {
             get { return fWayBill; }
@@ -128,7 +128,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Valid AT WebService Document
-        Boolean fWsAtDocument;
+        private Boolean fWsAtDocument;
         public Boolean WsAtDocument
         {
             get { return fWsAtDocument; }
@@ -136,7 +136,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //SAF-T PT:Is a SAF-T PT Audit Financial Document
-        Boolean fSaftAuditFile;
+        private Boolean fSaftAuditFile;
         public Boolean SaftAuditFile
         {
             get { return fSaftAuditFile; }
@@ -144,14 +144,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //SAF-T PT: SaftDocumentType: SalesInvoices, WorkingDocuments or MovementOfGoods
-        SaftDocumentType fSaftDocumentType;
+        private SaftDocumentType fSaftDocumentType;
         public SaftDocumentType SaftDocumentType
         {
             get { return fSaftDocumentType; }
             set { SetPropertyValue<SaftDocumentType>("SaftDocumentType", ref fSaftDocumentType, value); }
         }
 
-        ProcessArticleStockMode fStockMode;
+        private ProcessArticleStockMode fStockMode;
         public ProcessArticleStockMode StockMode
         {
             get { return fStockMode; }
@@ -159,7 +159,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many ConfigurationPlaceTerminal
-        sys_configurationprinters fPrinter;
+        private sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesDocumentFinanceType")]
         public sys_configurationprinters Printer
         {
@@ -168,7 +168,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many ConfigurationPrintersTemplates
-        sys_configurationprinterstemplates fTemplate;
+        private sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesDocumentFinanceType")]
         public sys_configurationprinterstemplates Template
         {

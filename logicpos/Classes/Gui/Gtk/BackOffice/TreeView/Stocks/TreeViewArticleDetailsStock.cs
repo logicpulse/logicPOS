@@ -15,10 +15,10 @@ using logicpos.financial.library.Classes.Stocks;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-	//Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
-    class TreeViewArticleDetailsStock : GenericTreeViewXPO
+    //Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
+    internal class TreeViewArticleDetailsStock : GenericTreeViewXPO
     {
-        XPCollection xpoCollection;
+        private readonly XPCollection xpoCollection;
         //Public Parametless Constructor Required by Generics
         public TreeViewArticleDetailsStock() { }
 
@@ -54,41 +54,37 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"), MinWidth = 100 });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Accounting")
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                Query = "SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;",
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock"),
-                MinWidth = 100,
-                //Alignment = 1.0F,
-                FormatProvider = new FormatterDecimal(),
-                CellRenderer = StockCellRenderer
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("Accounting")
+                {
+                    Query = "SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;",
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock"),
+                    MinWidth = 100,
+                    //Alignment = 1.0F,
+                    FormatProvider = new FormatterDecimal(),
+                    CellRenderer = StockCellRenderer
 
-            });
-
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("MinimumStock")
-            {
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock"),
-                MinWidth = 100,
-                //Alignment = 1.0F,
-                FormatProvider = new FormatterDecimal(),
-                CellRenderer = MinStockCellRender
-                //CellRenderer = new CellRendererText()
-                //{
-                //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
-                //    Alignment = Pango.Alignment.Right,
-                //    Xalign = 1.0F
-                //}
-            });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("UnitMeasure") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure"), ChildName = "Designation", Expand = true });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
+                },
+                new GenericTreeViewColumnProperty("MinimumStock")
+                {
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock"),
+                    MinWidth = 100,
+                    //Alignment = 1.0F,
+                    FormatProvider = new FormatterDecimal(),
+                    CellRenderer = MinStockCellRender
+                    //CellRenderer = new CellRendererText()
+                    //{
+                    //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
+                    //    Alignment = Pango.Alignment.Right,
+                    //    Xalign = 1.0F
+                    //}
+                },
+                new GenericTreeViewColumnProperty("UnitMeasure") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure"), ChildName = "Designation", Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
 
 
             //Configure Criteria/XPCollection/Model
@@ -97,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             CriteriaOperator criteria = pXpoCriteria;
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {
@@ -163,7 +159,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //}
                     //catch (Exception ex)
                     //{
-                    //    _log.Error("Error updating stock quantity" + ex.Message, ex);
+                    //    _logger.Error("Error updating stock quantity" + ex.Message, ex);
                     //    return;
                     //}
 

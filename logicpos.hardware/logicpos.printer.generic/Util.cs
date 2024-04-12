@@ -31,7 +31,7 @@ namespace logicpos.printer.generic
     public static class Util
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
         //private static string _financeFinalConsumerFiscalNumber = "999999990";//<<< SettingsApp.FinanceFinalConsumerFiscalNumber | Cant Add Framework, circular dependency
@@ -165,7 +165,7 @@ namespace logicpos.printer.generic
             printer.Cut(true);
         }
 
-        static void CashRegister(ref ThermalPrinter printer, string item, int price)
+        private static void CashRegister(ref ThermalPrinter printer, string item, int price)
         {
             printer.Reset();
             printer.Indent(0);
@@ -428,7 +428,7 @@ namespace logicpos.printer.generic
                                 }
                                 catch (Exception ex)
                                 {
-                                    _log.Error(ex.Message, ex);
+                                    _logger.Error(ex.Message, ex);
                                 }
                             }
                             //printText += (new String(' ', pObject.Col - 1)) + pObject.Text;
@@ -714,8 +714,6 @@ namespace logicpos.printer.generic
         {
 
             List<PrintObject> printObjects = new List<PrintObject>();
-            string xml = string.Empty;
-
             XmlNodeList controls = appconfigdoc.GetElementsByTagName("Control");
 
             foreach (XmlNode dev in controls)
@@ -848,12 +846,7 @@ namespace logicpos.printer.generic
         public static List<PrintObject> GetObjectsFromTemplate(PrintObject prt, XmlDocument appconfigdoc, DataTable dataLoop, DataTable dataStatic)
         {
             List<PrintObject> printObjects = new List<PrintObject>();
-            string xml = string.Empty;
-
-            int dataCount = 0;
-
-            dataCount = dataLoop.Rows.Count - 1;
-
+            int dataCount = dataLoop.Rows.Count - 1;
             XmlNodeList controls = appconfigdoc.GetElementsByTagName("Control");
 
             foreach (XmlNode dev in controls)

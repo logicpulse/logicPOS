@@ -12,17 +12,17 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogUserDetail : BOBaseDialog
+    internal class DialogUserDetail : BOBaseDialog
     {
         //Private UI References
         private CheckButton _checkButtonPasswordReset;
         //Reference to UserDetail
-        private sys_userdetail _userDetail;
+        private readonly sys_userdetail _userDetail;
         //Old Values before Changes
         private Guid _currentUserPermissionProfileGuid;
-        private bool _currentUserPasswordReset;
-        private bool _currentUserDisabled;
-        private bool _isLoggedUser = false;
+        private readonly bool _currentUserPasswordReset;
+        private readonly bool _currentUserDisabled;
+        private readonly bool _isLoggedUser = false;
 
         public DialogUserDetail(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
@@ -219,7 +219,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -241,8 +241,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Detected Change in Logged User Profile
             if (_dialogMode == DialogMode.Update && _isLoggedUser && _currentUserPermissionProfileGuid != _userDetail.Profile.Oid)
             {
-                _log.Debug(string.Format("Detected Change Logged User Profile: [{0}]", _userDetail.Profile.Designation));
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_profile_changed_request_logoff"));
+                _logger.Debug(string.Format("Detected Change Logged User Profile: [{0}]", _userDetail.Profile.Designation));
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_profile_changed_request_loggeroff"));
             }
 
             //Detected Change in User Disabled: If user was Disabled, Force Logout User
@@ -268,7 +268,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

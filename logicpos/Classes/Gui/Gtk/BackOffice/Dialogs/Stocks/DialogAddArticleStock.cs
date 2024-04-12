@@ -13,6 +13,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.Extensions;
 using logicpos.financial.library.Classes.Stocks;
 using System;
 using System.Collections;
@@ -22,42 +23,41 @@ using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-
-    class DialogAddArticleStock : BOBaseDialog
+    internal class DialogAddArticleStock : BOBaseDialog
     {
         //UI Components Dialog
         private VBox _vbox;
-        TouchButtonIconWithText _buttonOk;
-        TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
         //UI Components Form
         private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectSupplier;
         private EntryBoxValidationDatePickerDialog _entryBoxDocumentDate;
         private EntryBoxValidation _entryBoxDocumentNumber;
-        private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle;
-        private EntryBoxValidation _entryBoxQuantity;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle;
+        private readonly EntryBoxValidation _entryBoxQuantity;
         private EntryBoxValidation _entryBoxNotes;
         private HSeparator _separator;
         //InitialValues
-        private erp_customer _initialSupplier = null;
+        private readonly erp_customer _initialSupplier = null;
         private DateTime _initialDocumentDate;
-        private string _initialDocumentNumber;
+        private readonly string _initialDocumentNumber;
         //MultiArticles
         private ICollection<VBox> _articleEntryWidgetCollection;
         //private ICollection<fin_article> _articleCollection;
         private Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>> _articleCollection;
         public ICollection _dropdownTextCollection;
         private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle1;
-        EntryBoxValidation _entryBoxSerialNumber1;
-        EntryBoxValidation _entryBoxPrice1;
+        private EntryBoxValidation _entryBoxSerialNumber1;
+        private EntryBoxValidation _entryBoxPrice1;
         private int _totalCompositeEntrys = 0;
-        private fin_article _article = null;
+        private readonly fin_article _article = null;
         private fin_article _previousValue = null;
-        VBox _vboxArticles;
-        ScrolledWindow _scrolledWindowView;
-        Viewport _viewport;
-        ICollection _collectionSavedArticleSerialNumber;
-        Dictionary<EntryValidation, List<fin_articleserialnumber>> _entrySerialNumberCacheList;
-        Dictionary<EntryValidation, string> _serialNumbersInCache;
+        private VBox _vboxArticles;
+        private ScrolledWindow _scrolledWindowView;
+        private Viewport _viewport;
+        private ICollection _collectionSavedArticleSerialNumber;
+        private Dictionary<EntryValidation, List<fin_articleserialnumber>> _entrySerialNumberCacheList;
+        private Dictionary<EntryValidation, string> _serialNumbersInCache;
 
         //Public Methods
         public erp_customer Customer
@@ -118,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Load();
                 //Init VBOX
                 _vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-                _vbox.ModifyBase(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
+                _vbox.ModifyBase(StateType.Normal, Color.White.ToGdkColor());
                 _articleEntryWidgetCollection = new List<VBox>();
                 //_articleCollection = new List<fin_article>();
                 _articleCollection = new Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>>();
@@ -141,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
 
                 //DocumentNumber
-                Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+                Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                 string _fileIconListFinanceDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
                 HBox hBoxDocument = new HBox(false, 0);
                 _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false, true);
@@ -165,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _viewport = new Viewport() { ShadowType = ShadowType.None };
 
 
-                _viewport.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _viewport.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
                 _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, SettingsApp.RegexAlfaNumericArticleCode, SettingsApp.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
@@ -204,7 +204,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Unique Articles (Have multi S/N)
                 CheckButton _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unique_articles"));
                 _checkButtonUniqueArticles.Sensitive = false;
-                _checkButtonUniqueArticles.Toggled += _checkButtonUniqueArticles_Toggled;
+                _checkButtonUniqueArticles.Toggled += CheckButtonUniqueArticles_Toggled;
 
                 if (defaultWareHouse == null)
                 {
@@ -228,7 +228,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Events Composition
                 _entryBoxSelectArticle1.ClosePopup += _entryBoxSelectArticle_ClosePopup;
-                _entryBoxSelectArticle1.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+                _entryBoxSelectArticle1.CleanArticleEvent += EntryBoxSelectArticle_CleanArticleEvent;
                 _entryBoxSelectArticle1.AddNewEntryEvent += NewBox_AddNewEntryEvent;
                 _entryBoxSelectArticle1.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
 
@@ -278,28 +278,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _vbox.PackStart(_entryBoxNotes, false, false, 0);
                 _vbox.PackStart(_vboxArticles, false, false, 0);
 
-                _vbox.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
-                _vbox.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _vbox.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
+                _vbox.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 //_vbox.PackStart(_entryBoxQuantity, false, false, 0);
 
                 _viewport.Add(_vbox);
                 _scrolledWindowView.Add(_viewport);
 
-                this.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
-                this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                this.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
+                this.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
 
                 //Append Tab
                 _notebook.AppendPage(_scrolledWindowView, new Label("Inserir Artigos"));
-                _notebook.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
-                _notebook.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _notebook.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
+                _notebook.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
-        private void _checkButtonUniqueArticles_Toggled(object sender, EventArgs e)
+        private void CheckButtonUniqueArticles_Toggled(object sender, EventArgs e)
         {
             try
             {
@@ -312,7 +312,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -348,8 +348,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     Dictionary<EntryValidation, List<fin_articleserialnumber>> serialNumberList;
                     if (_articleCollection[selectedArticle].Item2 == null)
                     {
-                        serialNumberList = new Dictionary<EntryValidation, List<fin_articleserialnumber>>();
-                        serialNumberList.Add(entrySerialNumberSelected, SelectedAssocietedArticles);
+                        serialNumberList = new Dictionary<EntryValidation, List<fin_articleserialnumber>>
+                        {
+                            { entrySerialNumberSelected, SelectedAssocietedArticles }
+                        };
                     }
                     else
                     {
@@ -370,7 +372,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error opening Composite article window " + ex.Message);
+                _logger.Error("Error opening Composite article window " + ex.Message);
             }
         }
 
@@ -440,14 +442,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     own_customer.FiscalNumber = GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
                     own_customer.Name = GlobalFramework.PreferenceParameters["COMPANY_NAME"];
                     own_customer.Save();
-                    _log.Debug("Updating own supplier name and fiscal number");
+                    _logger.Debug("Updating own supplier name and fiscal number");
                     //if (supplier == null) { supplier = own_customer; }
                 }          
 
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             try
@@ -456,7 +458,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             try
@@ -465,7 +467,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -480,7 +482,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -624,7 +626,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error selecting new Composite article Entry : " + ex.Message);
+                _logger.Error("Error selecting new Composite article Entry : " + ex.Message);
             }
         }
 
@@ -635,8 +637,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 ListStore store = new ListStore(typeof(string));
                 string sortProp = "Designation";
-                SortingCollection sortCollection = new SortingCollection();
-                sortCollection.Add(new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending));
+                SortingCollection sortCollection = new SortingCollection
+                {
+                    new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending)
+                };
                 if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
                 _dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
@@ -659,7 +663,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error populating dropdown list : " + ex.Message);
+                _logger.Error("Error populating dropdown list : " + ex.Message);
                 return null;
             }
         }
@@ -729,7 +733,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Events
                 NewEntryBoxSelectArticle.ClosePopup += _entryBoxSelectArticle_ClosePopup;
-                NewEntryBoxSelectArticle.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+                NewEntryBoxSelectArticle.CleanArticleEvent += EntryBoxSelectArticle_CleanArticleEvent;
                 NewEntryBoxSelectArticle.AddNewEntryEvent += NewBox_AddNewEntryEvent;
                 NewEntryBoxSelectArticle.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
                 NewEntryBoxSelectArticle.ShowAll();
@@ -776,12 +780,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error Adding new Composite article Entry : " + ex.Message);
+                _logger.Error("Error Adding new Composite article Entry : " + ex.Message);
             }
         }
 
         //Clean article event
-        private void _entryBoxSelectArticle_CleanArticleEvent(object sender, EventArgs e)
+        private void EntryBoxSelectArticle_CleanArticleEvent(object sender, EventArgs e)
         {
             try
             {
@@ -869,7 +873,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -898,7 +902,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -959,7 +963,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error updating quantity from article : " + ex.Message);
+                _logger.Error("Error updating quantity from article : " + ex.Message);
                 ValidateDialog();
             }
         }
@@ -985,8 +989,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Check if exists
                 //Get all article serial Number to check if already exists 
-                SortingCollection sortCollection = new SortingCollection();
-                sortCollection.Add(new SortProperty("SerialNumber", DevExpress.Xpo.DB.SortingDirection.Ascending));
+                SortingCollection sortCollection = new SortingCollection
+                {
+                    new SortProperty("SerialNumber", DevExpress.Xpo.DB.SortingDirection.Ascending)
+                };
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND SerialNumber == '{0}'", entrySerialNumber.Text));
                 _collectionSavedArticleSerialNumber = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_articleserialnumber)), criteria, sortCollection, int.MaxValue, false, true);
 
@@ -1008,8 +1014,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     
                     if (_articleCollection[selectedArticle].Item2 == null)
                     {
-                        _entrySerialNumberCacheList = new Dictionary<EntryValidation, List<fin_articleserialnumber>>();
-                        _entrySerialNumberCacheList.Add(entrySerialNumber, null);
+                        _entrySerialNumberCacheList = new Dictionary<EntryValidation, List<fin_articleserialnumber>>
+                        {
+                            { entrySerialNumber, null }
+                        };
                     }
                     else
                     {
@@ -1054,7 +1062,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error updating serialNumber from article : " + ex.Message);
+                _logger.Error("Error updating serialNumber from article : " + ex.Message);
                 ValidateDialog();
             }
         }
@@ -1079,7 +1087,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error updating Purchased Price from article : " + ex.Message);
+                _logger.Error("Error updating Purchased Price from article : " + ex.Message);
                 ValidateDialog();
             }
         }
@@ -1112,7 +1120,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error change warehouse Location model : " + ex.Message);
+                _logger.Error("Error change warehouse Location model : " + ex.Message);
             }
         }
 
@@ -1144,7 +1152,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error Updating WarehouseLocation Entry : " + ex.Message);
+                _logger.Error("Error Updating WarehouseLocation Entry : " + ex.Message);
             }
         }
 
@@ -1158,7 +1166,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         /// <returns>PosArticleStockResponse</returns>
         public static ProcessArticleStockParameter GetProcessArticleStockParameter(DialogAddArticleStock pDialog)
         {
-            ProcessArticleStockParameter result = null;
 
             //Convert Entry Serial Numbers to string
             Dictionary<string, List<fin_articleserialnumber>> serialNumbers = new Dictionary<string, List<fin_articleserialnumber>>();
@@ -1176,15 +1183,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 var tuple = new Tuple<decimal, Dictionary<string, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>(articles.Value.Item1, serialNumbers, articles.Value.Item3, articles.Value.Item4);
                 ProcessArticleCollection.Add(articles.Key, tuple);
             }
-            result = new ProcessArticleStockParameter(
-                  pDialog.Customer,
-                  pDialog.DocumentDate,
-                  pDialog.DocumentNumber,
-                  ProcessArticleCollection,
-                  pDialog.Quantity,
-                  pDialog.Notes,
-                  pDialog.AttachedFile
-              );
+            ProcessArticleStockParameter result = new ProcessArticleStockParameter(
+      pDialog.Customer,
+      pDialog.DocumentDate,
+      pDialog.DocumentNumber,
+      ProcessArticleCollection,
+      pDialog.Quantity,
+      pDialog.Notes,
+      pDialog.AttachedFile
+  );
             //Save to Session
             pDialog.Save();
             pDialog.Destroy();

@@ -19,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     //T1: DataSource (XPCollection|DataTable)
     //T2: DataSourceRow (XPGuidObject|DataRow)
     //T3: GenericTreeType
-    class PosSelectRecordDialog<T1, T2, T3> : PosBaseDialog
+    internal class PosSelectRecordDialog<T1, T2, T3> : PosBaseDialog
         //Generic Types Constrained to Classes that Implement IGenericTreeView
         //where T : IGenericTreeView, new()
       where T3 : GenericTreeView<T1, T2>, new()
@@ -87,7 +87,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -125,7 +125,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -189,17 +189,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonOk.Sensitive = false;
 
             //ActionArea Buttons
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            //actionAreaButtons.Add(new ActionAreaButton(_buttonMore, _responseTypeLoadMoreDocuments));
-            //actionAreaButtons.Add(new ActionAreaButton(_buttonFilter, _responseTypeFilter));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                //actionAreaButtons.Add(new ActionAreaButton(_buttonMore, _responseTypeLoadMoreDocuments));
+                //actionAreaButtons.Add(new ActionAreaButton(_buttonFilter, _responseTypeFilter));
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
             return actionAreaButtons;
         }
 
-        void _genericTreeView_CursorChanged(object sender, EventArgs e)
+        private void _genericTreeView_CursorChanged(object sender, EventArgs e)
         {
-            if (CursorChanged != null) CursorChanged(sender, e);
+            CursorChanged?.Invoke(sender, e);
 
             //If button more clicked
             if (_genericTreeView.Navigator.TreeViewSearch.Button_MoreResponse())
@@ -229,12 +231,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //    GenericTreeView.Refresh();
         //}
 
-        void _genericTreeView_CheckBoxToggled(object sender, EventArgs e)
+        private void _genericTreeView_CheckBoxToggled(object sender, EventArgs e)
         {
-            if (CheckBoxToggled != null) CheckBoxToggled(sender, e);
+            CheckBoxToggled?.Invoke(sender, e);
         }
 
-        void PosSelectRecordDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void PosSelectRecordDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             //Required a valid _buttonOk Refrence to Work, Some Dialogs dont Have _buttonOk, Have Other Actions
             if (args.Event.Key == Gdk.Key.Return && (_buttonOk != null && _buttonOk.Sensitive))
@@ -247,7 +249,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Static Helper to Get a DataTable of CheckBoxs from a Query
 
         //Log4Net
-        private static log4net.ILog _logStatic = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _loggerStatic = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //Class Members Related to This Gelper Method
         private static PosSelectRecordDialog<T1, T2, T3> _dialogSelectRecord;
         private static DataTable _resultDataTable;
@@ -294,7 +296,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 else if (_dialogSelectRecord.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
                 {
-                    actionAreaButtonOk.Button.Sensitive = (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0) ? true : false;
+                    actionAreaButtonOk.Button.Sensitive = (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0);
 
                     //This Code may be Usefull in a near future to Update TitleBar
                     //Get Indexes
@@ -369,13 +371,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (itemChecked)
                 {
-                    //_logStatic.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, new Guid(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")].ToString())));
+                    //_loggerStatic.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, new Guid(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")].ToString())));
                     _resultDataTable.Rows.Add(dataTable.Rows[itemIndex].ItemArray);
                 }
             }
             catch (Exception ex)
             {
-                _logStatic.Error(ex.Message, ex);
+                _loggerStatic.Error(ex.Message, ex);
             }
             return false;
         }

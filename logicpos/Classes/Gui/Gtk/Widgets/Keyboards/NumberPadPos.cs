@@ -9,7 +9,7 @@ using logicpos.App;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class NumberPadPos : NumberPad
+    internal class NumberPadPos : NumberPad
     {
         public NumberPadPos(String name, Color colorButton, Color colorRightButton, String fontButton, String fontRightButton, byte buttonWidth, byte rightButtonWidth, byte buttonHeight, byte padding = 0)
             : base(name, colorButton, fontButton, buttonWidth, buttonHeight, padding)

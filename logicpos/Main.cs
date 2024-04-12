@@ -15,16 +15,16 @@ using System.Threading;
 
 namespace logicpos
 {
-    class MainApp
+    internal class MainApp
     {
-        private static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _loggerger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
        
-        private static bool _forceShowPluginLicenceWithDebugger = false;
+        private static readonly bool _forceShowPluginLicenceWithDebugger = false;
 
         /* IN009203 - Mutex */
-        private static string _appGuid = "bfb677c2-a44a-46f8-93ab-d2d6a54e0b53";
+        private static readonly string _appGuid = "bfb677c2-a44a-46f8-93ab-d2d6a54e0b53";
 
-        private static SingleProgramInstance _singleProgramInstance = new SingleProgramInstance(_appGuid);
+        private static readonly SingleProgramInstance _singleProgramInstance = new SingleProgramInstance(_appGuid);
 
         private static Thread loadingThread;
 
@@ -36,7 +36,7 @@ namespace logicpos
             try
             {
                 // Show current Configuration File
-                _logger.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+                _loggerger.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 
                 /* IN009203 - Mutex block */
                 using (_singleProgramInstance)
@@ -54,7 +54,7 @@ namespace logicpos
                     Theme.ParseTheme(true, false);
 
                     /* Show "loading" */
-                    _logger.Debug("void StartApp() :: Show 'loading'");
+                    _loggerger.Debug("void StartApp() :: Show 'loading'");
                     DialogLoading = Utils.GetThreadDialog(new Window("POS start loading"), true);
                     loadingThread = new Thread(() => DialogLoading.Run());
                     loadingThread.Start();
@@ -88,7 +88,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                _loggerger.Error(ex.Message, ex);
             }
         }
 
@@ -107,7 +107,7 @@ namespace logicpos
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
-                    _logger.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                    _loggerger.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
                     // Init Plugin
                     SettingsApp.InitSoftwareVendorPluginSettings();
                     // Check if all Resources are Embedded
@@ -116,7 +116,7 @@ namespace logicpos
                 else
                 {
                     // Show Loaded Plugin
-                    _logger.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
+                    _loggerger.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
                 }
 
 
@@ -132,7 +132,7 @@ namespace logicpos
                     // Show Loaded Plugin
                     if (GlobalFramework.PluginLicenceManager != null)
                     {
-                        _logger.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                        _loggerger.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
                     }
                 }
 
@@ -142,7 +142,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                _loggerger.Error(ex.Message, ex);
                 loadingThread.Abort();
                 DialogLoading.Destroy();
             }
@@ -159,7 +159,7 @@ namespace logicpos
 
             if (GlobalFramework.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
             {
-                _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
+                _loggerger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
                 // Boot LogicPos after LicenceManager.IntellilockPlugin
                 LicenseRouter licenseRouter = new LicenseRouter();
             }
@@ -167,14 +167,14 @@ namespace logicpos
             {
                 bool dbExists = Utils.checkIfDbExists();
                 // Boot LogicPos without pass in LicenseRouter
-                _logger.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
+                _loggerger.Debug("void StartApp() :: Boot LogicPos without pass in LicenseRouter");
                 /* IN009005: creating a new thread for app start up */
                 System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartFrontOffice));
                 GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.ThreadDialogReadyEvent));
                 thread.Start();
 
                 /* Show "loading" */
-                _logger.Debug("void StartApp() :: Show 'loading'");
+                _loggerger.Debug("void StartApp() :: Show 'loading'");
                 GlobalApp.DialogThreadWork = Utils.GetThreadDialog(new Window("POS start up"), dbExists);
                 GlobalApp.DialogThreadWork.Run();
                 /* IN009005: end */
@@ -189,7 +189,7 @@ namespace logicpos
         /// </summary>
         private static void StartFrontOffice()
         {
-            _logger.Debug("void StartFrontOffice() :: StartApp: AppMode.FrontOffice");
+            _loggerger.Debug("void StartFrontOffice() :: StartApp: AppMode.FrontOffice");
 
             LogicPos logicPos = new LogicPos();
             logicPos.StartApp(AppMode.FrontOffice);
@@ -198,19 +198,21 @@ namespace logicpos
         private static void InitPaths()
         {
             // Init Paths
-            GlobalFramework.Path = new Hashtable();
-            GlobalFramework.Path.Add("assets", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathAssets"]));
-            GlobalFramework.Path.Add("images", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathImages"]));
-            GlobalFramework.Path.Add("keyboards", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathKeyboards"]));
-            GlobalFramework.Path.Add("themes", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathThemes"]));
-            GlobalFramework.Path.Add("sounds", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathSounds"]));
-            GlobalFramework.Path.Add("resources", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathResources"]));
-            GlobalFramework.Path.Add("reports", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathReports"]));
-            GlobalFramework.Path.Add("temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]));
-            GlobalFramework.Path.Add("cache", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCache"]));
-            GlobalFramework.Path.Add("plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]));
-            GlobalFramework.Path.Add("documents", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathDocuments"]));
-            GlobalFramework.Path.Add("certificates", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]));
+            GlobalFramework.Path = new Hashtable
+            {
+                { "assets", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathAssets"]) },
+                { "images", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathImages"]) },
+                { "keyboards", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathKeyboards"]) },
+                { "themes", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathThemes"]) },
+                { "sounds", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathSounds"]) },
+                { "resources", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathResources"]) },
+                { "reports", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathReports"]) },
+                { "temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]) },
+                { "cache", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCache"]) },
+                { "plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]) },
+                { "documents", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathDocuments"]) },
+                { "certificates", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]) }
+            };
             //Create Directories
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
             FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"])));
@@ -235,7 +237,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                _loggerger.Error(ex.Message, ex);
             }
         }
 
@@ -275,7 +277,7 @@ namespace logicpos
                     GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
 
-                _logger.Error(String.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
+                _loggerger.Error(String.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
             }
         }
     }

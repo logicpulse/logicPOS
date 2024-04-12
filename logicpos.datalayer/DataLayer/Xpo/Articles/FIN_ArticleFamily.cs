@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_articlefamily), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -39,7 +39,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fButtonLabel;
+        private string fButtonLabel;
         [Size(35)]
         public string ButtonLabel
         {
@@ -47,14 +47,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonLabel", ref fButtonLabel, value); }
         }
 
-        bool fButtonLabelHide;
+        private bool fButtonLabelHide;
         public bool ButtonLabelHide
         {
             get { return fButtonLabelHide; }
             set { SetPropertyValue<bool>("ButtonLabelHide", ref fButtonLabelHide, value); }
         }
 
-        string fButtonImage;
+        private string fButtonImage;
         [Size(255)]
         public string ButtonImage
         {
@@ -62,7 +62,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonImage", ref fButtonImage, value); }
         }
 
-        string fButtonIcon;
+        private string fButtonIcon;
         [Size(255)]
         public string ButtonIcon
         {
@@ -71,7 +71,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserCommissionGroup One <> Many Family
-        pos_usercommissiongroup fCommissionGroup;
+        private pos_usercommissiongroup fCommissionGroup;
         [Association(@"UserCommissionGroupReferencesFamily")]
         public pos_usercommissiongroup CommissionGroup
         {
@@ -80,7 +80,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //CustomerDiscountGroup One <> Many SubFamily
-        erp_customerdiscountgroup fDiscountGroup;
+        private erp_customerdiscountgroup fDiscountGroup;
         [Association(@"CustomerDiscountGroupReferencesFamily")]
         public erp_customerdiscountgroup DiscountGroup
         {
@@ -89,7 +89,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPrinters One <> Many ArticleFamily
-        sys_configurationprinters fPrinter;
+        private sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesArticleFamily")]
         public sys_configurationprinters Printer
         {
@@ -98,7 +98,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ArticleFamily One <> Many ConfigurationPrintersTemplates
-        sys_configurationprinterstemplates fTemplate;
+        private sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesArticleFamily")]
         public sys_configurationprinterstemplates Template
         {

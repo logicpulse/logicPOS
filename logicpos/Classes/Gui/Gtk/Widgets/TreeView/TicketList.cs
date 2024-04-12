@@ -1,5 +1,4 @@
-﻿using DevExpress.Xpo;
-using Gtk;
+﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -7,7 +6,7 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.resources.Resources.Localization;
+using logicpos.Extensions;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
@@ -19,15 +18,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public partial class TicketList : Box
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings: App
         /* IN008024 */
         //private string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
         //Settings: Colors
-        private Color _colorPosTicketListModeTicketBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosTicketListModeTicketBackground"]);
-        private Color _colorPosTicketListModeOrderMainBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosTicketListModeOrderMainBackground"]);
-        private Color _colorPosTicketListModeEditBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosTicketListModeEditBackground"]);
+        private readonly Color _colorPosTicketListModeTicketBackground = GlobalFramework.Settings["colorPosTicketListModeTicketBackground"].StringToColor();
+        private readonly Color _colorPosTicketListModeOrderMainBackground = GlobalFramework.Settings["colorPosTicketListModeOrderMainBackground"].StringToColor();
+        private readonly Color _colorPosTicketListModeEditBackground = GlobalFramework.Settings["colorPosTicketListModeEditBackground"].StringToColor();
         //SessionApp
         private Guid _currentOrderMainOid;
         private int _currentTicketId;
@@ -79,160 +78,160 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //TicketPad Button References
-        TouchButtonIconWithText _buttonKeyPrev;
+        private TouchButtonIconWithText _buttonKeyPrev;
         public TouchButtonIconWithText ButtonKeyPrev
         {
             set { _buttonKeyPrev = value; _buttonKeyPrev.Clicked += _buttonKeyPrev_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyNext;
+        private TouchButtonIconWithText _buttonKeyNext;
         public TouchButtonIconWithText ButtonKeyNext
         {
             set { _buttonKeyNext = value; _buttonKeyNext.Clicked += _buttonKeyNext_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyDelete;
+        private TouchButtonIconWithText _buttonKeyDelete;
         public TouchButtonIconWithText ButtonKeyDelete
         {
             set { _buttonKeyDelete = value; _buttonKeyDelete.Clicked += _buttonKeyDelete_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyChangeQuantity;
+        private TouchButtonIconWithText _buttonKeyChangeQuantity;
         public TouchButtonIconWithText ButtonKeyChangeQuantity
         {
             set { _buttonKeyChangeQuantity = value; _buttonKeyChangeQuantity.Clicked += _buttonKeyChangeQuantity_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyChangePrice;
+        private TouchButtonIconWithText _buttonKeyChangePrice;
         public TouchButtonIconWithText ButtonKeyChangePrice
         {
             set { _buttonKeyChangePrice = value; _buttonKeyChangePrice.Clicked += _buttonKeyChangePrice_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyWeight;
+        private TouchButtonIconWithText _buttonKeyWeight;
         public TouchButtonIconWithText ButtonKeyWeight
         {
             set { _buttonKeyWeight = value; _buttonKeyWeight.Clicked += _buttonKeyWeight_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyGifts;
+        private TouchButtonIconWithText _buttonKeyGifts;
         public TouchButtonIconWithText ButtonKeyGifts
         {
             set { _buttonKeyGifts = value; _buttonKeyGifts.Clicked += _buttonKeyGifts_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyFinishOrder;
+        private TouchButtonIconWithText _buttonKeyFinishOrder;
         public TouchButtonIconWithText ButtonKeyFinishOrder
         {
             set { _buttonKeyFinishOrder = value; _buttonKeyFinishOrder.Clicked += _buttonKeyFinishOrder_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyPayments;
+        private TouchButtonIconWithText _buttonKeyPayments;
         public TouchButtonIconWithText ButtonKeyPayments
         {
             // Shared Event for Payments and SplitAccount
             set { _buttonKeyPayments = value; _buttonKeyPayments.Clicked += _buttonKeyPayments_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeySplitAccount;
+        private TouchButtonIconWithText _buttonKeySplitAccount;
         public TouchButtonIconWithText ButtonKeySplitAccount
         {
             // Shared Event for Payments and SplitAccount
             set { _buttonKeySplitAccount = value; _buttonKeySplitAccount.Clicked += _buttonKeyPayments_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyBarCode;
+        private TouchButtonIconWithText _buttonKeyBarCode;
         public TouchButtonIconWithText ButtonKeyBarCode
         {
             set { _buttonKeyBarCode = value; _buttonKeyBarCode.Clicked += _buttonKeyBarCode_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyCardCode;
+        private TouchButtonIconWithText _buttonKeyCardCode;
         public TouchButtonIconWithText ButtonKeyCardCode
         {
             set { _buttonKeyCardCode = value; _buttonKeyCardCode.Clicked += _buttonKeyCardCode_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyListOrder;
+        private TouchButtonIconWithText _buttonKeyListOrder;
         public TouchButtonIconWithText ButtonKeyListOrder
         {
             set { _buttonKeyListOrder = value; _buttonKeyListOrder.Clicked += _buttonKeyListOrder_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyChangeTable;
+        private TouchButtonIconWithText _buttonKeyChangeTable;
         public TouchButtonIconWithText ButtonKeyChangeTable
         {
             set { _buttonKeyChangeTable = value; _buttonKeyChangeTable.Clicked += _buttonKeyChangeTable_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyListMode;
+        private TouchButtonIconWithText _buttonKeyListMode;
         public TouchButtonIconWithText ButtonKeyListMode
         {
             set { _buttonKeyListMode = value; _buttonKeyListMode.Clicked += _buttonKeyListMode_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyDecrease;
+        private TouchButtonIconWithText _buttonKeyDecrease;
         public TouchButtonIconWithText ButtonKeyDecrease
         {
             set { _buttonKeyDecrease = value; _buttonKeyDecrease.Clicked += _buttonKeyDecrease_Clicked; }
         }
 
-        TouchButtonIconWithText _buttonKeyIncrease;
+        private TouchButtonIconWithText _buttonKeyIncrease;
         public TouchButtonIconWithText ButtonKeyIncrease
         {
             set { _buttonKeyIncrease = value; _buttonKeyIncrease.Clicked += _buttonKeyIncrease_Clicked; }
         }
 
         //Toolbar Button References
-        TouchButtonIconWithText _toolbarApplicationClose;
+        private TouchButtonIconWithText _toolbarApplicationClose;
         public TouchButtonIconWithText ToolbarApplicationClose
         {
             set { _toolbarApplicationClose = value; }
         }
 
-        TouchButtonIconWithText _toolbarLogoutUser;
+        private TouchButtonIconWithText _toolbarLogoutUser;
         public TouchButtonIconWithText ToolbarLogoutUser
         {
             set { _toolbarLogoutUser = value; }
         }
 
-        TouchButtonIconWithText _toolbarShowSystemDialog;
+        private TouchButtonIconWithText _toolbarShowSystemDialog;
         public TouchButtonIconWithText ToolbarShowSystemDialog
         {
             set { _toolbarShowSystemDialog = value; }
         }
 
-        TouchButtonIconWithText _toolbarShowChangeUserDialog;
+        private TouchButtonIconWithText _toolbarShowChangeUserDialog;
         public TouchButtonIconWithText ToolbarShowChangeUserDialog
         {
             set { _toolbarShowChangeUserDialog = value; }
         }
 
-        TouchButtonIconWithText _toolbarBackOffice;
+        private TouchButtonIconWithText _toolbarBackOffice;
         public TouchButtonIconWithText ToolbarBackOffice
         {
             set { _toolbarBackOffice = value; }
         }
 
-        TouchButtonIconWithText _toolbarReports;
+        private TouchButtonIconWithText _toolbarReports;
         public TouchButtonIconWithText ToolbarReports
         {
             set { _toolbarReports = value; }
         }
 
-        TouchButtonIconWithText _toolbarCashDrawer;
+        private TouchButtonIconWithText _toolbarCashDrawer;
         public TouchButtonIconWithText ToolbarCashDrawer
         {
             set { _toolbarCashDrawer = value; }
         }
 
-        TouchButtonIconWithText _toolbarFinanceDocuments;
+        private TouchButtonIconWithText _toolbarFinanceDocuments;
         public TouchButtonIconWithText ToolbarFinanceDocuments
         {
             set { _toolbarFinanceDocuments = value; }
         }
 
-        TouchButtonIconWithText _toolbarNewFinanceDocument;
+        private TouchButtonIconWithText _toolbarNewFinanceDocument;
         public TouchButtonIconWithText ToolbarNewFinanceDocument
         {
             set { _toolbarNewFinanceDocument = value; }
@@ -258,18 +257,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 this.BorderWidth = 10;
 
                 //Objects:EventBoxPosTicketList:EventBoxTotal
-                Gdk.Color eventBoxTotalBackgroundColor = logicpos.Utils.StringToGdkColor(pThemeObject.EventBoxTotal.BackgroundColor);
+                Gdk.Color eventBoxTotalBackgroundColor = (pThemeObject.EventBoxTotal.BackgroundColor as string).StringToGdkColor();
                 //Objects:Columns
                 Pango.FontDescription columnsFontTitle = Pango.FontDescription.FromString(pThemeObject.Columns.FontTitle);
                 Pango.FontDescription columnsFontData = Pango.FontDescription.FromString(pThemeObject.Columns.FontData);
 
                 //Objects:EventBoxPosTicketList:EventBoxTotal:LabelLabelTotal
                 Pango.FontDescription labelLabelTotalFont = Pango.FontDescription.FromString(pThemeObject.EventBoxTotal.LabelLabelTotal.Font);
-                Gdk.Color labelLabelTotalFontColor = logicpos.Utils.StringToGdkColor(pThemeObject.EventBoxTotal.LabelLabelTotal.FontColor);
+                Gdk.Color labelLabelTotalFontColor = (pThemeObject.EventBoxTotal.LabelLabelTotal.FontColor as string).StringToGdkColor();
                 float labelLabelTotalAlignmentX = Convert.ToSingle(pThemeObject.EventBoxTotal.LabelLabelTotal.AlignmentX);
                 //Objects:EventBoxPosTicketList:EventBoxTotal:LabelTotal
                 Pango.FontDescription labelTotalFont = Pango.FontDescription.FromString(pThemeObject.EventBoxTotal.LabelTotal.Font);
-                Gdk.Color labelTotalFontColor = logicpos.Utils.StringToGdkColor(pThemeObject.EventBoxTotal.LabelTotal.FontColor);
+                Gdk.Color labelTotalFontColor = (pThemeObject.EventBoxTotal.LabelTotal.FontColor as string).StringToGdkColor();
                 float labelTotalAlignmentX = Convert.ToSingle(pThemeObject.EventBoxTotal.LabelTotal.AlignmentX);
 
                 //Objects:EventBoxPosTicketList:Columns:DesignationWidth
@@ -330,7 +329,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -450,7 +449,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _currentOrderDetails = GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails;
 
                 //Change BackGround Color ListMode
-                Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = logicpos.Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = logicpos.Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
+                Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = _colorPosTicketListModeTicketBackground.ToGdkColor() : colorListMode = _colorPosTicketListModeOrderMainBackground.ToGdkColor();
                 _treeView.ModifyBase(StateType.Normal, colorListMode);
 
                 //Ticket Mode
@@ -533,7 +532,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -603,11 +602,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                                         (SettingsApp.AppMode == AppOperationMode.Retail) ? TaxSellType.TakeAway : TaxSellType.Normal));
 
                                     newLine.Properties.PriceNet = Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
-                                    newLine.Properties.TotalFinal = Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Total)) - Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));                                    
+                                    newLine.Properties.TotalFinal = Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Total)) - Convert.ToDecimal((string)_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price));
 
                                     //newLine.Properties.Quantity -= GetArticleDefaultQuantity(_currentDetailArticle.Oid);
                                     newLine.Properties.Quantity = -1;
-                                    GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Add(newLine);                                    
+                                    GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid].OrderTickets[_currentTicketId].OrderDetails.Lines.Add(newLine);
                                 }
                             }
                         }
@@ -623,7 +622,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -646,7 +645,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     InsertOrUpdate(articleGuid);
                 }
                 else
-                {                    
+                {
                     string message = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_invalid_code");
                     logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
                     return;
@@ -685,7 +684,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception)
             {
-                _log.Error("Error Missing Config Parameter Key: [requireToChooseVatExemptionReason]");
+                _logger.Error("Error Missing Config Parameter Key: [requireToChooseVatExemptionReason]");
             }
 
             try
@@ -799,8 +798,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     bool showMessage;
                     if (logicpos.Utils.CheckStocks())
                     {
-                        if(!logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, pArticleOid, Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity, out showMessage)) { 
-                            if(showMessage) return;
+                        if (!logicpos.Utils.ShowMessageMinimumStock(_sourceWindow, pArticleOid, Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity, out showMessage))
+                        {
+                            if (showMessage) return;
                         }
                     }
                     //Get Place Object to extract TaxSellType Normal|TakeWay
@@ -808,9 +808,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
                     fin_articletype articletype = (fin_articletype)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_articletype), article.Type.Oid);
 
-                    if (configurationPlace == null) { configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), SettingsApp.XpoOidConfigurationPlaceTableDefaultOpenTable); } 
+                    if (configurationPlace == null) { configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), SettingsApp.XpoOidConfigurationPlaceTableDefaultOpenTable); }
                     //Use VatDirectSelling if in Retail or in TakeWay mode
-                    TaxSellType taxSellType = (SettingsApp.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling ) ? TaxSellType.TakeAway : TaxSellType.Normal;
+                    TaxSellType taxSellType = (SettingsApp.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
                     decimal priceTax = (taxSellType == TaxSellType.Normal) ? article.VatOnTable.Value : article.VatDirectSelling.Value;
 
                     //Get PriceFinal to Request Price Dialog
@@ -840,7 +840,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
 
                     }
-					//Proteção para artigos do tipo "Sem Preço" [IN:013329]
+                    //Proteção para artigos do tipo "Sem Preço" [IN:013329]
                     else if (!articletype.HavePrice)
                     {
                         sourceMode = PricePropertiesSourceMode.FromPriceNet;
@@ -881,12 +881,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Add VatExemptionReason to VatExemptionReason
                     if (article.VatExemptionReason != null) priceProperties.VatExemptionReason = article.VatExemptionReason.Oid;
                     int i = 0;
-                    foreach(var item in CurrentOrderDetails.Lines)
+                    foreach (var item in CurrentOrderDetails.Lines)
                     {
-                        _log.Debug(item.ArticleOid);
-                        _log.Debug(pArticleOid);
-                        _log.Debug(item.Properties.PriceFinal);
-                        _log.Debug(priceProperties.PriceFinal);
+                        _logger.Debug(item.ArticleOid);
+                        _logger.Debug(pArticleOid);
+                        _logger.Debug(item.Properties.PriceFinal);
+                        _logger.Debug(priceProperties.PriceFinal);
                         if (item.ArticleOid == pArticleOid && item.Properties.PriceFinal == priceProperties.PriceFinal)
                         {
                             _listStoreModelSelectedIndex = i;
@@ -894,7 +894,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                         i++;
                     }
-                    _log.Debug(_listStoreModelSelectedIndex);
+                    _logger.Debug(_listStoreModelSelectedIndex);
 
                     //Check if item is already on ticket list and his position
                     bool itemInTicket = false;
@@ -907,7 +907,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if ((Guid)(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.ArticleId)) == pArticleOid &&
                                 Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)) == Math.Round(priceProperties.PriceFinal, SettingsApp.DecimalRoundTo))
                         {
-                            
+
                             _listStoreModelSelectedIndex = itemPosition;
 
                             //Update TreeView Model Price and quantity
@@ -935,7 +935,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Update Total Items Member
                     _listStoreModelTotalItems = _listStoreModel.IterNChildren();
 
-                    if(!itemInTicket)
+                    if (!itemInTicket)
                     {
                         //Insert into orderDetails SessionApp
                         _currentOrderDetails.Insert(article.Oid, article.Designation, priceProperties);
@@ -969,7 +969,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1039,7 +1039,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                         catch (Exception ex)
                         {
-                            _log.Error(ex.Message, ex);
+                            _logger.Error(ex.Message, ex);
                         }
                     }
                     else
@@ -1062,7 +1062,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
             else if (_listMode == TicketListMode.OrderMain)
@@ -1188,7 +1188,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1201,7 +1201,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1211,17 +1211,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 if (GlobalFramework.SessionApp.CurrentOrderMainOid != Guid.Empty && GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid))
                     _articleBag = ArticleBag.TicketOrderToArticleBag(GlobalFramework.SessionApp.OrdersMain[_currentOrderMainOid]);
-            }catch (Exception ex)
-            {
-                _log.Error(string.Format("UpdateArticleBag Error: [{0}]", ex.Message));
             }
-            //_log.Debug(string.Format("UpdateArticleBag TotalQuantity: [{0}]", _articleBag.TotalQuantity));
+            catch (Exception ex)
+            {
+                _logger.Error(string.Format("UpdateArticleBag Error: [{0}]", ex.Message));
+            }
+            //_logger.Debug(string.Format("UpdateArticleBag TotalQuantity: [{0}]", _articleBag.TotalQuantity));
         }
 
         public void UpdateTicketListButtons()
         {
             //Debug
-            //_log.Debug(String.Format("TicketListMode: [{0}], listStoreModelTotalItems: [{1}], currentOrderDetails.TotalItems: [{2}]", Enum.GetName(typeof(TicketListMode), _listMode), _listStoreModelTotalItems, _currentOrderDetails.TotalItems));
+            //_logger.Debug(String.Format("TicketListMode: [{0}], listStoreModelTotalItems: [{1}], currentOrderDetails.TotalItems: [{2}]", Enum.GetName(typeof(TicketListMode), _listMode), _listStoreModelTotalItems, _currentOrderDetails.TotalItems));
 
             //No Items, always disable All actions
             if (_listStoreModelTotalItems == 0)
@@ -1314,7 +1315,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (_toolbarShowSystemDialog != null && !_toolbarShowSystemDialog.Sensitive) _toolbarShowSystemDialog.Sensitive = FrameworkUtils.HasPermissionTo("SYSTEM_ACCESS");
                 if (_toolbarLogoutUser != null && !_toolbarLogoutUser.Sensitive) _toolbarLogoutUser.Sensitive = true;
                 if (_toolbarShowChangeUserDialog != null && !_toolbarShowChangeUserDialog.Sensitive) _toolbarShowChangeUserDialog.Sensitive = true;
-                if (_toolbarCashDrawer != null /*&& !_toolbarCashDrawer.Sensitive*/) _toolbarCashDrawer.Sensitive = (FrameworkUtils.HasPermissionTo("WORKSESSION_ALL")); 
+                if (_toolbarCashDrawer != null /*&& !_toolbarCashDrawer.Sensitive*/) _toolbarCashDrawer.Sensitive = (FrameworkUtils.HasPermissionTo("WORKSESSION_ALL"));
                 if (_toolbarFinanceDocuments != null && !_toolbarFinanceDocuments.Sensitive) _toolbarFinanceDocuments.Sensitive = true;
                 //With Valid Open WorkSessionPeriodTerminal
                 if (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
@@ -1435,7 +1436,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void UpdateOrderStatusBar()
         {
-            //_log.Debug("void UpdateOrderStatusBar() :: Starting..."); /* IN009008 */
+            //_logger.Debug("void UpdateOrderStatusBar() :: Starting..."); /* IN009008 */
             //If CashDrawer Open
             if (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
             {
@@ -1502,7 +1503,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Events
 
         //Used to assign _treePath to last Inserted Item in listStore, ex get _treePath to last, to start in last Item in Model
-        void _listStoreModel_RowInserted(object o, RowInsertedArgs args)
+        private void _listStoreModel_RowInserted(object o, RowInsertedArgs args)
         {
             ListStore listStore = (ListStore)o;
             _treeIter = args.Iter;
@@ -1516,7 +1517,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _listStoreModelSelectedIndex = _listStoreModelTotalItems - 1;
         }
 
-        void _treeView_CursorChanged(object sender, EventArgs e)
+        private void _treeView_CursorChanged(object sender, EventArgs e)
         {
             TreeView treeView = (TreeView)sender;
             TreeSelection selection = treeView.Selection;
@@ -1549,11 +1550,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                     }
                     //Debug
-                    //_log.Debug(string.Format("_treeView_CursorChanged(): _currentDetailArticleId [{0}], _listStoreModelSelectedIndex [{1}], _currentDetailArticle.Designation [{2}]", _currentDetailArticleOid, _listStoreModelSelectedIndex, _currentDetailArticle.Designation));
+                    //_logger.Debug(string.Format("_treeView_CursorChanged(): _currentDetailArticleId [{0}], _listStoreModelSelectedIndex [{1}], _currentDetailArticle.Designation [{2}]", _currentDetailArticleOid, _listStoreModelSelectedIndex, _currentDetailArticle.Designation));
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
             else

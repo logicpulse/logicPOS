@@ -4,9 +4,9 @@ using logicpos.datalayer.DataLayer.Xpo;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosReadCardDialog
+    internal partial class PosReadCardDialog
     {
-        void _touchButtonReadCard_Clicked(object sender, EventArgs e)
+        private void _touchButtonReadCard_Clicked(object sender, EventArgs e)
         {
         }
     }

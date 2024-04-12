@@ -29,7 +29,7 @@ namespace logicpos
         private static Thread _threadImport;
         private static Thread _threadExport;
 
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         // Import/Export XLS 
         public static ImportExportFileOpen ImportExportFileOpen;
         private static string pathBackups;
@@ -195,7 +195,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -218,7 +218,7 @@ namespace logicpos
             DataTable dtResult = new DataTable();
             try
             {
-                _log.Debug("Proccess file: " + path);
+                _logger.Debug("Proccess file: " + path);
                 if (path.Contains(".xls"))
                 {
                     using (var stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite))
@@ -274,7 +274,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error("ReadExcel: Error proccess file " + ex.Message, ex);
+                _logger.Error("ReadExcel: Error proccess file " + ex.Message, ex);
                 Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_error")));
             }
 
@@ -307,7 +307,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error("Error:  " + ex.Message, ex);
+                _logger.Error("Error:  " + ex.Message, ex);
             }
             return lastArticleCode;
         }
@@ -508,18 +508,18 @@ namespace logicpos
                             }
                             catch (Exception ex)
                             {
-                                _log.Error("Error:  " + ex.Message, ex);
+                                _logger.Error("Error:  " + ex.Message, ex);
                             }
                         }
                         catch (Exception ex)
                         {
-                            _log.Error("Error:  " + ex.Message, ex);
+                            _logger.Error("Error:  " + ex.Message, ex);
                             flagImport = true;
                         }
                     }
                     catch (Exception ex)
                     {
-                        _log.Error("Error:  " + ex.Message, ex);
+                        _logger.Error("Error:  " + ex.Message, ex);
                     }
 
                 }
@@ -530,7 +530,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error("Error:  " + ex.Message, ex);
+                _logger.Error("Error:  " + ex.Message, ex);
                 return result;
             }
             finally
@@ -636,7 +636,7 @@ namespace logicpos
                     }
                     catch (Exception ex)
                     {
-                        _log.Error("Error:  " + ex.Message, ex);
+                        _logger.Error("Error:  " + ex.Message, ex);
                         flagImport = true;
                     }
                 }
@@ -843,7 +843,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_export_error"));
             }
 
@@ -857,7 +857,7 @@ namespace logicpos
                 if (dtExport != null && dtExport.Rows.Count > 0)
                 {
 
-                    _log.Debug("FileName: " + path);
+                    _logger.Debug("FileName: " + path);
 
                     XLWorkbook wb = new XLWorkbook();
                     wb.Worksheets.Add(dtExport, "1");
@@ -871,14 +871,14 @@ namespace logicpos
                 }
                 else
                 {
-                    _log.Debug("ExportExcel: DataTable has no rows to export");
+                    _logger.Debug("ExportExcel: DataTable has no rows to export");
                     return false;
                 }
 
             }
             catch (Exception ex)
             {
-                _log.Error("ExportExcel: Error creating file " + ex.Message, ex);
+                _logger.Error("ExportExcel: Error creating file " + ex.Message, ex);
                 return false;
             }
             finally

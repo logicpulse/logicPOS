@@ -16,13 +16,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
     /// Test Page : Not Used
     /// </summary>
 
-    class DocumentFinanceDialogPage7 : PagePadPage
+    internal class DocumentFinanceDialogPage7 : PagePadPage
     {
-        private VBox _vboxButtons;
-        private HBox _hboxButtons1;
-        private HBox _hboxButtons2;
-        private OrderMain _orderMain;
-        private ArticleBag _articleBag;
+        private readonly VBox _vboxButtons;
+        private readonly HBox _hboxButtons1;
+        private readonly HBox _hboxButtons2;
+        private readonly OrderMain _orderMain;
+        private readonly ArticleBag _articleBag;
 
         //Constructor
         public DocumentFinanceDialogPage7(Window pSourceWindow, String pPageName) : this(pSourceWindow, pPageName, "", null, true) { }
@@ -112,14 +112,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //Override Base Validate
         public override void Validate()
         {
-            //_log.Debug(string.Format("Validate: {0}", this.Name));
+            //_logger.Debug(string.Format("Validate: {0}", this.Name));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
 
         //5.2: FT: Fatura
-        void buttonPrintInvoice_Clicked(object sender, EventArgs e)
+        private void buttonPrintInvoice_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
@@ -136,7 +136,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //5.3: FT: Cancel Invoice
-        void buttonCancelInvoice_Clicked(object sender, EventArgs e)
+        private void buttonCancelInvoice_Clicked(object sender, EventArgs e)
         {
             string dateTimeFormatCombinedDateTime = SettingsApp.DateTimeFormatCombinedDateTime;
             Guid documentMasterGuid = new Guid("81fcf207-ff59-4971-90cb-80d2cbdb87dc");//Document To Cancel
@@ -150,7 +150,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //OrderReferences
-        void buttonOrderReferences_Clicked(object sender, EventArgs e)
+        private void buttonOrderReferences_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
@@ -159,8 +159,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //DC DC2015S0001/1
             fin_documentfinancemaster documentOrderReference = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), orderReference);
             //Add Order References
-            List<fin_documentfinancemaster> orderReferences = new List<fin_documentfinancemaster>();
-            orderReferences.Add(documentOrderReference);
+            List<fin_documentfinancemaster> orderReferences = new List<fin_documentfinancemaster>
+            {
+                documentOrderReference
+            };
 
             //Get ArticleBag from documentFinanceMasterSource
             ArticleBag articleBag = ArticleBag.DocumentFinanceMasterToArticleBag(documentOrderReference);
@@ -179,7 +181,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //NC : Credit Note
-        void buttonCreditNote_Clicked(object sender, EventArgs e)
+        private void buttonCreditNote_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeCreditNote;
             Guid reference = new Guid("daecbf1d-6211-4e74-a8cd-81795e347656");
@@ -187,8 +189,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //FT FT2015S0001/16
             fin_documentfinancemaster documentReference = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), reference);
             //Add Order References
-            List<DocumentReference> references = new List<DocumentReference>();
-            references.Add(new DocumentReference(documentReference, "Artigo com defeito"));
+            List<DocumentReference> references = new List<DocumentReference>
+            {
+                new DocumentReference(documentReference, "Artigo com defeito")
+            };
 
             //Get ArticleBag from documentFinanceMasterSource
             ArticleBag articleBag = ArticleBag.DocumentFinanceMasterToArticleBag(documentReference);
@@ -205,7 +209,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //FT: Vats
-        void buttonPrintInvoiceVat_Clicked(object sender, EventArgs e)
+        private void buttonPrintInvoiceVat_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
@@ -230,11 +234,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
 
             //Get ArticleBag
-            ArticleBag articleBag = new ArticleBag();
-            articleBag.Add(articleRED, placeGuid, tableGuid, PriceType.Price1, 1.0m);
-            articleBag.Add(articleISE, placeGuid, tableGuid, PriceType.Price1, 1.0m, vatExemptionReason);
-            articleBag.Add(articleINT, placeGuid, tableGuid, PriceType.Price1, 1.0m);
-            articleBag.Add(articleNOR, placeGuid, tableGuid, PriceType.Price1, 1.0m);
+            ArticleBag articleBag = new ArticleBag
+            {
+                { articleRED, placeGuid, tableGuid, PriceType.Price1, 1.0m },
+                { articleISE, placeGuid, tableGuid, PriceType.Price1, 1.0m, vatExemptionReason },
+                { articleINT, placeGuid, tableGuid, PriceType.Price1, 1.0m },
+                { articleNOR, placeGuid, tableGuid, PriceType.Price1, 1.0m }
+            };
 
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
@@ -246,7 +252,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
-        void buttonPrintInvoiceDiscount_Clicked(object sender, EventArgs e)
+        private void buttonPrintInvoiceDiscount_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
@@ -263,9 +269,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
 
             //Get ArticleBag
-            ArticleBag articleBag = new ArticleBag();
-            articleBag.Add(article1, placeGuid, tableGuid, PriceType.Price1, 100.0m);
-            articleBag.Add(article2, placeGuid, tableGuid, PriceType.Price1, 1.0m);
+            ArticleBag articleBag = new ArticleBag
+            {
+                { article1, placeGuid, tableGuid, PriceType.Price1, 100.0m },
+                { article2, placeGuid, tableGuid, PriceType.Price1, 1.0m }
+            };
 
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
@@ -277,7 +285,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
-        void buttonPrintInvoiceExchangeRate_Clicked(object sender, EventArgs e)
+        private void buttonPrintInvoiceExchangeRate_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
@@ -296,9 +304,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
 
             //Get ArticleBag
-            ArticleBag articleBag = new ArticleBag();
-            articleBag.Add(article1, placeGuid, tableGuid, PriceType.Price1, 100.0m);
-            articleBag.Add(article2, placeGuid, tableGuid, PriceType.Price1, 1.0m);
+            ArticleBag articleBag = new ArticleBag
+            {
+                { article1, placeGuid, tableGuid, PriceType.Price1, 100.0m },
+                { article2, placeGuid, tableGuid, PriceType.Price1, 1.0m }
+            };
 
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
@@ -312,7 +322,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
-        void buttonPrintInvoiceJohnDoe1_Clicked(object sender, EventArgs e)
+        private void buttonPrintInvoiceJohnDoe1_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice;
             Guid customerGuid = new Guid("d8ce6455-e1a4-41dc-a475-223c00de3a91");//John Doe1
@@ -326,8 +336,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
 
             //Get ArticleBag
-            ArticleBag articleBag = new ArticleBag();
-            articleBag.Add(article1, placeGuid, tableGuid, PriceType.Price1, 1.0m);
+            ArticleBag articleBag = new ArticleBag
+            {
+                { article1, placeGuid, tableGuid, PriceType.Price1, 1.0m }
+            };
 
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
@@ -339,7 +351,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
-        void buttonPrintInvoiceJohnDoe2_Clicked(object sender, EventArgs e)
+        private void buttonPrintInvoiceJohnDoe2_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice;
             Guid customerGuid = new Guid("f5a382bb-f826-40d8-8910-cfb18df8a41e");//John Doe2
@@ -353,8 +365,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
 
             //Get ArticleBag
-            ArticleBag articleBag = new ArticleBag();
-            articleBag.Add(article1, placeGuid, tableGuid, PriceType.Price1, 8.0m);
+            ArticleBag articleBag = new ArticleBag
+            {
+                { article1, placeGuid, tableGuid, PriceType.Price1, 8.0m }
+            };
 
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
@@ -366,7 +380,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
-        void buttonPrintTransportationGuideWithTotals_Clicked(object sender, EventArgs e)
+        private void buttonPrintTransportationGuideWithTotals_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = new Guid("96bcf534-0dab-48bb-a69e-166e81ae6f7b");
             Guid customerGuid = new Guid("d64c5d26-b4f9-4220-bd3c-72ece5e3960a");
@@ -380,8 +394,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
 
             //Get ArticleBag
-            ArticleBag articleBag = new ArticleBag();
-            articleBag.Add(article1, placeGuid, tableGuid, PriceType.Price1, 24.0m);
+            ArticleBag articleBag = new ArticleBag
+            {
+                { article1, placeGuid, tableGuid, PriceType.Price1, 24.0m }
+            };
 
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(
@@ -393,7 +409,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             fin_documentfinancemaster resultDocument = FrameworkCalls.PersistFinanceDocument(SourceWindow, processFinanceDocumentParameter);
         }
 
-        void buttonPrintTransportationGuideWithoutTotals_Clicked(object sender, EventArgs e)
+        private void buttonPrintTransportationGuideWithoutTotals_Clicked(object sender, EventArgs e)
         {
             Guid documentTypeGuid = new Guid("96bcf534-0dab-48bb-a69e-166e81ae6f7b");
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
@@ -407,8 +423,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             Guid tableGuid = new Guid("64d417f6-ff97-4f4b-bded-4bc9bf9f18d9");
 
             //Get ArticleBag
-            ArticleBag articleBag = new ArticleBag();
-            articleBag.Add(article1, placeGuid, tableGuid, PriceType.Price1, 48.0m);
+            ArticleBag articleBag = new ArticleBag
+            {
+                { article1, placeGuid, tableGuid, PriceType.Price1, 48.0m }
+            };
 
             //Prepare ProcessFinanceDocumentParameter
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(

@@ -9,10 +9,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     /// <summary>
     /// Class for pages used in PagePad
     /// </summary>
-    abstract class PagePadPage : Box
+    internal abstract class PagePadPage : Box
     {
         //Log4Net
-        protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Private Fields
 

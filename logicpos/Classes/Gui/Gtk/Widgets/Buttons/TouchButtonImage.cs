@@ -10,9 +10,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         private const int _BUTTON_INNER_BORDER = 7;
         private const int _BUTTON_TEXT_OVERLAY_INNER_MARGIN = 0;
         private const int _BUTTON_TEXT_ALPHA_OVERLAY = 250;
-        private bool _useCachedImages = logicpos.Utils.UseCache();
-        private bool _useVatAutocompletee = logicpos.Utils.UseVatAutocomplete();
-        private string _pathCache = FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"]));
+        private readonly bool _useCachedImages = logicpos.Utils.UseCache();
+        private readonly bool _useVatAutocompletee = logicpos.Utils.UseVatAutocomplete();
+        private readonly string _pathCache = FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"]));
 
         public Widget widget;
 
@@ -83,7 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     try
                     {
                         System.Drawing.Image imageButton = new System.Drawing.Bitmap(image);
-                        //_log.Debug(string.Format("CreateThumbnail(): imageButton: {0}x{1} resize to targetImageSize: {2}x{3}", imageButton.Width, imageButton.Height, targetImageSize.Width, targetImageSize.Height));
+                        //_logger.Debug(string.Format("CreateThumbnail(): imageButton: {0}x{1} resize to targetImageSize: {2}x{3}", imageButton.Width, imageButton.Height, targetImageSize.Width, targetImageSize.Height));
 
 #pragma warning disable
                         if (debug)
@@ -106,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     }
                     catch (FileNotFoundException ex)
                     {
-                        _log.Error(string.Format("CreateThumbnail(): [{0}]", ex.Message), ex);
+                        _logger.Error(string.Format("CreateThumbnail(): [{0}]", ex.Message), ex);
                     }
                 }
             }
@@ -142,7 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     }
                     catch (FileNotFoundException ex)
                     {
-                        _log.Error(string.Format("CreateThumbnail(): [{0}]", ex.Message), ex);
+                        _logger.Error(string.Format("CreateThumbnail(): [{0}]", ex.Message), ex);
                     }
                 }
             }
@@ -170,7 +170,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
 

@@ -13,9 +13,9 @@ namespace logicpos.printer.generic
     public class ThermalPrinter
 	{
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private MemoryStream _memStream = new MemoryStream();
+        private readonly MemoryStream _memStream = new MemoryStream();
 
         private BinaryWriter _binaryStream;
 
@@ -108,9 +108,11 @@ namespace logicpos.printer.generic
 
             try
             {
-                Dictionary<char, char> replaceChars = new Dictionary<char, char>();
-                replaceChars.Add('º', 'o');
-                replaceChars.Add('ª', 'a');
+                Dictionary<char, char> replaceChars = new Dictionary<char, char>
+                {
+                    { 'º', 'o' },
+                    { 'ª', 'a' }
+                };
 
                 foreach (var item in replaceChars)
                 {
@@ -1391,7 +1393,7 @@ namespace logicpos.printer.generic
                 }
                 else
                 {
-                    _log.Error(String.Format("Error: invalid settings for PrinterThermalCutCommand: [{0}]", configCutCommand));
+                    _logger.Error(String.Format("Error: invalid settings for PrinterThermalCutCommand: [{0}]", configCutCommand));
                 }
             };
 

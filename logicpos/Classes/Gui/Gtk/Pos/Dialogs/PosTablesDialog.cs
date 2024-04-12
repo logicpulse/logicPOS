@@ -21,41 +21,41 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Size _sizePosTableButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosTableButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private String _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
-        private String _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
+        private readonly String _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
+        private readonly String _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
         //UI
-        private Fixed _fixedContent;
+        private readonly Fixed _fixedContent;
         private TablePad _tablePadPlace;
         private TablePad _tablePadOrder;
         private TablePad _tablePadTable;
         private HBox _hboxTableScrollers;
         private HBox _hboxOrderScrollers;
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
-        private TouchButtonIconWithText _buttonTableFilterAll;
-        private TouchButtonIconWithText _buttonTableFilterFree;
-        private TouchButtonIconWithText _buttonTableFilterOpen;
-        private TouchButtonIconWithText _buttonTableFilterReserved;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonTableFilterAll;
+        private readonly TouchButtonIconWithText _buttonTableFilterFree;
+        private readonly TouchButtonIconWithText _buttonTableFilterOpen;
+        private readonly TouchButtonIconWithText _buttonTableFilterReserved;
         //private TouchButtonIconWithText _buttonOrderChangeTable;
-        private TouchButtonIconWithText _buttonTableReservation;
-        private TouchButtonIconWithText _buttonTableViewOrders;
-        private TouchButtonIconWithText _buttonTableViewTables;
+        private readonly TouchButtonIconWithText _buttonTableReservation;
+        private readonly TouchButtonIconWithText _buttonTableViewOrders;
+        private readonly TouchButtonIconWithText _buttonTableViewTables;
         //Used when we need to access CurrentButton Reference
         private TouchButtonTable _currentButton;
         //ResponseType (Above 10)
         //private ResponseType _responseTypeOrderChangeTable = (ResponseType)11;
-        private ResponseType _responseTypeViewOrders = (ResponseType)12;
-        private ResponseType _responseTypeViewTables = (ResponseType)13;
-        private ResponseType _responseTypeTableReservation = (ResponseType)14;
+        private readonly ResponseType _responseTypeViewOrders = (ResponseType)12;
+        private readonly ResponseType _responseTypeViewTables = (ResponseType)13;
+        private readonly ResponseType _responseTypeTableReservation = (ResponseType)14;
         //Other    
-        private int _tablesStatusShowAllIndex = 10;
+        private readonly int _tablesStatusShowAllIndex = 10;
         private int _currentTableStatusId = 10;
         private TableViewMode _currentViewMode = TableViewMode.Orders;
-        private TableFilterMode _FilterMode;
+        private readonly TableFilterMode _FilterMode;
         //Base Queries
-        private String _sqlPlaceBase;
-        private String _sqlPlaceBaseOrder;
-        private String _sqlPlaceBaseTable;
+        private readonly String _sqlPlaceBase;
+        private readonly String _sqlPlaceBaseOrder;
+        private readonly String _sqlPlaceBaseTable;
 
         //Public Properties
         private Guid _currentTableButtonOid;

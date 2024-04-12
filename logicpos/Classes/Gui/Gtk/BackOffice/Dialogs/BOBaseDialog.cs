@@ -1,5 +1,4 @@
-﻿using DevExpress.Xpo;
-using Gtk;
+﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
@@ -7,18 +6,18 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.Extensions;
 using logicpos.financial.library.Classes.Stocks;
-using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    abstract class BOBaseDialog : Dialog
+    internal abstract class BOBaseDialog : Dialog
     {
         //Log4Net
-        protected static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected Members
         protected GenericTreeViewXPO _treeView = null;
@@ -133,8 +132,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             String tmpFileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
             System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
             System.Drawing.Size sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
-            System.Drawing.Color colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"]);
-            System.Drawing.Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
+            System.Drawing.Color colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
+            System.Drawing.Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
 
             //TODO:THEME
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
@@ -260,22 +259,22 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         {
                             ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, null, 1, DateTime.Now, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), (_dataSourceRow as fin_article).Accounting, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
                         }
-                       
+
                     }
                     //Delete Articles compositions with deleted Parents
                     string sqlDelete = string.Format("DELETE FROM [fin_articlecomposition] WHERE [Article] IS NULL;");
                     GlobalFramework.SessionXpo.ExecuteQuery(sqlDelete);
-                    _log.Debug("Delete() :: articles composition with null parents'" + "'  ");
+                    _logger.Debug("Delete() :: articles composition with null parents'" + "'  ");
                     //Delete Articles SerialNumber emptys 
                     //sqlDelete = string.Format("DELETE FROM [fin_articleserialnumber] WHERE [SerialNumber] IS NULL;");
                     //GlobalFramework.SessionXpo.ExecuteQuery(sqlDelete);
-                    //_log.Debug("Delete() :: articles serialnumber with null value'" + "'  ");
+                    //_logger.Debug("Delete() :: articles serialnumber with null value'" + "'  ");
 
                     _dataSourceRow.Reload();
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("error Delete() :: articles composition with null parents '" + "' : " + ex.Message, ex);
+                    _logger.Error("error Delete() :: articles composition with null parents '" + "' : " + ex.Message, ex);
                 }
             }
         }
@@ -345,7 +344,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //Protect Edits in Components
                     foreach (var item in _crudWidgetList)
                     {
-                        //_log.Debug(String.Format("item: [{0}]", item));
+                        //_logger.Debug(String.Format("item: [{0}]", item));
                         item.Widget.Sensitive = false;
                     }
                 }
@@ -390,7 +389,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -423,7 +422,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -444,7 +443,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -474,7 +473,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -509,7 +508,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }

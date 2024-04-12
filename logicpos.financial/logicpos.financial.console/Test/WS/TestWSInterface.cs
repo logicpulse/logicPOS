@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace logicpos.financial.console.Test.WS
 {
-    class TestWSInterface
+    internal class TestWSInterface
     {
-        private static string _wsLogin = "admin";
-        private static string _wsPassword = "admin";
+        private static readonly string _wsLogin = "admin";
+        private static readonly string _wsPassword = "admin";
         private static qws.WSInterface WebService { get { return GetWebService(); } }
         private static qws.WSInterface GetWebService() { return new qws.WSInterface(); }
 

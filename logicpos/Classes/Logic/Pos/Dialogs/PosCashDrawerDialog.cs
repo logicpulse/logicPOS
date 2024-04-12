@@ -8,10 +8,11 @@ using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using System;
 using System.Drawing;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosCashDrawerDialog
+    internal partial class PosCashDrawerDialog
     {
         protected override void OnResponse(ResponseType pResponse)
         {
@@ -20,8 +21,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _movementAmountMoney = FrameworkUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
                 _movementDescription = _entryBoxMovementDescription.EntryValidation.Text;
 
-                decimal cashLastMovementTypeAmount = 0.0m;
-
+                decimal cashLastMovementTypeAmount;
                 if (_selectedMovementType.Token == "CASHDRAWER_OPEN")
                 {
                     cashLastMovementTypeAmount = ProcessWorkSessionPeriod.GetSessionPeriodCashDrawerOpenOrCloseAmount("CASHDRAWER_CLOSE");
@@ -117,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void PosCashDrawerDialog_Clicked(object sender, EventArgs e)
+        private void PosCashDrawerDialog_Clicked(object sender, EventArgs e)
         {
             TouchButtonIconWithText button = (TouchButtonIconWithText)sender;
             ActivateButton(button);
@@ -165,13 +165,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             if (_selectedCashDrawerButton != null)
             {
                 //Toggle Button Off
-                _selectedCashDrawerButton.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorBaseDialogDefaultButtonBackground));
+                _selectedCashDrawerButton.ModifyBg(
+                    StateType.Normal, 
+                    _colorBaseDialogDefaultButtonBackground.ToGdkColor());
             }
 
             //In the End Change reference to new Seleted Button
             _selectedCashDrawerButton = pButton;
             //Toggle Button On
-            _selectedCashDrawerButton.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(logicpos.Utils.Lighten(_colorBaseDialogDefaultButtonBackground, 0.50f)));
+            _selectedCashDrawerButton.ModifyBg(
+                StateType.Normal, 
+                _colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
 
             //Validate
             ValidateDialog();
@@ -179,7 +183,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void ValidateDialog()
         {
-            decimal entryValidation = -1;
+            decimal entryValidation;
             if (_entryBoxMovementAmountMoney.EntryValidation.Text != string.Empty)
                 entryValidation = FrameworkUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
 
@@ -228,16 +232,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             decimal diference = Math.Round(_movementAmountMoney - totalInCashDrawer, _decimalRoundTo);
-            string message = string.Empty;
-            //_log.Debug(string.Format("_movementAmountMoney: [{0}], pLastMovementTypeAmount:[{1}], totalInCashDrawer: [{2}], diference: [{3}]", _movementAmountMoney, pLastMovementTypeAmount, totalInCashDrawer, diference));
+            //_logger.Debug(string.Format("_movementAmountMoney: [{0}], pLastMovementTypeAmount:[{1}], totalInCashDrawer: [{2}], diference: [{3}]", _movementAmountMoney, pLastMovementTypeAmount, totalInCashDrawer, diference));
 
             if (diference != 0)
             {
-                message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_open_close_total_enter_diferent_from_total_in_cashdrawer")
-                  , FrameworkUtils.DecimalToStringCurrency(totalInCashDrawer)
-                  , FrameworkUtils.DecimalToStringCurrency(_movementAmountMoney)
-                  , FrameworkUtils.DecimalToStringCurrency(diference)
-                );
+                string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_cashdrawer_open_close_total_enter_diferent_from_total_in_cashdrawer")
+      , FrameworkUtils.DecimalToStringCurrency(totalInCashDrawer)
+      , FrameworkUtils.DecimalToStringCurrency(_movementAmountMoney)
+      , FrameworkUtils.DecimalToStringCurrency(diference)
+    );
                 logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(600, 450), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
 
                 return false;

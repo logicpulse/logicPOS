@@ -13,8 +13,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         //Private Members
         /* IN008024 */
         //private string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
-        private fin_documentorderticket _orderTicket;
-        private bool _enableArticlePrinter;
+        private readonly fin_documentorderticket _orderTicket;
+        private readonly bool _enableArticlePrinter;
 
         public ThermalPrinterInternalDocumentOrderRequest(sys_configurationprinters pPrinter, fin_documentorderticket pOrderTicket)
             :this(pPrinter, pOrderTicket, false) { }
@@ -74,10 +74,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
         private void PrintDocumentDetails()
         {
-            List<TicketColumn> columns = new List<TicketColumn>();
-            columns.Add(new TicketColumn("Designation", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left));
-            columns.Add(new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("UnitMeasure", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
+            List<TicketColumn> columns = new List<TicketColumn>
+            {
+                new TicketColumn("Designation", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left),
+                new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("UnitMeasure", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right)
+            };
 
             //Prepare Table with Padding
             DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);

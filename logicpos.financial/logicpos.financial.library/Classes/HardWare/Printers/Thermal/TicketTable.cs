@@ -12,12 +12,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
     public class TicketTable : DataTable
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //Parameters
-        private Session _session;
-        private List<TicketColumn> _columnsProperties;
+        private readonly Session _session;
+        private readonly List<TicketColumn> _columnsProperties;
         //Other
-        private char _columnDivider = ' ';
+        private readonly char _columnDivider = ' ';
         //Public
         private int _tableWidth;
         public int TableWidth
@@ -193,7 +193,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                 //Check if final Table Width is bigger than pTableWidth
                 if (checkTableWidth > pTableWidth)
                 {
-                    _log.Error($"ConfigColumns > checkTableWidth: [{checkTableWidth}] > [{pTableWidth}]");
+                    _logger.Error($"ConfigColumns > checkTableWidth: [{checkTableWidth}] > [{pTableWidth}]");
                     throw new Exception($"Error columns to large to fit{Environment.NewLine}checkTableWidth: [{checkTableWidth}] > [{pTableWidth}]");
                 }
                 else if (dynamicColumn > -1)//0
@@ -218,7 +218,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         {
             bool debug = false;
             string result = string.Empty;
-            string formatedColumn = string.Empty;
             TicketColumn ticketColumn;
 
             try
@@ -227,6 +226,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                 {
                     ticketColumn = (TicketColumn)this.Columns[i].ExtendedProperties["Ticket"];
 
+                    string formatedColumn;
                     //Title Mode
                     if (pDataRow == null)
                     {
@@ -277,19 +277,19 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                     }
 
                     result += formatedColumn;
-                    if (debug) _log.Debug(string.Format(
+                    if (debug) _logger.Debug(string.Format(
                         "FormatedColumn[{0}]: [{1}], Width: [{2}], Align: [{3}], Format: [{4}]",
                         i, formatedColumn, ticketColumn.Width,
                         Enum.GetName(typeof(TicketColumnsAlign), ticketColumn.Align),
                         (ticketColumn.Format != string.Empty) ? ticketColumn.Format : "NOFORMAT")
                     );
                 }
-                if (debug) _log.Debug(string.Format("result: [{0}], Chars: [{1}]", result, result.Length));
+                if (debug) _logger.Debug(string.Format("result: [{0}], Chars: [{1}]", result, result.Length));
 
             }
             catch (Exception ex)
             {
-                _log.Debug("string GetLine(DataRow pDataRow) :: " + ex.Message, ex);
+                _logger.Debug("string GetLine(DataRow pDataRow) :: " + ex.Message, ex);
                 throw ex;
             }
 
@@ -311,7 +311,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             }
             catch (Exception ex)
             {
-                _log.Debug("List<string> GetTable() :: " + ex.Message, ex);
+                _logger.Debug("List<string> GetTable() :: " + ex.Message, ex);
                 throw ex;
             }
 
@@ -355,17 +355,17 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
                 for (int i = startRow; i < table.Count; i++)
                 {
-                    if (debug) _log.Debug(string.Format("Table Row: [{0}], TextMode: [{1}]", table[i], Enum.GetName(typeof(WriteLineTextMode), pTextMode)));
+                    if (debug) _logger.Debug(string.Format("Table Row: [{0}], TextMode: [{1}]", table[i], Enum.GetName(typeof(WriteLineTextMode), pTextMode)));
                     //Apply Format to Row
                     if (pLineFormat != string.Empty) table[i] = string.Format(pLineFormat, table[i]);
-                    //if (debug) _log.Debug(String.Format("pLineFormat:[{0}], table:[{1}]: ", pLineFormat, table[i]));
+                    //if (debug) _logger.Debug(String.Format("pLineFormat:[{0}], table:[{1}]: ", pLineFormat, table[i]));
                     //Print Row
                     pThermalPrinterGeneric.WriteLine(table[i], pTextMode);
                 }
             }
             catch (Exception ex)
             {
-                _log.Debug("void Print(ThermalPrinterGeneric pThermalPrinterGeneric, WriteLineTextMode pTextMode, bool pIgnoreFirstRow, string pLineFormat) :: " + ex.Message, ex);
+                _logger.Debug("void Print(ThermalPrinterGeneric pThermalPrinterGeneric, WriteLineTextMode pTextMode, bool pIgnoreFirstRow, string pLineFormat) :: " + ex.Message, ex);
                 throw ex;
             }
         }
@@ -379,7 +379,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             {
                 ticketColumn = (this.Columns[pField].ExtendedProperties.ContainsKey("Ticket")) ? (TicketColumn)this.Columns[pField].ExtendedProperties["Ticket"] : null;
 
-                _log.Debug(string.Format("[{0}], [{1}], [{2}], [{3}], [{4}], [{5}]",
+                _logger.Debug(string.Format("[{0}], [{1}], [{2}], [{3}], [{4}], [{5}]",
                     item[pField],
                     this.Columns[pField].ColumnName,
                     this.Columns[pField].DataType,

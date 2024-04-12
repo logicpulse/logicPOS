@@ -23,7 +23,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserProfile One <> Many UserProfilePermissions
-        sys_userprofile fUserProfile;
+        private sys_userprofile fUserProfile;
         [Association(@"UserProfile-UserPermissionProfile")]
         public sys_userprofile UserProfile
         {
@@ -32,7 +32,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserPermissionProfile One <> Many UserPermissionItem 
-        sys_userpermissionitem fPermissionItem;
+        private sys_userpermissionitem fPermissionItem;
         [Association(@"UserPermissionProfile-UserPermissionItem")]
         public sys_userpermissionitem PermissionItem
         {

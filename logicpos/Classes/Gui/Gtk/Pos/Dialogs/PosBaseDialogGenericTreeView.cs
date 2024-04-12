@@ -11,7 +11,7 @@ using logicpos.Classes.Enums.Dialogs;
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     //T DataSourceRow (XPGuidObject|DataRow)
-    abstract class PosBaseDialogGenericTreeView<T> : PosBaseDialog
+    internal abstract class PosBaseDialogGenericTreeView<T> : PosBaseDialog
     {
         //Protected Members
         protected DialogMode _dialogMode;

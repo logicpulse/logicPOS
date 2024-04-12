@@ -8,7 +8,7 @@ namespace logicpos.plugin.library
     public static class GenericPluginLoader<T>
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static ICollection<T> LoadPlugins(string path)
         {
@@ -46,7 +46,7 @@ namespace logicpos.plugin.library
                                 {
                                     if (type.GetInterface(pluginType.FullName) != null)
                                     {
-                                        //_log.Debug(String.Format("GenericPluginLoader Add Plugin: [{0}]", type));
+                                        //_logger.Debug(String.Format("GenericPluginLoader Add Plugin: [{0}]", type));
                                         pluginTypes.Add(type);
                                     }
                                 }

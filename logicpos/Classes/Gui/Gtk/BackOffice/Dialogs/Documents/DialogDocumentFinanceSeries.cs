@@ -9,7 +9,7 @@ using logicpos.resources.Resources.Localization;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogDocumentFinanceSeries : BOBaseDialog
+    internal class DialogDocumentFinanceSeries : BOBaseDialog
     {
 
         public DialogDocumentFinanceSeries(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
@@ -86,7 +86,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

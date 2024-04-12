@@ -7,7 +7,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public class EntryMultiline : EventBox
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Parameters
         protected Window _sourceWindow;
@@ -67,13 +67,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _textView.KeyReleaseEvent += _textView_KeyReleaseEvent;
         }
 
-        void Buffer_Changed(object sender, EventArgs e)
+        private void Buffer_Changed(object sender, EventArgs e)
         {
             //Update value Reference
             _value = _textView.Buffer;
         }
 
-        void _textView_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void _textView_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             //Prevent Enter Key to proceed to Dialog KeyReleaseEvent
             if (args.Event.Key.ToString().Equals("Return"))

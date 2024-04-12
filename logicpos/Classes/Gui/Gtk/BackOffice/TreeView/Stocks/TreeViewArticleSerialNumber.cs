@@ -14,7 +14,7 @@ using logicpos.datalayer.Enums;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewArticleSerialNumber : GenericTreeViewXPO
+    internal class TreeViewArticleSerialNumber : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewArticleSerialNumber() { }
@@ -36,55 +36,44 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, MinWidth = 200 });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("SerialNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), Expand = true, MinWidth = 200 });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("IsSold") { Title = "Vendido", Expand = false });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Status") { Title = "Estado", Expand = true, MinWidth = 150 });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Article") { ChildName = "IsComposed", Title = "Artigo Composto", Expand = false });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "Date", Title = "Data de Compra", Expand = true, FormatProvider = new FormatterDate() });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("StockMovimentIn")
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                Query = "SELECT Name as Result FROM erp_customer WHERE Oid = '{0}';",                
-                Title = "Fornecedor",
-                DecryptValue = true,
-                MinWidth = 100
-            });
-            
-            columnProperties.Add(new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "PurchasePrice", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_purchase_price"), Expand = false });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "DocumentNumber", Title = "Documento Origem", Expand = true });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("StockMovimentOut")
-            {
-                Query = "SELECT DocumentNumber as Result FROM fin_documentfinancemaster WHERE Oid = '{0}';",
-                Title = "Documento Venda",
-                DecryptValue = false,
-                MinWidth = 100
-            });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouse WHERE Oid = (SELECT Warehouse FROM fin_warehouselocation WHERE Oid = '{0}');", ChildName = "Warehouse",  Title = "Armazem", Expand = true });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouselocation WHERE Oid = '{0}';", ChildName = "Location", Title = "Localização", Expand = true });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
+                new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, MinWidth = 200 },
+                new GenericTreeViewColumnProperty("SerialNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), Expand = true, MinWidth = 200 },
+                new GenericTreeViewColumnProperty("IsSold") { Title = "Vendido", Expand = false },
+                new GenericTreeViewColumnProperty("Status") { Title = "Estado", Expand = true, MinWidth = 150 },
+                new GenericTreeViewColumnProperty("Article") { ChildName = "IsComposed", Title = "Artigo Composto", Expand = false },
+                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "Date", Title = "Data de Compra", Expand = true, FormatProvider = new FormatterDate() },
+                new GenericTreeViewColumnProperty("StockMovimentIn")
+                {
+                    Query = "SELECT Name as Result FROM erp_customer WHERE Oid = '{0}';",
+                    Title = "Fornecedor",
+                    DecryptValue = true,
+                    MinWidth = 100
+                },
+                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "PurchasePrice", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_purchase_price"), Expand = false },
+                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "DocumentNumber", Title = "Documento Origem", Expand = true },
+                new GenericTreeViewColumnProperty("StockMovimentOut")
+                {
+                    Query = "SELECT DocumentNumber as Result FROM fin_documentfinancemaster WHERE Oid = '{0}';",
+                    Title = "Documento Venda",
+                    DecryptValue = false,
+                    MinWidth = 100
+                },
+                new GenericTreeViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouse WHERE Oid = (SELECT Warehouse FROM fin_warehouselocation WHERE Oid = '{0}');", ChildName = "Warehouse", Title = "Armazem", Expand = true },
+                new GenericTreeViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouselocation WHERE Oid = '{0}';", ChildName = "Location", Title = "Localização", Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
 
             //Configure Criteria/XPCollection/Model
             //Default Criteria with XpoOidUndefinedRecord
-            CriteriaOperator criteria = pXpoCriteria;
+            CriteriaOperator criteria;
 
 
             // Override Criteria adding XpoOidHiddenRecordsFilter
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {
@@ -93,8 +82,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
 
-            var sortingCollection = new SortingCollection();
-            sortingCollection.Add(new SortProperty("UpdatedAt", DevExpress.Xpo.DB.SortingDirection.Descending));
+            var sortingCollection = new SortingCollection
+            {
+                new SortProperty("UpdatedAt", DevExpress.Xpo.DB.SortingDirection.Descending)
+            };
 
             int TopReturnedObj = 50;
             if(pSourceWindow.Title != logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")))

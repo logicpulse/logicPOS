@@ -44,9 +44,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         //Override Parent Template
         public override bool Print()
         {
-            bool result = false;
-            int copyNameIndex = 0;
-
+            bool result;
             try
             {
                 for (int i = 0; i < _copyNames.Count; i++)
@@ -57,11 +55,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     PrintExtendedHeader();
 
                     //Get CopyName Position, ex 0[Original], 4[Quadriplicate], we cant use I, else 0[Original], 1[Duplicate]
-                    copyNameIndex = _copyNames[i] + 1;
+                    int copyNameIndex = _copyNames[i] + 1;
                     //Overrided by Child Classes
                     _copyName = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_print_copy_title{0}", copyNameIndex));
                     if (_secondCopy && i < 1) _copyName = string.Format("{0}/{1}", _copyName, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_second_print"));
-                    //_log.Debug(String.Format("copyName: [{0}], copyNameIndex: [{1}]", _copyName, copyNameIndex));
+                    //_logger.Debug(String.Format("copyName: [{0}], copyNameIndex: [{1}]", _copyName, copyNameIndex));
 
                     //Call Child Content (Overrided)
                     PrintContent();
@@ -80,7 +78,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             }
             catch (Exception ex)
             {
-                _log.Debug("override bool Print() :: Thermal Printer: " + ex.Message, ex);
+                _logger.Debug("override bool Print() :: Thermal Printer: " + ex.Message, ex);
                 throw ex;
             }
 
@@ -192,12 +190,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
         protected void PrintDocumentPaymentDetails(string pPaymentCondition, string pPaymentMethod, string pCurrency)
         {
-            //Init DataTable
-            DataRow dataRow = null;
             DataTable dataTable = new DataTable();
             dataTable.Columns.Add(new DataColumn("Label", typeof(string)));
             dataTable.Columns.Add(new DataColumn("Value", typeof(string)));
 
+            //Init DataTable
+            DataRow dataRow;
             //Add Row : PaymentConditions
             if (!string.IsNullOrEmpty(pPaymentCondition))
             {
@@ -221,9 +219,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             dataTable.Rows.Add(dataRow);
 
             //Configure Ticket Column Properties
-            List<TicketColumn> columns = new List<TicketColumn>();
-            columns.Add(new TicketColumn("Label", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlign.Right));
-            columns.Add(new TicketColumn("Value", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlign.Left));
+            List<TicketColumn> columns = new List<TicketColumn>
+            {
+                new TicketColumn("Label", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlign.Right),
+                new TicketColumn("Value", "", _thermalPrinterGeneric.MaxCharsPerLineNormal / 2, TicketColumnsAlign.Left)
+            };
 
             //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
             TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormal);
@@ -355,7 +355,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 SettingsApp.SaftProductID
             );
 
-            string certificationText = string.Empty;
+            string certificationText;
 
             //Write Certification,CopyRight and License Text 
             if (SettingsApp.XpoOidConfigurationCountryPortugal.Equals(SettingsApp.ConfigurationSystemCountry.Oid))

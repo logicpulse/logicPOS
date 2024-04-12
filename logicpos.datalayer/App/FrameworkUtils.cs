@@ -9,7 +9,7 @@ namespace logicpos.datalayer.App
     public class FrameworkUtils
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static AppOperationMode GetAppMode()
         {
@@ -24,13 +24,13 @@ namespace logicpos.datalayer.App
                     CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(appOperationModeToken);
                     result = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), customAppOperationMode.AppOperationTheme); //TO DO
                     //result = (AppOperationMode)Enum.Parse(typeof(AppOperationMode), appOperationModeToken);
-                    _log.Debug("AppOperationMode GetAppMode() :: '" + appOperationModeToken + "' with '" + result + "' AppOperationMode");
+                    _logger.Debug("AppOperationMode GetAppMode() :: '" + appOperationModeToken + "' with '" + result + "' AppOperationMode");
                 }
             }
             catch (Exception ex)
             {
                 /* IN009036 */
-                _log.Error(String.Format("AppOperationMode GetAppMode() :: [{0}]: {1}", appOperationModeToken, ex.Message));
+                _logger.Error(String.Format("AppOperationMode GetAppMode() :: [{0}]: {1}", appOperationModeToken, ex.Message));
             }
 
             return result;
@@ -88,7 +88,7 @@ namespace logicpos.datalayer.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             if (result <= 0)
@@ -107,7 +107,7 @@ namespace logicpos.datalayer.App
         {
             if (pOid == new Guid())
             {
-                _log.Error(string.Format("GetXPGuidObject[{0}]: Invalid Guid: [{1}]", pXPGuidObjectType, pOid));
+                _logger.Error(string.Format("GetXPGuidObject[{0}]: Invalid Guid: [{1}]", pXPGuidObjectType, pOid));
             }
 
             try
@@ -119,7 +119,7 @@ namespace logicpos.datalayer.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -156,7 +156,7 @@ namespace logicpos.datalayer.App
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             };
 

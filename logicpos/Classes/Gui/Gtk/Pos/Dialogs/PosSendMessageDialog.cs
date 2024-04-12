@@ -8,11 +8,11 @@ using logicpos.resources.Resources.Localization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosSendMessageDialog : PosInputTextDialog
+    internal class PosSendMessageDialog : PosInputTextDialog
     {
         //UI EntryBox
-        private XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser> _entryBoxSelectUser;
-        private XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal> _entryBoxSelectTerminal;
+        private readonly XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser> _entryBoxSelectUser;
+        private readonly XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal> _entryBoxSelectTerminal;
         //Default Values
         private sys_userdetail _valueUser = null;
         public sys_userdetail ValueUser

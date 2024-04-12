@@ -18,7 +18,7 @@ using System.Threading;
 
 namespace logicpos.Classes.DataLayer
 {
-    class DataBaseBackupFileInfo
+    internal class DataBaseBackupFileInfo
     {
         private string _fileName = string.Empty;
         public string FileName
@@ -68,16 +68,16 @@ namespace logicpos.Classes.DataLayer
         }
     }
 
-    class DataBaseBackup
+    internal class DataBaseBackup
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //Enable Debug
-        private static bool _debug = false;
+        private static readonly bool _debug = false;
         //Settings
         private static string _backupConnectionString;
         private static string _fileExtension;
-        private static string _pathBackups = GlobalFramework.Path["backups"].ToString();
+        private static readonly string _pathBackups = GlobalFramework.Path["backups"].ToString();
         //Private Vars
         private static readonly Size _sizeDialog = new Size(800, 300);
 
@@ -140,7 +140,7 @@ namespace logicpos.Classes.DataLayer
 
                 XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, AutoCreateOption.None);
                 Session SessionXpoForBackupPurposes = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
-                _log.Debug(string.Format("bool Backup(Window pSourceWindow) :: Init XpoDefault.DataLayer [ {0} ]", SessionXpoForBackupPurposes.ToString()));
+                _logger.Debug(string.Format("bool Backup(Window pSourceWindow) :: Init XpoDefault.DataLayer [ {0} ]", SessionXpoForBackupPurposes.ToString()));
                 /* IN009164 - End */
 
                 //Initialize object before start Actions, to allocate database (automatic backups) and assign CreatedAt, this way next Terminal Skip Backup when trigger backup event
@@ -186,9 +186,9 @@ namespace logicpos.Classes.DataLayer
                         break;
                 }
                 /* IN007007 */
-                _log.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", GlobalFramework.DatabaseType, fileName, backupResult));
+                _logger.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", GlobalFramework.DatabaseType, fileName, backupResult));
 
-                if (_debug) _log.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", GlobalFramework.DatabaseType, fileName, backupResult));
+                if (_debug) _logger.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", GlobalFramework.DatabaseType, fileName, backupResult));
 
                 if (backupResult)
                 {
@@ -228,7 +228,7 @@ namespace logicpos.Classes.DataLayer
                         //Remove Temporary Backup
                         /* ERR201810#15 - Database backup issues */
                         //try { if (File.Exists(fileName)) { File.Delete(fileName); } }
-                        //catch (Exception ex) { _log.Error(ex.Message, ex); }
+                        //catch (Exception ex) { _logger.Error(ex.Message, ex); }
 
                         //Post Backup
                         FrameworkUtils.Audit("DATABASE_BACKUP", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_database_backup"),
@@ -256,7 +256,7 @@ namespace logicpos.Classes.DataLayer
                             logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
                         }
 
-                        _log.Debug($"DataBaseBackup.Backup(Window pSourceWindow): {string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
+                        _logger.Debug($"DataBaseBackup.Backup(Window pSourceWindow): {string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
                     }
                 }
                 else
@@ -270,8 +270,8 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error("bool Backup(Window pSourceWindow) :: Error during backup process: " + ex.Message, ex);
-                // _log.Error("bool Backup(Window pSourceWindow) :: Error during backup process on Session [ " + SessionXpoForBackupPurposes.ToString() + " ]: " + ex.Message, ex);
+                _logger.Error("bool Backup(Window pSourceWindow) :: Error during backup process: " + ex.Message, ex);
+                // _logger.Error("bool Backup(Window pSourceWindow) :: Error during backup process on Session [ " + SessionXpoForBackupPurposes.ToString() + " ]: " + ex.Message, ex);
                 // SessionXpoForBackupPurposes.Disconnect();
             }
             return backupResult;
@@ -304,7 +304,7 @@ namespace logicpos.Classes.DataLayer
                         fileInfo = GetSelectRecordFileName(pSourceWindow);
                         //Equal to Filename not FileNamePacked
                         fileNamePacked = fileInfo.FileNamePacked;
-                        if (_debug) _log.Debug(string.Format("RestoreBackup: FileNamePacked:[{0}], FileHashDB:[{1}], FileHashFile:[{2}] FileHashValid:[{3}]", fileInfo.FileNamePacked, fileInfo.FileHashDB, fileInfo.FileHashFile, fileInfo.FileHashValid));
+                        if (_debug) _logger.Debug(string.Format("RestoreBackup: FileNamePacked:[{0}], FileHashDB:[{1}], FileHashFile:[{2}] FileHashValid:[{3}]", fileInfo.FileNamePacked, fileInfo.FileHashDB, fileInfo.FileHashFile, fileInfo.FileHashValid));
                         if (fileInfo.Response != ResponseType.Cancel && !fileInfo.FileHashValid)
                         {
                             //#EQUAL#1
@@ -348,13 +348,13 @@ namespace logicpos.Classes.DataLayer
 
                 if (fileName != string.Empty)
                 {
-                    if (_debug) _log.Debug(string.Format("Restore Filename:[{0}] to pathBackups[{1}]", fileNamePacked, pathBackups));
+                    if (_debug) _logger.Debug(string.Format("Restore Filename:[{0}] to pathBackups[{1}]", fileNamePacked, pathBackups));
                     if (GlobalFramework.DatabaseType != DatabaseType.MSSqlServer)
                     {
                         // Old Method before PluginSoftwareVendor Implementation
                         //restoreResult = Utils.ZipUnPack(fileNamePacked, pathBackups, true);
                         restoreResult = GlobalFramework.PluginSoftwareVendor.RestoreBackup(SettingsApp.SecretKey, fileNamePacked, pathBackups, true);
-                        if (_debug) _log.Debug(string.Format("RestoreBackup: unpackResult:[{0}]", restoreResult));
+                        if (_debug) _logger.Debug(string.Format("RestoreBackup: unpackResult:[{0}]", restoreResult));
                     }
 
                     if (restoreResult || GlobalFramework.DatabaseType == DatabaseType.MSSqlServer)
@@ -433,7 +433,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
             finally
@@ -537,7 +537,7 @@ namespace logicpos.Classes.DataLayer
                 }
                 catch (Exception ex)
                 {
-                  _log.Error(ex.Message, ex);
+                  _logger.Error(ex.Message, ex);
                 }
               }
 
@@ -558,13 +558,12 @@ namespace logicpos.Classes.DataLayer
 
         private static string GetLatestValidBackupFileName()
         {
-            string fileName = string.Empty;
             string sql = @"SELECT FileName FROM sys_systembackup ORDER BY Version DESC;";
             SelectedData xpoSelectedDataSystemBackup = GlobalFramework.SessionXpo.ExecuteQuery(sql);
 
             foreach (SelectStatementResultRow item in xpoSelectedDataSystemBackup.ResultSet[0].Rows)
             {
-                fileName = item.Values[0].ToString();
+                string fileName = item.Values[0].ToString();
 
                 if (File.Exists(fileName))
                 {
@@ -621,7 +620,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return resultFileInfo;
@@ -650,7 +649,7 @@ namespace logicpos.Classes.DataLayer
         {
             string filenameSource = string.Format("{0}.db", GlobalFramework.DatabaseName);
             string filenameTarget = pFileName;
-            if (_debug) _log.Debug(string.Format("BackupSQLite filenameSource: [{0}] to filenameSource: [{1}]", filenameSource, filenameTarget));
+            if (_debug) _logger.Debug(string.Format("BackupSQLite filenameSource: [{0}] to filenameSource: [{1}]", filenameSource, filenameTarget));
 
             try
             {
@@ -659,7 +658,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
             finally
@@ -673,7 +672,7 @@ namespace logicpos.Classes.DataLayer
         {
             string filenameSource = pFileName;
             string filenameTarget = string.Format("{0}.db", GlobalFramework.DatabaseName);
-            if (_debug) _log.Debug(string.Format("BackupSQLite filenameSource: [{0}] to filenameSource: [{1}]", filenameSource, filenameTarget));
+            if (_debug) _logger.Debug(string.Format("BackupSQLite filenameSource: [{0}] to filenameSource: [{1}]", filenameSource, filenameTarget));
 
             try
             {
@@ -684,7 +683,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
             finally
@@ -705,7 +704,7 @@ namespace logicpos.Classes.DataLayer
         {
             try
             {
-                _log.Debug(string.Format("BackupMSSqlServer() :: pFileName: {0}", pFileName));
+                _logger.Debug(string.Format("BackupMSSqlServer() :: pFileName: {0}", pFileName));
 
                 string sql = string.Format(@"
                   BACKUP DATABASE {0} TO DISK='{1}';"
@@ -717,7 +716,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error(string.Format("BackupMSSqlServer() :: Error during backup process execution: ", ex.Message), ex);
+                _logger.Error(string.Format("BackupMSSqlServer() :: Error during backup process execution: ", ex.Message), ex);
                 /* IN007007 */
                 return false;
             }
@@ -744,7 +743,7 @@ namespace logicpos.Classes.DataLayer
                   , GlobalFramework.DatabaseName
                   , pFileName
                 );
-                //_log.Debug(string.Format("RestoreMSSqlServer.sql: [{0}]", sql));
+                //_logger.Debug(string.Format("RestoreMSSqlServer.sql: [{0}]", sql));
 
                 GlobalFramework.SessionXpo.ExecuteScalar(sql);
 
@@ -763,7 +762,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 //throw;
                 return false;
             }
@@ -780,7 +779,7 @@ namespace logicpos.Classes.DataLayer
         //The folder holding the file must have appropriate permissions given
         private static bool BackupMSSqlServer(string pConnectionString, string pFileName)
         {
-          if (_debug) _log.Debug(string.Format("BackupMSSqlServer fileName: [{0}]", pFileName));
+          if (_debug) _logger.Debug(string.Format("BackupMSSqlServer fileName: [{0}]", pFileName));
 
           try
           {
@@ -806,14 +805,14 @@ namespace logicpos.Classes.DataLayer
           }
           catch (Exception ex)
           {
-            _log.Error(ex.Message, ex);
+            _logger.Error(ex.Message, ex);
             return false;
           }
         }
 
         private static bool RestoreMSSqlServer(string pConnectionString, string pFileName)
         {
-          if (_debug) _log.Debug(string.Format("RestoreMSSqlServer fileName: [{0}]", pFileName));
+          if (_debug) _logger.Debug(string.Format("RestoreMSSqlServer fileName: [{0}]", pFileName));
 
           try
           {
@@ -841,7 +840,7 @@ namespace logicpos.Classes.DataLayer
           }
           catch (Exception ex)
           {
-            _log.Error(ex.Message, ex);
+            _logger.Error(ex.Message, ex);
             return false;
           }
         }
@@ -852,7 +851,7 @@ namespace logicpos.Classes.DataLayer
 
         private static bool BackupMySql(string pConnectionString, string pFileName)
         {
-            if (_debug) _log.Debug(string.Format("BackupMySql fileName: [{0}]", pFileName));
+            if (_debug) _logger.Debug(string.Format("BackupMySql fileName: [{0}]", pFileName));
 
             try
             {
@@ -874,7 +873,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
             finally
@@ -886,7 +885,7 @@ namespace logicpos.Classes.DataLayer
 
         private static bool RestoreMySql(string pConnectionString, string pFileName)
         {
-            if (_debug) _log.Debug(string.Format("RestoreMySql fileName: [{0}]", pFileName));
+            if (_debug) _logger.Debug(string.Format("RestoreMySql fileName: [{0}]", pFileName));
 
             try
             {
@@ -908,7 +907,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
             finally
@@ -923,7 +922,7 @@ namespace logicpos.Classes.DataLayer
 
         public static DateTime GetLastBackupDate()
         {
-            _log.Debug("DateTime GetLastBackupDate()");
+            _logger.Debug("DateTime GetLastBackupDate()");
             DateTime result = DateTime.Now;
             /* IN009068 - logs to track the cause of the issue. #TODO: pending implementation to solve the issue definitively */
             try
@@ -947,7 +946,7 @@ namespace logicpos.Classes.DataLayer
             }
             catch (Exception ex)
             {
-                _log.Error("DateTime DataBaseBackup.GetLastBackupDate() :: " + ex.Message, ex);
+                _logger.Error("DateTime DataBaseBackup.GetLastBackupDate() :: " + ex.Message, ex);
                 throw ex;
             }
             return result;

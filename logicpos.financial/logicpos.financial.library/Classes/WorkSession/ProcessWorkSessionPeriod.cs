@@ -19,7 +19,7 @@ namespace logicpos.financial.library.Classes.WorkSession
     public class ProcessWorkSessionPeriod
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static pos_worksessionperiod GetSessionPeriod(WorkSessionPeriodType pWorkSessionPeriodType)
         {
@@ -86,7 +86,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
         }
@@ -126,7 +126,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
             return result;
@@ -232,14 +232,14 @@ namespace logicpos.financial.library.Classes.WorkSession
                     {
                         //Rollback
                         uowSession.RollbackTransaction();
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                         return false;
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
         }
@@ -258,7 +258,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -276,7 +276,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -367,11 +367,11 @@ namespace logicpos.financial.library.Classes.WorkSession
 
                     string sql = string.Format(sqlShared, string.Format("(({0}) {1})", sqlWhereTypeTotal, sqlWherePeriod));
                     resultTotal = Convert.ToDecimal(pSession.ExecuteScalar(sql));
-                    //_log.Debug(string.Format("pMovementTypeTotal: [{0}], resultTotal: [{1}], sql: [{2}]", pMovementTypeTotal, resultTotal, sql));
+                    //_logger.Debug(string.Format("pMovementTypeTotal: [{0}], resultTotal: [{1}], sql: [{2}]", pMovementTypeTotal, resultTotal, sql));
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
             return resultTotal;
@@ -379,7 +379,6 @@ namespace logicpos.financial.library.Classes.WorkSession
 
         public static string GetSessionPeriodMovementTotalDebug(pos_worksessionperiod pWorkSessionPeriod, bool pOutputToLog)
         {
-            string result = String.Empty;
             string resultDetail = string.Format("WorkSessionPeriod:[{0}] Type:[{1}]", pWorkSessionPeriod.Oid, pWorkSessionPeriod.PeriodType);
             string resultValues = String.Empty;
             string resultFields = String.Empty;
@@ -390,8 +389,8 @@ namespace logicpos.financial.library.Classes.WorkSession
                 resultValues += string.Format("{0}\t", GetSessionPeriodMovementTotal(pWorkSessionPeriod, typeTotal).ToString());
             }
 
-            result = string.Format("{0}{1}{2}{3}{4}{5}{6}", Environment.NewLine, resultDetail, Environment.NewLine, resultFields, Environment.NewLine, resultValues, Environment.NewLine);
-            if (pOutputToLog) _log.Debug(result);
+            string result = string.Format("{0}{1}{2}{3}{4}{5}{6}", Environment.NewLine, resultDetail, Environment.NewLine, resultFields, Environment.NewLine, resultValues, Environment.NewLine);
+            if (pOutputToLog) _logger.Debug(result);
 
             return result;
         }
@@ -432,7 +431,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             );
 
             decimal resultAmount = Convert.ToDecimal(pSession.ExecuteScalar(sql));
-            //_log.Debug(string.Format("pMoventTypeToken sql: [{0}]", sql));
+            //_logger.Debug(string.Format("pMoventTypeToken sql: [{0}]", sql));
 
             return resultAmount;
         }
@@ -524,13 +523,13 @@ namespace logicpos.financial.library.Classes.WorkSession
 
                 //Final Query
                 sqlCashDrawerAmount = string.Format(sqlCashDrawerAmount, whereClose, wherePeriod);
-                //_log.Debug(string.Format("sqlCashDrawerAmount: [{0}]", sqlCashDrawerAmount));
+                //_logger.Debug(string.Format("sqlCashDrawerAmount: [{0}]", sqlCashDrawerAmount));
                 var cashDrawerAmount = GlobalFramework.SessionXpo.ExecuteScalar(sqlCashDrawerAmount);
                 result = (cashDrawerAmount != null) ? Convert.ToDecimal(cashDrawerAmount) : 0.0m;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -564,11 +563,13 @@ namespace logicpos.financial.library.Classes.WorkSession
                 }
             }
 
-            Hashtable resultHashTable = new Hashtable();
-            resultHashTable.Add("totalMoneyInCashDrawerOnOpen", totalMoneyInCashDrawerOnOpen);
-            resultHashTable.Add("totalMoneyInCashDrawer", totalMoneyInCashDrawer);
-            resultHashTable.Add("totalMoneyIn", totalMoneyIn);
-            resultHashTable.Add("totalMoneyOut", totalMoneyOut);
+            Hashtable resultHashTable = new Hashtable
+            {
+                { "totalMoneyInCashDrawerOnOpen", totalMoneyInCashDrawerOnOpen },
+                { "totalMoneyInCashDrawer", totalMoneyInCashDrawer },
+                { "totalMoneyIn", totalMoneyIn },
+                { "totalMoneyOut", totalMoneyOut }
+            };
 
             return resultHashTable;
         }
@@ -582,7 +583,7 @@ namespace logicpos.financial.library.Classes.WorkSession
         //    WorkSessionPeriod workSessionPeriod = GlobalFramework.SessionXpo.GetObjectByKey<WorkSessionPeriod>(workSessionPeriodOid);
         //    foreach (WorkSessionPeriodTotal item in workSessionPeriod.TotalPeriod)
         //    {
-        //      _log.Debug(string.Format("Message: [{0}]", item.Total));
+        //      _logger.Debug(string.Format("Message: [{0}]", item.Total));
         //    }
         //    //WorkSessionPeriodTotal  WorkSessionPeriodTotal = GlobalFramework.SessionXpo.GetObjectByKey<WorkSessionPeriodTotal>(workSessionPeriodOid);
         //    return 1.0m;

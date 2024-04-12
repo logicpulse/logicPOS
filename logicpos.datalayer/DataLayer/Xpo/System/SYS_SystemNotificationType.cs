@@ -9,14 +9,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemnotificationtype() : base() { }
         public sys_systemnotificationtype(Session session) : base(session) { }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -24,7 +24,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -32,7 +32,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fMessage;
+        private string fMessage;
         [Indexed(Unique = true), Size(255)]
         public string Message
         {
@@ -41,21 +41,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Days to Show Notification
-        int fWarnDaysBefore;
+        private int fWarnDaysBefore;
         public int WarnDaysBefore
         {
             get { return fWarnDaysBefore; }
             set { SetPropertyValue<int>("WarnDaysBefore", ref fWarnDaysBefore, value); }
         }
 
-        sys_userdetail fUserTarget;
+        private sys_userdetail fUserTarget;
         public sys_userdetail UserTarget
         {
             get { return fUserTarget; }
             set { SetPropertyValue<sys_userdetail>("UserTarget", ref fUserTarget, value); }
         }
 
-        pos_configurationplaceterminal fTerminalTarget;
+        private pos_configurationplaceterminal fTerminalTarget;
         public pos_configurationplaceterminal TerminalTarget
         {
             get { return fTerminalTarget; }

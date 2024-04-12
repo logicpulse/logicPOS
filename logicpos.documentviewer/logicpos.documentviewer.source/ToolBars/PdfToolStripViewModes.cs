@@ -8,7 +8,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 	/// </summary>
 	public class PdfToolStripViewModes : PdfToolStrip
 	{
-        int _tilesCount = -1;
+        private int _tilesCount = -1;
 		#region Overriding
 		/// <summary>
 		/// Create all buttons and add its into toolbar. Override this method to create custom buttons

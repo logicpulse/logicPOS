@@ -11,7 +11,7 @@ namespace logicpos.shared.Classes.Utils
     public class Utils
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //DotNetZipLib Helper Classes
@@ -48,12 +48,12 @@ namespace logicpos.shared.Classes.Utils
                     {
                         if (File.Exists(pFiles[i]))
                         {
-                            if (debug) _log.Debug(string.Format("Add File:[{0}] to Zip:[{1}]", pFiles[i], pDestinationFileName));
+                            if (debug) _logger.Debug(string.Format("Add File:[{0}] to Zip:[{1}]", pFiles[i], pDestinationFileName));
                             zip.AddFile(pFiles[i], System.IO.Path.GetDirectoryName(pFiles[i]));
                         }
                         else
                         {
-                            if (debug) _log.Debug(string.Format("Error Adding File:[{0}] to Zip:[{1}]. Cant Find the File", pFiles[i], pDestinationFileName));
+                            if (debug) _logger.Debug(string.Format("Error Adding File:[{0}] to Zip:[{1}]. Cant Find the File", pFiles[i], pDestinationFileName));
                         }
                     }
 
@@ -67,7 +67,7 @@ namespace logicpos.shared.Classes.Utils
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 result = false;
             }
             return result;
@@ -97,7 +97,7 @@ namespace logicpos.shared.Classes.Utils
 
                     foreach (ZipEntry e in zip)
                     {
-                        if (debug) _log.Debug(string.Format("Extract file: [{0}] from [{1}] to destinationPath: [{2}]", e.FileName, pFileName, pDestinationPath));
+                        if (debug) _logger.Debug(string.Format("Extract file: [{0}] from [{1}] to destinationPath: [{2}]", e.FileName, pFileName, pDestinationPath));
                         e.ExtractWithPassword(pDestinationPath, pExtractExistingFileAction, pPassword);
                     }
                     result = true;
@@ -105,7 +105,7 @@ namespace logicpos.shared.Classes.Utils
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 result = false;
             }
             return result;
@@ -265,7 +265,7 @@ namespace logicpos.shared.Classes.Utils
             }
             catch (Exception ex)
             {
-                _log.Debug(ex.Message, ex);
+                _logger.Debug(ex.Message, ex);
             }
 
             return result;

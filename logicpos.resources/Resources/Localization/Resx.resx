@@ -229,7 +229,7 @@ Or select '{2}' to start POS on default '1024x768' mode.</value>
   <data name="audit_message_table_unreserved" xml:space="preserve">
     <value>Table Unreserved: {0}</value>
   </data>
-  <data name="audit_message_used_forced_logout" xml:space="preserve">
+  <data name="audit_message_used_forced_loggerout" xml:space="preserve">
     <value>Application Closed, Forced Logout of User: {0}</value>
   </data>
   <data name="audit_message_user_change" xml:space="preserve">
@@ -238,13 +238,13 @@ Or select '{2}' to start POS on default '1024x768' mode.</value>
   <data name="audit_message_user_change_password" xml:space="preserve">
     <value>User Changed Password: {0}</value>
   </data>
-  <data name="audit_message_user_login" xml:space="preserve">
+  <data name="audit_message_user_loggerin" xml:space="preserve">
     <value>User Logged In: {0}</value>
   </data>
-  <data name="audit_message_user_login_error" xml:space="preserve">
+  <data name="audit_message_user_loggerin_error" xml:space="preserve">
     <value>User Login Error: {0}</value>
   </data>
-  <data name="audit_message_user_logout" xml:space="preserve">
+  <data name="audit_message_user_loggerout" xml:space="preserve">
     <value>User Logged Out: {0}</value>
   </data>
   <data name="backoffice_datetime_format_status_bar" xml:space="preserve">
@@ -698,7 +698,7 @@ You can't issue finance documents with dates smaller than system date!</value>
 
 This record is necessary for the proper functioning of the application!</value>
   </data>
-  <data name="dialog_message_user_profile_changed_request_logoff" xml:space="preserve">
+  <data name="dialog_message_user_profile_changed_request_loggeroff" xml:space="preserve">
     <value>The currently registered user profile was changed!
 
 To apply changes, you have logout and login to apply this profile privileges!</value>
@@ -813,7 +813,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="global_application_close" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="global_application_logout_user" xml:space="preserve">
+  <data name="global_application_loggerout_user" xml:space="preserve">
     <value>LogOut</value>
   </data>
   <data name="global_application_main_menu" xml:space="preserve">
@@ -1650,7 +1650,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="global_load_first_time" xml:space="preserve">
     <value>Creating POS Database...</value>
   </data>
-  <data name="global_login" xml:space="preserve">
+  <data name="global_loggerin" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="global_maintenance" xml:space="preserve">
@@ -1847,7 +1847,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="global_printer_thermal_encoding" xml:space="preserve">
     <value>Encoding</value>
   </data>
-  <data name="global_printer_thermal_image_company_logo" xml:space="preserve">
+  <data name="global_printer_thermal_image_company_loggero" xml:space="preserve">
     <value>File of Company Logo</value>
   </data>
   <data name="global_printer_thermal_max_chars_per_line_normal" xml:space="preserve">
@@ -1875,7 +1875,7 @@ To continue press Yes to close all terminals, or press No and close all terminal
     <value>Total in {0}</value>
     <comment>When printing the invoice total thermal-printer printed, this shows the default currency and total amount already converted, for the countries where this is required (Mozambique, for example).</comment>
   </data>
-  <data name="global_printer_thermal_print_logo" xml:space="preserve">
+  <data name="global_printer_thermal_print_loggero" xml:space="preserve">
     <value>Print Company Logo</value>
   </data>
   <data name="global_printer_type" xml:space="preserve">
@@ -2952,10 +2952,10 @@ To proceed you must change the old password!</value>
   <data name="prefparam_path_saftpt" xml:space="preserve">
     <value>Path :: Saft Export</value>
   </data>
-  <data name="prefparam_report_filename_logo" xml:space="preserve">
+  <data name="prefparam_report_filename_loggero" xml:space="preserve">
     <value>Report :: Logo FileName</value>
   </data>
-  <data name="prefparam_report_filename_logo_small" xml:space="preserve">
+  <data name="prefparam_report_filename_loggero_small" xml:space="preserve">
     <value>Report :: Logo FileName Small</value>
   </data>
   <data name="prefparam_report_footer_line1" xml:space="preserve">
@@ -3030,7 +3030,7 @@ To proceed you must change the old password!</value>
   <data name="prefparam_system_currency" xml:space="preserve">
     <value>Currency :: System Currency</value>
   </data>
-  <data name="prefparam_ticket_filename_logo" xml:space="preserve">
+  <data name="prefparam_ticket_filename_loggero" xml:space="preserve">
     <value>Ticket :: Logo FileName</value>
   </data>
   <data name="prefparam_ticket_footer_line1" xml:space="preserve">
@@ -3396,7 +3396,7 @@ To proceed you must change the old password!</value>
   <data name="widget_pospinpad_change_password" xml:space="preserve">
     <value>Reset</value>
   </data>
-  <data name="widget_pospinpad_login" xml:space="preserve">
+  <data name="widget_pospinpad_loggerin" xml:space="preserve">
     <value>Enter</value>
   </data>
   <data name="widget_pospinpad_ok" xml:space="preserve">
@@ -3843,7 +3843,7 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   <data name="global_email_separator" xml:space="preserve">
     <value>Email (for multiple emails use the comma. Ex. 123@123.pt,test@test.pt)</value>
   </data>
-  <data name="change_log" xml:space="preserve">
+  <data name="change_logger" xml:space="preserve">
     <value>Changelog</value>
   </data>
   <data name="global_minimum_stock" xml:space="preserve">

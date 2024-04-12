@@ -2,6 +2,7 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     //KeyBoardPad UI Widget
-    class KeyBoardPad : Box
+    internal class KeyBoardPad : Box
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Public Properties
         public PosKeyboardDialog ParentDialog { get; set; }
@@ -32,9 +33,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Private Members
-        private String _fontKeyboardPadTextEntry = GlobalFramework.Settings["fontKeyboardPadTextEntry"];
-        private VirtualKeyBoard _virtualKeyBoard;
-        private int _spacing = 10;
+        private readonly String _fontKeyboardPadTextEntry = GlobalFramework.Settings["fontKeyboardPadTextEntry"];
+        private readonly VirtualKeyBoard _virtualKeyBoard;
+        private readonly int _spacing = 10;
         private bool _isCapsEnabled = false;
         private String _activeDiacritical;
         private ModifierKeys _activeModifierKey = ModifierKeys.None;
@@ -84,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 for (int j = 0; j < currentKeyboardRow.Count; j++)
                 {
                     //Debug
-                    //_log.Debug(string.Format("InitVirtualKeyboard(): tmpKey{0}:{1}:{2}", i, j, currentKey.L1.Glyph));
+                    //_logger.Debug(string.Format("InitVirtualKeyboard(): tmpKey{0}:{1}:{2}", i, j, currentKey.L1.Glyph));
 
                     currentKey = currentKeyboardRow[j];
 
@@ -120,7 +121,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _textEntry = new EntryValidation();
             _textEntry.ModifyFont(fontDescriptiontextEntry);
             //Change Selected Text, when looses entry focus
-            _textEntry.ModifyBase(StateType.Active, logicpos.Utils.ColorToGdkColor(Color.Gray));
+            _textEntry.ModifyBase(StateType.Active, Color.Gray.ToGdkColor());
             //Final Pack KeyBoard + TextEntry
             VBox vboxResult = new VBox(false, _spacing);
             vboxResult.PackStart(_textEntry);
@@ -133,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             return vboxResult;
         }
 
-        void KeyBoardPad_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void KeyBoardPad_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
@@ -155,8 +156,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             List<VirtualKey> currentKeyboardRow;
             VirtualKey currentKey;
             Char charKey;
-            Color _colorKeyboardPadKeyDefaultFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorKeyboardPadKeyDefaultFont"]);
-            Color _colorKeyboardPadKeySecondaryFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorKeyboardPadKeySecondaryFont"]);
+            Color _colorKeyboardPadKeyDefaultFont = GlobalFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
+            Color _colorKeyboardPadKeySecondaryFont = GlobalFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
 
             //loop rows
             for (int i = 0; i < _virtualKeyBoard.KeyBoard.Count; i++)
@@ -255,14 +256,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         if (_activeModifierKey != ModifierKeys.Shift)
                         {
                             //ExChange Font Color, Highlight L1
-                            currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
-                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
+                            currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeyDefaultFont.ToGdkColor());
+                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal, _colorKeyboardPadKeySecondaryFont.ToGdkColor());
                         }
                         else
                         {
                             //ExChange Font Color, Highlight L2
-                            currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
-                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
+                            currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeySecondaryFont.ToGdkColor());
+                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal,_colorKeyboardPadKeyDefaultFont.ToGdkColor());
                         };
                     };
                 }
@@ -297,7 +298,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void keyboardPadKey_Clicked(object sender, EventArgs e)
         {
             KeyboardPadKey vKey = (KeyboardPadKey)sender;
-            VirtualKeyProperties vKeyProperties = null;
             Char _unicodeChar;
             bool _requireUpdate = false;
             bool _skipInsert = false;
@@ -308,6 +308,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _textEntry.GetSelectionBounds(out selectionStart, out selectionEnd);
             if (selectionStart > 0 || selectionEnd > 0) _textEntry.DeleteSelection();
 
+            VirtualKeyProperties vKeyProperties;
             //Get Level and Assign Level Properties to current vKeyProperties
             switch (_activeModifierKey)
             {
@@ -368,7 +369,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                         catch (Exception ex)
                         {
-                            _log.Error(ex.Message, ex);
+                            _logger.Error(ex.Message, ex);
                         }
                     }
                     else
@@ -469,7 +470,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     };
 
                     //Debug
-                    //_log.Debug(string.Format("keyboardKey_Clicked(): L1.Glyph:[{1}] L1.UnicodeId:[{2}] L1.CharacterName:[{3}] unicodeChar[{4}]", vKey.Properties.Type, vKeyProperties.Glyph, vKeyProperties.UnicodeId, vKeyProperties.CharacterName, _unicodeChar));
+                    //_logger.Debug(string.Format("keyboardKey_Clicked(): L1.Glyph:[{1}] L1.UnicodeId:[{2}] L1.CharacterName:[{3}] unicodeChar[{4}]", vKey.Properties.Type, vKeyProperties.Glyph, vKeyProperties.UnicodeId, vKeyProperties.CharacterName, _unicodeChar));
 
                     //Add to TextEntry
                     _tempCursorPosition = _textEntry.Position;
@@ -508,56 +509,57 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public static string ReplaceDiacritial(string pInput) 
         {
             string result = pInput;
-            Dictionary<string,string> replace = new Dictionary<string,string>();
-            
-            //Important this chars are not equal, ex ("ã", "ã") in real is ("a~", "ã"), this is the trick to a good replacement
+            Dictionary<string,string> replace = new Dictionary<string, string>
+            {
+                //Important this chars are not equal, ex ("ã", "ã") in real is ("a~", "ã"), this is the trick to a good replacement
 
-            // ´ : From VirtualKeyboard > ÁÉÍÓÚ áéíóú
-            replace.Add("Á", "Á");//A´
-            replace.Add("É", "É");//E´
-            replace.Add("Í", "Í");//I´
-            replace.Add("Ó", "Ó");//O´
-            replace.Add("Ú", "Ú");//U´
-            replace.Add("á", "á");//a´
-            replace.Add("é", "é");//e´
-            replace.Add("í", "í");//i´
-            replace.Add("ó", "ó");//o´
-            replace.Add("ú", "ú");//u´
-            //  : From VirtualKeyboard > ÀÈÌÒÙ àèìòù
-            replace.Add("À", "À");//A
-            replace.Add("È", "È");//E
-            replace.Add("Ì", "Ì");//I
-            replace.Add("Ò", "Ò");//O
-            replace.Add("Ù", "Ù");//U
-            replace.Add("à", "à");//a
-            replace.Add("è", "è");//e
-            replace.Add("ì", "ì");//i
-            replace.Add("ò", "ò");//o
-            replace.Add("ù", "ù");//u
-            // ^ : From VirtualKeyboard > ÂÊÎÔÛ âêîôû
-            replace.Add("Â", "Â");//A^
-            replace.Add("Ê", "Ê");//E^
-            replace.Add("Î", "Î");//I^
-            replace.Add("Ô", "Ô");//O^
-            replace.Add("Û", "Û");//U^
-            replace.Add("â", "â");//a^
-            replace.Add("ê", "ê");//e^
-            replace.Add("î", "î");//i^
-            replace.Add("ô", "ô");//o^
-            replace.Add("û", "û");//u^
-            // ~ : From VirtualKeyboard > ÃẼĨÕŨÑ ãẽĩõũñ
-            replace.Add("Ã", "Ã");//A~
-            replace.Add("Ẽ", "E");//E~
-            replace.Add("Ĩ", "I");//I~
-            replace.Add("Õ", "Õ");//O~
-            replace.Add("Ũ", "U");//U~
-            replace.Add("Ñ", "Ñ");//N~
-            replace.Add("ã", "ã");//a~
-            replace.Add("ẽ", "e");//e~
-            replace.Add("ĩ", "i");//i~
-            replace.Add("õ", "õ");//o~
-            replace.Add("ũ", "u");//u~
-            replace.Add("ñ", "ñ");//n~
+                // ´ : From VirtualKeyboard > ÁÉÍÓÚ áéíóú
+                { "Á", "Á" },//A´
+                { "É", "É" },//E´
+                { "Í", "Í" },//I´
+                { "Ó", "Ó" },//O´
+                { "Ú", "Ú" },//U´
+                { "á", "á" },//a´
+                { "é", "é" },//e´
+                { "í", "í" },//i´
+                { "ó", "ó" },//o´
+                { "ú", "ú" },//u´
+                              //  : From VirtualKeyboard > ÀÈÌÒÙ àèìòù
+                { "À", "À" },//A
+                { "È", "È" },//E
+                { "Ì", "Ì" },//I
+                { "Ò", "Ò" },//O
+                { "Ù", "Ù" },//U
+                { "à", "à" },//a
+                { "è", "è" },//e
+                { "ì", "ì" },//i
+                { "ò", "ò" },//o
+                { "ù", "ù" },//u
+                              // ^ : From VirtualKeyboard > ÂÊÎÔÛ âêîôû
+                { "Â", "Â" },//A^
+                { "Ê", "Ê" },//E^
+                { "Î", "Î" },//I^
+                { "Ô", "Ô" },//O^
+                { "Û", "Û" },//U^
+                { "â", "â" },//a^
+                { "ê", "ê" },//e^
+                { "î", "î" },//i^
+                { "ô", "ô" },//o^
+                { "û", "û" },//u^
+                              // ~ : From VirtualKeyboard > ÃẼĨÕŨÑ ãẽĩõũñ
+                { "Ã", "Ã" },//A~
+                { "Ẽ", "E" },//E~
+                { "Ĩ", "I" },//I~
+                { "Õ", "Õ" },//O~
+                { "Ũ", "U" },//U~
+                { "Ñ", "Ñ" },//N~
+                { "ã", "ã" },//a~
+                { "ẽ", "e" },//e~
+                { "ĩ", "i" },//i~
+                { "õ", "õ" },//o~
+                { "ũ", "u" },//u~
+                { "ñ", "ñ" }//n~
+            };
 
             foreach (var item in replace)
 	        {

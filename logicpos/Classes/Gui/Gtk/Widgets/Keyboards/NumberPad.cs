@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class NumberPad : Box
+    internal class NumberPad : Box
     {
         //Private Members
         private Table _table;
@@ -88,9 +88,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             buttonKeyCE.Clicked += buttonKey_Clicked;
         }
 
-        void buttonKey_Clicked(object sender, EventArgs e)
+        private void buttonKey_Clicked(object sender, EventArgs e)
         {
-            if (Clicked != null) Clicked(sender, e);
+            Clicked?.Invoke(sender, e);
         }
     }
 }

@@ -11,21 +11,21 @@ using System.Text.RegularExpressions;
 /// </summary>
 public class ExpressionEvaluator
 {
-    private static Regex varOrFunctionRegEx = new Regex(@"^(?<inObject>(?<nullConditional>[?])?\.)?(?<name>[a-zA-Z_][a-zA-Z0-9_]*)\s*(?<isfunction>[(])?", RegexOptions.IgnoreCase);
-    private static Regex numberRegex = new Regex(@"^(?<sign>[+-])?\d+(?<hasdecimal>\.?\d+(e[+-]?\d+)?)?(?<type>ul|[fdulm])?", RegexOptions.IgnoreCase);
-    private static Regex stringBeginningRegex = new Regex("^(?<interpolated>[$])?(?<escaped>[@])?[\"]");
-    private static Regex castRegex = new Regex(@"^\(\s*(?<typeName>[a-zA-Z_][a-zA-Z0-9_\.\[\]<>]*[?]?)\s*\)");
-    private static Regex indexingBeginningRegex = new Regex(@"^[?]?\[");
-    private static Regex primaryTypesRegex = new Regex(@"(?<=^|[^a-zA-Z_])(?<primaryType>object|string|bool[?]?|byte[?]?|char[?]?|decimal[?]?|double[?]?|short[?]?|int[?]?|long[?]?|sbyte[?]?|float[?]?|ushort[?]?|uint[?]?|void)(?=[^a-zA-Z_]|$)");
-    private static Regex endOfStringWithDollar = new Regex("^[^\"{]*[\"{]");
-    private static Regex endOfStringWithoutDollar = new Regex("^[^\"]*[\"]");
-    private static Regex endOfStringInterpolationRegex = new Regex("^[^}\"]*[}\"]");
-    private static Regex stringBeginningForEndBlockRegex = new Regex("[$]?[@]?[\"]$");
-    private static Regex lambdaExpressionRegex = new Regex(@"^\s*(?<args>(\s*[(]\s*([a-zA-Z_][a-zA-Z0-9_]*\s*([,]\s*[a-zA-Z_][a-zA-Z0-9_]*\s*)*)?[)])|[a-zA-Z_][a-zA-Z0-9_]*)\s*=>(?<expression>.*)$");
-    private static Regex lambdaArgRegex = new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*");
+    private static readonly Regex varOrFunctionRegEx = new Regex(@"^(?<inObject>(?<nullConditional>[?])?\.)?(?<name>[a-zA-Z_][a-zA-Z0-9_]*)\s*(?<isfunction>[(])?", RegexOptions.IgnoreCase);
+    private static readonly Regex numberRegex = new Regex(@"^(?<sign>[+-])?\d+(?<hasdecimal>\.?\d+(e[+-]?\d+)?)?(?<type>ul|[fdulm])?", RegexOptions.IgnoreCase);
+    private static readonly Regex stringBeginningRegex = new Regex("^(?<interpolated>[$])?(?<escaped>[@])?[\"]");
+    private static readonly Regex castRegex = new Regex(@"^\(\s*(?<typeName>[a-zA-Z_][a-zA-Z0-9_\.\[\]<>]*[?]?)\s*\)");
+    private static readonly Regex indexingBeginningRegex = new Regex(@"^[?]?\[");
+    private static readonly Regex primaryTypesRegex = new Regex(@"(?<=^|[^a-zA-Z_])(?<primaryType>object|string|bool[?]?|byte[?]?|char[?]?|decimal[?]?|double[?]?|short[?]?|int[?]?|long[?]?|sbyte[?]?|float[?]?|ushort[?]?|uint[?]?|void)(?=[^a-zA-Z_]|$)");
+    private static readonly Regex endOfStringWithDollar = new Regex("^[^\"{]*[\"{]");
+    private static readonly Regex endOfStringWithoutDollar = new Regex("^[^\"]*[\"]");
+    private static readonly Regex endOfStringInterpolationRegex = new Regex("^[^}\"]*[}\"]");
+    private static readonly Regex stringBeginningForEndBlockRegex = new Regex("[$]?[@]?[\"]$");
+    private static readonly Regex lambdaExpressionRegex = new Regex(@"^\s*(?<args>(\s*[(]\s*([a-zA-Z_][a-zA-Z0-9_]*\s*([,]\s*[a-zA-Z_][a-zA-Z0-9_]*\s*)*)?[)])|[a-zA-Z_][a-zA-Z0-9_]*)\s*=>(?<expression>.*)$");
+    private static readonly Regex lambdaArgRegex = new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*");
 
-    private static BindingFlags instanceBindingFlag = (BindingFlags.Default | BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-    private static BindingFlags staticBindingFlag = (BindingFlags.Default | BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static);
+    private static readonly BindingFlags instanceBindingFlag = (BindingFlags.Default | BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+    private static readonly BindingFlags staticBindingFlag = (BindingFlags.Default | BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Static);
 
     public static Dictionary<string, Type> PrimaryTypesDict = new Dictionary<string, Type>()
     {
@@ -60,7 +60,7 @@ public class ExpressionEvaluator
         { "void", typeof(void) }
     };
 
-    private static Dictionary<string, Func<string, object>> numberSuffixToParse = new Dictionary<string, Func<string, object>>()
+    private static readonly Dictionary<string, Func<string, object>> numberSuffixToParse = new Dictionary<string, Func<string, object>>()
     {
         { "f", number => float.Parse(number, NumberStyles.Any, CultureInfo.InvariantCulture) },
         { "d", number => double.Parse(number, NumberStyles.Any, CultureInfo.InvariantCulture) },
@@ -70,7 +70,7 @@ public class ExpressionEvaluator
         { "m", number => decimal.Parse(number, NumberStyles.Any, CultureInfo.InvariantCulture) }
     };
 
-    private static Dictionary<char, string> stringEscapedCharDict = new Dictionary<char, string>()
+    private static readonly Dictionary<char, string> stringEscapedCharDict = new Dictionary<char, string>()
     {
         { '\\', @"\" },
         { '"', "\"" },
@@ -112,7 +112,7 @@ public class ExpressionEvaluator
         IndexingWithNullConditional,
     }
 
-    private static Dictionary<string, ExpressionOperator> operatorsDictionary = new Dictionary<string, ExpressionOperator>(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, ExpressionOperator> operatorsDictionary = new Dictionary<string, ExpressionOperator>(StringComparer.OrdinalIgnoreCase)
     {
         { "+", ExpressionOperator.Plus },
         { "-", ExpressionOperator.Minus },
@@ -138,16 +138,16 @@ public class ExpressionEvaluator
         { "??", ExpressionOperator.NullCoalescing },
     };
 
-    private static Dictionary<ExpressionOperator, bool> leftOperandOnlyOperatorsEvaluationDictionary = new Dictionary<ExpressionOperator, bool>()
+    private static readonly Dictionary<ExpressionOperator, bool> leftOperandOnlyOperatorsEvaluationDictionary = new Dictionary<ExpressionOperator, bool>()
     {
     };
 
-    private static Dictionary<ExpressionOperator, bool> rightOperandOnlyOperatorsEvaluationDictionary = new Dictionary<ExpressionOperator, bool>()
+    private static readonly Dictionary<ExpressionOperator, bool> rightOperandOnlyOperatorsEvaluationDictionary = new Dictionary<ExpressionOperator, bool>()
     {
         {ExpressionOperator.LogicalNegation, true }
     };
 
-    private static List<Dictionary<ExpressionOperator, Func<dynamic, dynamic, object>>> operatorsEvaluations =
+    private static readonly List<Dictionary<ExpressionOperator, Func<dynamic, dynamic, object>>> operatorsEvaluations =
         new List<Dictionary<ExpressionOperator, Func<dynamic, dynamic, object>>>()
     {
         new Dictionary<ExpressionOperator, Func<dynamic, dynamic, object>>()
@@ -215,7 +215,7 @@ public class ExpressionEvaluator
         },
     };
 
-    private static Dictionary<string, object> defaultVariables = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, object> defaultVariables = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase)
     {
         { "pi", Math.PI },
         { "e", Math.E },
@@ -224,7 +224,7 @@ public class ExpressionEvaluator
         { "false", false },
     };
 
-    private static Dictionary<string, Func<double, double>> simpleDoubleMathFuncsDictionary = new Dictionary<string, Func<double, double>>()
+    private static readonly Dictionary<string, Func<double, double>> simpleDoubleMathFuncsDictionary = new Dictionary<string, Func<double, double>>()
     {
         { "abs", Math.Abs },
         { "acos", Math.Acos },
@@ -244,7 +244,7 @@ public class ExpressionEvaluator
         { "truncate", Math.Truncate },
     };
 
-    private static Dictionary<string, Func<double, double, double>> doubleDoubleMathFuncsDictionary = new Dictionary<string, Func<double, double, double>>()
+    private static readonly Dictionary<string, Func<double, double, double>> doubleDoubleMathFuncsDictionary = new Dictionary<string, Func<double, double, double>>()
     {
         { "atan2", Math.Atan2 },
         { "ieeeremainder", Math.IEEERemainder },
@@ -252,7 +252,7 @@ public class ExpressionEvaluator
         { "pow", Math.Pow },
     };
 
-    private static Dictionary<string, Func<ExpressionEvaluator, List<string>, object>> complexStandardFuncsDictionary = new Dictionary<string, Func<ExpressionEvaluator, List<string>, object>>()
+    private static readonly Dictionary<string, Func<ExpressionEvaluator, List<string>, object>> complexStandardFuncsDictionary = new Dictionary<string, Func<ExpressionEvaluator, List<string>, object>>()
     {
         { "array", (self, args) => args.ConvertAll(arg => self.Evaluate(arg)).ToArray() },
         { "avg", (self, args) => args.ConvertAll(arg => Convert.ToDouble(self.Evaluate(arg))).Sum() / args.Count },
@@ -499,7 +499,7 @@ public class ExpressionEvaluator
                                 }
                                 else
                                 {
-                                    throw new ExpressionEvaluatorSyntaxErrorException($"[{objType.ToString()}] object has no Method named \"{func}\".");
+                                    throw new ExpressionEvaluatorSyntaxErrorException($"[{objType}] object has no Method named \"{func}\".");
                                 }
                             }
 
@@ -510,7 +510,7 @@ public class ExpressionEvaluator
                         }
                         catch (Exception ex)
                         {
-                            throw new ExpressionEvaluatorSyntaxErrorException($"The call of the method \"{func}\" on type [{objType.ToString()}] generate this error : {(ex.InnerException?.Message ?? ex.Message)}", ex);
+                            throw new ExpressionEvaluatorSyntaxErrorException($"The call of the method \"{func}\" on type [{objType}] generate this error : {(ex.InnerException?.Message ?? ex.Message)}", ex);
                         }
 
                     }
@@ -591,7 +591,7 @@ public class ExpressionEvaluator
                             }
                             catch (Exception ex)
                             {
-                                throw new ExpressionEvaluatorSyntaxErrorException($"[{objType.ToString()}] object has no public Property or Member named \"{var}\".", ex);
+                                throw new ExpressionEvaluatorSyntaxErrorException($"[{objType}] object has no public Property or Member named \"{var}\".", ex);
                             }
                         }
                         else
@@ -1249,10 +1249,10 @@ public class ExpressionEvaluator
 
     private class DelegateEncaps
     {
-        private lambdaExpressionDelegate lambda;
+        private readonly lambdaExpressionDelegate lambda;
 
-        private MethodInfo methodInfo;
-        private object target;
+        private readonly MethodInfo methodInfo;
+        private readonly object target;
 
         public DelegateEncaps(lambdaExpressionDelegate lambda)
         {
@@ -1390,7 +1390,7 @@ public class VariableEvaluationEventArg : EventArgs
 }
 public class FunctionEvaluationEventArg : EventArgs
 {
-    private Func<string, object> evaluateFunc = null;
+    private readonly Func<string, object> evaluateFunc = null;
 
     public FunctionEvaluationEventArg(string name, Func<string, object> evaluateFunc, List<string> args = null)
     {

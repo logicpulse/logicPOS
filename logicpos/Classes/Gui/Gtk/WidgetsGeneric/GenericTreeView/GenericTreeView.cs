@@ -21,10 +21,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
     /// <summary>Class used to render TreeView from generated liststore model, and column properties</summary>
     /// T1 DataSource Generic Type, T2 DataSourceRow Generic Type
-    abstract class GenericTreeView<T1, T2> : Box, IGenericTreeView
+    internal abstract class GenericTreeView<T1, T2> : Box, IGenericTreeView
     {
         //Log4Net
-        protected static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         protected bool _debug = false;
 
         //Parameters
@@ -445,11 +445,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     if (pInfoValue != null)
                     {
                         //Source : TreeViewColumnProperty
-                        //if (_debug) _log.Debug("Source Property:{0}, Value:{1}, Type:{2}", p.Name, tempSourceValue, tempSourceValue.GetType());
+                        //if (_debug) _logger.Debug("Source Property:{0}, Value:{1}, Type:{2}", p.Name, tempSourceValue, tempSourceValue.GetType());
 
                         //Target : TreeViewColumn
                         piTreeViewColumn = _columnProperties[i].Column.GetType().GetProperty(pInfo.Name);
-                        //if (piTreeViewColumn != null) _log.Debug(string.Format("piTreeViewColumn.GetValue[{0}]:[{1}]", pInfo.Name, piTreeViewColumn.GetValue(_columnProperties[i].Column, null).ToString()));
+                        //if (piTreeViewColumn != null) _logger.Debug(string.Format("piTreeViewColumn.GetValue[{0}]:[{1}]", pInfo.Name, piTreeViewColumn.GetValue(_columnProperties[i].Column, null).ToString()));
 
                         //Check if is Valid property and Assign assignValue to true, to post processing
                         switch (pInfoValue.GetType().Name)
@@ -477,7 +477,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             case "CellRendererText":
                                 break;
                             default:
-                                //if (_debug) _log.Debug(string.Format("Undetected Column FieldProperty Type: [{0}]", pInfoValue.GetType().Name));
+                                //if (_debug) _logger.Debug(string.Format("Undetected Column FieldProperty Type: [{0}]", pInfoValue.GetType().Name));
                                 break;
                         }
 
@@ -485,12 +485,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         {
                             try
                             {
-                                //if (_debug) _log.Debug("Name:{0} piTreeViewColumn.SetValue({1}, {2})", _columnProperties[i].Name, _columnProperties[i].Column, pInfoValue);
+                                //if (_debug) _logger.Debug("Name:{0} piTreeViewColumn.SetValue({1}, {2})", _columnProperties[i].Name, _columnProperties[i].Column, pInfoValue);
                                 piTreeViewColumn.SetValue(_columnProperties[i].Column, pInfoValue);
                             }
                             catch (Exception ex)
                             {
-                                _log.Error(string.Format("AddColumns(): {0}", ex.Message), ex);
+                                _logger.Error(string.Format("AddColumns(): {0}", ex.Message), ex);
                             }
                         }
                     }
@@ -580,7 +580,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return columnValues;
@@ -694,7 +694,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Insert Record***");
                 }
             }
@@ -750,7 +750,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                         //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
                     }
                 }
@@ -796,7 +796,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             //    {
                             //        string sqlDelete = string.Format("DELETE FROM [fin_articlecomposition] WHERE [ArticleChild] = '{0}';", item.ArticleChild);
                             //        GlobalFramework.SessionXpo.ExecuteQuery(sqlDelete);
-                            //        _log.Debug("Delete() :: articles composition '" + "' : " + item.ArticleChild);
+                            //        _logger.Debug("Delete() :: articles composition '" + "' : " + item.ArticleChild);
                             //    }
                             //}
                             //if((_dataSourceRow as fin_article).ArticleSerialNumber.Count > 0)
@@ -804,14 +804,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             //    (_dataSourceRow as fin_article).ArticleSerialNumber.DeleteObjectOnRemove = true;
                             //    (_dataSourceRow as fin_article).Session.Delete((_dataSourceRow as fin_article).ArticleSerialNumber);
                             //    (_dataSourceRow as fin_article).Session.Save((_dataSourceRow as fin_article).ArticleSerialNumber);
-                            //     _log.Debug("Delete() :: articles serial Numbers");                                    
+                            //     _logger.Debug("Delete() :: articles serial Numbers");                                    
                             //}
                             //if ((_dataSourceRow as fin_article).ArticleWarehouse.Count > 0)
                             //{
                             //    (_dataSourceRow as fin_article).ArticleWarehouse.DeleteObjectOnRemove = true;
                             //    (_dataSourceRow as fin_article).Session.Delete((_dataSourceRow as fin_article).ArticleWarehouse);
                             //    (_dataSourceRow as fin_article).Session.Save((_dataSourceRow as fin_article).ArticleWarehouse);
-                            //    _log.Debug("Delete() :: articles from warehouses");
+                            //    _logger.Debug("Delete() :: articles from warehouses");
                             //}
                         }
                         else if (_dataSourceRow.GetType() == typeof(fin_warehouse))
@@ -850,7 +850,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     }
                     catch (Exception ex)
                     {
-                        _log.Error("void Delete() :: Class '" + _dataSourceRow.GetType().Name + "' : " + ex.Message, ex);
+                        _logger.Error("void Delete() :: Class '" + _dataSourceRow.GetType().Name + "' : " + ex.Message, ex);
                         String message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
                         logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                     }
@@ -1178,14 +1178,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     registerHasReferences = true;
 
-                    _log.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"));
+                    _logger.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"));
                     logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_referenced_record_message"), className, code));
                 }
                 return registerHasReferences;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
         }
@@ -1268,7 +1268,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 pDataObject.GetType().GetProperty(column.Name).SetValue(pDataObject, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], columnValue).ToString());
                                 if (Debugger.IsAttached)
                                 {
-                                    _log.Debug($"GenericTreeView: Replaced ResourceString column name [{column.Name}] with value [{columnValue}] after Update Record...");
+                                    _logger.Debug($"GenericTreeView: Replaced ResourceString column name [{column.Name}] with value [{columnValue}] after Update Record...");
                                 }
                                 //IN009296 BackOffice - Mudar o idioma da aplicação
                                 if (columnValue == "prefparam_culture")
@@ -1323,7 +1323,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
         }
@@ -1361,7 +1361,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _navigator.UpdateButtons(_treeView);
             //output = string.Format("Value:{0} PageSize{1} Lower:{2} Upper:{3} currentPage/totalPages:{4}/{5}", _treeView.Vadjustment.Value, _treeView.Vadjustment.PageSize, _treeView.Vadjustment.Lower, _treeView.Vadjustment.Upper, _navigator.CurrentPage, _navigator.TotalPages);
             //if (_showStatusBar) _statusbar.Push(0, output);
-            //_log.Debug(output);
+            //_logger.Debug(output);
         }
 
         public void FirstPage()
@@ -1401,7 +1401,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1414,7 +1414,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1443,8 +1443,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public object GetXPGuidObjectChildValue(object pFieldValue, string pFieldName, string pChildName)
         {
 
-            object fieldValue = null;
-
+            object fieldValue;
             if (pChildName != null & pChildName != string.Empty)
             {
                 pFieldName += "." + pChildName;
@@ -1490,8 +1489,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
-                    _log.Error(string.Format("Error! Required sourceWindow for ExposeEvent, current value is sourceWindow: [{0}]", _sourceWindow));
+                    _logger.Error(ex.Message, ex);
+                    _logger.Error(string.Format("Error! Required sourceWindow for ExposeEvent, current value is sourceWindow: [{0}]", _sourceWindow));
                 }
             }
         }
@@ -1617,27 +1616,27 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //if (_treeViewMode == GenericTreeViewMode.CheckBox) { ToggleCheckBox(_treePath); }
 
             //Check MODELS Sync from _listStoreModel <> _listStoreModelFilterSort
-            //_log.Debug(string.Format("_currentRowIndex: [{0}/{1}]", _currentRowIndex, _totalRows));
-            //_log.Debug(string.Format("_listStoreModelFilterSort CurrentValue(0): [{0}]", _listStoreModelFilterSort.GetValue(_treeIter, 0)));
-            //_log.Debug(string.Format("_listStoreModelFilterSort CurrentValue(3): [{0}]", _listStoreModelFilterSort.GetValue(_treeIter, 3)));
-            //_log.Debug(string.Format("_listStoreModel CurrentValue(0): [{0}]", _listStoreModel.GetValue(_treeIterModel, 0)));
-            //_log.Debug(string.Format("_listStoreModel CurrentValue(3): [{0}]", _listStoreModel.GetValue(_treeIterModel, 3)));
-            //_log.Debug(string.Empty);
+            //_logger.Debug(string.Format("_currentRowIndex: [{0}/{1}]", _currentRowIndex, _totalRows));
+            //_logger.Debug(string.Format("_listStoreModelFilterSort CurrentValue(0): [{0}]", _listStoreModelFilterSort.GetValue(_treeIter, 0)));
+            //_logger.Debug(string.Format("_listStoreModelFilterSort CurrentValue(3): [{0}]", _listStoreModelFilterSort.GetValue(_treeIter, 3)));
+            //_logger.Debug(string.Format("_listStoreModel CurrentValue(0): [{0}]", _listStoreModel.GetValue(_treeIterModel, 0)));
+            //_logger.Debug(string.Format("_listStoreModel CurrentValue(3): [{0}]", _listStoreModel.GetValue(_treeIterModel, 3)));
+            //_logger.Debug(string.Empty);
 
             //Use fire/share event handler only if is used (!= null), else do nothing            
-            if (CursorChanged != null) CursorChanged(this, e);
+            CursorChanged?.Invoke(this, e);
         }
 
         /// <summary>
         /// Store Current Clicked Column ID and Sort Order
         /// </summary>
-        void Column_Clicked(object sender, EventArgs e)
+        private void Column_Clicked(object sender, EventArgs e)
         {
             TreeViewColumn column = (TreeViewColumn)sender;
             _columnSortColumnId = column.SortColumnId;
             _columnSortType = column.SortOrder;
             _columnSortIndicator = column.SortIndicator;
-            //_log.Debug(string.Format("_columnSortColumnId: [{0}], _columnSortType: [{1}], _columnSortIndicator: [{2}]", _columnSortColumnId, _columnSortType, _columnSortIndicator));
+            //_logger.Debug(string.Format("_columnSortColumnId: [{0}], _columnSortType: [{1}], _columnSortIndicator: [{2}]", _columnSortColumnId, _columnSortType, _columnSortIndicator));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1695,7 +1694,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return false;
         }
@@ -1705,47 +1704,47 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
         private void OnCheckBoxToggled()
         {
-            if (CheckBoxToggled != null) { CheckBoxToggled(this, EventArgs.Empty); }
+            CheckBoxToggled?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRecordBeforeInsert()
         {
-            if (RecordBeforeInsert != null) { RecordBeforeInsert(this, EventArgs.Empty); }
+            RecordBeforeInsert?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRecordBeforeUpdate()
         {
-            if (RecordBeforeUpdate != null) { RecordBeforeUpdate(this, EventArgs.Empty); }
+            RecordBeforeUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRecordBeforeDelete()
         {
-            if (RecordBeforeDelete != null) { RecordBeforeDelete(this, EventArgs.Empty); }
+            RecordBeforeDelete?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRecordBeforeView()
         {
-            if (RecordBeforeView != null) { RecordBeforeView(this, EventArgs.Empty); }
+            RecordBeforeView?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRecordAfterInsert()
         {
-            if (RecordAfterInsert != null) { RecordAfterInsert(this, EventArgs.Empty); }
+            RecordAfterInsert?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRecordAfterUpdate()
         {
-            if (RecordAfterUpdate != null) { RecordAfterUpdate(this, EventArgs.Empty); }
+            RecordAfterUpdate?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRecordAfterDelete()
         {
-            if (RecordAfterDelete != null) { RecordAfterDelete(this, EventArgs.Empty); }
+            RecordAfterDelete?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnRecordAfterView()
         {
-            if (RecordAfterView != null) { RecordAfterView(this, EventArgs.Empty); }
+            RecordAfterView?.Invoke(this, EventArgs.Empty);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1849,7 +1848,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }

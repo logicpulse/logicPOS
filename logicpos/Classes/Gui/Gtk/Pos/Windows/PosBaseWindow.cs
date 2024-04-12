@@ -1,5 +1,6 @@
 using Gtk;
 using logicpos.App;
+using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Drawing;
@@ -10,7 +11,7 @@ namespace logicpos
     public abstract class PosBaseWindow : Gtk.Window
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected
         /* IN008024 */
@@ -38,7 +39,7 @@ namespace logicpos
         public PosBaseWindow(String pFileImageBackground)
             : base(Gtk.WindowType.Toplevel)
         {
-            _log.Debug("PosBaseWindow: " + pFileImageBackground);
+            _logger.Debug("PosBaseWindow: " + pFileImageBackground);
             //Init Theme Object
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
             var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
@@ -50,14 +51,14 @@ namespace logicpos
             {
                 try
                 {
-                    _log.Debug("themeWindow: " + themeWindow);
+                    _logger.Debug("themeWindow: " + themeWindow);
 
                     //Globals
                     Name = Convert.ToString(themeWindow.Globals.Name);
                     int screenWidth = Convert.ToInt16(themeWindow.Globals.ScreenWidth);
                     int screenHeight = Convert.ToInt16(themeWindow.Globals.ScreenHeight);
-                    Color screenBackgroundColorOuter = FrameworkUtils.StringToColor(themeWindow.Globals.ScreenBackgroundColorOuter);
-                    Color screenBackgroundColor = FrameworkUtils.StringToColor(themeWindow.Globals.ScreenBackgroundColor);
+                    Color screenBackgroundColorOuter = (themeWindow.Globals.ScreenBackgroundColorOuter as string).StringToColor();
+                    Color screenBackgroundColor = (themeWindow.Globals.ScreenBackgroundColor as string).StringToColor();
 
                     //Check Requirenments
                     CheckMonitorGeometry(screenWidth, screenHeight);
@@ -67,23 +68,25 @@ namespace logicpos
                     WindowPosition = WindowPosition.Center;
                     Modal = true;
                     Fullscreen();
-                    ModifyBg(StateType.Normal, Utils.ColorToGdkColor(screenBackgroundColorOuter));
+                    ModifyBg(StateType.Normal, screenBackgroundColorOuter.ToGdkColor());
 
                     //Icon
                     string fileImageAppIcon = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icos\application.ico"));
                     if (File.Exists(fileImageAppIcon)) Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
                     _eventboxScreenArea = new EventBox();
-                    _eventboxScreenArea.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(screenBackgroundColor));
+                    _eventboxScreenArea.ModifyBg(StateType.Normal, screenBackgroundColor.ToGdkColor());
                     _eventboxScreenArea.WidthRequest = screenWidth;
                     _eventboxScreenArea.HeightRequest = screenHeight;
 
-                    Alignment _alignmentWindow = new Alignment(0.5f, 0.5f, 0.0f, 0.0f);
-                    _alignmentWindow.Add(_eventboxScreenArea);
+                    Alignment _alignmentWindow = new Alignment(0.5f, 0.5f, 0.0f, 0.0f)
+                    {
+                        _eventboxScreenArea
+                    };
                     Add(_alignmentWindow);
 
                     DeleteEvent += PosBaseWindow_DeleteEvent;
-                    _log.Debug("Theme Background: " + pFileImageBackground);
+                    _logger.Debug("Theme Background: " + pFileImageBackground);
 
                     //Theme Background
                     if (pFileImageBackground != string.Empty)
@@ -93,7 +96,7 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     Utils.ShowMessageTouchErrorRenderTheme(this, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
                 }
             }
@@ -101,10 +104,10 @@ namespace logicpos
             {
                 Utils.ShowMessageTouchErrorRenderTheme(this, errorMessage);
             }
-            _log.Debug("PosBaseWindow end");
+            _logger.Debug("PosBaseWindow end");
         }
 
-        void PosBaseWindow_DeleteEvent(object o, DeleteEventArgs args)
+        private void PosBaseWindow_DeleteEvent(object o, DeleteEventArgs args)
         {
             Hide();
 
@@ -139,7 +142,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

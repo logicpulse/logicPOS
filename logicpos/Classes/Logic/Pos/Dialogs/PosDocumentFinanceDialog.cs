@@ -16,7 +16,7 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosDocumentFinanceDialog
+    internal partial class PosDocumentFinanceDialog
     {
         protected override void OnResponse(ResponseType pResponse)
         {
@@ -244,8 +244,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
             _pagePad3.ArticleBag = GetArticleBag();
-
-            erp_customer customer = null;
             bool wayBillMode = _pagePad1.EntryBoxSelectDocumentFinanceType.Value.WayBill;
 
             object resultObject;
@@ -267,6 +265,8 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 _pagePad2.EntryBoxCustomerNotes.EntryValidation.Text
             );
 
+
+            erp_customer customer;
             if (resultObject.GetType() == typeof(erp_customer))
             {
                 customer = (erp_customer)resultObject;
@@ -338,8 +338,10 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //OrderReferences
             if (_pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null) 
             {
-                List<fin_documentfinancemaster> orderReferences = new List<fin_documentfinancemaster>();
-                orderReferences.Add(_pagePad1.EntryBoxSelectSourceDocumentFinance.Value);
+                List<fin_documentfinancemaster> orderReferences = new List<fin_documentfinancemaster>
+                {
+                    _pagePad1.EntryBoxSelectSourceDocumentFinance.Value
+                };
                 result.OrderReferences = orderReferences;
             }
 
@@ -438,7 +440,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

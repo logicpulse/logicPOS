@@ -8,12 +8,12 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosDatePickerDialog : PosBaseDialog
+    internal class PosDatePickerDialog : PosBaseDialog
     {
         //Private Members
-        private DateTime _dateTime;
+        private readonly DateTime _dateTime;
         //UI
-        private Fixed _fixedContent;
+        private readonly Fixed _fixedContent;
         //Public Properties
         private Calendar _calendar;
         public Calendar Calendar
@@ -59,9 +59,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(buttonOk, ResponseType.Ok),
+                new ActionAreaButton(buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, _windowSize, _fixedContent, actionAreaButtons);

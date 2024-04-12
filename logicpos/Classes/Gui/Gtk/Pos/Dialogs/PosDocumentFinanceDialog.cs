@@ -12,7 +12,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosDocumentFinanceDialog : PosBaseDialog
+    internal partial class PosDocumentFinanceDialog : PosBaseDialog
     {
         //Private
         private List<PagePadPage> _listPages;
@@ -22,16 +22,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private DocumentFinanceDialogPage4 _pagePad4;
         private DocumentFinanceDialogPage5 _pagePad5;
         //UI
-        private TouchButtonIconWithText _buttonClearCustomer;
+        private readonly TouchButtonIconWithText _buttonClearCustomer;
         public TouchButtonIconWithText ButtonClearCustomer { 
             get { return _buttonClearCustomer; } 
         }
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
-        private TouchButtonIconWithText _buttonPreview;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonPreview;
         //Custom Responses Types
-        private ResponseType _responseTypePreview = (ResponseType)11;
-        private ResponseType _responseTypeClearCustomer = (ResponseType)12;
+        private readonly ResponseType _responseTypePreview = (ResponseType)11;
+        private readonly ResponseType _responseTypeClearCustomer = (ResponseType)12;
         //DocumentFinanceArticle MaxQuantities Validate
         private Dictionary<Guid,decimal> _validateMaxQuantities;
         public Dictionary<Guid,decimal> ValidateMaxQuantities
@@ -76,11 +76,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonOk.Sensitive = false;
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonClearCustomer, _responseTypeClearCustomer));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonPreview, _responseTypePreview));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonClearCustomer, _responseTypeClearCustomer),
+                new ActionAreaButton(_buttonPreview, _responseTypePreview),
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, _windowTitle, windowSize, boxContent, actionAreaButtons);
@@ -163,7 +165,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
 
-        void _pagePad_PageChanged(object sender, EventArgs e)
+        private void _pagePad_PageChanged(object sender, EventArgs e)
         {
             this.WindowTitle = GetPageTitle(_pagePad.CurrentPageIndex);
             _pagePad.ActivePage.Validate();
@@ -174,12 +176,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public string GetPageTitle(int pPageIndex)
         {
-            string result = string.Empty;
-
-            result = string.Format("{0} :: {1}",
-              resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_finance_document"),
-              resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
-            );
+            string result = string.Format("{0} :: {1}",
+  resources.CustomResources.GetCustomResources(datalayer.App.GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_finance_document"),
+  resources.CustomResources.GetCustomResources(datalayer.App.GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
+);
 
             //Enable/Disable ClearCustomer
             if (_buttonClearCustomer != null) _buttonClearCustomer.Visible = (_pagePad2 != null && pPageIndex == 1);
@@ -220,7 +220,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 if (_listPages[i].Enabled)
                 {
-                    //_log.Debug(string.Format("listPages[{0}].Enabled: [{1}], Validated[{2}]", i, _listPages[i].Enabled, _listPages[i].Validated));
+                    //_logger.Debug(string.Format("listPages[{0}].Enabled: [{1}], Validated[{2}]", i, _listPages[i].Enabled, _listPages[i].Validated));
                     //If Enabled and Not Validated return False
                     if (!_listPages[i].Validated) result = false;
                 }

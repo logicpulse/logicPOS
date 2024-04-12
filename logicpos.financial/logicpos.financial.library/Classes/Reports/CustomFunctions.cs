@@ -12,7 +12,7 @@ namespace logicpos.financial.library.Classes.Reports
     public static class CustomFunctions
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static ResourceManager _resourceManager;
         private static bool _lowerCaseResource;
 
@@ -70,8 +70,10 @@ namespace logicpos.financial.library.Classes.Reports
         {
             if (GlobalFramework.FastReportSystemVars == null)
             {
-                Dictionary<string, string> systemVars = new Dictionary<string, string>();
-                systemVars.Add("PreparedPages", "0");
+                Dictionary<string, string> systemVars = new Dictionary<string, string>
+                {
+                    { "PreparedPages", "0" }
+                };
                 GlobalFramework.FastReportSystemVars = systemVars;
             }
         }
@@ -81,13 +83,14 @@ namespace logicpos.financial.library.Classes.Reports
         /// </summary>
         public static void RegisterCustomVars(string pAppName)
         {
-            Dictionary<string, string> customVars = new Dictionary<string, string>();
-
-            //App
-            customVars.Add("APP_COMPANY", SettingsApp.AppCompanyName);
-            customVars.Add("APP_NAME", pAppName);
-            customVars.Add("APP_VERSION", FrameworkUtils.ProductVersion);
-            customVars.Add("DATE", FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateFormat));
+            Dictionary<string, string> customVars = new Dictionary<string, string>
+            {
+                //App
+                { "APP_COMPANY", SettingsApp.AppCompanyName },
+                { "APP_NAME", pAppName },
+                { "APP_VERSION", FrameworkUtils.ProductVersion },
+                { "DATE", FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateFormat) }
+            };
             if (SettingsApp.ConfigurationSystemCurrency != null)
             {
                 customVars.Add("SYSTEM_CURRENCY_LABEL", SettingsApp.ConfigurationSystemCurrency.Designation);
@@ -123,20 +126,20 @@ namespace logicpos.financial.library.Classes.Reports
             customVars.Add("COMPANY_CIVIL_REGISTRATION_ID", Pref("COMPANY_CIVIL_REGISTRATION_ID"));
             customVars.Add("COMPANY_TAX_ENTITY", Pref("COMPANY_TAX_ENTITY"));
             //Report
-            customVars.Add("REPORT_FILENAME_LOGO", Pref("REPORT_FILENAME_LOGO"));
-            customVars.Add("REPORT_FILENAME_LOGO_SMALL", Pref("REPORT_FILENAME_LOGO_SMALL"));
+            customVars.Add("REPORT_FILENAME_loggerO", Pref("REPORT_FILENAME_loggerO"));
+            customVars.Add("REPORT_FILENAME_loggerO_SMALL", Pref("REPORT_FILENAME_loggerO_SMALL"));
             customVars.Add("REPORT_FOOTER_LINE1", Pref("REPORT_FOOTER_LINE1"));
             customVars.Add("REPORT_FOOTER_LINE2", Pref("REPORT_FOOTER_LINE2"));
             //Ticket
-            customVars.Add("TICKET_FILENAME_LOGO", Pref("TICKET_FILENAME_LOGO"));
+            customVars.Add("TICKET_FILENAME_loggerO", Pref("TICKET_FILENAME_loggerO"));
             customVars.Add("TICKET_FOOTER_LINE1", Pref("TICKET_FOOTER_LINE1"));
             customVars.Add("TICKET_FOOTER_LINE2", Pref("TICKET_FOOTER_LINE2"));
             //Session
-            customVars.Add("SESSION_LOGGED_USER", String.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
+            customVars.Add("SESSION_loggerGED_USER", String.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
 
             if (GlobalFramework.Settings["POS_CURRENTTERMINAL"] != null)
             {
-                customVars.Add("SESSION_LOGGED_TERMINAL", GlobalFramework.Settings["POS_CURRENTTERMINAL"]);
+                customVars.Add("SESSION_loggerGED_TERMINAL", GlobalFramework.Settings["POS_CURRENTTERMINAL"]);
             }
 
             GlobalFramework.FastReportCustomVars = customVars;
@@ -163,7 +166,7 @@ namespace logicpos.financial.library.Classes.Reports
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return "ERROR";
             }
         }
@@ -190,7 +193,7 @@ namespace logicpos.financial.library.Classes.Reports
                     result = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
                 }
 
-                //_log.Debug(string.Format("Message: [{0}]", resourceName));
+                //_logger.Debug(string.Format("Message: [{0}]", resourceName));
 
                 // Override default values - Non Default Country Replaceables
                 /* IN005993 */
@@ -209,7 +212,7 @@ namespace logicpos.financial.library.Classes.Reports
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return "ERROR";
             }
         }
@@ -231,7 +234,7 @@ namespace logicpos.financial.library.Classes.Reports
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return "ERROR";
             }
         }
@@ -252,7 +255,7 @@ namespace logicpos.financial.library.Classes.Reports
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return "ERROR";
             }
         }
@@ -265,12 +268,12 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                _log.Debug(string.Format("FastReport: [{0}]", pOutput));
+                _logger.Debug(string.Format("FastReport: [{0}]", pOutput));
                 return "LOG";
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return "ERROR";
             }
         }
@@ -283,12 +286,12 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                _log.Debug(string.Format("FastReport: Debug Object Type [{0}]", pObject.GetType()));
+                _logger.Debug(string.Format("FastReport: Debug Object Type [{0}]", pObject.GetType()));
                 return "DEBUG";
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return "ERROR";
             }
         }
@@ -306,7 +309,7 @@ namespace logicpos.financial.library.Classes.Reports
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return "ERROR";
             }
         }
@@ -361,7 +364,7 @@ namespace logicpos.financial.library.Classes.Reports
         //  }
         //  catch (Exception ex)
         //  {
-        //    _log.Error(ex.Message, ex);
+        //    _logger.Error(ex.Message, ex);
         //    return "ERROR";
         //  }
         //} 

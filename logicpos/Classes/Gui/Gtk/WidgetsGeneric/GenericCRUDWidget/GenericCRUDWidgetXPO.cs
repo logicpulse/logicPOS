@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    class GenericCRUDWidgetXPO : GenericCRUDWidget<XPGuidObject>
+    internal class GenericCRUDWidgetXPO : GenericCRUDWidget<XPGuidObject>
     {
         private bool _hasXPGuidObjectValue;
 
@@ -43,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -74,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     };
                     _fieldValue = prop.GetValue(_dataSourceRow, null);
                     _hasXPGuidObjectValue = (_fieldType.BaseType.Name == "XPGuidObject");
-                    //_log.Debug(string.Format("prop.Name:[{0}] FieldType:[{1}] FieldType.BaseType.Name:[{2}] Value:[{3}] _hasXPGuidObjectValue:[{4}]", prop.Name, FieldType, FieldType.BaseType.Name, _fieldValue, _hasXPGuidObjectValue));
+                    //_logger.Debug(string.Format("prop.Name:[{0}] FieldType:[{1}] FieldType.BaseType.Name:[{2}] Value:[{3}] _hasXPGuidObjectValue:[{4}]", prop.Name, FieldType, FieldType.BaseType.Name, _fieldValue, _hasXPGuidObjectValue));
                 }
             }
         }

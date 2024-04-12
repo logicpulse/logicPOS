@@ -17,14 +17,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacetable), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -32,7 +32,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -40,7 +40,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fButtonImage;
+        private string fButtonImage;
         [Size(255)]
         public string ButtonImage
         {
@@ -48,35 +48,35 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonImage", ref fButtonImage, value); }
         }
 
-        decimal fDiscount;
+        private decimal fDiscount;
         public decimal Discount
         {
             get { return fDiscount; }
             set { SetPropertyValue<decimal>("Discount", ref fDiscount, value); }
         }
 
-        TableStatus fTableStatus;
+        private TableStatus fTableStatus;
         public TableStatus TableStatus
         {
             get { return fTableStatus; }
             set { SetPropertyValue<TableStatus>("TableStatus", ref fTableStatus, value); }
         }
 
-        Decimal fTotalOpen;
+        private Decimal fTotalOpen;
         public Decimal TotalOpen
         {
             get { return fTotalOpen; }
             set { SetPropertyValue<Decimal>("TotalOpen", ref fTotalOpen, value); }
         }
 
-        DateTime fDateTableOpen;
+        private DateTime fDateTableOpen;
         public DateTime DateTableOpen
         {
             get { return fDateTableOpen; }
             set { SetPropertyValue<DateTime>("DateTableOpen", ref fDateTableOpen, value); }
         }
 
-        DateTime fDateTableClosed;
+        private DateTime fDateTableClosed;
         public DateTime DateTableClosed
         {
             get { return fDateTableClosed; }
@@ -84,7 +84,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlace One <> Many ConfigurationPlaceTable
-        pos_configurationplace fPlace;
+        private pos_configurationplace fPlace;
         [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTable")]
         public pos_configurationplace Place
         {

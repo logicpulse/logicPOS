@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 
@@ -106,8 +107,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public class Accordion : Box
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private string _nodePrivilegesTokenFormat;
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly string _nodePrivilegesTokenFormat;
         protected Label _label;
 
         //Declare public Event, to link to accordionChildButton_Clicked
@@ -198,7 +199,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //tmpFont.Size = 2;
                         //Redimensionar Tamanho da Fonte dos Botões Parent do accordion para 1024
                         accordionType = "Parent";
-                        ChangeFont(FrameworkUtils.StringToColor("61, 61, 61"), accordionType);
+                        ChangeFont("61, 61, 61".StringToColor(), accordionType);
                         hboxParent.PackStart(_label, true, true, 0);
                         accordionParentButton = new AccordionParentButton(hboxParent) { Name = parentLevel.Key };
                     }
@@ -223,7 +224,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Click Event
                     accordionParentButton.Clicked += accordionParentButton_Clicked;
                     vboxOuter.PackStart(accordionParentButton, false, false, 0);                    
-                    //_log.Debug(string.Format("Accordion(): parentLevel.Value.Label [{0}]", parentLevel.Value.Label));
+                    //_logger.Debug(string.Format("Accordion(): parentLevel.Value.Label [{0}]", parentLevel.Value.Label));
                     if (parentLevel.Value.Childs != null && parentLevel.Value.Childs.Count > 0)
                     {
                         foreach (var childLevel in parentLevel.Value.Childs)
@@ -231,7 +232,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             HBox hboxChild = new HBox(false, 0);
                             _label = new Label(childLevel.Value.Label);
                             accordionType = "Child";
-                            ChangeFont(FrameworkUtils.StringToColor("61, 61, 61"), accordionType);
+                            ChangeFont("61, 61, 61".StringToColor(), accordionType);
                             hboxChild.PackStart(_label, true, true, 0);
                             
                             //Init ChildButton
@@ -241,7 +242,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             childLevel.Value.NodeButton = accordionChildButton;
                             //Privileges
                             currentNodePrivilegesToken = string.Format(pNodePrivilegesTokenFormat, childLevel.Key.ToUpper());
-                            //_log.Debug(string.Format("currentNodePrivilegesToken: [{0}]", currentNodePrivilegesToken));
+                            //_logger.Debug(string.Format("currentNodePrivilegesToken: [{0}]", currentNodePrivilegesToken));
 
                             //First Child Node is Assigned has currentChildButton
                             //if (childLevel.Value.Active)
@@ -294,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         foreach (var childLevel in parentLevel.Value.Childs)
                         {
                             currentNodePrivilegesToken = string.Format(_nodePrivilegesTokenFormat, childLevel.Key.ToUpper());
-                            //_log.Debug(string.Format("[{0}]=[{1}] [{2}]=[{3}]", childLevel.Value.NodeButton.Sensitive, childLevel.Value.NodeButton.Name, currentNodePrivilegesToken, FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken)));
+                            //_logger.Debug(string.Format("[{0}]=[{1}] [{2}]=[{3}]", childLevel.Value.NodeButton.Sensitive, childLevel.Value.NodeButton.Name, currentNodePrivilegesToken, FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken)));
                             //If have (Content | Events | ExternalApp) & Privileges or the Button is Enabled, Else is Disabled
                             if (FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null))
                             {
@@ -332,29 +333,23 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
             }
 
-            if (Clicked != null)
-            {
-                Clicked(sender, e);
-            }
+            Clicked?.Invoke(sender, e);
         }
 
         //Redirect to public Clicked Event, this way we can have access to ChildButtons Click Events from the outside 
         private void accordionChildButton_Clicked(object sender, EventArgs e)
         {
             _currentChildButton = (AccordionChildButton)sender;
-            if (Clicked != null)
-            {
-                Clicked(sender, e);
-            }
+            Clicked?.Invoke(sender, e);
         }
        
         public void ChangeFont(System.Drawing.Color pColorFont, string accordionType)
         {          
             //color
             System.Drawing.Color colNormal = pColorFont;
-            System.Drawing.Color colPrelight = logicpos.Utils.Lighten(colNormal);
-            System.Drawing.Color colActive = logicpos.Utils.Lighten(colPrelight);
-            System.Drawing.Color colInsensitive = logicpos.Utils.Darken(colNormal);
+            System.Drawing.Color colPrelight = colNormal.Lighten();
+            System.Drawing.Color colActive = colPrelight.Lighten();
+            System.Drawing.Color colInsensitive = colNormal.Darken();
             System.Drawing.Color colSelected = System.Drawing.Color.FromArgb(125, 0, 0);
 
             String _fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
@@ -377,11 +372,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 if (GlobalApp.boScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
                 else _label.ModifyFont(fontPosBackOfficeChild);
             }
-            _label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colNormal));
-            _label.ModifyFg(StateType.Prelight, logicpos.Utils.ColorToGdkColor(colPrelight));
-            _label.ModifyFg(StateType.Active, logicpos.Utils.ColorToGdkColor(colActive));
-            _label.ModifyFg(StateType.Insensitive, logicpos.Utils.ColorToGdkColor(colInsensitive));
-            _label.ModifyFg(StateType.Selected, logicpos.Utils.ColorToGdkColor(colSelected));
+            _label.ModifyFg(StateType.Normal, colNormal.ToGdkColor());
+            _label.ModifyFg(StateType.Prelight, colPrelight.ToGdkColor());
+            _label.ModifyFg(StateType.Active, colActive.ToGdkColor());
+            _label.ModifyFg(StateType.Insensitive, colInsensitive.ToGdkColor());
+            _label.ModifyFg(StateType.Selected, colSelected.ToGdkColor());
             
             _label.SetAlignment(0.0f, 0.5f);
         }

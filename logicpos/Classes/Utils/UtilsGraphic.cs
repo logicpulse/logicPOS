@@ -4,7 +4,7 @@ using System.IO;
 
 namespace logicpos
 {
-    class UtilsGraphic
+    internal class UtilsGraphic
     {
         public static void DrawLine(Graphics pGraphics, Pen pPen, Point pPoint1, Point pPoint2)
         {

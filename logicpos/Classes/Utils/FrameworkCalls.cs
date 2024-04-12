@@ -18,10 +18,10 @@ using logicpos.financial.service.Objects.Modules.AT;
 
 namespace logicpos
 {
-    class FrameworkCalls
+    internal class FrameworkCalls
     {
         //Log4Net
-        protected static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static Size _sizeDefaultWindowSize = new Size(600, 400);
 
@@ -54,12 +54,12 @@ namespace logicpos
                         {
                             try
                             {
-                                _log.Debug(string.Format("Send Document {0} to AT", documentFinanceMaster.DocumentNumber));
+                                _logger.Debug(string.Format("Send Document {0} to AT", documentFinanceMaster.DocumentNumber));
                                 SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
                             }
                             catch(Exception Ex)
                             {
-                                _log.Error(Ex.Message);
+                                _logger.Error(Ex.Message);
                             }
                             
                             //SendDocumentToATWSDialog(pSourceWindow, documentFinanceMaster);
@@ -68,25 +68,25 @@ namespace logicpos
                     /* TK013134 - Parking Ticket Module */
                     foreach (var item in GlobalFramework.PendentPayedParkingTickets)
                     {
-                        _log.Debug("[PARKING TICKET] Informing Access.Track that the parking ticket has been payed...");
+                        _logger.Debug("[PARKING TICKET] Informing Access.Track that the parking ticket has been payed...");
                         AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
 
                         bool isTicketPayedInformed = accessTrackParkingTicketService.payTicket(item.Key);
 
 
-                        _log.Debug($"[PARKING TICKET] Barcode '{item.Key}' sent to Access.Track: Guid '{item.Value}'");
+                        _logger.Debug($"[PARKING TICKET] Barcode '{item.Key}' sent to Access.Track: Guid '{item.Value}'");
 
                         if (!isTicketPayedInformed)
                         {
-                            _log.Debug($"[PARKING TICKET] Barcode '{item.Key}' not identified by Access.Track: Guid '{item.Value}'");
+                            _logger.Debug($"[PARKING TICKET] Barcode '{item.Key}' not identified by Access.Track: Guid '{item.Value}'");
                         }
                         else if (accessTrackParkingTicketService.isTicketValid(item.Key))
                         {
-                            _log.Debug($"[PARKING TICKET] Barcode '{item.Key}' payed successfully");
+                            _logger.Debug($"[PARKING TICKET] Barcode '{item.Key}' payed successfully");
                         }
                         else
                         {
-                            _log.Error($"[PARKING TICKET] Barcode '{item.Key}' payment has not been recognized by Access.Track!");
+                            _logger.Error($"[PARKING TICKET] Barcode '{item.Key}' payment has not been recognized by Access.Track!");
                         }
 
                     }
@@ -94,7 +94,7 @@ namespace logicpos
                     int i = 0;
                     foreach (var item in GlobalFramework.PendentPayedParkingCards)
                     {
-                        _log.Debug("[PARKING TICKET] Informing Access.Track that the parking card has been payed...");
+                        _logger.Debug("[PARKING TICKET] Informing Access.Track that the parking card has been payed...");
                         AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
 
                         //Number of months paid is passed by document notes
@@ -145,8 +145,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                string errorMessage = string.Empty;
-
+                string errorMessage;
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
@@ -236,7 +235,7 @@ namespace logicpos
         //NEW SEND METHOD
         public static ServicesATSoapResult SendDocumentToATWS(fin_documentfinancemaster pDocumentFinanceMaster)
         {
-            ServicesATSoapResult result = null;
+            ServicesATSoapResult result;
             try
             {
                 fin_documentfinancemaster documentMaster = pDocumentFinanceMaster;
@@ -260,7 +259,7 @@ namespace logicpos
                     {
                         result = new ServicesATSoapResult("200", resultSend);
                         servicesAT.PersistResult(result);
-                        _log.Error(string.Format("Error {0}: [{1}]", result.ReturnCode, result.ReturnMessage));
+                        _logger.Error(string.Format("Error {0}: [{1}]", result.ReturnCode, result.ReturnMessage));
                     }
                     else
                     {
@@ -273,13 +272,13 @@ namespace logicpos
                     //All messages are in PT, from ATWS, dont required translation here
                     string errorMsg = string.Format("Documento Inválido: {0}", pDocumentFinanceMaster.DocumentNumber);
                     result = new ServicesATSoapResult("202", errorMsg);
-                    _log.Error(string.Format("Error {0}: [{1}]", result.ReturnCode, result.ReturnMessage));
+                    _logger.Error(string.Format("Error {0}: [{1}]", result.ReturnCode, result.ReturnMessage));
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
-                if (Environment.UserInteractive) { _log.Error(ex.Message); }
+                _logger.Error(ex.Message, ex);
+                if (Environment.UserInteractive) { _logger.Error(ex.Message); }
                 //Send Error Message : 210 is All Exceptions Errors
                 result = new financial.service.Objects.Modules.AT.ServicesATSoapResult("210", ex.Message);
             }
@@ -311,16 +310,16 @@ namespace logicpos
         //                //Init Client
         //                Service1Client serviceClient = new Service1Client();
         //                //SendDocuments
-        //                _log.Debug(string.Format("Send Document: [{0}] to AT", pDocumentFinanceMaster.DocumentNumber));
+        //                _logger.Debug(string.Format("Send Document: [{0}] to AT", pDocumentFinanceMaster.DocumentNumber));
         //                result = serviceClient.SendDocument(pDocumentFinanceMaster.Oid);
         //                //Check Result
         //                if (result != null)
         //                {
-        //                    _log.Debug(string.Format("DocumentNumber: [{0}] - AT WebService ReturnCode: [{1}], ReturnMessage: [{2}]", pDocumentFinanceMaster.DocumentNumber, result.ReturnCode, result.ReturnMessage));
+        //                    _logger.Debug(string.Format("DocumentNumber: [{0}] - AT WebService ReturnCode: [{1}], ReturnMessage: [{2}]", pDocumentFinanceMaster.DocumentNumber, result.ReturnCode, result.ReturnMessage));
         //                }
         //                else
         //                {
-        //                    _log.Error(String.Format("Error null resultResultObject: [{0}]", result));
+        //                    _logger.Error(String.Format("Error null resultResultObject: [{0}]", result));
         //                }
 
         //                // Always Close Client
@@ -328,7 +327,7 @@ namespace logicpos
         //            }
         //            catch (Exception ex)
         //            {
-        //                _log.Error(ex.Message, ex);
+        //                _logger.Error(ex.Message, ex);
         //            }
         //        }
         //        else
@@ -336,7 +335,7 @@ namespace logicpos
         //            result = new ServicesATSoapResult();
         //            result.ReturnCode = "201";
         //            result.ReturnMessage = string.Format("Erro a comunicar com o WebService:{0}{1}", Environment.NewLine, endpointAddress);
-        //            _log.Debug(string.Format("EndpointAddress OffLine, Please check URI: {0}", endpointAddress));
+        //            _logger.Debug(string.Format("EndpointAddress OffLine, Please check URI: {0}", endpointAddress));
         //        }
         //    }
 
@@ -366,8 +365,7 @@ namespace logicpos
             }
             catch (ProcessFinanceDocumentValidationException ex)
             {
-                string errorMessage = string.Empty;
-
+                string errorMessage;
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
@@ -483,7 +481,7 @@ namespace logicpos
                   resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                   resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_error")
                 );
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -518,7 +516,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
@@ -770,7 +768,7 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
             return result;

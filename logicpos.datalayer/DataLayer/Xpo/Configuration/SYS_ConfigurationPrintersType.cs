@@ -15,15 +15,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinterstype), "Ord");
             Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinterstype), "Code");
         }
-        
-        UInt32 fOrd;
+
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -39,7 +39,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fToken;
+        private string fToken;
         [Indexed(Unique = true)]
         public string Token
         {
@@ -47,7 +47,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Token", ref fToken, value); }
         }
 
-        Boolean fThermalPrinter;
+        private Boolean fThermalPrinter;
         public Boolean ThermalPrinter
         {
             get { return fThermalPrinter; }

@@ -27,8 +27,8 @@ using System;
 
 namespace logicpos.financial.library.Classes.Reports.BOs.Customers
 {
-    [FRBO(Entity = "view_documentfinancecurrentaccount")]    
-    class FRBODocumentFinanceCurrentAccount : FRBOBaseObject
+    [FRBO(Entity = "view_documentfinancecurrentaccount")]
+    internal class FRBODocumentFinanceCurrentAccount : FRBOBaseObject
     {
         [FRBO(Field = "DocumentTypeOid")]
         //Primary Oid (Required)

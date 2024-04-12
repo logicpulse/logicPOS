@@ -10,28 +10,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentorderticket() : base() { }
         public fin_documentorderticket(Session session) : base(session) { }
 
-        Int32 fTicketId;
+        private Int32 fTicketId;
         public Int32 TicketId
         {
             get { return fTicketId; }
             set { SetPropertyValue<Int32>("TicketId", ref fTicketId, value); }
         }
 
-        DateTime fDateStart;
+        private DateTime fDateStart;
         public DateTime DateStart
         {
             get { return fDateStart; }
             set { SetPropertyValue<DateTime>("DateStart", ref fDateStart, value); }
         }
 
-        PriceType fPriceType;
+        private PriceType fPriceType;
         public PriceType PriceType
         {
             get { return fPriceType; }
             set { SetPropertyValue<PriceType>("PriceType", ref fPriceType, value); }
         }
 
-        Decimal fDiscount;
+        private Decimal fDiscount;
         public Decimal Discount
         {
             get { return fDiscount; }
@@ -46,7 +46,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentOrderMain One <> Many DocumentOrderTicket
-        fin_documentordermain fOrderMain;
+        private fin_documentordermain fOrderMain;
         [Association(@"DocumentOrderMainReferencesDocumentOrderTicket")]
         public fin_documentordermain OrderMain
         {
@@ -55,7 +55,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlaceTable One <> Many DocumentOrderTicket
-        pos_configurationplacetable fPlaceTable;
+        private pos_configurationplacetable fPlaceTable;
         [Association(@"ConfigurationPlaceTableReferencesDocumentOrderTicket")]
         public pos_configurationplacetable PlaceTable
         {

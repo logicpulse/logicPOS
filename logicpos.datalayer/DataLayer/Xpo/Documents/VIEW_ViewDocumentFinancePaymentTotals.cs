@@ -9,14 +9,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public viewdocumentfinancepaymenttotals() : base() { }
         public viewdocumentfinancepaymenttotals(Session session) : base(session) { }
 
-        string pDocumentOid;
+        private string pDocumentOid;
         public string DocumentOid
         {
             get { return pDocumentOid; }
             set { SetPropertyValue<string>("DocumentOid", ref pDocumentOid, value); }
         }
 
-        Decimal pTotal;
+        private Decimal pTotal;
         public Decimal Total
         {
             get { return pTotal; }

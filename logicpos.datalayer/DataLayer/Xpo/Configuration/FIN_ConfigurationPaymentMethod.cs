@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpaymentmethod), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fToken;
+        private string fToken;
         [Size(100)]
         [Indexed(Unique = true)]
         public String Token
@@ -40,7 +40,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<String>("Token", ref fToken, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -48,7 +48,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fResourceString;
+        private string fResourceString;
         [Indexed(Unique = true)]
         public string ResourceString
         {
@@ -56,7 +56,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ResourceString", ref fResourceString, value); }
         }
 
-        string fButtonIcon;
+        private string fButtonIcon;
         [Size(255)]
         public string ButtonIcon
         {
@@ -64,21 +64,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonIcon", ref fButtonIcon, value); }
         }
 
-        string fAcronym;
+        private string fAcronym;
         public string Acronym
         {
             get { return fAcronym; }
             set { SetPropertyValue<string>("Acronym", ref fAcronym, value); }
         }
 
-        string fAllowPayback;
+        private string fAllowPayback;
         public string AllowPayback
         {
             get { return fAllowPayback; }
             set { SetPropertyValue<string>("AllowPayback", ref fAllowPayback, value); }
         }
 
-        string fSymbol;
+        private string fSymbol;
         public string Symbol
         {
             get { return fSymbol; }

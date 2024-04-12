@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Extensions;
 using System;
 using System.Drawing;
 
@@ -10,12 +11,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public class KeyboardPadKey : TouchButtonBase
     {
         //Private Members
-        private String _l1LabelText;
-        private String _l2LabelText;
-        private Color _colorKeyboardPadKeyDefaultFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorKeyboardPadKeyDefaultFont"]);
-        private Color _colorKeyboardPadKeySecondaryFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorKeyboardPadKeySecondaryFont"]);
-        private Color _colorKeyboardPadKeyBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorKeyboardPadKeyBackground"]);
-        private Color _colorKeyboardPadKeyBackgroundActive = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorKeyboardPadKeyBackgroundActive"]);
+        private readonly string _l1LabelText;
+        private readonly string _l2LabelText;
+        private readonly Color _colorKeyboardPadKeyDefaultFont = GlobalFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
+        private readonly Color _colorKeyboardPadKeySecondaryFont = GlobalFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyBackground = GlobalFramework.Settings["colorKeyboardPadKeyBackground"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyBackgroundActive = GlobalFramework.Settings["colorKeyboardPadKeyBackgroundActive"].StringToColor();
 
         //Public Properties
         private Label _labelL1;
@@ -95,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     _labelL1.SetAlignment(1.00F, 0.5F);
                     break;
             }
-            _labelL1.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
+            _labelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeyDefaultFont.ToGdkColor());
             _labelL1.ModifyFont(fontDescriptionPrimaryKey);
             vbox.PackEnd(_labelL1);
             //HideL2 dont show L2
@@ -103,8 +104,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 _labelL2 = new Label();
                 _labelL2.Text = _l2LabelText;
-                _labelL1.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeyDefaultFont));
-                _labelL2.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorKeyboardPadKeySecondaryFont));
+                _labelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeyDefaultFont.ToGdkColor());
+                _labelL2.ModifyFg(StateType.Normal, _colorKeyboardPadKeySecondaryFont.ToGdkColor());
                 _labelL1.ModifyFont(fontDescriptionSecondaryKey);
                 _labelL2.ModifyFont(fontDescriptionSecondaryKey);
                 _labelL1.SetAlignment(0.60F, 0.50F);

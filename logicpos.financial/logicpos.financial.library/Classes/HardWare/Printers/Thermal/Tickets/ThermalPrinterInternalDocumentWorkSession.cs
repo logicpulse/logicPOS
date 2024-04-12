@@ -16,8 +16,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
     public class ThermalPrinterInternalDocumentWorkSession : ThermalPrinterBaseInternalTemplate
     {
-        private pos_worksessionperiod _workSessionPeriod;
-        private SplitCurrentAccountMode _splitCurrentAccountMode;
+        private readonly pos_worksessionperiod _workSessionPeriod;
+        private readonly SplitCurrentAccountMode _splitCurrentAccountMode;
 
         public ThermalPrinterInternalDocumentWorkSession(sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod, SplitCurrentAccountMode pSplitCurrentAccountMode)
             : base(pPrinter)
@@ -98,7 +98,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Helper Logic
 
-        class DataTableGroupProperties
+        private class DataTableGroupProperties
         {
             private string _title;
             public string Title
@@ -136,7 +136,6 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
             if (pPrinter != null)
             {
-                sys_configurationprinters printer = pPrinter;
                 sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)FrameworkUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SettingsApp.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
                 string splitCurrentAccountFilter = string.Empty;
                 string fileTicket = template.FileTemplate;
@@ -214,9 +213,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     dataRow[1] = FrameworkUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyOut"]);
                     dataTable.Rows.Add(dataRow);
                     //Configure Ticket Column Properties
-                    List<TicketColumn> columns = new List<TicketColumn>();
-                    columns.Add(new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right));
-                    columns.Add(new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left));
+                    List<TicketColumn> columns = new List<TicketColumn>
+                    {
+                        new TicketColumn("Label", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Right),
+                        new TicketColumn("Value", "", Convert.ToInt16(_maxCharsPerLineNormal / 2) - 2, TicketColumnsAlign.Left)
+                    };
                     TicketTable ticketTable = new TicketTable(dataTable, columns, _thermalPrinterGeneric.MaxCharsPerLineNormalBold);
                     //Print Ticket Table
                     ticketTable.Print(_thermalPrinterGeneric);
@@ -278,11 +279,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                             xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(item.Value.Sql);
 
                             //Generate Columns
-                            columns = new List<TicketColumn>();
-                            columns.Add(new TicketColumn("GroupTitle", item.Value.Title, 0, TicketColumnsAlign.Left));
-                            columns.Add(new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-                            //columns.Add(new TicketColumn("UnitMeasure", string.Empty, 3));
-                            columns.Add(new TicketColumn("Total", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_totalfinal_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                            columns = new List<TicketColumn>
+                            {
+                                new TicketColumn("GroupTitle", item.Value.Title, 0, TicketColumnsAlign.Left),
+                                new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"),
+                                //columns.Add(new TicketColumn("UnitMeasure", string.Empty, 3));
+                                new TicketColumn("Total", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_totalfinal_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}")
+                            };
 
                             //Init DataTable
                             dataTable = new DataTable();
@@ -308,7 +311,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                                     //Sum Summary Totals
                                     summaryTotalQuantity += quantity;
                                     summaryTotal += total;
-                                    //_log.Debug(string.Format("Designation: [{0}], quantity: [{1}], unitMeasure: [{2}], total: [{3}]", designation, quantity, unitMeasure, total));
+                                    //_logger.Debug(string.Format("Designation: [{0}], quantity: [{1}], unitMeasure: [{2}], total: [{3}]", designation, quantity, unitMeasure, total));
                                     //Create Row
                                     dataRow = dataTable.NewRow();
                                     dataRow[0] = designation;
@@ -365,7 +368,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     throw new Exception(ex.Message);
                 }
             }
@@ -377,17 +380,19 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         {
             //Parameters
             string sqlWhere = pSqlWhere;
-            bool enabledGroupTerminal = (pPeriodType == WorkSessionPeriodType.Day) ? true : false; ;
-            bool enabledGroupPaymentMethod = (pSplitCurrentAccountMode != SplitCurrentAccountMode.CurrentAcount) ? true : false; ; ;
+            bool enabledGroupTerminal = (pPeriodType == WorkSessionPeriodType.Day); ;
+            bool enabledGroupPaymentMethod = (pSplitCurrentAccountMode != SplitCurrentAccountMode.CurrentAcount); ; ;
             bool enabledGroupSubFamily = true;
 
             //Init DataTableGroupProperties Object
-            Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> dictGroupProperties = new Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties>();
+            Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties> dictGroupProperties = new Dictionary<DataTableGroupPropertiesType, DataTableGroupProperties>
+            {
+                //WorkSessionMovementResumeQueryMode.FinanceDocuments Groups : Show FinanceDocuments
 
-            //WorkSessionMovementResumeQueryMode.FinanceDocuments Groups : Show FinanceDocuments
-
-            //Family
-            dictGroupProperties.Add(DataTableGroupPropertiesType.DocumentsFamily, new DataTableGroupProperties(
+                //Family
+                {
+                    DataTableGroupPropertiesType.DocumentsFamily,
+                    new DataTableGroupProperties(
               resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_family"),
               GenWorkSessionMovementResumeQuery(
                 "FamilyDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
@@ -395,10 +400,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 "MIN(FamilyCode)",
                 sqlWhere
               )
-            ));
+            )
+                },
 
-            //SubFamily
-            dictGroupProperties.Add(DataTableGroupPropertiesType.DocumentsSubFamily, new DataTableGroupProperties(
+                //SubFamily
+                {
+                    DataTableGroupPropertiesType.DocumentsSubFamily,
+                    new DataTableGroupProperties(
               resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_subfamily"),
               GenWorkSessionMovementResumeQuery(
                 "SubFamilyDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
@@ -407,10 +415,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 sqlWhere
               )
               , enabledGroupSubFamily
-            ));
+            )
+                },
 
-            //Article
-            dictGroupProperties.Add(DataTableGroupPropertiesType.DocumentsArticle, new DataTableGroupProperties(
+                //Article
+                {
+                    DataTableGroupPropertiesType.DocumentsArticle,
+                    new DataTableGroupProperties(
               resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"),
               GenWorkSessionMovementResumeQuery(
                 "Designation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
@@ -418,10 +429,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 "MIN(Code)",
                 sqlWhere
               )
-            ));
+            )
+                },
 
-            //Tax
-            dictGroupProperties.Add(DataTableGroupPropertiesType.DocumentsTax, new DataTableGroupProperties(
+                //Tax
+                {
+                    DataTableGroupPropertiesType.DocumentsTax,
+                    new DataTableGroupProperties(
               resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_tax"),
               GenWorkSessionMovementResumeQuery(
                 "VatDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
@@ -429,10 +443,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 "MIN(VatCode)",
                 sqlWhere
               )
-            ));
+            )
+                },
 
-            //PaymentMethod
-            dictGroupProperties.Add(DataTableGroupPropertiesType.DocumentsPaymentMethod, new DataTableGroupProperties(
+                //PaymentMethod
+                {
+                    DataTableGroupPropertiesType.DocumentsPaymentMethod,
+                    new DataTableGroupProperties(
               resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_type_of_payment"),
               GenWorkSessionMovementResumeQuery(
                 "PaymentMethodDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
@@ -441,10 +458,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 sqlWhere
               )
               , enabledGroupPaymentMethod
-            ));
+            )
+                },
 
-            //DocumentType
-            dictGroupProperties.Add(DataTableGroupPropertiesType.DocumentsDocumentType, new DataTableGroupProperties(
+                //DocumentType
+                {
+                    DataTableGroupPropertiesType.DocumentsDocumentType,
+                    new DataTableGroupProperties(
               resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type"),
               GenWorkSessionMovementResumeQuery(
                 "DocumentTypeDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
@@ -452,7 +472,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 "MIN(DocumentTypeCode)",
                 sqlWhere
               )
-            ));
+            )
+                }
+            };
 
             //Hour
             string hourField = string.Empty;

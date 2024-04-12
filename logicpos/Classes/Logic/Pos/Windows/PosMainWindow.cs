@@ -21,7 +21,7 @@ namespace logicpos
     public partial class PosMainWindow
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private Guid pTableOid = Guid.Empty;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -47,7 +47,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: KeyRelease
 
-        void PosMainWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void PosMainWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             //Redirect Event to BarCodeReader.KeyReleaseEvent
             if (GlobalApp.BarCodeReader != null)
@@ -59,7 +59,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: touchButtonPosToolbarApplicationClose
 
-        void touchButtonPosToolbarApplicationClose_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarApplicationClose_Clicked(object sender, EventArgs e)
         {
             LogicPos.Quit(this);
         }
@@ -67,7 +67,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: touchButtonPosToolbarBackOffice
 
-        void touchButtonPosToolbarBackOffice_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarBackOffice_Clicked(object sender, EventArgs e)
         {
             Utils.ShowBackOffice(this);
         }
@@ -76,7 +76,7 @@ namespace logicpos
         //Event: touchButtonPosToolbarReports
 
         // Deprecated
-        void touchButtonPosToolbarReports_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarReports_Clicked(object sender, EventArgs e)
         {
             //Temporary Disable
             //Utils.ShowReportsWinForms(this);
@@ -96,7 +96,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             //Test Report With DocumentFinanceMaster Documents
@@ -119,7 +119,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: touchButtonPosToolbarLogoutUser
 
-        void touchButtonPosToolbarLogoutUser_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarLogoutUser_Clicked(object sender, EventArgs e)
         {
             Hide();
             //Call Shared WindowStartup LogOutUser, and Show WindowStartup
@@ -130,7 +130,7 @@ namespace logicpos
         //Event: touchButtonPosToolbarShowSystemDialog
 
         // System Dialog
-        void touchButtonPosToolbarShowSystemDialog_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarShowSystemDialog_Clicked(object sender, EventArgs e)
         {
             PosSystemDialog dialog = new PosSystemDialog(this, Gtk.DialogFlags.DestroyWithParent);
             int response = dialog.Run();
@@ -140,12 +140,12 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: touchButtonPosToolbarCashDrawer
 
-        void touchButtonPosToolbarCashDrawer_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarCashDrawer_Clicked(object sender, EventArgs e)
         {
             ShowCashDialog();
         }
 
-        void ShowCashDialog()
+        private void ShowCashDialog()
         {
             PosCashDialog dialog = new PosCashDialog(this, Gtk.DialogFlags.DestroyWithParent);
             int response = dialog.Run();
@@ -155,7 +155,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: touchButtonPosToolbarNewFinanceDocument
 
-        void touchButtonPosToolbarNewFinanceDocument_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarNewFinanceDocument_Clicked(object sender, EventArgs e)
         {
             //Call New DocumentFinance Dialog
             PosDocumentFinanceDialog dialogNewDocument = new PosDocumentFinanceDialog(this, DialogFlags.DestroyWithParent);
@@ -169,7 +169,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: touchButtonPosToolbarFinanceDocuments
 
-        void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarFinanceDocuments_Clicked(object sender, EventArgs e)
         {
             PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(this, Gtk.DialogFlags.DestroyWithParent, 0);
             ResponseType response = (ResponseType)dialog.Run();
@@ -179,7 +179,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: touchButtonPosToolbarShowChangeUser
 
-        void touchButtonPosToolbarShowChangeUserDialog_Clicked(object sender, EventArgs e)
+        private void touchButtonPosToolbarShowChangeUserDialog_Clicked(object sender, EventArgs e)
         {
             PosChangeUserDialog dialogChangeUser = new PosChangeUserDialog(this, Gtk.DialogFlags.DestroyWithParent);
 
@@ -214,7 +214,7 @@ namespace logicpos
                                 GlobalFramework.LoggedUser = (sys_userdetail)FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), dialogChangeUser.UserDetail.Oid);
                                 GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions();
                                 _ticketList.UpdateTicketListButtons();
-                                FrameworkUtils.Audit("USER_LOGIN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_login"), GlobalFramework.LoggedUser.Name));
+                                FrameworkUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), GlobalFramework.LoggedUser.Name));
                                 terminalInfo = string.Format("{0} : {1}", GlobalFramework.LoggedTerminal.Designation, GlobalFramework.LoggedUser.Name);
                                 if (_labelTerminalInfo.Text != terminalInfo) _labelTerminalInfo.Text = terminalInfo;
                                 //After First time Login ShowNotifications
@@ -228,7 +228,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             finally
             {
@@ -240,7 +240,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: Favorites Button
 
-        void buttonFavorites_Clicked(object sender, EventArgs e)
+        private void buttonFavorites_Clicked(object sender, EventArgs e)
         {
             _tablePadArticle.Filter = " AND (Favorite = 1)";
             //Enable Buttons, else when we have only a Family or Subfamily, the buttons will never be enabled
@@ -251,7 +251,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: Families Button Clicks
 
-        void _tablePadFamily_Clicked(object sender, EventArgs e)
+        private void _tablePadFamily_Clicked(object sender, EventArgs e)
         {
             TouchButtonBase button = (TouchButtonBase)sender;
 
@@ -278,15 +278,15 @@ namespace logicpos
             //IN009277ENDS
           
             //Debug
-            //_log.Debug(string.Format("_tablePadFamily_Clicked(): F:CurrentId: [{0}], Name: [{1}]", button.CurrentId, button.Name));
-            //_log.Debug(string.Format("_tablePadFamily_Clicked(): SubFamily.Sql:[{0}{1}{2}]", _tablePadSubFamily.Sql, _tablePadSubFamily.Filter, _tablePadSubFamily.Order));
-            //_log.Debug(string.Format("_tablePadFamily_Clicked(): Article.Sql:[{0}{1}{2}]", _tablePadArticle.Sql, _tablePadArticle.Filter, _tablePadArticle.Order));
+            //_logger.Debug(string.Format("_tablePadFamily_Clicked(): F:CurrentId: [{0}], Name: [{1}]", button.CurrentId, button.Name));
+            //_logger.Debug(string.Format("_tablePadFamily_Clicked(): SubFamily.Sql:[{0}{1}{2}]", _tablePadSubFamily.Sql, _tablePadSubFamily.Filter, _tablePadSubFamily.Order));
+            //_logger.Debug(string.Format("_tablePadFamily_Clicked(): Article.Sql:[{0}{1}{2}]", _tablePadArticle.Sql, _tablePadArticle.Filter, _tablePadArticle.Order));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: SubFamilies Button Clicks
 
-        void _tablePadSubFamily_Clicked(object sender, EventArgs e)
+        private void _tablePadSubFamily_Clicked(object sender, EventArgs e)
         {
             TouchButtonBase button = (TouchButtonBase)sender;
 
@@ -297,19 +297,19 @@ namespace logicpos
             _tablePadArticle.Filter = string.Format(" AND (SubFamily = '{0}')", button.CurrentButtonOid);
 
             //Debug
-            //_log.Debug(string.Format("_tablePadSubFamily_Clicked(): S:CurrentId:[{0}], Name:[{1}]", button.CurrentId, button.Name));
-            //_log.Debug(string.Format("_tablePadSubFamily_Clicked(): Article.Sql:[{0}{1}{2}]", _tablePadArticle.Sql, _tablePadArticle.Filter, _tablePadArticle.Order));
+            //_logger.Debug(string.Format("_tablePadSubFamily_Clicked(): S:CurrentId:[{0}], Name:[{1}]", button.CurrentId, button.Name));
+            //_logger.Debug(string.Format("_tablePadSubFamily_Clicked(): Article.Sql:[{0}{1}{2}]", _tablePadArticle.Sql, _tablePadArticle.Filter, _tablePadArticle.Order));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Event: Articles Button Clicks
 
-        void _tablePadArticle_Clicked(object sender, EventArgs e)
+        private void _tablePadArticle_Clicked(object sender, EventArgs e)
         {
             try
             {
                 TouchButtonBase button = (TouchButtonBase)sender;
-                //_log.Debug(string.Format("_tablePadArticle_Clicked(): A:CurrentId:[{0}], Name:[{1}]", button.CurrentButtonOid, button.Name));
+                //_logger.Debug(string.Format("_tablePadArticle_Clicked(): A:CurrentId:[{0}], Name:[{1}]", button.CurrentButtonOid, button.Name));
 
                 //Change Mode
                 if (_ticketList.ListMode != TicketListMode.Ticket)
@@ -326,7 +326,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
         }
@@ -369,7 +369,7 @@ namespace logicpos
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)
         {
-            //_log.Debug(String.Format("Window: [{0}] Device: [{1}] Captured: [{2}] Length: [{3}]", GlobalApp.HWBarCodeReader.Window, GlobalApp.HWBarCodeReader.Device, GlobalApp.HWBarCodeReader.Buffer, GlobalApp.HWBarCodeReader.Buffer.Length));
+            //_logger.Debug(String.Format("Window: [{0}] Device: [{1}] Captured: [{2}] Length: [{3}]", GlobalApp.HWBarCodeReader.Window, GlobalApp.HWBarCodeReader.Device, GlobalApp.HWBarCodeReader.Buffer, GlobalApp.HWBarCodeReader.Buffer.Length));
             /* 
              * TK013134 - Parking Ticket 
              * Check for cases that a table has not been opened yet
@@ -418,7 +418,7 @@ namespace logicpos
 
         public void UpdateWorkSessionUI()
         {
-            //_log.Debug("void UpdateWorkSessionUI() :: Starting..."); /* IN009008 */
+            //_logger.Debug("void UpdateWorkSessionUI() :: Starting..."); /* IN009008 */
 
             //Update Toolbar UI Buttons After ToolBox and ToolBar
             if (GlobalFramework.WorkSessionPeriodDay != null)
@@ -458,9 +458,6 @@ namespace logicpos
 
                             Guid currentTableOid = Guid.Parse(selectStatementResultData[0].Values[0].ToString());
 
-                            //Table TableOID = null;
-                            OrderMain currentOrderMain = null;
-
                             //string filterCriteria = string.Format("Oid = '{0}'", SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
 
                             Guid newOrderMainOid = Guid.NewGuid();
@@ -469,8 +466,9 @@ namespace logicpos
                             OrderTicket orderTicket = new OrderTicket(newOrderMain, (PriceType)newOrderMain.Table.PriceType);
                             //Create Reference to SessionApp OrderMain with Open Ticket, Ready to Add Details
                             newOrderMain.OrderTickets.Add(1, orderTicket);
+                            //Table TableOID = null;
                             //Create Reference to be used in Shared Code
-                            currentOrderMain = newOrderMain;
+                            OrderMain currentOrderMain = newOrderMain;
 
                             _ticketList.UpdateArticleBag();
                             _ticketList.UpdateTicketListOrderButtons();
@@ -590,7 +588,7 @@ namespace logicpos
                     pTicketList.UpdateTicketListOrderButtons();
 
                     //Debug
-                    if (debug) _log.Debug(string.Format("UpdateGUITimer(): Table Status Updated [{0}], _persistentOid [{1}], _orderStatus [{2}], _UpdatedAt [{3}], dateLastDBUpdate [{4}]", orderMain.Table.Name, orderMain.PersistentOid, Convert.ToInt16(OrderStatus.Open), orderMain.UpdatedAt, dateLastDBUpdate));
+                    if (debug) _logger.Debug(string.Format("UpdateGUITimer(): Table Status Updated [{0}], _persistentOid [{1}], _orderStatus [{2}], _UpdatedAt [{3}], dateLastDBUpdate [{4}]", orderMain.Table.Name, orderMain.PersistentOid, Convert.ToInt16(OrderStatus.Open), orderMain.UpdatedAt, dateLastDBUpdate));
 
                     GlobalFramework.SessionApp.Write();
                 }
@@ -610,7 +608,7 @@ namespace logicpos
                 GlobalFramework.SessionApp.Write();
 
                 //Debug
-                //if (debug) _log.Debug(string.Format("UpdateGUITimer(): Cant Get Table Status [{0}], sql:[{1}]", orderMain.Table.Name, sqlOrderMainUpdatedAt));
+                //if (debug) _logger.Debug(string.Format("UpdateGUITimer(): Cant Get Table Status [{0}], sql:[{1}]", orderMain.Table.Name, sqlOrderMainUpdatedAt));
             }
         }
 

@@ -15,7 +15,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosReportsQueryDialog : PosBaseDialog
+    internal partial class PosReportsQueryDialog : PosBaseDialog
     {
         // ScrolledWindow
         private ScrolledWindow _scrolledWindow;
@@ -42,29 +42,29 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private XPOEntryBoxSelectRecordValidation<fin_articlestock, TreeViewArticleStock> _entryBoxSelectDocumentNumber;
         private XPOEntryBoxSelectRecordValidation<fin_configurationvatrate, TreeViewConfigurationVatRate> _entryBoxSelectVatRate;
         // Dictionaries
-        private Dictionary<string, object> _selectionBoxs = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _selectionBoxs = new Dictionary<string, object>();
         // Strore components for mode, this is used to Add or Not component to UI based on ReportsQueryDialogMode
-        private Dictionary<ReportsQueryDialogMode, Dictionary<string, string>> _fieldsModeComponents = new Dictionary<ReportsQueryDialogMode, Dictionary<string, string>>();
+        private readonly Dictionary<ReportsQueryDialogMode, Dictionary<string, string>> _fieldsModeComponents = new Dictionary<ReportsQueryDialogMode, Dictionary<string, string>>();
         // Dialog Buttons
         private TouchButtonIconWithText _buttonOk;
         private TouchButtonIconWithText _buttonCancel;
 		// IN009223 IN009227
         private TouchButtonIconWithText _buttonCleanFilter;
-        private ResponseType _responseTypeCleanFilter = (ResponseType) DialogResponseType.CleanFilter;
+        private readonly ResponseType _responseTypeCleanFilter = (ResponseType) DialogResponseType.CleanFilter;
 
         // Export to pdf/excel
         private TouchButtonIconWithText _buttonExportPdf;
-        private ResponseType _responseTypeExportPdf = (ResponseType)DialogResponseType.ExportPdf;
+        private readonly ResponseType _responseTypeExportPdf = (ResponseType)DialogResponseType.ExportPdf;
         private TouchButtonIconWithText _buttonExportXls;
-        private ResponseType _responseTypeExportXls = (ResponseType)DialogResponseType.ExportXls;
+        private readonly ResponseType _responseTypeExportXls = (ResponseType)DialogResponseType.ExportXls;
 
         // Parameters
-        private ReportsQueryDialogMode _reportsQueryDialogMode;
-        private string _databaseSourceObject;
+        private readonly ReportsQueryDialogMode _reportsQueryDialogMode;
+        private readonly string _databaseSourceObject;
         // Public Properties
         private string _filterValue;
         private string _filterValueHumanReadble;
-        private string _windowTitle;
+        private readonly string _windowTitle;
         public string FilterValue { get => _filterValue; set => _filterValue = value; }
         public string FilterValueHumanReadble { get => _filterValueHumanReadble; set => _filterValueHumanReadble = value; }
         private DateTime _dateStart;
@@ -524,7 +524,7 @@ Oid = '{SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice}'
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 

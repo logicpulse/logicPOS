@@ -9,9 +9,9 @@ namespace logicpos.Classes.Logic.Hardware
     public class InputReader
     {
         //Log4Net
-        private static readonly log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private uint _timerInterval;
+        private readonly uint _timerInterval;
         private bool _timerEnabled = false;
         private static List<int> _barCodeReaderList;
         private static List<int> _cardReaderList;
@@ -81,7 +81,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -89,10 +89,7 @@ namespace logicpos.Classes.Logic.Hardware
 
         private void OnCapture()
         {
-            if (Captured != null)
-            {
-                Captured(this, EventArgs.Empty);
-            }
+            Captured?.Invoke(this, EventArgs.Empty);
         }
 
         public void StartTimer()
@@ -144,7 +141,6 @@ namespace logicpos.Classes.Logic.Hardware
         public void KeyReleaseEvent(Window pSourceWindow, object o, KeyReleaseEventArgs args)
         {
             if (!_timerEnabled) StartTimer();
-            string input = string.Empty;
             char keyChar;
 
             switch (args.Event.Key.ToString())
@@ -159,7 +155,7 @@ namespace logicpos.Classes.Logic.Hardware
                 case "Key_7":
                 case "Key_8":
                 case "Key_9":
-                    input = args.Event.Key.ToString();
+                    string input = args.Event.Key.ToString();
                     keyChar = input[input.Length - 1];
                     //Add to Buffer
                     _captureBuffer += keyChar;

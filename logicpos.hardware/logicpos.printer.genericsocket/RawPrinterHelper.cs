@@ -57,7 +57,6 @@ namespace logicpos.printer.genericsocket
         // Returns true on success, false on failure.
         public static bool SendBytesToPrinter(string szPrinterName, IntPtr pBytes, int dwCount)
         {
-            int dwError = 0, dwWritten = 0;
             var hPrinter = new IntPtr(0);
             var di = new DOCINFOA();
             var bSuccess = false; // Assume failure unless you specifically succeed.
@@ -74,6 +73,7 @@ namespace logicpos.printer.genericsocket
                     // Start a page.
                     if (StartPagePrinter(hPrinter))
                     {
+                        int dwWritten;
                         // Write your bytes.
                         bSuccess = WritePrinter(hPrinter, pBytes, dwCount, out dwWritten);
                         EndPagePrinter(hPrinter);
@@ -82,6 +82,7 @@ namespace logicpos.printer.genericsocket
                 }
                 ClosePrinter(hPrinter);
             }
+            int dwError;
             // If you did not succeed, GetLastError may give more information
             // about why not.
             if (bSuccess == false)
@@ -100,7 +101,6 @@ namespace logicpos.printer.genericsocket
 
             // Dim an array of bytes big enough to hold the file's contents.
             var bytes = new byte[fs.Length];
-            var bSuccess = false;
 
             // Your unmanaged pointer.
             var pUnmanagedBytes = new IntPtr(0);
@@ -113,7 +113,7 @@ namespace logicpos.printer.genericsocket
             // Copy the managed byte array into the unmanaged array.
             Marshal.Copy(bytes, 0, pUnmanagedBytes, nLength);
             // Send the unmanaged bytes to the printer.
-            bSuccess = SendBytesToPrinter(szPrinterName, pUnmanagedBytes, nLength);
+            bool bSuccess = SendBytesToPrinter(szPrinterName, pUnmanagedBytes, nLength);
             // Free the unmanaged memory that you allocated earlier.
             Marshal.FreeCoTaskMem(pUnmanagedBytes);
             return bSuccess;
@@ -148,11 +148,10 @@ namespace logicpos.printer.genericsocket
         //if you want a wrapper function for you strings :
         public static bool SendAsciiToPrinter(string szPrinterName, string data)
         {
-            var retval = false;
 
             //if  you are using UTF-8 and get wrong values in qrcode printing, you must use ASCII instead.
             //retval = SendBytesToPrinter(szPrinterName, Encoding.UTF8.GetBytes(data));
-            retval = SendBytesToPrinter(szPrinterName, Encoding.ASCII.GetBytes(data));
+            bool retval = SendBytesToPrinter(szPrinterName, Encoding.ASCII.GetBytes(data));
 
             return retval;
         }

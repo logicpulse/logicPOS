@@ -8,11 +8,11 @@ using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class EntryBoxValidationDatePickerDialog : EntryBoxValidationButton
+    internal class EntryBoxValidationDatePickerDialog : EntryBoxValidationButton
     {
         //Private Properties
-        private string _windowTitle;
-        private string _dateFormat;
+        private readonly string _windowTitle;
+        private readonly string _dateFormat;
         //Public Properties
         private DateTime _dateTime;
         public DateTime Value
@@ -91,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                     }
                 }
             };
@@ -133,7 +133,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -142,10 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void OnClosePopup()
         {
-            if (ClosePopup != null)
-            {
-                ClosePopup(this, EventArgs.Empty);
-            }
+            ClosePopup?.Invoke(this, EventArgs.Empty);
         }
 
         //Required Custom Validate Over Default EntryValidation for Min and Max Dates

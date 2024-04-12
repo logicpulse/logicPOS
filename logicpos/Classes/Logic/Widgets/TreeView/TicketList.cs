@@ -9,6 +9,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
@@ -19,22 +20,22 @@ using System.IO.Ports;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    partial class TicketList
+    public partial class TicketList
     {
         //Prev
-        void _buttonKeyPrev_Clicked(object sender, EventArgs e)
+        private void _buttonKeyPrev_Clicked(object sender, EventArgs e)
         {
             Prev();
         }
 
         //Next
-        void _buttonKeyNext_Clicked(object sender, EventArgs e)
+        private void _buttonKeyNext_Clicked(object sender, EventArgs e)
         {
             Next();
         }
 
         //Delete
-        void _buttonKeyDelete_Clicked(object sender, EventArgs e)
+        private void _buttonKeyDelete_Clicked(object sender, EventArgs e)
         {
             if (_listMode == TicketListMode.OrderMain)
             {
@@ -117,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Always Change to OrderMain ListMode before Update Model
                         _listMode = TicketListMode.Ticket;
                         orderMain.CleanSessionOrder();
-                        Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = logicpos.Utils.ColorToGdkColor(_colorPosTicketListModeTicketBackground) : colorListMode = logicpos.Utils.ColorToGdkColor(_colorPosTicketListModeOrderMainBackground);
+                        Gdk.Color colorListMode = (_listMode == TicketListMode.Ticket) ? colorListMode = _colorPosTicketListModeTicketBackground.ToGdkColor() : colorListMode = _colorPosTicketListModeOrderMainBackground.ToGdkColor();
                         _treeView.ModifyBase(StateType.Normal, colorListMode);
                         //UpdateModel();
                         UpdateOrderStatusBar();
@@ -128,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                     }
                 }
             }
@@ -140,7 +141,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Decrease
-        void _buttonKeyDecrease_Clicked(object sender, EventArgs e)
+        private void _buttonKeyDecrease_Clicked(object sender, EventArgs e)
         {
             try
             {
@@ -167,13 +168,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
 
         }
 
         //Increase
-        void _buttonKeyIncrease_Clicked(object sender, EventArgs e)
+        private void _buttonKeyIncrease_Clicked(object sender, EventArgs e)
         {
             try
             {       
@@ -211,13 +212,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
 
         }
 
         //Change Quantity
-        void _buttonKeyChangeQuantity_Clicked(object sender, EventArgs e)
+        private void _buttonKeyChangeQuantity_Clicked(object sender, EventArgs e)
         {
             try
             {
@@ -243,12 +244,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         //Change Price
-        void _buttonKeyChangePrice_Clicked(object sender, EventArgs e)
+        private void _buttonKeyChangePrice_Clicked(object sender, EventArgs e)
         {
             try
             {
@@ -310,12 +311,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         //Finish Order
-        void _buttonKeyFinishOrder_Clicked(object sender, EventArgs e)
+        private void _buttonKeyFinishOrder_Clicked(object sender, EventArgs e)
         {
             try
             {
@@ -365,12 +366,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         //Payments and SplitAccount (Shared for Both Actions)
-        void _buttonKeyPayments_Clicked(object sender, EventArgs e)
+        private void _buttonKeyPayments_Clicked(object sender, EventArgs e)
         {
             TouchButtonIconWithText button = (sender as TouchButtonIconWithText);
 
@@ -448,12 +449,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         //BarCode
-        void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
+        private void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
             logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
@@ -472,7 +473,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //IN009279 CardCode scanner
-        void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
+        private void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png");
             logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
@@ -491,7 +492,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //ListOrder
-        void _buttonKeyListOrder_Clicked(object sender, EventArgs e)
+        private void _buttonKeyListOrder_Clicked(object sender, EventArgs e)
         {
             try
             {
@@ -502,12 +503,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
         //ChangeTable - Change Order From Table to Table
-        void _buttonKeyChangeTable_Clicked(object sender, EventArgs e)
+        private void _buttonKeyChangeTable_Clicked(object sender, EventArgs e)
         {
             PosTablesDialog dialog = new PosTablesDialog(this.SourceWindow, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
             ResponseType response = (ResponseType)dialog.Run();
@@ -568,7 +569,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Change List Mode
-        void _buttonKeyListMode_Clicked(object sender, EventArgs e)
+        private void _buttonKeyListMode_Clicked(object sender, EventArgs e)
         {
             //Toggle Mode
             _listMode = (_listMode == TicketListMode.Ticket) ? TicketListMode.OrderMain : TicketListMode.Ticket;
@@ -582,19 +583,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Gifts
-        void _buttonKeyGifts_Clicked(object sender, EventArgs e)
+        private void _buttonKeyGifts_Clicked(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
 
         //Weight
-        void _buttonKeyWeight_Clicked(object sender, EventArgs e)
+        private void _buttonKeyWeight_Clicked(object sender, EventArgs e)
         {
             try
             {
                 _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter,
        (int)TicketListColumns.ArticleId) && item.Properties.PriceNet == Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
-                //_log.Debug(string.Format("PriceUser: [{0}]", _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser));
+                //_logger.Debug(string.Format("PriceUser: [{0}]", _currentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceUser));
                 // Round Price before Send to WeighingBalance
                 decimal articlePricePerKg = decimal.Round(CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal, 2, MidpointRounding.AwayFromZero);
                 GlobalApp.WeighingBalance.WeighArticle(articlePricePerKg);
@@ -607,7 +608,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -616,7 +617,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void WeighingBalanceDataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            //_log.Debug("WeighingBalanceDataReceived");
+            //_logger.Debug("WeighingBalanceDataReceived");
             string inData = GlobalApp.WeighingBalance.ComPort().ReadLine() + "\n";
 
             if (inData.Substring(0, 2) == "99")
@@ -642,7 +643,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     ChangeQuantity(quantity);
                 }
                 //_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity);
-                //_log.Debug(string.Format("Quantity: {0}", _listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)));
+                //_logger.Debug(string.Format("Quantity: {0}", _listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Quantity)));
             }
         }
 

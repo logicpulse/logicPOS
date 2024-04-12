@@ -10,7 +10,7 @@ using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
-    class GenericTreeViewDataTable : GenericTreeView<DataTable, DataRow>
+    internal class GenericTreeViewDataTable : GenericTreeView<DataTable, DataRow>
     {
         //Public Parametless Constructor Required by Generics
         public GenericTreeViewDataTable() { }
@@ -35,13 +35,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
           Type pDialogType
         )
         {
-            if (_debug) _log.Debug("InitObject Begin(" + pSourceWindow + "," + pDataSource + "," + pColumnProperties + "," + pGenericTreeViewMode + "," + pGenericTreeViewNavigatorMode);
+            if (_debug) _logger.Debug("InitObject Begin(" + pSourceWindow + "," + pDataSource + "," + pColumnProperties + "," + pGenericTreeViewMode + "," + pGenericTreeViewNavigatorMode);
 
             //Parameters
             _sourceWindow = pSourceWindow;
             _dataSource = pDataSource;
             if (_dataSource.Rows.Count > 0) _dataSourceRow = _dataSource.Rows[_currentRowIndex];
-            _guidDefaultValue = default(Guid);
+            _guidDefaultValue = default;
             _dialogType = pDialogType;
             _columnProperties = pColumnProperties;
             _treeViewMode = pGenericTreeViewMode;
@@ -57,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _listStoreModel.Foreach(new TreeModelForeachFunc(TreeModelForEachTask));
 
             //Initialize UI
-            if (_debug) _log.Debug("InitObject Before InitUI");
+            if (_debug) _logger.Debug("InitObject Before InitUI");
             InitUI();
 
             //Update Navigator Permissions
@@ -70,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Always have a valid cursor, in first Record or in pDefaultValue
             SetInitialCursorPosition();
 
-            if (_debug) _log.Debug("InitObject End");
+            if (_debug) _logger.Debug("InitObject End");
         }
 
         public override void InitDataModel(DataTable pDataSource, List<GenericTreeViewColumnProperty> pColumnProperties, GenericTreeViewMode pGenericTreeViewMode)
@@ -196,7 +196,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         fieldValue = FrameworkUtils.FormatDataTableFieldFromType(fieldValue.ToString(), fieldValue.GetType().Name);
                     }
             }
-            //_log.Debug(string.Format("GetDataRowColumnValue: fieldName:[{0}], fieldValue:[{1}], fieldType:[{2}]", fieldName, fieldValue, fieldValue.GetType()));
+            //_logger.Debug(string.Format("GetDataRowColumnValue: fieldName:[{0}], fieldValue:[{1}], fieldType:[{2}]", fieldName, fieldValue, fieldValue.GetType()));
             return fieldValue;
         }
 
@@ -206,14 +206,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             DataTable dataTableScheme = GenericTreeViewColumnProperty.ColumnPropertiesToDataTableScheme(_columnProperties);
             //Initialize DataRow
             System.Object[] rowArray = new System.Object[_columnProperties.Count];
-            //Create rowArray to add To Fresh DataTable, to be the DataSourceRow[0]
-            object defaultFieldValue = default(object);
-
             int i = -1;//Leave 0 for Column Propertiy Index
             foreach (GenericTreeViewColumnProperty column in _columnProperties)
             {
                 i++;
-                //_log.Debug(string.Format("column.Name: [{0}], column.Type: [{1}]", column.Name, column.Type));
+                //Create rowArray to add To Fresh DataTable, to be the DataSourceRow[0]
+                object defaultFieldValue;
+                //_logger.Debug(string.Format("column.Name: [{0}], column.Type: [{1}]", column.Name, column.Type));
 
                 //Always add a Typed Default value, ex String, Guid, Enum etc
                 if (column.Type == typeof(String))
@@ -258,7 +257,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //_dataSource.Rows[0][12].GetType() == (pDataSourceRow as DataRow).ItemArray[12].GetType()
             _dataSource.Rows.Add(pDataSourceRow as DataRow);
 
-            if (_debug) _log.Debug(string.Format("DataTable Count: [{0}]", _dataSource.Rows.Count));
+            if (_debug) _logger.Debug(string.Format("DataTable Count: [{0}]", _dataSource.Rows.Count));
         }
 
         public override void DataSourceRowDelete<T>(T pDataSourceRow)
@@ -284,7 +283,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _reindexRowIndex = 0;
             _listStoreModel.Foreach(TreeModelForEachTask);
 
-            if (_debug) _log.Debug(string.Format("DataTable Count: [{0}]", _dataSource.Rows.Count));
+            if (_debug) _logger.Debug(string.Format("DataTable Count: [{0}]", _dataSource.Rows.Count));
         }
 
         /// <summary>
@@ -297,7 +296,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
         public override bool ShowDialog<T>(T pDataObject, DialogMode pDialogMode)
         {
-            //_log.Debug(string.Format("pDataObject: [{0}]", pDataObject));
+            //_logger.Debug(string.Format("pDataObject: [{0}]", pDataObject));
 
             return base.ShowDialog<T>(pDataObject, pDialogMode);
         }
@@ -351,7 +350,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return resultIndex;
@@ -368,7 +367,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return resultValue;
@@ -387,7 +386,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

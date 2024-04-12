@@ -10,28 +10,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articlestock() : base() { }
         public fin_articlestock(Session session) : base(session) { }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        DateTime fDate;
+        private DateTime fDate;
         public DateTime Date
         {
             get { return fDate; }
             set { SetPropertyValue<DateTime>("Date", ref fDate, value); }
         }
 
-        erp_customer fCustomer;
+        private erp_customer fCustomer;
         public erp_customer Customer
         {
             get { return fCustomer; }
             set { SetPropertyValue<erp_customer>("Customer", ref fCustomer, value); }
         }
 
-        string fDocumentNumber;
+        private string fDocumentNumber;
         [Size(50)]
         //[Indexed(Unique = true)]
         public string DocumentNumber
@@ -40,7 +40,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentNumber", ref fDocumentNumber, value); }
         }
 
-        fin_articleserialnumber fArticleSerialNumber;
+        private fin_articleserialnumber fArticleSerialNumber;
         //[Indexed(Unique = true)]
         public fin_articleserialnumber ArticleSerialNumber
         {
@@ -48,42 +48,42 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<fin_articleserialnumber>("ArticleSerialNumber", ref fArticleSerialNumber, value); }
         }
 
-        fin_article fArticle;
+        private fin_article fArticle;
         public fin_article Article
         {
             get { return fArticle; }
             set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
         }
 
-        Decimal fQuantity;
+        private Decimal fQuantity;
         public Decimal Quantity
         {
             get { return fQuantity; }
             set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
         }
 
-        decimal fPurchasePrice;
+        private decimal fPurchasePrice;
         public decimal PurchasePrice
         {
             get { return fPurchasePrice; }
             set { SetPropertyValue<decimal>("PurchasePrice", ref fPurchasePrice, value); }
         }
 
-        byte[] fAttachedFile;
+        private byte[] fAttachedFile;
         public byte[] AttachedFile
         {
             get { return fAttachedFile; }
             set { SetPropertyValue<byte[]>("AttachedFile", ref fAttachedFile, value); }
         }
 
-        fin_documentfinancemaster fDocumentMaster;
+        private fin_documentfinancemaster fDocumentMaster;
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
             set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
         }
 
-        fin_documentfinancedetail fDocumentDetail;
+        private fin_documentfinancedetail fDocumentDetail;
         public fin_documentfinancedetail DocumentDetail
         {
             get { return fDocumentDetail; }

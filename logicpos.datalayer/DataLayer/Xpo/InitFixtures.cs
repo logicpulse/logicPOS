@@ -38,40 +38,39 @@ namespace logicpos.datalayer.DataLayer.Xpo
             //UserPermissionGroup
             XPCollection xpcUserProfile = new XPCollection(_session, typeof(sys_userprofile));
             sys_userprofile userProfile1 = null;
-            sys_userprofile userProfile2 = null;
-            sys_userprofile userProfile3 = null;
 
             //UserProfile
             if (xpcUserProfile.Count == 0)
             {
                 userProfile1 = new sys_userprofile(_session) { Code = 10, Designation = "Administração" }; userProfile1.Save();
-                userProfile2 = new sys_userprofile(_session) { Code = 20, Designation = "Empregado" }; userProfile2.Save();
-                userProfile3 = new sys_userprofile(_session) { Code = 30, Designation = "Supervisor" }; userProfile3.Save();
+                sys_userprofile userProfile2 = new sys_userprofile(_session) { Code = 20, Designation = "Empregado" };
+                userProfile2.Save();
+                sys_userprofile userProfile3 = new sys_userprofile(_session) { Code = 30, Designation = "Supervisor" };
+                userProfile3.Save();
             };
 
             //UserPermissionGroup
             XPCollection xpcUserPermissionGroup = new XPCollection(_session, typeof(sys_userpermissiongroup));
-            sys_userpermissiongroup userPermissionGroup1 = null;
-            sys_userpermissiongroup userPermissionGroup2 = null;
-            sys_userpermissiongroup userPermissionGroup3 = null;
-
             if (xpcUserPermissionGroup.Count == 0)
             {
-                userPermissionGroup1 = new sys_userpermissiongroup(_session) { Code = 10, Designation = "Administração" }; userPermissionGroup1.Save();
-                userPermissionGroup2 = new sys_userpermissiongroup(_session) { Code = 20, Designation = "Mesas" }; userPermissionGroup2.Save();
-                userPermissionGroup3 = new sys_userpermissiongroup(_session) { Code = 30, Designation = "Relatórios" }; userPermissionGroup3.Save();
+                sys_userpermissiongroup userPermissionGroup1 = new sys_userpermissiongroup(_session) { Code = 10, Designation = "Administração" };
+                userPermissionGroup1.Save();
+                sys_userpermissiongroup userPermissionGroup2 = new sys_userpermissiongroup(_session) { Code = 20, Designation = "Mesas" };
+                userPermissionGroup2.Save();
+                sys_userpermissiongroup userPermissionGroup3 = new sys_userpermissiongroup(_session) { Code = 30, Designation = "Relatórios" };
+                userPermissionGroup3.Save();
             };
 
             //UserPermissionItem
             sys_userpermissionitem userPermissionItem1 = null;
-            sys_userpermissionitem userPermissionItem2 = null;
-            sys_userpermissionitem userPermissionItem3 = null;
             XPCollection xpcUserPermissionItem = new XPCollection(_session, typeof(sys_userpermissionitem));
             if (xpcUserPermissionItem.Count == 0)
             {
                 userPermissionItem1 = new sys_userpermissionitem(_session) { Token = "TABLE_ALL", Designation = "Mesas – Todas as operações #1" }; userPermissionItem1.Save();
-                userPermissionItem2 = new sys_userpermissionitem(_session) { Token = "TOTALS_ALL", Designation = "Totais – Todas as operações" }; userPermissionItem2.Save();
-                userPermissionItem3 = new sys_userpermissionitem(_session) { Token = "ORDER_ALL", Designation = "Pedidos – Todas as operações" }; userPermissionItem3.Save();
+                sys_userpermissionitem userPermissionItem2 = new sys_userpermissionitem(_session) { Token = "TOTALS_ALL", Designation = "Totais – Todas as operações" };
+                userPermissionItem2.Save();
+                sys_userpermissionitem userPermissionItem3 = new sys_userpermissionitem(_session) { Token = "ORDER_ALL", Designation = "Pedidos – Todas as operações" };
+                userPermissionItem3.Save();
             }
 
             //UserPermissionProfile

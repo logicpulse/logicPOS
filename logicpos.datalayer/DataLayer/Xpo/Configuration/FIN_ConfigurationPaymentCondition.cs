@@ -15,15 +15,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpaymentcondition), "Ord");
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpaymentcondition), "Code");
         }
-        
-        UInt32 fOrd;
+
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -39,7 +39,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fAcronym;
+        private string fAcronym;
         public string Acronym
         {
             get { return fAcronym; }

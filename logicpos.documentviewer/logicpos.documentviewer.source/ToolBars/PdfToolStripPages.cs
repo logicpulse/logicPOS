@@ -158,16 +158,16 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 				return;
 			if (e.KeyCode == Keys.Enter)
 			{
-				int pn = 0;
-				string text = item.TextBox.Text;
-				char[] chs = { ' ', '/', '\\' };
+                string text = item.TextBox.Text;
+                char[] chs = { ' ', '/', '\\' };
 				int i = text.LastIndexOfAny(chs);
 				if (i > 0)
 					text = text.Substring(0, i-1);
 
-				if (!int.TryParse(text, out pn))
-					return;
-				if (pn < 1)
+                int pn;
+                if (!int.TryParse(text, out pn))
+                    return;
+                if (pn < 1)
 					pn = 1;
 				else if (pn > PdfViewer.Document.Pages.Count )
 					pn = PdfViewer.Document.Pages.Count;

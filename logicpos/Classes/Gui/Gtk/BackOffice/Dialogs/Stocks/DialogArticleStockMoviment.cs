@@ -11,6 +11,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,30 +19,30 @@ using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
-    class DialogArticleStockMoviment : BOBaseDialog
+    internal class DialogArticleStockMoviment : BOBaseDialog
     {
         //UI
-        VBox vboxTab1;
-        VBox vboxTab2;
-        VBox vboxTab3;
-        VBox vboxTab4;
-        fin_article _selectedArticle;
-        XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumber;
-        XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumberToChange;
-        XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumberCompositionArticles;
-        XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectSupplier;
-        XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectDocumentOut;
-        EntryBoxValidation _entryBoxDocumentNumber;
-        EntryBoxValidation _entryBoxPrice1;
-        EntryBoxValidation _entryBoxQuantity;
-        EntryBoxValidationDatePickerDialog _entryBoxDocumentDateIn;
-        EntryBoxValidationDatePickerDialog _entryBoxDocumentDateOut;
-        XPGuidObject _xPGuidObject;
-        Window _sourceWindow;
-        Viewport _viewport;
-        TouchButtonIconWithText _buttonChange;
-        TouchButtonIconWithText _buttonArticleOut;
-        byte[] AttachedFile;
+        private readonly VBox vboxTab1;
+        private readonly VBox vboxTab2;
+        private VBox vboxTab3;
+        private readonly VBox vboxTab4;
+        private readonly fin_article _selectedArticle;
+        private XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumber;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumberToChange;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber> _entryBoxArticleSerialNumberCompositionArticles;
+        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectSupplier;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_documentfinancemaster, TreeViewDocumentFinanceMaster> _entryBoxSelectDocumentOut;
+        private EntryBoxValidation _entryBoxDocumentNumber;
+        private EntryBoxValidation _entryBoxPrice1;
+        private EntryBoxValidation _entryBoxQuantity;
+        private EntryBoxValidationDatePickerDialog _entryBoxDocumentDateIn;
+        private readonly EntryBoxValidationDatePickerDialog _entryBoxDocumentDateOut;
+        private readonly XPGuidObject _xPGuidObject;
+        private readonly Window _sourceWindow;
+        private readonly Viewport _viewport;
+        private readonly TouchButtonIconWithText _buttonChange;
+        private readonly TouchButtonIconWithText _buttonArticleOut;
+        private byte[] AttachedFile;
 
         private TouchButtonIconWithText _buttonInsert;
         public TouchButtonIconWithText ButtonInsert
@@ -116,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
 
                 //DocumentNumber
-                Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+                Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
                 string _fileIconListFinanceDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
                 HBox hBoxDocument = new HBox(false, 0);
                 _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false, true);
@@ -165,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -183,7 +184,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     (_dataSourceRow as fin_articlestock).Quantity = FrameworkUtils.StringToDecimal(_entryBoxQuantity.EntryValidation.Text);
                     if (AttachedFile != null) (_dataSourceRow as fin_articlestock).AttachedFile = AttachedFile;
                     (_dataSourceRow as fin_articlestock).Save();
-                    _log.Debug("Sock Moviment In Changed with sucess");
+                    _logger.Debug("Sock Moviment In Changed with sucess");
 
                     ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), GlobalFramework.ServerVersion));
                 }
@@ -191,7 +192,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 

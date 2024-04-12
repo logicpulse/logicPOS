@@ -12,7 +12,7 @@ using logicpos.Classes.Formatters;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewUserCommissionGroup : GenericTreeViewXPO
+    internal class TreeViewUserCommissionGroup : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewUserCommissionGroup() { }
@@ -34,30 +34,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Commission")
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_commission"),
-                MinWidth = 100,
-                //Alignment = 1.0F,
-                FormatProvider = new FormatterDecimal(),
-                //CellRenderer = new CellRendererText()
-                //{
-                //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
-                //    Alignment = Pango.Alignment.Right,
-                //    Xalign = 1.0F
-                //}
-            });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("Commission")
+                {
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_commission"),
+                    MinWidth = 100,
+                    //Alignment = 1.0F,
+                    FormatProvider = new FormatterDecimal(),
+                    //CellRenderer = new CellRendererText()
+                    //{
+                    //    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
+                    //    Alignment = Pango.Alignment.Right,
+                    //    Xalign = 1.0F
+                    //}
+                },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = pXpoCriteria;
+            CriteriaOperator criteria;
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {

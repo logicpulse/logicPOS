@@ -12,7 +12,7 @@ namespace logicpos.financial.library.Classes.Finance
     public class FiscalNumber
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Test With
         //FiscalNumber.IsValidFiscalNumber("503218820", "PT");
@@ -61,7 +61,7 @@ namespace logicpos.financial.library.Classes.Finance
                             if (r == 10 || r == 11) r = 0;
                             checkDigit = r;
                             if (checkDigit == s[8]) result = true;
-                            //_log.Debug(string.Format("FiscalNumber[{0}]:, sum: [{1}], checkDigit: [{2}], result:[{3}] ", pFiscalNumber, sum, checkDigit, result));
+                            //_logger.Debug(string.Format("FiscalNumber[{0}]:, sum: [{1}], checkDigit: [{2}], result:[{3}] ", pFiscalNumber, sum, checkDigit, result));
                         }
                         break;
 
@@ -73,7 +73,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -137,7 +137,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -146,18 +146,14 @@ namespace logicpos.financial.library.Classes.Finance
         //Detect if first 2 chars is a CountryCode 2 if so, extract it
         public static string ExtractFiscalNumber(string pFiscalNumber)
         {
-            string result = string.Empty;
-
             int intPrefix;
             int intPrefixLength = 2;
             string fiscalNumberPrefix = pFiscalNumber.Substring(0, intPrefixLength);
             bool isNumeric = int.TryParse(fiscalNumberPrefix, out intPrefix);
 
-            result = (isNumeric) 
-                ? pFiscalNumber 
-                : pFiscalNumber.Substring(intPrefixLength, pFiscalNumber.Length - 2)
-            ;
-
+            string result = isNumeric
+    ? pFiscalNumber
+    : pFiscalNumber.Substring(intPrefixLength, pFiscalNumber.Length - 2);
             return result;
         }
     }

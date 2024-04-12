@@ -14,7 +14,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosReportsQueryDialog : PosBaseDialog
+    internal partial class PosReportsQueryDialog : PosBaseDialog
     {
         private void entryBoxDateStart_ClosePopup(object sender, EventArgs e)
         {
@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 dynamic dynamicSelectedObject = _selectionBoxs[widget.Name];
                 XPGuidObject dynamicSelectedXPOObject = dynamicSelectedObject.Value;
-                if (debug) _log.Debug(string.Format("Selected Type Key: [{0}] Value: [{1}]", widget.Name, dynamicSelectedXPOObject.Oid));
+                if (debug) _logger.Debug(string.Format("Selected Type Key: [{0}] Value: [{1}]", widget.Name, dynamicSelectedXPOObject.Oid));
             }
         }
 
@@ -151,8 +151,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
-                    _log.Error(string.Format("Error in countQuerySql: [{0}]", countQuerySql));
+                    _logger.Error(ex.Message, ex);
+                    _logger.Error(string.Format("Error in countQuerySql: [{0}]", countQuerySql));
                 }
                 //if(_databaseSourceObject == "fin_articlewarehouse" && _filterValue.Contains("SerialNumber"))
                 //{
@@ -185,7 +185,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Init Local Vars
             bool debug = false;
             int i = 0;
-            string fieldName = string.Empty;
             string filterSelectionBoxs = string.Empty;
             // Store Human Readable Filter
             string filterSelectionBoxsHumanReadable = string.Empty;
@@ -193,7 +192,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string filterDateField = (_fieldsModeComponents[_reportsQueryDialogMode].ContainsKey(typeof(DateTime).Name)) 
                 ? _fieldsModeComponents[_reportsQueryDialogMode][typeof(DateTime).Name]
                 : "UNDEFINED_DATE_FIELD";
-            dynamic dynamicSelectedObject = null;
             XPGuidObject dynamicSelectedXPOObject;
             // Store Result Object
             List<string> result = new List<string>();
@@ -202,9 +200,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 i++;
                 // Reset Vars
-                fieldName = null;
+                string fieldName = null;
                 dynamicSelectedXPOObject = null;
-                //_log.Debug(string.Format("Key: [{0}]", item.Key));
+                //_logger.Debug(string.Format("Key: [{0}]", item.Key));
 
                 // FieldName
                 //if (_fieldNames.ContainsKey(item.Key))
@@ -216,7 +214,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 // Get selectionBox XPOObjet
                 if (_selectionBoxs.ContainsKey(item.Key))
                 {
-                    dynamicSelectedObject = _selectionBoxs[item.Key];
+                    dynamic dynamicSelectedObject = _selectionBoxs[item.Key];
                     if (dynamicSelectedObject != null)
                     {
                         dynamicSelectedXPOObject = dynamicSelectedObject.Value;
@@ -225,7 +223,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     else
                     {
-                        _log.Error(string.Format("Error cant get _selectionBox[{0}]", item.Key));
+                        _logger.Error(string.Format("Error cant get _selectionBox[{0}]", item.Key));
                     }
                 }
 
@@ -287,8 +285,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     ? string.Format("{0}, {1}", datesFilterHumanReadable, filterSelectionBoxsHumanReadable)
                     : datesFilterHumanReadable;
 
-                if (debug) _log.Debug(string.Format("Filter: [{0}]", filter));
-                if (debug) _log.Debug(string.Format("filterHumanReadable: [{0}]", filterHumanReadable));
+                if (debug) _logger.Debug(string.Format("Filter: [{0}]", filter));
+                if (debug) _logger.Debug(string.Format("filterHumanReadable: [{0}]", filterHumanReadable));
 
 
                 /* IN009204 - RCs should be removed from this report, only AT Financial documents here */
@@ -321,7 +319,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Helper to debug extraFilter
             //if (!string.IsNullOrEmpty(extraFilter))
             //{
-            //    _log.Debug("BREAK");
+            //    _logger.Debug("BREAK");
             //}
             T1 defaultValue = (T1)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(T1), SettingsApp.XpoOidUndefinedRecord);            
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", SettingsApp.XpoOidUndefinedRecord,SettingsApp.XpoOidUserRecord, extraFilter));

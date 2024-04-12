@@ -10,7 +10,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     public class PosKeyboardDialog : PosBaseDialog
     {
-        KeyBoardPad _keyboardPad;
+        private readonly KeyBoardPad _keyboardPad;
         //Public Properties
         public String Text
         {

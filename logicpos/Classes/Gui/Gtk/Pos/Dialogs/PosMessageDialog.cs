@@ -7,12 +7,13 @@ using logicpos.shared;
 using System;
 using System.IO;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosMessageDialog : PosBaseDialog
+    internal class PosMessageDialog : PosBaseDialog
     {
-        TextView _textviewLog;
+        private TextView _textviewLog;
 
         public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, String pMessage, String pImageDialog = "")
             : this(pSourceWindow, pDialogFlags, new System.Drawing.Size(700, 500), pMessage, pImageDialog)
@@ -39,8 +40,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText button = new TouchButtonIconWithText("touchButton_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, pButtonLabel, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
 
             //Add to ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(button, pResponseType));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(button, pResponseType)
+            };
 
             InitObject(pSourceWindow, pDialogFlags, pSize, string.Empty, pMessage, actionAreaButtons, fileImagePath, pImageDialog);
         }
@@ -88,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _textviewLog.WrapMode = WrapMode.Word;
             _textviewLog.Sensitive = false;
             //Removed to be Transparent - CHANGE COLOR ex to System.Drawing.Color.Aqua to View TextView to Position
-            _textviewLog.ModifyBase(StateType.Insensitive, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.Transparent));
+            _textviewLog.ModifyBase(StateType.Insensitive, System.Drawing.Color.Transparent.ToGdkColor());
 
 
             TextBuffer _textBuffer = _textviewLog.Buffer;
@@ -130,9 +133,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
                 TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
                 //Add to ActionArea
-                actionAreaButtons = new ActionAreaButtons();
-                actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-                actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
+                actionAreaButtons = new ActionAreaButtons
+                {
+                    new ActionAreaButton(buttonOk, ResponseType.Ok),
+                    new ActionAreaButton(buttonCancel, ResponseType.Cancel)
+                };
             }
             else
             {
@@ -146,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //  int maxSize = 700;
             //  int targetSize = _textviewLog.HeightRequest + 125;
             //  windowSize.Height = (targetSize < maxSize) ? targetSize : maxSize;
-            //  _log.Debug(string.Format("Message: [{0}] [{1}] [{2}] [{3}]", _textviewLog.HeightRequest, targetSize, pSize.Height, windowSize.Height));
+            //  _logger.Debug(string.Format("Message: [{0}] [{1}] [{2}] [{3}]", _textviewLog.HeightRequest, targetSize, pSize.Height, windowSize.Height));
             //}
 
             //Init Object

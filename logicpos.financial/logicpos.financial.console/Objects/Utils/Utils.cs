@@ -9,7 +9,7 @@ namespace logicpos.financial.console.Objects
     public class Utils
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Terminals
@@ -34,7 +34,7 @@ namespace logicpos.financial.console.Objects
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             //Create a new db terminal
@@ -55,7 +55,7 @@ namespace logicpos.financial.console.Objects
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(string.Format("Error! Cant Register a new TerminalId [{0}] with HardwareId: [{1}], Error: [2]", configurationPlaceTerminal.Oid, configurationPlaceTerminal.HardwareId, ex.Message), ex);
+                    _logger.Error(string.Format("Error! Cant Register a new TerminalId [{0}] with HardwareId: [{1}], Error: [2]", configurationPlaceTerminal.Oid, configurationPlaceTerminal.HardwareId, ex.Message), ex);
                     Environment.Exit(0);
                 }
             }

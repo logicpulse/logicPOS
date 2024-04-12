@@ -14,11 +14,11 @@ using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
-    class DocumentFinanceDialogPage3 : PagePadPage
+    internal class DocumentFinanceDialogPage3 : PagePadPage
     {
-        private Session _session;
-        private DocumentFinanceDialogPagePad _pagePad;
-        private PosDocumentFinanceDialog _posDocumentFinanceDialog;
+        private readonly Session _session;
+        private readonly DocumentFinanceDialogPagePad _pagePad;
+        private readonly PosDocumentFinanceDialog _posDocumentFinanceDialog;
 
         //Public
         private ArticleBag _articleBag;
@@ -204,13 +204,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         );
 
                         //Finnally Update DataSourceRow Value with calculated PriceProperties
-                        if (debug) _log.Debug(string.Format("#1:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", FrameworkUtils.DecimalToString(Convert.ToDecimal(_treeViewArticles.DataSourceRow["TotalFinal"])), FrameworkUtils.DecimalToString(discountGlobal)));
+                        if (debug) _logger.Debug(string.Format("#1:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", FrameworkUtils.DecimalToString(Convert.ToDecimal(_treeViewArticles.DataSourceRow["TotalFinal"])), FrameworkUtils.DecimalToString(discountGlobal)));
                         //Update Display Values with ExchangeRate Multiplier
                         item["PriceDisplay"] = priceProperties.PriceNet * exchangeRate;
                         item["TotalNet"] = (priceProperties.TotalNet * exchangeRate);
                         item["TotalFinal"] = priceProperties.TotalFinal * exchangeRate;
                         item["PriceFinal"] = priceProperties.PriceFinal * exchangeRate;
-                        if (debug) _log.Debug(string.Format("#2:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", FrameworkUtils.DecimalToString(Convert.ToDecimal(_treeViewArticles.DataSourceRow["TotalFinal"])), FrameworkUtils.DecimalToString(discountGlobal)));
+                        if (debug) _logger.Debug(string.Format("#2:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", FrameworkUtils.DecimalToString(Convert.ToDecimal(_treeViewArticles.DataSourceRow["TotalFinal"])), FrameworkUtils.DecimalToString(discountGlobal)));
                     }
                     //Call Refresh, Recreate TreeView from Model
                     _treeViewArticles.Refresh();
@@ -218,7 +218,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

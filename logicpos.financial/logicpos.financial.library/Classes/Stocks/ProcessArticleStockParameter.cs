@@ -10,22 +10,22 @@ namespace logicpos.financial.library.Classes.Stocks
 {
     public class ProcessArticleStockParameter
     {
-        private erp_customer _customer;
+        private readonly erp_customer _customer;
         public erp_customer Customer
         {
             get { return _customer; }
         }
-        private DateTime _documentDate;
+        private readonly DateTime _documentDate;
         public DateTime DocumentDate
         {
             get { return _documentDate; }
         }
-        private string _documentNumber;
+        private readonly string _documentNumber;
         public string DocumentNumber
         {
             get { return _documentNumber; }
         }
-        private Dictionary<fin_article, Tuple<decimal, Dictionary<string, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>> _articleCollection;
+        private readonly Dictionary<fin_article, Tuple<decimal, Dictionary<string, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>> _articleCollection;
         public Dictionary<fin_article, Tuple<decimal, Dictionary<string, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>> ArticleCollection
         {
             get { return _articleCollection; }

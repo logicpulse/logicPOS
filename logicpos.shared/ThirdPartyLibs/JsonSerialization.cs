@@ -94,7 +94,7 @@ namespace DansCSharpLibrary.JsonSerialization
     public static class TestSerialization
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static void Write(String pFilePath)
         {
@@ -122,9 +122,9 @@ namespace DansCSharpLibrary.JsonSerialization
             Person person3 = JsonSerialization.ReadFromJsonFile<Person>(Path.Combine(pFilePath, "person3.json"));
             List<Person> people = JsonSerialization.ReadFromJsonFile<List<Person>>(Path.Combine(pFilePath, "people.json"));
 
-            _log.Debug(string.Format("Read(): Name:[{0}], Age:[{1}], StreetAddress:[{2}], City:[{3}]", person1.Name, person1.Age, person1.HomeAddress.StreetAddress, person1.HomeAddress.City));
-            _log.Debug(string.Format("Read(): Name:[{0}], Age:[{1}], StreetAddress:[{2}], City:[{3}]", person2.Name, person2.Age, person2.HomeAddress.StreetAddress, person2.HomeAddress.City));
-            _log.Debug(string.Format("Read(): Name:[{0}], Age:[{1}], StreetAddress:[{2}], City:[{3}]", person3.Name, person3.Age, person3.HomeAddress.StreetAddress, person3.HomeAddress.City));
+            _logger.Debug(string.Format("Read(): Name:[{0}], Age:[{1}], StreetAddress:[{2}], City:[{3}]", person1.Name, person1.Age, person1.HomeAddress.StreetAddress, person1.HomeAddress.City));
+            _logger.Debug(string.Format("Read(): Name:[{0}], Age:[{1}], StreetAddress:[{2}], City:[{3}]", person2.Name, person2.Age, person2.HomeAddress.StreetAddress, person2.HomeAddress.City));
+            _logger.Debug(string.Format("Read(): Name:[{0}], Age:[{1}], StreetAddress:[{2}], City:[{3}]", person3.Name, person3.Age, person3.HomeAddress.StreetAddress, person3.HomeAddress.City));
 
             foreach (Person person in people)
             {

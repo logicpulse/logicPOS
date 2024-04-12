@@ -2,6 +2,7 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     public abstract class PosBaseDialog : Dialog
     {
         //Log4Net
-        protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //Protected
         /* IN008024 */
         //protected string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
@@ -29,17 +30,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Used to detect Confirmation Button for Enter Key
         private TouchButtonBase _actionAreaConfirmButton;
         private ActionAreaButtons _actionAreaRightButtons;
-        private uint _borderWidth = 5;
+        private readonly uint _borderWidth = 5;
         //private Gtk.Style _styleBackground;
         //Assets
         protected String _fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
-        private String _fileDefaultWindowIconClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png");
-        private String _fileDefaultWindowIconMinimize = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
+        private readonly String _fileDefaultWindowIconClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png");
+        private readonly String _fileDefaultWindowIconMinimize = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
         //Colors
-        private System.Drawing.Color _colorBaseDialogTitleBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogTitleBackground"]);
-        private System.Drawing.Color _colorBaseDialogWindowBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogWindowBackground"]);
-        private System.Drawing.Color _colorBaseDialogWindowBackgroundBorder = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogWindowBackgroundBorder"]);
-        private Boolean _useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
+        private readonly System.Drawing.Color _colorBaseDialogTitleBackground = GlobalFramework.Settings["colorBaseDialogTitleBackground"].StringToColor();
+        private readonly System.Drawing.Color _colorBaseDialogWindowBackground = GlobalFramework.Settings["colorBaseDialogWindowBackground"].StringToColor();
+        private readonly System.Drawing.Color _colorBaseDialogWindowBackgroundBorder = GlobalFramework.Settings["colorBaseDialogWindowBackgroundBorder"].StringToColor();
+        private readonly Boolean _useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
         //Protected Members (Shared for Child Dialogs)
         protected int _dragOffsetX, _dragOffsetY;
         protected Label _labelWindowTitle;        
@@ -51,10 +52,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public System.Drawing.Size _sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
         public System.Drawing.Size _sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
         //IN009257 Ends
-        protected System.Drawing.Color _colorBaseDialogDefaultButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogDefaultButtonFont"]);
-        protected System.Drawing.Color _colorBaseDialogDefaultButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogDefaultButtonBackground"]);
-        protected System.Drawing.Color _colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
-        protected System.Drawing.Color _colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"]);
+        protected System.Drawing.Color _colorBaseDialogDefaultButtonFont = GlobalFramework.Settings["colorBaseDialogDefaultButtonFont"].StringToColor();
+        protected System.Drawing.Color _colorBaseDialogDefaultButtonBackground = GlobalFramework.Settings["colorBaseDialogDefaultButtonBackground"].StringToColor();
+        protected System.Drawing.Color _colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+        protected System.Drawing.Color _colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
         protected String _fontBaseDialogButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogButton"]);
         protected String _fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
         protected String _fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
@@ -115,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _windowMaskBackground.TransientFor = pSourceWindow;
                 _windowMaskBackground.SetSizeRequest(10, 10);
                 _windowMaskBackground.Move(-100, -100);
-                _windowMaskBackground.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.Black));
+                _windowMaskBackground.ModifyBg(StateType.Normal, System.Drawing.Color.Black.ToGdkColor());
                 //Prevent click outside Dialog
                 _windowMaskBackground.Opacity = 0.35F;//0.55F | 0.75F
                 _windowMaskBackground.CanFocus = false;
@@ -177,7 +178,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             WindowPosition = WindowPosition.Center;
             SetSizeRequest(pSize.Width, pSize.Height);
             DefaultResponse = ResponseType.Cancel;
-            ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorBaseDialogWindowBackgroundBorder));
+            ModifyBg(StateType.Normal, _colorBaseDialogWindowBackgroundBorder.ToGdkColor());
             TransientFor = _sourceWindow;
             //ActionArea
             //ActionArea.HeightRequest = _buttonSize.Height + 10 + (int) (BorderWidth * 2);
@@ -188,7 +189,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Build();
         }
 
-        void PosBaseDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void PosBaseDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (
                 _confirmDialogOnEnter
@@ -212,17 +213,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(string.Format("Build(): Error load WindowIcon from file [{0}] : {1}", _windowIcon, ex.Message), ex);
+                    _logger.Error(string.Format("Build(): Error load WindowIcon from file [{0}] : {1}", _windowIcon, ex.Message), ex);
                 }
             }
             else
             {
-                _log.Debug(string.Format("Build(): File not found [{0}]", _windowIcon));
+                _logger.Debug(string.Format("Build(): File not found [{0}]", _windowIcon));
             }
 
             //Title
             EventBox eventboxWindowTitle = new EventBox();
-            eventboxWindowTitle.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorBaseDialogTitleBackground));
+            eventboxWindowTitle.ModifyBg(StateType.Normal, _colorBaseDialogTitleBackground.ToGdkColor());
             eventboxWindowTitle.HeightRequest = 40;
             //WindowIcon
             Image imageWindowsIcon = new Image(pixbufWindowIcon);
@@ -231,7 +232,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fontDescription.Weight = Pango.Weight.Bold;
             if (FrameworkUtils.OSVersion() != "unix") fontDescription.Size = 18; //qnd ligado, nao aparece no ubuntu!
             _labelWindowTitle.SetAlignment(0, 0.5F);
-            _labelWindowTitle.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+            _labelWindowTitle.ModifyFg(StateType.Normal, System.Drawing.Color.White.ToGdkColor());
             _labelWindowTitle.ModifyFont(fontDescription);
             //HBox TitleBar - Container for Title and Icon
             HBox hboxWindowTitleBar = new HBox(false, 0);
@@ -286,7 +287,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Window Content - Box for Content to Add Border Arround Content Widget
             EventBox eventboxWindowContent = new EventBox();
-            eventboxWindowContent.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorBaseDialogWindowBackground));
+            eventboxWindowContent.ModifyBg(StateType.Normal, _colorBaseDialogWindowBackground.ToGdkColor());
             eventboxWindowContent.Add(_content);
 
             //Prepare ActionAreaButtons
@@ -320,13 +321,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Window Content - Inner
             EventBox eventboxWindowBorderInner = new EventBox() { BorderWidth = 0 };
-            eventboxWindowBorderInner.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorBaseDialogWindowBackground));
+            eventboxWindowBorderInner.ModifyBg(StateType.Normal, _colorBaseDialogWindowBackground.ToGdkColor());
             //eventboxWindowBorderInner.Style = _styleBackground;
             eventboxWindowBorderInner.Add(vboxWindow);
 
             //Window Border - Outer
             EventBox eventboxWindowBorderOuter = new EventBox();
-            eventboxWindowBorderOuter.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(_colorBaseDialogWindowBackgroundBorder));
+            eventboxWindowBorderOuter.ModifyBg(StateType.Normal, _colorBaseDialogWindowBackgroundBorder.ToGdkColor());
             eventboxWindowBorderOuter.Add(eventboxWindowBorderInner);
 
             //Finish Pack
@@ -378,7 +379,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
 
-        void Button_Clicked(object sender, EventArgs e)
+        private void Button_Clicked(object sender, EventArgs e)
         {
             ActionAreaButton button = (ActionAreaButton)sender;
             Respond(button.Response);
@@ -404,7 +405,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         protected virtual void WindowMotionDrag(object o, MotionNotifyEventArgs args)
         {
-            EventBox eb = (EventBox)o;
             int mouseX, mouseY, windowX, windowY, moveX, moveY, currentX, currentY;
             Gdk.Display.Default.GetPointer(out mouseX, out mouseY);
             Display.GetPointer(out windowX, out windowY);
@@ -412,7 +412,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             moveY = windowY - _dragOffsetY;
             Move(moveX, moveY);
             GetPosition(out currentX, out currentY);
-            //_log.Debug(string.Format("{0}.WindowMotionDrag(): Mouse:{1}x{2}, Window:{3}x{4}, DragOffset:{5}x{6}, Move:{7}x{8}, CurrentPosition:{9}x{10}"
+            //_logger.Debug(string.Format("{0}.WindowMotionDrag(): Mouse:{1}x{2}, Window:{3}x{4}, DragOffset:{5}x{6}, Move:{7}x{8}, CurrentPosition:{9}x{10}"
             //  , GetType().Name, mouseX, mouseY, windowX, windowY, _dragOffsetX, _dragOffsetY, moveX, moveY, currentX, currentY));
         }
 
@@ -449,10 +449,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _button.Clicked += ActionAreaButton_Clicked;
         }
 
-        void ActionAreaButton_Clicked(object sender, EventArgs e)
+        private void ActionAreaButton_Clicked(object sender, EventArgs e)
         {
             //Send this and Not sender, to catch base object
-            if (Clicked != null) Clicked(this, e);
+            Clicked?.Invoke(this, e);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -479,7 +479,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             System.Drawing.Size sizeBaseDialogDefaultButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogDefaultButtonIcon"]);
             System.Drawing.Size sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
             System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
-            System.Drawing.Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
+            System.Drawing.Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             //System.Drawing.Color colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"]);
             string fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
             //Icons
@@ -585,8 +585,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public static TouchButtonIconWithText FactoryGetDialogButtonTypeDocuments(PosBaseDialogButtonType pButtonType, string pButtonName, string pButtonLabel, string pButtonImage)
-        {          
-            System.Drawing.Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);   
+        {         
+            System.Drawing.Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();   
             //Icons
             string fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
             string fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");

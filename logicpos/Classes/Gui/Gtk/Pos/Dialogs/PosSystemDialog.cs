@@ -10,7 +10,7 @@ using logicpos.App;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosSystemDialog : PosBaseDialog
+    internal partial class PosSystemDialog : PosBaseDialog
     {
         public PosSystemDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)

@@ -1,6 +1,6 @@
 ﻿namespace logicpos.Classes.Enums.Dialogs
 {
-    enum DocumentFinanceDialogPreviewMode {
+    internal enum DocumentFinanceDialogPreviewMode {
         Preview, 
         Confirmation
     }

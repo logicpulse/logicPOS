@@ -21,14 +21,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplace), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -36,7 +36,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -44,7 +44,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fButtonImage;
+        private string fButtonImage;
         [Size(255)]
         public string ButtonImage
         {
@@ -52,21 +52,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonImage", ref fButtonImage, value); }
         }
 
-        string fTypeSubtotal;
+        private string fTypeSubtotal;
         public string TypeSubtotal
         {
             get { return fTypeSubtotal; }
             set { SetPropertyValue<string>("TypeSubtotal", ref fTypeSubtotal, value); }
         }
 
-        string fAccountType;
+        private string fAccountType;
         public string AccountType
         {
             get { return fAccountType; }
             set { SetPropertyValue<string>("AccountType", ref fAccountType, value); }
         }
 
-        OrderPrintMode fOrderPrintMode;
+        private OrderPrintMode fOrderPrintMode;
         public OrderPrintMode OrderPrintMode
         {
             get { return fOrderPrintMode; }
@@ -88,7 +88,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPriceType One <> Many ConfigurationPlace
-        fin_configurationpricetype fPriceType;
+        private fin_configurationpricetype fPriceType;
         [Association(@"ConfigurationPriceTypeReferencesConfigurationPlace")]
         public fin_configurationpricetype PriceType
         {
@@ -97,7 +97,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlaceMovementType One <> Many ConfigurationPlace
-        pos_configurationplacemovementtype fMovementType;
+        private pos_configurationplacemovementtype fMovementType;
         [Association(@"ConfigurationPlaceMovementTypeReferencesConfigurationPlace")]
         public pos_configurationplacemovementtype MovementType
         {

@@ -8,14 +8,14 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosDocumentFinanceSelectRecordDialog : PosBaseDialog
+    internal partial class PosDocumentFinanceSelectRecordDialog : PosBaseDialog
     {
-        private TouchButtonIconWithText _touchButtonPosToolbarFinanceDocuments;
-        private TouchButtonIconWithText _toolbarFinanceDocumentsInvoicesUnpayed;
-        private TouchButtonIconWithText _toolbarFinanceDocumentsPayments;
-        private TouchButtonIconWithText _touchButtonPosToolbarCurrentAccountDocuments;
-        private TouchButtonIconWithText _touchButtonPosToolbarWorkSessionPeriods;
-        private TouchButtonIconWithText _touchButtonPosToolbarMerchandiseEntry;
+        private readonly TouchButtonIconWithText _touchButtonPosToolbarFinanceDocuments;
+        private readonly TouchButtonIconWithText _toolbarFinanceDocumentsInvoicesUnpayed;
+        private readonly TouchButtonIconWithText _toolbarFinanceDocumentsPayments;
+        private readonly TouchButtonIconWithText _touchButtonPosToolbarCurrentAccountDocuments;
+        private readonly TouchButtonIconWithText _touchButtonPosToolbarWorkSessionPeriods;
+        private readonly TouchButtonIconWithText _touchButtonPosToolbarMerchandiseEntry;
 
         public PosDocumentFinanceSelectRecordDialog(Window pSourceWindow, DialogFlags pDialogFlags, int docChoice)
             : base(pSourceWindow, pDialogFlags)

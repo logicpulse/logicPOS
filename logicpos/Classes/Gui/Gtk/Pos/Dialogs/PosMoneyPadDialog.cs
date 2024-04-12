@@ -11,15 +11,16 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class MoneyPadResult
+    internal class MoneyPadResult
     {
-        ResponseType _response;
+        private ResponseType _response;
         public ResponseType Response
         {
             get { return _response; }
             set { _response = value; }
         }
-        decimal _value;
+
+        private decimal _value;
         public decimal Value
         {
             get { return _value; }
@@ -33,7 +34,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
     }
 
-    class PosMoneyPadDialog : PosBaseDialog
+    internal class PosMoneyPadDialog : PosBaseDialog
     {
         //UI
         private MoneyPad _moneyPad;
@@ -98,12 +99,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             //Start Enable or Disable
-            _buttonOk.Sensitive = (pInitialValue > 0 && pInitialValue >= pTotalOrder) ? true : false;
+            _buttonOk.Sensitive = (pInitialValue > 0 && pInitialValue >= pTotalOrder);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, pWindowTitle, windowSize, fixedContent, actionAreaButtons);
@@ -111,8 +114,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
-		//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
-        void _moneyPad_EntryChanged(object sender, EventArgs e)
+        //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+        private void _moneyPad_EntryChanged(object sender, EventArgs e)
         {
             _amount = _moneyPad.DeliveryValue;
 
@@ -139,8 +142,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             ResponseType resultResponse;
             decimal resultValue = -1.0m;
-
-            String regexDecimalGreaterThanZero = SettingsApp.RegexDecimalGreaterThanZero;
             String defaultValue = FrameworkUtils.DecimalToString(pInitialValue);
 
             PosMoneyPadDialog dialog;

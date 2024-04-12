@@ -33,7 +33,7 @@ namespace PCComm
     public class CommunicationManager
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Manager Enums
         /// <summary>
@@ -57,8 +57,8 @@ namespace PCComm
         private TransmissionType _transType;
         //private RichTextBox _displayWindow;
         //global manager variables
-        private Color[] MessageColor = { Color.Blue, Color.Green, Color.Black, Color.Orange, Color.Red };
-        private SerialPort comPort = new SerialPort();
+        private readonly Color[] MessageColor = { Color.Blue, Color.Green, Color.Black, Color.Orange, Color.Red };
+        private readonly SerialPort comPort = new SerialPort();
         #endregion
 
         #region Manager Properties
@@ -260,7 +260,7 @@ namespace PCComm
         }
         #endregion
 
-        string command = string.Empty;
+        private readonly string command = string.Empty;
 
         #region DisplayData
         /// <summary>
@@ -273,7 +273,7 @@ namespace PCComm
         private void DisplayData(MessageType type, string msg)
         {
             string outMsg = msg.Replace("\n", string.Empty);
-            //_log.Debug($"MessageType: [{type}], outMsg: [{outMsg}]");
+            //_logger.Debug($"MessageType: [{type}], outMsg: [{outMsg}]");
 
             //    _displayWindow.Invoke(new EventHandler(delegate
             //{
@@ -286,7 +286,7 @@ namespace PCComm
             {
                 //_displayWindow.AppendText(CalculateFromHex(msg));
                 List<int> result = CalculateFromHex(msg);
-                //_log.Debug($"Weight: [{result[0]}], Total: [{result[1]}]");
+                //_logger.Debug($"Weight: [{result[0]}], Total: [{result[1]}]");
             }
             //    _displayWindow.ScrollToCaret();
             //}));
@@ -312,7 +312,7 @@ namespace PCComm
                 comPort.Open();
                 //display message
                 //DisplayData(MessageType.Normal, "Port opened at " + DateTime.Now + "\n");
-                _log.Debug(string.Format("Port {0} opened at {1}", _portName, DateTime.Now));
+                _logger.Debug(string.Format("Port {0} opened at {1}", _portName, DateTime.Now));
                 //return true
                 return true;
             }
@@ -345,7 +345,7 @@ namespace PCComm
                 comPort.Open();
                 //display message
                 //DisplayData(MessageType.Normal, "Port opened at " + DateTime.Now + "\n");
-                _log.Debug(string.Format("Port {0} opened at {1}", port, DateTime.Now));
+                _logger.Debug(string.Format("Port {0} opened at {1}", port, DateTime.Now));
                 //return true
                 return true;
             }
@@ -398,7 +398,7 @@ namespace PCComm
             foreach (string str in Enum.GetNames(typeof(Parity)))
             {
                 //((ComboBox)obj).Items.Add(str);
-                _log.Debug($"SetParityValues: {str}");
+                _logger.Debug($"SetParityValues: {str}");
             }
         }
         #endregion
@@ -409,7 +409,7 @@ namespace PCComm
             foreach (string str in Enum.GetNames(typeof(StopBits)))
             {
                 //((ComboBox)obj).Items.Add(str);
-                _log.Debug($"SetStopBitValues: {str}");
+                _logger.Debug($"SetStopBitValues: {str}");
             }
         }
         #endregion
@@ -420,7 +420,7 @@ namespace PCComm
             foreach (string str in SerialPort.GetPortNames())
             {
                 //((ComboBox)obj).Items.Add(str);
-                _log.Debug($"SetPortNameValues: {str}");
+                _logger.Debug($"SetPortNameValues: {str}");
             }
         }
         #endregion
@@ -431,7 +431,7 @@ namespace PCComm
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void comPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        private void comPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             //determine the mode the user selected (binary/string)
             switch (CurrentTransmissionType)
@@ -504,18 +504,13 @@ namespace PCComm
         public List<int> CalculateFromHex(string result)
         {
             List<int> resultList = new List<int>();
-
-            string WWWWW = string.Empty;
-            string IIIIII = string.Empty;
-
             string S = result.Substring(2, 1);
             //if (S =="0")
-            WWWWW = result.Substring(3, 5);
+            string WWWWW = result.Substring(3, 5);
 
             string E = result.Substring(9, 1);
             //if (E == "0")
-            IIIIII = result.Substring(10, 6);
-
+            string IIIIII = result.Substring(10, 6);
             resultList.Add(Convert.ToInt16(WWWWW));
             // Sanitize : Must Remove last Charcters like detected ones [= >]
             //resultList.Add(Convert.ToInt16(IIIIII.Replace("=", string.Empty)));

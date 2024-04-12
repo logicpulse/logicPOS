@@ -2,40 +2,42 @@
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
+using logicpos.Extensions;
 using System;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    partial class TicketPad : Box
+    internal partial class TicketPad : Box
     {
         //Private Members
-        private TicketList _ticketList;
+        private readonly TicketList _ticketList;
         //UI
-        private TouchButtonIconWithText _buttonPrev;
-        private TouchButtonIconWithText _buttonNext;
-        private TouchButtonIconWithText _buttonDecrease;
-        private TouchButtonIconWithText _buttonIncrease;
-        private TouchButtonIconWithText _buttonDelete;
-        private TouchButtonIconWithText _buttonChangeQuantity;
-        private TouchButtonIconWithText _buttonChangePrice;
-        private TouchButtonIconWithText _buttonListMode;
-        private TouchButtonIconWithText _buttonListOrder;
-        private TouchButtonIconWithText _buttonSplitAccount;
-        private TouchButtonIconWithText _buttonMessages;
-        private TouchButtonIconWithText _buttonWeight;
-        private TouchButtonIconWithText _buttonGifts;
-        private TouchButtonIconWithText _buttonChangeTable;
-        private TouchButtonIconWithText _buttonFinishOrder;
-        private TouchButtonIconWithText _buttonPayments;
-        private TouchButtonIconWithText _buttonBarCode;
+        private readonly TouchButtonIconWithText _buttonPrev;
+        private readonly TouchButtonIconWithText _buttonNext;
+        private readonly TouchButtonIconWithText _buttonDecrease;
+        private readonly TouchButtonIconWithText _buttonIncrease;
+        private readonly TouchButtonIconWithText _buttonDelete;
+        private readonly TouchButtonIconWithText _buttonChangeQuantity;
+        private readonly TouchButtonIconWithText _buttonChangePrice;
+        private readonly TouchButtonIconWithText _buttonListMode;
+        private readonly TouchButtonIconWithText _buttonListOrder;
+        private readonly TouchButtonIconWithText _buttonSplitAccount;
+        private readonly TouchButtonIconWithText _buttonMessages;
+        private readonly TouchButtonIconWithText _buttonWeight;
+        private readonly TouchButtonIconWithText _buttonGifts;
+        private readonly TouchButtonIconWithText _buttonChangeTable;
+        private readonly TouchButtonIconWithText _buttonFinishOrder;
+        private readonly TouchButtonIconWithText _buttonPayments;
+        private readonly TouchButtonIconWithText _buttonBarCode;
 		//IN009279 Parking ticket Service - implementar Cartão cliente
-        private TouchButtonIconWithText _buttonCardCode;
+        private readonly TouchButtonIconWithText _buttonCardCode;
         //private TouchButtonIconWithText _buttonSendTicket;
         //Public Properties
         public Window SourceWindow { get; set; }
+
         //Public UI
-        TouchButtonIconWithText _buttonSelectTable;
+        private TouchButtonIconWithText _buttonSelectTable;
         public TouchButtonIconWithText ButtonKeySelectTable
         {
             get { return _buttonSelectTable; }
@@ -52,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Buttons Shared for all Buttons
             Size buttonsIconSize = logicpos.Utils.StringToSize(themeButtons.IconSize);
             string buttonsFont = themeButtons.Font;
-            Color buttonsFontColor = FrameworkUtils.StringToColor(themeButtons.FontColor);
+            Color buttonsFontColor = (themeButtons.FontColor as string).StringToColor();
 
             //Buttons:ButtonPrev
             string buttonPrevName = themeButtons.ButtonPrev.Name;

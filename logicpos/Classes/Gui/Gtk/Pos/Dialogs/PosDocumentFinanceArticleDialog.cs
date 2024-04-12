@@ -25,14 +25,14 @@ using System.Collections;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosDocumentFinanceArticleDialog : PosBaseDialogGenericTreeView<DataRow>
+    internal class PosDocumentFinanceArticleDialog : PosBaseDialogGenericTreeView<DataRow>
     {
         //Window
-        private PosDocumentFinanceDialog _posDocumentFinanceDialog;
+        private readonly PosDocumentFinanceDialog _posDocumentFinanceDialog;
         //Action Buttons
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
-        private TouchButtonIconWithText _buttonClear;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonClear;
         //UI
         private VBox _vboxEntrys;
         private XPOEntryBoxSelectRecord<fin_article, TreeViewArticle> _entryBoxSelectArticle;
@@ -64,26 +64,26 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private GenericCRUDWidgetDataTable _crudWidgetSelectVatExemptionReason;
         private GenericCRUDWidgetDataTable _crudWidgetSelectArticleSubFamily;
         private GenericCRUDWidgetDataTable _crudWidgetSelectArticleFamily;
-        private GenericCRUDWidgetDataTable _crudWidgetSelectArticleSerialNumber;
+        private readonly GenericCRUDWidgetDataTable _crudWidgetSelectArticleSerialNumber;
         //Document Types
-        private fin_documentfinancetype _documentFinanceType;
-        private List<string> _listSaftDocumentType = new List<string>();
+        private readonly fin_documentfinancetype _documentFinanceType;
+        private readonly List<string> _listSaftDocumentType = new List<string>();
         //Store Current Price without ExchangeRate, the price used in all Logic, price from Entry is only for Display
         private decimal _articlePrice = 0.0m;
-        private bool _priceWithVat = false;
+        private readonly bool _priceWithVat = false;
         //Working Currency
-        private cfg_configurationcurrency _currencyDefaultSystem;
-        private cfg_configurationcurrency _currencyDisplay;
+        private readonly cfg_configurationcurrency _currencyDefaultSystem;
+        private readonly cfg_configurationcurrency _currencyDisplay;
         //Customer Price Type
-        private erp_customer _customer;
+        private readonly erp_customer _customer;
 
         //New Article
         private fin_article _article;
         private fin_articlewarehouse _articleWarehouse;
 
         //Consignation Invoice Article Default Values
-        private fin_configurationvatrate _vatRateConsignationInvoice;
-        private fin_configurationvatexemptionreason _vatRateConsignationInvoiceExemptionReason;
+        private readonly fin_configurationvatrate _vatRateConsignationInvoice;
+        private readonly fin_configurationvatexemptionreason _vatRateConsignationInvoiceExemptionReason;
         //Logic
         private decimal _discountGlobal = 0.0m;
         public decimal DiscountGlobal
@@ -137,10 +137,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonClear = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.CleanFilter);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonClear, ResponseType.DeleteEvent));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel),
+                new ActionAreaButton(_buttonClear, ResponseType.DeleteEvent)
+            };
 
             //Init Content
             Fixed fixedContent = new Fixed();
@@ -208,8 +210,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
             //Select ArticleCode
 
-            SortingCollection sortCollection = new SortingCollection();
-            sortCollection.Add(new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending));
+            SortingCollection sortCollection = new SortingCollection
+            {
+                new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
             ICollection collectionCustomers = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_article)), criteria, sortCollection, int.MaxValue, false, true);
             //_article = new fin_article(GlobalFramework.SessionXpo);
@@ -367,7 +371,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception Ex)
                 {
-                    _log.Error("Error updating article quantity :" + Ex.Message);
+                    _logger.Error("Error updating article quantity :" + Ex.Message);
                 }
             };
             _entryBoxValidationQuantity.EntryValidation.FocusOutEvent += delegate
@@ -378,7 +382,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception Ex)
                 {
-                    _log.Error("Error updating article quantity :" + Ex.Message);
+                    _logger.Error("Error updating article quantity :" + Ex.Message);
                 }
             };
 
@@ -554,8 +558,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 this.Run();
             }
             else if (pResponse == ResponseType.Ok && !ValidateMinArticleStockQuantity())
-            {   
-                pResponse = ResponseType.None;
+            {
                 this.Run();
             }
             else if (pResponse == ResponseType.DeleteEvent)
@@ -631,7 +634,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(string.Format("Error saving new article: {0}", ex.Message));
+                    _logger.Error(string.Format("Error saving new article: {0}", ex.Message));
                 }
 
             }
@@ -649,7 +652,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
         //TK016251 - FrontOffice - Criar novo documento com auto-complete para artigos e clientes 
-        void _entryBoxSelectArticleCode_ClosePopup(object sender, EventArgs e)
+        private void _entryBoxSelectArticleCode_ClosePopup(object sender, EventArgs e)
         {
             try
             {
@@ -802,12 +805,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
-
-        void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
+        private void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
         {
             try
             {
@@ -946,7 +948,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
 
 
@@ -1105,7 +1107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("bool ValidateSerialNumber() :: " + ex.Message, ex);
+                    _logger.Error("bool ValidateSerialNumber() :: " + ex.Message, ex);
                 }
             }
             return true;
@@ -1114,8 +1116,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private bool ValidateMaxArticleQuantity()
         {
             bool result = true;
-            string invalidArticleQuantity = string.Empty;
-
             try
             {
                 /* IN009171 - when receiving a '.' on it, converter throws "System.FormatException" */
@@ -1133,7 +1133,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     if (currentQuantity > maxPossibleQuantity)
                     {
-                        _log.Debug(string.Format("CurrentQuantity: [{0}] is Greater than MaxPossibleQuantity: [{1}]", currentQuantity, maxPossibleQuantity));
+                        _logger.Debug(string.Format("CurrentQuantity: [{0}] is Greater than MaxPossibleQuantity: [{1}]", currentQuantity, maxPossibleQuantity));
                         result = false;
                     }
 
@@ -1147,7 +1147,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("bool ValidateMaxArticleQuantity() :: _entryBoxValidationQuantity.EntryValidation.Text [ " + _entryBoxValidationQuantity.EntryValidation.Text + " ]: " + ex.Message, ex);
+                _logger.Error("bool ValidateMaxArticleQuantity() :: _entryBoxValidationQuantity.EntryValidation.Text [ " + _entryBoxValidationQuantity.EntryValidation.Text + " ]: " + ex.Message, ex);
             }
 
             return result;
@@ -1187,7 +1187,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("bool ValidateMinArticleStockQuantity() :: _entryBoxValidationQuantity.EntryValidation.Text [ " + _entryBoxValidationQuantity.EntryValidation.Text + " ]: " + ex.Message, ex);
+                _logger.Error("bool ValidateMinArticleStockQuantity() :: _entryBoxValidationQuantity.EntryValidation.Text [ " + _entryBoxValidationQuantity.EntryValidation.Text + " ]: " + ex.Message, ex);
             }
 
             return result;

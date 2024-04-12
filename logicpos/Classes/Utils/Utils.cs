@@ -19,6 +19,7 @@ using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
+using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
 using System;
 using System.Collections;
@@ -42,14 +43,11 @@ using System.Threading;
 
 namespace logicpos
 {
-    class Utils : logicpos.shared.Classes.Utils.Utils
+    internal class Utils : logicpos.shared.Classes.Utils.Utils
     {
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        //private static DatabaseType pDatabaseType;
-        Hashtable commands = new Hashtable();
+        private readonly Hashtable commands = new Hashtable();
 
         public Dictionary<string, AccordionNode> _accordionChildDocumentsTemp = new Dictionary<string, AccordionNode>();
         public Dictionary<string, AccordionNode> _accordionChildArticlesTemp = new Dictionary<string, AccordionNode>();
@@ -58,140 +56,6 @@ namespace logicpos
         public Dictionary<string, AccordionNode> _accordionChildOtherTablesTemp = new Dictionary<string, AccordionNode>();
 
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Colours
-
-        //Convert Color to HexColor
-        public static string Color2Hex(Color pRgb)
-        {
-            string red = Convert.ToString(pRgb.R, 16);
-            if (red.Length < 2) red = "0" + red;
-            string green = Convert.ToString(pRgb.G, 16);
-            if (green.Length < 2) green = "0" + green;
-            string blue = Convert.ToString(pRgb.B, 16);
-            if (blue.Length < 2) blue = "0" + blue;
-
-            return red.ToUpper() + green.ToUpper() + blue.ToUpper();
-        }
-
-        //Convert HexColor to Color
-        /*
-        public static Color Hex2Color(string pHexData)
-        {
-          if (pHexData.Length != 6)
-            return Color.Black;
-
-          string r_text, g_text, b_text;
-          int r, g, b;
-
-          r_text = pHexData.Substring(0, 2);
-          g_text = pHexData.Substring(2, 2);
-          b_text = pHexData.Substring(4, 2);
-
-          r = int.Parse(r_text, System.Globalization.NumberStyles.HexNumber);
-          g = int.Parse(g_text, System.Globalization.NumberStyles.HexNumber);
-          b = int.Parse(b_text, System.Globalization.NumberStyles.HexNumber);
-
-          return Color.FromArgb(r, g, b);
-        }
-        */
-
-        public static string GetCurrentDirectory()
-        {
-            string currentDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            //if (!currentDir.EndsWith(@"\"))
-            //{
-            //    currentDir = currentDir + @"/";
-            //}
-
-            return currentDir;
-        }
-
-
-        //2015-05-13 apmuga para suportar alfa e não devolver sempre preto
-        public static Color Hex2Color(string pHexData)
-        {
-            int tmpCutFirstChars = 0;
-            string tmpAlfa, tmpRed, tmpGreen, tmpBlue;
-            int tmpAlfaValue = 0, tmpRedValue, tmpGreenValue, tmpBlueValue;
-
-            if (pHexData.StartsWith("#"))
-            {
-                tmpCutFirstChars++;
-            }
-
-            if (pHexData.Length == 9)
-            {
-                tmpAlfa = pHexData.Substring(tmpCutFirstChars, 2);
-
-                tmpAlfaValue = int.Parse(tmpAlfa, System.Globalization.NumberStyles.HexNumber);
-                tmpCutFirstChars += 2;
-            }
-
-            tmpRed = pHexData.Substring(0 + tmpCutFirstChars, 2);
-            tmpGreen = pHexData.Substring(2 + tmpCutFirstChars, 2);
-            tmpBlue = pHexData.Substring(4 + tmpCutFirstChars, 2);
-
-            tmpRedValue = int.Parse(tmpRed, System.Globalization.NumberStyles.HexNumber);
-            tmpGreenValue = int.Parse(tmpGreen, System.Globalization.NumberStyles.HexNumber);
-            tmpBlueValue = int.Parse(tmpBlue, System.Globalization.NumberStyles.HexNumber);
-
-            return Color.FromArgb(tmpAlfaValue, tmpRedValue, tmpGreenValue, tmpBlueValue);
-        }
-
-        //Ligth color by correctionFactor
-        public static Color Lighten(Color pInColor, float pCorrectionFactor = 0.25f)
-        {
-            try
-            {
-                float red = (255 - pInColor.R) * pCorrectionFactor + pInColor.R;
-                float green = (255 - pInColor.G) * pCorrectionFactor + pInColor.G;
-                float blue = (255 - pInColor.B) * pCorrectionFactor + pInColor.B;
-                //check
-                if (red > 255) red = 0;
-                if (green > 255) green = 0;
-                if (blue > 255) blue = 0;
-                return Color.FromArgb(pInColor.A, (int)red, (int)green, (int)blue);
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message, ex);
-                return pInColor;
-            }
-        }
-
-        //Dark color by correctionFactor
-        public static Color Darken(Color pInColor, float pCorrectionFactor = 0.25f)
-        {
-            try
-            {
-                float red = -(255 - pInColor.R) * pCorrectionFactor + pInColor.R;
-                float green = -(255 - pInColor.G) * pCorrectionFactor + pInColor.G;
-                float blue = -(255 - pInColor.B) * pCorrectionFactor + pInColor.B;
-                //check
-                if (red < 0) red = 0;
-                if (green < 0) green = 0;
-                if (blue < 0) blue = 0;
-                return Color.FromArgb(pInColor.A, (int)red, (int)green, (int)blue);
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message, ex);
-                return pInColor;
-            }
-        }
-
-        //Converts System.Drawing.Color to Gdk.Color
-        public static Gdk.Color ColorToGdkColor(System.Drawing.Color pColor)
-        {
-            return new Gdk.Color(pColor.R, pColor.G, pColor.B);
-        }
-
-        //Converts String to Gdk.Color
-        public static Gdk.Color StringToGdkColor(string pColor)
-        {
-            return Utils.ColorToGdkColor(FrameworkUtils.StringToColor(pColor));
-        }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //DataBase
@@ -230,12 +94,12 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 throw;
             }
         }
 
-        
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ShowMessage Non Touch
 
@@ -252,7 +116,7 @@ namespace logicpos
 
         public static void ShowMessageUnderConstruction()
         {
-            _log.Warn(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function")));
+            _logger.Warn(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function")));
             ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function"), "Error");
         }
 
@@ -270,8 +134,8 @@ namespace logicpos
         public static ResponseType ShowMessageTouch(Window pSourceWindow, Gtk.DialogFlags pDialogFlags, Size pSize, MessageType pMessageType, ButtonsType pButtonsType, string pWindowTitle, string pMessage)
         {
             //Settings
-            Color colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"]);
-            Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
+            Color colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
+            Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             Size sizeBaseDialogActionAreaButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
             Size sizeBaseDialogActionAreaButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
             String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
@@ -286,7 +150,6 @@ namespace logicpos
             String fileActionClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
             //Init Local Vars
             String fileImageDialog, fileImageWindowIcon;
-            String messageType = string.Empty;
             ResponseType resultResponse = ResponseType.None;
 
             //Prepara ActionArea and Buttons
@@ -325,7 +188,7 @@ namespace logicpos
             }
 
             //Prepare Images
-            messageType = Enum.GetName(typeof(MessageType), pMessageType).ToLower();
+            string messageType = Enum.GetName(typeof(MessageType), pMessageType).ToLower();
 
             if (messageType != string.Empty)
             {
@@ -351,20 +214,20 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return resultResponse;
             }
             finally
             {
-                if (resultResponse != ResponseType.Apply) { dialog.Destroy(); } 
+                if (resultResponse != ResponseType.Apply) { dialog.Destroy(); }
             }
         }
 
         public static ResponseType ShowMessageTouchUnderConstruction(Window pSourceWindow)
         {
             ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function"));
-            _log.Debug(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function")));
-            _log.Debug(string.Format("responseType: [{0}]", responseType));
+            _logger.Debug(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function")));
+            _logger.Debug(string.Format("responseType: [{0}]", responseType));
             return responseType;
         }
 
@@ -378,7 +241,7 @@ namespace logicpos
 
         public static bool ShowMessageTouchRequiredValidPrinter(Window pSourceWindow, sys_configurationprinters pPrinter)
         {
-            bool result = (pPrinter != null || GlobalFramework.LoggedTerminal.ThermalPrinter != null) ? false : true;
+            bool result = pPrinter == null && GlobalFramework.LoggedTerminal.ThermalPrinter == null;
 
             if (result)
             {
@@ -556,14 +419,14 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
         }
         public static bool ShowMessageMinimumStock(Window pSourceWindow, Guid pArticleOid, decimal pNewQuantity)
         {
-            bool unusedBool = false;
+            bool unusedBool;
             return ShowMessageMinimumStock(pSourceWindow, pArticleOid, pNewQuantity, out unusedBool);
         }
 
@@ -571,8 +434,8 @@ namespace logicpos
         {
             showMessage = false;
             Size size = new Size(500, 350);
-            fin_article article = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), pArticleOid);            
-            decimal articleStock = 0;
+            fin_article article = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), pArticleOid);
+            decimal articleStock;
             try
             {
                 string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", article.Oid);
@@ -580,7 +443,7 @@ namespace logicpos
             }
             catch
             {
-                _log.Debug("Article with stock 0 or NULL");
+                _logger.Debug("Article with stock 0 or NULL");
                 articleStock = 0;
             }
 
@@ -589,7 +452,7 @@ namespace logicpos
             int childStockAlertCount = 0;
             if (article.IsComposed)
             {
-                foreach(fin_articlecomposition item in article.ArticleComposition)
+                foreach (fin_articlecomposition item in article.ArticleComposition)
                 {
                     fin_article child = item.ArticleChild;
                     decimal childStock = 0;
@@ -600,13 +463,13 @@ namespace logicpos
                     }
                     catch
                     {
-                        _log.Debug("Article child with stock 0 or NULL");
+                        _logger.Debug("Article child with stock 0 or NULL");
                         childStock = 0;
                     }
                     var childStockAfterChanged = childStock - (pNewQuantity * item.Quantity);
                     if (childStockAfterChanged <= child.MinimumStock)
                     {
-                        childStockMessage += Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + child.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(childStock), GlobalFramework.CurrentCultureNumberFormat, "0.00")  + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine ;
+                        childStockMessage += Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + child.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(childStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine;
                         childStockAlertCount++;
                     }
                 }
@@ -618,7 +481,7 @@ namespace logicpos
                 if (article.IsComposed)
                 {
                     size = new Size(650, 480);
-                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(articleStock), GlobalFramework.CurrentCultureNumberFormat, "0.00")  + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00")  + childStockMessage);
+                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(articleStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + childStockMessage);
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -632,7 +495,7 @@ namespace logicpos
                 }
                 else
                 {
-                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(articleStock), GlobalFramework.CurrentCultureNumberFormat, "0.00")   + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") );
+                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(articleStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00"));
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -743,7 +606,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             finally
             {
@@ -870,7 +733,7 @@ namespace logicpos
             {
                 Bitmap bmpImage = new Bitmap(pImage);
 
-                //_log.Debug(
+                //_logger.Debug(
                 //  "CropImage():" +
                 //  ": image.Width:" + pImage.Width +
                 //  ", image.Height:" + pImage.Height +
@@ -887,7 +750,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return pImage;
             }
         }
@@ -912,7 +775,7 @@ namespace logicpos
             pImage = CropImage(pImage, rectCropArea);
             //drawingImage.Save(image + ".croped.png");
 
-            //_log.Debug(
+            //_logger.Debug(
             //  "ResizeAndCrop()" +
             //  ": resizeImageSize.Width:" + resizeImageSize.Width +
             //  ", resizeImageSize.Height:" + resizeImageSize.Height +
@@ -959,7 +822,7 @@ namespace logicpos
                 }
             };
 
-            //_log.Debug(
+            //_logger.Debug(
             //  "ImageFindResizeSize()" +
             //  ": imageWidth=" + pImageWidth +
             //  ", imageHeight=" + pImageHeight +
@@ -1044,12 +907,12 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return (result);
         }
@@ -1064,7 +927,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return "0, 0";
             }
         }
@@ -1079,7 +942,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return new Size();
             }
         }
@@ -1094,7 +957,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return resultPosition;
             }
             return resultPosition;
@@ -1110,7 +973,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return resultTableConfig;
             }
             return resultTableConfig;
@@ -1345,25 +1208,25 @@ namespace logicpos
 
             // Displays the properties of each culture.
 
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "PROPERTY", "INTERNATIONAL", "TRADITIONAL"));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "CompareInfo", myCIintl.CompareInfo, myCItrad.CompareInfo));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "DisplayName", myCIintl.DisplayName, myCItrad.DisplayName));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "EnglishName", myCIintl.EnglishName, myCItrad.EnglishName));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "IsNeutralCulture", myCIintl.IsNeutralCulture, myCItrad.IsNeutralCulture));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "IsReadOnly", myCIintl.IsReadOnly, myCItrad.IsReadOnly));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "LCID", myCIintl.LCID, myCItrad.LCID));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "Name", myCIintl.Name, myCItrad.Name));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "NativeName", myCIintl.NativeName, myCItrad.NativeName));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "Parent", myCIintl.Parent, myCItrad.Parent));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "TextInfo", myCIintl.TextInfo, myCItrad.TextInfo));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterISOLanguageName", myCIintl.ThreeLetterISOLanguageName, myCItrad.ThreeLetterISOLanguageName));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterWindowsLanguageName", myCIintl.ThreeLetterWindowsLanguageName, myCItrad.ThreeLetterWindowsLanguageName));
-            _log.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "TwoLetterISOLanguageName", myCIintl.TwoLetterISOLanguageName, myCItrad.TwoLetterISOLanguageName));
-            _log.Debug("");
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "PROPERTY", "INTERNATIONAL", "TRADITIONAL"));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "CompareInfo", myCIintl.CompareInfo, myCItrad.CompareInfo));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "DisplayName", myCIintl.DisplayName, myCItrad.DisplayName));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "EnglishName", myCIintl.EnglishName, myCItrad.EnglishName));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "IsNeutralCulture", myCIintl.IsNeutralCulture, myCItrad.IsNeutralCulture));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "IsReadOnly", myCIintl.IsReadOnly, myCItrad.IsReadOnly));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "LCID", myCIintl.LCID, myCItrad.LCID));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "Name", myCIintl.Name, myCItrad.Name));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "NativeName", myCIintl.NativeName, myCItrad.NativeName));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "Parent", myCIintl.Parent, myCItrad.Parent));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "TextInfo", myCIintl.TextInfo, myCItrad.TextInfo));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterISOLanguageName", myCIintl.ThreeLetterISOLanguageName, myCItrad.ThreeLetterISOLanguageName));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "ThreeLetterWindowsLanguageName", myCIintl.ThreeLetterWindowsLanguageName, myCItrad.ThreeLetterWindowsLanguageName));
+            _logger.Debug(string.Format("{0,-33}{1,-25}{2,-25}", "TwoLetterISOLanguageName", myCIintl.TwoLetterISOLanguageName, myCItrad.TwoLetterISOLanguageName));
+            _logger.Debug("");
             // Compare two strings using myCIintl.
-            _log.Debug("Comparing \"llegar\" and \"lugar\"");
-            _log.Debug(string.Format("   With myCIintl.CompareInfo.Compare: {0}", myCIintl.CompareInfo.Compare("llegar", "lugar")));
-            _log.Debug(string.Format("   With myCItrad.CompareInfo.Compare: {0}", myCItrad.CompareInfo.Compare("llegar", "lugar")));
+            _logger.Debug("Comparing \"llegar\" and \"lugar\"");
+            _logger.Debug(string.Format("   With myCIintl.CompareInfo.Compare: {0}", myCIintl.CompareInfo.Compare("llegar", "lugar")));
+            _logger.Debug(string.Format("   With myCItrad.CompareInfo.Compare: {0}", myCItrad.CompareInfo.Compare("llegar", "lugar")));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1423,7 +1286,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -1501,27 +1364,27 @@ namespace logicpos
             return result;
         }
 
-        
+
         public static string OpenNewSerialNumberCompositePopUpWindow(Window pSourceWindow, XPGuidObject pXPGuidObject, out List<fin_articleserialnumber> pSelectedCollection, string pSerialNumber = "", List<fin_articleserialnumber> pSelectedCollectionToFill = null)
         {
             try
             {
                 DialogArticleCompositionSerialNumber dialog = new DialogArticleCompositionSerialNumber(pSourceWindow, Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, pXPGuidObject, pSelectedCollectionToFill, pSerialNumber);
                 ResponseType response = (ResponseType)dialog.Run();
-                if(response == ResponseType.Ok)
+                if (response == ResponseType.Ok)
                 {
                     string insertedSerialNumber = dialog.EntryBoxSerialNumber1.EntryValidation.Text;
                     pSelectedCollection = dialog.SelectedAssocietedArticles;
                     dialog.Destroy();
                     return insertedSerialNumber;
                 }
-                dialog.Destroy(); 
-                pSelectedCollection = dialog.SelectedAssocietedArticles; 
+                dialog.Destroy();
+                pSelectedCollection = dialog.SelectedAssocietedArticles;
                 return pSerialNumber;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 pSelectedCollection = null;
                 return "";
             }
@@ -1545,7 +1408,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 /* This block of code log the message informing that the resolution is not supported and asks user to define or not the default one */
-                _log.Error("ScreenSize GetSupportedScreenResolution(Size screenSize) :: " + ex.Message, ex);
+                _logger.Error("ScreenSize GetSupportedScreenResolution(Size screenSize) :: " + ex.Message, ex);
 
                 /* IN009034 */
                 GlobalApp.DialogThreadNotify.WakeupMain();
@@ -1578,7 +1441,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -1612,19 +1475,19 @@ namespace logicpos
 
         public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists, string backupProcess)
         {
-            string fileWorking = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Other\working.gif");          
-  
+            string fileWorking = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Other\working.gif");
+
             Dialog dialog = new Dialog("Working", pSourceWindow, DialogFlags.Modal | DialogFlags.DestroyWithParent);
             dialog.WindowPosition = WindowPosition.Center;
             //dialog.Display = 0;
             //Mensagem alternativa para primeira instalação e versao com DB criada
-            Label labelBoot;            
-            if (dbExists) labelBoot = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_load")); 
+            Label labelBoot;
+            if (dbExists) labelBoot = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_load"));
             else labelBoot = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_load_first_time"));
-            if(backupProcess != string.Empty) labelBoot = new Label(backupProcess);
+            if (backupProcess != string.Empty) labelBoot = new Label(backupProcess);
 
             labelBoot.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 10 Bold"));
-            labelBoot.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(Color.DarkSlateGray));
+            labelBoot.ModifyFg(StateType.Normal, Color.DarkSlateGray.ToGdkColor());
             dialog.Decorated = false;
             //dialog.BorderWidth = 5;
             dialog.SetSizeRequest(194, 220);
@@ -1656,7 +1519,7 @@ namespace logicpos
                 {
                     return true;
                 }
-                
+
             }
             return false;
         }
@@ -1837,7 +1700,7 @@ namespace logicpos
         //}
         //catch (Exception ex)
         //{
-        //    _log.Error(ex.Message, ex);
+        //    _logger.Error(ex.Message, ex);
         //    //Notify WakeupMain and Call ReadyEvent
         //    GlobalApp.DialogThreadNotify.WakeupMain();
         //    return false;
@@ -1847,7 +1710,7 @@ namespace logicpos
         //Thread thread = new Thread(() => result = Utils.ThreadRoutine(3000));
         //Utils.ThreadStart(pSourceWindow, thread);
         //GlobalApp.DialogThreadNotify.WakeupMain();
-        //_log.Debug(String.Format("Result: [{0}]", result));
+        //_logger.Debug(String.Format("Result: [{0}]", result));
         //
         //Links
         //How to pass parameters to ThreadStart method in Thread?
@@ -1877,11 +1740,11 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
-        public static void ThreadLoading (Window pSourceWindow)
+        public static void ThreadLoading(Window pSourceWindow)
         {
             try
             {
@@ -1894,7 +1757,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1939,13 +1802,13 @@ namespace logicpos
                     {
                         settings.Add(item.Key, item.Value);
                         //Debug
-                        if (debug) _log.Debug(string.Format("AddOrUpdateAppSettings: Add Key: [{0}] = [{1}]", item.Key, settings[item.Key].Value));
+                        if (debug) _logger.Debug(string.Format("AddOrUpdateAppSettings: Add Key: [{0}] = [{1}]", item.Key, settings[item.Key].Value));
                     }
                     else
                     {
                         settings[item.Key].Value = item.Value;
                         //Debug
-                        if (debug) _log.Debug(string.Format("AddOrUpdateAppSettings: Modified Key: [{0}] = [{1}]", item.Key, settings[item.Key].Value));
+                        if (debug) _logger.Debug(string.Format("AddOrUpdateAppSettings: Modified Key: [{0}] = [{1}]", item.Key, settings[item.Key].Value));
                     }
 
                     //Assign to Memory
@@ -1955,18 +1818,18 @@ namespace logicpos
                 //Save
                 if (Debugger.IsAttached == true)
                 {
-                    if (debug) _log.Debug("Save AppSettings with debugger");
+                    if (debug) _logger.Debug("Save AppSettings with debugger");
                     configFile.SaveAs(configFileName, ConfigurationSaveMode.Modified);
                 }
                 else
                 {
-                    if (debug) _log.Debug("Save AppSettings without debugger");
+                    if (debug) _logger.Debug("Save AppSettings without debugger");
                     configFile.Save(ConfigurationSaveMode.Modified);
                 }
             }
             catch (ConfigurationErrorsException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1982,7 +1845,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2022,7 +1885,7 @@ namespace logicpos
         //    }
         //    catch (Exception ex)
         //    {
-        //      _log.Error(ex.Message, ex);
+        //      _logger.Error(ex.Message, ex);
         //    }
         //  }
 
@@ -2035,7 +1898,7 @@ namespace logicpos
         //    }
         //    catch (Exception ex)
         //    {
-        //      _log.Error(ex.Message, ex);
+        //      _logger.Error(ex.Message, ex);
         //    }
         //  }
 
@@ -2052,7 +1915,7 @@ namespace logicpos
         //    };
         //    terminalXpo.Save();
 
-        //    _log.Debug(string.Format("Registered a new Terminal in Database and Config Settings. TerminalId: [{0}] ]", terminalXpo.Oid));
+        //    _logger.Debug(string.Format("Registered a new Terminal in Database and Config Settings. TerminalId: [{0}] ]", terminalXpo.Oid));
         //    //Save to Text
         //    File.WriteAllText(terminalIdFile, terminalXpo.Oid.ToString());
         //  }
@@ -2082,12 +1945,12 @@ namespace logicpos
                 try
                 {
                     //Try TerminalID from Database
-                    _log.Debug("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database");
+                    _logger.Debug("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database");
                     configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", GlobalFramework.LicenceHardwareId);
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database: " + ex.Message, ex);
+                    _logger.Error("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database: " + ex.Message, ex);
                 }
 
                 //Create a new db terminal
@@ -2104,7 +1967,7 @@ namespace logicpos
                             HardwareId = GlobalFramework.LicenceHardwareId
                             //Fqdn = GetFQDN()
                         };
-                        _log.Debug("pos_configurationplaceterminal GetTerminal() :: configurationPlaceTerminal.Save()");
+                        _logger.Debug("pos_configurationplaceterminal GetTerminal() :: configurationPlaceTerminal.Save()");
                         configurationPlaceTerminal.Save();
                     }
                     catch (Exception ex)
@@ -2112,7 +1975,7 @@ namespace logicpos
                         /* IN009034 */
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
-                        _log.Error(string.Format("pos_configurationplaceterminal GetTerminal() :: Error! Can't Register a new TerminalId [{0}] with HardwareId: [{1}], Error: [2]", configurationPlaceTerminal.Oid, configurationPlaceTerminal.HardwareId, ex.Message), ex);
+                        _logger.Error(string.Format("pos_configurationplaceterminal GetTerminal() :: Error! Can't Register a new TerminalId [{0}] with HardwareId: [{1}], Error: [2]", configurationPlaceTerminal.Oid, configurationPlaceTerminal.HardwareId, ex.Message), ex);
                         ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_register_new_terminal"), configurationPlaceTerminal.HardwareId));
                         Environment.Exit(0);
                     }
@@ -2120,7 +1983,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error("pos_configurationplaceterminal GetTerminal() :: " + ex.Message, ex);
+                _logger.Error("pos_configurationplaceterminal GetTerminal() :: " + ex.Message, ex);
             }
 
             return configurationPlaceTerminal;
@@ -2145,14 +2008,14 @@ namespace logicpos
                         item.SessionStatus = WorkSessionPeriodStatus.Close;
                         item.DateEnd = dateTime;
                         item.Save();
-                    }                    
+                    }
                 }
 
                 result = true;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2164,7 +2027,7 @@ namespace logicpos
         //Helpers
         public static void ShowFrontOffice(Window pHideWindow)
         {
-            _log.Debug("void ShowFrontOffice(Window pHideWindow) :: Starting..."); /* IN009008 */
+            _logger.Debug("void ShowFrontOffice(Window pHideWindow) :: Starting..."); /* IN009008 */
             try
             {
                 if (GlobalApp.WindowPos == null)
@@ -2176,13 +2039,13 @@ namespace logicpos
                     {
                         /* IN008024 */
                         CustomAppOperationMode customAppOperationMode = SettingsApp.CustomAppOperationMode;
-                        //_log.Debug(string.Format("fileImageBackgroundWindowPos: [{0}]", GlobalFramework.Settings["fileImageBackgroundWindowPos"]));
+                        //_logger.Debug(string.Format("fileImageBackgroundWindowPos: [{0}]", GlobalFramework.Settings["fileImageBackgroundWindowPos"]));
                         string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                         GlobalApp.WindowPos = new PosMainWindow(windowImageFileName);
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                     }
                 }
                 else
@@ -2196,7 +2059,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -2223,18 +2086,18 @@ namespace logicpos
                         GlobalApp.WindowBackOffice = new BackOfficeMainWindow();
                     }
                     else
-                    {                        
+                    {
                         GlobalApp.WindowBackOffice.Show();
                     }
-                   
-                   pHideWindow.Hide();
-                    
-                    
+
+                    pHideWindow.Hide();
+
+
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -2283,7 +2146,7 @@ namespace logicpos
             }
             else
             {
-                _log.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, fileImageBackground));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, fileImageBackground));
                 return null;
             }
         }
@@ -2310,14 +2173,14 @@ namespace logicpos
             }
             else
             {
-                _log.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, fileImageBackground));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, fileImageBackground));
                 return null;
             }
         }
 
         public static Gtk.Style GetImageBackgroundDash(string pFile)
         {
-            
+
             if (pFile != null && File.Exists(pFile))
             {
                 Gdk.Pixmap pixmap = Utils.FileToPixmap(pFile);
@@ -2335,7 +2198,7 @@ namespace logicpos
             }
             else
             {
-                _log.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, pFile));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, pFile));
                 return null;
             }
         }
@@ -2363,9 +2226,9 @@ namespace logicpos
                 }
                 else
                 {
-                    _log.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, pFilename.ToString()));
+                    _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, pFilename.ToString()));
                     return null;
-                }                
+                }
             }
         }
 
@@ -2408,9 +2271,7 @@ namespace logicpos
         /// <param name="showNotificationOnDemand"></param>
         public static void ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser, bool showNotificationOnDemand = false)
         {
-            _log.Debug("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: Source Window: " + pSourceWindow.Name);
-
-            string message = string.Empty;
+            _logger.Debug("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: Source Window: " + pSourceWindow.Name);
             string extraFilter = (pLoggedUser != Guid.Empty) ? string.Format("AND (UserTarget = '{0}' OR UserTarget IS NULL) ", pLoggedUser) : string.Empty;
 
             /* IN006001 */
@@ -2458,6 +2319,8 @@ namespace logicpos
                 sortProperty[1] = new SortProperty("Ord", SortingDirection.Ascending);
                 XPCollection xpcSystemNotification = new XPCollection(pSession, typeof(sys_systemnotification), criteriaOperator, sortProperty);
 
+
+                string message;
                 if (xpcSystemNotification.Count > 0)
                 {
                     foreach (sys_systemnotification item in xpcSystemNotification)
@@ -2503,7 +2366,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
+                _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
                 ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "There is an error when checking for notifications. Please contact the helpdesk");
             }
         }
@@ -2549,13 +2412,13 @@ namespace logicpos
                          new Size(700, 480),
                          MessageType.Info,
                          ButtonsType.Ok,
-                         resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "change_log"),
+                         resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "change_logger"),
                          message
                        );
             }
             catch (Exception ex)
             {
-                _log.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
+                _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
                 ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "There is an error when checking for changelog. Please contact the helpdesk");
             }
         }
@@ -2566,7 +2429,6 @@ namespace logicpos
         public static string GetVirtualKeyBoardInput(Window pSourceWindow, KeyboardMode pMode, string pInitialValue, string pRegExRule)
         {
             Boolean useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
-            string result = string.Empty;
 
             //if (GlobalApp.DialogPosKeyboard == null)
             //{
@@ -2611,6 +2473,7 @@ namespace logicpos
             GlobalApp.DialogPosKeyboard.TextEntry.Position = GlobalApp.DialogPosKeyboard.TextEntry.Text.Length;
             GlobalApp.DialogPosKeyboard.TextEntry.GrabFocus();
             int response = GlobalApp.DialogPosKeyboard.Run();
+            string result;
             if (response == (int)ResponseType.Ok)
             {
                 result = GlobalApp.DialogPosKeyboard.Text;
@@ -2641,7 +2504,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return (result);
@@ -2653,11 +2516,11 @@ namespace logicpos
 
             try
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_EUROPEAN_VAT_AUTOCOMPLETE"]); 
+                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_EUROPEAN_VAT_AUTOCOMPLETE"]);
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return (result);
@@ -2673,7 +2536,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return (result);
@@ -2690,24 +2553,23 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return (result);
         }
-		//Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
+        //Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
         internal static bool PrintTicket()
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["TICKET_PRINT_TICKET"]);
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
-				return true;
+                _logger.Error(ex.Message, ex);
+                return true;
             }
 
             return (result);
@@ -2715,28 +2577,26 @@ namespace logicpos
         //Criação de variável nas configurações para imprimir ou não ticket's com designação comercial da empresa
         internal static bool PrintTicketComercialName()
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["TICKET_PRINT_COMERCIAL_NAME"]);
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return true;
             }
 
             return (result);
         }
-        
+
 
         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
         //Criação de variável nas configurações para imprimir ou não QRCode
         internal static bool PrintQRCode()
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'PRINT_QRCODE' AND (Disabled = 0 OR Disabled is NULL);");
@@ -2745,7 +2605,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["PRINT_QRCODE"]);
                 GlobalFramework.PrintQRCode = result;
                 return true;
@@ -2756,17 +2616,16 @@ namespace logicpos
 
         internal static bool CheckStocks()
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS' AND (Disabled = 0 OR Disabled is NULL);");
-                result = Convert.ToBoolean(GlobalFramework.SessionXpo.ExecuteScalar(query));                
+                result = Convert.ToBoolean(GlobalFramework.SessionXpo.ExecuteScalar(query));
                 GlobalFramework.CheckStocks = result;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["CHECK_STOCKS"]);
                 GlobalFramework.CheckStocks = result;
                 return true;
@@ -2777,8 +2636,7 @@ namespace logicpos
 
         internal static bool CheckStockMessage()
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS_MESSAGE';");
@@ -2787,7 +2645,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["CHECK_STOCKS_MESSAGE"]);
                 GlobalFramework.CheckStockMessage = result;
                 return true;
@@ -2796,7 +2654,7 @@ namespace logicpos
             return (result);
         }
 
-        
+
 
 
         //Commented by Mario because its not used in Project
@@ -2814,7 +2672,7 @@ namespace logicpos
         //  }
         //  catch (Exception ex)
         //  {
-        //    _log.Error(ex.Message, ex);
+        //    _logger.Error(ex.Message, ex);
         //  }
         //}
 
@@ -2831,7 +2689,7 @@ namespace logicpos
         public static T GetGenericTreeViewXPO<T>(Window pSourceWindow, CriteriaOperator pCriteria, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default)
           where T : IGenericTreeView, new()
         {
-            T genericTreeView = default(T);
+            T genericTreeView = default;
 
             try
             {
@@ -2862,7 +2720,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return genericTreeView;
         }
@@ -2881,7 +2739,7 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     return false;
                 }
             }
@@ -2912,13 +2770,13 @@ namespace logicpos
                     //Test
                     if (pDebug)
                     {
-                        _log.Debug(string.Format("{0}:{1}", "HardwareId", GlobalFramework.LicenceHardwareId));
-                        _log.Debug(string.Format("{0}:{1}", "Company", GlobalFramework.LicenceCompany));
-                        _log.Debug(string.Format("{0}:{1}", "Nif", GlobalFramework.LicenceNif));
-                        _log.Debug(string.Format("{0}:{1}", "Address", GlobalFramework.LicenceAddress));
-                        _log.Debug(string.Format("{0}:{1}", "Email", GlobalFramework.LicenceEmail));
-                        _log.Debug(string.Format("{0}:{1}", "Telephone", GlobalFramework.LicenceTelephone));
-                        _log.Debug(string.Format("{0}:{1}", "Reseller", GlobalFramework.LicenceReseller));
+                        _logger.Debug(string.Format("{0}:{1}", "HardwareId", GlobalFramework.LicenceHardwareId));
+                        _logger.Debug(string.Format("{0}:{1}", "Company", GlobalFramework.LicenceCompany));
+                        _logger.Debug(string.Format("{0}:{1}", "Nif", GlobalFramework.LicenceNif));
+                        _logger.Debug(string.Format("{0}:{1}", "Address", GlobalFramework.LicenceAddress));
+                        _logger.Debug(string.Format("{0}:{1}", "Email", GlobalFramework.LicenceEmail));
+                        _logger.Debug(string.Format("{0}:{1}", "Telephone", GlobalFramework.LicenceTelephone));
+                        _logger.Debug(string.Format("{0}:{1}", "Reseller", GlobalFramework.LicenceReseller));
                     }
                     iNIFile.Flush();
 
@@ -2936,7 +2794,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2953,31 +2811,33 @@ namespace logicpos
 
         public static object SaveOrUpdateCustomer(Window pSourceWindow, erp_customer pCustomer, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, cfg_configurationcountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
         {
-            bool changed = false;
             bool customerExists = false;
             erp_customer result;
             erp_customer finalConsumerEntity = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
             fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpricetype), SettingsApp.XpoOidConfigurationPriceTypeDefault);
-                        
-            SortingCollection sortCollection = new SortingCollection();
-            sortCollection.Add(new SortProperty("Oid", DevExpress.Xpo.DB.SortingDirection.Ascending));
+
+            SortingCollection sortCollection = new SortingCollection
+            {
+                new SortProperty("Oid", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
             ICollection collectionCustomers = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
 
             foreach (erp_customer item in collectionCustomers)
             {
-				//Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
+                //Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
                 if (item.FiscalNumber == pFiscalNumber) customerExists = true;
                 if (item.Oid.Equals(finalConsumerEntity)) customerExists = true;
             }
 
+            bool changed;
             //insert new Customer before Process Finance Document
             //se for consumidor final, nao altera, cria novo registo
             if (!customerExists)
             {
                 changed = true;
-				//Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
-                if (string.IsNullOrEmpty(pName)) pName = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown"); 
+                //Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
+                if (string.IsNullOrEmpty(pName)) pName = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown");
                 result = new erp_customer(GlobalFramework.SessionXpo)
                 {
                     Ord = (pFiscalNumber != string.Empty) ? FrameworkUtils.GetNextTableFieldID("erp_customer", "Ord") : 0,
@@ -2993,7 +2853,7 @@ namespace logicpos
                     Discount = pDiscount,
                     PriceType = configurationPriceType,
                     Notes = pNotes,
-                    Hidden = (pFiscalNumber != string.Empty) ? false : true
+                    Hidden = pFiscalNumber == string.Empty
                 };
                 if (pPhone != null)
                 {
@@ -3011,7 +2871,7 @@ namespace logicpos
                 //Require to get a Fresh Object
                 result = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), pCustomer.Oid);
 
-                if(result != finalConsumerEntity)
+                if (result != finalConsumerEntity)
                 {
                     if (CheckIfFieldChanged(result.Name, pName)) { result.Name = pName; changed = true; };
                     if (CheckIfFieldChanged(result.Address, pAddress)) { result.Address = pAddress; changed = true; };
@@ -3038,7 +2898,7 @@ namespace logicpos
                             result.Reload();
                         }
                     }
-                }               
+                }
             }
 
             //Shared Save for Insert and Update
@@ -3050,7 +2910,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 //Dont Show in Log, we process error showing alert to user
-                //_log.Error(ex.Message, ex);
+                //_logger.Error(ex.Message, ex);
                 result.Reload();
                 return ex;
             }
@@ -3059,9 +2919,9 @@ namespace logicpos
         //Method to Check Equallity from Db Fields to Input Fields, Required to compare null with "" etc
         public static bool CheckIfFieldChanged(object pFieldDb, object pFieldInput)
         {
-            bool result = false;
             object fieldDb = (pFieldDb == null || pFieldDb.ToString() == string.Empty) ? string.Empty : pFieldDb;
 
+            bool result;
             //Decimal
             if (fieldDb.GetType() == typeof(decimal))
             {
@@ -3105,33 +2965,33 @@ namespace logicpos
 
             try
             {
-                Color colorEntryValidationValidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
-                Color colorEntryValidationInvalidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationInvalidFont"]);
-                Color colorEntryValidationValidBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidBackground"]);
-                Color colorEntryValidationInvalidBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationInvalidBackground"]);
+                Color colorEntryValidationValidFont = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+                Color colorEntryValidationInvalidFont = GlobalFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
+                Color colorEntryValidationValidBackground = GlobalFramework.Settings["colorEntryValidationValidBackground"].StringToColor();
+                Color colorEntryValidationInvalidBackground = GlobalFramework.Settings["colorEntryValidationInvalidBackground"].StringToColor();
 
                 if (pValidated)
                 {
-                    target.ModifyText(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                    target.ModifyText(StateType.Active, Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                    target.ModifyBase(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidBackground));
-                    if (pLabel != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                    if (pLabel2 != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                    if (pLabel3 != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                    target.ModifyText(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
+                    target.ModifyText(StateType.Active, colorEntryValidationValidFont.ToGdkColor());
+                    target.ModifyBase(StateType.Normal, colorEntryValidationValidBackground.ToGdkColor());
+                    if (pLabel != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
+                    if (pLabel2 != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
+                    if (pLabel3 != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
                 }
                 else
                 {
-                    target.ModifyText(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
-                    target.ModifyText(StateType.Active, Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
-                    target.ModifyBase(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationInvalidBackground));
-                    if (pLabel != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
-                    if (pLabel2 != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                    if (pLabel3 != null) pLabel.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                    target.ModifyText(StateType.Normal, colorEntryValidationInvalidFont.ToGdkColor());
+                    target.ModifyText(StateType.Active, colorEntryValidationInvalidFont.ToGdkColor());
+                    target.ModifyBase(StateType.Normal, colorEntryValidationInvalidBackground.ToGdkColor());
+                    if (pLabel != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationInvalidFont.ToGdkColor());
+                    if (pLabel2 != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
+                    if (pLabel3 != null) pLabel.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -3156,7 +3016,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -3209,29 +3069,31 @@ namespace logicpos
                 );
 
                 string systemProtectedSalted = SaltedString.GenerateSaltedString(systemProtected);
-                _log.Debug(String.Format("systemProtected: [{0}]", systemProtected));
-                _log.Debug(String.Format("systemProtectedSalted: [{0}]", systemProtectedSalted));
+                _logger.Debug(String.Format("systemProtected: [{0}]", systemProtected));
+                _logger.Debug(String.Format("systemProtectedSalted: [{0}]", systemProtectedSalted));
 
                 //Change Configuration
-                Dictionary<string, string> values = new Dictionary<string, string>();
-                values.Add("appSystemProtection", systemProtectedSalted);
-                values.Add("xpoOidConfigurationCountrySystemCountry", pConfigurationCountry.Oid.ToString());
-                values.Add("xpoOidConfigurationCountrySystemCountryCountryCode2", pConfigurationCountry.Code2);
-                values.Add("xpoOidConfigurationCurrencySystemCurrency)", pConfigurationCurrency.Oid.ToString());
+                Dictionary<string, string> values = new Dictionary<string, string>
+                {
+                    { "appSystemProtection", systemProtectedSalted },
+                    { "xpoOidConfigurationCountrySystemCountry", pConfigurationCountry.Oid.ToString() },
+                    { "xpoOidConfigurationCountrySystemCountryCountryCode2", pConfigurationCountry.Code2 },
+                    { "xpoOidConfigurationCurrencySystemCurrency)", pConfigurationCurrency.Oid.ToString() }
+                };
                 Utils.AddUpdateSettings(values);
 
                 result = true;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
         }
 
-		//TK016235 BackOffice - Mode
-        public static void startReportsMenuFromBackOffice(Window pSourceWindow)        
+        //TK016235 BackOffice - Mode
+        public static void startReportsMenuFromBackOffice(Window pSourceWindow)
         {
             try
             {
@@ -3241,8 +3103,8 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
-            }            
+                _logger.Error(ex.Message, ex);
+            }
         }
 
         public static void openWorkSessionFromBackOffice(Window pSourceWindow)
@@ -3255,7 +3117,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -3275,7 +3137,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -3288,13 +3150,13 @@ namespace logicpos
                 if (docChoice == 0)
                 {
                     ResponseType response = (ResponseType)dialog.Run();
-                }                
+                }
                 dialog.Destroy();
 
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -3310,15 +3172,15 @@ namespace logicpos
                     ResponseType response = (ResponseType)dialog.Run();
                     dialog.Destroy();
                 }
-                else if(Utils.CheckStockMessage() && !GlobalFramework.LicenceModuleStocks)
+                else if (Utils.CheckStockMessage() && !GlobalFramework.LicenceModuleStocks)
                 {
-                    var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_acquire_module_stocks"));                   
+                    var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_acquire_module_stocks"));
                     if (messageDialog == ResponseType.Ok)
                     {
                         Process.Start("https://logic-pos.com/");
                     }
 
-                    string query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Value = 'False' WHERE Token = 'CHECK_STOCKS_MESSAGE';"); 
+                    string query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Value = 'False' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
                     GlobalFramework.SessionXpo.ExecuteScalar(query);
                     query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
                     GlobalFramework.SessionXpo.ExecuteScalar(query);
@@ -3331,7 +3193,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -3352,12 +3214,12 @@ namespace logicpos
         {
             try
             {
-                
+
 
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -3372,7 +3234,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -3386,7 +3248,7 @@ namespace logicpos
                 return (p == 4) || (p == 6) || (p == 128);
             }
         }
-		//Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
+        //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
         public static bool IsPortOpen(string portName)
         {
             var port = new SerialPort(portName);
@@ -3398,7 +3260,7 @@ namespace logicpos
             }
             catch (Exception)
             {
-                _log.Debug(string.Format("Port already in use: [{0}]", portName));
+                _logger.Debug(string.Format("Port already in use: [{0}]", portName));
                 return false;
             }
         }

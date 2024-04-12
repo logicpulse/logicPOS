@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationweighingmachine), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,14 +31,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         public string Designation
         {
             get { return fDesignation; }
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fPortName;
+        private string fPortName;
         [Size(4)]
         public string PortName
         {
@@ -46,14 +46,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("PortName", ref fPortName, value); }
         }
 
-        UInt32 fBaudRate;
+        private UInt32 fBaudRate;
         public UInt32 BaudRate
         {
             get { return fBaudRate; }
             set { SetPropertyValue<UInt32>("BaudRate", ref fBaudRate, value); }
         }
 
-        string fParity;
+        private string fParity;
         [Size(5)]
         public string Parity
         {
@@ -61,7 +61,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Parity", ref fParity, value); }
         }
 
-        string fStopBits;
+        private string fStopBits;
         [Size(12)]
         public string StopBits
         {
@@ -69,7 +69,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("StopBits", ref fStopBits, value); }
         }
 
-        UInt32 fDataBits;
+        private UInt32 fDataBits;
         public UInt32 DataBits
         {
             get { return fDataBits; }

@@ -17,7 +17,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //This Can be Optional
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
@@ -25,7 +25,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //This Can be Optional
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -33,7 +33,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Size(60)]
         public string Designation
         {
@@ -41,7 +41,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fAcronym;
+        private string fAcronym;
         [Size(3)]
         public string Acronym
         {
@@ -49,7 +49,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Acronym", ref fAcronym, value); }
         }
 
-        string fStandardApplicable;
+        private string fStandardApplicable;
         [Size(512)]
         public string StandardApplicable
         {

@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -39,14 +39,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fAcronym;
+        private string fAcronym;
         public string Acronym
         {
             get { return fAcronym; }
             set { SetPropertyValue<string>("Acronym", ref fAcronym, value); }
         }
 
-        string fSymbol;
+        private string fSymbol;
         [Size(10)]
         public string Symbol
         {
@@ -54,7 +54,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Symbol", ref fSymbol, value); }
         }
 
-        string fEntity;
+        private string fEntity;
         [Size(512)]
         public string Entity
         {
@@ -62,7 +62,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Entity", ref fEntity, value); }
         }
 
-        decimal fExchangeRate;
+        private decimal fExchangeRate;
         public decimal ExchangeRate
         {
             get { return fExchangeRate; }

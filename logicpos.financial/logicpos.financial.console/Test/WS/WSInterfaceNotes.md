@@ -8,7 +8,7 @@ WSInterface\Web.config
 
 WSInterfaceTester\App.config
 
-	<add key="LogicposWS_Login" value="admin"/>
+	<add key="LogicposWS_loggerin" value="admin"/>
 	<add key="LogicposWS_Password" value="admin"/>
 
 public class LogicposHelper

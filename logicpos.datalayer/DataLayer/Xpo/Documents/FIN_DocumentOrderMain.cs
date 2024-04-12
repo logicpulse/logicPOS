@@ -10,14 +10,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentordermain() : base() { }
         public fin_documentordermain(Session session) : base(session) { }
 
-        DateTime fDateStart;
+        private DateTime fDateStart;
         public DateTime DateStart
         {
             get { return fDateStart; }
             set { SetPropertyValue<DateTime>("DateStart", ref fDateStart, value); }
         }
 
-        OrderStatus fOrderStatus;
+        private OrderStatus fOrderStatus;
         public OrderStatus OrderStatus
         {
             get { return fOrderStatus; }
@@ -32,7 +32,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlaceTable One <> Many DocumentOrderMain
-        pos_configurationplacetable fPlaceTable;
+        private pos_configurationplacetable fPlaceTable;
         [Association(@"ConfigurationPlaceTableReferencesDocumentOrderMain")]
         public pos_configurationplacetable PlaceTable
         {

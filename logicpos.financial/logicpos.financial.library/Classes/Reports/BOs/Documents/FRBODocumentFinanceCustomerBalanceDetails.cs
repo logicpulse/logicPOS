@@ -70,8 +70,8 @@ using System;
 
 namespace logicpos.financial.library.Classes.Reports.BOs.Documents
 {
-    [FRBO(Entity = "view_documentfinancecustomerbalancedetails")]    
-    class FRBODocumentFinanceCustomerBalanceDetails: FRBOBaseObject
+    [FRBO(Entity = "view_documentfinancecustomerbalancedetails")]
+    internal class FRBODocumentFinanceCustomerBalanceDetails: FRBOBaseObject
     {
         [FRBO(Field = "DocumentTypeOid")]
         //Primary Oid (Required)

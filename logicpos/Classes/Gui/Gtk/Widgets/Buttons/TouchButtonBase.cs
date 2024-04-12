@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using logicpos.Extensions;
 using System;
 using System.Drawing;
 
@@ -7,7 +8,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
     public class TouchButtonBase : Button
     {
         //Log4Net
-        protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected Fields
         protected EventBox _eventboxBackgroundColor;
@@ -35,7 +36,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             //HasDefault = true;
             //HasFocus = true;
 
-            //Clicked += delegate {_log.Debug("TouchButtonBase() ButtonPress: button.Name=" + Name);};
+            //Clicked += delegate {_logger.Debug("TouchButtonBase() ButtonPress: button.Name=" + Name);};
         }
 
         public TouchButtonBase(String pName, System.Drawing.Color pColor, Widget pWidget, int pWidth, int pHeight)
@@ -64,15 +65,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             else
             {
                 Color colNormal = pColor;
-                Color colPrelight = logicpos.Utils.Lighten(colNormal);
-                Color colActive = logicpos.Utils.Lighten(colPrelight);
-                Color colInsensitive = logicpos.Utils.Darken(colNormal);
+                Color colPrelight = colNormal.Lighten();
+                Color colActive = colPrelight.Lighten();
+                Color colInsensitive = colNormal.Darken();
                 Color colSelected = Color.FromArgb(125, 0, 0);
-                pTargetEventBox.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colNormal));
-                pTargetEventBox.ModifyBg(StateType.Selected, logicpos.Utils.ColorToGdkColor(colSelected));
-                pTargetEventBox.ModifyBg(StateType.Prelight, logicpos.Utils.ColorToGdkColor(colPrelight));
-                pTargetEventBox.ModifyBg(StateType.Active, logicpos.Utils.ColorToGdkColor(colActive));
-                pTargetEventBox.ModifyBg(StateType.Insensitive, logicpos.Utils.ColorToGdkColor(colInsensitive));
+
+                pTargetEventBox.ModifyBg(StateType.Normal, colNormal.ToGdkColor());
+                pTargetEventBox.ModifyBg(StateType.Selected, colSelected.ToGdkColor());
+                pTargetEventBox.ModifyBg(StateType.Prelight, colPrelight.ToGdkColor());
+                pTargetEventBox.ModifyBg(StateType.Active, colActive.ToGdkColor());
+                pTargetEventBox.ModifyBg(StateType.Insensitive, colInsensitive.ToGdkColor());
             }
         }
     }

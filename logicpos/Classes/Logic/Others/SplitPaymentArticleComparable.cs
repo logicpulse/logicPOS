@@ -3,7 +3,7 @@ using System;
 
 namespace logicpos.Classes.Logic.Others
 {
-    class SplitPaymentArticleComparable : IComparable
+    internal class SplitPaymentArticleComparable : IComparable
     {
         public Guid oid;
         public string designation;

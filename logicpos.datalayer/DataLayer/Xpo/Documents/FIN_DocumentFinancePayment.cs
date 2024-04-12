@@ -11,7 +11,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         // BOF SAFT-T PT
 
-        string fPaymentRefNo;
+        private string fPaymentRefNo;
         [Size(60)]
         public string PaymentRefNo
         {
@@ -19,7 +19,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("PaymentRefNo", ref fPaymentRefNo, value); }
         }
 
-        string fTransactionID;
+        private string fTransactionID;
         [Size(70)]
         public string TransactionID
         {
@@ -27,7 +27,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("TransactionID", ref fTransactionID, value); }
         }
 
-        string fTransactionDate;
+        private string fTransactionDate;
         [Size(19)]
         public string TransactionDate
         {
@@ -38,7 +38,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //RC — Recibo emitido no âmbito do regime de IVA de Caixa (incluindo os relativos a adiantamentos desse regime);
         //RG — Outros recibos emitidos.
 
-        string fPaymentType;
+        private string fPaymentType;
         [Size(2)]
         public string PaymentType
         {
@@ -50,7 +50,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         //N — Recibo normal e vigente;
         //A — Recibo anulado.
-        string fPaymentStatus;
+        private string fPaymentStatus;
         [Size(1)]
         public string PaymentStatus
         {
@@ -58,7 +58,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("PaymentStatus", ref fPaymentStatus, value); }
         }
 
-        string fPaymentStatusDate;
+        private string fPaymentStatusDate;
         [Size(50)]
         public string PaymentStatusDate
         {
@@ -66,7 +66,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("PaymentStatusDate", ref fPaymentStatusDate, value); }
         }
 
-        string fReason;
+        private string fReason;
         [Size(50)]
         public string Reason
         {
@@ -75,7 +75,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Utilizador responsável pelo estado atual do recibo.
-        string fDocumentStatusSourceID;
+        private string fDocumentStatusSourceID;
         [Size(30)]
         public string DocumentStatusSourceID
         {
@@ -86,7 +86,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //P — Recibo produzido na aplicação;
         //I — Recibo integrado e produzido noutra aplicação;
         //M — Recibo
-        string fSourcePayment;
+        private string fSourcePayment;
         [Size(1)]
         public string SourcePayment
         {
@@ -107,7 +107,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //PR — Permuta de bens;
         //TB — Transferência bancária ou débito direto autorizado;
         //TR — Ticket restaurante.
-        string fPaymentMechanism;
+        private string fPaymentMechanism;
         [Size(2)]
         public string PaymentMechanism
         {
@@ -115,14 +115,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("PaymentMechanism", ref fPaymentMechanism, value); }
         }
 
-        decimal fPaymentAmount;
+        private decimal fPaymentAmount;
         public decimal PaymentAmount
         {
             get { return fPaymentAmount; }
             set { SetPropertyValue<decimal>("PaymentAmount", ref fPaymentAmount, value); }
         }
 
-        string fPaymentDate;
+        private string fPaymentDate;
         [Size(19)]
         public string PaymentDate
         {
@@ -130,7 +130,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("PaymentDate", ref fPaymentDate, value); }
         }
 
-        string fSourceID;
+        private string fSourceID;
         [Size(30)]
         public string SourceID
         {
@@ -138,7 +138,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("SourceID", ref fSourceID, value); }
         }
 
-        string fSystemEntryDate;
+        private string fSystemEntryDate;
         [Size(50)]
         public string SystemEntryDate
         {
@@ -154,21 +154,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         //4.4.4.15 - DocumentTotals
 
-        decimal fTaxPayable;
+        private decimal fTaxPayable;
         public decimal TaxPayable
         {
             get { return fTaxPayable; }
             set { SetPropertyValue<decimal>("TaxPayable", ref fTaxPayable, value); }
         }
 
-        decimal fNetTotal;
+        private decimal fNetTotal;
         public decimal NetTotal
         {
             get { return fNetTotal; }
             set { SetPropertyValue<decimal>("NetTotal", ref fNetTotal, value); }
         }
 
-        decimal fGrossTotal;
+        private decimal fGrossTotal;
         public decimal GrossTotal
         {
             get { return fGrossTotal; }
@@ -177,14 +177,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         //4.4.4.16. Acordos (Settlement)
 
-        decimal fSettlementAmount;
+        private decimal fSettlementAmount;
         public decimal SettlementAmount
         {
             get { return fSettlementAmount; }
             set { SetPropertyValue<decimal>("SettlementAmount", ref fSettlementAmount, value); }
         }
 
-        string fCurrencyCode;
+        private string fCurrencyCode;
         [Size(3)]
         public string CurrencyCode
         {
@@ -192,21 +192,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("CurrencyCode", ref fCurrencyCode, value); }
         }
 
-        decimal fCurrencyAmount;
+        private decimal fCurrencyAmount;
         public decimal CurrencyAmount
         {
             get { return fCurrencyAmount; }
             set { SetPropertyValue<decimal>("CurrencyAmount", ref fCurrencyAmount, value); }
         }
 
-        decimal fExchangeRate;
+        private decimal fExchangeRate;
         public decimal ExchangeRate
         {
             get { return fExchangeRate; }
             set { SetPropertyValue<decimal>("ExchangeRate", ref fExchangeRate, value); }
         }
 
-        decimal fWithholdingTaxAmount;
+        private decimal fWithholdingTaxAmount;
         public decimal WithholdingTaxAmount
         {
             get { return fWithholdingTaxAmount; }
@@ -215,7 +215,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         //EOF SAF-T PT
 
-        Guid fEntityOid;
+        private Guid fEntityOid;
         public Guid EntityOid
         {
             get { return fEntityOid; }
@@ -223,7 +223,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Used to Store 30Chars Codes for SAF-T
-        string fEntityInternalCode;
+        private string fEntityInternalCode;
         [Size(30)]
         public string EntityInternalCode
         {
@@ -231,7 +231,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("EntityInternalCode", ref fEntityInternalCode, value); }
         }
 
-        string fDocumentDate;
+        private string fDocumentDate;
         [Size(19)]
         public string DocumentDate
         {
@@ -239,7 +239,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentDate", ref fDocumentDate, value); }
         }
 
-        string fExtendedValue;
+        private string fExtendedValue;
         [Size(1024)]
         public string ExtendedValue
         {
@@ -248,7 +248,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many DocumentFinancePayment
-        fin_documentfinancetype fDocumentType;
+        private fin_documentfinancetype fDocumentType;
         [Association(@"DocumentFinanceTypeReferencesDocumentFinancePayment")]
         public fin_documentfinancetype DocumentType
         {
@@ -257,7 +257,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceSeries One <> Many DocumentFinancePayment
-        fin_documentfinanceseries fDocumentSerie;
+        private fin_documentfinanceseries fDocumentSerie;
         [Association(@"DocumentFinanceSeriesReferencesDocumentFinancePayment")]
         public fin_documentfinanceseries DocumentSerie
         {
@@ -266,7 +266,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPaymentMethod One <> Many DocumentFinancePayment
-        fin_configurationpaymentmethod fPaymentMethod;
+        private fin_configurationpaymentmethod fPaymentMethod;
         [Association(@"ConfigurationPaymentMethodReferencesDocumentFinancePayment")]
         public fin_configurationpaymentmethod PaymentMethod
         {
@@ -275,7 +275,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationCurrency One <> Many DocumentFinancePayment
-        cfg_configurationcurrency fCurrency;
+        private cfg_configurationcurrency fCurrency;
         [Association(@"ConfigurationCurrencyReferencesDocumentFinancePayment")]
         public cfg_configurationcurrency Currency
         {

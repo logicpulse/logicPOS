@@ -13,17 +13,17 @@ using System.Net.Mail;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosSendEmailDialog : PosBaseDialog
+    internal class PosSendEmailDialog : PosBaseDialog
     {
-        private VBox _vbox;
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
-        private EntryBoxValidation _entryBoxValidationSubject;
-        private EntryBoxValidation _entryBoxValidationTo;
-        private EntryBoxValidation _entryBoxValidationCc;
-        private EntryBoxValidation _entryBoxValidationBcc;
-        private EntryBoxValidationMultiLine _entryBoxValidationMultiLine;
-        private List<string> _attachmentFileNames;
+        private readonly VBox _vbox;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly EntryBoxValidation _entryBoxValidationSubject;
+        private readonly EntryBoxValidation _entryBoxValidationTo;
+        private readonly EntryBoxValidation _entryBoxValidationCc;
+        private readonly EntryBoxValidation _entryBoxValidationBcc;
+        private readonly EntryBoxValidationMultiLine _entryBoxValidationMultiLine;
+        private readonly List<string> _attachmentFileNames;
         public string Subject { get => _entryBoxValidationSubject.EntryValidation.Text; }
         public string To { get => _entryBoxValidationTo.EntryValidation.Text; }
         public string Cc { get => _entryBoxValidationCc.EntryValidation.Text; }
@@ -90,9 +90,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _entryBoxValidationMultiLine.EntryMultiline.Value.Changed += delegate { Validate(); };
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, windowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
@@ -146,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                     // Keep Running
                     this.Run();

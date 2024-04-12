@@ -10,15 +10,15 @@ using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class EntryBoxValidationDatePickerMultiDates : EventBox
+    internal class EntryBoxValidationDatePickerMultiDates : EventBox
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private bool _debug = false;
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly bool _debug = false;
 
         //Private
-        private Window _sourceWindow;
-        private VBox _vbox;
+        private readonly Window _sourceWindow;
+        private readonly VBox _vbox;
         //Public
         private string _title;
         public string Title
@@ -161,7 +161,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (pAddDateTimeToList) _datesList.Add(_entryBoxAddDate.Value);
         }
 
-        void Button_Clicked(object sender, EventArgs e)
+        private void Button_Clicked(object sender, EventArgs e)
         {
             TouchButtonIcon button = (TouchButtonIcon)sender;
             EntryBoxValidationButton entryBoxValidationButton = (button.Parent.Parent.Parent as EntryBoxValidationButton);
@@ -178,9 +178,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             for (int i = 0; i < _datesList.Count; i++)
             {
-                _log.Debug(string.Format("_datesList[{0}/{1}]", _datesList[i], _datesList.Count));
+                _logger.Debug(string.Format("_datesList[{0}/{1}]", _datesList[i], _datesList.Count));
             }
-            _log.Debug(string.Format("ToString(): {0}", ToString()));
+            _logger.Debug(string.Format("ToString(): {0}", ToString()));
         }
 
         override public string ToString()
@@ -202,10 +202,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void OnChange()
         {
-            if (Changed != null)
-            {
-                Changed(this, EventArgs.Empty);
-            }
+            Changed?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         public fin_articleserialnumber(Session session) : base(session) { }
 
         //Article One <> Many ArticleSerialNumber
-        fin_article fArticle;
+        private fin_article fArticle;
         [Association(@"ArticleReferencesArticleSerialNumber")]
         public fin_article Article
         {
@@ -40,42 +40,42 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         //    set { SetPropertyValue<fin_warehouselocation>("Location", ref fLocation, value); }
         //}
 
-        fin_articlewarehouse fArticleWarehouse;
+        private fin_articlewarehouse fArticleWarehouse;
         public fin_articlewarehouse ArticleWarehouse
         {
             get { return fArticleWarehouse; }
             set { SetPropertyValue<fin_articlewarehouse>("ArticleWarehouse", ref fArticleWarehouse, value); }
         }
 
-        fin_articlestock fStockMovimentIn;
+        private fin_articlestock fStockMovimentIn;
         public fin_articlestock StockMovimentIn
         {
             get { return fStockMovimentIn; }
             set { SetPropertyValue<fin_articlestock>("StockMovimentIn", ref fStockMovimentIn, value); }
         }
 
-        fin_articlestock fStockMovimentOut;
+        private fin_articlestock fStockMovimentOut;
         public fin_articlestock StockMovimentOut
         {
             get { return fStockMovimentOut; }
             set { SetPropertyValue<fin_articlestock>("StockMovimentOut", ref fStockMovimentOut, value); }
         }
 
-        string fSerialNumber;
+        private string fSerialNumber;
         public string SerialNumber
         {
             get { return fSerialNumber; }
             set { SetPropertyValue<string>("SerialNumber", ref fSerialNumber, value); }
         }
 
-        bool fIsSold;
+        private bool fIsSold;
         public bool IsSold
         {
             get { return fIsSold; }
             set { SetPropertyValue<bool>("IsSold", ref fIsSold, value); }
         }
 
-        int fStatus;
+        private int fStatus;
         public int Status
         {
             get { return fStatus; }

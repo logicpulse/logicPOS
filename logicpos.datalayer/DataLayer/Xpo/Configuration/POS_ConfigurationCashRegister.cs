@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationcashregister), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -39,35 +39,35 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fPrinter;
+        private string fPrinter;
         public string Printer
         {
             get { return fPrinter; }
             set { SetPropertyValue<string>("Printer", ref fPrinter, value); }
         }
 
-        string fDrawer;
+        private string fDrawer;
         public string Drawer
         {
             get { return fDrawer; }
             set { SetPropertyValue<string>("Drawer", ref fDrawer, value); }
         }
 
-        string fAutomaticDrawer;
+        private string fAutomaticDrawer;
         public string AutomaticDrawer
         {
             get { return fAutomaticDrawer; }
             set { SetPropertyValue<string>("AutomaticDrawer", ref fAutomaticDrawer, value); }
         }
 
-        string fActiveSales;
+        private string fActiveSales;
         public string ActiveSales
         {
             get { return fActiveSales; }
             set { SetPropertyValue<string>("ActiveSales", ref fActiveSales, value); }
         }
 
-        string fAllowChargeBacks;
+        private string fAllowChargeBacks;
         public string AllowChargeBacks
         {
             get { return fAllowChargeBacks; }

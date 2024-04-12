@@ -17,14 +17,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             ShowInDialog = true;
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -32,91 +32,91 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         public string Designation
         {
             get { return fDesignation; }
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fNetworkName;
+        private string fNetworkName;
         public string NetworkName
         {
             get { return fNetworkName; }
             set { SetPropertyValue<string>("NetworkName", ref fNetworkName, value); }
         }
 
-        string fThermalEncoding;
+        private string fThermalEncoding;
         public string ThermalEncoding
         {
             get { return fThermalEncoding; }
             set { SetPropertyValue<string>("ThermalEncoding", ref fThermalEncoding, value); }
         }
 
-        Boolean fThermalPrintLogo;
+        private Boolean fThermalPrintLogo;
         public Boolean ThermalPrintLogo
         {
             get { return fThermalPrintLogo; }
             set { SetPropertyValue<Boolean>("ThermalPrintLogo", ref fThermalPrintLogo, value); }
         }
 
-        string fThermalImageCompanyLogo;
+        private string fThermalImageCompanyLogo;
         public string ThermalImageCompanyLogo
         {
             get { return fThermalImageCompanyLogo; }
             set { SetPropertyValue<string>("ThermalImageCompanyLogo", ref fThermalImageCompanyLogo, value); }
         }
 
-        int fThermalMaxCharsPerLineNormal;
+        private int fThermalMaxCharsPerLineNormal;
         public int ThermalMaxCharsPerLineNormal
         {
             get { return fThermalMaxCharsPerLineNormal; }
             set { SetPropertyValue<int>("ThermalMaxCharsPerLineNormal", ref fThermalMaxCharsPerLineNormal, value); }
         }
 
-        int fThermalMaxCharsPerLineNormalBold;
+        private int fThermalMaxCharsPerLineNormalBold;
         public int ThermalMaxCharsPerLineNormalBold
         {
             get { return fThermalMaxCharsPerLineNormalBold; }
             set { SetPropertyValue<int>("ThermalMaxCharsPerLineNormalBold", ref fThermalMaxCharsPerLineNormalBold, value); }
         }
 
-        int fThermalMaxCharsPerLineSmall;
+        private int fThermalMaxCharsPerLineSmall;
         public int ThermalMaxCharsPerLineSmall
         {
             get { return fThermalMaxCharsPerLineSmall; }
             set { SetPropertyValue<int>("ThermalMaxCharsPerLineSmall", ref fThermalMaxCharsPerLineSmall, value); }
         }
 
-        string fThermalCutCommand;
+        private string fThermalCutCommand;
         public string ThermalCutCommand
         {
             get { return fThermalCutCommand; }
             set { SetPropertyValue<string>("ThermalCutCommand", ref fThermalCutCommand, value); }
         }
 
-        int fThermalOpenDrawerValueM;
+        private int fThermalOpenDrawerValueM;
         public int ThermalOpenDrawerValueM
         {
             get { return fThermalOpenDrawerValueM; }
             set { SetPropertyValue<int>("ThermalOpenDrawerValueM", ref fThermalOpenDrawerValueM, value); }
         }
 
-        int fThermalOpenDrawerValueT1;
+        private int fThermalOpenDrawerValueT1;
         public int ThermalOpenDrawerValueT1
         {
             get { return fThermalOpenDrawerValueT1; }
             set { SetPropertyValue<int>("ThermalOpenDrawerValueT1", ref fThermalOpenDrawerValueT1, value); }
         }
 
-        int fThermalOpenDrawerValueT2;
+        private int fThermalOpenDrawerValueT2;
         public int ThermalOpenDrawerValueT2
         {
             get { return fThermalOpenDrawerValueT2; }
             set { SetPropertyValue<int>("ThermalOpenDrawerValueT2", ref fThermalOpenDrawerValueT2, value); }
         }
 
-        Boolean fShowInDialog;
+        private Boolean fShowInDialog;
         public Boolean ShowInDialog
         {
             get { return fShowInDialog; }
@@ -124,7 +124,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPrintersType One <> Many ConfigurationPlace
-        sys_configurationprinterstype fPrinterType;
+        private sys_configurationprinterstype fPrinterType;
         [Association(@"ConfigurationPrintersTypeConfigurationPrinters")]
         public sys_configurationprinterstype PrinterType
         {

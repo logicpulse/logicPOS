@@ -8,7 +8,7 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogDocumentFinanceYears : BOBaseDialog
+    internal class DialogDocumentFinanceYears : BOBaseDialog
     {
 
         public DialogDocumentFinanceYears(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
@@ -56,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

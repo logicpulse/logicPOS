@@ -24,32 +24,32 @@ using logicpos.financial.library.Classes.Reports;
 using Medsphere.Widgets;
 using System.Collections;
 using DevExpress.Xpo.DB;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class DashBoard : GenericTreeViewXPO
+    internal class DashBoard : GenericTreeViewXPO
     {
-        //private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        //private log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Botões do DashBoard
-        private TouchButtonIconWithText botao1;
-        private TouchButtonIconWithText botao2;
-        private TouchButtonIconWithText botao3;
-        private TouchButtonIconWithText botao4;
-        private TouchButtonIconWithText botao5;
-        private TouchButtonIconWithText botao6;
-        private TouchButtonIconWithText botao7;
-        private TouchButtonIconWithText botao8;
-        private TouchButtonIconWithText botao9;
-        private TouchButtonIconWithText botao10;
-        private TouchButtonIconWithText botao11;
-        private TouchButtonIconWithText botao12;
-        private TouchButtonIconWithText botao13;
-        private TouchButtonIconWithText botao14;
-        private TouchButtonIconWithText botao15;
-        private TouchButtonIconWithText botao16;
-
-        ICollection collectionDocuments = null;
+        private readonly TouchButtonIconWithText botao1;
+        private readonly TouchButtonIconWithText botao2;
+        private readonly TouchButtonIconWithText botao3;
+        private readonly TouchButtonIconWithText botao4;
+        private readonly TouchButtonIconWithText botao5;
+        private readonly TouchButtonIconWithText botao6;
+        private readonly TouchButtonIconWithText botao7;
+        private readonly TouchButtonIconWithText botao8;
+        private readonly TouchButtonIconWithText botao9;
+        private readonly TouchButtonIconWithText botao10;
+        private readonly TouchButtonIconWithText botao11;
+        private readonly TouchButtonIconWithText botao12;
+        private readonly TouchButtonIconWithText botao13;
+        private readonly TouchButtonIconWithText botao14;
+        private readonly TouchButtonIconWithText botao15;
+        private readonly TouchButtonIconWithText botao16;
+        private readonly ICollection collectionDocuments = null;
         private readonly string creditNoteOid = SettingsApp.XpoOidDocumentFinanceTypeCreditNote.ToString();
         private readonly string invoiceOid = SettingsApp.XpoOidDocumentFinanceTypeInvoice.ToString();
         private readonly string simpleInvoiceOid = SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice.ToString();
@@ -75,7 +75,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         };
 
         public ComboBox selAno;
-        Graph newGraph = new Graph2D();
+        private readonly Graph newGraph = new Graph2D();
 
         //Public Parametless Constructor Required by Generics
         public DashBoard()
@@ -89,24 +89,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         
         //ScreenArea
         protected EventBox _eventboxDashboard;
-        protected Color _colorBaseDialogDefaultButtonFont = FrameworkUtils.StringToColor("76, 72, 70");
-        protected Color _colorBaseDialogDefaultButtonBackground = FrameworkUtils.StringToColor("156, 191, 42");
-        protected Color _colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor("0, 0, 0");
-        protected Color _colorBaseDialogActionAreaButtonBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"]);
+        protected Color _colorBaseDialogDefaultButtonFont = ("76, 72, 70").StringToColor();
+        protected Color _colorBaseDialogDefaultButtonBackground = ("156, 191, 42").StringToColor();
+        protected Color _colorBaseDialogActionAreaButtonFont = ("0, 0, 0").StringToColor();
+        protected Color _colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
         //protected String _fontBaseDialogButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogButton"]);
         protected String _fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
         protected String _fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
         protected String _fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
         protected String _fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+
         //Colors
-        Color colorBackOfficeContentBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeContentBackground"]);
-        Color colorBackOfficeStatusBarBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeStatusBarBackground"]);
-        Color colorBackOfficeAccordionFixBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeAccordionFixBackground"]);
-        Color colorBackOfficeStatusBarFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeStatusBarFont"]);
-        Color colorBackOfficeStatusBarBottomBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBackOfficeStatusBarBottomBackground"]);
+        private readonly Color colorBackOfficeContentBackground = GlobalFramework.Settings["colorBackOfficeContentBackground"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarBackground = GlobalFramework.Settings["colorBackOfficeStatusBarBackground"].StringToColor();
+        private readonly Color colorBackOfficeAccordionFixBackground = GlobalFramework.Settings["colorBackOfficeAccordionFixBackground"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarFont = GlobalFramework.Settings["colorBackOfficeStatusBarFont"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarBottomBackground = GlobalFramework.Settings["colorBackOfficeStatusBarBottomBackground"].StringToColor();
         public Color slateBlue = Color.FromName("White");
         //private Frame frame;
-        private Label label;
+        private readonly Label label;
 
         public DashBoard(Window pSourceWindow, XPGuidObject pDefaultValue, CriteriaOperator pXpoCriteria, Type pDialogType, GenericTreeViewMode pGenericTreeViewMode = GenericTreeViewMode.Default, GenericTreeViewNavigatorMode pGenericTreeViewNavigatorMode = GenericTreeViewNavigatorMode.Default)
         {
@@ -117,12 +118,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
             _sourceWindow = pSourceWindow;
 
-            Color screenBackgroundColor = FrameworkUtils.StringToColor(themeWindow.Globals.ScreenBackgroundColor);
+            Color screenBackgroundColor = (themeWindow.Globals.ScreenBackgroundColor as string).StringToColor();
             Color white = System.Drawing.Color.White;
             Color black = System.Drawing.Color.Black;
 
 
-            //_log.Debug("Theme Background: " + eventBackGround);
+            //_logger.Debug("Theme Background: " + eventBackGround);
             //Shared error Message
             string errorMessage = "Node: <Window ID=\"PosBaseWindow\">";
 
@@ -166,8 +167,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_eventboxDashboard.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(screenBackgroundColor));
             _eventboxDashboard.WidthRequest = GlobalApp.boScreenSize.Width;
             _eventboxDashboard.HeightRequest = GlobalApp.boScreenSize.Height;
-            Alignment _alignmentWindow = new Alignment(0.0f, 0.0f, 0.0f, 0.0f);
-            _alignmentWindow.Add(_eventboxDashboard);
+            Alignment _alignmentWindow = new Alignment(0.0f, 0.0f, 0.0f, 0.0f)
+            {
+                _eventboxDashboard
+            };
             Add(_alignmentWindow);
             try
             {
@@ -285,12 +288,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 decimal dailyTotal = 0;
                 decimal MonthlyTotal = 0;
                 decimal annualTotal = 0;
-                ArrayList values = new ArrayList();
-                values.Add(DateTime.Now.Year.ToString());
+                ArrayList values = new ArrayList
+                {
+                    DateTime.Now.Year.ToString()
+                };
                 try
                 {
-                    SortingCollection sortCollection = new SortingCollection();
-                    sortCollection.Add(new SortProperty("Date", SortingDirection.Ascending));
+                    SortingCollection sortCollection = new SortingCollection
+                    {
+                        new SortProperty("Date", SortingDirection.Ascending)
+                    };
                     CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL AND (DocumentType.Oid = '{0}' OR DocumentType.Oid = '{1}' OR DocumentType.Oid = '{2}' OR DocumentType.Oid = '{3}') AND DocumentStatusReason != 'A')", invoiceOid, invoiceAndPaymentOid, simpleInvoiceOid, creditNoteOid));
                     collectionDocuments = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinancemaster)), criteria, sortCollection, int.MaxValue, false, true);
 
@@ -337,7 +344,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
 
                 label = new Label();
@@ -350,7 +357,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     currency.ToString());
 
                 label.ModifyFont(FontDescription.FromString("Trebuchet MS 16"));
-                label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(white));
+                label.ModifyFg(StateType.Normal, white.ToGdkColor());
                 label.Justify = Justification.Right;
                 frame.Add(label);
                 hbox.PackStart(frame, false, false, 0);
@@ -368,7 +375,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 //w = 1;
                 selAno = new ComboBox(getYears);
-                selAno.ModifyFg(StateType.Selected, logicpos.Utils.ColorToGdkColor(black));
+                selAno.ModifyFg(StateType.Selected, black.ToGdkColor());
 
                 TreeIter iter;
                 selAno.Model.GetIterFirst(out iter);
@@ -405,7 +412,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     currency.ToString());
 
                    label.ModifyFont(FontDescription.FromString("Trebuchet MS 16"));
-                   label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(white));
+                   label.ModifyFg(StateType.Normal, white.ToGdkColor());
                    label.Justify = Justification.Right;
                    frame.Add(label);
 
@@ -432,7 +439,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 logicpos.Utils.ShowMessageTouchErrorRenderTheme(pSourceWindow, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
             }
         }
@@ -471,9 +478,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         /// <param name="sql"></param>
         public void HistogramPlot(Graph graph, DateTime date)
         {
-
-            PlotColor plotColors = new PlotColor();
-            plotColors = PlotColor.Green;
+            PlotColor plotColors = PlotColor.Green;
             HistogramPlot plot = new HistogramPlot(
                 CreateModel(date),
                 plotColors);
@@ -494,15 +499,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public TreeStore CreateModel(DateTime year)
         {
             TreeStore store = new TreeStore(typeof(DateTime), typeof(double));
-
-            decimal totalMes = 0;
             string date;
             DateTime parsedDate = new DateTime();
             try
             {
                 for (int i = 1; i <= 12; i++)
                 {
-                    totalMes = 0;
+                    decimal totalMes = 0;
                     foreach (fin_documentfinancemaster item in collectionDocuments)
                     {
                         //Faturação por Mes/Ano
@@ -529,7 +532,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 store = null;
                 return store;
             }

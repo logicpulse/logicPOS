@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class TablePadUser : TablePad
+    internal class TablePadUser : TablePad
     {
         public TablePadUser(String pSql, String pOrder, String pFilter, Guid pActiveButtonOid, bool pToggleMode, uint pRows, uint pColumns, String pButtonNamePrefix, Color pColorButton, int pButtonWidth, int pButtonHeight, TouchButtonBase buttonPrev, TouchButtonBase buttonNext)
             : base(pSql, pOrder, pFilter, pActiveButtonOid, pToggleMode, pRows, pColumns, pButtonNamePrefix, pColorButton, pButtonWidth, pButtonHeight, buttonPrev, buttonNext)

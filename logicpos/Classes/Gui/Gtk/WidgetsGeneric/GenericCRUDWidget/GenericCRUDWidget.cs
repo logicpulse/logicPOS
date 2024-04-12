@@ -7,14 +7,15 @@ using logicpos.shared;
 using System;
 using System.Drawing;
 using System.Reflection;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
     //T (XPGuidObject|DataRow)
-    abstract class GenericCRUDWidget<T>
+    internal abstract class GenericCRUDWidget<T>
     {
         //Log4Net
-        protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Public Properties : Parameters
         protected Widget _widget;
@@ -145,7 +146,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
         public void InitField()
         {
-            //_log.Debug("Field:[{0}] Type:[{1}] FieldType:[{2}] ValidationRule:[{3}]", Field, FieldType, Widget.GetType().Name, ValidationRule);
+            //_logger.Debug("Field:[{0}] Type:[{1}] FieldType:[{2}] ValidationRule:[{3}]", Field, FieldType, Widget.GetType().Name, ValidationRule);
 
             switch (_widget.GetType().Name)
             {
@@ -165,7 +166,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 //Cast _fieldValue to DateTime
                                 (_widget as Entry).Text = ((DateTime)_fieldValue).ToString(SettingsApp.DateTimeFormat);
-                                //_log.Debug(string.Format("{0}:{1}:{2}:{3}:{4}", _dataSourceRow, _fieldName, _fieldValue, _fieldProperty, _fieldType));
+                                //_logger.Debug(string.Format("{0}:{1}:{2}:{3}:{4}", _dataSourceRow, _fieldName, _fieldValue, _fieldProperty, _fieldType));
                             }
                         }
                         catch
@@ -245,12 +246,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         }
                         catch
                         {
-                            (_widget as CheckButton).Active = default(bool);
+                            (_widget as CheckButton).Active = default;
                         }
                     }
                     else
                     {
-                        (_widget as CheckButton).Active = default(bool);
+                        (_widget as CheckButton).Active = default;
                     }
                     break;
 
@@ -283,12 +284,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         }
                         catch
                         {
-                            (_widget as FileChooserButton).SetFilename(default(String));
+                            (_widget as FileChooserButton).SetFilename(default);
                         }
                     }
                     else
                     {
-                        (_widget as FileChooserButton).SetFilename(default(String));
+                        (_widget as FileChooserButton).SetFilename(default);
                     }
                     //Validation
                     if (_required)
@@ -346,7 +347,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         }
                         catch (Exception ex)
                         {
-                            _log.Error(ex.Message, ex);
+                            _logger.Error(ex.Message, ex);
                             (_widget as EntryBoxValidation).EntryValidation.Text = string.Empty;
                         };
                     }
@@ -395,8 +396,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Use Custom Validate Function ex ValidateFiscalNumberFunc() in DialogCustomer
         public void ValidateField(Func<bool> pFunc)
         {
-            Color colorEntryValidationValidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
-            Color colorEntryValidationInvalidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationInvalidFont"]);
+            Color colorEntryValidationValidFont = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+            Color colorEntryValidationInvalidFont = GlobalFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
 
             //Always True, in case of null pFunc
             _validatedFunc = true;
@@ -528,11 +529,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 if (_validated && _validatedFunc)
                 {
-                    _label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationValidFont));
+                    _label.ModifyFg(StateType.Normal, colorEntryValidationValidFont.ToGdkColor());
                 }
                 else
                 {
-                    _label.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
+                    _label.ModifyFg(StateType.Normal, colorEntryValidationInvalidFont.ToGdkColor());
                 }
             }
         }
@@ -563,10 +564,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Shared CODE for Change Widgets Colors 
         public void UpdateWidget(dynamic pCurrentWidget, bool pIsValid)
         {
-            Color colorEntryValidationValidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
-            Color colorEntryValidationInvalidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationInvalidFont"]);
-            Color colorEntryValidationValidBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidBackground"]);
-            Color colorEntryValidationInvalidBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationInvalidBackground"]);
+            Color colorEntryValidationValidFont = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+            Color colorEntryValidationInvalidFont = GlobalFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
+            Color colorEntryValidationValidBackground = GlobalFramework.Settings["colorEntryValidationValidBackground"].StringToColor();
+            Color colorEntryValidationInvalidBackground = GlobalFramework.Settings["colorEntryValidationInvalidBackground"].StringToColor();
 
             //Override currentWidget reference, to access inner TextView
             if (pCurrentWidget.GetType() == typeof(EntryMultiline))
@@ -576,15 +577,15 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (pIsValid)
             {
-                pCurrentWidget.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                pCurrentWidget.ModifyText(StateType.Active, logicpos.Utils.ColorToGdkColor(colorEntryValidationValidFont));
-                pCurrentWidget.ModifyBase(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationValidBackground));
+                pCurrentWidget.ModifyText(StateType.Normal,colorEntryValidationValidFont.ToGdkColor());
+                pCurrentWidget.ModifyText(StateType.Active,colorEntryValidationValidFont.ToGdkColor());
+                pCurrentWidget.ModifyBase(StateType.Normal, colorEntryValidationValidBackground.ToGdkColor());
             }
             else
             {
-                pCurrentWidget.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
-                pCurrentWidget.ModifyText(StateType.Active, logicpos.Utils.ColorToGdkColor(colorEntryValidationInvalidFont));
-                pCurrentWidget.ModifyBase(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorEntryValidationInvalidBackground));
+                pCurrentWidget.ModifyText(StateType.Normal, colorEntryValidationInvalidFont.ToGdkColor());
+                pCurrentWidget.ModifyText(StateType.Active, colorEntryValidationInvalidFont.ToGdkColor());
+                pCurrentWidget.ModifyBase(StateType.Normal, colorEntryValidationInvalidBackground.ToGdkColor());
             }
         }
     }

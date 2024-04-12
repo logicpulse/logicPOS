@@ -12,7 +12,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewSystemBackup : GenericTreeViewXPO
+    internal class TreeViewSystemBackup : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewSystemBackup() { }
@@ -31,21 +31,22 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Version")
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_version"),
-                MinWidth = 60,
-                CellRenderer = new CellRendererText()
+                new GenericTreeViewColumnProperty("Version")
                 {
-                    Alignment = Pango.Alignment.Right,
-                    Xalign = 1.0F
-                }
-            });
-            columnProperties.Add(new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 180 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("FileNamePacked") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file"), MinWidth = 240 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_version"),
+                    MinWidth = 60,
+                    CellRenderer = new CellRendererText()
+                    {
+                        Alignment = Pango.Alignment.Right,
+                        Xalign = 1.0F
+                    }
+                },
+                new GenericTreeViewColumnProperty("CreatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 180 },
+                new GenericTreeViewColumnProperty("FileNamePacked") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file"), MinWidth = 240 },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
 
             //Sort Order
             SortProperty[] sortProperty = new SortProperty[2];
@@ -54,10 +55,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = pXpoCriteria;
+            CriteriaOperator criteria;
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {

@@ -12,7 +12,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articlewarehouse() : base() { }
         public fin_articlewarehouse(Session session) : base(session) { }
 
-        fin_article fArticle;
+        private fin_article fArticle;
         [Association(@"ArticleReferencesArticleWareHouse")]
         public fin_article Article
         {
@@ -20,7 +20,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
         }
 
-        fin_warehouse fWarehouse;
+        private fin_warehouse fWarehouse;
         [Association(@"ArticleWarehouseReferencesWareHouse")]
         public fin_warehouse Warehouse
         {
@@ -28,7 +28,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<fin_warehouse>("Warehouse", ref fWarehouse, value); }
         }
 
-        fin_warehouselocation fLocation;
+        private fin_warehouselocation fLocation;
         [Association(@"WarehouseLocationReferencesArticleWarehouse")]
         public fin_warehouselocation Location
         {
@@ -36,14 +36,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<fin_warehouselocation>("Location", ref fLocation, value); }
         }
 
-        fin_articleserialnumber fArticleSerialNumber;
+        private fin_articleserialnumber fArticleSerialNumber;
         public fin_articleserialnumber ArticleSerialNumber
         {
             get { return fArticleSerialNumber; }
             set { SetPropertyValue<fin_articleserialnumber>("ArticleSerialNumber", ref fArticleSerialNumber, value); }
         }
 
-        decimal fQuantity;
+        private decimal fQuantity;
         public decimal Quantity
         {
             get { return fQuantity; }

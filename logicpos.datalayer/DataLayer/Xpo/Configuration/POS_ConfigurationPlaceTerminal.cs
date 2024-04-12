@@ -19,14 +19,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             InputReaderTimerInterval = 200;
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -34,7 +34,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -42,7 +42,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fHardwareId;
+        private string fHardwareId;
         [Indexed(Unique = true), Size(30)]
         public string HardwareId
         {
@@ -50,7 +50,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("HardwareId", ref fHardwareId, value); }
         }
 
-        UInt32 fInputReaderTimerInterval;
+        private UInt32 fInputReaderTimerInterval;
         public UInt32 InputReaderTimerInterval
         {
             get { return fInputReaderTimerInterval; }
@@ -58,7 +58,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPlace One <> Many ConfigurationPlaceTerminal
-        pos_configurationplace fPlace;
+        private pos_configurationplace fPlace;
         [Association(@"ConfigurationPlaceReferencesConfigurationPlaceTerminal")]
         public pos_configurationplace Place
         {
@@ -67,7 +67,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPrinters One <> Many ConfigurationPlaceTerminal
-        sys_configurationprinters fPrinter;
+        private sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesConfigurationPlaceTerminal")]
         public sys_configurationprinters Printer
         {
@@ -76,7 +76,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPrinters One <> Many ConfigurationPlaceTerminal
-        sys_configurationprinters fThermalPrinter;
+        private sys_configurationprinters fThermalPrinter;
         [Association(@"ConfigurationThermalPrintersReferencesConfigurationPlaceTerminal")]
         public sys_configurationprinters ThermalPrinter
         {
@@ -85,7 +85,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //BarcodeReader One <> Many ConfigurationPlaceTerminal
-        sys_configurationinputreader fBarcodeReader;
+        private sys_configurationinputreader fBarcodeReader;
         [Association(@"ConfigurationHardwareInputReader1ReferencesConfigurationPlaceTerminal")]
         public sys_configurationinputreader BarcodeReader
         {
@@ -94,7 +94,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationInputReader One <> Many ConfigurationPlaceTerminal
-        sys_configurationinputreader fCardReader;
+        private sys_configurationinputreader fCardReader;
         [Association(@"ConfigurationHardwareInputReader2ReferencesConfigurationPlaceTerminal")]
         public sys_configurationinputreader CardReader
         {
@@ -103,7 +103,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPoleDisplay One <> Many ConfigurationPlaceTerminal
-        sys_configurationpoledisplay fPoleDisplay;
+        private sys_configurationpoledisplay fPoleDisplay;
         [Association(@"ConfigurationHardwarePoleDisplayReferencesConfigurationPlaceTerminal")]
         public sys_configurationpoledisplay PoleDisplay
         {
@@ -112,7 +112,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationWeighingMachine One <> Many ConfigurationPlaceTerminal
-        sys_configurationweighingmachine fWeighingMachine;
+        private sys_configurationweighingmachine fWeighingMachine;
         [Association(@"ConfigurationHardwareWeighingMachineReferencesConfigurationPlaceTerminal")]
         public sys_configurationweighingmachine WeighingMachine
         {
@@ -128,7 +128,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPrintersTemplates One <> Many ConfigurationPlaceTerminal
-        sys_configurationprinterstemplates fTemplateTicket;
+        private sys_configurationprinterstemplates fTemplateTicket;
         [Association(@"ConfigurationPrintersTemplatesTemplateTicketReferencesTerminal")]
         public sys_configurationprinterstemplates TemplateTicket
         {
@@ -137,7 +137,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPrintersTemplates One <> Many ConfigurationPlaceTerminal
-        sys_configurationprinterstemplates fTemplateTablesConsult;
+        private sys_configurationprinterstemplates fTemplateTablesConsult;
         [Association(@"ConfigurationPrintersTemplatesTemplateTablesConsultReferencesTerminal")]
         public sys_configurationprinterstemplates TemplateTablesConsult
         {

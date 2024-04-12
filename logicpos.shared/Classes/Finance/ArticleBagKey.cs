@@ -5,42 +5,42 @@ namespace logicpos.shared.Classes.Finance
 {
     public class ArticleBagKey
     {
-        Guid _articleOid;
+        private Guid _articleOid;
         public Guid ArticleOid
         {
             get { return _articleOid; }
             set { _articleOid = value; }
         }
 
-        string _designation;
+        private string _designation;
         public string Designation
         {
             get { return _designation; }
             set { _designation = value; }
         }
 
-        decimal _price;
+        private decimal _price;
         public decimal Price
         {
             get { return _price; }
             set { _price = value; }
         }
 
-        decimal _discount;
+        private decimal _discount;
         public decimal Discount
         {
             get { return _discount; }
             set { _discount = value; }
         }
 
-        decimal _vat;
+        private decimal _vat;
         public decimal Vat
         {
             get { return _vat; }
             set { _vat = value; }
         }
 
-        Guid _vatExemptionReasonOid;
+        private Guid _vatExemptionReasonOid;
         public Guid VatExemptionReasonOid
         {
             get { return _vatExemptionReasonOid; }

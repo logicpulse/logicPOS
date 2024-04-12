@@ -7,7 +7,7 @@ namespace logicpos.printer.genericsocket
 {
     public static class Print
     {
-        private static int timeOut = 1000;
+        private static readonly int timeOut = 1000;
 
         public static void SocketPrint(string printerName, byte[] docToPrint)
         {

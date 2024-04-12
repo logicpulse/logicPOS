@@ -60,8 +60,8 @@ namespace logicpos.financial.library.Classes.Finance
         //Global/Generic
         ERROR,
         //Errors
-        ERROR_RULE_LOGGED_USER_INVALID,
-        ERROR_RULE_LOGGED_TERMINAL_INVALID,
+        ERROR_RULE_loggerGED_USER_INVALID,
+        ERROR_RULE_loggerGED_TERMINAL_INVALID,
         //SourceMode
         ERROR_RULE_SOURCE_MODE_ORDERMAIN_EMPTY,
         ERROR_RULE_SOURCE_MODE_CUSTOM_ARTICLEBAG_EMPTY,
@@ -170,9 +170,9 @@ namespace logicpos.financial.library.Classes.Finance
     public class ProcessFinanceDocumentValidationField
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private string _name;
+        private readonly string _name;
         public string Name
         {
             get { return _name; }
@@ -183,17 +183,17 @@ namespace logicpos.financial.library.Classes.Finance
             get { return _value; }
             set { _value = value; }
         }
-        private string _rule;
+        private readonly string _rule;
         public string Rule
         {
             get { return _rule; }
         }
-        private bool _required;
+        private readonly bool _required;
         public bool Required
         {
             get { return _required; }
         }
-        private Action _action;
+        private readonly Action _action;
         public Action Action
         {
             get { return _action; }
@@ -223,7 +223,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -236,10 +236,10 @@ namespace logicpos.financial.library.Classes.Finance
     public class ProcessFinanceDocumentValidation
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 #if (DEBUG)
-        private static bool _debug = true;
+        private static readonly bool _debug = true;
 #else
         private static bool _debug = false;
 #endif
@@ -272,7 +272,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception)
             {
-                _log.Error("Error Missing Config Parameter Key: [requireToChooseVatExemptionReason]");
+                _logger.Error("Error Missing Config Parameter Key: [requireToChooseVatExemptionReason]");
             }
 
 
@@ -313,10 +313,8 @@ namespace logicpos.financial.library.Classes.Finance
                     ? (pParameters.ArticleBag.TotalFinal * configurationCurrency.ExchangeRate)
                     : totalDocumentForeignCurrency
                 ;
-                bool customerIsSingularEntity = (customer != null && customer.Country != null)
-                    ? FiscalNumber.IsSingularEntity(customer.FiscalNumber, customer.Country.Code2)
-                    //Cant get valid value without a valid customer country, defaults to SingularEntity
-                    : true;
+                bool customerIsSingularEntity = customer == null || customer.Country == null
+|| FiscalNumber.IsSingularEntity(customer.FiscalNumber, customer.Country.Code2);
                 //RegEx
                 //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
                 string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? SettingsApp.RegexDecimalGreaterThanZero : SettingsApp.RegexDecimalGreaterEqualThanZero;
@@ -535,14 +533,14 @@ namespace logicpos.financial.library.Classes.Finance
 
                 if (pLoggedUser == Guid.Empty)
                 {
-                    ResultAdd(FinanceValidationError.ERROR_RULE_LOGGED_USER_INVALID);
+                    ResultAdd(FinanceValidationError.ERROR_RULE_loggerGED_USER_INVALID);
                 }
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 if (GlobalFramework.LoggedTerminal == null)
                 {
-                    ResultAdd(FinanceValidationError.ERROR_RULE_LOGGED_TERMINAL_INVALID);
+                    ResultAdd(FinanceValidationError.ERROR_RULE_loggerGED_TERMINAL_INVALID);
                 }
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -835,7 +833,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return _resultEnum;
@@ -963,7 +961,7 @@ namespace logicpos.financial.library.Classes.Finance
                 totalDocumentsDiference = (totalInvoicesDebit - totalCreditNotes);
                 totalPaymentDiference = Math.Round(totalDocumentsDiference - paymentAmount, SettingsApp.DecimalRoundTo);
 
-                if (_debug) _log.Debug(String.Format(
+                if (_debug) _logger.Debug(String.Format(
                     "PaymentAmount: [{0}], InvoicesDebit: [{1}], CreditNotes: [{2}], DocumentsDiference: [{3}], PaymentDiference:[{4}]",
                     paymentAmount, totalInvoicesDebit, totalCreditNotes, totalDocumentsDiference, totalPaymentDiference)
                 );
@@ -985,7 +983,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return (_resultEnum);
@@ -1001,31 +999,27 @@ namespace logicpos.financial.library.Classes.Finance
 
         private static void ResultAdd(FinanceValidationError pTokenEnum, object pObject)
         {
-            string value = string.Empty;
 
             //Add
             _resultEnum.Add(pTokenEnum, pObject);
             //String Value
             //value = Enum.GetName(typeof(FinanceValidationError), _resultEnum[_resultEnum.Count - 1]).ToUpper();
-            value = Enum.GetName(typeof(FinanceValidationError), pTokenEnum).ToUpper();
-            if (_debug) _log.Debug(value);
+            string value = Enum.GetName(typeof(FinanceValidationError), pTokenEnum).ToUpper();
+            if (_debug) _logger.Debug(value);
         }
 
         //Get List<string> form SortedDictionary<FinanceValidationError,object>
         private static List<string> ResultToString()
         {
             List<string> result = new List<string>();
-            string key = string.Empty;
-            string value = string.Empty;
-
             try
             {
                 foreach (var item in _resultEnum)
                 {
-                    key = Enum.GetName(typeof(FinanceValidationError), item.Key).ToString().ToUpper();
+                    string key = Enum.GetName(typeof(FinanceValidationError), item.Key).ToString().ToUpper();
                     if (item.Value != null && item.Value.GetType() == typeof(string))
                     {
-                        value = Convert.ToString(item.Value);
+                        string value = Convert.ToString(item.Value);
                         if (value != string.Empty) key = string.Format("{0}_{1}", key, value);
                     }
 
@@ -1034,7 +1028,7 @@ namespace logicpos.financial.library.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -1042,13 +1036,12 @@ namespace logicpos.financial.library.Classes.Finance
 
         private static void GetFieldErrors()
         {
-            bool result = false;
-            string value = string.Empty;
-            Type type = null;
 
             //Loop Validation Fields Rules
             foreach (var item in _fields)
             {
+                string value;
+                Type type;
                 //Call Validate
                 if (item.Value.Value != null)
                 {
@@ -1067,10 +1060,10 @@ namespace logicpos.financial.library.Classes.Finance
                     //|| item.Key == FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYDATE_INVALID
                     )
                 {
-                    _log.Debug("BREAKPOINT");
+                    _logger.Debug("BREAKPOINT");
                 }
 
-                result = FrameworkUtils.Validate(value, item.Value.Rule, item.Value.Required);
+                bool result = FrameworkUtils.Validate(value, item.Value.Rule, item.Value.Required);
 
                 //Extra Validation for types that have more than RegEx Requirements
                 if (result && item.Key == FinanceValidationError.ERROR_FIELD_CUSTOMER_FISCAL_NUMBER_INVALID)
@@ -1081,7 +1074,7 @@ namespace logicpos.financial.library.Classes.Finance
                 if (!result)
                 {
                     ResultAdd(item.Key);
-                    if (_debug) _log.Debug(String.Format("Key: [{0}], Name: [{1}], Value: [{2}], Type: [{3}], Rule: [{4}], Required: [{5}]", item.Key, item.Value.Name, value, (type != null) ? type.ToString() : "NULL", item.Value.Rule, item.Value.Required));
+                    if (_debug) _logger.Debug(String.Format("Key: [{0}], Name: [{1}], Value: [{2}], Type: [{3}], Rule: [{4}], Required: [{5}]", item.Key, item.Value.Name, value, (type != null) ? type.ToString() : "NULL", item.Value.Rule, item.Value.Required));
                 }
             }
         }
@@ -1183,7 +1176,7 @@ namespace logicpos.financial.library.Classes.Finance
                         hasArticlesWithInvalidVat = true;
                     }
                     //Validate ValidationField: VatExemptionReason
-                    if (!FrameworkUtils.Validate(validationFieldVatExemptionReason.Value.ToString(), validationFieldVatExemptionReason.Rule, (item.Key.Vat == 0.0m) ? true : false))
+                    if (!FrameworkUtils.Validate(validationFieldVatExemptionReason.Value.ToString(), validationFieldVatExemptionReason.Rule, (item.Key.Vat == 0.0m)))
                     {
                         hasArticlesWithInvalidVatExemptionReason = true;
                     }

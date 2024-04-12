@@ -19,21 +19,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_worksessionperiod() : base() { }
         public pos_worksessionperiod(Session session) : base(session) { }
 
-        WorkSessionPeriodType fPeriodType;
+        private WorkSessionPeriodType fPeriodType;
         public WorkSessionPeriodType PeriodType
         {
             get { return fPeriodType; }
             set { SetPropertyValue<WorkSessionPeriodType>("PeriodType", ref fPeriodType, value); }
         }
 
-        WorkSessionPeriodStatus fSessionStatus;
+        private WorkSessionPeriodStatus fSessionStatus;
         public WorkSessionPeriodStatus SessionStatus
         {
             get { return fSessionStatus; }
             set { SetPropertyValue<WorkSessionPeriodStatus>("SessionStatus", ref fSessionStatus, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -41,21 +41,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        DateTime fDateStart;
+        private DateTime fDateStart;
         public DateTime DateStart
         {
             get { return fDateStart; }
             set { SetPropertyValue<DateTime>("DateStart", ref fDateStart, value); }
         }
 
-        DateTime fDateEnd;
+        private DateTime fDateEnd;
         public DateTime DateEnd
         {
             get { return fDateEnd; }
             set { SetPropertyValue<DateTime>("DateEnd", ref fDateEnd, value); }
         }
 
-        pos_configurationplaceterminal fTerminal;
+        private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
@@ -70,7 +70,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //RECURSIVE RelationShip : WorkSessionPeriod One (Type Day) <> Many WorkSessionPeriod (Type Terminal)
-        pos_worksessionperiod fParent;
+        private pos_worksessionperiod fParent;
         [Association(@"WorkSessionPeriodReferencesWorkSessionPeriod")]
         public pos_worksessionperiod Parent
         {

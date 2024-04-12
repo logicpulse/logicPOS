@@ -22,14 +22,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             GoToStandByInSeconds = 60;
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -37,70 +37,70 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         public string Designation
         {
             get { return fDesignation; }
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fVID;
+        private string fVID;
         public string VID
         {
             get { return fVID; }
             set { SetPropertyValue<string>("VID", ref fVID, value); }
         }
 
-        string fPID;
+        private string fPID;
         public string PID
         {
             get { return fPID; }
             set { SetPropertyValue<string>("PID", ref fPID, value); }
         }
 
-        string fEndPoint;
+        private string fEndPoint;
         public string EndPoint
         {
             get { return fEndPoint; }
             set { SetPropertyValue<string>("EndPoint", ref fEndPoint, value); }
         }
 
-        string fComPort;
+        private string fComPort;
         public string COM
         {
             get { return fComPort; }
             set { SetPropertyValue<string>("COM", ref fComPort, value); }
         }
 
-        string fCodeTable;
+        private string fCodeTable;
         public string CodeTable
         {
             get { return fCodeTable; }
             set { SetPropertyValue<string>("CodeTable", ref fCodeTable, value); }
         }
 
-        UInt32 fDisplayCharactersPerLine;
+        private UInt32 fDisplayCharactersPerLine;
         public UInt32 DisplayCharactersPerLine
         {
             get { return fDisplayCharactersPerLine; }
             set { SetPropertyValue<UInt32>("DisplayCharactersPerLine", ref fDisplayCharactersPerLine, value); }
         }
 
-        UInt32 fGoToStandByInSeconds;
+        private UInt32 fGoToStandByInSeconds;
         public UInt32 GoToStandByInSeconds
         {
             get { return fGoToStandByInSeconds; }
             set { SetPropertyValue<UInt32>("GoToStandByInSeconds", ref fGoToStandByInSeconds, value); }
         }
 
-        string fStandByLine1;
+        private string fStandByLine1;
         public string StandByLine1
         {
             get { return fStandByLine1; }
             set { SetPropertyValue<string>("StandByLine1", ref fStandByLine1, value); }
         }
 
-        string fStandByLine2;
+        private string fStandByLine2;
         public string StandByLine2
         {
             get { return fStandByLine2; }

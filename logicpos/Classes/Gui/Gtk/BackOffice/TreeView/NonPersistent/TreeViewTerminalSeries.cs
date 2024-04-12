@@ -9,7 +9,7 @@ using System.Data;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewTerminalSeries : GenericTreeViewDataTable
+    internal class TreeViewTerminalSeries : GenericTreeViewDataTable
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewTerminalSeries() { }
@@ -26,15 +26,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            /*00*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false });
-            /*01*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Type = typeof(UInt32), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") });
-            /*02*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
-            /*03*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("HardwareId") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), MinWidth = 200 });
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            {
+                /*00*/
+                new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
+                /*01*/
+                new GenericTreeViewColumnProperty("Code") { Type = typeof(UInt32), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
+                /*02*/
+                new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                /*03*/
+                new GenericTreeViewColumnProperty("HardwareId") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), MinWidth = 200 }
+            };
 
             //init DataTable
             DataTable dataTable = GetDataTable(columnProperties);

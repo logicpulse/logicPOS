@@ -8,6 +8,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
 using logicpos.shared.Classes.Finance;
@@ -17,11 +18,11 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosPaymentsDialog : PosBaseDialog
+    internal partial class PosPaymentsDialog : PosBaseDialog
     {
         //Settings
-        private Color _colorEntryValidationValidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationValidFont"]);
-        private Color _colorEntryValidationInvalidFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorEntryValidationInvalidFontLighter"]);
+        private readonly Color _colorEntryValidationValidFont = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+        private readonly Color _colorEntryValidationInvalidFont = GlobalFramework.Settings["colorEntryValidationInvalidFontLighter"].StringToColor();
         //Usefull to block .Change events when we change Entry.Text from code, and prevent to recursivly call Change Events
         private bool _enableGetCustomerDetails = true;
         //PartialPayments Stuff
@@ -30,39 +31,39 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Default DocumentType (FS)
         private Guid _processDocumentType = SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice;
         //ResponseType (Above 10)
-        private ResponseType _responseTypeClearCustomer = (ResponseType)11;
-        private ResponseType _responseTypeFullPayment = (ResponseType)12;
-        private ResponseType _responseTypePartialPayment = (ResponseType)13;
-        private ResponseType _responseTypeCurrentAccount= (ResponseType)14;
+        private readonly ResponseType _responseTypeClearCustomer = (ResponseType)11;
+        private readonly ResponseType _responseTypeFullPayment = (ResponseType)12;
+        private readonly ResponseType _responseTypePartialPayment = (ResponseType)13;
+        private readonly ResponseType _responseTypeCurrentAccount= (ResponseType)14;
         //UI
-        private Label _labelTotalValue;
-        private Label _labelDeliveryValue;
-        private Label _labelChangeValue;
+        private readonly Label _labelTotalValue;
+        private readonly Label _labelDeliveryValue;
+        private readonly Label _labelChangeValue;
         //UI EntryBox
-        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerFiscalNumber;
-        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerCardNumber;
-        private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerName;
-        private XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCustomerCountry;
-        private EntryBoxValidation _entryBoxCustomerDiscount;
-        private EntryBoxValidation _entryBoxCustomerAddress;
-        private EntryBoxValidation _entryBoxCustomerLocality;
-        private EntryBoxValidation _entryBoxCustomerZipCode;
-        private EntryBoxValidation _entryBoxCustomerCity;
-        private EntryBoxValidation _entryBoxCustomerNotes;
+        private readonly XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerFiscalNumber;
+        private readonly XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerCardNumber;
+        private readonly XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomerName;
+        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCustomerCountry;
+        private readonly EntryBoxValidation _entryBoxCustomerDiscount;
+        private readonly EntryBoxValidation _entryBoxCustomerAddress;
+        private readonly EntryBoxValidation _entryBoxCustomerLocality;
+        private readonly EntryBoxValidation _entryBoxCustomerZipCode;
+        private readonly EntryBoxValidation _entryBoxCustomerCity;
+        private readonly EntryBoxValidation _entryBoxCustomerNotes;
         //ActionArea
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
-        private TouchButtonIconWithText _buttonClearCustomer;
-        private TouchButtonIconWithText _buttonNewCustomer;
-        private TouchButtonIconWithText _buttonFullPayment;
-        private TouchButtonIconWithText _buttonPartialPayment;
-        private TouchButtonIconWithText _buttonCurrentAccount;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonClearCustomer;
+        private readonly TouchButtonIconWithText _buttonNewCustomer;
+        private readonly TouchButtonIconWithText _buttonFullPayment;
+        private readonly TouchButtonIconWithText _buttonPartialPayment;
+        private readonly TouchButtonIconWithText _buttonCurrentAccount;
         //Default Objects
-        private cfg_configurationcountry _intialValueConfigurationCountry;
+        private readonly cfg_configurationcountry _intialValueConfigurationCountry;
         //Store Partial Payment Enabled/Disabled
         private bool _partialPaymentEnabled = false;
         //Store PrequestProcessFinanceDocumentParameter
-        private bool _skipPersistFinanceDocument;
+        private readonly bool _skipPersistFinanceDocument;
         //Public Properties
         private decimal _totalDelivery = 0.0m;
         public decimal TotalDelivery
@@ -172,7 +173,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                string fileIconChangePaumentAmount = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_toolbar_finance_document.png");
 
                 //Colors
-                Color colorPosPaymentsDialogTotalPannelBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosPaymentsDialogTotalPannelBackground"]);
+                Color colorPosPaymentsDialogTotalPannelBackground = GlobalFramework.Settings["colorPosPaymentsDialogTotalPannelBackground"].StringToColor();
                 //Objects
                 _intialValueConfigurationCountry = SettingsApp.ConfigurationSystemCountry;
 
@@ -193,15 +194,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 fin_configurationpaymentmethod xpoCustomerCard = (fin_configurationpaymentmethod)xPSelectData.GetXPGuidObjectFromField(typeof(fin_configurationpaymentmethod), "Token", "CUSTOMER_CARD");
 
                 //Instantiate Buttons  //IN009257 Redimensionar botões para a resolução 1024 x 768. Alterei variável de tamanho de icons. era a mesma que documentos
-                TouchButtonIconWithText buttonMoney = new TouchButtonIconWithText("touchButtonMoney_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoMoney.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoMoney.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMoney.Oid, Sensitive = (xpoMoney.Disabled) ? false : true };
-                TouchButtonIconWithText buttonCheck = new TouchButtonIconWithText("touchButtonCheck_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoCheck.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoCheck.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCheck.Oid, Sensitive = (xpoCheck.Disabled) ? false : true };
-                TouchButtonIconWithText buttonMB = new TouchButtonIconWithText("touchButtonMB_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoMB.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoMB.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMB.Oid, Sensitive = (xpoMB.Disabled) ? false : true };
-                TouchButtonIconWithText buttonCreditCard = new TouchButtonIconWithText("touchButtonCreditCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoCreditCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoCreditCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCreditCard.Oid, Sensitive = (xpoCreditCard.Disabled) ? false : true };
+                TouchButtonIconWithText buttonMoney = new TouchButtonIconWithText("touchButtonMoney_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoMoney.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoMoney.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMoney.Oid, Sensitive = !xpoMoney.Disabled };
+                TouchButtonIconWithText buttonCheck = new TouchButtonIconWithText("touchButtonCheck_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoCheck.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoCheck.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCheck.Oid, Sensitive = !xpoCheck.Disabled };
+                TouchButtonIconWithText buttonMB = new TouchButtonIconWithText("touchButtonMB_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoMB.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoMB.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoMB.Oid, Sensitive = !xpoMB.Disabled };
+                TouchButtonIconWithText buttonCreditCard = new TouchButtonIconWithText("touchButtonCreditCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoCreditCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoCreditCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoCreditCard.Oid, Sensitive = !xpoCreditCard.Disabled };
                 /* IN009142 */
-                TouchButtonIconWithText buttonDebitCard = new TouchButtonIconWithText("touchButtonDebitCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoDebitCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoDebitCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoDebitCard.Oid, Sensitive = (xpoDebitCard.Disabled) ? false : true };
-                TouchButtonIconWithText buttonVisa = new TouchButtonIconWithText("touchButtonVisa_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoVisa.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoVisa.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoVisa.Oid, Sensitive = (xpoVisa.Disabled) ? false : true };
-                TouchButtonIconWithText buttonCurrentAccount = new TouchButtonIconWithText("touchButtonCurrentAccount_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoCurrentAccount.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoCurrentAccount.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCurrentAccount.Oid, Sensitive = (xpoCurrentAccount.Disabled) ? false : true };
-                TouchButtonIconWithText buttonCustomerCard = new TouchButtonIconWithText("touchButtonCustomerCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoCustomerCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoCustomerCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCustomerCard.Oid, Sensitive = (xpoCustomerCard.Disabled) ? false : true };
+                TouchButtonIconWithText buttonDebitCard = new TouchButtonIconWithText("touchButtonDebitCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoDebitCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoDebitCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoDebitCard.Oid, Sensitive = !xpoDebitCard.Disabled };
+                TouchButtonIconWithText buttonVisa = new TouchButtonIconWithText("touchButtonVisa_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoVisa.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoVisa.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBasePaymentButton.Width, _sizeBasePaymentButton.Height) { CurrentButtonOid = xpoVisa.Oid, Sensitive = !xpoVisa.Disabled };
+                TouchButtonIconWithText buttonCurrentAccount = new TouchButtonIconWithText("touchButtonCurrentAccount_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoCurrentAccount.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoCurrentAccount.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCurrentAccount.Oid, Sensitive = !xpoCurrentAccount.Disabled };
+                TouchButtonIconWithText buttonCustomerCard = new TouchButtonIconWithText("touchButtonCustomerCard_Green", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoCustomerCard.ResourceString), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], xpoCustomerCard.ButtonIcon)), _sizeBasePaymentButtonIcon, _sizeBaseDialogDefaultButton.Width, _sizeBaseDialogDefaultButton.Height) { CurrentButtonOid = xpoCustomerCard.Oid, Sensitive = !xpoCustomerCard.Disabled };
                 //Secondary Buttons
                 //Events
                 buttonMoney.Clicked += buttonMoney_Clicked;
@@ -249,12 +250,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _labelChangeValue = new Label(FrameworkUtils.DecimalToStringCurrency(0));
 
                 //Colors
-                labelTotal.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
-                labelDelivery.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
-                labelChange.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.FromArgb(101, 137, 171)));
-                _labelTotalValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
-                _labelDeliveryValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
-                _labelChangeValue.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.White));
+                labelTotal.ModifyFg(StateType.Normal, Color.FromArgb(101, 137, 171).ToGdkColor());
+                labelDelivery.ModifyFg(StateType.Normal, Color.FromArgb(101, 137, 171).ToGdkColor());
+                labelChange.ModifyFg(StateType.Normal, Color.FromArgb(101, 137, 171).ToGdkColor());
+                _labelTotalValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
+                _labelDeliveryValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
+                _labelChangeValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
 
                 //Alignments
                 labelTotal.SetAlignment(0, 0.5F);
@@ -291,7 +292,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //TotalPannel
                 EventBox eventboxTotalPannel = new EventBox();
                 eventboxTotalPannel.BorderWidth = 4;
-                eventboxTotalPannel.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorPosPaymentsDialogTotalPannelBackground));
+                eventboxTotalPannel.ModifyBg(StateType.Normal,colorPosPaymentsDialogTotalPannelBackground.ToGdkColor());
                 eventboxTotalPannel.Add(tableTotalPannel);
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -493,10 +494,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _buttonFullPayment.Sensitive = false;
 
                 //ActionArea
-                ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-                actionAreaButtons.Add(new ActionAreaButton(_buttonCurrentAccount, _responseTypeCurrentAccount)); 
-                actionAreaButtons.Add(new ActionAreaButton(_buttonClearCustomer, _responseTypeClearCustomer));
-                actionAreaButtons.Add(new ActionAreaButton(_buttonNewCustomer, _responseTypeClearCustomer));
+                ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+                {
+                    new ActionAreaButton(_buttonCurrentAccount, _responseTypeCurrentAccount),
+                    new ActionAreaButton(_buttonClearCustomer, _responseTypeClearCustomer),
+                    new ActionAreaButton(_buttonNewCustomer, _responseTypeClearCustomer)
+                };
                 if (enablePartialPaymentButtons)
                 {
                     actionAreaButtons.Add(new ActionAreaButton(_buttonFullPayment, _responseTypeFullPayment));
@@ -513,7 +516,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

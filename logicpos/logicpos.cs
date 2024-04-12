@@ -22,10 +22,10 @@ using System.IO;
 
 namespace logicpos
 {
-    class LogicPos
+    internal class LogicPos
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //BootStrap
         private bool _quitAfterBootStrap = false;
         /* IN009163 and IN009164 - Opt to auto-backup flow */
@@ -56,7 +56,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 240), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_contact_support"));
             }
             finally
@@ -103,8 +103,10 @@ namespace logicpos
                 GlobalApp.UseVirtualKeyBoard = Convert.ToBoolean(GlobalFramework.Settings["useVirtualKeyBoard"]);
 
                 //Init App Notifications
-                GlobalApp.Notifications = new System.Collections.Generic.Dictionary<string, bool>();
-                GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] = true;
+                GlobalApp.Notifications = new System.Collections.Generic.Dictionary<string, bool>
+                {
+                    ["SHOW_PRINTER_UNDEFINED"] = true
+                };
 
                 //System
                 GlobalApp.FilePickerStartPath = System.IO.Directory.GetCurrentDirectory();
@@ -137,7 +139,7 @@ namespace logicpos
                     catch (Exception ex)
                     {
                         //Extra protection to prevent goes to login without a valid connection
-                        _log.Error("void Init() :: DataLayer.CreateDatabaseSchema :: " + ex.Message, ex);
+                        _logger.Error("void Init() :: DataLayer.CreateDatabaseSchema :: " + ex.Message, ex);
 
                         /* IN009034 */
                         GlobalApp.DialogThreadNotify.WakeupMain();
@@ -154,14 +156,14 @@ namespace logicpos
                     var connectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
                     { ConnectionString = xpoConnectionString };
                     if (connectionStringBuilder.ContainsKey("password")) { connectionStringBuilder["password"] = "*****"; };
-                    _log.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
+                    _logger.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
 
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("void Init() :: Init XpoDefault.DataLayer: " + ex.Message, ex);
+                    _logger.Error("void Init() :: Init XpoDefault.DataLayer: " + ex.Message, ex);
 
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
@@ -174,7 +176,7 @@ namespace logicpos
                 if (!xpoCreateDatabaseAndSchema && !FrameworkUtils.IsRunningOnMono())
                 {
                     bool isSchemaValid = DataLayer.IsSchemaValid(xpoConnectionString);
-                    _log.Debug(string.Format("void Init() :: Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
+                    _logger.Debug(string.Format("void Init() :: Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
                     if (!isSchemaValid)
                     {
                         /* IN009034 */
@@ -247,7 +249,7 @@ namespace logicpos
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
                     string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
-                    _log.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
+                    _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
 
                     Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(endMessage, Environment.NewLine));
                     Environment.Exit(0);
@@ -282,7 +284,7 @@ namespace logicpos
                 GlobalFramework.CurrentCulture = GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
 
                 /* IN006018 and IN007009 */
-                _log.Debug(string.Format("CUSTOM CULTURE :: CurrentUICulture '{0}' in use.", CultureInfo.CurrentUICulture));
+                _logger.Debug(string.Format("CUSTOM CULTURE :: CurrentUICulture '{0}' in use.", CultureInfo.CurrentUICulture));
 
                 //Always use en-US NumberFormat because of mySql Requirements
                 GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
@@ -335,14 +337,14 @@ namespace logicpos
                     // or use predicate with from object id ex 
                     //var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
                     //var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
-                    //_log.Debug(string.Format("Message: [{0}]", themeWindow.Globals.Title));
+                    //_logger.Debug(string.Format("Message: [{0}]", themeWindow.Globals.Title));
                 }
                 catch (Exception ex)
                 {
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    _log.Debug("void Init() :: XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme) :: " + ex);
+                    _logger.Debug("void Init() :: XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme) :: " + ex);
                     Utils.ShowMessageTouchErrorRenderTheme(GlobalApp.WindowStartup, ex.Message);
                 }
 
@@ -371,14 +373,14 @@ namespace logicpos
                     //Check if port is used by pole display
                     if (GlobalFramework.LoggedTerminal.WeighingMachine.PortName == GlobalFramework.LoggedTerminal.PoleDisplay.COM)
                     {
-                        _log.Debug(string.Format("Port " + GlobalFramework.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
+                        _logger.Debug(string.Format("Port " + GlobalFramework.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
                     }
                     else
                     {
                         if (Utils.IsPortOpen(GlobalFramework.LoggedTerminal.WeighingMachine.PortName))
                         {
                             GlobalApp.WeighingBalance = new WeighingBalance(GlobalFramework.LoggedTerminal.WeighingMachine);
-                            //_log.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen())); }
+                            //_logger.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen())); }
                         }
 
                     }
@@ -386,7 +388,7 @@ namespace logicpos
                 }
 
                 //Send To Log
-                _log.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
+                _logger.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
 
                 //Audit
                 FrameworkUtils.Audit("APP_START", string.Format("{0} {1} clr {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion));
@@ -398,7 +400,7 @@ namespace logicpos
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    _log.Debug(String.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
+                    _logger.Debug(String.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
                     Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_plugin_softwarevendor_not_registered"));
                 }
 
@@ -422,7 +424,7 @@ namespace logicpos
                 }
                 catch (Exception)
                 {
-                    _log.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GlobalFramework.AppUseParkingTicketModule));
+                    _logger.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GlobalFramework.AppUseParkingTicketModule));
                 }
 
 
@@ -442,7 +444,7 @@ namespace logicpos
                     System.IO.DirectoryInfo di = new DirectoryInfo(documentsFolder);
                     if (di.GetFiles().Length > 0)
                     {
-                        _log.Debug(string.Format("void Init() :: New database created. Start Delete [{0}] document(s) from [{1}] folder!", di.GetFiles().Length, documentsFolder));
+                        _logger.Debug(string.Format("void Init() :: New database created. Start Delete [{0}] document(s) from [{1}] folder!", di.GetFiles().Length, documentsFolder));
                         foreach (FileInfo file in di.GetFiles())
                         {
                             try
@@ -451,7 +453,7 @@ namespace logicpos
                             }
                             catch (Exception)
                             {
-                                _log.Error(string.Format("void Init() :: Error! Cant delete Document file: [{0}]", file.Name));
+                                _logger.Error(string.Format("void Init() :: Error! Cant delete Document file: [{0}]", file.Name));
                             }
                         }
                     }
@@ -459,7 +461,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error("void Init() :: " + ex.Message, ex);
+                _logger.Error("void Init() :: " + ex.Message, ex);
             }
         }
 
@@ -472,7 +474,7 @@ namespace logicpos
         {
             bool xpoCreateDatabaseAndSchema = SettingsApp.XPOCreateDatabaseAndSchema;
             bool validDirectoryBackup = FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
-            _log.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
+            _logger.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
 
             //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
             if (!validDirectoryBackup)
@@ -506,10 +508,10 @@ namespace logicpos
         private ProtectedFiles InitProtectedFiles()
         {
             bool debug = true;
-            ProtectedFiles protectedFiles = null;
             string filePath = SettingsApp.ProtectedFilesFileName;
             List<string> fileList = SettingsApp.ProtectedFilesList;
 
+            ProtectedFiles protectedFiles;
             //ReCreate File MODE
             if (SettingsApp.ProtectedFilesRecreateCSV)
             {
@@ -521,7 +523,7 @@ namespace logicpos
                 //    {0}- Update logicpos.financial.library SettingsApp.ProtectedFilesFileHash with Hash: '{3}.'"
                 //    , Environment.NewLine, filePath, fileList.Count, md5FromFile
                 //);
-                //_log.Debug(String.Format("Protected files: [{0}]", message));
+                //_logger.Debug(String.Format("Protected files: [{0}]", message));
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
@@ -539,7 +541,7 @@ namespace logicpos
                 protectedFiles = new ProtectedFiles(filePath);
                 foreach (var item in protectedFiles)
                 {
-                    if (debug) _log.Debug(string.Format("Message: [{0}], Valid: [{1}], IsValidFile: [{2}]", item.Key, item.Value.Valid, protectedFiles.IsValidFile(item.Key)));
+                    if (debug) _logger.Debug(string.Format("Message: [{0}], Valid: [{1}], IsValidFile: [{2}]", item.Key, item.Value.Valid, protectedFiles.IsValidFile(item.Key)));
                 }
 
                 List<string> getInvalidAndMissingFiles = protectedFiles.GetInvalidAndMissingFiles(fileList);
@@ -549,7 +551,7 @@ namespace logicpos
                     string filesMessage = string.Empty;
                     for (int i = 0; i < getInvalidAndMissingFiles.Count; i++)
                     {
-                        if (debug) _log.Debug(string.Format("InvalidFile: [{0}]", getInvalidAndMissingFiles[i]));
+                        if (debug) _logger.Debug(string.Format("InvalidFile: [{0}]", getInvalidAndMissingFiles[i]));
                         filesMessage += string.Format("{0}{1}", getInvalidAndMissingFiles[i], Environment.NewLine);
                     }
 
@@ -585,7 +587,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -604,7 +606,7 @@ namespace logicpos
             else
             {
                 //Init Theme Object
-                _log.Debug("Init Theme Object ");
+                _logger.Debug("Init Theme Object ");
                 var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
                 var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
@@ -613,16 +615,16 @@ namespace logicpos
 
                 try
                 {
-                    _log.Debug("Init windowImageFileName ");
+                    _logger.Debug("Init windowImageFileName ");
                     string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
-                    _log.Debug("StartupWindow " + windowImageFileName);
+                    _logger.Debug("StartupWindow " + windowImageFileName);
                     GlobalApp.WindowStartup = new StartupWindow(windowImageFileName, needToUpdate);
 
 
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             };
         }
@@ -684,13 +686,13 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _log.Error("void StartBackupTimer() :: _autoBackupFlowIsActive: [" + _autoBackupFlowIsEnabled + "] :: " + ex.Message, ex);
+                _logger.Error("void StartBackupTimer() :: _autoBackupFlowIsActive: [" + _autoBackupFlowIsEnabled + "] :: " + ex.Message, ex);
             }
         }
 
         private bool UpdateBackupTimer()
         {
-            _log.Debug("bool UpdateBackupTimer()");
+            _logger.Debug("bool UpdateBackupTimer()");
             bool debug = false;
 
             DateTime currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
@@ -708,12 +710,12 @@ namespace logicpos
                 }
                 else
                 {
-                    if (debug) _log.Debug(string.Format("Inside of TimeRange: currentDateTime:[{0}], backupLastDateTime:[{1}], timeSpanDiference:[{2}], backupDatabaseTimeSpan:[{3}] ", currentDateTime, currentDateTimeLastBackup, timeSpanDiference, _backupDatabaseTimeSpan));
+                    if (debug) _logger.Debug(string.Format("Inside of TimeRange: currentDateTime:[{0}], backupLastDateTime:[{1}], timeSpanDiference:[{2}], backupDatabaseTimeSpan:[{3}] ", currentDateTime, currentDateTimeLastBackup, timeSpanDiference, _backupDatabaseTimeSpan));
                 }
             }
             else
             {
-                if (debug) _log.Debug(string.Format("Outside of TimeRange: [{0}] > [{1}] && [{2}] < [{3}]", currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeStart, currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeEnd));
+                if (debug) _logger.Debug(string.Format("Outside of TimeRange: [{0}] > [{1}] && [{2}] < [{3}]", currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeStart, currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeEnd));
             }
 
             // Returning true means that the timeout routine should be invoked

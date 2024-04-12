@@ -34,7 +34,7 @@ namespace logicpos
             vbox.PackEnd(hbox, false, true, 0);
         }
 
-        private Graph graph;
+        private readonly Graph graph;
 
         public PlotColor[] plotColors = new PlotColor[] {
             PlotColor.Red,

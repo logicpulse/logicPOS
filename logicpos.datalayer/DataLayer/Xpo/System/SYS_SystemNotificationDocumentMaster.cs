@@ -10,7 +10,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemnotificationdocumentmaster(Session session) : base(session) { }
 
         //SystemNotification One <> Many DocumentFinanceMaster
-        sys_systemnotification fNotification;
+        private sys_systemnotification fNotification;
         [Association(@"SystemNotificationReferenceDocumentFinanceMaster")]
         public sys_systemnotification Notification
         {
@@ -19,7 +19,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many SystemNotification
-        fin_documentfinancemaster fDocumentMaster;
+        private fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferenceSystemNotification")]
         public fin_documentfinancemaster DocumentMaster
         {

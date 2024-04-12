@@ -12,7 +12,7 @@ using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosChangeUserDialog : PosBaseDialog
+    internal class PosChangeUserDialog : PosBaseDialog
     {
         //Settings
         //Sizes
@@ -20,13 +20,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Size _sizePosUserButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosUserButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private String _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
-        private String _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
+        private readonly String _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
+        private readonly String _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
+
         //Private Gui Members
-        Fixed _fixedContent;
-        TablePad _tablePadUsers;
+        private readonly Fixed _fixedContent;
+        private TablePad _tablePadUsers;
+
         //TouchButtonIconWithText _buttonOk;
-        TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonCancel;
         //Public Properties
         private sys_userdetail _selectedUserDetail;
         public sys_userdetail UserDetail
@@ -53,9 +55,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            //actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                //actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
@@ -103,7 +107,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent.Put(hboxPlaceScrollers, 0, 411);
         }
 
-        void _tablePadUsers_Clicked(object sender, EventArgs e)
+        private void _tablePadUsers_Clicked(object sender, EventArgs e)
         {
             TouchButtonBase button = (TouchButtonBase)sender;
 
@@ -114,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (_selectedUserDetail.PasswordReset)
             {
-                //_log.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
+                //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
                 logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
                     string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), _selectedUserDetail.Name, SettingsApp.DefaultValueUserDetailAccessPin)
                 );

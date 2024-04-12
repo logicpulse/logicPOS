@@ -33,7 +33,7 @@
     {
     //Reset dataBandRec
     _dataBandRec = 1;
-    PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo&quot;);
+    PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_loggero&quot;);
     //Get data source
     _ds = Report.GetDataSource(&quot;DocumentFinanceMaster.DocumentFinanceDetail&quot;);
           // initialize dataSource
@@ -43,7 +43,7 @@
         private void Data1_BeforePrint(object sender, EventArgs e)
         {
           TextRecordCount.Text = &quot;&quot;;
-          PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo&quot;);
+          PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_loggero&quot;);
           // Display Helper
           //TextRecordCount.Text = _pageNo.ToString() + ':' + _dataBandRec.ToString() + ':' + _ds.RowCount.ToString() 
           //  + ':' + (_dataBandRec == _dataBandMaxRecs &amp;&amp; _dataBandRec != _ds.RowCount).ToString()

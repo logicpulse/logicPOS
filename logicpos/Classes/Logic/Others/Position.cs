@@ -2,14 +2,14 @@
 {
     public class Position
     {
-        int _x;
+        private int _x;
         public int X
         {
             get { return _x; }
             set { _x = value; }
         }
 
-        int _y;
+        private int _y;
         public int Y
         {
             get { return _y; }

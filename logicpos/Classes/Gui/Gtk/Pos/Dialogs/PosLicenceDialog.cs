@@ -11,17 +11,17 @@ using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosLicenceDialog : PosBaseDialog
+    internal class PosLicenceDialog : PosBaseDialog
     {
         //Parameters
-        private string _hardwareId;
+        private readonly string _hardwareId;
         //Ui
         private HBox _hboxMain;
         private EntryBoxValidation _entryBoxHardwareId;
         private EntryBoxValidation _entryBoxSoftwareKey;
-        private TouchButtonIconWithText _buttonRegister;
-        private TouchButtonIconWithText _buttonContinue;
-        private TouchButtonIconWithText _buttonClose;
+        private readonly TouchButtonIconWithText _buttonRegister;
+        private readonly TouchButtonIconWithText _buttonContinue;
+        private readonly TouchButtonIconWithText _buttonClose;
         //UI Public
         private EntryBoxValidation _entryBoxName;
         public EntryBoxValidation EntryBoxName
@@ -88,10 +88,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonRegister, ResponseType.Accept));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonContinue, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonClose, ResponseType.Close));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonRegister, ResponseType.Accept),
+                new ActionAreaButton(_buttonContinue, ResponseType.Ok),
+                new ActionAreaButton(_buttonClose, ResponseType.Close)
+            };
 
             //Init Content
             InitUI();
@@ -290,7 +292,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             switch (pResponse)
             {
                 case ResponseType.Accept:
-                    _log.Debug("ActionRegister()");
+                    _logger.Debug("ActionRegister()");
                     ActionRegister();
                     break;
             }
@@ -347,7 +349,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
 
                 logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_timeout"));
 

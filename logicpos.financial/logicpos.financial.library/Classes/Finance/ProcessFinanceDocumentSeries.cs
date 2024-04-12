@@ -14,7 +14,7 @@ namespace logicpos.financial.library.Classes.Finance
     public class ProcessFinanceDocumentSeries
     {
         //Log4Net
-        protected static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         protected static bool _debug = false;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -47,8 +47,10 @@ namespace logicpos.financial.library.Classes.Finance
             ;
 
             //Get Document Serie
-            SortingCollection sortCollection = new SortingCollection();
-            sortCollection.Add(new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending));
+            SortingCollection sortCollection = new SortingCollection
+            {
+                new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND DocumentType == '{0}'", documentFinanceTypeSerieGuid.ToString()));
             ICollection collectionDocumentFinanceSeries = pSession.GetObjects(pSession.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
 
@@ -140,13 +142,13 @@ namespace logicpos.financial.library.Classes.Finance
                         //Now we can disable, Outside of Loop
                         foreach (fin_documentfinanceseries disableSerie in listDisableSeries)
                         {
-                            if (_debug) _log.Debug(string.Format("  {0} : Disabled:[{1}]", disableSerie.Designation, disableSerie.Disabled));
+                            if (_debug) _logger.Debug(string.Format("  {0} : Disabled:[{1}]", disableSerie.Designation, disableSerie.Disabled));
                             disableSerie.Disabled = true;
                         }
                         //Now we can delete, Outside of Loop
                         foreach (fin_documentfinanceyearserieterminal deleteSerieTerminal in listDeleteSerieTerminal)
                         {
-                            if (_debug) _log.Debug(string.Format("    {0} : Deleted:[{1}]", deleteSerieTerminal.Designation, deleteSerieTerminal.Disabled));
+                            if (_debug) _logger.Debug(string.Format("    {0} : Deleted:[{1}]", deleteSerieTerminal.Designation, deleteSerieTerminal.Disabled));
                             deleteSerieTerminal.Delete();
                         }
 
@@ -159,7 +161,7 @@ namespace logicpos.financial.library.Classes.Finance
                 catch (Exception ex)
                 {
                     uowSession.RollbackTransaction();
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
 
@@ -176,7 +178,7 @@ namespace logicpos.financial.library.Classes.Finance
             uint ordAndCode = 10;
             uint ordAndCodeInc = 10;
             int terminalInc = 1;
-            string acronymPrefix = String.Empty, acronym, designation, output = String.Empty, acronymAudit;
+            string acronym, designation, output = String.Empty, acronymAudit;
             Dictionary<string,string> acronymPrefixCreatedSeries = new Dictionary<string,string>();
             fin_documentfinanceseries documentFinanceSeries = null;
             //Used to add DocumentFinanceYearSerieTerminal to list to delete outside of Loop
@@ -211,7 +213,7 @@ namespace logicpos.financial.library.Classes.Finance
                             //Loop DocumentFinanceYearSerieTerminal and Parent DocumentFinanceYearSerie and Delete 
                             foreach (fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal in xpDocumentFinanceYearSerieTerminal)
                             {
-                                if (_debug) _log.Debug(string.Format("Disabled documentFinanceYearSerie: [{0}]", documentFinanceYearSerieTerminal.Serie.Designation));
+                                if (_debug) _logger.Debug(string.Format("Disabled documentFinanceYearSerie: [{0}]", documentFinanceYearSerieTerminal.Serie.Designation));
                                 documentFinanceYearSerieTerminal.Serie.Disabled = true;
                                 //documentFinanceYearSerieTerminal.Disabled = true;
                                 //Add to Post Loop Deletion
@@ -221,7 +223,7 @@ namespace logicpos.financial.library.Classes.Finance
                             //Now we can delete, Outside of Loop
                             foreach (fin_documentfinanceyearserieterminal deleteSerieTerminal in listDeleteSerieTerminal)
                             {
-                                if (_debug) _log.Debug(string.Format("Deleted documentFinanceYearSerieTerminal: [{0}]", deleteSerieTerminal.Designation));
+                                if (_debug) _logger.Debug(string.Format("Deleted documentFinanceYearSerieTerminal: [{0}]", deleteSerieTerminal.Designation));
                                 deleteSerieTerminal.Delete();
                             }
                         }
@@ -234,7 +236,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                         //Create DocumentFinanceSeries Acronym From Date
                         DateTime now = FrameworkUtils.CurrentDateTimeAtomic();
-
+                        string acronymPrefix;
                         //AcronymPrefix ex FT[QN3T1U401]2016S001, works with Random and AcronymLastSerie modes
                         if (SettingsApp.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix)
                         {
@@ -278,7 +280,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 }
                                 //Add to Output
                                 if (pPreviewMode) output += string.Format("  {0} {1} - {2}{3}", documentFinanceType.Acronym, acronym, documentFinanceType.Designation, Environment.NewLine);
-                                if (_debug) _log.Debug(string.Format("DocumentFinanceSeries: [{0}], Designation: [{1}], Acronym: [{2}]", ordAndCode, designation, acronym));
+                                if (_debug) _logger.Debug(string.Format("DocumentFinanceSeries: [{0}], Designation: [{1}], Acronym: [{2}]", ordAndCode, designation, acronym));
 
                                 //Create DocumentFinanceYearSerieTerminal
                                 designation = string.Format("{0} {1}", designation, configurationPlaceTerminal.Designation);
@@ -297,7 +299,7 @@ namespace logicpos.financial.library.Classes.Finance
                                         Designation = string.Format("{0} {1}", documentFinanceSeries.Designation, configurationPlaceTerminal.Designation)
                                     };
                                 }
-                                if (_debug) _log.Debug(string.Format("DocumentFinanceYearSerieTerminal: [{0}], Terminal: [{1}], Serie: [{2}]", ordAndCode, terminal["Designation"], designation));
+                                if (_debug) _logger.Debug(string.Format("DocumentFinanceYearSerieTerminal: [{0}], Terminal: [{1}], Serie: [{2}]", ordAndCode, terminal["Designation"], designation));
 
                                 //Increment AcronymLastSerie and ordAndCodeInc
                                 documentFinanceType.AcronymLastSerie++;
@@ -336,7 +338,7 @@ namespace logicpos.financial.library.Classes.Finance
                 {
                     uowSession.RollbackTransaction();
                     result.Exception = ex;
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
             return result;
@@ -345,13 +347,12 @@ namespace logicpos.financial.library.Classes.Finance
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         //Private Members for Acronym Series Methods
-        private static string _acronymDateTimeFormat = "{2}:{1}:{0} {3}/{4}/YYYY";
-        private static string _base36Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private static readonly string _acronymDateTimeFormat = "{2}:{1}:{0} {3}/{4}/YYYY";
+        private static readonly string _base36Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         //Generate Random Acronym Based on Hash Date
         private static string DateToAcronymPrefix(DateTime pDateTime)
         {
-            string result = String.Empty;
             DateTime currentTime = pDateTime;
             string date = string.Format("{0}{1}{2}{3}{4}", currentTime.Second.ToString("00"), currentTime.Minute.ToString("00"), currentTime.Hour.ToString("00"), currentTime.Day.ToString("00"), currentTime.Month.ToString("00"));
             //#1 - Always Add First 1;

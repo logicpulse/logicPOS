@@ -15,14 +15,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
     //}
 
     /// <summary>Class used to store TreeView Column Properties, used to configure used xpColection columns</summary>
-    class GenericTreeViewColumnProperty : IEquatable<GenericTreeViewColumnProperty>, IComparable<GenericTreeViewColumnProperty>
+    internal class GenericTreeViewColumnProperty : IEquatable<GenericTreeViewColumnProperty>, IComparable<GenericTreeViewColumnProperty>
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private string _fontGenericTreeViewColumnTitle = GlobalFramework.Settings["fontGenericTreeViewColumnTitle"];
-        private string _fontGenericTreeViewColumn = GlobalFramework.Settings["fontGenericTreeViewColumn"];
+        private readonly string _fontGenericTreeViewColumnTitle = GlobalFramework.Settings["fontGenericTreeViewColumnTitle"];
+        private readonly string _fontGenericTreeViewColumn = GlobalFramework.Settings["fontGenericTreeViewColumn"];
 
         //Aditional TreeView ColumnProperties
         public GenericTreeViewColumnPropertyType PropertyType { get; set; }
@@ -189,12 +189,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public static DataTable ColumnPropertiesToDataTableScheme(List<GenericTreeViewColumnProperty> pColumnProperties)
         {
             DataTable resultDataTable = new DataTable();
-            Type dataTableColumnType = default(Type);
 
             //Add Columns with specific Types From Column Properties
             foreach (GenericTreeViewColumnProperty column in pColumnProperties)
             {
-                dataTableColumnType = (column.Type != null) ? column.Type : typeof(String);
+                Type dataTableColumnType = (column.Type != null) ? column.Type : typeof(String);
                 resultDataTable.Columns.Add(column.Name, dataTableColumnType);
             }
 

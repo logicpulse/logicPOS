@@ -34,14 +34,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Template = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(SettingsApp.XpoOidArticleDefaultTemplate);
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        string fCode;
+        private string fCode;
         [Indexed(Unique = true)]
         [Size(25)]
         public string Code
@@ -50,7 +50,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Code", ref fCode, value); }
         }
 
-        string fCodeDealer;
+        private string fCodeDealer;
         [Size(25)]
         public string CodeDealer
         {
@@ -58,7 +58,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("CodeDealer", ref fCodeDealer, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -66,7 +66,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        string fButtonLabel;
+        private string fButtonLabel;
         [Size(35)]
         public string ButtonLabel
         {
@@ -74,14 +74,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonLabel", ref fButtonLabel, value); }
         }
 
-        bool fButtonLabelHide;
+        private bool fButtonLabelHide;
         public bool ButtonLabelHide
         {
             get { return fButtonLabelHide; }
             set { SetPropertyValue<bool>("ButtonLabelHide", ref fButtonLabelHide, value); }
         }
 
-        string fButtonImage;
+        private string fButtonImage;
         [Size(255)]
         public string ButtonImage
         {
@@ -89,7 +89,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonImage", ref fButtonImage, value); }
         }
 
-        string fButtonIcon;
+        private string fButtonIcon;
         [Size(255)]
         public string ButtonIcon
         {
@@ -97,162 +97,162 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ButtonIcon", ref fButtonIcon, value); }
         }
 
-        decimal fPrice1;
+        private decimal fPrice1;
         public decimal Price1
         {
             get { return fPrice1; }
             set { SetPropertyValue<decimal>("Price1", ref fPrice1, value); }
         }
 
-        decimal fPrice2;
+        private decimal fPrice2;
         public decimal Price2
         {
             get { return fPrice2; }
             set { SetPropertyValue<decimal>("Price2", ref fPrice2, value); }
         }
 
-        decimal fPrice3;
+        private decimal fPrice3;
         public decimal Price3
         {
             get { return fPrice3; }
             set { SetPropertyValue<decimal>("Price3", ref fPrice3, value); }
         }
 
-        decimal fPrice4;
+        private decimal fPrice4;
         public decimal Price4
         {
             get { return fPrice4; }
             set { SetPropertyValue<decimal>("Price4", ref fPrice4, value); }
         }
 
-        decimal fPrice5;
+        private decimal fPrice5;
         public decimal Price5
         {
             get { return fPrice5; }
             set { SetPropertyValue<decimal>("Price5", ref fPrice5, value); }
         }
 
-        decimal fPrice1Promotion;
+        private decimal fPrice1Promotion;
         public decimal Price1Promotion
         {
             get { return fPrice1Promotion; }
             set { SetPropertyValue<decimal>("Price1Promotion", ref fPrice1Promotion, value); }
         }
 
-        decimal fPrice2Promotion;
+        private decimal fPrice2Promotion;
         public decimal Price2Promotion
         {
             get { return fPrice2Promotion; }
             set { SetPropertyValue<decimal>("Price2Promotion", ref fPrice2Promotion, value); }
         }
 
-        decimal fPrice3Promotion;
+        private decimal fPrice3Promotion;
         public decimal Price3Promotion
         {
             get { return fPrice3Promotion; }
             set { SetPropertyValue<decimal>("Price3Promotion", ref fPrice3Promotion, value); }
         }
 
-        decimal fPrice4Promotion;
+        private decimal fPrice4Promotion;
         public decimal Price4Promotion
         {
             get { return fPrice4Promotion; }
             set { SetPropertyValue<decimal>("Price4Promotion", ref fPrice4Promotion, value); }
         }
 
-        decimal fPrice5Promotion;
+        private decimal fPrice5Promotion;
         public decimal Price5Promotion
         {
             get { return fPrice5Promotion; }
             set { SetPropertyValue<decimal>("Price5Promotion", ref fPrice5Promotion, value); }
         }
 
-        bool fPrice1UsePromotionPrice;
+        private bool fPrice1UsePromotionPrice;
         public bool Price1UsePromotionPrice
         {
             get { return fPrice1UsePromotionPrice; }
             set { SetPropertyValue<bool>("Price1UsePromotionPrice", ref fPrice1UsePromotionPrice, value); }
         }
 
-        bool fPrice2UsePromotionPrice;
+        private bool fPrice2UsePromotionPrice;
         public bool Price2UsePromotionPrice
         {
             get { return fPrice2UsePromotionPrice; }
             set { SetPropertyValue<bool>("Price2UsePromotionPrice", ref fPrice2UsePromotionPrice, value); }
         }
 
-        bool fPrice3UsePromotionPrice;
+        private bool fPrice3UsePromotionPrice;
         public bool Price3UsePromotionPrice
         {
             get { return fPrice3UsePromotionPrice; }
             set { SetPropertyValue<bool>("Price3UsePromotionPrice", ref fPrice3UsePromotionPrice, value); }
         }
 
-        bool fPrice4UsePromotionPrice;
+        private bool fPrice4UsePromotionPrice;
         public bool Price4UsePromotionPrice
         {
             get { return fPrice4UsePromotionPrice; }
             set { SetPropertyValue<bool>("Price4UsePromotionPrice", ref fPrice4UsePromotionPrice, value); }
         }
 
-        bool fPrice5UsePromotionPrice;
+        private bool fPrice5UsePromotionPrice;
         public bool Price5UsePromotionPrice
         {
             get { return fPrice5UsePromotionPrice; }
             set { SetPropertyValue<bool>("Price5UsePromotionPrice", ref fPrice5UsePromotionPrice, value); }
         }
 
-        bool fPriceWithVat;
+        private bool fPriceWithVat;
         public bool PriceWithVat
         {
             get { return fPriceWithVat; }
             set { SetPropertyValue<bool>("PriceWithVat", ref fPriceWithVat, value); }
         }
 
-        decimal fDiscount;
+        private decimal fDiscount;
         public decimal Discount
         {
             get { return fDiscount; }
             set { SetPropertyValue<decimal>("Discount", ref fDiscount, value); }
         }
 
-        decimal fDefaultQuantity;
+        private decimal fDefaultQuantity;
         public decimal DefaultQuantity
         {
             get { return fDefaultQuantity; }
             set { SetPropertyValue<decimal>("DefaultQuantity", ref fDefaultQuantity, value); }
         }
 
-        decimal fAccounting;
+        private decimal fAccounting;
         public decimal Accounting
         {
             get { return fAccounting; }
             set { SetPropertyValue<decimal>("Accounting", ref fAccounting, value); }
         }
 
-		//Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
-        decimal fMinimumStock;
+        //Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
+        private decimal fMinimumStock;
         public decimal MinimumStock
         {
             get { return fMinimumStock; }
             set { SetPropertyValue<decimal>("MinimumStock", ref fMinimumStock, value); }
         }
 
-        decimal fTare;
+        private decimal fTare;
         public decimal Tare
         {
             get { return fTare; }
             set { SetPropertyValue<decimal>("Tare", ref fTare, value); }
         }
 
-        decimal fWeight;
+        private decimal fWeight;
         public decimal Weight
         {
             get { return fWeight; }
             set { SetPropertyValue<decimal>("Weight", ref fWeight, value); }
         }
 
-        string fBarCode;
+        private string fBarCode;
         [Indexed(Unique = true)]
         public string BarCode
         {
@@ -260,42 +260,43 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("BarCode", ref fBarCode, value); }
         }
 
-        bool fPVPVariable;
+        private bool fPVPVariable;
         public bool PVPVariable
         {
             get { return fPVPVariable; }
             set { SetPropertyValue<bool>("PVPVariable", ref fPVPVariable, value); }
         }
-		//Artigos Compostos [IN:016522]
-        bool fIsComposed;
+
+        //Artigos Compostos [IN:016522]
+        private bool fIsComposed;
         public bool IsComposed
         {
             get { return fIsComposed; }
             set { SetPropertyValue<bool>("IsComposed", ref fIsComposed, value); }
         }
 
-        bool fUniqueArticles;
+        private bool fUniqueArticles;
         public bool UniqueArticles
         {
             get { return fUniqueArticles; }
             set { SetPropertyValue<bool>("UniqueArticles", ref fUniqueArticles, value); }
         }
 
-        bool fFavorite;
+        private bool fFavorite;
         public bool Favorite
         {
             get { return fFavorite; }
             set { SetPropertyValue<bool>("Favorite", ref fFavorite, value); }
         }
 
-        bool fUseWeighingBalance;
+        private bool fUseWeighingBalance;
         public bool UseWeighingBalance
         {
             get { return fUseWeighingBalance; }
             set { SetPropertyValue<bool>("UseWeighingBalance", ref fUseWeighingBalance, value); }
         }
 
-        string fToken1;
+        private string fToken1;
         [Size(255)]
         public string Token1
         {
@@ -303,7 +304,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Token1", ref fToken1, value); }
         }
 
-        string fToken2;
+        private string fToken2;
         [Size(255)]
         public string Token2
         {
@@ -354,7 +355,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Family One <> Many Article
-        fin_articlefamily fFamily;
+        private fin_articlefamily fFamily;
         [Association(@"FamilyReferencesArticle")]
         public fin_articlefamily Family
         {
@@ -363,7 +364,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //SubFamily One <> Many Article
-        fin_articlesubfamily fSubFamily;
+        private fin_articlesubfamily fSubFamily;
         [Association(@"SubFamilyReferencesArticle")]
         public fin_articlesubfamily SubFamily
         {
@@ -372,7 +373,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ArticleType One <> Many Article
-        fin_articletype fType;
+        private fin_articletype fType;
         [Association(@"ArticleTypeReferencesArticle")]
         public fin_articletype Type
         {
@@ -381,7 +382,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ArticleClass One <> Many Article
-        fin_articleclass fClass;
+        private fin_articleclass fClass;
         [Association(@"ArticleClassReferencesArticle")]
         public fin_articleclass Class
         {
@@ -390,7 +391,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //configurationUnitMeasure One <> Many Article
-        cfg_configurationunitmeasure fUnitMeasure;
+        private cfg_configurationunitmeasure fUnitMeasure;
         [Association(@"ConfigurationUnitMeasureReferencesArticle")]
         public cfg_configurationunitmeasure UnitMeasure
         {
@@ -399,7 +400,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationUnitSize One <> Many Article
-        cfg_configurationunitsize fUnitSize;
+        private cfg_configurationunitsize fUnitSize;
         [Association(@"ConfigurationUnitSizeReferencesArticle")]
         public cfg_configurationunitsize UnitSize
         {
@@ -408,7 +409,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //UserCommissionGroup One <> Many Article
-        pos_usercommissiongroup fCommissionGroup;
+        private pos_usercommissiongroup fCommissionGroup;
         [Association(@"UserCommissionGroupReferencesArticle")]
         public pos_usercommissiongroup CommissionGroup
         {
@@ -417,7 +418,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //CustomerDiscountGroup One <> Many Article
-        erp_customerdiscountgroup fDiscountGroup;
+        private erp_customerdiscountgroup fDiscountGroup;
         [Association(@"CustomerDiscountGroupReferencesArticle")]
         public erp_customerdiscountgroup DiscountGroup
         {
@@ -426,7 +427,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationVatRate One <> Many Article
-        fin_configurationvatrate fVatOnTable;
+        private fin_configurationvatrate fVatOnTable;
         [Association(@"ConfigurationVatRateReferencesArticle_ForVatOnTable")]
         public fin_configurationvatrate VatOnTable
         {
@@ -435,7 +436,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationVatRate One <> Many Article
-        fin_configurationvatrate fVatDirectSelling;
+        private fin_configurationvatrate fVatDirectSelling;
         [Association(@"ConfigurationVatRateReferencesArticle_ForVatDirectSelling")]
         public fin_configurationvatrate VatDirectSelling
         {
@@ -444,7 +445,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationVatExemptionReason One <> Many Article
-        fin_configurationvatexemptionreason fVatExemptionReason;
+        private fin_configurationvatexemptionreason fVatExemptionReason;
         [Association(@"ConfigurationVatExemptionReasonReferencesArticle")]
         public fin_configurationvatexemptionreason VatExemptionReason
         {
@@ -453,7 +454,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationDevice One <> Many Article
-        sys_configurationprinters fPrinter;
+        private sys_configurationprinters fPrinter;
         [Association(@"ConfigurationPrintersReferencesArticle")]
         public sys_configurationprinters Printer
         {
@@ -462,7 +463,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many ConfigurationPrintersTemplates
-        sys_configurationprinterstemplates fTemplate;
+        private sys_configurationprinterstemplates fTemplate;
         [Association(@"ConfigurationPrintersTemplatesReferencesArticle")]
         public sys_configurationprinterstemplates Template
         {
@@ -470,7 +471,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<sys_configurationprinterstemplates>("Template", ref fTemplate, value); }
         }
 
-        sys_configurationprinterstemplates fTemplateBarCode;
+        private sys_configurationprinterstemplates fTemplateBarCode;
         [Association(@"ConfigurationPrintersBarCodeTemplatesReferencesArticle")]
         public sys_configurationprinterstemplates TemplateBarCode
         {

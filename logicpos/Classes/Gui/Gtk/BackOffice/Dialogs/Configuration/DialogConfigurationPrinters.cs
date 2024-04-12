@@ -11,7 +11,7 @@ using System.Configuration;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogConfigurationPrinters : BOBaseDialog
+    internal class DialogConfigurationPrinters : BOBaseDialog
     {
         private VBox _vboxTab2;
         private XPOComboBox _xpoComboBoxPrinterType;
@@ -172,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             }
                             }catch(Exception ex)
                         {
-                            _log.Error(ex.Message, ex);
+                            _logger.Error(ex.Message, ex);
                         }
                 
                     };
@@ -243,12 +243,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //ThermalPrintLogo
                 _entryThermalImageCompanyLogo = new Entry();
-                BOWidgetBox boxThermalImageCompanyLogo = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_image_company_logo"), _entryThermalImageCompanyLogo);
+                BOWidgetBox boxThermalImageCompanyLogo = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_image_company_loggero"), _entryThermalImageCompanyLogo);
                 _vboxTab2.PackStart(boxThermalImageCompanyLogo, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxThermalImageCompanyLogo, _dataSourceRow, "ThermalImageCompanyLogo", SettingsApp.RegexAlfaNumericFilePath, false));
 
                 //ThermalPrintLogo
-                CheckButton checkButtonThermalPrintLogo = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_print_logo"));
+                CheckButton checkButtonThermalPrintLogo = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_print_loggero"));
                 _vboxTab2.PackStart(checkButtonThermalPrintLogo, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonThermalPrintLogo, _dataSourceRow, "ThermalPrintLogo"));
 
@@ -267,7 +267,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -284,7 +284,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
         }
@@ -308,7 +308,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             try
             {
-                _log.Debug(string.Format("Message: [{0}]", _xpoComboBoxPrinterType.Value));
+                _logger.Debug(string.Format("Message: [{0}]", _xpoComboBoxPrinterType.Value));
 
                 //Tab Visibility
                 _vboxTab2.Visible = (_xpoComboBoxPrinterType.Value != null && (_xpoComboBoxPrinterType.Value as sys_configurationprinterstype).ThermalPrinter);
@@ -339,7 +339,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

@@ -10,21 +10,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemauditat() : base() { }
         public sys_systemauditat(Session session) : base(session) { }
 
-        DateTime fDate;
+        private DateTime fDate;
         public DateTime Date
         {
             get { return fDate; }
             set { SetPropertyValue<DateTime>("Date", ref fDate, value); }
         }
 
-        SystemAuditATWSType fType;
+        private SystemAuditATWSType fType;
         public SystemAuditATWSType Type
         {
             get { return fType; }
             set { SetPropertyValue<SystemAuditATWSType>("Type", ref fType, value); }
         }
 
-        string fPostData;
+        private string fPostData;
         [Size(SizeAttribute.Unlimited)]
         public string PostData
         {
@@ -33,21 +33,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //SoapResult
-        int fReturnCode;
+        private int fReturnCode;
         public int ReturnCode
         {
             get { return fReturnCode; }
             set { SetPropertyValue<int>("ReturnCode", ref fReturnCode, value); }
         }
 
-        string fReturnMessage;
+        private string fReturnMessage;
         public string ReturnMessage
         {
             get { return fReturnMessage; }
             set { SetPropertyValue<string>("ReturnMessage", ref fReturnMessage, value); }
         }
 
-        string fReturnRaw;
+        private string fReturnRaw;
         [Size(SizeAttribute.Unlimited)]
         public string ReturnRaw
         {
@@ -55,14 +55,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ReturnRaw", ref fReturnRaw, value); }
         }
 
-        string fDocumentNumber;
+        private string fDocumentNumber;
         public string DocumentNumber
         {
             get { return fDocumentNumber; }
             set { SetPropertyValue<string>("DocumentNumber", ref fDocumentNumber, value); }
         }
 
-        string fATDocCodeID;
+        private string fATDocCodeID;
         public string ATDocCodeID
         {
             get { return fATDocCodeID; }
@@ -70,7 +70,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many SystemAuditATWS
-        fin_documentfinancemaster fDocumentMaster;
+        private fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesSystemAuditAT")]
         public fin_documentfinancemaster DocumentMaster
         {

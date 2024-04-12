@@ -7,7 +7,7 @@ namespace logicpos.shared.App
     public abstract class SettingsApp : logicpos.datalayer.App.SettingsApp
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Developer Mode
@@ -495,7 +495,7 @@ namespace logicpos.shared.App
         // Defaults for New PrinterThermal Dialog
         public static string PrinterThermalEncoding = "PC860";
         public static bool PrinterThermalPrintLogo = false;
-        public static string PrinterThermalImageCompanyLogo = "Images/Tickets/company_logo_thermal.bmp";
+        public static string PrinterThermalImageCompanyLogo = "Images/Tickets/company_loggero_thermal.bmp";
         public static int PrinterThermalMaxCharsPerLineNormal = 48;
         public static int PrinterThermalMaxCharsPerLineNormalBold = 44;
         public static int PrinterThermalMaxCharsPerLineSmall = 64;
@@ -573,9 +573,9 @@ namespace logicpos.shared.App
         //Use to limit Simplified Invoices to have a total limit of 1000 (Articles Products + Services)
         private static int GetFinanceRuleSimplifiedInvoiceMaxTotal()
         {
-            int result = 0;
             bool byPassValue = false;
 
+            int result;
             //PT : Override Defaults
             if (SettingsApp.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
@@ -604,9 +604,9 @@ namespace logicpos.shared.App
         //Use to limit Simplified Invoices to have a total limit of 100 (Articles Services)
         private static int GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
         {
-            int result = 0;
             bool byPassValue = false;
 
+            int result;
             //PT : Override Defaults
             if (SettingsApp.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
@@ -635,7 +635,7 @@ namespace logicpos.shared.App
 
         private static int GetFinanceRuleRequiredCustomerDetailsAboveValue()
         {
-            int result = 0;
+            int result;
 
             //PT : Override Defaults
             if (SettingsApp.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)

@@ -7,7 +7,7 @@ using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosTablesDialog
+    public partial class PosTablesDialog
     {
         //Override Responses
         protected override void OnResponse(ResponseType pResponse)
@@ -50,7 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void tablePadPlace_Clicked(object sender, EventArgs e)
+        private void tablePadPlace_Clicked(object sender, EventArgs e)
         {
             TouchButtonBase button = (TouchButtonBase)sender;
             //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void tablePadTable_Clicked(object sender, EventArgs e)
+        private void tablePadTable_Clicked(object sender, EventArgs e)
         {
             TouchButtonTable button = (TouchButtonTable)sender;
 
@@ -105,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void _tablePadOrder_Clicked(object sender, EventArgs e)
+        private void _tablePadOrder_Clicked(object sender, EventArgs e)
         {
         }
 

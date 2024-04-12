@@ -10,7 +10,7 @@ namespace logicpos.financial.console.Test.Classes
     public class TestArticleBag
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static ArticleBag GetArticleBag(bool pForceErrors)
         {
@@ -20,29 +20,31 @@ namespace logicpos.financial.console.Test.Classes
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
 
-            Dictionary<Guid, decimal> mockArticles = new Dictionary<Guid, decimal>();
-            //P:Products
-            mockArticles.Add(new Guid("133cc225-517d-4c24-88b0-cd7c08cf5727"), 2.0m);
-            mockArticles.Add(new Guid("4c47be72-6174-4e63-a077-f3cdb6a15e97"), 3.0m);
-            mockArticles.Add(new Guid("0f32da9c-e533-489d-8a46-d6da79fd63a0"), 3.0m);
-            mockArticles.Add(new Guid("6b547918-769e-4f5b-bcd6-01af54846f73"), 4.0m);
-            mockArticles.Add(new Guid("42cd7f86-97b2-44f4-b098-3c9f0ae9f4b5"), 5.0m);
-            mockArticles.Add(new Guid("55892c3f-de10-4076-afde-619c54100c9b"), 6.0m);
-            mockArticles.Add(new Guid("fc109711-edb0-41dc-87b6-0acb77abd341"), 7.0m);
-            mockArticles.Add(new Guid("bf99351b-1556-43c4-a85c-90082fb02d05"), 8.0m);
-            mockArticles.Add(new Guid("11062ec9-fed0-43eb-a23e-c6f7ed83ff72"), 9.0m);
-            mockArticles.Add(new Guid("32deb30d-ffa2-45e4-bca6-03569b9e8b08"), 2.0m);
-            mockArticles.Add(new Guid("78638720-e728-4e96-8643-6d6267ff817b"), 2.0m);
-            mockArticles.Add(new Guid("42c327e2-4aad-41ea-b5b6-e2198c337f1c"), 3.0m);
-            mockArticles.Add(new Guid("0d30bf31-ecc4-452e-9b43-ee9d5c1d7fb6"), 4.0m);
-            mockArticles.Add(new Guid("7b45a01d-50ee-42d3-a4af-0dcde9397e93"), 5.0m);
-            mockArticles.Add(new Guid("630ff869-e433-46bb-a53b-563c43535424"), 6.0m);
-            mockArticles.Add(new Guid("f71b3648-bb41-4952-ac75-ee93ccf0ec66"), 7.0m);
-            mockArticles.Add(new Guid("87ff6f3a-c858-4829-bbcb-c6ea395129da"), 8.0m);
-            mockArticles.Add(new Guid("72e8bde8-d03b-4637-90f1-fcb265658af0"), 9.0m);
-            //S:Services
-            mockArticles.Add(new Guid("5a852060-43b9-4e71-a230-b733bb150427"), 3.0m);
-            mockArticles.Add(new Guid("072db1bf-6182-43de-8065-d4bbd8c9f8c2"), 4.0m);
+            Dictionary<Guid, decimal> mockArticles = new Dictionary<Guid, decimal>
+            {
+                //P:Products
+                { new Guid("133cc225-517d-4c24-88b0-cd7c08cf5727"), 2.0m },
+                { new Guid("4c47be72-6174-4e63-a077-f3cdb6a15e97"), 3.0m },
+                { new Guid("0f32da9c-e533-489d-8a46-d6da79fd63a0"), 3.0m },
+                { new Guid("6b547918-769e-4f5b-bcd6-01af54846f73"), 4.0m },
+                { new Guid("42cd7f86-97b2-44f4-b098-3c9f0ae9f4b5"), 5.0m },
+                { new Guid("55892c3f-de10-4076-afde-619c54100c9b"), 6.0m },
+                { new Guid("fc109711-edb0-41dc-87b6-0acb77abd341"), 7.0m },
+                { new Guid("bf99351b-1556-43c4-a85c-90082fb02d05"), 8.0m },
+                { new Guid("11062ec9-fed0-43eb-a23e-c6f7ed83ff72"), 9.0m },
+                { new Guid("32deb30d-ffa2-45e4-bca6-03569b9e8b08"), 2.0m },
+                { new Guid("78638720-e728-4e96-8643-6d6267ff817b"), 2.0m },
+                { new Guid("42c327e2-4aad-41ea-b5b6-e2198c337f1c"), 3.0m },
+                { new Guid("0d30bf31-ecc4-452e-9b43-ee9d5c1d7fb6"), 4.0m },
+                { new Guid("7b45a01d-50ee-42d3-a4af-0dcde9397e93"), 5.0m },
+                { new Guid("630ff869-e433-46bb-a53b-563c43535424"), 6.0m },
+                { new Guid("f71b3648-bb41-4952-ac75-ee93ccf0ec66"), 7.0m },
+                { new Guid("87ff6f3a-c858-4829-bbcb-c6ea395129da"), 8.0m },
+                { new Guid("72e8bde8-d03b-4637-90f1-fcb265658af0"), 9.0m },
+                //S:Services
+                { new Guid("5a852060-43b9-4e71-a230-b733bb150427"), 3.0m },
+                { new Guid("072db1bf-6182-43de-8065-d4bbd8c9f8c2"), 4.0m }
+            };
 
             foreach (var item in mockArticles)
             {
@@ -119,7 +121,7 @@ namespace logicpos.financial.console.Test.Classes
 
             foreach (var item in articleBag)
             {
-                //_log.Debug(string.Format("{0} x {1}", item.Key.Designation, item.Value.Quantity));
+                //_logger.Debug(string.Format("{0} x {1}", item.Key.Designation, item.Value.Quantity));
                 Console.WriteLine(string.Format("{0} x {1}", item.Key.Designation, item.Value.Quantity));
             }
 

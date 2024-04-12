@@ -31,7 +31,7 @@ namespace logicpos.shared.App
     public class FrameworkUtils : logicpos.datalayer.App.FrameworkUtils
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Strings
@@ -48,8 +48,7 @@ namespace logicpos.shared.App
 
         public static string RemoveCarriageReturnAndExtraWhiteSpaces(string pInput)
         {
-            string result = string.Empty;
-            result = RemoveCarriageReturn(RemoveExtraWhiteSpaces(pInput));
+            string result = RemoveCarriageReturn(RemoveExtraWhiteSpaces(pInput));
 
             //Remove Initial Space if Exists
             if (result.StartsWith(" "))
@@ -109,7 +108,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -125,7 +124,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -143,7 +142,7 @@ namespace logicpos.shared.App
             return holidaysDic;
         }
 
-        static Dictionary<DateTime, bool> holidaysDic;
+        private static Dictionary<DateTime, bool> holidaysDic;
 
         public static Dictionary<DateTime, bool> GetHolidays(int pYear)
         {
@@ -151,8 +150,10 @@ namespace logicpos.shared.App
             DateTime currentDateTime;
             Dictionary<DateTime, bool> result = new Dictionary<DateTime, bool>();
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled is NULL) AND (Year = 0 OR Year = {0})", pYear));
-            SortingCollection sortingCollection = new SortingCollection();
-            sortingCollection.Add(new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending));
+            SortingCollection sortingCollection = new SortingCollection
+            {
+                new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
             XPCollection xpcConfigurationHolidays = GetXPCollectionFromCriteria(GlobalFramework.SessionXpo, typeof(cfg_configurationholidays), criteriaOperator, sortingCollection);
 
             if (xpcConfigurationHolidays.Count > 0)
@@ -161,7 +162,7 @@ namespace logicpos.shared.App
                 {
                     currentDateTime = new DateTime(pYear, item.Month, item.Day);
                     result.Add(currentDateTime, item.Fixed);
-                    if (debug) _log.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
+                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
                 }
             }
             return result;
@@ -212,7 +213,6 @@ namespace logicpos.shared.App
         public static List<DateTime> GetUtilDays(DateTime pDateStart, DateTime pDateEnd, bool pWithHoydays)
         {
             bool debug = false;
-            string isHoliday = String.Empty;
             List<DateTime> result = new List<DateTime>();
             //Range Interval
             DateTime startDateTime = pDateStart.Date.AddDays(1);
@@ -221,8 +221,8 @@ namespace logicpos.shared.App
             {
                 if (startDateTime.DayOfWeek != DayOfWeek.Saturday && startDateTime.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : String.Empty;
-                    if (debug) _log.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
+                    string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : String.Empty;
+                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
 
                     if ((pWithHoydays && !IsHoliday(startDateTime)) || !pWithHoydays)
                     {
@@ -242,14 +242,13 @@ namespace logicpos.shared.App
             //Remove CurrentDay
             DateTime result = DateTimeToMidnightDate(pDateTime);
             string isHoliday = String.Empty;
-            string isWeekEnd = String.Empty;
-
             int i = 0;
             while (i < pDays)
             {
                 //Start Back one Day
                 result = result.AddDays(-1);
 
+                string isWeekEnd;
                 if (result.DayOfWeek != DayOfWeek.Saturday && result.DayOfWeek != DayOfWeek.Sunday)
                 {
                     isWeekEnd = String.Empty;
@@ -264,7 +263,7 @@ namespace logicpos.shared.App
                 {
                     isWeekEnd = "<WeekEnd>";
                 }
-                if (debug) _log.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
+                if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
             }
             return result;
         }
@@ -336,7 +335,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -491,8 +490,7 @@ namespace logicpos.shared.App
         {
             string domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
             string hostName = Dns.GetHostName();
-            string fqdn = String.Empty;
-
+            string fqdn;
             if (!hostName.Contains(domainName))
                 fqdn = hostName + "." + domainName;
             else
@@ -569,7 +567,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -650,7 +648,7 @@ namespace logicpos.shared.App
         //Use This Way
         //foreach (SelectStatementResultRow row in xPSelectData.Data) 
         //{
-        //  _log.Debug(string.Format("Message: [{0}]", row.Values[xPSelectData.GetFieldIndex("ButtonLabel")].ToString()));
+        //  _logger.Debug(string.Format("Message: [{0}]", row.Values[xPSelectData.GetFieldIndex("ButtonLabel")].ToString()));
         //}
         public static XPSelectData GetSelectedDataFromQuery(string pSql)
         {
@@ -724,8 +722,7 @@ namespace logicpos.shared.App
         /// <returns></returns>
         public static String FormatDataTableFieldFromType(string pFieldValue, string pFieldType)
         {
-            String resultFieldValue = String.Empty;
-
+            string resultFieldValue;
             switch (pFieldType)
             {
                 case "Decimal":
@@ -749,8 +746,10 @@ namespace logicpos.shared.App
 
         public static SortingCollection GetXPCollectionDefaultSortingCollection()
         {
-            SortingCollection sortingCollection = new SortingCollection();
-            sortingCollection.Add(new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending));
+            SortingCollection sortingCollection = new SortingCollection
+            {
+                new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
             //sortingCollection.Add(new SortProperty("Designation", DevExpress.Xpo.DB.SortingDirection.Ascending));
             return sortingCollection;
         }
@@ -770,7 +769,7 @@ namespace logicpos.shared.App
                 var resultInt = GlobalFramework.SessionXpo.ExecuteScalar(sql);
                 if (resultInt != null)
                 {
-                    _log.Debug(string.Format("GetNextTableFieldInt(): resultInt.GetType(): [{0}]", resultInt.GetType()));
+                    _logger.Debug(string.Format("GetNextTableFieldInt(): resultInt.GetType(): [{0}]", resultInt.GetType()));
 
                     if (resultInt.GetType() == typeof(Int16))
                     {
@@ -785,7 +784,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return result;
             }
 
@@ -1009,21 +1008,21 @@ namespace logicpos.shared.App
                     };
                     systemAudit.Save();
 
-                    _log.Debug(string.Format("Audit(): {0} > {1}", pAuditTypeToken, description));
+                    _logger.Debug(string.Format("Audit(): {0} > {1}", pAuditTypeToken, description));
 
                     result = true;
                 }
                 else
                 {
                     string exceptionMessage = string.Format("Invalid AuditType: [{0}]", pAuditTypeToken);
-                    _log.Error(exceptionMessage);
+                    _logger.Error(exceptionMessage);
                     //TriggerError
                     throw (new Exception(exceptionMessage));
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(string.Format("Audit(): {0} > {1}", pAuditTypeToken, ex.Message), ex);
+                _logger.Error(string.Format("Audit(): {0} > {1}", pAuditTypeToken, ex.Message), ex);
             }
 
             return result;
@@ -1050,7 +1049,7 @@ namespace logicpos.shared.App
             }
             catch (IOException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -1085,7 +1084,7 @@ namespace logicpos.shared.App
         //    }
         //    catch (Exception ex)
         //    {
-        //        _log.Error(ex.Message, ex);
+        //        _logger.Error(ex.Message, ex);
         //    }
         //    return (result);
         //}
@@ -1134,11 +1133,11 @@ namespace logicpos.shared.App
                 proc.Start();
 
                 // GlobalApp.WindowReportsWinForm = new logicpos.Classes.Gui.WinForms.BackOffice.Windows.BackOfficeReportWindow();
-                _log.Debug("Iniciar " + pExe);
+                _logger.Debug("Iniciar " + pExe);
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1155,7 +1154,7 @@ namespace logicpos.shared.App
             }
             catch (IOException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1171,10 +1170,10 @@ namespace logicpos.shared.App
         //http://docs.go-mono.com/index.aspx?link=T%3ASystem.PlatformID
         public static String OSVersion()
         {
-            String result = String.Empty;
             OperatingSystem os = Environment.OSVersion;
             PlatformID pid = os.Platform;
 
+            string result;
             switch (pid)
             {
                 case PlatformID.Win32NT:
@@ -1206,7 +1205,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return (result);
@@ -1228,7 +1227,7 @@ namespace logicpos.shared.App
             {
                 //TODO: FIX
                 string result = pPath.Replace('\\', '/'/*Path.DirectorySeparatorChar*/);
-                //_log.Debug(string.Format("OSSlash(): [{0}] : original pPath:[{1}] : result pPath: [{2}]", Path.DirectorySeparatorChar, pPath, result));
+                //_logger.Debug(string.Format("OSSlash(): [{0}] : original pPath:[{1}] : result pPath: [{2}]", Path.DirectorySeparatorChar, pPath, result));
                 return result;
             }
             else
@@ -1241,35 +1240,9 @@ namespace logicpos.shared.App
         //Colors
 
         //Converts a Color to String using TypeConverter, used to Store values in Appsettings
-        public static String ColorToString(Color pColor)
-        {
-            try
-            {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(Color));
-                return converter.ConvertToInvariantString(pColor);
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message, ex);
-                return "255, 0, 0";
-            }
-        }
+      
 
-        //Converts a String to Color using TypeConverter, used to Store values in Appsettings
-        public static Color StringToColor(String pColor)
-        {
-            try
-            {
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(Color));
-                return (Color)converter.ConvertFromInvariantString(pColor);
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex.Message, ex);
-                return (Color)Color.FromArgb(255, 0, 0);
-            }
-        }
-
+  
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Financial 
@@ -1418,7 +1391,7 @@ namespace logicpos.shared.App
               , pDocumentOrderMain
               , pArticle
             );
-            //_log.Debug(string.Format("sql: [{0}]", sql));
+            //_logger.Debug(string.Format("sql: [{0}]", sql));
             var partialPayedItems = pSession.ExecuteScalar(sql);
 
             return (partialPayedItems != null && Convert.ToDecimal(partialPayedItems) > 0)
@@ -1440,8 +1413,10 @@ namespace logicpos.shared.App
             {
                 Dictionary<string, string> resultPreferences = new Dictionary<string, string>();
 
-                SortingCollection sortingCollection = new SortingCollection();
-                sortingCollection.Add(new SortProperty("Ord", SortingDirection.Ascending));
+                SortingCollection sortingCollection = new SortingCollection
+                {
+                    new SortProperty("Ord", SortingDirection.Ascending)
+                };
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse("Disabled = 0 OR Disabled is NULL");
                 XPCollection xpcPreferenceParameter = new XPCollection(pSession, typeof(cfg_configurationpreferenceparameter), criteriaOperator);
 
@@ -1453,7 +1428,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return null;
             }
         }
@@ -1474,7 +1449,7 @@ namespace logicpos.shared.App
         //    }
         //    catch (Exception ex)
         //    {
-        //        _log.Debug(ex.Message, ex);
+        //        _logger.Debug(ex.Message, ex);
         //    }
 
         //    return result;
@@ -1567,7 +1542,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -1602,7 +1577,7 @@ namespace logicpos.shared.App
 
                             if (!result.ContainsKey(val1))
                             {
-                                if (debug) _log.Debug(string.Format("CSVFileToDictionary Add: [{0}],[{1}]", val1, val2));
+                                if (debug) _logger.Debug(string.Format("CSVFileToDictionary Add: [{0}],[{1}]", val1, val2));
                                 result.Add(val1, val2);
                             }
                         }
@@ -1611,7 +1586,7 @@ namespace logicpos.shared.App
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
                 finally
                 {
@@ -1667,13 +1642,13 @@ namespace logicpos.shared.App
                 foreach (string str in resultFromLinq)
                 {
                     result.Add(str);
-                    if (debug) _log.Debug(string.Format("Message: [{0}]", str));
+                    if (debug) _logger.Debug(string.Format("Message: [{0}]", str));
                 }
 
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -1707,7 +1682,7 @@ namespace logicpos.shared.App
                     {
                         foreach (sys_userpermissionprofile item in pUser.Profile.Permissions)
                         {
-                            if (debug) _log.Debug(string.Format("Permission: Token [{0}], Granted [{1}]", item.PermissionItem.Token, item.Granted));
+                            if (debug) _logger.Debug(string.Format("Permission: Token [{0}], Granted [{1}]", item.PermissionItem.Token, item.Granted));
                             resultPermissions.Add(item.PermissionItem.Token, item.Granted);
                         }
                     }
@@ -1717,15 +1692,14 @@ namespace logicpos.shared.App
             {
                 //If error Detect Check Duplicated PermissionItems in Profile
                 //SELECT upiToken,COUNT(*) as Count FROM view_userprofile WHERE uprOid = '1626e21f-75e6-429e-b0ac-edb755e733c2' GROUP BY upiToken ORDER BY COUNT(*) DESC,upiCode;
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return resultPermissions;
         }
 
         public static bool HasPermissionTo(String pToken)
         {
-            bool result = false;
-
+            bool result;
             if (GlobalFramework.LoggedUserPermissions != null && GlobalFramework.LoggedUserPermissions.ContainsKey(pToken))
             {
                 result = GlobalFramework.LoggedUserPermissions[pToken];
@@ -1735,7 +1709,7 @@ namespace logicpos.shared.App
                 result = false;
             }
 
-            //_log.Debug(string.Format("HasPermissionTo({0}): {1}", pToken, result));
+            //_logger.Debug(string.Format("HasPermissionTo({0}): {1}", pToken, result));
             return result;
         }
 
@@ -1750,7 +1724,7 @@ namespace logicpos.shared.App
 
         public static void SystemNotification(Session pSession)
         {
-            _log.Debug("void FrameworkUtils.SystemNotification(Session pSession) :: pSession: " + pSession.ToString());
+            _logger.Debug("void FrameworkUtils.SystemNotification(Session pSession) :: pSession: " + pSession.ToString());
             bool debug = true;
 
             //Filter 
@@ -1786,7 +1760,7 @@ namespace logicpos.shared.App
                 //        systemNotification.Message = systemNotificationType.Message;
                 //        systemNotification.Save();
                 //        ord++;
-                //        if (debug) _log.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+                //        if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
                 //    }
                 //};
 
@@ -1806,7 +1780,7 @@ namespace logicpos.shared.App
                         systemNotification.Message = string.Format(systemNotificationType.Message, GlobalFramework.LoggedTerminal.Designation);
                         systemNotification.Save();
                         ord++;
-                        if (debug) _log.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+                        if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
                     }
                 };
 
@@ -1827,7 +1801,7 @@ namespace logicpos.shared.App
                         systemNotification.Message = string.Format(systemNotificationType.Message, GlobalFramework.LoggedUser.Login, GlobalFramework.LoggedUser.Name);
                         systemNotification.Save();
                         ord++;
-                        if (debug) _log.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+                        if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
                     }
                 };
                 */
@@ -1851,7 +1825,7 @@ namespace logicpos.shared.App
                     };
                     systemNotification.Save();
                     ord++;
-                    if (debug) _log.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+                    if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
                 }
                 */
 
@@ -1869,7 +1843,7 @@ namespace logicpos.shared.App
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
-                            if (debug) _log.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+                            if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
                         };
 
                         //:::: Notification : ConsignationInvoiceDocumentsToInvoice ::::
@@ -1879,7 +1853,7 @@ namespace logicpos.shared.App
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
-                            if (debug) _log.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+                            if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
                         };
 
                         //:::: Notification : SaftDocumentType.MovementOfGoodsToInvoice ::::
@@ -1888,7 +1862,7 @@ namespace logicpos.shared.App
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
-                            if (debug) _log.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
+                            if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
                         };
 
                         break;
@@ -1899,7 +1873,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1939,8 +1913,6 @@ namespace logicpos.shared.App
             sys_systemnotification result = null;
             //Used to Persist sys_systemnotification if greater than 0
             int totalNotificatedDocuments = 0;
-            //Show total Showed Notification in Document
-            int totalNotificationsInDocument = 0;
             //Ignore Notificate Documents after Documents Have Been Notified a determined Number Of Times
             int ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = 0;
             try
@@ -1949,7 +1921,7 @@ namespace logicpos.shared.App
             }
             catch (Exception)
             {
-                _log.Error(string.Format("Error using PreferenceParameters: NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES, using default Value of : [{0}]", ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes));
+                _logger.Error(string.Format("Error using PreferenceParameters: NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES, using default Value of : [{0}]", ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes));
             }
 
             try
@@ -1971,7 +1943,7 @@ namespace logicpos.shared.App
                 // Debug Helper
                 //if (pSystemNotificationTypeGuid.Equals(SettingsApp.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods))
                 //{
-                //    _log.Debug("BREAK");
+                //    _logger.Debug("BREAK");
                 //}
 
                 if (xpcDocumentFinanceMaster.Count > 0)
@@ -1986,8 +1958,9 @@ namespace logicpos.shared.App
                         i++;
                         //Get BackDays
                         documentBackUtilDays = GetUtilDays(item.Date, true).Count;
+                        //Show total Showed Notification in Document
                         // Get total notification for Current Document
-                        totalNotificationsInDocument = item.Notifications.Count;
+                        int totalNotificationsInDocument = item.Notifications.Count;
 
                         // If document has less notifications show it again, or if is ignored with ignoreNotificationsAfterBeenNotificatedTimes == 0
                         if (ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes == 0 || totalNotificationsInDocument < ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes)
@@ -2026,7 +1999,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2095,7 +2068,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2155,7 +2128,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2189,7 +2162,7 @@ namespace logicpos.shared.App
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     return false;
                 }
             }
@@ -2214,7 +2187,7 @@ namespace logicpos.shared.App
                 catch (Exception)
                 {
                     //Hide Error from log
-                    //_log.Error(ex.Message, ex);
+                    //_logger.Error(ex.Message, ex);
                     return false;
                 }
             }
@@ -2240,7 +2213,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2268,7 +2241,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2298,12 +2271,12 @@ namespace logicpos.shared.App
                 //PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
                 //foreach (PropertyInfo property in properties)
                 //{
-                //    _log.Debug(String.Format("[{0}] == [{1}]", property.Name, pFieldName));
+                //    _logger.Debug(String.Format("[{0}] == [{1}]", property.Name, pFieldName));
                 //}
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2326,7 +2299,7 @@ namespace logicpos.shared.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -2363,7 +2336,7 @@ namespace logicpos.shared.App
                 resultObject = methodInfo.Invoke(GlobalFramework.PluginSoftwareVendor, methodParameters);
             }
 
-            if (debug) _log.Debug(String.Format("SoftwareVendor {0} Value: [{1}]", property, resultObject));
+            if (debug) _logger.Debug(String.Format("SoftwareVendor {0} Value: [{1}]", property, resultObject));
 
             if (resultObject != null)
             {

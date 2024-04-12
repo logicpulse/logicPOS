@@ -9,21 +9,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancedetailorderreference() : base() { }
         public fin_documentfinancedetailorderreference(Session session) : base(session) { }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        fin_documentfinancemaster fDocumentMaster;
+        private fin_documentfinancemaster fDocumentMaster;
         public fin_documentfinancemaster DocumentMaster
         {
             get { return fDocumentMaster; }
             set { SetPropertyValue<fin_documentfinancemaster>("DocumentMaster", ref fDocumentMaster, value); }
         }
 
-        string fOriginatingON;
+        private string fOriginatingON;
         [Size(60)]
         public string OriginatingON
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("OriginatingON", ref fOriginatingON, value); }
         }
 
-        DateTime fOrderDate;
+        private DateTime fOrderDate;
         public DateTime OrderDate
         {
             get { return fOrderDate; }
@@ -39,7 +39,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceDetail One <> Many DocumentFinanceOrderReferences
-        fin_documentfinancedetail fDocumentDetail;
+        private fin_documentfinancedetail fDocumentDetail;
         [Association(@"DocumentFinanceDetailReferencesDocumentFinanceDetailOrderReference")]
         public fin_documentfinancedetail DocumentDetail
         {

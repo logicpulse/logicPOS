@@ -5,7 +5,7 @@ using System;
 
 namespace logicpos.financial.console.Test.Classes.Reports
 {
-    class TestCustomReport
+    internal class TestCustomReport
     {
         public static string DocumentMasterCreatePDF()
         {

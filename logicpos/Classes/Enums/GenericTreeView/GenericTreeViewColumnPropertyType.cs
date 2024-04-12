@@ -1,6 +1,6 @@
 ﻿namespace logicpos.Classes.Enums.GenericTreeView
 {
-    enum GenericTreeViewColumnPropertyType
+    internal enum GenericTreeViewColumnPropertyType
     {
         Text, CheckBox
     }

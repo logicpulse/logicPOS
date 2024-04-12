@@ -33,7 +33,7 @@
     {
     //Reset dataBandRec
     _dataBandRec = 1;
-    PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_Logo&quot;);
+    PictureCompanyLogo.ImageLocation = (string)Report.GetParameterValue(&quot;Report_FileName_loggero&quot;);
     //Get data source
     _ds = Report.GetDataSource(&quot;DocumentFinanceMaster.DocumentFinanceDetail&quot;);
           // initialize dataSource

@@ -9,28 +9,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_worksessionmovement() : base() { }
         public pos_worksessionmovement(Session session) : base(session) { }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        DateTime fDate;
+        private DateTime fDate;
         public DateTime Date
         {
             get { return fDate; }
             set { SetPropertyValue<DateTime>("Date", ref fDate, value); }
         }
 
-        Decimal fMovementAmount;
+        private Decimal fMovementAmount;
         public Decimal MovementAmount
         {
             get { return fMovementAmount; }
             set { SetPropertyValue<Decimal>("MovementAmount", ref fMovementAmount, value); }
         }
 
-        string fDescription;
+        private string fDescription;
         [Size(255)]
         public string Description
         {
@@ -38,42 +38,42 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Description", ref fDescription, value); }
         }
 
-        sys_userdetail fUserDetail;
+        private sys_userdetail fUserDetail;
         public sys_userdetail UserDetail
         {
             get { return fUserDetail; }
             set { SetPropertyValue<sys_userdetail>("UserDetail", ref fUserDetail, value); }
         }
 
-        pos_configurationplaceterminal fTerminal;
+        private pos_configurationplaceterminal fTerminal;
         public pos_configurationplaceterminal Terminal
         {
             get { return fTerminal; }
             set { SetPropertyValue<pos_configurationplaceterminal>("Terminal", ref fTerminal, value); }
         }
 
-        fin_documentfinancemaster fDocumentFinanceMaster;
+        private fin_documentfinancemaster fDocumentFinanceMaster;
         public fin_documentfinancemaster DocumentFinanceMaster
         {
             get { return fDocumentFinanceMaster; }
             set { SetPropertyValue<fin_documentfinancemaster>("DocumentFinanceMaster", ref fDocumentFinanceMaster, value); }
         }
 
-        fin_documentfinancepayment fDocumentFinancePayment;
+        private fin_documentfinancepayment fDocumentFinancePayment;
         public fin_documentfinancepayment DocumentFinancePayment
         {
             get { return fDocumentFinancePayment; }
             set { SetPropertyValue<fin_documentfinancepayment>("DocumentFinancePayment", ref fDocumentFinancePayment, value); }
         }
 
-        fin_documentfinancetype fDocumentFinanceType;
+        private fin_documentfinancetype fDocumentFinanceType;
         public fin_documentfinancetype DocumentFinanceType
         {
             get { return fDocumentFinanceType; }
             set { SetPropertyValue<fin_documentfinancetype>("DocumentFinanceType", ref fDocumentFinanceType, value); }
         }
 
-        fin_configurationpaymentmethod fPaymentMethod;
+        private fin_configurationpaymentmethod fPaymentMethod;
         public fin_configurationpaymentmethod PaymentMethod
         {
             get { return fPaymentMethod; }
@@ -81,7 +81,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //WorkSessionPeriod One <> Many WorkSessionMovement
-        pos_worksessionperiod fWorkSessionPeriod;
+        private pos_worksessionperiod fWorkSessionPeriod;
         [Association(@"WorkSessionPeriodReferencesWorkSessionMovement")]
         public pos_worksessionperiod WorkSessionPeriod
         {
@@ -90,7 +90,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //WorkSessionMovementType One <> Many WorkSessionMovement
-        pos_worksessionmovementtype fWorkSessionMovementType;
+        private pos_worksessionmovementtype fWorkSessionMovementType;
         [Association(@"WorkSessionMovementTypeReferencesWorkSessionMovement")]
         public pos_worksessionmovementtype WorkSessionMovementType
         {

@@ -14,8 +14,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 	/// </summary>
 	public class PdfToolStripMain : PdfToolStrip
 	{
-		#region private members
-		delegate void ShowPrintDialogDelegate(PrintDialog dlg);
+        #region private members
+        private delegate void ShowPrintDialogDelegate(PrintDialog dlg);
 		#endregion
 
 		#region Public events
@@ -190,9 +190,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
         protected virtual string OnPasswordRequired()
 		{
 			var args = new EventArgs<string>(null);
-			if (PasswordRequired != null)
-				PasswordRequired(this, args);
-			return args.Value;
+            PasswordRequired?.Invoke(this, args);
+            return args.Value;
 		}
 
         /// <summary>
@@ -316,9 +315,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
         /// <param name="e">Event arguments</param>
         protected virtual void OnPdfPrinDocumentCreaded(EventArgs<PdfPrintDocument> e)
 		{
-			if (PdfPrintDocumentCreated != null)
-				PdfPrintDocumentCreated(this, e);
-		}
+            PdfPrintDocumentCreated?.Invoke(this, e);
+        }
 		#endregion
 
 		#region Private methods

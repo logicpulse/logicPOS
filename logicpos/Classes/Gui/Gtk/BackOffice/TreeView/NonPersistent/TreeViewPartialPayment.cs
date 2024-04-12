@@ -13,7 +13,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewPartialPayment : GenericTreeViewDataTable
+    internal class TreeViewPartialPayment : GenericTreeViewDataTable
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewPartialPayment() { }
@@ -34,40 +34,42 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int decimalsColumnWidth = 100;
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            /*00*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false });
-            /*01*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") });
-            /*02*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
-            /*03*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency });
-            /*04*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Vat") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
-            /*05*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency });
-            /*06*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Place") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_placetable_place") });
-            //Other Invisible Fields
-            /*07*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Visible = false });
-            /*08*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Quantity") { Type = typeof(Decimal), Visible = false });
-            /*09*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("UnitMeasure") { Type = typeof(String), Visible = false });
-            /*10*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("PlaceOid") { Type = typeof(Guid), Visible = false });
-            /*11*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("TableOid") { Type = typeof(Guid), Visible = false });
-            /*12*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false });
-            /*13*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Token1") { Type = typeof(string), Visible = false });  //ClassifiedID
-            /*14*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Token2") { Type = typeof(string), Visible = false });  //FriendlyID
-            /*15*/
-            columnProperties.Add(new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false });
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            {
+                /*00*/
+                new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
+                /*01*/
+                new GenericTreeViewColumnProperty("Code") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
+                /*02*/
+                new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                /*03*/
+                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
+                /*04*/
+                new GenericTreeViewColumnProperty("Vat") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                /*05*/
+                new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                /*06*/
+                new GenericTreeViewColumnProperty("Place") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_placetable_place") },
+                //Other Invisible Fields
+                /*07*/
+                new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Visible = false },
+                /*08*/
+                new GenericTreeViewColumnProperty("Quantity") { Type = typeof(Decimal), Visible = false },
+                /*09*/
+                new GenericTreeViewColumnProperty("UnitMeasure") { Type = typeof(String), Visible = false },
+                /*10*/
+                new GenericTreeViewColumnProperty("PlaceOid") { Type = typeof(Guid), Visible = false },
+                /*11*/
+                new GenericTreeViewColumnProperty("TableOid") { Type = typeof(Guid), Visible = false },
+                /*12*/
+                new GenericTreeViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false },
+                /*13*/
+                new GenericTreeViewColumnProperty("Token1") { Type = typeof(string), Visible = false },  //ClassifiedID
+                /*14*/
+                new GenericTreeViewColumnProperty("Token2") { Type = typeof(string), Visible = false },  //FriendlyID
+                /*15*/
+                new GenericTreeViewColumnProperty("Notes") { Type = typeof(string), Visible = false }
+            };
 
             //init DataTable
             DataTable dataTable = GetDataTable(columnProperties);

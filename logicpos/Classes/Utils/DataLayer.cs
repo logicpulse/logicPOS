@@ -412,8 +412,6 @@ namespace logicpos
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            string commandSeparator = string.Empty;
             Dictionary<string, string> result = new Dictionary<string, string>();
 
             try
@@ -469,7 +467,7 @@ namespace logicpos
                         result.Add("DATE_FORMAT(stm.Date, '%Y-%m-%d') AS stmDateDay,", "CONVERT(VARCHAR(19), stm.Date, 23) AS stmDateDay,");
                         result.Add("DATE_FORMAT(stk.CreatedAt, '%Y-%m-%d') AS stkDateDay,", "CONVERT(VARCHAR(19), stk.CreatedAt, 23) AS stkDateDay,");
                         //ByPass Default commandSeparator ;
-                        commandSeparator = "GO";
+                        string commandSeparator = "GO";
                         break;
                 }
             }

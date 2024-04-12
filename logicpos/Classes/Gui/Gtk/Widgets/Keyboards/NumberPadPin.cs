@@ -5,6 +5,7 @@ using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Drawing;
@@ -14,15 +15,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public class NumberPadPin : Box
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected
         protected Table _table;
         //Private Members
-        private Window _sourceWindow;
+        private readonly Window _sourceWindow;
         private int _tempCursorPosition = 0;
         private Boolean _entryPinShowStatus = false;
-        private Label _labelStatus;
+        private readonly Label _labelStatus;
         //Used to store New Password in Memory, to Compare with Confirmation
         private string _passwordNew;
         private bool _notLoginAuth;
@@ -112,7 +113,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Label Status
             _labelStatus = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_password"));
             _labelStatus.ModifyFont(Pango.FontDescription.FromString(pFontLabelStatus));
-            _labelStatus.ModifyFg(StateType.Normal, logicpos.Utils.ColorToGdkColor(pFontColorLabelStatus));
+            _labelStatus.ModifyFg(StateType.Normal, pFontColorLabelStatus.ToGdkColor());
             _labelStatus.SetAlignment(0.5F, 0.5f);
 
             //Initialize Buttons
@@ -215,7 +216,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
 
-        void _entryPin_Changed(object sender, EventArgs e)
+        private void _entryPin_Changed(object sender, EventArgs e)
         {
             EntryValidation entry = (EntryValidation)sender;
             ClearEntryPinStatusMessage();
@@ -224,7 +225,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Shared Button Key for Numbers
-        void buttonKey_Clicked(object sender, EventArgs e)
+        private void buttonKey_Clicked(object sender, EventArgs e)
         {
             TouchButtonText button = (TouchButtonText)sender;
             ClearEntryPinStatusMessage();
@@ -234,7 +235,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _entryPin.Position = _entryPin.Text.Length;
         }
 
-        void buttonKeyCE_Clicked(object sender, EventArgs e)
+        private void buttonKeyCE_Clicked(object sender, EventArgs e)
         {
             ClearEntryPinStatusMessage();
             //_entryPin.DeleteText(0, _entryPin.Text.Length);
@@ -244,7 +245,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _entryPin.Position = _entryPin.Text.Length;
         }
 
-        void _entryPin_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void _entryPin_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
@@ -350,7 +351,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -378,15 +379,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                 if (resultObject != null && resultObject.GetType() == typeof(String) && CryptographyUtils.SaltedString.ValidateSaltedString(resultObject.ToString(), password))
                 {
-                    _entryPin.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.Black));
+                    _entryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
                     _entryPin.Visibility = false;
                     _entryPinShowStatus = false;
                     result = true;
                 }
                 else
                 {
-                    FrameworkUtils.Audit("USER_LOGIN_ERROR", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_login_error"), pUserDetail.Name));                    
-                    _entryPin.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.Red));
+                    FrameworkUtils.Audit("USER_loggerIN_ERROR", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin_error"), pUserDetail.Name));                    
+                    _entryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
                     _entryPin.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "status_message_pin_error");
                     _entryPin.Visibility = true;
                     _entryPinShowStatus = true;
@@ -397,7 +398,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return result;
             }
         }
@@ -407,7 +408,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Clean Error Message
             if (_entryPinShowStatus || pForceClear)
             {
-                _entryPin.ModifyText(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.Black));
+                _entryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
                 _entryPin.Text = string.Empty;
                 _entryPin.Visibility = false;
                 _entryPinShowStatus = false;
@@ -420,8 +421,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 case NumberPadPinMode.Password:
                     _labelStatus.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_pinpad_message_type_password");
-                    //_buttonKeyOK.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_login;
-                    _buttonKeyOK.LabelText = (!_notLoginAuth) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_login") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
+                    //_buttonKeyOK.LabelText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_loggerin;
+                    _buttonKeyOK.LabelText = (!_notLoginAuth) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_loggerin") : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordOld:
                     //Show message to user, to change old password
@@ -449,7 +450,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             GlobalFramework.LoggedUser = pUserDetail;
             GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions();
-            FrameworkUtils.Audit("USER_LOGIN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_login"), pUserDetail.Name));
+            FrameworkUtils.Audit("USER_loggerIN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerin"), pUserDetail.Name));
 
             //SessionApp Add LoggedUser
             if (!GlobalFramework.SessionApp.LoggedUsers.ContainsKey(GlobalFramework.LoggedUser.Oid))

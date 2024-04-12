@@ -5,8 +5,8 @@ namespace CryptographyUtils
 {
     public class SaltedString
     {
-        static int saltLength = 6;
-        static string delim = "*";
+        private static readonly int saltLength = 6;
+        private static readonly string delim = "*";
 
         public static string SaltString(string pSaltString, string pSalt)
         {

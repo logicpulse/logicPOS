@@ -3,21 +3,21 @@
     public class TaxBagProperties
     {
         //Optional, used to add Designation when needed ex Preview
-        string _designation;
+        private string _designation;
         public string Designation
         {
             get { return _designation; }
             set { _designation = value; }
         }
 
-        decimal _total;
+        private decimal _total;
         public decimal Total
         {
             get { return _total; }
             set { _total = value; }
         }
 
-        decimal _totalBase;
+        private decimal _totalBase;
         public decimal TotalBase
         {
             get { return _totalBase; }

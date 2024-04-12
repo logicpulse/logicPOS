@@ -14,7 +14,7 @@ using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewWarehouse : GenericTreeViewXPO
+    internal class TreeViewWarehouse : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewWarehouse() { }
@@ -36,20 +36,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"), Expand = false });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
-
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            {
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"), Expand = false },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
 
             //Configure Criteria/XPCollection/Model
             //Default Criteria with XpoOidUndefinedRecord
-            CriteriaOperator criteria = pXpoCriteria;
+            CriteriaOperator criteria;
             // Override Criteria adding XpoOidHiddenRecordsFilter
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {
@@ -58,8 +58,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
             XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
-            var sortingCollection = new SortingCollection();
-            sortingCollection.Add(new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending));
+            var sortingCollection = new SortingCollection
+            {
+                new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending)
+            };
             xpoCollection.Sorting = sortingCollection;
 
             //Call Base Initializer

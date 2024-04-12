@@ -17,14 +17,14 @@ namespace logicpos.shared.Classes.Finance
 {
     public class PriceProperties
     {
-        PricePropertiesSourceMode _sourceMode;
+        private PricePropertiesSourceMode _sourceMode;
         public PricePropertiesSourceMode SourceMode
         {
             get { return _sourceMode; }
             set { _sourceMode = value; }
         }
 
-        decimal _quantity;
+        private decimal _quantity;
         public decimal Quantity
         {
             get { return _quantity; }
@@ -39,7 +39,7 @@ namespace logicpos.shared.Classes.Finance
             }
         }
 
-        decimal _priceUser;
+        private decimal _priceUser;
         public decimal PriceUser
         {
             get { return _priceUser; }
@@ -54,42 +54,42 @@ namespace logicpos.shared.Classes.Finance
             }
         }
 
-        decimal _discountArticle;
+        private decimal _discountArticle;
         public decimal DiscountArticle
         {
             get { return _discountArticle; }
             set { _discountArticle = value; }
         }
 
-        decimal _discountGlobal;
+        private decimal _discountGlobal;
         public decimal DiscountGlobal
         {
             get { return _discountGlobal; }
             set { _discountGlobal = value; }
         }
 
-        bool _priceWithVat;
+        private bool _priceWithVat;
         public bool PriceWithVat
         {
             get { return _priceWithVat; }
             set { _priceWithVat = value; }
         }
 
-        decimal _vat;
+        private decimal _vat;
         public decimal Vat
         {
             get { return _vat; }
             set { _vat = value; }
         }
 
-        Guid _vatExemptionReason;
+        private Guid _vatExemptionReason;
         public Guid VatExemptionReason
         {
             get { return _vatExemptionReason; }
             set { _vatExemptionReason = value; }
         }
 
-        decimal _priceNet;
+        private decimal _priceNet;
         public decimal PriceNet
         {
             get { return _priceNet; }
@@ -104,14 +104,14 @@ namespace logicpos.shared.Classes.Finance
             }
         }
 
-        decimal _priceWithDiscount;
+        private decimal _priceWithDiscount;
         public decimal PriceWithDiscount
         {
             get { return _priceWithDiscount; }
             set { _priceWithDiscount = value; }
         }
 
-        decimal _totalNetBeforeDiscountGlobal;
+        private decimal _totalNetBeforeDiscountGlobal;
         /// <summary>
         /// Represents the total net after applying Customer Discount and before Global Discount (discount registered for customer).
         /// Used when showing price details from item level.
@@ -123,7 +123,7 @@ namespace logicpos.shared.Classes.Finance
             set { _totalNetBeforeDiscountGlobal = value; }
         }
 
-        decimal _totalFinalBeforeDiscountGlobal;
+        private decimal _totalFinalBeforeDiscountGlobal;
         /// <summary>
         /// Represents the total final after applying Customer Discount and before Global Discount (discount registered for customer).
         /// Used when showing price details from item level.
@@ -135,42 +135,42 @@ namespace logicpos.shared.Classes.Finance
             set { _totalFinalBeforeDiscountGlobal = value; }
         }
 
-        decimal _priceWithDiscountGlobal;
+        private decimal _priceWithDiscountGlobal;
         public decimal PriceWithDiscountGlobal
         {
             get { return _priceWithDiscountGlobal; }
             set { _priceWithDiscountGlobal = value; }
         }
 
-        decimal _totalGross;
+        private decimal _totalGross;
         public decimal TotalGross
         {
             get { return _totalGross; }
             set { _totalGross = value; }
         }
 
-        decimal _totalNet;
+        private decimal _totalNet;
         public decimal TotalNet
         {
             get { return _totalNet; }
             set { _totalNet = value; }
         }
 
-        decimal _totalDiscount;
+        private decimal _totalDiscount;
         public decimal TotalDiscount
         {
             get { return _totalDiscount; }
             set { _totalDiscount = value; }
         }
 
-        decimal _totalTax;
+        private decimal _totalTax;
         public decimal TotalTax
         {
             get { return _totalTax; }
             set { _totalTax = value; }
         }
 
-        decimal _totalFinal;
+        private decimal _totalFinal;
         public decimal TotalFinal
         {
             get { return _totalFinal; }
@@ -185,7 +185,7 @@ namespace logicpos.shared.Classes.Finance
             }
         }
 
-        decimal _priceFinal;
+        private decimal _priceFinal;
         public decimal PriceFinal
         {
             get { return _priceFinal; }

@@ -8,7 +8,7 @@ using System;
 
 namespace logicpos
 {
-    partial class StartupWindow
+    public partial class StartupWindow
     {
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
@@ -29,7 +29,7 @@ namespace logicpos
             _numberPadPin.ProcessPassword(this, _selectedUserDetail);
         }
 
-        void ButtonKeyResetPassword_Clicked(object sender, EventArgs e)
+        private void ButtonKeyResetPassword_Clicked(object sender, EventArgs e)
         {
             //Require to store current Current Pin, else when we change mode it resets pin to messages
             string currentPin = _numberPadPin.EntryPin.Text;
@@ -40,7 +40,7 @@ namespace logicpos
         }
 
         //Removed : Conflited with Change Password, When we Implement Default Enter Key in All Dilogs, It Trigger Twice
-        void StartupWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void StartupWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             //if (args.Event.Key.ToString().Equals("Return"))
             //{
@@ -48,7 +48,7 @@ namespace logicpos
             //}
         }
 
-        void ButtonKeyQuit_Clicked(object sender, EventArgs e)
+        private void ButtonKeyQuit_Clicked(object sender, EventArgs e)
         {
             LogicPos.Quit(this);
         }
@@ -81,7 +81,7 @@ namespace logicpos
 
                         if (_selectedUserDetail.PasswordReset)
                         {
-                            //_log.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
+                            //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
                             Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
                                 string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), _selectedUserDetail.Name, SettingsApp.DefaultValueUserDetailAccessPin)
                             );
@@ -94,7 +94,7 @@ namespace logicpos
 	        }
 	        catch (Exception ex)
 	        {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
 	        }        
         }
 
@@ -111,7 +111,7 @@ namespace logicpos
             {
                 GlobalFramework.SessionApp.LoggedUsers.Remove(pUserDetail.Oid);
                 GlobalFramework.SessionApp.Write();
-                FrameworkUtils.Audit("USER_LOGOUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_logout"), pUserDetail.Name));
+                FrameworkUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (GlobalFramework.LoggedUser.Equals(pUserDetail))
                 {

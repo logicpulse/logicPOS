@@ -22,7 +22,7 @@ using System.Threading;
 
 namespace logicpos.financial.service
 {
-    class Program
+    internal class Program
     {
         //Log4Net basics with a Console Application (c#)
         //http://geekswithblogs.net/MarkPearl/archive/2012/01/30/log4net-basics-with-a-console-application-c.aspx
@@ -30,16 +30,16 @@ namespace logicpos.financial.service
         //[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static SortedList<string, Action> _testActions;
-        private static string _line = string.Empty;
+        private static readonly string _line = string.Empty;
 
         //Service Private Members
         public static string SERVICE_NAME = "LogicPulse LogicPos Financial Service";
         private static ServiceHost _serviceHost;
         private static Uri _baseAddress;
-        private static int _servicePort = 50391;
+        private static readonly int _servicePort = 50391;
         public static int ServicePort
         {
             get { return Program._servicePort; }
@@ -48,7 +48,7 @@ namespace logicpos.financial.service
         private static System.Timers.Timer _timer = null;
         private static bool _timerRunningTasks = false;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //Init Settings Main Config Settings
            GlobalFramework.Settings = ConfigurationManager.AppSettings;
@@ -58,7 +58,7 @@ namespace logicpos.financial.service
 
             //Service Initialization
             string uri = string.Format("http://localhost:{0}/Service1.svc", _servicePort);
-            _log.Debug(string.Format("Service URI: {0}", uri));
+            _logger.Debug(string.Format("Service URI: {0}", uri));
             _baseAddress = new Uri(uri);
 
             //Service Mode
@@ -67,7 +67,7 @@ namespace logicpos.financial.service
                 // Running as service
                 using (var service = new Service())
                 {
-                    _log.Debug("Service.Run(service)");
+                    _logger.Debug("Service.Run(service)");
                     Service.Run(service);
                 }
             }
@@ -110,10 +110,12 @@ namespace logicpos.financial.service
                 //Utils.Log(string.Format("BootStrap {0}....", SettingsApp.AppName));
 
                 // Init Paths
-                GlobalFramework.Path = new Hashtable();
-                GlobalFramework.Path.Add("temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]));
-                GlobalFramework.Path.Add("certificates", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]));
-                GlobalFramework.Path.Add("plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]));
+                GlobalFramework.Path = new Hashtable
+                {
+                    { "temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]) },
+                    { "certificates", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]) },
+                    { "plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]) }
+                };
                 //Create Directories
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
                 FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["certificates"])));
@@ -149,13 +151,13 @@ namespace logicpos.financial.service
                 //Init XPO Connector DataLayer
                 try
                 {
-                    _log.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
+                    _logger.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
 
 
                     var connectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
                     { ConnectionString = xpoConnectionString };
                     if (connectionStringBuilder.ContainsKey("password")) { connectionStringBuilder["password"] = "*****"; };
-                    _log.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
+                    _logger.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
 
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                     GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
@@ -168,7 +170,7 @@ namespace logicpos.financial.service
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     //Output only if in Console Mode
                     if (Environment.UserInteractive)
                     {
@@ -187,9 +189,9 @@ namespace logicpos.financial.service
                 //{
                 //    foreach (var pref in GlobalFramework.PreferenceParameters)
                 //    {
-                //        _log.Debug(string.Format(pref.Key + ": " + pref.Value));
+                //        _logger.Debug(string.Format(pref.Key + ": " + pref.Value));
                 //    }
-                //}catch(Exception Ex) { _log.Debug(Ex.Message); }
+                //}catch(Exception Ex) { _logger.Debug(Ex.Message); }
 
                 //CultureInfo/Localization
                string culture = GlobalFramework.PreferenceParameters["CULTURE"];
@@ -207,10 +209,10 @@ namespace logicpos.financial.service
                     string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
                     GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
                     if(GlobalFramework.CurrentCulture != null)
-                    _log.Debug(GlobalFramework.CurrentCulture.DisplayName);
+                    _logger.Debug(GlobalFramework.CurrentCulture.DisplayName);
                     else
                     {
-                        _log.Debug("No culture loaded");
+                        _logger.Debug("No culture loaded");
                     }
                 }
                 //Always use en-US NumberFormat because of MySql Requirements
@@ -241,7 +243,7 @@ namespace logicpos.financial.service
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -253,7 +255,7 @@ namespace logicpos.financial.service
             {
                 // Error Missing pluginPath
                 string errorMessage = "Error! missing plugin path in config! Please fix config and try again!";
-                _log.Error(errorMessage);
+                _logger.Error(errorMessage);
                 Console.WriteLine(errorMessage);
                 Console.ReadKey();
                 Environment.Exit(0);
@@ -266,7 +268,7 @@ namespace logicpos.financial.service
             if (GlobalFramework.PluginSoftwareVendor != null)
             {
                 // Show Loaded Plugin
-                _log.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
                 // Init Plugin
                 SettingsApp.InitSoftwareVendorPluginSettings();
             }
@@ -274,7 +276,7 @@ namespace logicpos.financial.service
             {
                 // Error Loading Required Plugin
                 string errorMessage = string.Format("Error! missing required plugin: [{0}]. Install required plugin and try again!", typeof(ISoftwareVendor));
-                _log.Error(errorMessage);
+                _logger.Error(errorMessage);
                 Console.WriteLine(errorMessage);
                 Console.ReadKey();
                 Environment.Exit(0);
@@ -292,14 +294,19 @@ namespace logicpos.financial.service
         private static void InitTestActions()
         {
             // Init Dictionary
-            _testActions = new SortedList<string, Action>();
-
-            _testActions.Add("1) TestSendDocument.SendFinanceDocument()", () =>
+            _testActions = new SortedList<string, Action>
+            {
+                {
+                    "1) TestSendDocument.SendFinanceDocument()",
+                    () =>
                 TestSendDocument.SendDocumentNonWayBill()
-            );
-            _testActions.Add("2) TestSendDocument.SendWayBillDocument()", () =>
-                TestSendDocument.SendDocumentWayBill()
-            );
+                },
+                {
+                    "2) TestSendDocument.SendWayBillDocument()",
+                    () =>
+                    TestSendDocument.SendDocumentWayBill()
+                }
+            };
         }
 
         private static void InitMain()
@@ -389,7 +396,7 @@ namespace logicpos.financial.service
 
         public static void Start(string[] args)
         {
-            _log.Debug("Service Started");
+            _logger.Debug("Service Started");
 
             //Call ModifyHttpSettings
             Utils.ModifyHttpSettings();
@@ -416,7 +423,7 @@ namespace logicpos.financial.service
         public static void Stop()
         {
             // onstop code here
-            _log.Debug("Service Stoped");
+            _logger.Debug("Service Stoped");
             // Close the ServiceHost.
             _serviceHost.Close();
 
@@ -431,7 +438,7 @@ namespace logicpos.financial.service
         {
             if (SettingsApp.ServiceTimerEnabled)
             {
-                _log.Debug("Service StartTimer to " + SettingsApp.ServiceTimer.Hour + ":" + SettingsApp.ServiceTimer.Minute);
+                _logger.Debug("Service StartTimer to " + SettingsApp.ServiceTimer.Hour + ":" + SettingsApp.ServiceTimer.Minute);
                 DateTime nowTime = DateTime.Now;
                 DateTime oneAmTime = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, SettingsApp.ServiceTimer.Hour, SettingsApp.ServiceTimer.Minute, 0, 0);
                 if (nowTime > oneAmTime)
@@ -448,7 +455,7 @@ namespace logicpos.financial.service
         {
             if (SettingsApp.ServiceTimerEnabled && _timer != null)
             {
-                //_log.Debug("Service StopTimer");
+                //_logger.Debug("Service StopTimer");
                 _timer.Stop();
                 _timer = null;
             }
@@ -464,12 +471,12 @@ namespace logicpos.financial.service
                 //Started Running Tasks
                 _timerRunningTasks = true;
 
-                _log.Debug(String.Format("Send Documents to AT"));
+                _logger.Debug(String.Format("Send Documents to AT"));
 				//Financial.service - Correções no envio de documentos AT [IN:014494]
 				//Now only works in prodution
                 if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocuments"]) || Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocumentsWayBill"]))
                 {
-                    _log.Debug(String.Format("ServiceATSendDocuments True"));
+                    _logger.Debug(String.Format("ServiceATSendDocuments True"));
                     Utils.ServiceSendPendentDocuments();
                 }
 
@@ -487,17 +494,17 @@ namespace logicpos.financial.service
                 {
                     case PowerModes.Resume:
                         StartTimer();
-                        _log.Debug("Windows Resume");
+                        _logger.Debug("Windows Resume");
                         break;
                     case PowerModes.Suspend:
                         StopTimer();
-                        _log.Debug("Windows Suspend");
+                        _logger.Debug("Windows Suspend");
                         break;
                 }
             }
             catch (Exception Ex)
             {
-                _log.Error("Erro ao suspender/retomar sessão no Windows" + Ex.Message);
+                _logger.Error("Erro ao suspender/retomar sessão no Windows" + Ex.Message);
             }
 
         }

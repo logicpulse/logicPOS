@@ -8,7 +8,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
     public class erp_customer : XPGuidObject
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public erp_customer() : base() { }
         public erp_customer(Session session) : base(session)
@@ -33,14 +33,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             CodeInternal = FrameworkUtils.GuidToStringId(Oid.ToString());
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         //[Indexed(Unique = true)] : Can have Duplicated Customer Codes ex Hidden Customers
         public UInt32 Code
         {
@@ -48,7 +48,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fCodeInternal;
+        private string fCodeInternal;
         [Indexed(Unique = true), Size(30)]
         public string CodeInternal
         {
@@ -56,7 +56,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("CodeInternal", ref fCodeInternal, value); }
         }
 
-        string fName;
+        private string fName;
         [Size(512)]
         [XPGuidObject(Encrypted = true)]
         public string Name
@@ -65,7 +65,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Name", ref fName, value); }
         }
 
-        string fAddress;
+        private string fAddress;
         [Size(512)]
         [XPGuidObject(Encrypted = true)]
         public string Address
@@ -74,7 +74,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Address", ref fAddress, value); }
         }
 
-        string fLocality;
+        private string fLocality;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Locality
@@ -83,7 +83,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Locality", ref fLocality, value); }
         }
 
-        string fZipCode;
+        private string fZipCode;
         [XPGuidObject(Encrypted = true)]
         public string ZipCode
         {
@@ -91,7 +91,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ZipCode", ref fZipCode, value); }
         }
 
-        string fCity;
+        private string fCity;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string City
@@ -100,7 +100,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("City", ref fCity, value); }
         }
 
-        string fDateOfBirth;
+        private string fDateOfBirth;
         [XPGuidObject(Encrypted = true)]
         public string DateOfBirth
         {
@@ -108,7 +108,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DateOfBirth", ref fDateOfBirth, value); }
         }
 
-        string fPhone;
+        private string fPhone;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Phone
@@ -117,7 +117,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Phone", ref fPhone, value); }
         }
 
-        string fFax;
+        private string fFax;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Fax
@@ -126,7 +126,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Fax", ref fFax, value); }
         }
 
-        string fMobilePhone;
+        private string fMobilePhone;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string MobilePhone
@@ -135,7 +135,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("MobilePhone", ref fMobilePhone, value); }
         }
 
-        string fEmail;
+        private string fEmail;
         [Size(255)]
         [XPGuidObject(Encrypted = true)]
         public string Email
@@ -144,7 +144,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Email", ref fEmail, value); }
         }
 
-        string fWebSite;
+        private string fWebSite;
         [XPGuidObject(Encrypted = true)]
         [Size(255)]
         public string WebSite
@@ -153,7 +153,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("WebSite", ref fWebSite, value); }
         }
 
-        string fFiscalNumber;
+        private string fFiscalNumber;
         [XPGuidObject(Encrypted = true)]
         //Removed, now we can have diferent customers with blacnk or null FisaclNumber
         //[Indexed(Unique = true)]
@@ -163,7 +163,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FiscalNumber", ref fFiscalNumber, value); }
         }
 
-        string fCardNumber;
+        private string fCardNumber;
         [XPGuidObject(Encrypted = true)]
         [Indexed(Unique = true)] //Give Problems in MsSqlServer, Must have a Card for Every Customer, Dont permit NULL 
         public string CardNumber
@@ -172,63 +172,63 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("CardNumber", ref fCardNumber, value); }
         }
 
-        string fDiscountType;
+        private string fDiscountType;
         public string DiscountType
         {
             get { return fDiscountType; }
             set { SetPropertyValue<string>("DiscountType", ref fDiscountType, value); }
         }
 
-        decimal fDiscount;
+        private decimal fDiscount;
         public decimal Discount
         {
             get { return fDiscount; }
             set { SetPropertyValue<decimal>("Discount", ref fDiscount, value); }
         }
 
-        decimal fCardCredit;
+        private decimal fCardCredit;
         public decimal CardCredit
         {
             get { return fCardCredit; }
             set { SetPropertyValue<decimal>("CardCredit", ref fCardCredit, value); }
         }
 
-        decimal fTotalDebt;
+        private decimal fTotalDebt;
         public decimal TotalDebt
         {
             get { return fTotalDebt; }
             set { SetPropertyValue<decimal>("TotalDebt", ref fTotalDebt, value); }
         }
 
-        decimal fTotalCredit;
+        private decimal fTotalCredit;
         public decimal TotalCredit
         {
             get { return fTotalCredit; }
             set { SetPropertyValue<decimal>("TotalCredit", ref fTotalCredit, value); }
         }
 
-        decimal fCurrentBalance;
+        private decimal fCurrentBalance;
         public decimal CurrentBalance
         {
             get { return fCurrentBalance; }
             set { SetPropertyValue<decimal>("CurrentBalance", ref fCurrentBalance, value); }
         }
 
-        string fCreditLine;
+        private string fCreditLine;
         public string CreditLine
         {
             get { return fCreditLine; }
             set { SetPropertyValue<string>("CreditLine", ref fCreditLine, value); }
         }
 
-        string fRemarks;
+        private string fRemarks;
         public string Remarks
         {
             get { return fRemarks; }
             set { SetPropertyValue<string>("Remarks", ref fRemarks, value); }
         }
 
-        Boolean fSupplier;
+        private Boolean fSupplier;
         public Boolean Supplier
         {
             get { return fSupplier; }
@@ -236,7 +236,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Assign True to Temporary Customers, Customers that was created in Finance Documents without FiscalNumber
-        Boolean fHidden;
+        private Boolean fHidden;
         public Boolean Hidden
         {
             get { return fHidden; }
@@ -244,7 +244,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //CustomerType One <> Many Customer
-        erp_customertype fCustomerType;
+        private erp_customertype fCustomerType;
         [Association(@"CustomerTypeReferencesCustomer")]
         public erp_customertype CustomerType
         {
@@ -253,7 +253,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //CustomerDiscountGroup One <> Many Customer
-        erp_customerdiscountgroup fDiscountGroup;
+        private erp_customerdiscountgroup fDiscountGroup;
         [Association(@"CustomerDiscountGroupReferencesCustomer")]
         public erp_customerdiscountgroup DiscountGroup
         {
@@ -262,7 +262,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationPriceType One <> Many Customer
-        fin_configurationpricetype fPriceType;
+        private fin_configurationpricetype fPriceType;
         [Association(@"ConfigurationPriceTypeReferencesCustomer")]
         public fin_configurationpricetype PriceType
         {
@@ -271,7 +271,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //ConfigurationCountry One <> Many Customer
-        cfg_configurationcountry fCountry;
+        private cfg_configurationcountry fCountry;
         [Association(@"ConfigurationCountryReferencesCustomer")]
         public cfg_configurationcountry Country
         {

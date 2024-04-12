@@ -1,6 +1,6 @@
 ﻿namespace logicpos.Classes.Enums.GenericTreeView
 {
-    enum NullBoolean
+    internal enum NullBoolean
     {
         Null, True, False
     }

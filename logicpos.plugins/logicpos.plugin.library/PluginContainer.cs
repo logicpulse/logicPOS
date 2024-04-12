@@ -7,7 +7,7 @@ namespace logicpos.plugin.library
     public class PluginContainer : Dictionary<string, IPlugin>
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private ICollection<IPlugin> _plugins;
         public ICollection<IPlugin> Plugins { get => _plugins; set => _plugins = value; }
@@ -51,7 +51,7 @@ namespace logicpos.plugin.library
             
             foreach (var item in this)
             {
-                //_log.Debug(String.Format("GetFirstPluginOfType: {0}", item));
+                //_logger.Debug(String.Format("GetFirstPluginOfType: {0}", item));
 
                 if (item.Value is T) {
                     // Add To founded plugins
@@ -62,7 +62,7 @@ namespace logicpos.plugin.library
             // Detect more than one plugin of sme time
             if (founded.Count > 1)
             {
-                _log.Debug(String.Format("Warning more than on plugin of type [{0}] founded, please delete one! Used first founded [{1}]", typeof(T), founded[0]));
+                _logger.Debug(String.Format("Warning more than on plugin of type [{0}] founded, please delete one! Used first founded [{1}]", typeof(T), founded[0]));
             }
 
             // Always return first Founded

@@ -122,22 +122,22 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 				return;
 			if(e.KeyCode == Keys.Enter)
 			{
-				float zoom = 0;
-				string text = item.ComboBox.Text.Replace("%", "").Replace(" ", "");
-				var t = text;
-				if(!float.TryParse(t, out zoom))
-				{
-					t = text.Replace(".", ",");
-					if(!float.TryParse(t, out zoom))
-					{
-						t = text.Replace(",", ".");
-						if (!float.TryParse(t, out zoom))
-						{
-							return;
-						}
-					}
-				}
-				if (zoom < ZoomLevel[0])
+                string text = item.ComboBox.Text.Replace("%", "").Replace(" ", "");
+                var t = text;
+                float zoom;
+                if (!float.TryParse(t, out zoom))
+                {
+                    t = text.Replace(".", ",");
+                    if (!float.TryParse(t, out zoom))
+                    {
+                        t = text.Replace(",", ".");
+                        if (!float.TryParse(t, out zoom))
+                        {
+                            return;
+                        }
+                    }
+                }
+                if (zoom < ZoomLevel[0])
 					zoom = ZoomLevel[0];
 				else if (zoom > ZoomLevel[ZoomLevel.Length-1])
 					zoom = ZoomLevel[ZoomLevel.Length-1];

@@ -9,18 +9,20 @@ namespace logicpos.datalayer.DataLayer.Xpo
     public class XPSelectData
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         //Private Members
-        Dictionary<string, int> _fieldIndex;
+        private readonly Dictionary<string, int> _fieldIndex;
+
         //Public Properties
-        SelectStatementResultRow[] _meta;
+        private SelectStatementResultRow[] _meta;
         public SelectStatementResultRow[] Meta
         {
             get { return _meta; }
             set { _meta = value; }
         }
 
-        SelectStatementResultRow[] _data;
+        private SelectStatementResultRow[] _data;
         public SelectStatementResultRow[] Data
         {
             get { return _data; }
@@ -36,7 +38,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             _fieldIndex = new Dictionary<string, int>();
             foreach (SelectStatementResultRow field in _meta)
             {
-                //_log.Debug(string.Format("FunctionName(): FieldName: {0}[{1}]", field.Values[0].ToString(), i));
+                //_logger.Debug(string.Format("FunctionName(): FieldName: {0}[{1}]", field.Values[0].ToString(), i));
                 _fieldIndex.Add(field.Values[0].ToString(), i++);
             }
         }
@@ -50,7 +52,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             }
             catch (Exception ex)
             {
-                _log.Error(string.Format("FieldName: [{0}] : {1}", pFieldName, ex.Message), ex);
+                _logger.Error(string.Format("FieldName: [{0}] : {1}", pFieldName, ex.Message), ex);
                 return -1;
             }
         }
@@ -64,7 +66,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             {
                 if (pSearchField.ToUpper() == rowFieldNames.Values[0].ToString().ToUpper())
                 {
-                    if (debug) _log.Debug(string.Format("GetValueFromField(): FindKey : [{0}]==[{1}]", pSearchField.ToUpper(), rowFieldNames.Values[0].ToString().ToUpper()));
+                    if (debug) _logger.Debug(string.Format("GetValueFromField(): FindKey : [{0}]==[{1}]", pSearchField.ToUpper(), rowFieldNames.Values[0].ToString().ToUpper()));
 
                     //Find First Value
                     foreach (SelectStatementResultRow rowData in _data)
@@ -74,7 +76,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
                         if (field != null && pSearchValue.ToUpper() == field.ToString().ToUpper())
                         {
-                            if (debug) _log.Debug(string.Format("GetValueFromField(): FindValue : [{0}]==[{1}]", pSearchValue.ToUpper(), rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())].ToString().ToUpper()));
+                            if (debug) _logger.Debug(string.Format("GetValueFromField(): FindValue : [{0}]==[{1}]", pSearchValue.ToUpper(), rowData.Values[GetFieldIndex(rowFieldNames.Values[0].ToString())].ToString().ToUpper()));
                             return rowData.Values[GetFieldIndex(pReturnField)];
                         }
                     }
@@ -101,7 +103,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             foreach (SelectStatementResultRow row in _meta)
                 csvOutput += string.Format("{0}\t{1}\t{2}{3}", row.Values[0], row.Values[1], row.Values[2], Environment.NewLine);
 
-            if (pLogOutput) _log.Debug(string.Format("GenMetaCsv():{0}{1}{2}", Environment.NewLine, csvOutput, Environment.NewLine));
+            if (pLogOutput) _logger.Debug(string.Format("GenMetaCsv():{0}{1}{2}", Environment.NewLine, csvOutput, Environment.NewLine));
 
             return csvOutput;
         }
@@ -125,7 +127,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                 csvOutput += Environment.NewLine;
             }
 
-            if (pLogOutput) _log.Debug(string.Format("GenDataCsv():{0}{1}{2}", Environment.NewLine, csvOutput, Environment.NewLine));
+            if (pLogOutput) _logger.Debug(string.Format("GenDataCsv():{0}{1}{2}", Environment.NewLine, csvOutput, Environment.NewLine));
 
             return csvOutput;
         }

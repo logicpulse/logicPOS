@@ -229,7 +229,7 @@ O seleccione '{2}' para iniciar POS en el modo predeterminado '1024x768'.</value
   <data name="audit_message_table_unreserved" xml:space="preserve">
     <value>Mesa sin reservas: {0}</value>
   </data>
-  <data name="audit_message_used_forced_logout" xml:space="preserve">
+  <data name="audit_message_used_forced_loggerout" xml:space="preserve">
     <value>Aplicación cerrada, Cierre de Sesión Forzado del Usuario: {0}</value>
   </data>
   <data name="audit_message_user_change" xml:space="preserve">
@@ -238,13 +238,13 @@ O seleccione '{2}' para iniciar POS en el modo predeterminado '1024x768'.</value
   <data name="audit_message_user_change_password" xml:space="preserve">
     <value>Contraseña cambiada por el usuario: {0}</value>
   </data>
-  <data name="audit_message_user_login" xml:space="preserve">
+  <data name="audit_message_user_loggerin" xml:space="preserve">
     <value>Usuario conectado: {0}</value>
   </data>
-  <data name="audit_message_user_login_error" xml:space="preserve">
+  <data name="audit_message_user_loggerin_error" xml:space="preserve">
     <value>Error de inicio de sesión del usuario: {0}</value>
   </data>
-  <data name="audit_message_user_logout" xml:space="preserve">
+  <data name="audit_message_user_loggerout" xml:space="preserve">
     <value>Usuario desconectado: {0}</value>
   </data>
   <data name="backoffice_datetime_format_status_bar" xml:space="preserve">
@@ -698,7 +698,7 @@ No puede emitir documentos financieros con fechas más pequeñas que la fecha de
 
   Este registro es necesario para el buen funcionamiento de la aplicación!</value>
   </data>
-  <data name="dialog_message_user_profile_changed_request_logoff" xml:space="preserve">
+  <data name="dialog_message_user_profile_changed_request_loggeroff" xml:space="preserve">
     <value>El perfil de usuario registrado actualmente fue cambiado!
 
 Para aplicar los cambios, debe cerrar sesión e iniciar sesión para aplicar estos privilegios de perfil.</value>
@@ -813,7 +813,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
   <data name="global_application_close" xml:space="preserve">
     <value>Cerrar</value>
   </data>
-  <data name="global_application_logout_user" xml:space="preserve">
+  <data name="global_application_loggerout_user" xml:space="preserve">
     <value>Cerrar sesión</value>
   </data>
   <data name="global_application_main_menu" xml:space="preserve">
@@ -1650,7 +1650,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
   <data name="global_load_first_time" xml:space="preserve">
     <value>Creando base de datos...</value>
   </data>
-  <data name="global_login" xml:space="preserve">
+  <data name="global_loggerin" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="global_maintenance" xml:space="preserve">
@@ -1847,7 +1847,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
   <data name="global_printer_thermal_encoding" xml:space="preserve">
     <value>Codificación</value>
   </data>
-  <data name="global_printer_thermal_image_company_logo" xml:space="preserve">
+  <data name="global_printer_thermal_image_company_loggero" xml:space="preserve">
     <value>Archivo del logotipo de la empresa</value>
   </data>
   <data name="global_printer_thermal_max_chars_per_line_normal" xml:space="preserve">
@@ -1875,7 +1875,7 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
     <value>Total em {0}</value>
     <comment>When printing the invoice total thermal-printer printed, this shows the default currency and total amount already converted, for the countries where this is required (Mozambique, for example).</comment>
   </data>
-  <data name="global_printer_thermal_print_logo" xml:space="preserve">
+  <data name="global_printer_thermal_print_loggero" xml:space="preserve">
     <value>Logotipo de la empresa de impresión</value>
   </data>
   <data name="global_printer_type" xml:space="preserve">
@@ -2952,10 +2952,10 @@ Para proceder debes cambiar la contraseña anterior!</value>
   <data name="prefparam_path_saftpt" xml:space="preserve">
     <value>Ruta :: SAF-T Exportar</value>
   </data>
-  <data name="prefparam_report_filename_logo" xml:space="preserve">
+  <data name="prefparam_report_filename_loggero" xml:space="preserve">
     <value>Reportes :: Archivo del Logotipo del Informe</value>
   </data>
-  <data name="prefparam_report_filename_logo_small" xml:space="preserve">
+  <data name="prefparam_report_filename_loggero_small" xml:space="preserve">
     <value>Reportes :: Archivo del Logotipo del Informe Pequeño</value>
   </data>
   <data name="prefparam_report_footer_line1" xml:space="preserve">
@@ -3030,7 +3030,7 @@ Para proceder debes cambiar la contraseña anterior!</value>
   <data name="prefparam_system_currency" xml:space="preserve">
     <value>Moneda :: Moneda del Sistema</value>
   </data>
-  <data name="prefparam_ticket_filename_logo" xml:space="preserve">
+  <data name="prefparam_ticket_filename_loggero" xml:space="preserve">
     <value>Ticket :: Nombre del Archivo de Logo</value>
   </data>
   <data name="prefparam_ticket_footer_line1" xml:space="preserve">
@@ -3399,7 +3399,7 @@ Para proceder debes cambiar la contraseña anterior!</value>
   <data name="widget_pospinpad_change_password" xml:space="preserve">
     <value>Reiniciar</value>
   </data>
-  <data name="widget_pospinpad_login" xml:space="preserve">
+  <data name="widget_pospinpad_loggerin" xml:space="preserve">
     <value>Entrar</value>
   </data>
   <data name="widget_pospinpad_ok" xml:space="preserve">
@@ -3846,7 +3846,7 @@ Por favor, ingrese otro número e intente nuevamente.</value>
   <data name="dialog_message_composite_article_already" xml:space="preserve">
     <value>¡El artículo insertado ya está asociado!</value>
   </data>
-  <data name="change_log" xml:space="preserve">
+  <data name="change_logger" xml:space="preserve">
     <value>Registro de cambios (registro de cambios)</value>
   </data>
   <data name="global_minimum_stock" xml:space="preserve">

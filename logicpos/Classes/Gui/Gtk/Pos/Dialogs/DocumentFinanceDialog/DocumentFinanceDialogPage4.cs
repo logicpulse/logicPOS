@@ -12,61 +12,61 @@ using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
-    class DocumentFinanceDialogPage4 : PagePadPage
+    internal class DocumentFinanceDialogPage4 : PagePadPage
     {
-        private Session _session;
-        private DocumentFinanceDialogPagePad _pagePad;
-        private cfg_configurationcountry _intialValueConfigurationCountry;
+        private readonly Session _session;
+        private readonly DocumentFinanceDialogPagePad _pagePad;
+        private readonly cfg_configurationcountry _intialValueConfigurationCountry;
         //UI
-        private EntryBoxValidationDatePickerDialog _entryBoxShipToDeliveryDate;
+        private readonly EntryBoxValidationDatePickerDialog _entryBoxShipToDeliveryDate;
         public EntryBoxValidationDatePickerDialog EntryBoxShipToDeliveryDate
         {
             get { return _entryBoxShipToDeliveryDate; }
         }
 
-        private EntryBoxValidation _entryBoxShipToDeliveryID;
+        private readonly EntryBoxValidation _entryBoxShipToDeliveryID;
         public EntryBoxValidation EntryBoxShipToDeliveryID
         {
             get { return _entryBoxShipToDeliveryID; }
         }
 
-        private EntryBoxValidation _entryBoxShipToWarehouseID;
+        private readonly EntryBoxValidation _entryBoxShipToWarehouseID;
         public EntryBoxValidation EntryBoxShipToWarehouseID
         {
             get { return _entryBoxShipToWarehouseID; }
         }
 
-        private EntryBoxValidation _entryBoxShipToLocationID;
+        private readonly EntryBoxValidation _entryBoxShipToLocationID;
         public EntryBoxValidation EntryBoxShipToLocationID
         {
             get { return _entryBoxShipToLocationID; }
         }
 
-        private EntryBoxValidation _entryBoxShipToAddressDetail;
+        private readonly EntryBoxValidation _entryBoxShipToAddressDetail;
         public EntryBoxValidation EntryBoxShipToAddressDetail
         {
             get { return _entryBoxShipToAddressDetail; }
         }
 
-        private EntryBoxValidation _entryBoxShipToRegion;
+        private readonly EntryBoxValidation _entryBoxShipToRegion;
         public EntryBoxValidation EntryBoxShipToRegion
         {
             get { return _entryBoxShipToRegion; }
         }
 
-        private EntryBoxValidation _entryBoxShipToPostalCode;
+        private readonly EntryBoxValidation _entryBoxShipToPostalCode;
         public EntryBoxValidation EntryBoxShipToPostalCode
         {
             get { return _entryBoxShipToPostalCode; }
         }
 
-        private EntryBoxValidation _entryBoxShipToCity;
+        private readonly EntryBoxValidation _entryBoxShipToCity;
         public EntryBoxValidation EntryBoxShipToCity
         {
             get { return _entryBoxShipToCity; }
         }
 
-        private XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectShipToCountry;
+        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectShipToCountry;
         public XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> EntryBoxSelectShipToCountry
         {
             get { return _entryBoxSelectShipToCountry; }
@@ -228,7 +228,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //Equal to ShipFrom
-        void _entryBoxShipToDeliveryDate_Changed(object sender, EventArgs e)
+        private void _entryBoxShipToDeliveryDate_Changed(object sender, EventArgs e)
         {
             try
             {
@@ -248,7 +248,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

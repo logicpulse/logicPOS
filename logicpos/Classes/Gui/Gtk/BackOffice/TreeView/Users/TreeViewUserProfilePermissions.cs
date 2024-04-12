@@ -14,23 +14,23 @@ using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewUserProfilePermissions : GenericTreeViewXPO
+    internal class TreeViewUserProfilePermissions : GenericTreeViewXPO
     {
         //Settings
-        private String _fontGenericTreeViewColumnTitle = GlobalFramework.Settings["fontGenericTreeViewColumnTitle"];
-        private String _fontGenericTreeViewColumn = GlobalFramework.Settings["fontGenericTreeViewColumn"];
+        private readonly String _fontGenericTreeViewColumnTitle = GlobalFramework.Settings["fontGenericTreeViewColumnTitle"];
+        private readonly String _fontGenericTreeViewColumn = GlobalFramework.Settings["fontGenericTreeViewColumn"];
 
-        private TreeView _treeViewPermissionItem = new TreeView();
-        private ListStore _listStoreModelPermissionItem = new ListStore(typeof(string), typeof(string), typeof(bool));
-        private CellRendererToggle _cellRendererTogglePermissionItem = new CellRendererToggle();
+        private readonly TreeView _treeViewPermissionItem = new TreeView();
+        private readonly ListStore _listStoreModelPermissionItem = new ListStore(typeof(string), typeof(string), typeof(bool));
+        private readonly CellRendererToggle _cellRendererTogglePermissionItem = new CellRendererToggle();
 
-        private Type _xpObjectTypeUserPermissionItem = typeof(sys_userpermissionitem);
-        private Type _xpObjectTypeUserPermissionProfile = typeof(sys_userpermissionprofile);
+        private readonly Type _xpObjectTypeUserPermissionItem = typeof(sys_userpermissionitem);
+        private readonly Type _xpObjectTypeUserPermissionProfile = typeof(sys_userpermissionprofile);
         private XPCollection _xpCollectionUserPermissionItem;
         private XPCollection _xpCollectionUserPermissionProfile;
 
-        private Pango.FontDescription _fontDescTitle;
-        private Pango.FontDescription _fontDesc;
+        private readonly Pango.FontDescription _fontDescTitle;
+        private readonly Pango.FontDescription _fontDesc;
 
         //Public Parametless Constructor Required by Generics
         public TreeViewUserProfilePermissions() { }
@@ -50,9 +50,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             XPCollection xpCollectionUserProfile = new XPCollection(GlobalFramework.SessionXpo, xpObjectTypeUserProfile, criteria);
 
-            List<GenericTreeViewColumnProperty> columnPropertiesUserProfile = new List<GenericTreeViewColumnProperty>();
-            columnPropertiesUserProfile.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") });
-            columnPropertiesUserProfile.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_profiles"), MaxWidth = 150 });
+            List<GenericTreeViewColumnProperty> columnPropertiesUserProfile = new List<GenericTreeViewColumnProperty>
+            {
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_profiles"), MaxWidth = 150 }
+            };
 
             InitObject(pSourceWindow, xpCollectionUserProfile, xPGuidObjectType, typeDialogClass, columnPropertiesUserProfile, showStatusBar);
             this.ShowAll();
@@ -170,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             //Events
@@ -209,7 +211,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             hbox.Add(scrolledWindowPermissionItem);
         }
 
-        void ToggleEvent(object o, ToggledArgs args)
+        private void ToggleEvent(object o, ToggledArgs args)
         {
             TreeIter iter;
             if (_listStoreModelPermissionItem.GetIter(out iter, new TreePath(args.Path)))
@@ -223,9 +225,6 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             //UserProfile _currentXPObject = (UserProfile)_dataSource.Lookup(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
             sys_userprofile _currentXPObject = (sys_userprofile)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userprofile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
-
-            sys_userpermissionprofile tmpUserPermissionProfileUpdate = null;// (UserPermissionProfile)_xpCollection2.Lookup(new Guid("" + pOid));
-
             bool needToInsert = true;
             for (int i = 0; i < _xpCollectionUserPermissionItem.Count; i++)
             {
@@ -257,7 +256,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                         if (needToInsert)
                         {
-                            tmpUserPermissionProfileUpdate = (sys_userpermissionprofile)Activator.CreateInstance(_xpObjectTypeUserPermissionProfile, GlobalFramework.SessionXpo);
+                            sys_userpermissionprofile tmpUserPermissionProfileUpdate = (sys_userpermissionprofile)Activator.CreateInstance(_xpObjectTypeUserPermissionProfile, GlobalFramework.SessionXpo);
                             tmpUserPermissionProfileUpdate.Reload();
                             tmpUserPermissionProfileUpdate.UserProfile = _currentXPObject;
                             //Mario Fix: Get Fresh Object else Gives Object Deleted Stress
@@ -274,7 +273,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
         }
@@ -315,7 +314,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
                 _listStoreModelPermissionItem.AppendValues("" + tmpUserPermissionItem.Oid, tmpUserPermissionItem.Designation, tmpCurrentValue);
             }

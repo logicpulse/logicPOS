@@ -6,7 +6,7 @@ using System;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
 {
-    class EntryBoxValidationMultiLine : EntryBoxBase
+    internal class EntryBoxValidationMultiLine : EntryBoxBase
     {
 
         private readonly string _initialLabelText;
@@ -67,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Entrys
             EntryMultiline.Value.Changed += Value_Changed;
         }
 
-        void Value_Changed(object sender, EventArgs e)
+        private void Value_Changed(object sender, EventArgs e)
         {
             if (MaxLength > 0 || MaxWords > 0)
             {

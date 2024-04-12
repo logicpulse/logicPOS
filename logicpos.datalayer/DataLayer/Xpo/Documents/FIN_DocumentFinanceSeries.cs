@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID("fin_documentfinanceseries", "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         //[Indexed(Unique = true)] Series have Duplicated Codes (ex when hidden)
         public UInt32 Code
         {
@@ -31,7 +31,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -39,27 +39,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        Int32 fNextDocumentNumber;
+        private Int32 fNextDocumentNumber;
         public Int32 NextDocumentNumber
         {
             get { return fNextDocumentNumber; }
             set { SetPropertyValue<Int32>("NextDocumentNumber", ref fNextDocumentNumber, value); }
         }
 
-        Int32 fDocumentNumberRangeBegin;
+        private Int32 fDocumentNumberRangeBegin;
         public Int32 DocumentNumberRangeBegin
         {
             get { return fDocumentNumberRangeBegin; }
             set { SetPropertyValue<Int32>("DocumentNumberRangeBegin", ref fDocumentNumberRangeBegin, value); }
         }
-        Int32 fDocumentNumberRangeEnd;
+
+        private Int32 fDocumentNumberRangeEnd;
         public Int32 DocumentNumberRangeEnd
         {
             get { return fDocumentNumberRangeEnd; }
             set { SetPropertyValue<Int32>("DocumentNumberRangeEnd", ref fDocumentNumberRangeEnd, value); }
         }
 
-        string fAcronym;
+        private string fAcronym;
         [Indexed(Unique = true)]
         public string Acronym
         {
@@ -68,7 +69,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceSeries
-        fin_documentfinancetype fDocumentType;
+        private fin_documentfinancetype fDocumentType;
         [Association(@"DocumentFinanceTypeReferencesDocumentFinanceSeries")]
         public fin_documentfinancetype DocumentType
         {
@@ -77,7 +78,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceType One <> Many DocumentFinanceSeries
-        fin_documentfinanceyears fFiscalYear;
+        private fin_documentfinanceyears fFiscalYear;
         [Association(@"DocumentFinanceYearsReferencesDocumentFinanceSeries")]
         public fin_documentfinanceyears FiscalYear
         {

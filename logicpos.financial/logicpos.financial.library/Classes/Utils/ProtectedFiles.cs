@@ -9,16 +9,15 @@ namespace logicpos.financial.library.Classes.Utils
     public class ProtectedFiles : Dictionary<string, ProtectedFile>
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         
         //Private Members
-        private bool _debug = false;
-        private char _splitter = ',';
+        private readonly bool _debug = false;
+        private readonly char _splitter = ',';
 
         //Constructor from List of Files (Developer Config), Used to Recreate the CSVFileName
         public ProtectedFiles(List<string> pFileList, string pFilePath)
         {
-            string fileName = String.Empty;
             List<string> fileList = pFileList;
 
             if (fileList.Count > 0)
@@ -26,13 +25,13 @@ namespace logicpos.financial.library.Classes.Utils
                 //Convert filename to Os filePaths
                 for (int i = 0; i < fileList.Count; i++)
                 {
-                    fileName = FrameworkUtils.OSSlash(fileList[i]);
+                    string fileName = FrameworkUtils.OSSlash(fileList[i]);
                     fileList[i] = fileName;
                     if (File.Exists(fileName))
                     {
                         ProtectedFile protectedFile = new ProtectedFile(fileName);
                         this.Add(fileName, protectedFile);
-                        if (_debug) _log.Debug(string.Format("fileName: [{0}], Md5: [{1}], Md5Encrypted: [{2}], Valid: [{3}]", fileName, protectedFile.Md5, protectedFile.Md5Encrypted, protectedFile.Valid));
+                        if (_debug) _logger.Debug(string.Format("fileName: [{0}], Md5: [{1}], Md5Encrypted: [{2}], Valid: [{3}]", fileName, protectedFile.Md5, protectedFile.Md5Encrypted, protectedFile.Valid));
                     }
                 }
             }
@@ -59,7 +58,7 @@ namespace logicpos.financial.library.Classes.Utils
                 {
                     foreach (var item in this)
                     {
-                        if (_debug) _log.Debug(string.Format("ProtectedFile: [{0}], [{1}]", item.Key, item.Value.Md5Encrypted));
+                        if (_debug) _logger.Debug(string.Format("ProtectedFile: [{0}], [{1}]", item.Key, item.Value.Md5Encrypted));
                         streamWriter.WriteLine(string.Format("{1}{0}{2}", _splitter, item.Key, item.Value.Md5Encrypted));
                     }
                 }
@@ -70,7 +69,7 @@ namespace logicpos.financial.library.Classes.Utils
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -80,8 +79,6 @@ namespace logicpos.financial.library.Classes.Utils
         public bool Load(string pFilePath)
         {
             bool result = false;
-            string fileName = String.Empty;
-
             try
             {
                 Dictionary<string, string> filesDictionary = FrameworkUtils.CSVFileToDictionary(pFilePath);
@@ -90,17 +87,17 @@ namespace logicpos.financial.library.Classes.Utils
 
                 foreach (var item in filesDictionary)
                 {
-                    fileName = item.Key;
+                    string fileName = item.Key;
                     ProtectedFile protectedFile = new ProtectedFile(fileName, item.Value);
                     this.Add(fileName, protectedFile);
-                    if (_debug) _log.Debug(string.Format("fileName: [{0}], Md5: [{1}], Md5Encrypted: [{2}], Valid: [{3}]", fileName, protectedFile.Md5, protectedFile.Md5Encrypted, protectedFile.Valid));
+                    if (_debug) _logger.Debug(string.Format("fileName: [{0}], Md5: [{1}], Md5Encrypted: [{2}], Valid: [{3}]", fileName, protectedFile.Md5, protectedFile.Md5Encrypted, protectedFile.Valid));
                 }
                 
                 result = true;
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -124,7 +121,7 @@ namespace logicpos.financial.library.Classes.Utils
                 this[pKey].Md5 = md5FromFile;
                 this[pKey].Valid = valid;
                 //debug
-                if (_debug) _log.Debug(string.Format("IsValidFile md5FromMem: [{0}], md5FromFile: [{1}], valid: [{2}]", md5FromMem, md5FromFile, valid));
+                if (_debug) _logger.Debug(string.Format("IsValidFile md5FromMem: [{0}], md5FromFile: [{1}], valid: [{2}]", md5FromMem, md5FromFile, valid));
                 //Assign to final Result
                 result = valid;
             }
@@ -151,15 +148,12 @@ namespace logicpos.financial.library.Classes.Utils
         public List<string> GetMissingFiles(List<string> pFileList)
         {
             List<string> result = new List<string>();
-            string fileName = String.Empty;
-
             foreach (var item in pFileList)
             {
-                fileName = FrameworkUtils.OSSlash(item);
-
+                string fileName = FrameworkUtils.OSSlash(item);
                 if (! this.ContainsKey(fileName))
                 {
-                    if (_debug) _log.Debug(string.Format("Miss filename : [{0}]", fileName));
+                    if (_debug) _logger.Debug(string.Format("Miss filename : [{0}]", fileName));
                     result.Add(fileName);
                 }
             }
@@ -173,9 +167,11 @@ namespace logicpos.financial.library.Classes.Utils
             //Get Both Lists
             List<string> getInvalidFiles = GetInvalidFiles();
             List<string> getMissingFiles = GetMissingFiles(pFileList);
-            List<List<string>> listList = new List<List<string>>();
-            listList.Add(getInvalidFiles); 
-            listList.Add(getMissingFiles);
+            List<List<string>> listList = new List<List<string>>
+            {
+                getInvalidFiles,
+                getMissingFiles
+            };
             //Get Distinct Filenames
             List<string> result = FrameworkUtils.MergeGenericLists(listList);
 

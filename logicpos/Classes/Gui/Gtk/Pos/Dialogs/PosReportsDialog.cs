@@ -12,11 +12,11 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosReportsDialog : PosBaseDialog
+    internal partial class PosReportsDialog : PosBaseDialog
     {
         private ScrolledWindow _scrolledWindow;
         // Enable to show Insert Logs on Console
-        private bool _showInsertLog = false;
+        private readonly bool _showInsertLog = false;
         // Start Ord Code Int
         private int _userpermissionitemOrdAndCode = 1000;
 
@@ -94,8 +94,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, typeof(rpt_reporttype), criteriaOperator, sortProperty);
 
                 // Report : Collection (ReportType Property Navigations)
-                SortingCollection sortingCollection = new SortingCollection();
-                sortingCollection.Add(new SortProperty("Ord", SortingDirection.Ascending));
+                SortingCollection sortingCollection = new SortingCollection
+                {
+                    new SortProperty("Ord", SortingDirection.Ascending)
+                };
 
                 foreach (rpt_reporttype reportType in xpoCollection)
                 {
@@ -107,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (string.IsNullOrEmpty(buttonLabelReportTypeString))
                     {
                         // Log Before Exchange _ with - to show in button labels
-                        _log.Error(string.Format("Can't find resourceString: [{0}]", reportType.ResourceString));
+                        _logger.Error(string.Format("Can't find resourceString: [{0}]", reportType.ResourceString));
                         buttonLabelReportTypeString = string.Format("${0}$", reportType.ResourceString.Replace("_", "-"));
                     }
 
@@ -147,7 +149,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             {
                                 // Log Before Exchange _ with - to show in button labels
                                 buttonLabelString = report.ResourceString;
-                                _log.Debug(string.Format("Error Missing resourceString! {0}", buttonLabelString));
+                                _logger.Debug(string.Format("Error Missing resourceString! {0}", buttonLabelString));
                                 buttonLabelString = string.Format("${0}$", report.ResourceString.Replace("_", "-"));
                             }
                             // Used this for debug purposes, Add Code, usefull to identify Reports
@@ -155,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             buttonLabel = string.Format("{0}{1}", buttonLabelString, buttoLabelPostfix);
 
                             // Output Order and Labels 
-                            //_log.Debug(String.Format("Label: [{0}]", buttonLabel));
+                            //_logger.Debug(String.Format("Label: [{0}]", buttonLabel));
 
                             // Add Child Menu
                             accordionChilds.Add(userpermissionitemToken, new AccordionNode(buttonLabel, reportSensitive)
@@ -177,20 +179,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 // Output Inserts
                 if (_showInsertLog)
                 {
-                    _log.Debug("Generated Inserts");
+                    _logger.Debug("Generated Inserts");
                     for (int i = 0; i < userpermissionitemInsert.Count; i++)
                     {
-                        _log.Debug(userpermissionitemInsert[i]);
+                        _logger.Debug(userpermissionitemInsert[i]);
                     }
                     for (int i = 0; i < userpermissionprofileInsert.Count; i++)
                     {
-                        _log.Debug(userpermissionprofileInsert[i]);
+                        _logger.Debug(userpermissionprofileInsert[i]);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return accordionDefinition;

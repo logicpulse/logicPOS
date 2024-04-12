@@ -21,14 +21,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using Image = Gtk.Image;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogArticle : BOBaseDialog
+    internal class DialogArticle : BOBaseDialog
     {
         //UI
         //Artigos Compostos [IN:016522]
-        VBox _vboxTab2;
+        private VBox _vboxTab2;
 
         private TouchButtonIconWithText _buttonInsert;
         public TouchButtonIconWithText ButtonInsert
@@ -52,14 +53,15 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //Non UI
         private fin_article _article = null;
         private fin_article _previousValue = null;
+
         //Other
-        VBox vboxTab4, vboxTab5;
-        ScrolledWindow _scrolledWindowCompositionView;
-        ScrolledWindow _scrolledWindowSerialNumbersView;
-        Viewport _CompositionView;
-        Viewport _SerialNumbersView;
-        private TouchButtonIcon _buttonAddSerialNumber;
-        private TouchButtonIcon _buttonClearSerialNumber;
+        private VBox vboxTab4, vboxTab5;
+        private ScrolledWindow _scrolledWindowCompositionView;
+        private ScrolledWindow _scrolledWindowSerialNumbersView;
+        private Viewport _CompositionView;
+        private readonly Viewport _SerialNumbersView;
+        private readonly TouchButtonIcon _buttonAddSerialNumber;
+        private readonly TouchButtonIcon _buttonClearSerialNumber;
         private uint _totalNumberOfFinanceDocuments = 0;
         private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle1;
         private GenericCRUDWidgetXPO _genericCRUDWidgetXPO;
@@ -67,12 +69,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private CheckButton _checkButtonComposite;
         private CheckButton _checkButtonUniqueArticles;
         private ICollection <Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>> _serialNumberCollection;
-        String iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
-        String iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+        private readonly String iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+        private readonly String iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
 
         private int _totalCompositeEntrys = 0;
 
-        private ICollection<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>> _entryCompositeLinesCollection;
+        private readonly ICollection<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>> _entryCompositeLinesCollection;
 
         public DialogArticle(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, pDialogMode, pXPGuidObject)
@@ -127,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
 
                 //Init Local Vars
@@ -476,7 +478,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 _scrolledWindowCompositionView = new ScrolledWindow();
                 _scrolledWindowCompositionView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindowCompositionView.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindowCompositionView.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _scrolledWindowCompositionView.ShadowType = ShadowType.None;
                 _CompositionView = new Viewport();
 
@@ -528,7 +530,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 _scrolledWindowSerialNumbersView = new ScrolledWindow();
                 _scrolledWindowSerialNumbersView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindowSerialNumbersView.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindowSerialNumbersView.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _scrolledWindowSerialNumbersView.ShadowType = ShadowType.None;
 
                 _notebook.AppendPage(_scrolledWindowSerialNumbersView, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number")));
@@ -567,7 +569,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                     //Enable/Disable Components
-                entryDesignation.Sensitive = (_totalNumberOfFinanceDocuments > 0) ? false : true;
+                entryDesignation.Sensitive = _totalNumberOfFinanceDocuments == 0;
 
                 //IN009261 BackOffice - Inserir mais auto-completes nos forms
 
@@ -589,8 +591,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _checkButtonUniqueArticles.Toggled += CheckButtonUniqueArticles_Toggled;
 
                 //Events Composition
-                _entryBoxSelectArticle1.ClosePopup += _entryBoxSelectArticle_ClosePopup;
-                _entryBoxSelectArticle1.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+                _entryBoxSelectArticle1.ClosePopup += EntryBoxSelectArticle_ClosePopup;
+                _entryBoxSelectArticle1.CleanArticleEvent += EntryBoxSelectArticle_CleanArticleEvent;
                 _entryBoxSelectArticle1.AddNewEntryEvent += NewBox_AddNewEntryEvent;
                 _entryBoxSelectArticle1.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
 
@@ -650,11 +652,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
-        private void _entrySerialNumberDefault_TextInserted(object o, TextInsertedArgs args)
+        private void EntrySerialNumberDefault_TextInserted(object o, TextInsertedArgs args)
         {
             //_genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget("boxSerialNumberDefault") as GenericCRUDWidgetXPO);
             //_genericCRUDWidgetXPO.Validated = true;            
@@ -690,7 +692,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception)
             {
-                _log.Error("Error Missing Config Parameter Key: [requireToChooseVatExemptionReason]");
+                _logger.Error("Error Missing Config Parameter Key: [requireToChooseVatExemptionReason]");
             }
 
             try
@@ -721,7 +723,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -800,7 +802,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error populating Composite article Entry : " + ex.Message);
+                _logger.Error("Error populating Composite article Entry : " + ex.Message);
             }
         }
 
@@ -955,7 +957,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error selecting new Composite article Entry : " + ex.Message);
+                _logger.Error("Error selecting new Composite article Entry : " + ex.Message);
             }
         }
 
@@ -966,8 +968,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 ListStore store = new ListStore(typeof(string));
                 string sortProp = "Designation";
-                SortingCollection sortCollection = new SortingCollection();
-                sortCollection.Add(new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending));
+                SortingCollection sortCollection = new SortingCollection
+                {
+                    new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending)
+                };
                 if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
                 _dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
@@ -990,7 +994,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error populating dropdown list : " + ex.Message);
+                _logger.Error("Error populating dropdown list : " + ex.Message);
                 return null;
             }
         }
@@ -1017,8 +1021,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 NewEntryBoxSelectArticle.CodeEntry.Text = articleChild.Code;
 
                 //Events
-                NewEntryBoxSelectArticle.ClosePopup += _entryBoxSelectArticle_ClosePopup;
-                NewEntryBoxSelectArticle.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+                NewEntryBoxSelectArticle.ClosePopup += EntryBoxSelectArticle_ClosePopup;
+                NewEntryBoxSelectArticle.CleanArticleEvent += EntryBoxSelectArticle_CleanArticleEvent;
                 NewEntryBoxSelectArticle.AddNewEntryEvent += NewBox_AddNewEntryEvent;
                 NewEntryBoxSelectArticle.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
                 NewEntryBoxSelectArticle.ShowAll();
@@ -1070,7 +1074,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error Adding new Composite article Entry : " + ex.Message);
+                _logger.Error("Error Adding new Composite article Entry : " + ex.Message);
             }
 
         }
@@ -1102,8 +1106,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxTab4.PackStart(NewEntryBoxSelectArticle, false, false, 0);
 
                 //Events
-                NewEntryBoxSelectArticle.ClosePopup += _entryBoxSelectArticle_ClosePopup;
-                NewEntryBoxSelectArticle.CleanArticleEvent += _entryBoxSelectArticle_CleanArticleEvent;
+                NewEntryBoxSelectArticle.ClosePopup += EntryBoxSelectArticle_ClosePopup;
+                NewEntryBoxSelectArticle.CleanArticleEvent += EntryBoxSelectArticle_CleanArticleEvent;
                 NewEntryBoxSelectArticle.AddNewEntryEvent += NewBox_AddNewEntryEvent;
                 NewEntryBoxSelectArticle.EntryQtdValidation.TextInserted += QtdEntryValidation_TextInserted;
                 NewEntryBoxSelectArticle.ShowAll();
@@ -1146,12 +1150,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error Adding new Composite article Entry : " + ex.Message);
+                _logger.Error("Error Adding new Composite article Entry : " + ex.Message);
             }
         }
 
         //Clean article event
-        private void _entryBoxSelectArticle_CleanArticleEvent(object sender, EventArgs e)
+        private void EntryBoxSelectArticle_CleanArticleEvent(object sender, EventArgs e)
         {
             try
             {
@@ -1261,12 +1265,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
         //Close popup articles event
-        private void _entryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
+        private void EntryBoxSelectArticle_ClosePopup(object sender, EventArgs e)
         {
             try
             {
@@ -1289,7 +1293,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -1326,7 +1330,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error updating quantity from article child : " + ex.Message);
+                _logger.Error("Error updating quantity from article child : " + ex.Message);
             }
         }
 
@@ -1420,7 +1424,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error hiding serial numbers article Entry : " + ex.Message);
+                _logger.Error("Error hiding serial numbers article Entry : " + ex.Message);
             }
         }
 
@@ -1513,7 +1517,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 };
                 buttonClearSerialNumber.Sensitive = false;
                 buttonAddSerialNumber.Sensitive = false;
-                buttonClearSerialNumber.Clicked += _buttonClearSerialNumber_Clicked;
+                buttonClearSerialNumber.Clicked += ButtonClearSerialNumber_Clicked;
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
                 vboxTab5.ShowAll();
                 //Add to collection
@@ -1527,7 +1531,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error populating SerialNumber Entrys : " + ex.Message);
+                _logger.Error("Error populating SerialNumber Entrys : " + ex.Message);
             }
         }
 
@@ -1560,11 +1564,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error clear SerialNumber Entry : " + ex.Message);
+                _logger.Error("Error clear SerialNumber Entry : " + ex.Message);
             }
         }
 
-        private void _buttonClearSerialNumber_Clicked(object sender, EventArgs e)
+        private void ButtonClearSerialNumber_Clicked(object sender, EventArgs e)
         {
             try
             {
@@ -1598,7 +1602,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("Error clear SerialNumber Entry : " + ex.Message);
+                _logger.Error("Error clear SerialNumber Entry : " + ex.Message);
             }
 
         }

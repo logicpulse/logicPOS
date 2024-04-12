@@ -16,14 +16,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyearserieterminal), "Code").ToString();
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        string fCode;
+        private string fCode;
         //[Indexed(Unique = true)] - Can have equal Article.Codes with Diferent Properties
         public string Code
         {
@@ -31,21 +31,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         public string Designation
         {
             get { return fDesignation; }
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        Decimal fQuantity;
+        private Decimal fQuantity;
         public Decimal Quantity
         {
             get { return fQuantity; }
             set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
         }
 
-        string fUnitMeasure;
+        private string fUnitMeasure;
         [Size(35)]
         public string UnitMeasure
         {
@@ -53,14 +53,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("UnitMeasure", ref fUnitMeasure, value); }
         }
 
-        Decimal fPrice;
+        private Decimal fPrice;
         public Decimal Price
         {
             get { return fPrice; }
             set { SetPropertyValue<Decimal>("Price", ref fPrice, value); }
         }
 
-        Decimal fDiscount;
+        private Decimal fDiscount;
         public Decimal Discount
         {
             get { return fDiscount; }
@@ -74,49 +74,49 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //  set { SetPropertyValue<Decimal>("DiscountGlobal", ref fDiscountGlobal, value); }
         //}
 
-        Decimal fVat;
+        private Decimal fVat;
         public Decimal Vat
         {
             get { return fVat; }
             set { SetPropertyValue<Decimal>("Vat", ref fVat, value); }
         }
 
-        Guid fVatExemptionReason;
+        private Guid fVatExemptionReason;
         public Guid VatExemptionReason
         {
             get { return fVatExemptionReason; }
             set { SetPropertyValue<Guid>("VatExemptionReason", ref fVatExemptionReason, value); }
         }
 
-        Decimal fTotalGross;
+        private Decimal fTotalGross;
         public Decimal TotalGross
         {
             get { return fTotalGross; }
             set { SetPropertyValue<Decimal>("TotalGross", ref fTotalGross, value); }
         }
 
-        Decimal fTotalDiscount;
+        private Decimal fTotalDiscount;
         public Decimal TotalDiscount
         {
             get { return fTotalDiscount; }
             set { SetPropertyValue<Decimal>("TotalDiscount", ref fTotalDiscount, value); }
         }
 
-        Decimal fTotalTax;
+        private Decimal fTotalTax;
         public Decimal TotalTax
         {
             get { return fTotalTax; }
             set { SetPropertyValue<Decimal>("TotalTax", ref fTotalTax, value); }
         }
 
-        Decimal fTotalFinal;
+        private Decimal fTotalFinal;
         public Decimal TotalFinal
         {
             get { return fTotalFinal; }
             set { SetPropertyValue<Decimal>("TotalFinal", ref fTotalFinal, value); }
         }
 
-        string fToken1;
+        private string fToken1;
         [Size(255)]
         public string Token1
         {
@@ -124,7 +124,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Token1", ref fToken1, value); }
         }
 
-        string fToken2;
+        private string fToken2;
         [Size(255)]
         public string Token2
         {
@@ -133,7 +133,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentOrderTicket One <> Many DocumentOrderDetail
-        fin_documentorderticket fOrderTicket;
+        private fin_documentorderticket fOrderTicket;
         [Association(@"DocumentOrderTicketReferencesDocumentOrderDetail")]
         public fin_documentorderticket OrderTicket
         {
@@ -142,7 +142,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Article One <> Many DocumentOrderDetail
-        fin_article fArticle;
+        private fin_article fArticle;
         [Association(@"ArticleReferencesDocumentOrderDetail")]
         public fin_article Article
         {

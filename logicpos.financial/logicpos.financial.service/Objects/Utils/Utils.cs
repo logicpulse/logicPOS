@@ -17,7 +17,7 @@ namespace logicpos.financial.service.Objects
     public class Utils
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -28,7 +28,7 @@ namespace logicpos.financial.service.Objects
 
         public static void Log(string pMessage, bool pEndWithBlankLine)
         {
-            _log.Debug(pMessage);
+            _logger.Debug(pMessage);
             if (Environment.UserInteractive)
             {
                 Console.WriteLine(pMessage);
@@ -181,9 +181,9 @@ namespace logicpos.financial.service.Objects
                 var elReference = itm.Element(d + "bookingReference").Value;
                 var elPrice = itm.Element(d + "price").Value;
 
-                _log.Debug(String.Format("elStatus: [{0}]", elStatus));
-                _log.Debug(String.Format("elReference: [{0}]", elReference));
-                _log.Debug(String.Format("elPrice: [{0}]", elPrice));
+                _logger.Debug(String.Format("elStatus: [{0}]", elStatus));
+                _logger.Debug(String.Format("elReference: [{0}]", elReference));
+                _logger.Debug(String.Format("elPrice: [{0}]", elPrice));
 
                 Console.WriteLine(elStatus);
                 Console.WriteLine(elReference);
@@ -229,16 +229,16 @@ namespace logicpos.financial.service.Objects
         /// <returns></returns>
         public static string GetDocumentContentLinesAndDocumentTotals(fin_documentfinancemaster pDocumentMaster)
         {
-            _log.Debug($"string GetDocumentContentLinesAndDocumentTotals(fin_documentfinancemaster pDocumentMaster) :: {pDocumentMaster.DocumentNumber}");
-
-            //Init Locals Vars
-            string result = string.Empty;
+            _logger.Debug($"string GetDocumentContentLinesAndDocumentTotals(fin_documentfinancemaster pDocumentMaster) :: {pDocumentMaster.DocumentNumber}");
             decimal taxPayable = 0.0m;
             decimal netTotal = 0.0m;
             decimal grossTotal = 0.0m;
             //Prepare Node Name
             string nodeName = (pDocumentMaster.DocumentType.Credit) ? "CreditAmount" : "DebitAmount";
 
+
+            //Init Locals Vars
+            string result;
             try
             {
                 string sql = string.Format(@"
@@ -341,11 +341,10 @@ namespace logicpos.financial.service.Objects
              *      >   &gt;
              *      &   &amp;
              */
-            _log.Debug($"string GetDocumentWayBillContentLines(fin_documentfinancemaster pDocumentMaster) :: {pDocumentMaster.DocumentNumber}");
+            _logger.Debug($"string GetDocumentWayBillContentLines(fin_documentfinancemaster pDocumentMaster) :: {pDocumentMaster.DocumentNumber}");
 
             //Init Locals Vars
-            string result = string.Empty;
-
+            string result;
             try
             {
                 string sql = string.Format(@"
@@ -416,7 +415,7 @@ namespace logicpos.financial.service.Objects
 
             string parameter = string.Format(@"http add urlacl url=http://+:{0}/ user=\{1}", Program.ServicePort, everyone);
 
-            _log.Debug(string.Format("ModifyHttpSettings: 'netsh {0}'", parameter));
+            _logger.Debug(string.Format("ModifyHttpSettings: 'netsh {0}'", parameter));
             ProcessStartInfo psi = new ProcessStartInfo("netsh", parameter);
 
             psi.Verb = "runas";
@@ -432,21 +431,21 @@ namespace logicpos.financial.service.Objects
 
         public static Dictionary<fin_documentfinancemaster, ServicesATSoapResult> ServiceSendPendentDocuments()
         {
-            _log.Debug("Dictionary<fin_documentfinancemaster, ServicesATSoapResult> Utils.ServiceSendPendentDocuments()");
+            _logger.Debug("Dictionary<fin_documentfinancemaster, ServicesATSoapResult> Utils.ServiceSendPendentDocuments()");
             Dictionary<fin_documentfinancemaster, ServicesATSoapResult> result = new Dictionary<fin_documentfinancemaster, ServicesATSoapResult>();
-            Guid key = Guid.Empty;
-            fin_documentfinancemaster documentMaster = null;
             ServicesATSoapResult soapResult = new ServicesATSoapResult();
 
             // Financial.service - Correções no envio de documentos AT [IN:014494]
             /* IN009083 - #TODO apply same validation for when sending documents to AT */
             try
             {
+                Guid key;
+                fin_documentfinancemaster documentMaster;
                 //Invoice Documents
                 if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocuments"]))
                 {
                     string sqlDocuments = GetDocumentsQuery(false);
-                    //_log.Debug(String.Format("sqlDocuments: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocuments)));
+                    //_logger.Debug(String.Format("sqlDocuments: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocuments)));
 
                     XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlDocuments);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
@@ -455,13 +454,13 @@ namespace logicpos.financial.service.Objects
                         documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
-                        
+
                         //Helper to Detect Documents
                         //Detect if Document is Already in AT System / -3 = "Já foi registado um documento idêntico."
                         //200 = Detect The operation has timed out | The remote name could not be resolved: 'servicos.portaldasfinancas.gov.pt'
                         //if (soapResult.ReturnCode.Equals("-3"))
                         //{
-                        //    _log.Debug("BREAK");
+                        //    _logger.Debug("BREAK");
                         //}
 
                         result.Add(documentMaster, soapResult);
@@ -472,7 +471,7 @@ namespace logicpos.financial.service.Objects
                 if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocumentsWayBill"]))
                 {
                     string sqlDocumentsWayBill = GetDocumentsQuery(true);
-                    //_log.Debug(String.Format("sqlDocumentsWayBill: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocumentsWayBill)));
+                    //_logger.Debug(String.Format("sqlDocumentsWayBill: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocumentsWayBill)));
 
                     XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlDocumentsWayBill);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
@@ -487,7 +486,7 @@ namespace logicpos.financial.service.Objects
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 Console.Write($"Error: [{ex.Message}]");
             }
 

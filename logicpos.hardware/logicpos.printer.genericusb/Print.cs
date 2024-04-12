@@ -8,7 +8,7 @@ namespace logicpos.printer.genericusb
     public static class Print
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		
 		//TK016310 Configuração Impressoras Windows 
         public static void USBPrintWindows(string printerName, byte[] document, bool DefaultDoorOpenCommand = false)
@@ -39,7 +39,7 @@ namespace logicpos.printer.genericusb
 
         public static void USBPrint(string printerName, byte[] document)
         {
-            _log.Debug(String.Format("USBPrint to printerName: [{0}], document: [{1}]", printerName, document.ToString()));
+            _logger.Debug(String.Format("USBPrint to printerName: [{0}], document: [{1}]", printerName, document.ToString()));
 
             UsbDevice usbDevice;
             UsbEndpointWriter usbWriter;
@@ -115,13 +115,13 @@ namespace logicpos.printer.genericusb
             }
             catch (Exception ex)
             {
-                _log.Error((usbErrorCode != ErrorCode.None ? usbErrorCode + ":" : String.Empty) + ex.Message);
+                _logger.Error((usbErrorCode != ErrorCode.None ? usbErrorCode + ":" : String.Empty) + ex.Message);
             }
         }
 
         private static void Reader_DataReceived(object sender, EndpointDataEventArgs e)
         {
-            _log.Debug(string.Format("Reader DataReceived: Count:[{0}], Buffer: [{1}]", e.Count, e.Buffer));
+            _logger.Debug(string.Format("Reader DataReceived: Count:[{0}], Buffer: [{1}]", e.Count, e.Buffer));
         }
 
         public static WriteEndpointID GetWriteEndpointFromString(string pValue)
@@ -154,7 +154,6 @@ namespace logicpos.printer.genericusb
 
                     usbDevice.Close();
                 }
-                usbDevice = null;
 
                 // Free usb resources
                 UsbDevice.Exit();

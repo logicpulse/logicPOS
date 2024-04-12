@@ -51,7 +51,7 @@ namespace logicpos
 
             //GlobalApp.ExpressionEvaluator.Variables["themeRoot"] =  _expressionEvaluatorReference;
             
-            //_log.Debug(string.Format("Message: [{0}]", _expressionEvaluatorReference.Theme.Frontoffice.Window[0].Globals.Name));
+            //_logger.Debug(string.Format("Message: [{0}]", _expressionEvaluatorReference.Theme.Frontoffice.Window[0].Globals.Name));
             //(GlobalApp.ExpressionEvaluator.Variables["themeRoot"] as dynamic).Theme.Frontoffice.Window[0].Globals.Name
 
             return parsedObject;
@@ -142,9 +142,7 @@ namespace logicpos
 
             string patternBase = @"(?<={0}\[)(.*?)(?=\])";
             string patternPrefix = string.Empty;
-            string pattern = string.Empty;
             string result = pInput;
-            string nodeValue = string.Empty;
             Func<string, string> funcGetValue = null;
 
             switch (pReplaceType)
@@ -169,16 +167,16 @@ namespace logicpos
                     break;
             }
 
-            pattern = string.Format(patternBase, patternPrefix);
+            string pattern = string.Format(patternBase, patternPrefix);
             MatchCollection matchCollection = Regex.Matches(pInput, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
             foreach (Match match in matchCollection)
             {
                 try
                 {
-                    nodeValue = funcGetValue(match.Value);
+                    string nodeValue = funcGetValue(match.Value);
                     if (nodeValue != string.Empty) result = result.Replace(string.Format("{0}[{1}]", patternPrefix, match), nodeValue);
-                    //if (_debug) _log.Debug(string.Format("item[{0}]: [{1}]=[{2}] result={3}", Enum.GetName(typeof(ReplaceType), pReplaceType), match, nodeValue, result));
+                    //if (_debug) _logger.Debug(string.Format("item[{0}]: [{1}]=[{2}] result={3}", Enum.GetName(typeof(ReplaceType), pReplaceType), match, nodeValue, result));
                 }
                 catch (Exception ex)
                 {

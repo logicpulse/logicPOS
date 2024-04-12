@@ -3,7 +3,7 @@ using System;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class CheckButtonExtended : CheckButton
+    internal class CheckButtonExtended : CheckButton
     {
         private int _index;
         public int Index

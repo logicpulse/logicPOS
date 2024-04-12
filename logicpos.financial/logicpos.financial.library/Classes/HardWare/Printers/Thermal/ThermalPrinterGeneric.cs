@@ -9,12 +9,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
     public class ThermalPrinterGeneric : ThermalPrinter
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Object Fields        
-        private string _encoding = string.Empty;
-        private string _line = string.Empty;
-        private char _lineChar = '-';
+        private readonly string _encoding = string.Empty;
+        private readonly string _line = string.Empty;
+        private readonly char _lineChar = '-';
         //Public
         private sys_configurationprinters _printer;
         public sys_configurationprinters Printer
@@ -78,9 +78,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 				//TK016310 Configuração Impressoras Windows 
                 if (IsLinux)
                 {
-                    _log.Info(_printer.PrinterType.Token);
-                    _log.Info(_printer.Designation);
-                    _log.Info(_printer.NetworkName);
+                    _logger.Info(_printer.PrinterType.Token);
+                    _logger.Info(_printer.Designation);
+                    _logger.Info(_printer.NetworkName);
                     switch (_printer.PrinterType.Token)
                     {
                         case "THERMAL_PRINTER_WINDOWS":
@@ -113,7 +113,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             }
             catch (Exception ex)
             {
-                _log.Error("void PrintBuffer() :: " + ex.Message, ex);
+                _logger.Error("void PrintBuffer() :: " + ex.Message, ex);
                 throw ex;
             }
         }

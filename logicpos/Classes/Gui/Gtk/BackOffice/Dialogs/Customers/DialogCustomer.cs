@@ -15,7 +15,7 @@ using System.Collections;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogCustomer : BOBaseDialog
+    internal class DialogCustomer : BOBaseDialog
     {
         private erp_customer _customer = null;
         private uint _totalNumberOfFinanceDocuments = 0;
@@ -35,8 +35,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //Helper Country
         private XPOComboBox _xpoComboBoxCountry;
         private cfg_configurationcountry _configurationCountry;
+
         //Other
-        bool _isFinalConsumerEntity = false;
+        private bool _isFinalConsumerEntity = false;
 
         public DialogCustomer(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
@@ -71,8 +72,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
 
                 //erp_customer customers = null;
-                SortingCollection sortCollection = new SortingCollection();
-                sortCollection.Add(new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending));
+                SortingCollection sortCollection = new SortingCollection
+                {
+                    new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending)
+                };
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
                 ICollection collectionCustomers = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
                 
@@ -301,7 +304,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error("void DialogCustomer.InitUI(): " + ex.Message, ex);
+                _logger.Error("void DialogCustomer.InitUI(): " + ex.Message, ex);
             }
         }
 
@@ -324,7 +327,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("void DialogCustomer.UpdateCountryRegExComponents(): " + ex.Message, ex);
+                _logger.Error("void DialogCustomer.UpdateCountryRegExComponents(): " + ex.Message, ex);
             }
         }
 
@@ -413,7 +416,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("bool DialogCustomer.FiscalNumberAlreadyExists(): " + ex.Message, ex);
+                _logger.Error("bool DialogCustomer.FiscalNumberAlreadyExists(): " + ex.Message, ex);
             }
 
             return fiscalNumberAlreadyExists;
@@ -438,7 +441,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error("bool DialogCustomer.EntryCodeAlreadyExists(): " + ex.Message, ex);
+                _logger.Error("bool DialogCustomer.EntryCodeAlreadyExists(): " + ex.Message, ex);
             }
 
             return entryCodeAlreadyExists;
@@ -446,8 +449,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private bool GetEntryNameSensitiveValue()
         {
-            bool result = false;
-
+            bool result;
             if (_dialogMode == DialogMode.Insert)
             {
                 result = true;
@@ -470,8 +472,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private bool GetEntryFiscalNumberSensitiveValue()
         {
-            bool result = false;
-
+            bool result;
             if (_dialogMode == DialogMode.Insert)
             {
                 result = true;

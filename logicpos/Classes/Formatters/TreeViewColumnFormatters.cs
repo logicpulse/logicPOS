@@ -12,10 +12,10 @@ namespace logicpos.Classes.Formatters
     public class FormatterDecimalCurrency : IFormatProvider, ICustomFormatter
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // always use dot separator for doubles
-        private CultureInfo culture = GlobalFramework.CurrentCulture;
+        private readonly CultureInfo culture = GlobalFramework.CurrentCulture;
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
@@ -28,7 +28,7 @@ namespace logicpos.Classes.Formatters
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -44,10 +44,10 @@ namespace logicpos.Classes.Formatters
     public class FormatterDecimal : IFormatProvider, ICustomFormatter
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // always use dot separator for doubles
-        private CultureInfo culture = GlobalFramework.CurrentCulture;
+        private readonly CultureInfo culture = GlobalFramework.CurrentCulture;
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
@@ -64,7 +64,7 @@ namespace logicpos.Classes.Formatters
            }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -80,7 +80,7 @@ namespace logicpos.Classes.Formatters
     public class FormatterDate : IFormatProvider, ICustomFormatter
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
@@ -92,7 +92,7 @@ namespace logicpos.Classes.Formatters
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -108,7 +108,7 @@ namespace logicpos.Classes.Formatters
     public class FormatterStockMovement : IFormatProvider, ICustomFormatter
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
@@ -121,7 +121,7 @@ namespace logicpos.Classes.Formatters
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -140,7 +140,7 @@ namespace logicpos.Classes.Formatters
     public class FormatterDecrypt : IFormatProvider, ICustomFormatter
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
@@ -155,7 +155,7 @@ namespace logicpos.Classes.Formatters
             }
             catch (Exception ex)
             {
-                _log.Error("string Format(string format, object arg, IFormatProvider formatProvider) :: " + ex.Message, ex);
+                _logger.Error("string Format(string format, object arg, IFormatProvider formatProvider) :: " + ex.Message, ex);
             }
             return result;
         }

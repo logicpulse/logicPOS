@@ -14,7 +14,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewDocumentFinanceMaster : GenericTreeViewXPO
+    internal class TreeViewDocumentFinanceMaster : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewDocumentFinanceMaster() { }
@@ -36,38 +36,40 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_date"), MinWidth = 140 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 120 }); /* IN009067 */
-            //#if (DEBUG)
-            columnProperties.Add(new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_status"), MinWidth = 50, MaxWidth = 50 });
-            //#endif
-            columnProperties.Add(new GenericTreeViewColumnProperty("EntityName")
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_entity"),
-                MinWidth = 260,
-                MaxWidth = 260,
-                FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
-            }); /* IN009067 */
-            columnProperties.Add(new GenericTreeViewColumnProperty("EntityFiscalNumber")
-            {
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"),
-                MinWidth = 100,
-                FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
-            }); /* IN009067 */
-            columnProperties.Add(new GenericTreeViewColumnProperty("TotalFinal")
-            { /* IN009166 */
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_final"), 
-                MinWidth = 100,
-                //Alignment = 1.0F,
-                FormatProvider = new FormatterDecimalCurrency(),
-                CellRenderer = new CellRendererText()
+                new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_date"), MinWidth = 140 },
+                new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                //#if (DEBUG)
+                new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_status"), MinWidth = 50, MaxWidth = 50 },
+                //#endif
+                new GenericTreeViewColumnProperty("EntityName")
                 {
-                    FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
-                    Alignment = Pango.Alignment.Right,
-                    Xalign = 1.0F
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_entity"),
+                    MinWidth = 260,
+                    MaxWidth = 260,
+                    FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
+                }, /* IN009067 */
+                new GenericTreeViewColumnProperty("EntityFiscalNumber")
+                {
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"),
+                    MinWidth = 100,
+                    FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
+                }, /* IN009067 */
+                new GenericTreeViewColumnProperty("TotalFinal")
+                { /* IN009166 */
+                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_final"),
+                    MinWidth = 100,
+                    //Alignment = 1.0F,
+                    FormatProvider = new FormatterDecimalCurrency(),
+                    CellRenderer = new CellRendererText()
+                    {
+                        FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
+                        Alignment = Pango.Alignment.Right,
+                        Xalign = 1.0F
+                    }
                 }
-            });
+            };
 
             /* IN009161 - changing columns order */
             /* IN009067 - Adding TotalOfCredit column */
@@ -290,10 +292,10 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = pXpoCriteria;
+            CriteriaOperator criteria;
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {

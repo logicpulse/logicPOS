@@ -12,11 +12,11 @@ using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosReadCardDialog : PosBaseDialog
+    internal partial class PosReadCardDialog : PosBaseDialog
     {
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
-        private EntryBoxValidation _entryBoxMovementDescription;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly EntryBoxValidation _entryBoxMovementDescription;
 
         private String _cardNumber;
         public String CardNumber
@@ -53,9 +53,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             _buttonOk.Clicked += _buttonOk_Clicked;
 
@@ -64,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
         }
 
-        void PosReadCardDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void PosReadCardDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
@@ -73,7 +75,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void _buttonOk_Clicked(object sender, EventArgs e)
+        private void _buttonOk_Clicked(object sender, EventArgs e)
         {
             CardNumber = _entryBoxMovementDescription.EntryValidation.Text;
         }

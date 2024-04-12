@@ -12,10 +12,10 @@ namespace logicpos.Classes.Logic.License
     public class LicenseRouter
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static bool showDebug = true;
-        readonly string hardwareID = string.Empty;
+        private readonly string hardwareID = string.Empty;
 
         private bool _loadApp = false;
         public bool LoadApp
@@ -31,7 +31,7 @@ namespace logicpos.Classes.Logic.License
 
             if (showDebug)
             {
-                _log.Debug("Debug Mode");
+                _logger.Debug("Debug Mode");
             }
 
             _loadApp = true;
@@ -51,14 +51,14 @@ namespace logicpos.Classes.Logic.License
 #else
             if (showDebug)
             {
-                _log.Debug("Not Debug Mode");
+                _logger.Debug("Not Debug Mode");
             }
 #endif
 
 #if (!DEBUG)
             if (showDebug)
             {
-                _log.Debug("Before GetLicenceInfo");
+                _logger.Debug("Before GetLicenceInfo");
             }
 
             GetLicenceInfo();
@@ -71,7 +71,7 @@ namespace logicpos.Classes.Logic.License
                 {
                     if (showDebug)
                     {
-                        _log.Debug("Skip License Manager, Plugin is Not Registered!");
+                        _logger.Debug("Skip License Manager, Plugin is Not Registered!");
                     }
                 }
                 // If Plugin Registered in Container                
@@ -81,7 +81,7 @@ namespace logicpos.Classes.Logic.License
 
                     hardwareID = GlobalFramework.PluginLicenceManager.GetHardwareID();
                     GlobalFramework.LicenceHardwareId = hardwareID;
-                    _log.Debug("Detected hardwareID: " + GlobalFramework.LicenceHardwareId);
+                    _logger.Debug("Detected hardwareID: " + GlobalFramework.LicenceHardwareId);
 
                     //Try Update Licence    
                     try
@@ -102,16 +102,16 @@ namespace logicpos.Classes.Logic.License
                         //If Diferent Licenses return 1 byte and update local license file, else if equal return byte 0, skipping if
                         if (showDebug)
                         {
-                            _log.Debug("registredLicence.Length: " + registredLicence.Length);
+                            _logger.Debug("registredLicence.Length: " + registredLicence.Length);
                         }
 
                         //Update Current Version
                         int result = GlobalFramework.PluginLicenceManager.updateCurrentVersion(hardwareID, version, System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
                         if (result > 0)
                         {
-                            _log.Debug("licence updated to version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                            _logger.Debug("licence updated to version: " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
                         }
-                        else { _log.Error("Error updating licence version"); }
+                        else { _logger.Error("Error updating licence version"); }
 
                         if (registredLicence.Length > 0)
                         {
@@ -127,7 +127,7 @@ namespace logicpos.Classes.Logic.License
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message);
+                        _logger.Error(ex.Message);
                     }
                     //Detected Blocked Version : Code must be here to works with Online and Offline Mode
                     if (version == "LOGICPOS_BLOCK")
@@ -140,20 +140,20 @@ namespace logicpos.Classes.Logic.License
 
                 if (showDebug)
                 {
-                    _log.Debug("Check if need register");
+                    _logger.Debug("Check if need register");
                 }
 
                 if (version == "logicpos")//NeedToRegister())
                 {
                     if (showDebug)
                     {
-                        _log.Debug("Need Register");
+                        _logger.Debug("Need Register");
                     }
 
                     //Show Form Register
                     if (showDebug)
                     {
-                        _log.Debug("ShowDialog");
+                        _logger.Debug("ShowDialog");
                     }
 
                     LicenseUIResult licenseUIResult = PosLicenceDialog.GetLicenseDetails(hardwareID);
@@ -165,18 +165,18 @@ namespace logicpos.Classes.Logic.License
                     {
                         GlobalFramework.LicenceRegistered = true;
                     }
-                    _log.Debug("LicenceRegistered: " + GlobalFramework.LicenceRegistered);
+                    _logger.Debug("LicenceRegistered: " + GlobalFramework.LicenceRegistered);
                 }
             }
             catch (Exception ex)
             {
-                _log.Error("Cannot connect with the intellilock WebService: " + ex.Message, ex);
+                _logger.Error("Cannot connect with the intellilock WebService: " + ex.Message, ex);
             }
 #endif
 
             if (showDebug)
             {
-                _log.Debug("loadPOS = " + _loadApp);
+                _logger.Debug("loadPOS = " + _loadApp);
                 //LicenseUIResult licenseUIResult = PosLicenceDialog.GetLicenseDetails(hardwareID);
             }
 
@@ -184,7 +184,7 @@ namespace logicpos.Classes.Logic.License
             {
                 if (showDebug)
                 {
-                    _log.Debug("LicenseRouter() :: StartApp: AppMode.FrontOffice");
+                    _logger.Debug("LicenseRouter() :: StartApp: AppMode.FrontOffice");
                 }
 
                 /* IN009005 and IN009034: Show "loading" */
@@ -192,7 +192,7 @@ namespace logicpos.Classes.Logic.License
                 GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(logicpos.Utils.ThreadDialogReadyEvent));
                 thread.Start();
 
-                _log.Debug("LicenseRouter() :: Show 'loading'");
+                _logger.Debug("LicenseRouter() :: Show 'loading'");
                 GlobalApp.DialogThreadWork = logicpos.Utils.GetThreadDialog(new Window("POS start up"), logicpos.Utils.checkIfDbExists());
                 GlobalApp.DialogThreadWork.Run();
                 /* IN009005 and IN009034: end" */
@@ -201,7 +201,7 @@ namespace logicpos.Classes.Logic.License
 
             if (showDebug)
             {
-                _log.Debug("end");
+                _logger.Debug("end");
             }
         }
 
@@ -262,14 +262,14 @@ namespace logicpos.Classes.Logic.License
 
             if (showDebug)
             {
-                _log.Debug("licence info count:" + sortedList.Count.ToString());
+                _logger.Debug("licence info count:" + sortedList.Count.ToString());
             }
 
             for (int i = 0; i < sortedList.Count; i++)
             {
                 string key = sortedList.GetKey(i).ToString();
                 string value = sortedList.GetByIndex(i).ToString();
-                _log.Debug("Licence Key:" + key + "=" + value);
+                _logger.Debug("Licence Key:" + key + "=" + value);
                 GlobalFramework.DtLicenceKeys.Rows.Add(key, value);
                 switch (key)
                 {
@@ -319,7 +319,7 @@ namespace logicpos.Classes.Logic.License
             {
                 if (showDebug)
                 {
-                    _log.Debug("NeedToRegister = true");
+                    _logger.Debug("NeedToRegister = true");
                 }
 
                 return true;
@@ -328,7 +328,7 @@ namespace logicpos.Classes.Logic.License
             {
                 if (showDebug)
                 {
-                    _log.Debug("NeedToRegister = false");
+                    _logger.Debug("NeedToRegister = false");
                 }
 
                 return false;
@@ -358,7 +358,7 @@ namespace logicpos.Classes.Logic.License
             }
             catch (Exception ex)
             {
-                _log.Error("Error ReadFileToByteArray!", ex);
+                _logger.Error("Error ReadFileToByteArray!", ex);
             }
             return null;
         }
@@ -370,7 +370,7 @@ namespace logicpos.Classes.Logic.License
             {
                 if (showDebug)
                 {
-                    _log.Debug("WriteByteArrayToFile: " + filePath);
+                    _logger.Debug("WriteByteArrayToFile: " + filePath);
                 }
 
                 FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
@@ -381,12 +381,12 @@ namespace logicpos.Classes.Logic.License
             }
             catch (Exception ex)
             {
-                _log.Error("Error Writing ByteArrayToFile!", ex);
+                _logger.Error("Error Writing ByteArrayToFile!", ex);
             }
 
             if (showDebug)
             {
-                _log.Debug("WriteByteArrayToFile response: " + response);
+                _logger.Debug("WriteByteArrayToFile response: " + response);
             }
 
             return response;

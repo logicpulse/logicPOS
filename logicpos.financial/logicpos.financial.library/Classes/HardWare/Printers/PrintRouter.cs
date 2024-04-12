@@ -18,7 +18,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
     public class PrintRouter
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Get Printer Token 
@@ -121,14 +121,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                         uowSession.RollbackTransaction();
                     }
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -141,14 +141,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
             if (pPrinter != null)
             {
-                //Init Helper Vars
-                bool resultSystemPrint = false;
                 int printCopies = pCopyNames.Count;
                 //Get Hash4Chars from Hash
                 string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(pDocumentFinanceMaster.Hash);
 
                 try
                 {
+                    //Init Helper Vars
+                    bool resultSystemPrint;
                     switch (GetPrinterToken(pPrinter.PrinterType.Token))
                     {
                         //Impressora SINOCAN em ambiente Windows
@@ -177,7 +177,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex.Message, ex);
+                    _logger.Warn(ex.Message, ex);
                     throw new Exception(ex.Message);
                 }
             }
@@ -206,8 +206,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
@@ -223,7 +222,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             }
             catch (Exception ex)
             {
-                _log.Warn(ex.Message, ex);
+                _logger.Warn(ex.Message, ex);
                 throw new Exception(ex.Message);
             }
             return result;
@@ -237,14 +236,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
             if (pPrinter != null)
             {
-                //Init Helper Vars
-                bool resultSystemPrint = false;
                 //Initialize CopyNames List from PrintCopies
                 List<int> copyNames = CustomReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
                 int printCopies = copyNames.Count;
 
                 try
                 {
+                    //Init Helper Vars
+                    bool resultSystemPrint;
                     switch (GetPrinterToken(pPrinter.PrinterType.Token))
                     {
                         //Impressora SINOCAN em ambiente Windows
@@ -273,7 +272,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex.Message, ex);
+                    _logger.Warn(ex.Message, ex);
                     throw new Exception(ex.Message);
                 }
             }
@@ -318,7 +317,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex.Message, ex);
+                    _logger.Warn(ex.Message, ex);
                     throw new Exception(ex.Message);
                 }
             }
@@ -329,8 +328,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         public static bool PrintArticleRequest(fin_documentorderticket pOrderTicket)
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 //Initialize printerArticleQueue to Store Articles > Printer Queue
@@ -357,7 +355,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             }
             catch (Exception ex)
             {
-                _log.Warn(ex.Message, ex);
+                _logger.Warn(ex.Message, ex);
                 throw new Exception(ex.Message);
             }
 
@@ -391,7 +389,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn(ex.Message, ex);
+                    _logger.Warn(ex.Message, ex);
                     throw new Exception(ex.Message);
                 }
             }
@@ -443,7 +441,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         }
                         catch (Exception ex)
                         {
-                            _log.Warn(ex.Message, ex);
+                            _logger.Warn(ex.Message, ex);
                         }
                     }
 
@@ -455,7 +453,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             }
             catch(Exception ex)
             {
-                _log.Error("Error open cash drawer :" + ex.Message);
+                _logger.Error("Error open cash drawer :" + ex.Message);
                 return false;
             }
             

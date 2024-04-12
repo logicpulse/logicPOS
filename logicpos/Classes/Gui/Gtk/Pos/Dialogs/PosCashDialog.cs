@@ -7,10 +7,10 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosCashDialog : PosBaseDialog
+    internal partial class PosCashDialog : PosBaseDialog
     {
-        private TouchButtonIconWithText _touchButtonStartStopWorkSessionPeriodDay;
-        private TouchButtonIconWithText _touchButtonCashDrawer;
+        private readonly TouchButtonIconWithText _touchButtonStartStopWorkSessionPeriodDay;
+        private readonly TouchButtonIconWithText _touchButtonCashDrawer;
 
         public PosCashDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)

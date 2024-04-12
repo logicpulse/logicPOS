@@ -21,14 +21,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Designation = string.Format("{0} {1} {2}{3}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), FiscalYear, "A", Code/10);
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -36,7 +36,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fDesignation;
+        private string fDesignation;
         [Indexed(Unique = true)]
         public string Designation
         {
@@ -44,7 +44,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        int fFiscalYear;
+        private int fFiscalYear;
         //False to Recreate new FiscalYears
         [Indexed(Unique = false)]
         public int FiscalYear
@@ -53,7 +53,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<int>("FiscalYear", ref fFiscalYear, value); }
         }
 
-        string fAcronym;
+        private string fAcronym;
         [Indexed(Unique = true)]
         public string Acronym
         {
@@ -61,7 +61,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Acronym", ref fAcronym, value); }
         }
 
-        bool fSeriesForEachTerminal;
+        private bool fSeriesForEachTerminal;
         public bool SeriesForEachTerminal
         {
             get { return fSeriesForEachTerminal; }

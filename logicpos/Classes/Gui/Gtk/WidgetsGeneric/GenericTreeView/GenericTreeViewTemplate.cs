@@ -13,7 +13,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
     //DataTable pDataSource, 
     //DataRow pDefaultValue, 
 
-    class GenericTreeViewTemplate : GenericTreeView<DataTable, DataRow>
+    internal class GenericTreeViewTemplate : GenericTreeView<DataTable, DataRow>
     {
         //Public Parametless Constructor Required by Generics
         public GenericTreeViewTemplate() { }
@@ -43,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             _columnProperties = pColumnProperties;
             _dataSource = pDataSource;
             _dataSourceRow = _dataSource.Rows[_currentRowIndex];
-            _guidDefaultValue = default(Guid);
+            _guidDefaultValue = default;
             _treeViewMode = pGenericTreeViewMode;
             _navigatorMode = pGenericTreeViewNavigatorMode;
 
@@ -106,14 +106,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             OnRecordBeforeInsert();
 
             //Implementation Goes Here
-            _log.Debug("Insert(): WIP");
+            _logger.Debug("Insert(): WIP");
 
             //Fire Event 
             OnRecordAfterInsert();
           }
           catch (Exception ex)
           {
-            _log.Error(ex.Message, ex);
+            _logger.Error(ex.Message, ex);
           }
         }
 
@@ -125,14 +125,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             OnRecordBeforeUpdate();
 
             //Implementation Goes Here
-            _log.Debug("Update(): WIP");
+            _logger.Debug("Update(): WIP");
 
             //Fire Event 
             OnRecordAfterUpdate();
           }
           catch (Exception ex)
           {
-            _log.Error(ex.Message, ex);
+            _logger.Error(ex.Message, ex);
           }
         }
         */
@@ -146,14 +146,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             OnRecordBeforeDelete();
 
             //Implementation Goes Here
-            _log.Debug("Delete(): WIP");
+            _logger.Debug("Delete(): WIP");
 
             //Fire Event 
             OnRecordAfterDelete();
           }
           catch (Exception ex)
           {
-            _log.Error(ex.Message, ex);
+            _logger.Error(ex.Message, ex);
           }
         }
         */

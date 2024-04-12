@@ -9,7 +9,7 @@ namespace logicpos.shared.Classes.Orders
     public class OrderMainTable
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private Guid _oid;
         public Guid Oid
@@ -68,7 +68,7 @@ namespace logicpos.shared.Classes.Orders
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

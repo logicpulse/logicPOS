@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.Extensions;
 using logicpos.financial;
 using logicpos.shared;
 using System;
@@ -7,10 +8,10 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class CheckButtonBox : EventBox
+    internal class CheckButtonBox : EventBox
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Protected
         protected Pango.FontDescription _fontDescription;
@@ -29,11 +30,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Defaults
             String fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
-            Color colorBaseDialogEntryBoxBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"]);
+            Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
 
             int padding = 3;
             //This
-            this.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(colorBaseDialogEntryBoxBackground));
+            this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
             this.BorderWidth = (uint)padding;
             //Font
             _fontDescription = Pango.FontDescription.FromString(fontEntry);
@@ -45,9 +46,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Add(_checkButton);
         }
 
-        void checkButton_Clicked(object sender, EventArgs e)
+        private void checkButton_Clicked(object sender, EventArgs e)
         {
-            if (Clicked != null) Clicked(sender, e);
+            Clicked?.Invoke(sender, e);
         }
     }
 }

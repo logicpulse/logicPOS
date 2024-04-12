@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class LittleAddsRadioButtonTouch : VBox
+    internal class LittleAddsRadioButtonTouch : VBox
     {
         //Log4Net
-        protected static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Public Properties
-        List<RadioButton> _radioButtonList;
+        private List<RadioButton> _radioButtonList;
         public List<RadioButton> RadioButtonList
         {
             get { return _radioButtonList; }
@@ -88,11 +88,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             };
         }
 
-        void radiobutton_Clicked(object sender, System.EventArgs e)
+        private void radiobutton_Clicked(object sender, System.EventArgs e)
         {
             RadioButton radiobutton = (RadioButton)sender;
             _value = radiobutton.Label;
-            _log.Debug(string.Format("_value: [{0}]", _value));
+            _logger.Debug(string.Format("_value: [{0}]", _value));
         }
     }
 }

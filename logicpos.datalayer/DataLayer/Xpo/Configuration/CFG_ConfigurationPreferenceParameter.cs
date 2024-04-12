@@ -17,14 +17,14 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Code");
         }
 
-        UInt32 fOrd;
+        private UInt32 fOrd;
         public UInt32 Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        UInt32 fCode;
+        private UInt32 fCode;
         [Indexed(Unique = true)]
         public UInt32 Code
         {
@@ -32,7 +32,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        string fToken;
+        private string fToken;
         [Size(100)]
         [Indexed(Unique = true)]
         public String Token
@@ -41,7 +41,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<String>("Token", ref fToken, value); }
         }
 
-        string fValue;
+        private string fValue;
         //[Size(255)]
         [Size(SizeAttribute.Unlimited)]
         public String Value
@@ -50,21 +50,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<String>("Value", ref fValue, value); }
         }
 
-        string fValueTip;
+        private string fValueTip;
         public string ValueTip
         {
             get { return fValueTip; }
             set { SetPropertyValue<string>("ValueTip", ref fValueTip, value); }
         }
 
-        Boolean fRequired;
+        private Boolean fRequired;
         public Boolean Required
         {
             get { return fRequired; }
             set { SetPropertyValue<Boolean>("Required", ref fRequired, value); }
         }
 
-        string fRegEx;
+        private string fRegEx;
         [Size(255)]
         public string RegEx
         {
@@ -72,7 +72,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("RegEx", ref fRegEx, value); }
         }
 
-        string fResourceString;
+        private string fResourceString;
         [Indexed(Unique = true)]
         public string ResourceString
         {
@@ -80,28 +80,29 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ResourceString", ref fResourceString, value); }
         }
 
-        string fResourceStringInfo;
+        private string fResourceStringInfo;
         [Size(255)]
         public String ResourceStringInfo
         {
             get { return fResourceStringInfo; }
             set { SetPropertyValue<String>("ResourceStringInfo", ref fResourceStringInfo, value); }
         }
-        int fFormType;
+
+        private int fFormType;
         public int FormType
         {
             get { return fFormType; }
             set { SetPropertyValue<int>("FormType", ref fFormType, value); }
         }
 
-        int fFormPageNo;
+        private int fFormPageNo;
         public int FormPageNo
         {
             get { return fFormPageNo; }
             set { SetPropertyValue<int>("FormPageNo", ref fFormPageNo, value); }
         }
 
-        PreferenceParameterInputType fInputType;
+        private PreferenceParameterInputType fInputType;
         public PreferenceParameterInputType InputType
         {
             get { return fInputType; }

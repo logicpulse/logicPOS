@@ -20,7 +20,7 @@ namespace logicpos.financial.library.Classes.Finance
     public class ProcessFinanceDocument
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public static fin_documentfinancemaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
         {
@@ -163,7 +163,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
                                 documentFinanceMasterParentDocument.DocumentStatusUser = userDetail.CodeInternal;
                             }
-                            //_log.Debug(String.Format("DocumentNumber: [{0}], DocumentStatusStatus: [{1}], DocumentStatusDate: [{2}], DocumentStatusUser: [{3}]", pParameters.OrderReferences[0].DocumentNumber, pParameters.OrderReferences[0].DocumentStatusStatus, pParameters.OrderReferences[0].DocumentStatusDate, pParameters.OrderReferences[0].DocumentStatusUser));
+                            //_logger.Debug(String.Format("DocumentNumber: [{0}], DocumentStatusStatus: [{1}], DocumentStatusDate: [{2}], DocumentStatusUser: [{3}]", pParameters.OrderReferences[0].DocumentNumber, pParameters.OrderReferences[0].DocumentStatusStatus, pParameters.OrderReferences[0].DocumentStatusDate, pParameters.OrderReferences[0].DocumentStatusUser));
                         }
                     }
 
@@ -685,13 +685,13 @@ if (GlobalFramework.AppUseParkingTicketModule)
 //    foreach (var item in GlobalFramework.PendentPayedParkingTickets)
 //    {
 //        // Call #Ws Part 2 : Send Payed Cached Tickets
-//        _log.Debug($"TicketId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
+//        _logger.Debug($"TicketId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
 //    }
 
 //    foreach (var item in GlobalFramework.PendentPayedParkingCards)
 //    {
 //        // Call #Ws Part 3 : Send Payed Cached Cards
-//        _log.Debug($"CardId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
+//        _logger.Debug($"CardId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
 //    }
 //}
 
@@ -722,7 +722,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
                         }
                         catch (Exception ex)
                         {
-                            _log.Error("Error processing stocks :: " + ex.Message, ex);
+                            _logger.Error("Error processing stocks :: " + ex.Message, ex);
                         }
 
                         //Assign Document to Result
@@ -740,14 +740,14 @@ if (GlobalFramework.AppUseParkingTicketModule)
                     catch (Exception ex)
                     {
                         uowSession.RollbackTransaction();
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                         throw new Exception("ERROR_COMMIT_FINANCE_DOCUMENT", ex.InnerException);
                     }
                 }
             }
             catch (ProcessFinanceDocumentValidationException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 throw new Exception(ex.Exception.Message, ex.InnerException);
             }
 
@@ -767,7 +767,6 @@ if (GlobalFramework.AppUseParkingTicketModule)
         public static string GenDocumentHash(Session pSession, fin_documentfinancetype pDocType, fin_documentfinanceseries pDocSerie, fin_documentfinancemaster pDocumentFinanceMaster)
         {
             bool debug = false;
-            string resultSignedHash = "";
             fin_documentfinancemaster doc = pDocumentFinanceMaster;
             //Required to ALways use "." and not Culture Decimal separator, ex ","
             //string TotalFinalRound = FrameworkUtils.DecimalToString(doc.TotalFinalRound).Replace(',', '.');
@@ -777,7 +776,8 @@ if (GlobalFramework.AppUseParkingTicketModule)
             var olastDocumentHash = pSession.ExecuteScalar(sql);
             string lastDocumentHash = (olastDocumentHash != null) ? olastDocumentHash.ToString() : "";
             string signTargetString = string.Format("{0};{1};{2};{3};{4}", doc.DocumentDate, doc.SystemEntryDate, doc.DocumentNumber, TotalFinalRound, lastDocumentHash);
-            
+
+            string resultSignedHash;
             // Old Method without Plugin
             //resultSignedHash = FrameworkUtils.SignDataToSHA1Base64(signTargetString, debug);
             // Sign Document if has a valid PluginSoftwareVendor 
@@ -792,11 +792,11 @@ if (GlobalFramework.AppUseParkingTicketModule)
             }
 
             //Debug
-            if (debug) _log.Debug(string.Format("GenDocumentHash(): #{0}", doc.DocumentNumber));
-            if (debug) _log.Debug(string.Format("GenDocumentHash(): lastDocumentHash [{0}]", lastDocumentHash));
-            if (debug) _log.Debug(string.Format("GenDocumentHash(): signTargetString [{0}]", signTargetString));
-            if (debug) _log.Debug(string.Format("GenDocumentHash(): resultSignedHash [{0}]", resultSignedHash));
-            if (debug) _log.Debug(string.Format("GenDocumentHash(): sql [{0}]", sql));
+            if (debug) _logger.Debug(string.Format("GenDocumentHash(): #{0}", doc.DocumentNumber));
+            if (debug) _logger.Debug(string.Format("GenDocumentHash(): lastDocumentHash [{0}]", lastDocumentHash));
+            if (debug) _logger.Debug(string.Format("GenDocumentHash(): signTargetString [{0}]", signTargetString));
+            if (debug) _logger.Debug(string.Format("GenDocumentHash(): resultSignedHash [{0}]", resultSignedHash));
+            if (debug) _logger.Debug(string.Format("GenDocumentHash(): sql [{0}]", sql));
 
             return resultSignedHash;
         }
@@ -838,8 +838,6 @@ if (GlobalFramework.AppUseParkingTicketModule)
         public static string GenDocumentQRCode(Session pSession, fin_documentfinancetype pDocType, fin_documentfinanceseries pDocSerie, fin_documentfinancemaster pDocumentFinanceMaster, bool _debug = false)
         {
             bool debug = _debug;
-            //byte[] resultQRCode = new byte[64]; 
-            string resultQRCode = "";
             fin_documentfinancemaster doc = pDocumentFinanceMaster;
 
             // Old Method without Plugin
@@ -880,8 +878,10 @@ if (GlobalFramework.AppUseParkingTicketModule)
             string R = "R:" + SettingsApp.SaftSoftwareCertificateNumber + "*";
             string S = "";
             //Debug
-            if (debug) _log.Debug(string.Format("GenDocumentQRCode(): " + A + B + C + D + E + F + G + H + I1 + I7 + I8 + N + O + Q + R + S));
+            if (debug) _logger.Debug(string.Format("GenDocumentQRCode(): " + A + B + C + D + E + F + G + H + I1 + I7 + I8 + N + O + Q + R + S));
 
+            //byte[] resultQRCode = new byte[64]; 
+            string resultQRCode;
             if (GlobalFramework.PluginSoftwareVendor != null && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
             {
                 //resultSignedHash = GlobalFramework.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
@@ -908,7 +908,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
                 resultQRCode = null;
             }
 
-            
+
 
             return resultQRCode;
         }
@@ -939,7 +939,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return documentNumber;
             }
         }
@@ -962,7 +962,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
                 string c = pHash.Substring(21 - 1, 1);
                 string d = pHash.Substring(31 - 1, 1);
 
-                //_log.Debug(string.Format("pHash: [{0}] [{1}][{2}][{3}][{4}]", pHash, a, b, c, d));
+                //_logger.Debug(string.Format("pHash: [{0}] [{1}][{2}][{3}][{4}]", pHash, a, b, c, d));
                 //Ex.: Result [wESm]
                 //wQ5dp/AesYEgM9QFlh8aSyfIcpJIDnm+Z8cr4PNsmF7AoxIR9+EU8vIq2PDXE7aIMYH0j.....
                 //[w]:w
@@ -1061,7 +1061,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
 
                     //Increase NextDocumentNumber
                     documentFinanceSerie.NextDocumentNumber++;
-                    if (debug) _log.Debug(string.Format("documentNumber: [{0}]", documentNumber));
+                    if (debug) _logger.Debug(string.Format("documentNumber: [{0}]", documentNumber));
 
                     //Get Fresh UOW Objects
                     erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(uowSession, typeof(erp_customer), pCustomer);
@@ -1144,7 +1144,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
                         documentFinanceMasterPayment.DebitAmount = item.TotalFinal;
                         documentFinanceMasterPayment.DocumentFinanceMaster = documentMaster;
                         documentFinanceMasterPayment.DocumentFinancePayment = documentFinancePayment;
-                        if (debug) _log.Debug(string.Format("DocumentAcronym:[{0}] DocumentNumber:[{1}] DocumentValue: [{2}], TotalCredit: [{3}]", item.DocumentType.Acronym, item.DocumentNumber, item.TotalFinal, totalCredit));
+                        if (debug) _logger.Debug(string.Format("DocumentAcronym:[{0}] DocumentNumber:[{1}] DocumentValue: [{2}], TotalCredit: [{3}]", item.DocumentType.Acronym, item.DocumentNumber, item.TotalFinal, totalCredit));
                         //}
                     }
 
@@ -1254,7 +1254,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             //Update Total Payed
                             totalPayed += totalToPayInCurrentInvoice;
 
-                            if (debug) _log.Debug(string.Format("[{0}] PayRemain: [{1}], PayInCurrent: [{2}], RemainToPay: [{3}], Credit: [{4}], totalPayed: [{5}], PartialPayed: [{6}], FullPayed: [{7}]", item.DocumentNumber, documentTotalPayRemain, totalToPayInCurrentInvoice, (documentTotalPayRemain - totalToPayInCurrentInvoice), totalCredit, totalPayed, documentPartialPayed, documentFullPayed));
+                            if (debug) _logger.Debug(string.Format("[{0}] PayRemain: [{1}], PayInCurrent: [{2}], RemainToPay: [{3}], Credit: [{4}], totalPayed: [{5}], PartialPayed: [{6}], FullPayed: [{7}]", item.DocumentNumber, documentTotalPayRemain, totalToPayInCurrentInvoice, (documentTotalPayRemain - totalToPayInCurrentInvoice), totalCredit, totalPayed, documentPartialPayed, documentFullPayed));
 
                             //Always Get Fresh Object in UOW, used to Assign to Full and Partial Payments, need to be Outside FullPayed
                             documentMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
@@ -1287,7 +1287,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                                 documentFinanceMasterPayment.CreditAmount = totalToPayInCurrentInvoice;
                                 documentFinanceMasterPayment.DocumentFinanceMaster = documentMaster;
                                 documentFinanceMasterPayment.DocumentFinancePayment = documentFinancePayment;
-                                //if(debug) _log.Debug(string.Format("  [{0}], Persisted PaymentAmount: [{1}]", documentMaster.DocumentNumber, totalToPayInCurrentInvoice));
+                                //if(debug) _logger.Debug(string.Format("  [{0}], Persisted PaymentAmount: [{1}]", documentMaster.DocumentNumber, totalToPayInCurrentInvoice));
                             }
                             /* IN009182 - adding related documents for reference */
                             string relatedDocumentsQuery = GenerateRelatedDocumentsQueryByDocumentType(documentMaster.Oid.ToString());
@@ -1319,7 +1319,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     //Get ExtendedValue
                     ExtendValue extendValue = new ExtendValue();
                     extended = extendValue.GetExtendedValue(totalPayedDocument, defaultCurrency.Designation);
-                    if (debug) _log.Debug(string.Format("extended: [{0}]", extended));
+                    if (debug) _logger.Debug(string.Format("extended: [{0}]", extended));
 
                     //Now we can Assign PaymentAmount (Credit-Debit Diference)
                     documentFinancePayment.PaymentAmount = totalPayedDocument;
@@ -1343,7 +1343,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 catch (Exception ex)
                 {
                     uowSession.RollbackTransaction();
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     //2016-01-05 apmuga passar erro para cima e não mascarar com outro erro
                     //throw new Exception("ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT", ex.InnerException);
                    // throw ex;
@@ -1368,7 +1368,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 pDocumentFinanceMaster.DocumentStatusReason = pStatusReason;
                 pDocumentFinanceMaster.DocumentStatusUser = pUserDetail.CodeInternal;
                 pDocumentFinanceMaster.SystemEntryDate = pCombinedDateTime;
-                if (debug) _log.Debug(string.Format("ChangePayedInvoiceStatus On: [{0}] to [{1}]", pDocumentFinanceMaster.DocumentNumber, pDocumentFinanceMaster.DocumentStatusStatus));
+                if (debug) _logger.Debug(string.Format("ChangePayedInvoiceStatus On: [{0}] to [{1}]", pDocumentFinanceMaster.DocumentNumber, pDocumentFinanceMaster.DocumentStatusStatus));
 
                 //Call Recursive Method on Parent Again, until it is NULL (No Parent)
                 if (pDocumentFinanceMaster.DocumentParent != null) ChangePayedInvoiceRelatedDocumentsStatus(pSession, pDocumentFinanceMaster.DocumentParent, pStatusReason, pCombinedDateTime, pUserDetail);
@@ -1377,7 +1377,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return result;
         }
@@ -1400,8 +1400,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
         //Main Method
         public static bool PersistFinanceDocumentWorkSession(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, ProcessFinanceDocumentParameter pParameters, fin_documentfinancepayment pDocumentFinancePayment, fin_configurationpaymentmethod pPaymentMethod)
         {
-            bool result = false;
-
+            bool result;
             try
             {
                 //Get Period WorkSessionPeriodTerminal, UserDetail and Terminal
@@ -1499,7 +1498,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             catch (Exception ex)
             {
                 result = false;
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -1536,7 +1535,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -1586,7 +1585,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -1609,7 +1608,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                     }
 
                     if (generatePdfDocuments)
@@ -1638,7 +1637,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -1660,7 +1659,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     }
                     catch (Exception ex)
                     {
-                        _log.Error(ex.Message, ex);
+                        _logger.Error(ex.Message, ex);
                     }
 
                     if (generatePdfDocuments)
@@ -1688,7 +1687,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

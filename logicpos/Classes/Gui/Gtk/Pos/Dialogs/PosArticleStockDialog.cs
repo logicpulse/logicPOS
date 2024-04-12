@@ -17,6 +17,7 @@ using logicpos.Classes.Enums.Keyboard;
 using System.Collections.Generic;
 using DevExpress.Xpo;
 using System.Collections;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -27,14 +28,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         //UI Components Dialog
         private VBox _vbox;
-        TouchButtonIconWithText _buttonOk;
-        TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
         //UI Components Form
         private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectSupplier;
         private EntryBoxValidationDatePickerDialog _entryBoxDocumentDate;
         private EntryBoxValidation _entryBoxDocumentNumber;
-        private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle;
-        private EntryBoxValidation _entryBoxQuantity;
+        private readonly XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle;
+        private readonly EntryBoxValidation _entryBoxQuantity;
         private EntryBoxValidation _entryBoxNotes;
         //InitialValues
         private erp_customer _initialSupplier = null;
@@ -47,10 +48,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public ICollection _dropdownTextCollection;
         private XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> _entryBoxSelectArticle1;
         private int _totalCompositeEntrys = 0;
-        private fin_article _article = null;
+        private readonly fin_article _article = null;
         private fin_article _previousValue = null;
-        VBox _vboxArticles;
-        ScrolledWindow _scrolledWindowView;
+        private VBox _vboxArticles;
+        private ScrolledWindow _scrolledWindowView;
 
         //Public Methods
         public erp_customer Customer
@@ -94,9 +95,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonOk.Sensitive = false;
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _scrolledWindowView, actionAreaButtons);
@@ -142,7 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _vboxArticles = new VBox(true, 0);
                 _scrolledWindowView = new ScrolledWindow();
                 _scrolledWindowView.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
-                _scrolledWindowView.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(System.Drawing.Color.White));
+                _scrolledWindowView.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _scrolledWindowView.ShadowType = ShadowType.Out;
                 _totalCompositeEntrys++;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
@@ -218,7 +221,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -270,7 +273,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             try
@@ -279,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             try
@@ -288,7 +291,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -303,7 +306,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -407,7 +410,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error selecting new Composite article Entry : " + ex.Message);
+                _logger.Error("Error selecting new Composite article Entry : " + ex.Message);
             }
         }
 
@@ -418,8 +421,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 ListStore store = new ListStore(typeof(string));
                 string sortProp = "Designation";
-                SortingCollection sortCollection = new SortingCollection();
-                sortCollection.Add(new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending));
+                SortingCollection sortCollection = new SortingCollection
+                {
+                    new SortProperty(sortProp, DevExpress.Xpo.DB.SortingDirection.Ascending)
+                };
                 if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
                 _dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
@@ -442,7 +447,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error populating dropdown list : " + ex.Message);
+                _logger.Error("Error populating dropdown list : " + ex.Message);
                 return null;
             }
         }
@@ -512,7 +517,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error Adding new Composite article Entry : " + ex.Message);
+                _logger.Error("Error Adding new Composite article Entry : " + ex.Message);
             }
         }
 
@@ -603,7 +608,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -632,7 +637,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message);
+                _logger.Error(ex.Message);
             }
         }
 
@@ -654,7 +659,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error("Error updating quantity from article : " + ex.Message);
+                _logger.Error("Error updating quantity from article : " + ex.Message);
                 ValidateDialog();
             }
         }

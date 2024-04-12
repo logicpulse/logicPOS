@@ -22,7 +22,7 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         //}
 
         //Article One <> Many ArticleCompositions
-        fin_article fArticle;
+        private fin_article fArticle;
         [Association(@"ArticleReferencesArticleComposition")]
         public fin_article Article
         {
@@ -30,7 +30,7 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
             set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
         }
 
-        fin_article fArticleChild;
+        private fin_article fArticleChild;
         public fin_article ArticleChild
         {
             get { return fArticleChild; }
@@ -45,7 +45,7 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         //}
 
 
-        Decimal fQuantity;
+        private Decimal fQuantity;
         public Decimal Quantity
         {
             get { return fQuantity; }

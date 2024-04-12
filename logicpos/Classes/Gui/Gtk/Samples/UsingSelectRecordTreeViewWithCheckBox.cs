@@ -17,13 +17,13 @@ namespace logicpos.Classes.Gui.Gtk.Samples
     //How to Use Call with
     //UsingSelectRecordTreeViewWithCheckBox usingSelectRecordTreeViewWithCheckBox = new UsingSelectRecordTreeViewWithCheckBox(this);
     //DataTable dataTable = usingSelectRecordTreeViewWithCheckBox.SelectRecordDialog();
-    //_log.Debug(string.Format("dataTable.Rows.Count: [{0}]", dataTable.Rows.Count));
+    //_logger.Debug(string.Format("dataTable.Rows.Count: [{0}]", dataTable.Rows.Count));
 
-    class UsingSelectRecordTreeViewWithCheckBox
+    internal class UsingSelectRecordTreeViewWithCheckBox
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private Window _sourceWindow;
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly Window _sourceWindow;
         private PosSelectRecordDialog<DataTable, DataRow, TreeViewTerminalSeries> _dialogSelectRecord;
         private DataTable _resultDataTable = new DataTable();
 
@@ -68,7 +68,7 @@ namespace logicpos.Classes.Gui.Gtk.Samples
                 }
                 else if (_dialogSelectRecord.GenericTreeViewMode == GenericTreeViewMode.CheckBox)
                 {
-                    actionAreaButtonOk.Button.Sensitive = (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0) ? true : false;
+                    actionAreaButtonOk.Button.Sensitive = (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0);
 
                     //Get Indexes
                     int indexColumnCheckBox = _dialogSelectRecord.GenericTreeView.DataSource.Columns.IndexOf("CheckBox");
@@ -96,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Samples
             return _resultDataTable;
         }
 
-        void dialogSelectRecord_Response(object o, ResponseArgs args)
+        private void dialogSelectRecord_Response(object o, ResponseArgs args)
         {
             PosSelectRecordDialog<DataTable, DataRow, TreeViewTerminalSeries>
               dialog = (PosSelectRecordDialog<DataTable, DataRow, TreeViewTerminalSeries>)o;
@@ -138,13 +138,13 @@ namespace logicpos.Classes.Gui.Gtk.Samples
                 if (itemChecked)
                 {
                     Guid itemGuid = new Guid(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")].ToString());
-                    _log.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
+                    _logger.Debug(string.Format("{0}:{1}:{2}", itemIndex, itemChecked, itemGuid));
                     _resultDataTable.Rows.Add(dataTable.Rows[itemIndex].ItemArray);
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return false;
         }

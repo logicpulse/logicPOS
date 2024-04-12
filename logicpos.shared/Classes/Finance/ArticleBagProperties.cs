@@ -7,98 +7,98 @@ namespace logicpos.shared.Classes.Finance
 {
     public class ArticleBagProperties
     {
-        Guid _placeOid;
+        private Guid _placeOid;
         public Guid PlaceOid
         {
             get { return _placeOid; }
             set { _placeOid = value; }
         }
 
-        Guid _tableOid;
+        private Guid _tableOid;
         public Guid TableOid
         {
             get { return _tableOid; }
             set { _tableOid = value; }
         }
 
-        PriceType _priceType;
+        private PriceType _priceType;
         public PriceType PriceType
         {
             get { return _priceType; }
             set { _priceType = value; }
         }
 
-        string _code;
+        private string _code;
         public string Code
         {
             get { return _code; }
             set { _code = value; }
         }
 
-        decimal _quantity;
+        private decimal _quantity;
         public decimal Quantity
         {
             get { return _quantity; }
             set { _quantity = value; }
         }
 
-        string _unitMeasure;
+        private string _unitMeasure;
         public string UnitMeasure
         {
             get { return _unitMeasure; }
             set { _unitMeasure = value; }
         }
 
-        decimal _priceWithDiscount = 0;
+        private decimal _priceWithDiscount = 0;
         public decimal PriceWithDiscount
         {
             get { return _priceWithDiscount; }
             set { _priceWithDiscount = value; }
         }
 
-        decimal _priceWithDiscountGlobal = 0;
+        private decimal _priceWithDiscountGlobal = 0;
         public decimal PriceWithDiscountGlobal
         {
             get { return _priceWithDiscountGlobal; }
             set { _priceWithDiscountGlobal = value; }
         }
 
-        decimal _totalGross = 0;
+        private decimal _totalGross = 0;
         public decimal TotalGross
         {
             get { return _totalGross; }
             set { _totalGross = value; }
         }
 
-        decimal _totalNet = 0;
+        private decimal _totalNet = 0;
         public decimal TotalNet
         {
             get { return _totalNet; }
             set { _totalNet = value; }
         }
 
-        decimal _totalDiscount = 0;
+        private decimal _totalDiscount = 0;
         public decimal TotalDiscount
         {
             get { return _totalDiscount; }
             set { _totalDiscount = value; }
         }
 
-        decimal _totalTax = 0;
+        private decimal _totalTax = 0;
         public decimal TotalTax
         {
             get { return _totalTax; }
             set { _totalTax = value; }
         }
 
-        decimal _totalFinal = 0;
+        private decimal _totalFinal = 0;
         public decimal TotalFinal
         {
             get { return _totalFinal; }
             set { _totalFinal = value; }
         }
 
-        decimal _priceFinal = 0;
+        private decimal _priceFinal = 0;
         public decimal PriceFinal
         {
             get { return _priceFinal; }
@@ -106,7 +106,7 @@ namespace logicpos.shared.Classes.Finance
         }
 
         //Reference DocumentMaster usefull for <References> in CreditNotes, see SAF-T PT References
-        fin_documentfinancemaster fReference;
+        private fin_documentfinancemaster fReference;
         public fin_documentfinancemaster Reference
         {
             get { return fReference; }
@@ -114,7 +114,7 @@ namespace logicpos.shared.Classes.Finance
         }
 
         //Reference Reason
-        string fReason;
+        private string fReason;
         [Size(50)]
         public string Reason
         {
@@ -122,7 +122,7 @@ namespace logicpos.shared.Classes.Finance
             set { fReason = value; }
         }
 
-        string fToken1;
+        private string fToken1;
         [Size(255)]
         public string Token1
         {
@@ -130,7 +130,7 @@ namespace logicpos.shared.Classes.Finance
             set { fToken1 = value; }
         }
 
-        string fToken2;
+        private string fToken2;
         [Size(255)]
         public string Token2
         {
@@ -138,7 +138,7 @@ namespace logicpos.shared.Classes.Finance
             set { fToken2 = value; }
         }
 
-        string fNotes;
+        private string fNotes;
         [Size(255)]
         public string Notes
         {
@@ -146,7 +146,7 @@ namespace logicpos.shared.Classes.Finance
             set { fNotes = value; }
         }
 
-        string fSerialNumber;
+        private string fSerialNumber;
         [Size(255)]
         public string SerialNumber
         {
@@ -154,7 +154,7 @@ namespace logicpos.shared.Classes.Finance
             set { fSerialNumber = value; }
         }
 
-        string fWarehouse;
+        private string fWarehouse;
         [Size(255)]
         public string Warehouse
         {

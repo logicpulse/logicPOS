@@ -9,21 +9,20 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class DocumentFinanceDialogPreview : PosBaseDialog
+    internal class DocumentFinanceDialogPreview : PosBaseDialog
     {
-        private bool _debug = false;
+        private readonly bool _debug = false;
         private Alignment _alignmentWindow;
-        private ArticleBag _articleBag;
-        private cfg_configurationcurrency _configurationCurrency;
+        private readonly ArticleBag _articleBag;
+        private readonly cfg_configurationcurrency _configurationCurrency;
 
         public DocumentFinanceDialogPreview(Window pSourceWindow, DialogFlags pDialogFlags, DocumentFinanceDialogPreviewMode pMode, ArticleBag pArticleBag, cfg_configurationcurrency pConfigurationCurrency)
             : base(pSourceWindow, pDialogFlags)
         {
-            //Init Local Vars
-            String windowTitle = string.Empty;
             Size windowSize = new Size(700, 360);
             String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_preview.png");
             
@@ -34,6 +33,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
 
+            //Init Local Vars
+            string windowTitle;
             if (pMode == DocumentFinanceDialogPreviewMode.Preview)
             {
                 windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_documentfinance_preview_totals_mode_preview");
@@ -138,7 +139,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 foreach (var item in _articleBag.TaxBag.OrderBy(i => i.Key))
                 {
                     row++;
-                    if (_debug) _log.Debug(string.Format("{0}:{1}:{2}:{3}", item.Value.Designation, item.Key, item.Value.TotalBase, item.Value.Total));
+                    if (_debug) _logger.Debug(string.Format("{0}:{1}:{2}:{3}", item.Value.Designation, item.Key, item.Value.TotalBase, item.Value.Total));
                     //Prepare Labels
                     Label labelDesignation = new Label(item.Value.Designation);
                     Label labelValue = new Label(FrameworkUtils.DecimalToString(item.Key));
@@ -208,25 +209,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 HBox hbox = new HBox(false, 20);
 
                 EventBox eventboxTax = new EventBox() { VisibleWindow = debug };
-                eventboxTax.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.LightGray));
+                eventboxTax.ModifyBg(StateType.Normal, Color.LightGray.ToGdkColor());
                 eventboxTax.Add(tableTax);
                 EventBox eventboxTotal = new EventBox() { VisibleWindow = debug };
-                eventboxTotal.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.LightGray));
+                eventboxTotal.ModifyBg(StateType.Normal, Color.LightGray.ToGdkColor());
                 eventboxTotal.Add(tableTotal);
 
                 hbox.PackStart(eventboxTax, true, true, 0);
                 hbox.PackStart(eventboxTotal, false, false, 0);
 
                 EventBox eventbox = new EventBox() { VisibleWindow = debug, BorderWidth = padding };
-                eventbox.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(Color.LightCoral));
+                eventbox.ModifyBg(StateType.Normal, Color.LightCoral.ToGdkColor());
                 eventbox.Add(hbox);
 
-                _alignmentWindow = new Alignment(0.5f, 0.5f, 0.5f, 0.5f);
-                _alignmentWindow.Add(eventbox);
+                _alignmentWindow = new Alignment(0.5f, 0.5f, 0.5f, 0.5f)
+                {
+                    eventbox
+                };
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

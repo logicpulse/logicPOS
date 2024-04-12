@@ -9,7 +9,7 @@ namespace logicpos.financial.library.Classes.Finance
     public class ExtendValue
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Função para escrever por extenso os valores em Real (em C# - suporta até R$ 9.999.999.999,99)     
@@ -45,13 +45,8 @@ namespace logicpos.financial.library.Classes.Finance
             }
 
             string strValorExtenso = ""; //Variável que irá armazenar o valor por extenso do número informado
-            string strNumero = "";       //Irá armazenar o número para exibir por extenso 
-            string strCentena = "";
-            string strDezena = "";
-            string strDezCentavo = "";
 
             decimal dblCentavos = 0;
-            decimal dblValorInteiro = 0;
             int intContador = 0;
             bool bln_Bilhao = false;
             bool bln_Milhao = false;
@@ -84,11 +79,12 @@ namespace logicpos.financial.library.Classes.Finance
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
 
                 //Gerar Extenso parte Inteira
-                dblValorInteiro = (Int64)pValue;
+                decimal dblValorInteiro = (Int64)pValue;
+                string strNumero;
                 if (dblValorInteiro > 0)
                 {
                     if (dblValorInteiro > 999)
@@ -126,7 +122,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 {
                                     if (int.Parse(strNumero) > 0)
                                     {
-                                        strCentena = Mid(dblValorInteiro.ToString().Trim(), (dblValorInteiro.ToString().Trim().Length - i) - 1, 3);
+                                        string strCentena = Mid(dblValorInteiro.ToString().Trim(), (dblValorInteiro.ToString().Trim().Length - i) - 1, 3);
 
                                         if (int.Parse(strCentena) > 100 && int.Parse(strCentena) < 200)
                                         {
@@ -153,7 +149,7 @@ namespace logicpos.financial.library.Classes.Finance
                                 {
                                     if (int.Parse(strNumero) > 0)
                                     {
-                                        strDezena = Mid(dblValorInteiro.ToString().Trim(), (dblValorInteiro.ToString().Trim().Length - i) - 1, 2);//
+                                        string strDezena = Mid(dblValorInteiro.ToString().Trim(), (dblValorInteiro.ToString().Trim().Length - i) - 1, 2);
 
                                         if (int.Parse(strDezena) > 10 && int.Parse(strDezena) < 20)
                                         {
@@ -252,7 +248,7 @@ namespace logicpos.financial.library.Classes.Finance
                     else
                     {
                         strNumero = Right(dblCentavos.ToString().Trim(), 2);
-                        strDezCentavo = Mid(dblCentavos.ToString().Trim(), 2, 1);
+                        string strDezCentavo = Mid(dblCentavos.ToString().Trim(), 2, 1);
 
                         //FIX
                         //strValorExtenso = strValorExtenso + ((int.Parse(strNumero) > 0) ? " e " : " ");
@@ -332,34 +328,36 @@ namespace logicpos.financial.library.Classes.Finance
         private string fcn_Numero_Dezena0(string pstrDezena0)
         {
             //Vetor que irá conter o número por extenso 
-            ArrayList array_Dezena0 = new ArrayList();
-
-            array_Dezena0.Add("Onze");
-            array_Dezena0.Add("Doze");
-            array_Dezena0.Add("Treze");
-            array_Dezena0.Add("Quatorze");
-            array_Dezena0.Add("Quinze");
-            array_Dezena0.Add("Dezesseis");
-            array_Dezena0.Add("Dezessete");
-            array_Dezena0.Add("Dezoito");
-            array_Dezena0.Add("Dezenove");
+            ArrayList array_Dezena0 = new ArrayList
+            {
+                "Onze",
+                "Doze",
+                "Treze",
+                "Quatorze",
+                "Quinze",
+                "Dezesseis",
+                "Dezessete",
+                "Dezoito",
+                "Dezenove"
+            };
 
             return array_Dezena0[((int.Parse(pstrDezena0)) - 1)].ToString();
         }
         private string fcn_Numero_Dezena1(string pstrDezena1)
         {
             //Vetor que irá conter o número por extenso
-            ArrayList array_Dezena1 = new ArrayList();
-
-            array_Dezena1.Add("Dez");
-            array_Dezena1.Add("Vinte");
-            array_Dezena1.Add("Trinta");
-            array_Dezena1.Add("Quarenta");
-            array_Dezena1.Add("Cinquenta");
-            array_Dezena1.Add("Sessenta");
-            array_Dezena1.Add("Setenta");
-            array_Dezena1.Add("Oitenta");
-            array_Dezena1.Add("Noventa");
+            ArrayList array_Dezena1 = new ArrayList
+            {
+                "Dez",
+                "Vinte",
+                "Trinta",
+                "Quarenta",
+                "Cinquenta",
+                "Sessenta",
+                "Setenta",
+                "Oitenta",
+                "Noventa"
+            };
 
             return array_Dezena1[Int16.Parse(pstrDezena1) - 1].ToString();
         }
@@ -367,34 +365,36 @@ namespace logicpos.financial.library.Classes.Finance
         private string fcn_Numero_Centena(string pstrCentena)
         {
             //Vetor que irá conter o número por extenso
-            ArrayList array_Centena = new ArrayList();
-
-            array_Centena.Add("Cem");
-            array_Centena.Add("Duzentos");
-            array_Centena.Add("Trezentos");
-            array_Centena.Add("Quatrocentos");
-            array_Centena.Add("Quinhentos");
-            array_Centena.Add("Seiscentos");
-            array_Centena.Add("Setecentos");
-            array_Centena.Add("Oitocentos");
-            array_Centena.Add("Novecentos");
+            ArrayList array_Centena = new ArrayList
+            {
+                "Cem",
+                "Duzentos",
+                "Trezentos",
+                "Quatrocentos",
+                "Quinhentos",
+                "Seiscentos",
+                "Setecentos",
+                "Oitocentos",
+                "Novecentos"
+            };
 
             return array_Centena[((int.Parse(pstrCentena)) - 1)].ToString();
         }
         private string fcn_Numero_Unidade(string pstrUnidade)
         {
             //Vetor que irá conter o número por extenso
-            ArrayList array_Unidade = new ArrayList();
-
-            array_Unidade.Add("Um");
-            array_Unidade.Add("Dois");
-            array_Unidade.Add("Três");
-            array_Unidade.Add("Quatro");
-            array_Unidade.Add("Cinco");
-            array_Unidade.Add("Seis");
-            array_Unidade.Add("Sete");
-            array_Unidade.Add("Oito");
-            array_Unidade.Add("Nove");
+            ArrayList array_Unidade = new ArrayList
+            {
+                "Um",
+                "Dois",
+                "Três",
+                "Quatro",
+                "Cinco",
+                "Seis",
+                "Sete",
+                "Oito",
+                "Nove"
+            };
 
             return array_Unidade[(int.Parse(pstrUnidade) - 1)].ToString();
         }

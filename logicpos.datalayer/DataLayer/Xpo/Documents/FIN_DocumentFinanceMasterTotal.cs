@@ -14,28 +14,28 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancemastertotal() : base() { }
         public fin_documentfinancemastertotal(Session session) : base(session) { }
 
-        Decimal fValue;
+        private Decimal fValue;
         public Decimal Value
         {
             get { return fValue; }
             set { SetPropertyValue<Decimal>("Value", ref fValue, value); }
         }
 
-        Decimal fTotal;
+        private Decimal fTotal;
         public Decimal Total
         {
             get { return fTotal; }
             set { SetPropertyValue<Decimal>("Total", ref fTotal, value); }
         }
 
-        Decimal fTotalBase;
+        private Decimal fTotalBase;
         public Decimal TotalBase
         {
             get { return fTotalBase; }
             set { SetPropertyValue<Decimal>("TotalBase", ref fTotalBase, value); }
         }
 
-        FinanceMasterTotalType fTotalType;
+        private FinanceMasterTotalType fTotalType;
         public FinanceMasterTotalType TotalType
         {
             get { return fTotalType; }
@@ -43,7 +43,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //DocumentFinanceMaster One <> Many DocumentFinanceMasterTotal
-        fin_documentfinancemaster fDocumentMaster;
+        private fin_documentfinancemaster fDocumentMaster;
         [Association(@"DocumentFinanceMasterReferencesDocumentFinanceMasterTotal")]
         public fin_documentfinancemaster DocumentMaster
         {

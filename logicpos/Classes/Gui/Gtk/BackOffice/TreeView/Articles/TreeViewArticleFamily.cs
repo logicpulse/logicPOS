@@ -11,7 +11,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class TreeViewArticleFamily : GenericTreeViewXPO
+    internal class TreeViewArticleFamily : GenericTreeViewXPO
     {
         //Public Parametless Constructor Required by Generics
         public TreeViewArticleFamily() { }
@@ -30,18 +30,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogArticleFamily);
 
             //Configure columnProperties
-            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>();
-            columnProperties.Add(new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true });
-            columnProperties.Add(new GenericTreeViewColumnProperty("Printer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_device_printer"), ChildName = "Designation" });
-            columnProperties.Add(new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 });
+            List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
+            {
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("Printer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_device_printer"), ChildName = "Designation" },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+            };
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
-            CriteriaOperator criteria = pXpoCriteria;
+            CriteriaOperator criteria;
             if (pXpoCriteria != null)
             {
-                criteria = CriteriaOperator.Parse($"({pXpoCriteria.ToString()}) AND (DeletedAt IS NULL)");
+                criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (DeletedAt IS NULL)");
             }
             else
             {
@@ -51,18 +53,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //TODO: Clean Comments : Moved Events to XPOWidget - Capture Events - VIEW DialogArticleFamily _crudWidgetList.BeforeUpdate and _crudWidgetList.AfterUpdate
             //this.RecordBeforeInsert += delegate { 
-            //  _log.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeInsert")); 
-            //  _log.Debug(string.Format("Dialog.DataSourceRow: [{0}]", (_dialog as DialogArticleFamily).DataSourceRow));
-            //  _log.Debug(string.Format("Dialog.CrudWidgetList: [{0}]", (_dialog as DialogArticleFamily).CrudWidgetList));
+            //  _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeInsert")); 
+            //  _logger.Debug(string.Format("Dialog.DataSourceRow: [{0}]", (_dialog as DialogArticleFamily).DataSourceRow));
+            //  _logger.Debug(string.Format("Dialog.CrudWidgetList: [{0}]", (_dialog as DialogArticleFamily).CrudWidgetList));
             //};
 
             //TODO: Test Events Here
-            //this.RecordBeforeUpdate += delegate { _log.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeUpdate"));};
-            //this.RecordBeforeDelete += delegate { _log.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeDelete"));};
-            //this.RecordAfterInsert += delegate { _log.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterInsert")); };
-            //this.RecordAfterUpdate += delegate { _log.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterUpdate"));};
-            //this.RecordAfterDelete += delegate { _log.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterDelete"));};
-            //this.RecordBeforeConfirm += delegate { _log.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeConfirm"));};
+            //this.RecordBeforeUpdate += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeUpdate"));};
+            //this.RecordBeforeDelete += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeDelete"));};
+            //this.RecordAfterInsert += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterInsert")); };
+            //this.RecordAfterUpdate += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterUpdate"));};
+            //this.RecordAfterDelete += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordAfterDelete"));};
+            //this.RecordBeforeConfirm += delegate { _logger.Debug(string.Format("[{0}] [{1}]", this.GetType(), "RecordBeforeConfirm"));};
 
             //Call Base Initializer
             base.InitObject(

@@ -14,44 +14,43 @@ namespace logicpos.shared.Classes.Finance
     public class ArticleBag : Dictionary<ArticleBagKey, ArticleBagProperties>
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        decimal _discountGlobal = 0.0m;
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private decimal _discountGlobal = 0.0m;
         public decimal DiscountGlobal
         {
             get { return _discountGlobal; }
             set { _discountGlobal = value; }
         }
 
-        decimal _totalQuantity = 0.0m;
+        private decimal _totalQuantity = 0.0m;
         public decimal TotalQuantity
         {
             get { return _totalQuantity; }
             set { _totalQuantity = value; }
         }
 
-        decimal _totalNet = 0;
+        private decimal _totalNet = 0;
         public decimal TotalNet
         {
             get { return _totalNet; }
             set { _totalNet = value; }
         }
 
-        decimal _totalGross = 0;
+        private decimal _totalGross = 0;
         public decimal TotalGross
         {
             get { return _totalGross; }
             set { _totalGross = value; }
         }
 
-        decimal _totalDiscount = 0;
+        private decimal _totalDiscount = 0;
         public decimal TotalDiscount
         {
             get { return _totalDiscount; }
             set { _totalDiscount = value; }
         }
 
-        decimal _totalTax = 0;
+        private decimal _totalTax = 0;
         public decimal TotalTax
         {
             get { return _totalTax; }
@@ -59,7 +58,7 @@ namespace logicpos.shared.Classes.Finance
         }
 
         //Total Document with Taxs (TotalFinal)
-        decimal _totalFinal = 0;
+        private decimal _totalFinal = 0;
         public decimal TotalFinal
         {
             get { return _totalFinal; }
@@ -67,7 +66,7 @@ namespace logicpos.shared.Classes.Finance
         }
 
         //TaxBag
-        Dictionary<decimal, TaxBagProperties> _taxBag = new Dictionary<decimal, TaxBagProperties>();
+        private Dictionary<decimal, TaxBagProperties> _taxBag = new Dictionary<decimal, TaxBagProperties>();
         public Dictionary<decimal, TaxBagProperties> TaxBag
         {
             get { return _taxBag; }
@@ -165,7 +164,7 @@ namespace logicpos.shared.Classes.Finance
             if (debug)
             {
                 priceProperties.SendToLog("");
-                _log.Debug(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}",
+                _logger.Debug(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}",
                   this[pKey].Code, pKey.Designation, this[pKey].Quantity, this[pKey].TotalGross, this[pKey].PriceWithDiscount, this[pKey].PriceWithDiscountGlobal, this[pKey].TotalGross, this[pKey].TotalNet, this[pKey].TotalDiscount, this[pKey].TotalTax, this[pKey].TotalFinal));
             }
         }
@@ -354,12 +353,12 @@ namespace logicpos.shared.Classes.Finance
                     {
                         result[article.Class.Acronym] += item.Value.TotalFinal;
                     }
-                    if (debug) _log.Debug(String.Format("Acronym: [{0}], TotalFinal : [{1}], ClassTotalFinal: [{2}]", article.Class.Acronym, item.Value.TotalFinal, result[article.Class.Acronym]));
+                    if (debug) _logger.Debug(String.Format("Acronym: [{0}], TotalFinal : [{1}], ClassTotalFinal: [{2}]", article.Class.Acronym, item.Value.TotalFinal, result[article.Class.Acronym]));
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -379,7 +378,7 @@ namespace logicpos.shared.Classes.Finance
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -393,9 +392,6 @@ namespace logicpos.shared.Classes.Finance
             bool isDone = false;
             decimal resultRemainQuantity = 0;
             string where = string.Empty;
-            //Store Reference to Future delete Object (After foreach Loop)
-            fin_documentordermain deleteOrderMain = null;
-            fin_documentorderticket deleteOrderTicket = null;
             fin_documentorderdetail deleteOrderDetail = null;
             string articleDesignation = string.Empty;
 
@@ -433,7 +429,7 @@ namespace logicpos.shared.Classes.Finance
                             }
                             catch (Exception ex)
                             {
-                                _log.Error(ex.Message, ex);
+                                _logger.Error(ex.Message, ex);
                             }
                         }
                     }
@@ -441,7 +437,7 @@ namespace logicpos.shared.Classes.Finance
 
                 //Debug
                 //string sql = @"SELECT * FROM fin_documentorderdetail WHERE 1=0{0};";
-                //_log.Debug(string.Format("Delete(): sql [{0}]", string.Format(sql, where)));
+                //_logger.Debug(string.Format("Delete(): sql [{0}]", string.Format(sql, where)));
 
                 //Audit
                 FrameworkUtils.Audit("ORDER_ARTICLE_REMOVED", string.Format(
@@ -464,8 +460,9 @@ namespace logicpos.shared.Classes.Finance
                     //Delete Records, OrderMain, OrderTicket and OrderDetails
                     if (deleteOrderDetail != null)
                     {
-                        deleteOrderTicket = deleteOrderDetail.OrderTicket;
-                        deleteOrderMain = deleteOrderTicket.OrderMain;
+                        fin_documentorderticket deleteOrderTicket = deleteOrderDetail.OrderTicket;
+                        //Store Reference to Future delete Object (After foreach Loop)
+                        fin_documentordermain deleteOrderMain = deleteOrderTicket.OrderMain;
 
                         //Delete Details
                         deleteOrderDetail.Delete();
@@ -509,7 +506,7 @@ namespace logicpos.shared.Classes.Finance
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                     uowSession.RollbackTransaction();
                     return -1;
                 }
@@ -520,10 +517,10 @@ namespace logicpos.shared.Classes.Finance
 
         public void ShowInLog()
         {
-            _log.Debug("\tCode\tDesignation\tQuantity\tPriceUser\tDiscount\tVat\tPriceNet\tPriceWithDiscount\tPriceWithDiscountGlobal\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal\tPriceFinal");
+            _logger.Debug("\tCode\tDesignation\tQuantity\tPriceUser\tDiscount\tVat\tPriceNet\tPriceWithDiscount\tPriceWithDiscountGlobal\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal\tPriceFinal");
             foreach (var item in this)
             {
-                _log.Debug(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}",
+                _logger.Debug(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}",
                     item.Value.Code,
                     item.Key.Designation,
                     item.Value.Quantity,
@@ -542,14 +539,14 @@ namespace logicpos.shared.Classes.Finance
                   ));
             }
             //TaxBag
-            _log.Debug("\tVat\tTotal");
+            _logger.Debug("\tVat\tTotal");
             foreach (var item in this._taxBag)
             {
-                _log.Debug(string.Format("\t{0}\t{1}", item.Key, item.Value));
+                _logger.Debug(string.Format("\t{0}\t{1}", item.Key, item.Value));
             }
             //Totals
-            _log.Debug("\tTotalItems\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal");
-            _log.Debug(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}", _totalQuantity, _totalNet, _totalGross, _totalDiscount, _totalTax, _totalFinal));
+            _logger.Debug("\tTotalItems\tTotalNet\tTotalGross\tTotalDiscount\tTotalTax\tTotalFinal");
+            _logger.Debug(string.Format("\t{0}\t{1}\t{2}\t{3}\t{4}\t{5}", _totalQuantity, _totalNet, _totalGross, _totalDiscount, _totalTax, _totalFinal));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

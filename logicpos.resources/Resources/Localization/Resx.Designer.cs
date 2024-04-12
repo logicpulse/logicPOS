@@ -388,9 +388,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Application Closed, Forced Logout of User: {0}.
         /// </summary>
-        public static string audit_message_used_forced_logout {
+        public static string audit_message_used_forced_loggerout {
             get {
-                return ResourceManager.GetString("audit_message_used_forced_logout", resourceCulture);
+                return ResourceManager.GetString("audit_message_used_forced_loggerout", resourceCulture);
             }
         }
         
@@ -415,27 +415,27 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User Logged In: {0}.
         /// </summary>
-        public static string audit_message_user_login {
+        public static string audit_message_user_loggerin {
             get {
-                return ResourceManager.GetString("audit_message_user_login", resourceCulture);
+                return ResourceManager.GetString("audit_message_user_loggerin", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User Login Error: {0}.
         /// </summary>
-        public static string audit_message_user_login_error {
+        public static string audit_message_user_loggerin_error {
             get {
-                return ResourceManager.GetString("audit_message_user_login_error", resourceCulture);
+                return ResourceManager.GetString("audit_message_user_loggerin_error", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a User Logged Out: {0}.
         /// </summary>
-        public static string audit_message_user_logout {
+        public static string audit_message_user_loggerout {
             get {
-                return ResourceManager.GetString("audit_message_user_logout", resourceCulture);
+                return ResourceManager.GetString("audit_message_user_loggerout", resourceCulture);
             }
         }
         
@@ -451,9 +451,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Changelog.
         /// </summary>
-        public static string change_log {
+        public static string change_logger {
             get {
-                return ResourceManager.GetString("change_log", resourceCulture);
+                return ResourceManager.GetString("change_logger", resourceCulture);
             }
         }
         
@@ -1646,9 +1646,9 @@ namespace logicpos.resources.Resources.Localization {
         ///
         ///To apply changes, you have logout and login to apply this profile privileges!.
         /// </summary>
-        public static string dialog_message_user_profile_changed_request_logoff {
+        public static string dialog_message_user_profile_changed_request_loggeroff {
             get {
-                return ResourceManager.GetString("dialog_message_user_profile_changed_request_logoff", resourceCulture);
+                return ResourceManager.GetString("dialog_message_user_profile_changed_request_loggeroff", resourceCulture);
             }
         }
         
@@ -1933,9 +1933,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a LogOut.
         /// </summary>
-        public static string global_application_logout_user {
+        public static string global_application_loggerout_user {
             get {
-                return ResourceManager.GetString("global_application_logout_user", resourceCulture);
+                return ResourceManager.GetString("global_application_loggerout_user", resourceCulture);
             }
         }
         
@@ -4489,9 +4489,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Login.
         /// </summary>
-        public static string global_login {
+        public static string global_loggerin {
             get {
-                return ResourceManager.GetString("global_login", resourceCulture);
+                return ResourceManager.GetString("global_loggerin", resourceCulture);
             }
         }
         
@@ -5200,9 +5200,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a File of Company Logo.
         /// </summary>
-        public static string global_printer_thermal_image_company_logo {
+        public static string global_printer_thermal_image_company_loggero {
             get {
-                return ResourceManager.GetString("global_printer_thermal_image_company_logo", resourceCulture);
+                return ResourceManager.GetString("global_printer_thermal_image_company_loggero", resourceCulture);
             }
         }
         
@@ -5263,9 +5263,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Print Company Logo.
         /// </summary>
-        public static string global_printer_thermal_print_logo {
+        public static string global_printer_thermal_print_loggero {
             get {
-                return ResourceManager.GetString("global_printer_thermal_print_logo", resourceCulture);
+                return ResourceManager.GetString("global_printer_thermal_print_loggero", resourceCulture);
             }
         }
         
@@ -8351,18 +8351,18 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Report :: Logo FileName.
         /// </summary>
-        public static string prefparam_report_filename_logo {
+        public static string prefparam_report_filename_loggero {
             get {
-                return ResourceManager.GetString("prefparam_report_filename_logo", resourceCulture);
+                return ResourceManager.GetString("prefparam_report_filename_loggero", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Report :: Logo FileName Small.
         /// </summary>
-        public static string prefparam_report_filename_logo_small {
+        public static string prefparam_report_filename_loggero_small {
             get {
-                return ResourceManager.GetString("prefparam_report_filename_logo_small", resourceCulture);
+                return ResourceManager.GetString("prefparam_report_filename_loggero_small", resourceCulture);
             }
         }
         
@@ -8585,9 +8585,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Ticket :: Logo FileName.
         /// </summary>
-        public static string prefparam_ticket_filename_logo {
+        public static string prefparam_ticket_filename_loggero {
             get {
-                return ResourceManager.GetString("prefparam_ticket_filename_logo", resourceCulture);
+                return ResourceManager.GetString("prefparam_ticket_filename_loggero", resourceCulture);
             }
         }
         
@@ -9674,9 +9674,9 @@ namespace logicpos.resources.Resources.Localization {
         /// <summary>
         ///   Consulta uma cadeia de caracteres localizada semelhante a Enter.
         /// </summary>
-        public static string widget_pospinpad_login {
+        public static string widget_pospinpad_loggerin {
             get {
-                return ResourceManager.GetString("widget_pospinpad_login", resourceCulture);
+                return ResourceManager.GetString("widget_pospinpad_loggerin", resourceCulture);
             }
         }
         

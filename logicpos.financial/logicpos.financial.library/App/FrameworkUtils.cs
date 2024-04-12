@@ -15,7 +15,7 @@ namespace logicpos.financial.library.App
     public class FrameworkUtils : logicpos.shared.App.FrameworkUtils
     {
         //Log4Net
-        private static log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //FinanceDocument
@@ -30,7 +30,7 @@ namespace logicpos.financial.library.App
             {
                 if (pDocumentFinanceMaster.DocumentParent != null)
                 {
-                    if (debug) _log.Debug(string.Format("IsDocumentMasterChildOfDocumentType DocumentParent: [{0}]", pDocumentFinanceMaster.DocumentParent.DocumentNumber));
+                    if (debug) _logger.Debug(string.Format("IsDocumentMasterChildOfDocumentType DocumentParent: [{0}]", pDocumentFinanceMaster.DocumentParent.DocumentNumber));
 
                     if (pDocumentFinanceTypeList.Contains(pDocumentFinanceMaster.DocumentParent.DocumentType.Oid))
                     {
@@ -46,7 +46,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -59,15 +59,17 @@ namespace logicpos.financial.library.App
             bool result = false;
             List<Guid> documentFinanceTypeList = new List<Guid>();
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled is NULL) AND (SaftDocumentType = {0})", (int)pSaftDocumentType));
-            SortingCollection sortingCollection = new SortingCollection();
-            sortingCollection.Add(new SortProperty("Ord", SortingDirection.Ascending));
+            SortingCollection sortingCollection = new SortingCollection
+            {
+                new SortProperty("Ord", SortingDirection.Ascending)
+            };
             XPCollection xpcDocumentFinanceType = GetXPCollectionFromCriteria(GlobalFramework.SessionXpo, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
 
             try
             {
                 foreach (fin_documentfinancetype item in xpcDocumentFinanceType)
                 {
-                    if (debug) _log.Debug(string.Format("Add DocumentFinanceType: [{0}]", item.Designation));
+                    if (debug) _logger.Debug(string.Format("Add DocumentFinanceType: [{0}]", item.Designation));
                     documentFinanceTypeList.Add(item.Oid);
                 }
 
@@ -78,7 +80,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -216,7 +218,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -231,7 +233,6 @@ namespace logicpos.financial.library.App
             XPCollection<fin_documentfinancedetail> result = new XPCollection<fin_documentfinancedetail>(pSourceDocument.Session, false);
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("DocumentMaster = '{0}' AND Disabled = 'False'", pSourceDocument.Oid));
             XPCollection xpoCollectionReferences = new XPCollection(pSourceDocument.Session, typeof(fin_documentfinancedetailreference), criteria);
-            bool addToCollection = true;
             List<string> listCreditedDocuments = new List<string>();
             pCreditedDocuments = string.Empty;
 
@@ -241,7 +242,7 @@ namespace logicpos.financial.library.App
                 foreach (fin_documentfinancedetail itemSource in pSourceDocument.DocumentDetail)
                 {
                     //Reset
-                    addToCollection = true;
+                    bool addToCollection = true;
 
                     //Force Reload : This Prevent cached Substracts 
                     itemSource.Reload();
@@ -278,7 +279,7 @@ namespace logicpos.financial.library.App
 							/* IN009235 - End */
 
                             // Debug Helper
-                            //_log.Debug(string.Format("DocumentNumber: [{0}], Designation: [{1}], Quantity: [{2}], itemReferences.Quantity: [{3}]",
+                            //_logger.Debug(string.Format("DocumentNumber: [{0}], Designation: [{1}], Quantity: [{2}], itemReferences.Quantity: [{3}]",
                             //    pSourceDocument.DocumentNumber, itemSource.Designation, itemSource.Quantity, itemReferences.DocumentDetail.Quantity)
                             //    );
 
@@ -305,7 +306,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -340,7 +341,7 @@ namespace logicpos.financial.library.App
                         resultAlreadyCredited = GlobalFramework.SessionXpo.ExecuteScalar(sql);
                         totalAlreadyCredited = (resultAlreadyCredited != null) ? Convert.ToDecimal(resultAlreadyCredited) : 0.0m;
 
-                        if (debug) _log.Debug(String.Format(
+                        if (debug) _logger.Debug(String.Format(
                             "[{0}], Parent: [{1}], CanBeCredited: [{2}], TryToCredit: [{3}], Diference: [{4}]",
                             item.Key.Designation,
                             totalParentDocument,                                                //Total in Parent/SourceDocument
@@ -360,7 +361,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -408,7 +409,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -451,7 +452,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -486,7 +487,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -527,7 +528,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -546,11 +547,9 @@ namespace logicpos.financial.library.App
         {
             //Declare local Variables
             fin_documentfinancemaster lastDocument = null;
-            fin_documentfinancemaster newDocument = null;
             fin_documentfinancemaster result = null;
-            fin_documentordermain orderMain = null;
             Guid currentOrderMainOid = GlobalFramework.SessionApp.CurrentOrderMainOid;
-            _log.Debug("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMainOid: " + currentOrderMainOid);
+            _logger.Debug("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMainOid: " + currentOrderMainOid);
             OrderMain currentOrderMain = null;
             
             try
@@ -602,17 +601,19 @@ namespace logicpos.financial.library.App
                             Customer = SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity
                         };
 
-                        orderMain = (fin_documentordermain)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentordermain), currentOrderMain.PersistentOid);
+                        fin_documentordermain orderMain = (fin_documentordermain)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentordermain), currentOrderMain.PersistentOid);
                         processFinanceDocumentParameter.SourceOrderMain = orderMain;
                         if (lastDocument != null)
                         {
                             processFinanceDocumentParameter.DocumentParent = lastDocument.Oid;
-                            processFinanceDocumentParameter.OrderReferences = new List<fin_documentfinancemaster>();
-                            processFinanceDocumentParameter.OrderReferences.Add(lastDocument);
+                            processFinanceDocumentParameter.OrderReferences = new List<fin_documentfinancemaster>
+                            {
+                                lastDocument
+                            };
                         }
 
                         //Generate New Document
-                        newDocument = ProcessFinanceDocument.PersistFinanceDocument(processFinanceDocumentParameter, false);
+                        fin_documentfinancemaster newDocument = ProcessFinanceDocument.PersistFinanceDocument(processFinanceDocumentParameter, false);
 
                         //Assign DocumentStatus and OrderReferences
                         if (newDocument != null)
@@ -640,7 +641,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMain: " + currentOrderMain);
+                _logger.Error("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMain: " + currentOrderMain);
                 // Send Exception to logicpos, must treat exception in ui, to Show Alert to User
                 throw ex;
             }
@@ -662,7 +663,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -679,7 +680,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;
@@ -712,7 +713,7 @@ namespace logicpos.financial.library.App
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

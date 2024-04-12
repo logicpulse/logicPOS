@@ -19,12 +19,12 @@ using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    class PosDeveloperTestDialog : PosBaseDialog
+    internal class PosDeveloperTestDialog : PosBaseDialog
     {
         //private Fixed _fixedContent;
-        private ScrolledWindow _scrolledWindow;
-        private VBox _vbox;
-        private uint _padding = 0;
+        private readonly ScrolledWindow _scrolledWindow;
+        private readonly VBox _vbox;
+        private readonly uint _padding = 0;
         private EntryBoxValidation _entryBoxValidationCustomButton1;
         private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _xPOEntryBoxSelectRecordValidationTextMode;
 
@@ -61,9 +61,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //ActionArea
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(buttonCancel, ResponseType.Cancel));
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(buttonOk, ResponseType.Ok),
+                new ActionAreaButton(buttonCancel, ResponseType.Cancel)
+            };
 
             //Init Object
             this.InitObject(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, _windowSize, _scrolledWindow, actionAreaButtons);
@@ -138,12 +140,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(entryBoxShipToDeliveryDateKeyboard, true, true, _padding);
 
             //Simple ListView
-            List<string> itemList = new List<string>();
-            itemList.Add("Looking for Kiosk mode in Android Lollipop 5.0");
-            itemList.Add("Think of a hypothetical ATM machine that is running Android");
-            itemList.Add("In this article we provide a brief overview of how");
-            itemList.Add("Kiosk Mode can be implemented without any modifications");
-            itemList.Add("The Home key brings you back to the Home screen");
+            List<string> itemList = new List<string>
+            {
+                "Looking for Kiosk mode in Android Lollipop 5.0",
+                "Think of a hypothetical ATM machine that is running Android",
+                "In this article we provide a brief overview of how",
+                "Kiosk Mode can be implemented without any modifications",
+                "The Home key brings you back to the Home screen"
+            };
 
             //ListComboBox
             ListComboBox listComboBox = new ListComboBox(itemList, itemList[3]);
@@ -177,30 +181,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             entryBoxDate.EntryValidation.Validate();
             entryBoxDate.ClosePopup += delegate
             {
-                _log.Debug(string.Format("entryBoxDate.Value: [{0}]", entryBoxDate.Value));
+                _logger.Debug(string.Format("entryBoxDate.Value: [{0}]", entryBoxDate.Value));
             };
             vbox.PackStart(entryBoxDate, true, true, padding);
             */
         }
 
-        void customButton1_Clicked(object sender, EventArgs e)
+        private void customButton1_Clicked(object sender, EventArgs e)
         {
             _entryBoxValidationCustomButton1.EntryValidation.Required = true;
             _entryBoxValidationCustomButton1.EntryValidation.Validate();
 
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Required = true;
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Validate();
-            _log.Debug(String.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
+            _logger.Debug(String.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
         }
 
-        void customButton2_Clicked(object sender, EventArgs e)
+        private void customButton2_Clicked(object sender, EventArgs e)
         {
             _entryBoxValidationCustomButton1.EntryValidation.Required = false;
             _entryBoxValidationCustomButton1.EntryValidation.Validate();
 
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Required = false;
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Validate();
-            _log.Debug(String.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
+            _logger.Debug(String.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
         }
 
 
@@ -213,7 +217,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             EntryBoxValidationFilePickerDialog entryFilePicker = new EntryBoxValidationFilePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file_image"), "", false, fileFilter);
             entryFilePicker.ClosePopup += delegate
             {
-                _log.Debug(string.Format("entryFilePicker.Value: [{0}]", entryFilePicker.Value));
+                _logger.Debug(string.Format("entryFilePicker.Value: [{0}]", entryFilePicker.Value));
             };
             _vbox.PackStart(entryFilePicker, true, true, _padding);
 
@@ -242,20 +246,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _vbox.PackStart(buttonTestDocumentMasterCreatePDF, true, true, _padding);
         }
 
-        void buttonTestDocumentMasterCreatePDF_Clicked(object sender, EventArgs e)
+        private void buttonTestDocumentMasterCreatePDF_Clicked(object sender, EventArgs e)
         {
             Guid guidOid = new Guid("099EF525-FCEC-48D8-9EE8-FA0F34A34ED4");
             fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), guidOid);
             string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
-            _log.Debug(string.Format("fileName: [{0}]", fileName));
+            _logger.Debug(string.Format("fileName: [{0}]", fileName));
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Events
 
-        void customSharedButton_Clicked(object sender, EventArgs e)
+        private void customSharedButton_Clicked(object sender, EventArgs e)
         {
-            _log.Debug("customSharedButton_Clicked");
+            _logger.Debug("customSharedButton_Clicked");
         }
     }
 }

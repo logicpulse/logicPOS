@@ -4,7 +4,7 @@ using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class EntryBoxValidation : EntryBoxBase
+    internal class EntryBoxValidation : EntryBoxBase
     {
         //Public Properties
         private EntryValidation _entryValidation;

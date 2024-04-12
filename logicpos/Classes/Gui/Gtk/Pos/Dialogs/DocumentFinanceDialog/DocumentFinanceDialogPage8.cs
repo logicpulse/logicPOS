@@ -14,22 +14,22 @@ using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
-    class DocumentFinanceDialogPage8 : PagePadPage
+    internal class DocumentFinanceDialogPage8 : PagePadPage
     {
-        private Session _session;
-        private DocumentFinanceDialogPagePad _pagePad;
-        private GenericCRUDWidgetListXPO _crudWidgetList;
+        private readonly Session _session;
+        private readonly DocumentFinanceDialogPagePad _pagePad;
+        private readonly GenericCRUDWidgetListXPO _crudWidgetList;
         //UI EntryBox
-        private EntryBoxValidation _entryBoxClient;
-        private EntryBoxValidation _entryBoxClientValidation;
-        private EntryBoxValidation _entryBoxFiscalNumber;
-        private EntryBoxValidation _entryBoxAddress;
-        private EntryBoxValidation _entryBoxLocality;
-        private EntryBoxValidation _entryBoxZipCode;
-        private EntryBoxValidation _entryBoxCity;
-        private XPOEntryBoxSelectRecord<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCountry;
-        private XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCountryValidation;
-        private EntryBoxValidation _entryBoxNotes;
+        private readonly EntryBoxValidation _entryBoxClient;
+        private readonly EntryBoxValidation _entryBoxClientValidation;
+        private readonly EntryBoxValidation _entryBoxFiscalNumber;
+        private readonly EntryBoxValidation _entryBoxAddress;
+        private readonly EntryBoxValidation _entryBoxLocality;
+        private readonly EntryBoxValidation _entryBoxZipCode;
+        private readonly EntryBoxValidation _entryBoxCity;
+        private readonly XPOEntryBoxSelectRecord<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCountry;
+        private readonly XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry> _entryBoxSelectCountryValidation;
+        private readonly EntryBoxValidation _entryBoxNotes;
         //Public
         private erp_customer _valueCustomer;
         public erp_customer ValueCustomer
@@ -91,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _entryBoxSelectCountryValidation.EntryValidation.IsEditable = false;
             //Test _selectedXPGuidObject :)
             //_entryBoxSelectCountryValidation.EntryValidation.Changed += delegate { 
-            //  _log.Debug(string.Format("_entryBoxCountryValidation.Selected.Code3: [{0}]", _entryBoxSelectCountryValidation.Value.Code3));
+            //  _logger.Debug(string.Format("_entryBoxCountryValidation.Selected.Code3: [{0}]", _entryBoxSelectCountryValidation.Value.Code3));
             //};
 
             //Notes
@@ -138,7 +138,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //Override Base Validate
         public override void Validate()
         {
-            //_log.Debug(string.Format("Validate: {0}", this.Name));
+            //_logger.Debug(string.Format("Validate: {0}", this.Name));
         }
     }
 }

@@ -9,7 +9,7 @@ using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
-    class DialogConfigurationPlaceTable : BOBaseDialog
+    internal class DialogConfigurationPlaceTable : BOBaseDialog
     {
         public DialogConfigurationPlaceTable(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
@@ -67,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

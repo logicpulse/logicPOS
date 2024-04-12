@@ -18,7 +18,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
     public class ServicesAT
     {
         //Log4Net
-        protected log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //WebService and Files
         //Pub
@@ -29,46 +29,46 @@ namespace logicpos.financial.service.Objects.Modules.AT
             get { return _validCerificates; }
             set { _validCerificates = value; }
         }
-        private bool _wayBillMode;
-        private Uri _urlWebService;
-        private Uri _urlSoapAction;
+        private readonly bool _wayBillMode;
+        private readonly Uri _urlWebService;
+        private readonly Uri _urlSoapAction;
         //Change this to test Mode
-        private bool testMode = false;
-        private string _appPath = string.Empty;
+        private readonly bool testMode = false;
+        private readonly string _appPath = string.Empty;
         private string _postData;
-        private string _pathSaveSoap;
-        private string _pathSaveSoapResult;
-        private string _pathSaveSoapResultError;
-        private string _pathPublicKey;
-        private string _pathCertificate;
-        private string _atPasswordCertificate;
-        private string _atTaxRegistrationNumber;
-        private string _atAccountFiscalNumber;
-        private string _atAccountPassword;
+        private readonly string _pathSaveSoap;
+        private readonly string _pathSaveSoapResult;
+        private readonly string _pathSaveSoapResultError;
+        private readonly string _pathPublicKey;
+        private readonly string _pathCertificate;
+        private readonly string _atPasswordCertificate;
+        private readonly string _atTaxRegistrationNumber;
+        private readonly string _atAccountFiscalNumber;
+        private readonly string _atAccountPassword;
         //Generated on buildCredentials()
         private string _accountPasswordEncrypted = string.Empty;
         private string _symetricKeyEncrypted = string.Empty;
         private string _dateOfCriationEncrypted = string.Empty;
         //Sample Document Details
-        private bool _useMockSampleData = false;
+        private readonly bool _useMockSampleData = false;
         //IncreaseDocumentNumber
-        private bool _increaseDocumentNumber = false;
+        private readonly bool _increaseDocumentNumber = false;
         //Override Document Date, used in WayBills MovementStartTime to be equal/greater than SystemTime else -100
         private DateTime _movementStartTime;
         //Sample Document Details : Documents
-        private string _sampleDCInvoiceNo = "FS 10001/1033";
-        private string _sampleDCInvoiceDate = "2016-07-14";
-        private string _sampleDCInvoiceType = "FS";
+        private readonly string _sampleDCInvoiceNo = "FS 10001/1033";
+        private readonly string _sampleDCInvoiceDate = "2016-07-14";
+        private readonly string _sampleDCInvoiceType = "FS";
         //Sample Document Details : DocumentWayBill
-        private string _sampleWBDocumentNumber = "GT 2013/1";
-        private string _sampleWBMovementDate = "2016-07-09";
-        private string _sampleWBMovementType = "GT";
+        private readonly string _sampleWBDocumentNumber = "GT 2013/1";
+        private readonly string _sampleWBMovementDate = "2016-07-09";
+        private readonly string _sampleWBMovementType = "GT";
         //Sample Document Details : Shared for Documents and DocumentWayBill
-        private string _sampleXXCustomerTaxID = "508278155";//299999998 | 111111111
+        private readonly string _sampleXXCustomerTaxID = "508278155";//299999998 | 111111111
 
         
         //XPObjects
-        private fin_documentfinancemaster _documentMaster;
+        private readonly fin_documentfinancemaster _documentMaster;
 
         //Response
         private ServicesATSoapResult _soapResult = null;
@@ -407,7 +407,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
         private string GenerateXmlStringDC()
         {
-            _log.Debug($"string ServiceAT.GenerateXmlStringDC() :: {_documentMaster.DocumentNumber}");
+            _logger.Debug($"string ServiceAT.GenerateXmlStringDC() :: {_documentMaster.DocumentNumber}");
 
             /* IN009150 (IN009075) */
             string entityFiscalNumber = "";
@@ -416,12 +416,11 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             //Init Local Vars
             string customerTaxID = FiscalNumber.ExtractFiscalNumber(entityFiscalNumber);
-            string sbContentCustomerTax = string.Empty;
-            string sbContentLinesAndDocumentTotals = string.Empty;
 
             //Test mode, increase DocumentNumber only when Develop
             if (_increaseDocumentNumber) Utils.IncreaseDocumentNumber(_documentMaster);
 
+            string sbContentCustomerTax;
             //Diferent sbContentCustomerTax if OutSide Portugal
             if (_documentMaster.EntityCountryOid.Equals(SettingsApp.XpoOidConfigurationCountryPortugal))
             {
@@ -439,7 +438,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             }
 
             //Get Lines Content
-            sbContentLinesAndDocumentTotals = Utils.GetDocumentContentLinesAndDocumentTotals(_documentMaster);
+            string sbContentLinesAndDocumentTotals = Utils.GetDocumentContentLinesAndDocumentTotals(_documentMaster);
 
             //Init StringBuilder
             StringBuilder sb = new StringBuilder();
@@ -489,14 +488,13 @@ namespace logicpos.financial.service.Objects.Modules.AT
              *      >   &gt;
              *      &   &amp;
              */
-            _log.Debug($"string ServicesAT.GenerateXmlStringWB() :: {_documentMaster.DocumentNumber}");
+            _logger.Debug($"string ServicesAT.GenerateXmlStringWB() :: {_documentMaster.DocumentNumber}");
 			//IN009347 Documentos PT - Alteração do Layout dos dados do Cliente #Lindote 2020
             /* IN009150 (IN009075) - Decrypt phase */
             string entityName           = "";
             string entityAddress        = "";
             string entityZipCode        = "";
             string entityCity           = "";
-            string entityLocality       = "";
             // string entityCountry        = "";
             string entityFiscalNumber   = "";
 
@@ -511,7 +509,6 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             //Init Local Vars
             string customerTaxID = FiscalNumber.ExtractFiscalNumber(entityFiscalNumber);
-            string sbContentLines = string.Empty;
             //MovementStartTime equal/greater system DateTime to prevent -100 error (Override _documentMaster.MovementStartTime)
             _movementStartTime = DateTime.Now;
 
@@ -519,7 +516,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             if (_increaseDocumentNumber) Utils.IncreaseDocumentNumber(_documentMaster);
 
             //Get Lines Content
-            sbContentLines = Utils.GetDocumentWayBillContentLines(_documentMaster);
+            string sbContentLines = Utils.GetDocumentWayBillContentLines(_documentMaster);
 
             StringBuilder sb = new StringBuilder();
             //Soap Envelope
@@ -730,7 +727,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             }
             catch (WebException ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
 
                 if (ex.Status == WebExceptionStatus.ProtocolError)
                 {
@@ -864,7 +861,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
             return result;

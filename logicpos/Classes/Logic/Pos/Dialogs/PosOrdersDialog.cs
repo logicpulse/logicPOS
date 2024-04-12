@@ -15,9 +15,9 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosOrdersDialog
+    internal partial class PosOrdersDialog
     {
-        void buttonTableConsult_Clicked(object sender, EventArgs e)
+        private void buttonTableConsult_Clicked(object sender, EventArgs e)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             finally
             {
@@ -86,15 +86,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        void buttonPrintOrder_Clicked(object sender, EventArgs e)
+        private void buttonPrintOrder_Clicked(object sender, EventArgs e)
         {
             if (logicpos.Utils.ShowMessageTouchRequiredValidPrinter(this, GlobalFramework.LoggedTerminal.ThermalPrinter)) return;
-
-            string sql = string.Empty;
             OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
             Guid orderTicketOid = new Guid();
 
-            sql = string.Format(@"SELECT COUNT(*) AS Count FROM fin_documentorderticket WHERE OrderMain = '{0}';", currentOrderMain.PersistentOid);
+            string sql = string.Format(@"SELECT COUNT(*) AS Count FROM fin_documentorderticket WHERE OrderMain = '{0}';", currentOrderMain.PersistentOid);
             var countTickets = GlobalFramework.SessionXpo.ExecuteScalar(sql);
 
             //If has more than one ticket show requestTicket dialog
@@ -125,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             else
             {
                 sql = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}';", currentOrderMain.PersistentOid);
-                //_log.Debug(string.Format("sql: [{0}]", sql));
+                //_logger.Debug(string.Format("sql: [{0}]", sql));
                 orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql);
             }
 

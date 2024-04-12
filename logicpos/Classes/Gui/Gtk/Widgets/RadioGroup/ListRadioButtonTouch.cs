@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
-    class ListRadioButtonTouch : EntryBoxBase
+    internal class ListRadioButtonTouch : EntryBoxBase
     {
         //Public Properties
         private ListRadioButton _listRadioButton;
@@ -29,9 +29,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
 
             //Pack
-            EventBox evbox = new EventBox();
-            evbox.Add(_listRadioButton);
-            evbox.Add(Vbox);
+            EventBox evbox = new EventBox
+            {
+                _listRadioButton,
+                Vbox
+            };
             Vbox.BorderWidth = 5;
             Vbox.PackStart(evbox);
         }

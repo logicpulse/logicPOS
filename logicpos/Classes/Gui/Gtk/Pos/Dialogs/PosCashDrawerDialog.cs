@@ -13,24 +13,25 @@ using System.Collections.Generic;
 using System.Drawing;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    partial class PosCashDrawerDialog : PosBaseDialog
+    internal partial class PosCashDrawerDialog : PosBaseDialog
     {
         //Settings
-        private int _decimalRoundTo = SettingsApp.DecimalRoundTo;
+        private readonly int _decimalRoundTo = SettingsApp.DecimalRoundTo;
         //Private Properties
         //ResponseType (Above 10)
-        private ResponseType _responseTypePrint = (ResponseType)11;
+        private readonly ResponseType _responseTypePrint = (ResponseType)11;
         //Buttons
-        private TouchButtonIconWithText _buttonOk;
-        private TouchButtonIconWithText _buttonCancel;
-        private TouchButtonIconWithText _buttonPrint;
+        private readonly TouchButtonIconWithText _buttonOk;
+        private readonly TouchButtonIconWithText _buttonCancel;
+        private readonly TouchButtonIconWithText _buttonPrint;
         private TouchButtonBase _selectedCashDrawerButton;
         //UI
-        private EntryBoxValidation _entryBoxMovementAmountMoney;
-        private EntryBoxValidation _entryBoxMovementDescription;
+        private readonly EntryBoxValidation _entryBoxMovementAmountMoney;
+        private readonly EntryBoxValidation _entryBoxMovementDescription;
         //private EntryBoxValidation _entryBoxMovementAmountOtherPayments;
         //Public
         private decimal _totalAmountInCashDrawer;
@@ -157,7 +158,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
                 //Initial Dialog Values
                 _selectedCashDrawerButton = buttonBag[initialButtonToken];
-                _selectedCashDrawerButton.ModifyBg(StateType.Normal, logicpos.Utils.ColorToGdkColor(logicpos.Utils.Lighten(_colorBaseDialogDefaultButtonBackground, 0.50f)));
+                _selectedCashDrawerButton.ModifyBg(StateType.Normal, _colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
                 _selectedMovementType = (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_worksessionmovementtype), _selectedCashDrawerButton.CurrentButtonOid);
                 _selectedMovementType.Token = initialButtonToken;
 
@@ -195,10 +196,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _buttonPrint.Sensitive = buttonOkSensitive;
 
                 //ActionArea
-                ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
-                actionAreaButtons.Add(new ActionAreaButton(_buttonPrint, _responseTypePrint));
-                actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
-                actionAreaButtons.Add(new ActionAreaButton(_buttonCancel, ResponseType.Cancel));
+                ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+                {
+                    new ActionAreaButton(_buttonPrint, _responseTypePrint),
+                    new ActionAreaButton(_buttonOk, ResponseType.Ok),
+                    new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+                };
 
                 //Call Activate Button Helper Method
                 ActivateButton(buttonBag[initialButtonToken]);
@@ -208,7 +211,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
     }

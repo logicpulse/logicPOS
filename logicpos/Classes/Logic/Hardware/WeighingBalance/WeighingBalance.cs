@@ -14,9 +14,9 @@ namespace logicpos.Classes.Logic.Hardware
     public class WeighingBalance
     {
         //Log4Net
-        private log4net.ILog _log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private CommunicationManager _communicationManager;
+        private readonly CommunicationManager _communicationManager;
 
         public WeighingBalance(sys_configurationweighingmachine weighingMachine)
             : this(weighingMachine.BaudRate.ToString(), weighingMachine.Parity, weighingMachine.StopBits, weighingMachine.DataBits.ToString(), weighingMachine.PortName)
@@ -43,7 +43,7 @@ namespace logicpos.Classes.Logic.Hardware
                 logicpos.Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                     string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
                     );
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 return false;
             }
         }
@@ -68,7 +68,7 @@ namespace logicpos.Classes.Logic.Hardware
         /// </summary>
         public void WeighArticle(decimal articlePricePerKg)
         {     
-            //_log.Debug(string.Format("WeighArticle articlePricePerKg: [{0}]", articlePricePerKg));
+            //_logger.Debug(string.Format("WeighArticle articlePricePerKg: [{0}]", articlePricePerKg));
             // Round Price to 0.00, to force ex 5,00, else we have 5 and it acts has 0,50
             string priceString = articlePricePerKg.ToString("0.00").ToString().Replace(",", string.Empty).Replace(".", string.Empty);
             // Format it
@@ -125,18 +125,13 @@ namespace logicpos.Classes.Logic.Hardware
         public List<int> CalculateFromHex(string result)
         {
             List<int> resultList = new List<int>();
-
-            string WWWWW = string.Empty;
-            string IIIIII = string.Empty;
-
             string S = result.Substring(2, 1);
             //if (S =="0")
-            WWWWW = result.Substring(3, 5);
+            string WWWWW = result.Substring(3, 5);
 
             string E = result.Substring(9, 1);
             //if (E == "0")
-            IIIIII = result.Substring(10, 6);
-
+            string IIIIII = result.Substring(10, 6);
             resultList.Add(Convert.ToInt16(WWWWW));
             // Sanitize : Must Remove last Charcters like detected ones [= >]
             //resultList.Add(Convert.ToInt16(IIIIII.Replace("=", string.Empty)));

@@ -18,11 +18,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     // Use PrintRouter for financialDocuments ex PrintFinanceDocument
 
-    partial class PosReportsDialog
+    internal partial class PosReportsDialog
     {
         public static CustomReportDisplayMode exportType;
+
         // Test Document Report
-        void TestDocumentReport()
+        private void TestDocumentReport()
         {
             Guid docOid = new Guid("6d44b0a8-6450-4245-b4ee-a6e971f4bcec");
             fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), docOid);
@@ -33,15 +34,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(documentFinanceMaster.Hash);
                 string destinationFileName = "";
                 string result = CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Design, documentFinanceMaster.Oid, hash4Chars, copyNames, destinationFileName);
-                _log.Debug(String.Format("Result: [{0}]", result));
+                _logger.Debug(String.Format("Result: [{0}]", result));
             }
             else
             {
-                _log.Debug(String.Format("Null Document Found for documentType: [{0}]", nameof(fin_documentfinancemaster), docOid.ToString()));
+                _logger.Debug(String.Format("Null Document Found for documentType: [{0}]", nameof(fin_documentfinancemaster), docOid.ToString()));
             }
         }
 
-        void buttonReportUnderConstruction_Clicked(object sender, EventArgs e)
+        private void buttonReportUnderConstruction_Clicked(object sender, EventArgs e)
         {
             logicpos.Utils.ShowMessageUnderConstruction();
         }
@@ -108,10 +109,6 @@ OR
         public Type senderType;
         public void PrintReportRouter(object sender, EventArgs e)
         {
-            //CustomReportDisplayMode displayMode = (Debugger.IsAttached)
-            //    ? CustomReportDisplayMode.Design
-            //    : CustomReportDisplayMode.ExportPDF;
-            CustomReportDisplayMode displayMode = exportType;
 
             // Override Default Development Mode
             // Local Variables
@@ -133,11 +130,11 @@ OR
             }
             //TouchButtonIconWithText buttonIcon = (sender as TouchButtonIconWithText);
             //AccordionChildButton button = (sender as AccordionChildButton);
-            //_log.Debug(String.Format("Button.Name: [{0}], Button.label: [{1}]", button.Name, button.Label));
+            //_logger.Debug(String.Format("Button.Name: [{0}], Button.label: [{1}]", button.Name, button.Label));
 
             // Get Token From buttonName
             ReportsTypeToken token = (ReportsTypeToken)Enum.Parse(typeof(ReportsTypeToken), button.Name, true);
-            _log.Debug("void PrintReportRouter(object sender, EventArgs e) :: ReportsTypeToken: " + token.ToString());
+            _logger.Debug("void PrintReportRouter(object sender, EventArgs e) :: ReportsTypeToken: " + token.ToString());
             //TK016249 - Impressoras - Diferenciação entre Tipos
             GlobalFramework.UsingThermalPrinter = true;
             // Prepare ReportsQueryDialogMode
@@ -331,8 +328,11 @@ OR
             //if (reportFilter != null || !financialViewMode)
             if (reportFilter != null/* || reportsQueryDialogMode != ReportsQueryDialogMode.UNDEFINED*/)
             {
+                //CustomReportDisplayMode displayMode = (Debugger.IsAttached)
+                //    ? CustomReportDisplayMode.Design
+                //    : CustomReportDisplayMode.ExportPDF;
                 // Now we have two types of export according the Button response
-                displayMode = exportType;
+                CustomReportDisplayMode displayMode = exportType;
                 switch (token)
                 {
                     case ReportsTypeToken.REPORT_SALES_PER_FINANCE_DOCUMENT:
@@ -863,7 +863,7 @@ OR
                     case ReportsTypeToken.REPORT_LIST_CLOSE_WORKSESSION:
                         break;
                     default:
-                        _log.Error(String.Format("Undetected Token: [{0}]", token));
+                        _logger.Error(String.Format("Undetected Token: [{0}]", token));
                         break;
                 }
             }

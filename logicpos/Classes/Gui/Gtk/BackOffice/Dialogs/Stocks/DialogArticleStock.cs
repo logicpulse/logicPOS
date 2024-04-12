@@ -26,26 +26,26 @@ using logicpos.Classes.Enums.Reports;
 using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.financial.library.Classes.Reports;
 using System.Threading;
+using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
     //Gestão de Stocks : Janela de Gestão de Stocks [IN:016534]
-    class DialogArticleStock : BOBaseDialog
+    internal class DialogArticleStock : BOBaseDialog
     {
         //UI
-        VBox _vboxTab2;
-        TouchButtonIconWithText _openOriginDocumentMovbutton;
-        TouchButtonIconWithText _openSellDocumentMovbutton;
-
-        TouchButtonIconWithText _openOriginDocumentbutton;
-        TouchButtonIconWithText _openCompositeArticlebutton;
-        TouchButtonIconWithText _openChangeArticleLocationbutton;
-        TouchButtonIconWithText _openSellDocumentbutton;
-        TouchButtonIconWithText _printSerialNumberbutton;
-        CriteriaOperator CriteriaOperatorLastFilterStocks;
-        CriteriaOperator CriteriaOperatorLastFilterHistory;
-        CriteriaOperator CriteriaOperatorLastFilterWarehouse;
-        List<fin_articleserialnumber> _listArticleserialnumbers;
+        private VBox _vboxTab2;
+        private TouchButtonIconWithText _openOriginDocumentMovbutton;
+        private TouchButtonIconWithText _openSellDocumentMovbutton;
+        private TouchButtonIconWithText _openOriginDocumentbutton;
+        private TouchButtonIconWithText _openCompositeArticlebutton;
+        private TouchButtonIconWithText _openChangeArticleLocationbutton;
+        private TouchButtonIconWithText _openSellDocumentbutton;
+        private TouchButtonIconWithText _printSerialNumberbutton;
+        private CriteriaOperator CriteriaOperatorLastFilterStocks;
+        private CriteriaOperator CriteriaOperatorLastFilterHistory;
+        private CriteriaOperator CriteriaOperatorLastFilterWarehouse;
+        private readonly List<fin_articleserialnumber> _listArticleserialnumbers;
 
         private TouchButtonIconWithText _buttonInsert;
         public TouchButtonIconWithText ButtonInsert
@@ -243,7 +243,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -274,7 +274,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -321,7 +321,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
             }
         }
@@ -357,7 +357,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -380,7 +380,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -397,7 +397,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -414,7 +414,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -535,7 +535,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -563,7 +563,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (System.Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
         }
@@ -587,7 +587,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -644,7 +644,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _treeViewXPO_ArticleWarehouse.Refresh();
                     _treeViewXPO_StockMov.Refresh();
 
-                    _log.Debug("Serial Number deleted");
+                    _logger.Debug("Serial Number deleted");
                 }
                 else
                 {
@@ -705,12 +705,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex.Message, ex);
+                    _logger.Error(ex.Message, ex);
                 }
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
 
         }
@@ -755,7 +755,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
         }
 
@@ -789,7 +789,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
             }
         }
@@ -847,7 +847,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
                 //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
             }
         }
@@ -871,7 +871,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return false;
         }
@@ -887,7 +887,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 String fileIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pIcon);
                 String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;  
-                Color colorBaseDialogActionAreaButtonFont = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"]);
+                Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
                 Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
                 Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
 
@@ -895,7 +895,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             catch (Exception ex)
             {
-                _log.Error(ex.Message, ex);
+                _logger.Error(ex.Message, ex);
             }
             return (result);
         }
