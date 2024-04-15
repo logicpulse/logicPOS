@@ -19,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         //Private Members to Store Parameters
         private Session _xpoSession;
         private Type _xpoObjectType;
-        private String _fieldLabel;
+        private string _fieldLabel;
 
         //Private Members
         private XPCollection _XpCollection;
@@ -34,23 +34,23 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             set { _value = value; }
         }
 
-        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria)
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria);
         }
 
-        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null)
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty);
         }
 
         //IN:009261 Overload for default value selected
-        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
+        public XPOComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
         {
             InitComboBox(pXpoSession, pXPGuidObjectType, pCurrentValue, pFieldLabel, pCriteria, pSortProperty, active, pXPCollection);
         }
 
-        public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, String pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
+        public void InitComboBox(Session pXpoSession, Type pXPGuidObjectType, XPGuidObject pCurrentValue, string pFieldLabel, CriteriaOperator pCriteria, SortProperty[] pSortProperty = null, int active = 0, XPCollection pXPCollection = null)
         {
             //Required to Force Combo to be same Height has Entrys
             HeightRequest = 23;

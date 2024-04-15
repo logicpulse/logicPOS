@@ -6,7 +6,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     internal class TablePadArticle : TablePad
     {
-        public TablePadArticle(String pSql, String pOrder, String pFilter, Guid pActiveButtonOid, bool pToggleMode, uint pRows, uint pColumns, String pButtonNamePrefix, Color pColorButton, int pButtonWidth, int pButtonHeight, TouchButtonBase buttonPrev, TouchButtonBase buttonNext)
+        public TablePadArticle(string pSql, string pOrder, string pFilter, Guid pActiveButtonOid, bool pToggleMode, uint pRows, uint pColumns, string pButtonNamePrefix, Color pColorButton, int pButtonWidth, int pButtonHeight, TouchButtonBase buttonPrev, TouchButtonBase buttonNext)
             : base(pSql, pOrder, pFilter, pActiveButtonOid, pToggleMode, pRows, pColumns, pButtonNamePrefix, pColorButton, pButtonWidth, pButtonHeight, buttonPrev, buttonNext)
         {
         }

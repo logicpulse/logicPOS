@@ -249,10 +249,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 dataRow[4] = pFinanceDetail.Discount;
                 //dataRow[5] = pFinanceDetail.TotalNet * _documentFinanceMasterList[0].ExchangeRate;
                 /* fix for item total before CustomerDiscount: (TotalGross - ItemDiscount) + ItemVAT */
-                Decimal amountItemDiscount = pFinanceDetail.TotalGross * pFinanceDetail.Discount / 100;
-                Decimal amountDueBeforeTax = (pFinanceDetail.TotalGross - amountItemDiscount);
-                Decimal totalItemTax = amountDueBeforeTax * pFinanceDetail.Vat / 100;
-                Decimal amountDueAfterTax = amountDueBeforeTax + totalItemTax;
+                decimal amountItemDiscount = pFinanceDetail.TotalGross * pFinanceDetail.Discount / 100;
+                decimal amountDueBeforeTax = (pFinanceDetail.TotalGross - amountItemDiscount);
+                decimal totalItemTax = amountDueBeforeTax * pFinanceDetail.Vat / 100;
+                decimal amountDueAfterTax = amountDueBeforeTax + totalItemTax;
                 dataRow[5] = _documentFinanceMasterList[0].ExchangeRate * amountDueAfterTax;
                 /* IN009211 block - end */
 
@@ -397,10 +397,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Init DataTable
                 DataRow dataRow = null;
                 DataTable dataTable = new DataTable();
-                DataColumn dcDesignation = new DataColumn("Designation", typeof(String));
-                DataColumn dcTax = new DataColumn("Tax", typeof(String));
-                DataColumn dcTaxBase = new DataColumn("TaxBase", typeof(String));
-                DataColumn dcTotal = new DataColumn("Total", typeof(String));
+                DataColumn dcDesignation = new DataColumn("Designation", typeof(string));
+                DataColumn dcTax = new DataColumn("Tax", typeof(string));
+                DataColumn dcTaxBase = new DataColumn("TaxBase", typeof(string));
+                DataColumn dcTotal = new DataColumn("Total", typeof(string));
                 dataTable.Columns.Add(dcDesignation);
                 dataTable.Columns.Add(dcTax);
                 dataTable.Columns.Add(dcTaxBase);

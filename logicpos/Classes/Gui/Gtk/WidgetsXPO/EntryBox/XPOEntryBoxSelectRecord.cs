@@ -115,16 +115,16 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         public CriteriaOperator CriteriaOperatorLastFilter { get; private set; }
 
         //Constructor/OverLoads
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, String pLabelText)
+        public XPOEntryBoxSelectRecord(Window pSourceWindow, string pLabelText)
             : this(pSourceWindow, pLabelText, string.Empty, string.Empty) { }
 
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, String pLabelText, String pFieldDisplayValue, String pFieldValidateValue)
+        public XPOEntryBoxSelectRecord(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue)
             : this(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldDisplayValue, null) { }
 
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, String pLabelText, String pFieldDisplayValue, String pFieldValidateValue, T1 pValue)
+        public XPOEntryBoxSelectRecord(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pValue)
             : this(pSourceWindow, pLabelText, pFieldDisplayValue, pFieldDisplayValue, pValue, null) { }
 
-        public XPOEntryBoxSelectRecord(Window pSourceWindow, String pLabelText, String pFieldDisplayValue, String pFieldValidateValue, T1 pValue, CriteriaOperator pCriteriaOperator, bool BOSource = false)
+        public XPOEntryBoxSelectRecord(Window pSourceWindow, string pLabelText, string pFieldDisplayValue, string pFieldValidateValue, T1 pValue, CriteriaOperator pCriteriaOperator, bool BOSource = false)
             : base(pSourceWindow, pLabelText, BOSource)
         {
             //Parameters
@@ -151,9 +151,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _codeEntry = pCodeEntry;
             ListStore store = null;
             //Settings
-            String iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
-            String iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
-            String iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+            string iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
+            string iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+            string iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
             //Init Button
             _buttonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             _buttonClearValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
@@ -175,9 +175,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                         {
                             _entry.Text = (_value as fin_articlewarehouse).Article.Designation;
                         }
-                        else _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
+                        else _entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
                     }
-                    else _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
+                    else _entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
                 }
                 catch (Exception ex)
                 {
@@ -240,7 +240,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _entry = pEntry;
             ListStore store = null;
             //Settings
-            String iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
+            string iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
             //Init Button
             _buttonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             //UI/Pack
@@ -259,9 +259,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                         {
                             _entry.Text = (_value as fin_articlewarehouse).Article.Designation;
                         }
-                        else _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
+                        else _entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
                     }
-                    else _entry.Text = (String)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(String));
+                    else _entry.Text = (string)Convert.ChangeType(_value.GetMemberValue(_fieldDisplayValue), typeof(string));
                 }
                 catch (Exception ex)
                 {

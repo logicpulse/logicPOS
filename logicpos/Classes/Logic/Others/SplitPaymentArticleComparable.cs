@@ -36,7 +36,7 @@ namespace logicpos.Classes.Logic.Others
         }
 
         // This function is used to sorts the array list, based on price
-        public int CompareTo(Object obj)
+        public int CompareTo(object obj)
         {
             if (obj is SplitPaymentArticleComparable)
             {

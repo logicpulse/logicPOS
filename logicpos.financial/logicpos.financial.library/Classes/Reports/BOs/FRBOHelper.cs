@@ -166,7 +166,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     }                        
                     /* IN009252 - "Reason" added to "fin_documentfinancemaster.Notes" */
                     if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += Environment.NewLine; /* " | " */
-                    notes += String.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reason"), documentFinanceMasterView.Notes);
+                    notes += string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reason"), documentFinanceMasterView.Notes);
                     documentFinanceMasterView.Notes = notes;
                 }
 

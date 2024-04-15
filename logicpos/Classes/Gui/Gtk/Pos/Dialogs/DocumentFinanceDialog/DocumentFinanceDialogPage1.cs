@@ -96,11 +96,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         private readonly cfg_configurationcurrency _defaultValueConfigurationCurrency;
 
         //Constructor
-        public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName)
+        public DocumentFinanceDialogPage1(Window pSourceWindow, string pPageName)
             : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName, Widget pWidget)
+        public DocumentFinanceDialogPage1(Window pSourceWindow, string pPageName, Widget pWidget)
             : this(pSourceWindow, pPageName, "", pWidget, true) { }
-        public DocumentFinanceDialogPage1(Window pSourceWindow, String pPageName, String pPageIcon, Widget pWidget, bool pEnabled = true)
+        public DocumentFinanceDialogPage1(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
             : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
             //Init private vars References
@@ -543,7 +543,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //Get Criteria of Excluded DocumentTypes for EntryBoxSelectDocumentFinanceType
         private string GetDocumentFinanceTypeExtraCriteria()
         {
-            String result = string.Empty;
+            string result = string.Empty;
 
             Guid[] excludedDocumentTypes = new Guid[] {
                 SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput,

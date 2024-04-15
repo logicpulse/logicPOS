@@ -1393,7 +1393,7 @@ namespace logicpos.printer.generic
                 }
                 else
                 {
-                    _logger.Error(String.Format("Error: invalid settings for PrinterThermalCutCommand: [{0}]", configCutCommand));
+                    _logger.Error(string.Format("Error: invalid settings for PrinterThermalCutCommand: [{0}]", configCutCommand));
                 }
             };
 

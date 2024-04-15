@@ -283,7 +283,7 @@ namespace logicpos.shared.Classes.Finance
             _priceFinal = (_totalFinal > 0) ? _totalFinal / _quantity : 0.0m;
         }
 
-        public void SendToLog(String pLabel)
+        public void SendToLog(string pLabel)
         {
             PropertyInfo[] pis = this.GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
 

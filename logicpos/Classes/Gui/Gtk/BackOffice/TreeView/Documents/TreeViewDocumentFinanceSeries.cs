@@ -197,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if (resultAcronym.ResponseType == ResponseType.Ok && sqlCheckExistingSeriesResultInt > 0)
                         {
                             responseType = logicpos.Utils.ShowMessageTouch(
-                                GlobalApp.WindowStartup,
+                                GlobalApp.StartupWindow,
                                 DialogFlags.Modal,
                                 MessageType.Question,
                                 ButtonsType.YesNo,

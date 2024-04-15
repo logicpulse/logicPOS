@@ -11,9 +11,49 @@ namespace logicpos
 {
     internal interface IStockManagementModule
     {
-        bool Add(Session session, ProcessArticleStockMode @in, fin_documentfinancedetail documentDetail, erp_customer own_customer, int v1, DateTime now, string v2, fin_article article, int v3, string v4, string serialNumber, decimal purchasePrice, fin_warehouselocation location, object p, List<fin_articleserialnumber> selectedAssocietedArticles, bool v5, bool v6);
-        bool Add(Session session, ProcessArticleStockMode @in, erp_customer own_customer, int v1, DateTime now, string v2, fin_article article, int v3, string v4, string serialNumber, decimal purchasePrice, fin_warehouselocation location, object p, List<fin_articleserialnumber> selectedAssocietedArticles, bool v5, bool v6);
-        void Add(ProcessArticleStockMode @in, ProcessArticleStockParameter res);
-        bool Add(fin_documentfinancemaster @in, bool p);
+        bool Add(
+            Session session, 
+            ProcessArticleStockMode processArticleStockMode, 
+            fin_documentfinancedetail documentDetail, 
+            erp_customer own_customer, 
+            int v1, 
+            DateTime now, 
+            string v2, 
+            fin_article article, 
+            int v3, 
+            string v4, 
+            string serialNumber, 
+            decimal purchasePrice, 
+            fin_warehouselocation location, 
+            object p, 
+            List<fin_articleserialnumber> selectedAssocietedArticles, 
+            bool v5, 
+            bool v6);
+
+        bool Add(
+            Session session, 
+            ProcessArticleStockMode processArticleStockMode, 
+            erp_customer own_customer, 
+            int v1, 
+            DateTime now, 
+            string v2, 
+            fin_article article, 
+            int v3, 
+            string v4, 
+            string serialNumber, 
+            decimal purchasePrice, 
+            fin_warehouselocation location, 
+            object p, 
+            List<fin_articleserialnumber> selectedAssocietedArticles, 
+            bool v5, 
+            bool v6);
+
+        void Add(
+            ProcessArticleStockMode processArticleStockMode, 
+            ProcessArticleStockParameter res);
+
+        bool Add(
+            fin_documentfinancemaster processArticleStockMode, 
+            bool p);
     }
 }

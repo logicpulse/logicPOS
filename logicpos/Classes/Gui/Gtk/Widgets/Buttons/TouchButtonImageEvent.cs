@@ -25,13 +25,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         private readonly int _fontSize;
 
         public TouchButtonImageEvent(
-          String pName,
-          String pLabel,
-          String pImage,
-          String pImageClicked,
+          string pName,
+          string pLabel,
+          string pImage,
+          string pImageClicked,
           int pPaddingLeft = 0,
           int pPaddingRight = 0,
-          String pFontName = "Arial",
+          string pFontName = "Arial",
           int pFontSize = 20
         )
         {

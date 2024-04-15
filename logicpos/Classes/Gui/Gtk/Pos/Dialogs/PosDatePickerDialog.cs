@@ -27,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
         }
 
-        public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, String pDialogTitle)
+        public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pDialogTitle)
             : this(pSourceWindow, pDialogFlags, pDialogTitle, FrameworkUtils.CurrentDateTimeAtomic())
         {
         }
@@ -37,15 +37,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
         }
 
-        public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, String pDialogTitle, DateTime pDateTime)
+        public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pDialogTitle, DateTime pDateTime)
             : base(pSourceWindow, pDialogFlags)
         {
             //Parameters
             _dateTime = pDateTime;
 
             //Init Local Vars
-            String windowTitle = pDialogTitle;
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
+            string windowTitle = pDialogTitle;
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
             _windowSize = new Size(600, 373);
 
             //Init Content

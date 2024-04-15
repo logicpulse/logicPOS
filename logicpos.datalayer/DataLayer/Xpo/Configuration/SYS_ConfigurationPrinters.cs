@@ -17,16 +17,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             ShowInDialog = true;
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         [Indexed(Unique = true)]
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -53,11 +53,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("ThermalEncoding", ref fThermalEncoding, value); }
         }
 
-        private Boolean fThermalPrintLogo;
-        public Boolean ThermalPrintLogo
+        private bool fThermalPrintLogo;
+        public bool ThermalPrintLogo
         {
             get { return fThermalPrintLogo; }
-            set { SetPropertyValue<Boolean>("ThermalPrintLogo", ref fThermalPrintLogo, value); }
+            set { SetPropertyValue<bool>("ThermalPrintLogo", ref fThermalPrintLogo, value); }
         }
 
         private string fThermalImageCompanyLogo;
@@ -116,11 +116,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<int>("ThermalOpenDrawerValueT2", ref fThermalOpenDrawerValueT2, value); }
         }
 
-        private Boolean fShowInDialog;
-        public Boolean ShowInDialog
+        private bool fShowInDialog;
+        public bool ShowInDialog
         {
             get { return fShowInDialog; }
-            set { SetPropertyValue<Boolean>("ShowInDialog", ref fShowInDialog, value); }
+            set { SetPropertyValue<bool>("ShowInDialog", ref fShowInDialog, value); }
         }
 
         //ConfigurationPrintersType One <> Many ConfigurationPlace

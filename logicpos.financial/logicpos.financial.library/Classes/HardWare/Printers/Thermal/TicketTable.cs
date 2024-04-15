@@ -94,7 +94,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             foreach (SelectStatementResultRow rowData in xPSelectData.Data)
             {
                 //Init a new DataRow
-                Object[] dataRow = new String[xPSelectData.Meta.Length];
+                object[] dataRow = new string[xPSelectData.Meta.Length];
 
                 foreach (SelectStatementResultRow rowMeta in xPSelectData.Meta)
                 {
@@ -135,7 +135,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             {
                 int i = -1;
                 //Init a new DataRow
-                Object[] dataRow = new String[pDataTable.Columns.Count];
+                object[] dataRow = new string[pDataTable.Columns.Count];
 
                 foreach (DataColumn column in pDataTable.Columns)
                 {

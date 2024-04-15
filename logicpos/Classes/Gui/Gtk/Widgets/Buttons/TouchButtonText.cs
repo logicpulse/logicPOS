@@ -16,19 +16,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             set { _labelText = value; _label.Text = value; }
         }
 
-        public TouchButtonText(String pName)
+        public TouchButtonText(string pName)
             : base(pName)
         {
         }
 
-        public TouchButtonText(String pName, Color pColor, String pLabelText, String pFont, Color pColorFont, int pWidth, int pHeight)
+        public TouchButtonText(string pName, Color pColor, string pLabelText, string pFont, Color pColorFont, int pWidth, int pHeight)
             : base(pName)
         {
             InitObject(pName, pColor, pLabelText, pFont, pColorFont, pWidth, pHeight);
             base.InitObject(pName, pColor, _widget, pWidth, pHeight);
         }
 
-        public void InitObject(String pName, Color pColor, String pLabelText, String pFont, Color pColorFont, int pWidth, int pHeight)
+        public void InitObject(string pName, Color pColor, string pLabelText, string pFont, Color pColorFont, int pWidth, int pHeight)
         {
             _labelText = pLabelText;
             _label = new Label(_labelText);
@@ -36,14 +36,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             _widget = _label;
         }
 
-        public void SetFont(String pFont)
+        public void SetFont(string pFont)
         {
             //Font, Style, Size ex "Ahafoni CLM Bold 100"
             Pango.FontDescription fontDesc = Pango.FontDescription.FromString(pFont);
             _label.ModifyFont(fontDesc);
         }
 
-        public void ChangeFont(String pFont, Color pColorFont)
+        public void ChangeFont(string pFont, Color pColorFont)
         {
             //font
             SetFont(pFont);

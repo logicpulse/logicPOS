@@ -91,10 +91,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
                 //Init Local Vars
-                String windowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cashdrawer"), FrameworkUtils.DecimalToStringCurrency(_totalAmountInCashDrawer));
+                string windowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cashdrawer"), FrameworkUtils.DecimalToStringCurrency(_totalAmountInCashDrawer));
                 Size windowSize = new Size(462, 310);//400 With Other Payments
-                String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
-                String fileActionPrint = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
+                string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
+                string fileActionPrint = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
 
                 //Get SeletedData from WorkSessionMovementType Buttons
                 string executeSql = @"SELECT Oid, Token, ResourceString, ButtonIcon, Disabled FROM pos_worksessionmovementtype WHERE (Token LIKE 'CASHDRAWER_%') AND (Disabled IS NULL or Disabled  <> 1) ORDER BY Ord;";

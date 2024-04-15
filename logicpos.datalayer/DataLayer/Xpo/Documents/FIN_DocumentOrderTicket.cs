@@ -10,11 +10,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentorderticket() : base() { }
         public fin_documentorderticket(Session session) : base(session) { }
 
-        private Int32 fTicketId;
-        public Int32 TicketId
+        private int fTicketId;
+        public int TicketId
         {
             get { return fTicketId; }
-            set { SetPropertyValue<Int32>("TicketId", ref fTicketId, value); }
+            set { SetPropertyValue<int>("TicketId", ref fTicketId, value); }
         }
 
         private DateTime fDateStart;
@@ -31,11 +31,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<PriceType>("PriceType", ref fPriceType, value); }
         }
 
-        private Decimal fDiscount;
-        public Decimal Discount
+        private decimal fDiscount;
+        public decimal Discount
         {
             get { return fDiscount; }
-            set { SetPropertyValue<Decimal>("Discount", ref fDiscount, value); }
+            set { SetPropertyValue<decimal>("Discount", ref fDiscount, value); }
         }
 
         //DocumentOrderTicket One <> Many DocumentOrderDetail

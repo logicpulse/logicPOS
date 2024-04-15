@@ -70,9 +70,9 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
         public string EntityCountry { get; set; }
         public Guid EntityCountryOid { get; set; }
         public string EntityFiscalNumber { get; set; }
-        public Boolean Payed { get; set; }
+        public bool Payed { get; set; }
         public DateTime PayedDate { get; set; }
-        public Boolean Printed { get; set; }
+        public bool Printed { get; set; }
         // Navigation Properties
         public fin_documentordermain SourceOrderMain { get; set; }
         public fin_documentfinancetype DocumentType { get; set; }

@@ -36,7 +36,7 @@ namespace logicpos
             try
             {
                 // Show current Configuration File
-                _logger.Debug(String.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+                _logger.Debug(string.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 
                 /* IN009203 - Mutex block */
                 using (_singleProgramInstance)
@@ -107,7 +107,7 @@ namespace logicpos
                 if (GlobalFramework.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
-                    _logger.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
                     // Init Plugin
                     SettingsApp.InitSoftwareVendorPluginSettings();
                     // Check if all Resources are Embedded
@@ -116,7 +116,7 @@ namespace logicpos
                 else
                 {
                     // Show Loaded Plugin
-                    _logger.Error(String.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
+                    _logger.Error(string.Format("Error missing required plugin type Installed: [{0}]", typeof(ISoftwareVendor)));
                 }
 
 
@@ -132,7 +132,7 @@ namespace logicpos
                     // Show Loaded Plugin
                     if (GlobalFramework.PluginLicenceManager != null)
                     {
-                        _logger.Debug(String.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
                     }
                 }
 
@@ -277,7 +277,7 @@ namespace logicpos
                     GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
 
-                _logger.Error(String.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
+                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
             }
         }
     }

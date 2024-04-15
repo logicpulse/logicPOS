@@ -34,8 +34,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Template = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(SettingsApp.XpoOidArticleDefaultTemplate);
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }

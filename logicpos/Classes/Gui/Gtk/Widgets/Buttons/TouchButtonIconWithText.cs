@@ -8,14 +8,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 {
     public class TouchButtonIconWithText : TouchButtonText
     {
-        public TouchButtonIconWithText(String name, System.Drawing.Color color, String labelText, String font, System.Drawing.Color colorFont, String icon, System.Drawing.Size sizeIcon, int width, int height)
+        public TouchButtonIconWithText(string name, System.Drawing.Color color, string labelText, string font, System.Drawing.Color colorFont, string icon, System.Drawing.Size sizeIcon, int width, int height)
             : base(name)
         {
             InitObject(name, color, labelText, font, colorFont, icon, sizeIcon, width, height, false);
             base.InitObject(name, color, _widget, width, height);
         }
 
-        public TouchButtonIconWithText(String name, System.Drawing.Color color, String labelText, String font, System.Drawing.Color colorFont, String icon, System.Drawing.Size sizeIcon, int width, int height, bool leftImg)
+        public TouchButtonIconWithText(string name, System.Drawing.Color color, string labelText, string font, System.Drawing.Color colorFont, string icon, System.Drawing.Size sizeIcon, int width, int height, bool leftImg)
             : base(name)
         {
             InitObject(name, color, labelText, font, colorFont, icon, sizeIcon, width, height, true);
@@ -24,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 
         public Widget Content;
 
-        public void InitObject(String name, System.Drawing.Color color, String labelText, String font, System.Drawing.Color colorFont, String icon, System.Drawing.Size sizeIcon, int width, int height, bool leftImg)
+        public void InitObject(string name, System.Drawing.Color color, string labelText, string font, System.Drawing.Color colorFont, string icon, System.Drawing.Size sizeIcon, int width, int height, bool leftImg)
         {
             if (!leftImg)
             {
@@ -56,8 +56,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             }
             else
             {
-                String fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
-                String fontPosBackOfficeParentLowRes = GlobalFramework.Settings["fontPosBackOfficeParentLowRes"];
+                string fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
+                string fontPosBackOfficeParentLowRes = GlobalFramework.Settings["fontPosBackOfficeParentLowRes"];
                 Pango.FontDescription fontDescription = Pango.FontDescription.FromString(fontPosBackOfficeParent);
 
                 if (GlobalApp.ScreenSize.Height == 800)

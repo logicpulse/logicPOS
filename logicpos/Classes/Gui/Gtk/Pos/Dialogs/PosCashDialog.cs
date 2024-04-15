@@ -16,13 +16,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Settings
-            String _fileToolbarStartStopWorkSessionPeriodDay = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png");
-            String _fileToolbarCashDrawer = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png");
+            string _fileToolbarStartStopWorkSessionPeriodDay = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png");
+            string _fileToolbarCashDrawer = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_cashdrawer.png");
 
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cash");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cash");
             Size windowSize = new Size(428, 205);
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;

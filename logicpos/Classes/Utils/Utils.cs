@@ -104,7 +104,7 @@ namespace logicpos
         //ShowMessage Non Touch
 
         //Call with : Utils.ShowMessage(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, "Message Test", "Error");
-        public static Gtk.ResponseType ShowMessageNonTouch(Gtk.Window pSourceWindow, Gtk.DialogFlags pDialogFlags, MessageType pMsgType, ButtonsType pButtonsType, string pMessage, String pWindowTitle)
+        public static Gtk.ResponseType ShowMessageNonTouch(Gtk.Window pSourceWindow, Gtk.DialogFlags pDialogFlags, MessageType pMsgType, ButtonsType pButtonsType, string pMessage, string pWindowTitle)
         {
             MessageDialog messageDialog = new MessageDialog(pSourceWindow, pDialogFlags, pMsgType, pButtonsType, pMessage);
             messageDialog.Title = pWindowTitle;
@@ -138,18 +138,18 @@ namespace logicpos
             Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             Size sizeBaseDialogActionAreaButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
             Size sizeBaseDialogActionAreaButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
-            String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
+            string fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
             //Images
-            String fileImageDialogBaseMessageTypeImage = FrameworkUtils.OSSlash(GlobalFramework.Settings["fileImageDialogBaseMessageTypeImage"]);
-            String fileImageDialogBaseMessageTypeIcon = FrameworkUtils.OSSlash(GlobalFramework.Settings["fileImageDialogBaseMessageTypeIcon"]);
+            string fileImageDialogBaseMessageTypeImage = FrameworkUtils.OSSlash(GlobalFramework.Settings["fileImageDialogBaseMessageTypeImage"]);
+            string fileImageDialogBaseMessageTypeIcon = FrameworkUtils.OSSlash(GlobalFramework.Settings["fileImageDialogBaseMessageTypeIcon"]);
             //Files
-            String fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-            String fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-            String fileActionYes = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png");
-            String fileActionNo = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png");
-            String fileActionClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
+            string fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+            string fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+            string fileActionYes = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png");
+            string fileActionNo = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png");
+            string fileActionClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
             //Init Local Vars
-            String fileImageDialog, fileImageWindowIcon;
+            string fileImageDialog, fileImageWindowIcon;
             ResponseType resultResponse = ResponseType.None;
 
             //Prepara ActionArea and Buttons
@@ -619,7 +619,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Images 
 
-        public static Gdk.Pixmap FileToPixmap(String pFilename)
+        public static Gdk.Pixmap FileToPixmap(string pFilename)
         {
             if (pFilename != null && File.Exists(pFilename))
             {
@@ -670,7 +670,7 @@ namespace logicpos
         }
 
         //Returns a PixBuf from File Path
-        public static Gdk.Pixbuf FileToPixBuf(String pFilename)
+        public static Gdk.Pixbuf FileToPixBuf(string pFilename)
         {
             if (pFilename != null && File.Exists(pFilename))
             {
@@ -684,7 +684,7 @@ namespace logicpos
         }
 
         //Returns a Resized PixBuf from File Path - Usefull for FileChooserButtons
-        public static Gdk.Pixbuf ResizeAndCropFileToPixBuf(String pFilename, Size pSize)
+        public static Gdk.Pixbuf ResizeAndCropFileToPixBuf(string pFilename, Size pSize)
         {
             if (pFilename != null && File.Exists(pFilename))
             {
@@ -839,7 +839,7 @@ namespace logicpos
         }
 
         //Render text over Image 
-        public static System.Drawing.Image ImageTextOverlay(System.Drawing.Image pImage, String pLabel, Rectangle pTranspRectangle, Color pFontColor, String pFontName = "Tahoma", int pFontSize = 12, int pTransparentLevel = 128)
+        public static System.Drawing.Image ImageTextOverlay(System.Drawing.Image pImage, string pLabel, Rectangle pTranspRectangle, Color pFontColor, string pFontName = "Tahoma", int pFontSize = 12, int pTransparentLevel = 128)
         {
             Graphics g = Graphics.FromImage(pImage);
             SolidBrush semiTransBrushWhite = new SolidBrush(Color.FromArgb(pTransparentLevel, 255, 255, 255));
@@ -918,7 +918,7 @@ namespace logicpos
         }
 
         //Converts a Size to String using TypeConverter, used to Store values in Appsettings
-        public static String SizeToString(Size pSize)
+        public static string SizeToString(Size pSize)
         {
             try
             {
@@ -933,7 +933,7 @@ namespace logicpos
         }
 
         //Converts a String to Size using TypeConverter, used to Store values in Appsettings
-        public static Size StringToSize(String pSize)
+        public static Size StringToSize(string pSize)
         {
             try
             {
@@ -947,7 +947,7 @@ namespace logicpos
             }
         }
 
-        public static Position StringToPosition(String pPosition)
+        public static Position StringToPosition(string pPosition)
         {
             string[] splitted = pPosition.Split(',');
             Position resultPosition = new Position();
@@ -963,7 +963,7 @@ namespace logicpos
             return resultPosition;
         }
 
-        public static TableConfig StringToTableConfig(String pTableConfig)
+        public static TableConfig StringToTableConfig(string pTableConfig)
         {
             string[] splitted = pTableConfig.Split(',');
             TableConfig resultTableConfig = new TableConfig();
@@ -984,7 +984,7 @@ namespace logicpos
 
         public static Gdk.Pixbuf ScreenCapture()
         {
-            String tempPath = Convert.ToString(GlobalFramework.Path["temp"]);
+            string tempPath = Convert.ToString(GlobalFramework.Path["temp"]);
 
             Gdk.Window window = Gdk.Global.DefaultRootWindow;
             if (window != null)
@@ -1005,21 +1005,21 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //UnicodeHexadecimal 00C1
 
-        public static Char UnicodeHexadecimalStringToChar(String pInput)
+        public static char UnicodeHexadecimalStringToChar(string pInput)
         {
             char result = (char)int.Parse(pInput, NumberStyles.HexNumber);
             return result;
         }
 
         //UnicodeJavascript \u00C1
-        public static Char UnicodeJavascriptStringToChar(String pInput)
+        public static char UnicodeJavascriptStringToChar(string pInput)
         {
             char result = (char)int.Parse(pInput.Substring(2), NumberStyles.HexNumber);
             return result;
         }
 
         //Check if is letter with RegEx, better than Char.IsLetter that returns º and ª too
-        public static bool IsLetter(Char input)
+        public static bool IsLetter(char input)
         {
             string pattern = @"^[a-zA-ZçÇÁáÉéÍóÚúÀàÈèÌìÒòÙùÃãÕõÂâÊêÎîÔôÛû]+$";
             Regex regex = new Regex(pattern);
@@ -1198,7 +1198,7 @@ namespace logicpos
         //Localization
 
         //Test with Utils.ShowCultureInfo(GlobalFramework.CurrentCulture.ToString());
-        public static void ShowCultureInfo(String pCulture)
+        public static void ShowCultureInfo(string pCulture)
         {
             // Creates and initializes the CultureInfo which uses the international sort.
             CultureInfo myCIintl = new CultureInfo(pCulture, false);
@@ -1232,7 +1232,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Windows
 
-        public static string GetWindowTitle(String pTitle)
+        public static string GetWindowTitle(string pTitle)
         {
             //return string.Format("{0} {1} : {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, pTitle);
             return string.Format("{0} : {1}", SettingsApp.AppName, pTitle);
@@ -1245,7 +1245,7 @@ namespace logicpos
         /// <param name="pTitle"></param>
         /// <param name="dialogMode"></param>
         /// <returns></returns>
-        public static string GetWindowTitle(String dialogWindowTitle, logicpos.Classes.Enums.Dialogs.DialogMode dialogMode)
+        public static string GetWindowTitle(string dialogWindowTitle, logicpos.Classes.Enums.Dialogs.DialogMode dialogMode)
         {
             string action = string.Empty;
 
@@ -1414,7 +1414,7 @@ namespace logicpos
                 GlobalApp.DialogThreadNotify.WakeupMain();
 
                 string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_unsupported_resolution_detected"), screenSize.Width, screenSize.Height, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_true"));
-                Utils.ShowMessageTouchUnsupportedResolutionDetectedDialogbox(GlobalApp.WindowStartup, screenSize.Width, screenSize.Height);
+                Utils.ShowMessageTouchUnsupportedResolutionDetectedDialogbox(GlobalApp.StartupWindow, screenSize.Width, screenSize.Height);
 
                 supportedScreenSizeEnum = ScreenSize.resDefault;
             }
@@ -2030,7 +2030,7 @@ namespace logicpos
             _logger.Debug("void ShowFrontOffice(Window pHideWindow) :: Starting..."); /* IN009008 */
             try
             {
-                if (GlobalApp.WindowPos == null)
+                if (GlobalApp.PosMainWindow == null)
                 {
                     //Init Theme Object
                     Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
@@ -2041,7 +2041,7 @@ namespace logicpos
                         CustomAppOperationMode customAppOperationMode = SettingsApp.CustomAppOperationMode;
                         //_logger.Debug(string.Format("fileImageBackgroundWindowPos: [{0}]", GlobalFramework.Settings["fileImageBackgroundWindowPos"]));
                         string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
-                        GlobalApp.WindowPos = new PosMainWindow(windowImageFileName);
+                        GlobalApp.PosMainWindow = new PosMainWindow(windowImageFileName);
                     }
                     catch (Exception ex)
                     {
@@ -2051,9 +2051,9 @@ namespace logicpos
                 else
                 {
                     //Update POS Components if Window was previously Created, Required to Reflect Outside Changes Like BackOffice
-                    GlobalApp.WindowPos.UpdateUI();
+                    GlobalApp.PosMainWindow.UpdateUI();
                     //Now Show Updated Window
-                    GlobalApp.WindowPos.Show();
+                    GlobalApp.PosMainWindow.Show();
                 };
                 pHideWindow.Hide();
             }
@@ -2081,13 +2081,13 @@ namespace logicpos
 
                     //FrameworkUtils.ShowWaitingCursor();
 
-                    if (GlobalApp.WindowBackOffice == null)
+                    if (GlobalApp.BackOfficeMainWindow == null)
                     {
-                        GlobalApp.WindowBackOffice = new BackOfficeMainWindow();
+                        GlobalApp.BackOfficeMainWindow = new BackOfficeMainWindow();
                     }
                     else
                     {
-                        GlobalApp.WindowBackOffice.Show();
+                        GlobalApp.BackOfficeMainWindow.Show();
                     }
 
                     pHideWindow.Hide();
@@ -2103,13 +2103,13 @@ namespace logicpos
 
         public static void ShowReports(Window pHideWindow)
         {
-            if (GlobalApp.WindowReports == null)
+            if (GlobalApp.BackOfficeReportWindow == null)
             {
-                GlobalApp.WindowReports = new BackOfficeReportWindow();
+                GlobalApp.BackOfficeReportWindow = new BackOfficeReportWindow();
             }
             else
             {
-                GlobalApp.WindowReports.Show();
+                GlobalApp.BackOfficeReportWindow.Show();
             };
             pHideWindow.Hide();
         }
@@ -2428,7 +2428,7 @@ namespace logicpos
 
         public static string GetVirtualKeyBoardInput(Window pSourceWindow, KeyboardMode pMode, string pInitialValue, string pRegExRule)
         {
-            Boolean useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
+            bool useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
 
             //if (GlobalApp.DialogPosKeyboard == null)
             //{
@@ -2438,11 +2438,11 @@ namespace logicpos
                 case KeyboardMode.Alfa:
                 case KeyboardMode.AlfaNumeric:
                     //On Create SourceWindow is always GlobalApp.WindowPos else if its a Dialog, when it is destroyed, in Memory Keyboard is Destroyed too, this way we keep it in Memory
-                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.WindowPos, Gtk.DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
+                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.PosMainWindow, Gtk.DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
                     break;
 
                 case KeyboardMode.Numeric:
-                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.WindowPos, Gtk.DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
+                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.PosMainWindow, Gtk.DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
                     break;
                 default: break;
             }
@@ -2486,7 +2486,7 @@ namespace logicpos
             //Fix Keyboard White Bug when useBaseDialogWindowMask = false
             //Required to assign TransientFor to a non Destroyed Window/Dialog like GlobalApp.WindowPos, 
             //else Keyboard is destroyed when TransientFor Windows/Dialog is Destroyed ex when pSourceWindow = PosInputTextDialog
-            GlobalApp.DialogPosKeyboard.TransientFor = GlobalApp.WindowPos;
+            GlobalApp.DialogPosKeyboard.TransientFor = GlobalApp.PosMainWindow;
 
             return result;
         }
@@ -2947,7 +2947,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //SessionApp
 
-        public static String GetSessionFileName()
+        public static string GetSessionFileName()
         {
             string result = Path.Combine(GlobalFramework.Path["temp"].ToString(), string.Format(SettingsApp.AppSessionFile, GlobalFramework.LicenceHardwareId));
             return result;
@@ -3069,8 +3069,8 @@ namespace logicpos
                 );
 
                 string systemProtectedSalted = SaltedString.GenerateSaltedString(systemProtected);
-                _logger.Debug(String.Format("systemProtected: [{0}]", systemProtected));
-                _logger.Debug(String.Format("systemProtectedSalted: [{0}]", systemProtectedSalted));
+                _logger.Debug(string.Format("systemProtected: [{0}]", systemProtected));
+                _logger.Debug(string.Format("systemProtectedSalted: [{0}]", systemProtectedSalted));
 
                 //Change Configuration
                 Dictionary<string, string> values = new Dictionary<string, string>
@@ -3277,7 +3277,7 @@ namespace logicpos
                 stringChars[i] = chars[random.Next(chars.Length)];
             }
 
-            return new String(stringChars);
+            return new string(stringChars);
         }
 
     }

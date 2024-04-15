@@ -27,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Public EventHandlers
         public event EventHandler Clicked;
 
-        public NumberPad(String name, Color color, String font, byte buttonWidth, byte buttonHeight, byte padding = 0)
+        public NumberPad(string name, Color color, string font, byte buttonWidth, byte buttonHeight, byte padding = 0)
         {
             this.Name = name;
 

@@ -331,7 +331,7 @@ namespace acme.softwarevendor.plugin
 
             if (emmbededFilesMissing.Count > 0)
             {
-                throw new Exception(string.Format("Error! Detected files not Embedded in Resources! [{0}]", String.Join(", ", emmbededFilesMissing)));
+                throw new Exception(string.Format("Error! Detected files not Embedded in Resources! [{0}]", string.Join(", ", emmbededFilesMissing)));
             }
         }
 

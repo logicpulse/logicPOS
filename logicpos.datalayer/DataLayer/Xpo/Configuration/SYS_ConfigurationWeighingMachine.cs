@@ -16,16 +16,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationweighingmachine), "Code");
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         [Indexed(Unique = true)]
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -46,8 +46,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("PortName", ref fPortName, value); }
         }
 
-        private UInt32 fBaudRate;
-        public UInt32 BaudRate
+        private uint fBaudRate;
+        public uint BaudRate
         {
             get { return fBaudRate; }
             set { SetPropertyValue<UInt32>("BaudRate", ref fBaudRate, value); }
@@ -69,8 +69,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("StopBits", ref fStopBits, value); }
         }
 
-        private UInt32 fDataBits;
-        public UInt32 DataBits
+        private uint fDataBits;
+        public uint DataBits
         {
             get { return fDataBits; }
             set { SetPropertyValue<UInt32>("DataBits", ref fDataBits, value); }

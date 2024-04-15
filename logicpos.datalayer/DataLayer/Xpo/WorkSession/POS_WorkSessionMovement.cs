@@ -9,8 +9,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_worksessionmovement() : base() { }
         public pos_worksessionmovement(Session session) : base(session) { }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
@@ -23,11 +23,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DateTime>("Date", ref fDate, value); }
         }
 
-        private Decimal fMovementAmount;
-        public Decimal MovementAmount
+        private decimal fMovementAmount;
+        public decimal MovementAmount
         {
             get { return fMovementAmount; }
-            set { SetPropertyValue<Decimal>("MovementAmount", ref fMovementAmount, value); }
+            set { SetPropertyValue<decimal>("MovementAmount", ref fMovementAmount, value); }
         }
 
         private string fDescription;

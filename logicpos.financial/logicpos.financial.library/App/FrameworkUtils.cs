@@ -260,16 +260,16 @@ namespace logicpos.financial.library.App
                             itemSource.VatExemptionReason == itemReferences.DocumentDetail.VatExemptionReason
                         )
                         {
-							/* IN009235 - Begin */
-                            Decimal itemDiscountValue = (itemReferences.DocumentDetail.TotalGross * itemReferences.DocumentDetail.Discount / 100);
-                            Decimal itemTotalNetValue = itemReferences.DocumentDetail.TotalGross - itemDiscountValue;
-                            Decimal itemTaxValue = (itemTotalNetValue * itemReferences.DocumentDetail.Vat / 100);
-                            Decimal itemTotalFinalValue = itemTotalNetValue + itemTaxValue;
+                            /* IN009235 - Begin */
+                            decimal itemDiscountValue = (itemReferences.DocumentDetail.TotalGross * itemReferences.DocumentDetail.Discount / 100);
+                            decimal itemTotalNetValue = itemReferences.DocumentDetail.TotalGross - itemDiscountValue;
+                            decimal itemTaxValue = (itemTotalNetValue * itemReferences.DocumentDetail.Vat / 100);
+                            decimal itemTotalFinalValue = itemTotalNetValue + itemTaxValue;
 
-                            Decimal itemOldDiscountValue = (itemSource.TotalGross * itemSource.Discount / 100);
-                            Decimal itemOldTotalNetValue = itemSource.TotalGross - itemOldDiscountValue;
-                            Decimal itemOldTaxValue = (itemOldTotalNetValue * itemSource.Vat / 100);
-                            Decimal itemOldTotalFinalValue = itemOldTotalNetValue + itemOldTaxValue;
+                            decimal itemOldDiscountValue = (itemSource.TotalGross * itemSource.Discount / 100);
+                            decimal itemOldTotalNetValue = itemSource.TotalGross - itemOldDiscountValue;
+                            decimal itemOldTaxValue = (itemOldTotalNetValue * itemSource.Vat / 100);
+                            decimal itemOldTotalFinalValue = itemOldTotalNetValue + itemOldTaxValue;
 
                             // Substract Credited Quantity from itemSource
                             itemSource.Quantity -= itemReferences.DocumentDetail.Quantity;
@@ -341,7 +341,7 @@ namespace logicpos.financial.library.App
                         resultAlreadyCredited = GlobalFramework.SessionXpo.ExecuteScalar(sql);
                         totalAlreadyCredited = (resultAlreadyCredited != null) ? Convert.ToDecimal(resultAlreadyCredited) : 0.0m;
 
-                        if (debug) _logger.Debug(String.Format(
+                        if (debug) _logger.Debug(string.Format(
                             "[{0}], Parent: [{1}], CanBeCredited: [{2}], TryToCredit: [{3}], Diference: [{4}]",
                             item.Key.Designation,
                             totalParentDocument,                                                //Total in Parent/SourceDocument

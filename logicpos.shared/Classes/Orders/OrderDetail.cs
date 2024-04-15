@@ -69,7 +69,7 @@ namespace logicpos.shared.Classes.Orders
             Insert(article.Oid, article.Designation, priceProperties);
         }
 
-        public void Insert(Guid pArticleId, String pDesignation, PriceProperties pPriceProperties)
+        public void Insert(Guid pArticleId, string pDesignation, PriceProperties pPriceProperties)
         {
             OrderDetailLine line = new OrderDetailLine(pArticleId, pDesignation, pPriceProperties);
             _lines.Add(line);

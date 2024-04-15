@@ -33,14 +33,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly uint _borderWidth = 5;
         //private Gtk.Style _styleBackground;
         //Assets
-        protected String _fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
-        private readonly String _fileDefaultWindowIconClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png");
-        private readonly String _fileDefaultWindowIconMinimize = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
+        protected string _fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
+        private readonly string _fileDefaultWindowIconClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_close.png");
+        private readonly string _fileDefaultWindowIconMinimize = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
         //Colors
         private readonly System.Drawing.Color _colorBaseDialogTitleBackground = GlobalFramework.Settings["colorBaseDialogTitleBackground"].StringToColor();
         private readonly System.Drawing.Color _colorBaseDialogWindowBackground = GlobalFramework.Settings["colorBaseDialogWindowBackground"].StringToColor();
         private readonly System.Drawing.Color _colorBaseDialogWindowBackgroundBorder = GlobalFramework.Settings["colorBaseDialogWindowBackgroundBorder"].StringToColor();
-        private readonly Boolean _useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
+        private readonly bool _useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
         //Protected Members (Shared for Child Dialogs)
         protected int _dragOffsetX, _dragOffsetY;
         protected Label _labelWindowTitle;        
@@ -56,14 +56,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         protected System.Drawing.Color _colorBaseDialogDefaultButtonBackground = GlobalFramework.Settings["colorBaseDialogDefaultButtonBackground"].StringToColor();
         protected System.Drawing.Color _colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
         protected System.Drawing.Color _colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
-        protected String _fontBaseDialogButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogButton"]);
-        protected String _fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
-        protected String _fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
-        protected String _fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-        protected String _fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-        protected String _fileDemoData = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_demo.png");
+        protected string _fontBaseDialogButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogButton"]);
+        protected string _fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
+        protected string _fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
+        protected string _fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+        protected string _fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+        protected string _fileDemoData = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_demo.png");
         //IN009223 IN009227
-		protected String _fileActionMore = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_nav_new.png");
+		protected string _fileActionMore = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_nav_new.png");
 
         //Public Properties
         protected Window _sourceWindow;
@@ -78,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             get { return _windowMaskBackground; }
             set { _windowMaskBackground = value; }
         }
-        public String WindowTitle
+        public string WindowTitle
         {
             get { return (_labelWindowTitle.Text); }
             set { _labelWindowTitle.Text = value; }
@@ -157,12 +157,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //}
         }
 
-        public void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, String pIcon, String pTitle, System.Drawing.Size pSize, Widget pContent, ActionAreaButtons pActionAreaRightButtons)
+        public void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, string pIcon, string pTitle, System.Drawing.Size pSize, Widget pContent, ActionAreaButtons pActionAreaRightButtons)
         {
             InitObject(pSourceWindow, pDialogFlags, pIcon, pTitle, pSize, pContent, null, pActionAreaRightButtons);
         }
 
-        public void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, String pIcon, String pTitle, System.Drawing.Size pSize, Widget pContent, Widget pActionAreaLeftContent, ActionAreaButtons pActionAreaRightButtons)
+        public void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, string pIcon, string pTitle, System.Drawing.Size pSize, Widget pContent, Widget pActionAreaLeftContent, ActionAreaButtons pActionAreaRightButtons)
         {
             //parameters
             _sourceWindow = pSourceWindow;

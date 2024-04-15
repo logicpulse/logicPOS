@@ -39,24 +39,24 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 /*00*/
                 new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
                 /*01*/
-                new GenericTreeViewColumnProperty("Code") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
+                new GenericTreeViewColumnProperty("Code") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
                 /*02*/
-                new GenericTreeViewColumnProperty("Designation") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("Designation") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
                 /*03*/
-                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
                 /*04*/
-                new GenericTreeViewColumnProperty("Vat") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("Vat") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*05*/
-                new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("Discount") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*06*/
-                new GenericTreeViewColumnProperty("Place") { Type = typeof(String), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_placetable_place") },
+                new GenericTreeViewColumnProperty("Place") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_placetable_place") },
                 //Other Invisible Fields
                 /*07*/
-                new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Visible = false },
+                new GenericTreeViewColumnProperty("Price") { Type = typeof(decimal), Visible = false },
                 /*08*/
-                new GenericTreeViewColumnProperty("Quantity") { Type = typeof(Decimal), Visible = false },
+                new GenericTreeViewColumnProperty("Quantity") { Type = typeof(decimal), Visible = false },
                 /*09*/
-                new GenericTreeViewColumnProperty("UnitMeasure") { Type = typeof(String), Visible = false },
+                new GenericTreeViewColumnProperty("UnitMeasure") { Type = typeof(string), Visible = false },
                 /*10*/
                 new GenericTreeViewColumnProperty("PlaceOid") { Type = typeof(Guid), Visible = false },
                 /*11*/
@@ -102,12 +102,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Add Columns with specific Types From Column Properties
             foreach (GenericTreeViewColumnProperty column in pColumnProperties)
             {
-                dataTableColumnType = (column.Type != null) ? column.Type : typeof(String);
+                dataTableColumnType = (column.Type != null) ? column.Type : typeof(string);
                 resultDataTable.Columns.Add(column.Name, dataTableColumnType);
             }
 
             //Init DataRow
-            System.Object[] dataRow = new System.Object[pColumnProperties.Count];
+            object[] dataRow = new object[pColumnProperties.Count];
 
             //Start Loop
             foreach (var item in articleBag)

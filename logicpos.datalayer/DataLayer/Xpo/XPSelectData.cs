@@ -98,7 +98,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         public string GenMetaCsv(bool pLogOutput = false)
         {
-            string csvOutput = String.Empty;
+            string csvOutput = string.Empty;
 
             foreach (SelectStatementResultRow row in _meta)
                 csvOutput += string.Format("{0}\t{1}\t{2}{3}", row.Values[0], row.Values[1], row.Values[2], Environment.NewLine);
@@ -110,7 +110,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         public string GenDataCsv(bool pLogOutput = false)
         {
-            string csvOutput = String.Empty;
+            string csvOutput = string.Empty;
 
             foreach (SelectStatementResultRow rowFieldNames in _meta)
             {

@@ -33,19 +33,19 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         // Assigned by Childs and Store Properties References
         protected Dictionary<string, PropertyInfo> _encryptedAttributes;
-        private Boolean fDisabled;
-        public Boolean Disabled
+        private bool fDisabled;
+        public bool Disabled
         {
             get { return fDisabled; }
-            set { SetPropertyValue<Boolean>("Disabled", ref fDisabled, value); }
+            set { SetPropertyValue<bool>("Disabled", ref fDisabled, value); }
         }
 
-        private String fNotes;
+        private string fNotes;
         [Size(SizeAttribute.Unlimited)]
-        public String Notes
+        public string Notes
         {
             get { return fNotes; }
-            set { SetPropertyValue<String>("Notes", ref fNotes, value); }
+            set { SetPropertyValue<string>("Notes", ref fNotes, value); }
         }
 
         private DateTime fCreatedAt;

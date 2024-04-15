@@ -20,8 +20,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Size _sizePosUserButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosUserButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private readonly String _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
-        private readonly String _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
+        private readonly string _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
+        private readonly string _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
 
         //Private Gui Members
         private readonly Fixed _fixedContent;
@@ -41,9 +41,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_user");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_change_user");
             Size windowSize = new Size(559, 562);
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
 
             //Init Content
             _fixedContent = new Fixed();
@@ -84,7 +84,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             hboxPlaceScrollers.PackStart(buttonPosScrollersPlaceNext);
 
             //TablePad Places
-            String sqlUsers = @"SELECT Oid as id, Name as name, NULL as label, NULL as image FROM sys_userdetail WHERE (Disabled IS NULL or Disabled  <> 1)";
+            string sqlUsers = @"SELECT Oid as id, Name as name, NULL as label, NULL as image FROM sys_userdetail WHERE (Disabled IS NULL or Disabled  <> 1)";
             _tablePadUsers = new TablePadUser(
                 sqlUsers, 
                 "ORDER BY Ord", 

@@ -716,7 +716,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         article.Designation = $"{article.Designation} [{parkingTicketResult.Minutes} min.] [{parkingTicketResult.Ean}]";
                         article.Notes = $"[{ean}] {parkingTicketResult.Description}";/* IN009239 */
                         article.DefaultQuantity = Convert.ToInt32(parkingTicketResult.Quantity);
-                        GlobalApp.WindowPos.UpdateWorkSessionUI();
+                        GlobalApp.PosMainWindow.UpdateWorkSessionUI();
                     }
                     else
                     {
@@ -941,7 +941,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         _currentOrderDetails.Insert(article.Oid, article.Designation, priceProperties);
 
                         //Insert into TreeView Model : [0]ArticleId,[1]Designation,[2]Price,[3]Quantity,[4]Discount,[5]Vat,[6]Total
-                        System.Object[] columnValues = new System.Object[Enum.GetNames(typeof(TicketListColumns)).Length];
+                        object[] columnValues = new object[Enum.GetNames(typeof(TicketListColumns)).Length];
                         columnValues[0] = article.Oid;
                         columnValues[1] = article.Designation;
                         columnValues[2] = FrameworkUtils.DecimalToString(_currentOrderDetails.Lines[_currentOrderDetails.Lines.Count - 1].Properties.PriceFinal);

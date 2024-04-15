@@ -81,7 +81,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printer
                 string externalApp = "ConsoleApplication.exe";//SettingsApp.ExecutableReports
                 //Filename
                 Guid guidParameter = Guid.NewGuid();
-                String fileName = string.Format("{0}{1}.tob", GlobalFramework.Path["temp"].ToString(), guidParameter.ToString());
+                string fileName = string.Format("{0}{1}.tob", GlobalFramework.Path["temp"].ToString(), guidParameter.ToString());
                 JsonSerialization.WriteToJsonFile<PrintTransportObject>(fileName, pTransportObject);
                 //Call External Application
                 FrameworkUtils.ExecuteExternalProcess(externalApp, string.Format("printpreview {0}", fileName));

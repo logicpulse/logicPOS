@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //EventHandlers
         public EventHandler Clicked { get; set; }
 
-        public AccordionNode(String pLabel, bool pSensitve = true)
+        public AccordionNode(string pLabel, bool pSensitve = true)
         {
             Label = pLabel;
             Sensitive = pSensitve;
@@ -32,7 +32,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public bool Active { get; set; }
         public VBox ChildBox { get; set; }
 
-        public AccordionParentButton(String pLabel)
+        public AccordionParentButton(string pLabel)
             : base(pLabel)
         {
             //Redimensionar altura do botão Parent do accordion para 1024
@@ -74,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public string ExternalAppFileName { get; set; }
         public VBox ChildbuttonBox { get; set; }
 
-        public AccordionChildButton(String pLabel)
+        public AccordionChildButton(string pLabel)
             : base(pLabel)
         {
             if (GlobalApp.boScreenSize.Height <= 800)
@@ -352,10 +352,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             System.Drawing.Color colInsensitive = colNormal.Darken();
             System.Drawing.Color colSelected = System.Drawing.Color.FromArgb(125, 0, 0);
 
-            String _fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
-            String _fontPosBackOfficeChild = GlobalFramework.Settings["fontPosBackOfficeChild"];
-            String _fontPosBackOfficeParentLowRes = GlobalFramework.Settings["fontPosBackOfficeParentLowRes"];
-            String _fontPosBackOfficeChildLowRes = GlobalFramework.Settings["fontPosBackOfficeChildLowRes"];
+            string _fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
+            string _fontPosBackOfficeChild = GlobalFramework.Settings["fontPosBackOfficeChild"];
+            string _fontPosBackOfficeParentLowRes = GlobalFramework.Settings["fontPosBackOfficeParentLowRes"];
+            string _fontPosBackOfficeChildLowRes = GlobalFramework.Settings["fontPosBackOfficeChildLowRes"];
 
             Pango.FontDescription fontPosBackOfficeparentLowRes = Pango.FontDescription.FromString(_fontPosBackOfficeParentLowRes);
             Pango.FontDescription fontPosBackOfficeParent = Pango.FontDescription.FromString(_fontPosBackOfficeParent);

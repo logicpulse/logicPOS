@@ -5,8 +5,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Customers
     [FRBO(Entity = "erp_customer")]
     public class FRBOCustomer : FRBOBaseObject
     {
-        public UInt32 Ord { get; set; }
-        public UInt32 Code { get; set; }
+        public uint Ord { get; set; }
+        public uint Code { get; set; }
         public string CodeInternal { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
@@ -29,7 +29,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Customers
         public decimal CurrentBalance { get; set; }
         public string CreditLine { get; set; }
         public string Remarks { get; set; }
-        public Boolean Supplier { get; set; }
-        public Boolean Hidden { get; set; }
+        public bool Supplier { get; set; }
+        public bool Hidden { get; set; }
     }
 }

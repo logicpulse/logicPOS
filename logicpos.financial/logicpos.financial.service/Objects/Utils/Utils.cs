@@ -181,9 +181,9 @@ namespace logicpos.financial.service.Objects
                 var elReference = itm.Element(d + "bookingReference").Value;
                 var elPrice = itm.Element(d + "price").Value;
 
-                _logger.Debug(String.Format("elStatus: [{0}]", elStatus));
-                _logger.Debug(String.Format("elReference: [{0}]", elReference));
-                _logger.Debug(String.Format("elPrice: [{0}]", elPrice));
+                _logger.Debug(string.Format("elStatus: [{0}]", elStatus));
+                _logger.Debug(string.Format("elReference: [{0}]", elReference));
+                _logger.Debug(string.Format("elPrice: [{0}]", elPrice));
 
                 Console.WriteLine(elStatus);
                 Console.WriteLine(elReference);

@@ -16,15 +16,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationprinterstemplates), "Code");
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
-        public UInt32 Code
+        private uint fCode;
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -45,18 +45,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FileTemplate", ref fFileTemplate, value); }
         }
 
-        private Boolean fFinancialTemplate;
-        public Boolean FinancialTemplate
+        private bool fFinancialTemplate;
+        public bool FinancialTemplate
         {
             get { return fFinancialTemplate; }
-            set { SetPropertyValue<Boolean>("FinancialTemplate", ref fFinancialTemplate, value); }
+            set { SetPropertyValue<bool>("FinancialTemplate", ref fFinancialTemplate, value); }
         }
 
-        private Boolean fIsBarCode;
-        public Boolean IsBarCode
+        private bool fIsBarCode;
+        public bool IsBarCode
         {
             get { return fIsBarCode; }
-            set { SetPropertyValue<Boolean>("IsBarCode", ref fIsBarCode, value); }
+            set { SetPropertyValue<bool>("IsBarCode", ref fIsBarCode, value); }
         }
 
 

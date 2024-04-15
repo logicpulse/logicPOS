@@ -70,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (currentDocumentFinanceYear != null)
                 {
                     ResponseType responseType = logicpos.Utils.ShowMessageTouch(
-                        GlobalApp.WindowStartup,
+                        GlobalApp.StartupWindow,
                         DialogFlags.Modal,
                         new Size(600, 400),
                         MessageType.Question,

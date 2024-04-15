@@ -9,12 +9,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
     {
         private Color _buttonColor;
 
-        public TouchButtonUser(String pName)
+        public TouchButtonUser(string pName)
             : base(pName)
         {
         }
 
-        public TouchButtonUser(String pName, Color pColor, String pLabelText, String pFont, int pWidth, int pHeight, Boolean pLogged)
+        public TouchButtonUser(string pName, Color pColor, string pLabelText, string pFont, int pWidth, int pHeight, bool pLogged)
             : base(pName)
         {
             _buttonColor = pColor;
@@ -22,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             base.InitObject(pName, _buttonColor, _widget, pWidth, pHeight);
         }
 
-        public void InitObject(String pName, String pLabelText, String pFont, Boolean pLogged)
+        public void InitObject(string pName, string pLabelText, string pFont, bool pLogged)
         {
             _label = new Label(pLabelText);
             _widget = _label;

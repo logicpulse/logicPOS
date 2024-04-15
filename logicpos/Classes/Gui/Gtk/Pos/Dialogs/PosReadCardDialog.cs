@@ -18,8 +18,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly TouchButtonIconWithText _buttonCancel;
         private readonly EntryBoxValidation _entryBoxMovementDescription;
 
-        private String _cardNumber;
-        public String CardNumber
+        private string _cardNumber;
+        public string CardNumber
         {
             get { return _cardNumber; }
             set { _cardNumber = value; }
@@ -29,12 +29,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Settings
-            String regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
+            string regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
 
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_readcard");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_readcard");
             Size windowSize = new Size(462, 320);//400 With Other Payments
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_read_card.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_read_card.png");
 
             //EntryDescription
             _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);

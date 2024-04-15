@@ -9,8 +9,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public pos_worksessionperiodtotal() : base() { }
         public pos_worksessionperiodtotal(Session session) : base(session) { }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }

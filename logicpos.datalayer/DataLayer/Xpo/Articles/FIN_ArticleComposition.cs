@@ -45,11 +45,11 @@ namespace logicpos.datalayer.DataLayer.Xpo.Articles
         //}
 
 
-        private Decimal fQuantity;
-        public Decimal Quantity
+        private decimal fQuantity;
+        public decimal Quantity
         {
             get { return fQuantity; }
-            set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
+            set { SetPropertyValue<decimal>("Quantity", ref fQuantity, value); }
         }
 
         //Guid fArticleChild;

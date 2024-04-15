@@ -17,16 +17,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinancetype), "Code");
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         [Indexed(Unique = true)]
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -48,11 +48,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Acronym", ref fAcronym, value); }
         }
 
-        private Int32 fAcronymLastSerie;
-        public Int32 AcronymLastSerie
+        private int fAcronymLastSerie;
+        public int AcronymLastSerie
         {
             get { return fAcronymLastSerie; }
-            set { SetPropertyValue<Int32>("AcronymLastSerie", ref fAcronymLastSerie, value); }
+            set { SetPropertyValue<int>("AcronymLastSerie", ref fAcronymLastSerie, value); }
         }
 
         private string fResourceString;
@@ -70,77 +70,77 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Default Value when create new DocumentMaster
-        private Boolean fPayed;
-        public Boolean Payed
+        private bool fPayed;
+        public bool Payed
         {
             get { return fPayed; }
-            set { SetPropertyValue<Boolean>("Payed", ref fPayed, value); }
+            set { SetPropertyValue<bool>("Payed", ref fPayed, value); }
         }
 
-        private Boolean fCredit;
-        public Boolean Credit
+        private bool fCredit;
+        public bool Credit
         {
             get { return fCredit; }
-            set { SetPropertyValue<Boolean>("Credit", ref fCredit, value); }
+            set { SetPropertyValue<bool>("Credit", ref fCredit, value); }
         }
 
-        private Int32 fCreditDebit;
-        public Int32 CreditDebit
+        private int fCreditDebit;
+        public int CreditDebit
         {
             get { return fCreditDebit; }
-            set { SetPropertyValue<Int32>("CreditDebit", ref fCreditDebit, value); }
+            set { SetPropertyValue<int>("CreditDebit", ref fCreditDebit, value); }
         }
 
         //Number of Copies to Print, ex 2, Generate Original, Duplicate, Note: this is not the number of copies to print in document
-        private Int32 fPrintCopies;
-        public Int32 PrintCopies
+        private int fPrintCopies;
+        public int PrintCopies
         {
             get { return fPrintCopies; }
-            set { SetPropertyValue<Int32>("PrintCopies", ref fPrintCopies, value); }
+            set { SetPropertyValue<int>("PrintCopies", ref fPrintCopies, value); }
         }
 
-        private Boolean fPrintRequestMotive;
-        public Boolean PrintRequestMotive
+        private bool fPrintRequestMotive;
+        public bool PrintRequestMotive
         {
             get { return fPrintRequestMotive; }
-            set { SetPropertyValue<Boolean>("PrintRequestMotive", ref fPrintRequestMotive, value); }
+            set { SetPropertyValue<bool>("PrintRequestMotive", ref fPrintRequestMotive, value); }
         }
 
-        private Boolean fPrintRequestConfirmation;
-        public Boolean PrintRequestConfirmation
+        private bool fPrintRequestConfirmation;
+        public bool PrintRequestConfirmation
         {
             get { return fPrintRequestConfirmation; }
-            set { SetPropertyValue<Boolean>("PrintRequestConfirmation", ref fPrintRequestConfirmation, value); }
+            set { SetPropertyValue<bool>("PrintRequestConfirmation", ref fPrintRequestConfirmation, value); }
         }
 
-        private Boolean fPrintOpenDrawer;
-        public Boolean PrintOpenDrawer
+        private bool fPrintOpenDrawer;
+        public bool PrintOpenDrawer
         {
             get { return fPrintOpenDrawer; }
-            set { SetPropertyValue<Boolean>("PrintOpenDrawer", ref fPrintOpenDrawer, value); }
+            set { SetPropertyValue<bool>("PrintOpenDrawer", ref fPrintOpenDrawer, value); }
         }
 
-        private Boolean fWayBill;
-        public Boolean WayBill
+        private bool fWayBill;
+        public bool WayBill
         {
             get { return fWayBill; }
-            set { SetPropertyValue<Boolean>("WayBill", ref fWayBill, value); }
+            set { SetPropertyValue<bool>("WayBill", ref fWayBill, value); }
         }
 
         //Valid AT WebService Document
-        private Boolean fWsAtDocument;
-        public Boolean WsAtDocument
+        private bool fWsAtDocument;
+        public bool WsAtDocument
         {
             get { return fWsAtDocument; }
-            set { SetPropertyValue<Boolean>("WsAtDocument", ref fWsAtDocument, value); }
+            set { SetPropertyValue<bool>("WsAtDocument", ref fWsAtDocument, value); }
         }
 
         //SAF-T PT:Is a SAF-T PT Audit Financial Document
-        private Boolean fSaftAuditFile;
-        public Boolean SaftAuditFile
+        private bool fSaftAuditFile;
+        public bool SaftAuditFile
         {
             get { return fSaftAuditFile; }
-            set { SetPropertyValue<Boolean>("SaftAuditFile", ref fSaftAuditFile, value); }
+            set { SetPropertyValue<bool>("SaftAuditFile", ref fSaftAuditFile, value); }
         }
 
         //SAF-T PT: SaftDocumentType: SalesInvoices, WorkingDocuments or MovementOfGoods

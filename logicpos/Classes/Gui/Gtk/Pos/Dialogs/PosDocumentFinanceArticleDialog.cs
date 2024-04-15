@@ -109,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _documentFinanceType = ((_sourceWindow as PosDocumentFinanceDialog).PagePad.Pages[0] as DocumentFinanceDialogPage1).EntryBoxSelectDocumentFinanceType.Value;
 
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_insert_articles");
             //Get Default System Currency
             _currencyDefaultSystem = SettingsApp.ConfigurationSystemCurrency;
             //Consignation Invoice default values
@@ -119,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //TODO:THEME
             _windowSize = new Size(900, 360);
 
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_finance_article.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_finance_article.png");
 
             //Get Discount from Select Customer
             _discountGlobal = FrameworkUtils.StringToDecimal(((pSourceWindow as PosDocumentFinanceDialog).PagePad.Pages[1] as DocumentFinanceDialogPage2).EntryBoxCustomerDiscount.EntryValidation.Text);

@@ -61,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         
         /// <summary>Constructor</summary>
         /// Note: DefaultColumnProperty Never used in Code
-        public GenericTreeViewColumnProperty(String pFieldName, GenericTreeViewColumnProperty pDefaultColumnProperty = null)
+        public GenericTreeViewColumnProperty(string pFieldName, GenericTreeViewColumnProperty pDefaultColumnProperty = null)
         {
             //Parameters
             Name = pFieldName;
@@ -116,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         }
 
         // Detect Field Name and Assign Automatic Properties like Field Code
-        public void InitDefaultPropertiesByFieldName(String pProperty)
+        public void InitDefaultPropertiesByFieldName(string pProperty)
         {
             switch (pProperty)
             {
@@ -193,7 +193,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Add Columns with specific Types From Column Properties
             foreach (GenericTreeViewColumnProperty column in pColumnProperties)
             {
-                Type dataTableColumnType = (column.Type != null) ? column.Type : typeof(String);
+                Type dataTableColumnType = (column.Type != null) ? column.Type : typeof(string);
                 resultDataTable.Columns.Add(column.Name, dataTableColumnType);
             }
 

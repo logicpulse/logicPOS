@@ -32,8 +32,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_template");
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_template");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
             _windowSize = new Size(595, 740);
 
             //Init VBox
@@ -194,7 +194,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Required = true;
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Validate();
-            _logger.Debug(String.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
+            _logger.Debug(string.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
         }
 
         private void customButton2_Clicked(object sender, EventArgs e)
@@ -204,7 +204,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Required = false;
             _xPOEntryBoxSelectRecordValidationTextMode.EntryValidation.Validate();
-            _logger.Debug(String.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
+            _logger.Debug(string.Format("Validated: [{0}]", _entryBoxValidationCustomButton1.EntryValidation.Validated));
         }
 
 

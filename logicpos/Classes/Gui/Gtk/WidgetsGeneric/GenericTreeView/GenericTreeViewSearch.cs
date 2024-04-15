@@ -29,7 +29,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         private Window _sourceWindow;
         private TreeView _treeView;
         private List<GenericTreeViewColumnProperty> _columnProperties;
-        private readonly Boolean _isCaseSensitivity = false;
+        private readonly bool _isCaseSensitivity = false;
         //UI
         private EntryBoxValidation _entryBoxSearchCriteria;
 
@@ -88,14 +88,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         private void InitUI(bool showFilterAndMoreButtons)
         {
             //Settings
-            String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
+            string fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
             Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
             Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault;
             Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
             //WIP: String fileIconSearchAdvanced = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_search_advanced.png");
-            
-            String regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
+
+            string regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
 
             //SearchCriteria
             _entryBoxSearchCriteria = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewsearch_search_label"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
@@ -137,8 +137,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 TouchButtonIconWithText buttonMore;
                 TouchButtonIconWithText buttonFilter;
 
-                String fileActionMore = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_more.png");
-                String fileActionFilter = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_filter.png");
+                string fileActionMore = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_more.png");
+                string fileActionFilter = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_filter.png");
                 buttonMore = new TouchButtonIconWithText("touchButtonSearchAdvanced_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_more"), ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, fileActionMore, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height) { Sensitive = true };
                 buttonFilter = new TouchButtonIconWithText("touchButtonSearchAdvanced_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter"), ExpressionEvaluatorExtended.fontDocumentsSizeDefault, colorBaseDialogActionAreaButtonFont, fileActionFilter, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height) { Sensitive = true };
 

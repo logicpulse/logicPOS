@@ -6,7 +6,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
     public class VirtualKey
     {
-        public String Type { get; set; }
+        public string Type { get; set; }
         public int RowIndex { get; set; }
         public int ColIndex { get; set; }
         public VirtualKeyProperties L1 { get; set; }

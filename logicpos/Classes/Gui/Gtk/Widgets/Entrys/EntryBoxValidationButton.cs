@@ -21,7 +21,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             set { _button = value; }
         }
 
-        public EntryBoxValidationButton(Window pSourceWindow, String pLabelText, KeyboardMode pKeyboardMode, string pRule, bool pRequired, string pIconFile = "", bool pBOSource = false)
+        public EntryBoxValidationButton(Window pSourceWindow, string pLabelText, KeyboardMode pKeyboardMode, string pRule, bool pRequired, string pIconFile = "", bool pBOSource = false)
             : base(pSourceWindow, pLabelText, pBOSource)
         {
             //Settings

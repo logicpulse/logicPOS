@@ -6,14 +6,14 @@ namespace logicpos.financial.library.Classes.Utils
 {
     public class ProtectedFile
     {
-        private string _md5 = String.Empty;
+        private string _md5 = string.Empty;
         public string Md5
         {
             get { return _md5; }
             set { _md5 = value; }
         }
 
-        private string _md5Salted = String.Empty;
+        private string _md5Salted = string.Empty;
         public string Md5Encrypted
         {
             get { return _md5Salted; }

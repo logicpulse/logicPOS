@@ -16,9 +16,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = string.Format("{0} : {1} #{2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_place_table"), pTable);
+            string windowTitle = string.Format("{0} : {1} #{2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_place_table"), pTable);
             Size windowSize = new Size(429, 205);//618 (3buts)
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_orders.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_orders.png");
 
             Size sizeIcon = new Size(50, 50);
             int buttonWidth = 162;
@@ -26,8 +26,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             uint tablePadding = 15;
 
             //Icons
-            String fileIconListOrders = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_ticketpad_orderlist.png");
-            String fileIconPrintOrder = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_print.png");
+            string fileIconListOrders = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_ticketpad_orderlist.png");
+            string fileIconPrintOrder = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_print.png");
             //String fileIconListFinanceDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
 
             //Buttons

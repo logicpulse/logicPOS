@@ -238,7 +238,7 @@ namespace logicpos
                 catch (Exception ex)
                 {
                     log.Error(ex.Message, ex);
-                    Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(GlobalApp.WindowStartup, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
+                    Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(GlobalApp.StartupWindow, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                 }
 
                 int posMainWindowComponentsMargin = Convert.ToInt16(GlobalFramework.Settings["intPosMainWindowComponentsMargin"]);

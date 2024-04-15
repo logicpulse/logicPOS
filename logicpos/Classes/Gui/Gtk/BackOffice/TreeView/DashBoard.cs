@@ -94,10 +94,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         protected Color _colorBaseDialogActionAreaButtonFont = ("0, 0, 0").StringToColor();
         protected Color _colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
         //protected String _fontBaseDialogButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogButton"]);
-        protected String _fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
-        protected String _fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
-        protected String _fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-        protected String _fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+        protected string _fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
+        protected string _fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
+        protected string _fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+        protected string _fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
 
         //Colors
         private readonly Color colorBackOfficeContentBackground = GlobalFramework.Settings["colorBackOfficeContentBackground"].StringToColor();
@@ -138,25 +138,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             DateTime datenow = new DateTime();
 
             //Icons dos botões do dashboard
-            String _fileFiscalYearIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_configurations.png");
-            String _fileInsertFiscalYear = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_fiscal_year.png");
-            String _fileInsertIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_printer.png");
-            String _fileTerminalsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_terminals.png");
+            string _fileFiscalYearIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_configurations.png");
+            string _fileInsertFiscalYear = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_fiscal_year.png");
+            string _fileInsertIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_printer.png");
+            string _fileTerminalsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_terminals.png");
 
-            String _fileArticlesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_articles.png");
-            String _fileCostumersIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_costumers.png");
-            String _fileEmployeesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_employees.png");
-            String _fileOtherTablesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
+            string _fileArticlesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_articles.png");
+            string _fileCostumersIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_costumers.png");
+            string _fileEmployeesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_employees.png");
+            string _fileOtherTablesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
 
-            String _fileDocumentsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents.png");
-            String _fileNewDocumentIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
-            String _filePayedDocumentsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
-            String _fileInsertMerchIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_merch.png");
+            string _fileDocumentsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents.png");
+            string _fileNewDocumentIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
+            string _filePayedDocumentsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
+            string _fileInsertMerchIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_merch.png");
 
-            String _fileReportsMenuIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports.png");
-            String _fileReportsTotalIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_report.png");
-            String _fileReportsClientsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_client.png");
-            String _fileReportsDayIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_day.png");
+            string _fileReportsMenuIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports.png");
+            string _fileReportsTotalIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_report.png");
+            string _fileReportsClientsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_client.png");
+            string _fileReportsDayIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_day.png");
 
             //Tamanho dos Icons e da Font do Texto dos botões
             Size sizeIcon = new Size(35, 35);
@@ -229,16 +229,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
                 //Actions Configurações
-                botao1.Clicked += delegate { botao1.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao1, null); };
-                botao2.Clicked += delegate { botao2.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao2, null); };
-                botao3.Clicked += delegate { botao3.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao3, null); };
-                botao4.Clicked += delegate { botao4.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao4, null); };
+                botao1.Clicked += delegate { botao1.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao1, null); };
+                botao2.Clicked += delegate { botao2.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao2, null); };
+                botao3.Clicked += delegate { botao3.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao3, null); };
+                botao4.Clicked += delegate { botao4.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao4, null); };
 
                 //Actions Tabelas
-                botao5.Clicked += delegate { botao5.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao5, null); };
-                botao6.Clicked += delegate { botao6.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao6, null); };
-                botao7.Clicked += delegate { botao7.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao7, null); };
-                botao8.Clicked += delegate { botao8.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(pSourceWindow); GlobalApp.WindowBackOffice._dashboardButton_Clicked(botao8, null); };
+                botao5.Clicked += delegate { botao5.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao5, null); };
+                botao6.Clicked += delegate { botao6.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao6, null); };
+                botao7.Clicked += delegate { botao7.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao7, null); };
+                botao8.Clicked += delegate { botao8.Content = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(pSourceWindow); GlobalApp.BackOfficeMainWindow._dashboardButton_Clicked(botao8, null); };
 
                 //Actions Documents
                 botao9.Clicked += delegate { logicpos.Utils.startDocumentsMenuFromBackOffice(pSourceWindow, 0); };

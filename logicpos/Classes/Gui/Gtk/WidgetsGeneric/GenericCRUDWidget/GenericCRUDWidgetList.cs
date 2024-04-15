@@ -117,8 +117,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public bool ValidateRecord()
         {
             bool result = true;
-            String currentFieldLabel;
-            String invalidFields = string.Empty;
+            string currentFieldLabel;
+            string invalidFields = string.Empty;
 
             //Fire Event
             OnBeforeValidate();
@@ -170,7 +170,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = logicpos.Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_validation_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error"), invalidFields));
+                ResponseType response = logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_validation_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error"), invalidFields));
             };
 
             return result;
@@ -217,7 +217,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             modified = Modified(item.GetMemberValue(), (item.Widget as Entry).Text, item.FieldType, item.FieldName);
                             if (modified)
                             {
-                                if (!String.IsNullOrEmpty((item.Widget as Entry).Text))
+                                if (!string.IsNullOrEmpty((item.Widget as Entry).Text))
                                 {
                                     item.SetMemberValue(Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, GlobalFramework.CurrentCultureNumberFormat));
                                 }
@@ -236,7 +236,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             modified = Modified(item.GetMemberValue(), (item.Widget as TextView).Buffer.Text, item.FieldType);
                             if (modified)
                             {
-                                if (!String.IsNullOrEmpty((item.Widget as TextView).Buffer.Text))
+                                if (!string.IsNullOrEmpty((item.Widget as TextView).Buffer.Text))
                                 {
                                     item.SetMemberValue(Convert.ChangeType((item.Widget as TextView).Buffer.Text, item.FieldType));
                                 }
@@ -253,7 +253,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             modified = Modified(item.GetMemberValue(), (item.Widget as EntryMultiline).Value.Text, item.FieldType);
                             if (modified)
                             {
-                                if (!String.IsNullOrEmpty((item.Widget as EntryMultiline).Value.Text))
+                                if (!string.IsNullOrEmpty((item.Widget as EntryMultiline).Value.Text))
                                 {
                                     item.SetMemberValue(Convert.ChangeType((item.Widget as EntryMultiline).Value.Text, item.FieldType));
                                 }
@@ -288,7 +288,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         //FileChooserButton
                         else if (item.Widget.GetType() == typeof(FileChooserButton))
                         {
-                            String relativeFilename = (String)Convert.ChangeType((item.Widget as FileChooserButton).Filename, item.FieldType);
+                            string relativeFilename = (string)Convert.ChangeType((item.Widget as FileChooserButton).Filename, item.FieldType);
                             /* ERR201810#15 - Database backup issues */
                             //if (relativeFilename != null) relativeFilename = FrameworkUtils.RelativePath(relativeFilename);
                             modified = Modified(item.GetMemberValue(), relativeFilename, item.FieldType);
@@ -304,7 +304,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             modified = Modified(item.GetMemberValue(), (item.Widget as EntryBoxValidation).EntryValidation.Text, item.FieldType, item.FieldName);
                             if (modified)
                             {
-                                if (!String.IsNullOrEmpty((item.Widget as EntryBoxValidation).EntryValidation.Text))
+                                if (!string.IsNullOrEmpty((item.Widget as EntryBoxValidation).EntryValidation.Text))
                                 {
                                     //_logger.Debug(string.Format("Message1: [{0}/{1}/{2}/{3}]", item.FieldType, item.FieldName, (item.Widget as EntryBoxValidation).EntryValidation.Text, GlobalFramework.CurrentCultureNumberFormat));
                                     //Extra protection to convert string to Decimal, else may occur errors when work with en-US
@@ -424,7 +424,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                logicpos.Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                logicpos.Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                 result = false;
             }
 

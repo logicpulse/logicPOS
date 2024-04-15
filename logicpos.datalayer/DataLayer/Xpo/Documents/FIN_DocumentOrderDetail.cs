@@ -16,8 +16,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyearserieterminal), "Code").ToString();
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
@@ -38,11 +38,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        private Decimal fQuantity;
-        public Decimal Quantity
+        private decimal fQuantity;
+        public decimal Quantity
         {
             get { return fQuantity; }
-            set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
+            set { SetPropertyValue<decimal>("Quantity", ref fQuantity, value); }
         }
 
         private string fUnitMeasure;
@@ -53,18 +53,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("UnitMeasure", ref fUnitMeasure, value); }
         }
 
-        private Decimal fPrice;
-        public Decimal Price
+        private decimal fPrice;
+        public decimal Price
         {
             get { return fPrice; }
-            set { SetPropertyValue<Decimal>("Price", ref fPrice, value); }
+            set { SetPropertyValue<decimal>("Price", ref fPrice, value); }
         }
 
-        private Decimal fDiscount;
-        public Decimal Discount
+        private decimal fDiscount;
+        public decimal Discount
         {
             get { return fDiscount; }
-            set { SetPropertyValue<Decimal>("Discount", ref fDiscount, value); }
+            set { SetPropertyValue<decimal>("Discount", ref fDiscount, value); }
         }
 
         //Decimal fDiscountGlobal;
@@ -74,11 +74,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
         //  set { SetPropertyValue<Decimal>("DiscountGlobal", ref fDiscountGlobal, value); }
         //}
 
-        private Decimal fVat;
-        public Decimal Vat
+        private decimal fVat;
+        public decimal Vat
         {
             get { return fVat; }
-            set { SetPropertyValue<Decimal>("Vat", ref fVat, value); }
+            set { SetPropertyValue<decimal>("Vat", ref fVat, value); }
         }
 
         private Guid fVatExemptionReason;
@@ -88,32 +88,32 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<Guid>("VatExemptionReason", ref fVatExemptionReason, value); }
         }
 
-        private Decimal fTotalGross;
-        public Decimal TotalGross
+        private decimal fTotalGross;
+        public decimal TotalGross
         {
             get { return fTotalGross; }
-            set { SetPropertyValue<Decimal>("TotalGross", ref fTotalGross, value); }
+            set { SetPropertyValue<decimal>("TotalGross", ref fTotalGross, value); }
         }
 
-        private Decimal fTotalDiscount;
-        public Decimal TotalDiscount
+        private decimal fTotalDiscount;
+        public decimal TotalDiscount
         {
             get { return fTotalDiscount; }
-            set { SetPropertyValue<Decimal>("TotalDiscount", ref fTotalDiscount, value); }
+            set { SetPropertyValue<decimal>("TotalDiscount", ref fTotalDiscount, value); }
         }
 
-        private Decimal fTotalTax;
-        public Decimal TotalTax
+        private decimal fTotalTax;
+        public decimal TotalTax
         {
             get { return fTotalTax; }
-            set { SetPropertyValue<Decimal>("TotalTax", ref fTotalTax, value); }
+            set { SetPropertyValue<decimal>("TotalTax", ref fTotalTax, value); }
         }
 
-        private Decimal fTotalFinal;
-        public Decimal TotalFinal
+        private decimal fTotalFinal;
+        public decimal TotalFinal
         {
             get { return fTotalFinal; }
-            set { SetPropertyValue<Decimal>("TotalFinal", ref fTotalFinal, value); }
+            set { SetPropertyValue<decimal>("TotalFinal", ref fTotalFinal, value); }
         }
 
         private string fToken1;

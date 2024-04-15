@@ -30,7 +30,7 @@ namespace logicpos.datalayer.App
             catch (Exception ex)
             {
                 /* IN009036 */
-                _logger.Error(String.Format("AppOperationMode GetAppMode() :: [{0}]: {1}", appOperationModeToken, ex.Message));
+                _logger.Error(string.Format("AppOperationMode GetAppMode() :: [{0}]: {1}", appOperationModeToken, ex.Message));
             }
 
             return result;
@@ -129,7 +129,7 @@ namespace logicpos.datalayer.App
 
         public static DateTime CurrentDateTimeAtomic()
         {
-            String sql = String.Empty;
+            string sql = string.Empty;
             var result = new DateTime();
 
             switch (GlobalFramework.DatabaseType)
@@ -148,7 +148,7 @@ namespace logicpos.datalayer.App
                     break;
             }
 
-            if (sql != String.Empty)
+            if (sql != string.Empty)
             {
                 try
                 {

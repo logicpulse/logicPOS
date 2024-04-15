@@ -105,7 +105,7 @@ namespace logicpos
         }
 
         //Constructor
-        public PosMainWindow(String pBackgroundImage)
+        public PosMainWindow(string pBackgroundImage)
             : base(pBackgroundImage)
         {
             try
@@ -509,7 +509,7 @@ namespace logicpos
             TablePadFamilyButtonNext.BorderWidth = 0;
             TablePadFamilyButtonNext.CanFocus = false;
             //Objects:TablePadFamily
-            String sqlTablePadFamily = @"
+            string sqlTablePadFamily = @"
                 SELECT 
                     Oid as id, Designation as name, ButtonLabel as label, ButtonImage as image,
                     (SELECT COUNT(*) as childs FROM fin_articlesubfamily WHERE (Disabled IS NULL or Disabled  <> 1) AND Family = p.Oid) as childs
@@ -554,7 +554,7 @@ namespace logicpos
             TablePadSubFamilyButtonNext.BorderWidth = 0;
             TablePadSubFamilyButtonNext.CanFocus = false;
             //Objects:TablePadSubFamily
-            String sqlTablePadSubFamily = @"
+            string sqlTablePadSubFamily = @"
                 SELECT 
                     Oid as id, Designation as name, ButtonLabel as label, ButtonImage as image,
                     (SELECT COUNT(*) as childs FROM fin_article WHERE (Disabled IS NULL or Disabled  <> 1) AND SubFamily = p.Oid) as childs
@@ -563,7 +563,7 @@ namespace logicpos
                 WHERE 
                     (Disabled IS NULL or Disabled <> 1)
             ";
-            String filterTablePadSubFamily = " AND (Family = '" + TablePadFamily.SelectedButtonOid + "')";
+            string filterTablePadSubFamily = " AND (Family = '" + TablePadFamily.SelectedButtonOid + "')";
             _tablePadSubFamily = new TablePad(
                 sqlTablePadSubFamily,
                 "ORDER BY Ord",
@@ -600,7 +600,7 @@ namespace logicpos
             TablePadArticleButtonNext.BorderWidth = 0;
             TablePadArticleButtonNext.CanFocus = false;
             //Objects:TablePadArticle
-            String sql = @"
+            string sql = @"
                 SELECT 
                     Oid as id, Designation as name, ButtonLabel as label, ButtonImage as image, Price1 as price, ButtonLabelHide 
                 FROM 
@@ -608,7 +608,7 @@ namespace logicpos
                 WHERE 
                     (Disabled IS NULL or Disabled <> 1)
             ";
-            String filterTablePadArticle = " AND (SubFamily = '" + TablePadSubFamily.SelectedButtonOid + "')";
+            string filterTablePadArticle = " AND (SubFamily = '" + TablePadSubFamily.SelectedButtonOid + "')";
             _tablePadArticle = new TablePadArticle(
                 sql,
                 "ORDER BY Ord",

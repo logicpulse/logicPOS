@@ -16,15 +16,15 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(rpt_reporttype), "Code");
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
-        public UInt32 Code
+        private uint fCode;
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }

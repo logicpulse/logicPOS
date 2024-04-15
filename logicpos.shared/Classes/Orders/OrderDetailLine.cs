@@ -38,7 +38,7 @@ namespace logicpos.shared.Classes.Orders
         }
 
         //public OrderDetailLine(Guid pArticleOid, String pDesignation, decimal pQnt, decimal pPrice, decimal pDiscount, decimal pVat, bool pHasPrice, bool pPriceWithVAT)
-        public OrderDetailLine(Guid pArticleOid, String pDesignation, PriceProperties pPriceProperties)
+        public OrderDetailLine(Guid pArticleOid, string pDesignation, PriceProperties pPriceProperties)
         {
             _articleOid = pArticleOid;
             _designation = pDesignation;

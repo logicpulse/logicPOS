@@ -528,7 +528,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
                         logicpos.Utils.ShowMessageTouch(
-                            GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
                             resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_table_is_not_free")
                         );
                     }

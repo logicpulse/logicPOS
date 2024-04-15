@@ -122,7 +122,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //InitObject
 
-        protected void InitObject(Widget pWidget, Label pLabel, T pDataSourceRow, String pFieldName, String pValidationRule = "", bool pRequired = false)
+        protected void InitObject(Widget pWidget, Label pLabel, T pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
         {
             //Parameters
             _widget = pWidget;
@@ -157,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         try
                         {
-                            (_widget as Entry).Text = (String)Convert.ChangeType(GetMemberValue(), typeof(String), GlobalFramework.CurrentCultureNumberFormat);
+                            (_widget as Entry).Text = (string)Convert.ChangeType(GetMemberValue(), typeof(string), GlobalFramework.CurrentCultureNumberFormat);
                             //Decimal : Replace Visual Decimal Separator if is .
                             if (_fieldType == typeof(decimal) && GlobalFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
                                 (_widget as Entry).Text = (_widget as Entry).Text.Replace('.', ',');
@@ -192,7 +192,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         try
                         {
-                            (_widget as TextView).Buffer.Text = (String)Convert.ChangeType(GetMemberValue(), typeof(String));
+                            (_widget as TextView).Buffer.Text = (string)Convert.ChangeType(GetMemberValue(), typeof(string));
                         }
                         catch
                         {
@@ -217,7 +217,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         try
                         {
-                            (_widget as EntryMultiline).Value.Text = (String)Convert.ChangeType(GetMemberValue(), typeof(String));
+                            (_widget as EntryMultiline).Value.Text = (string)Convert.ChangeType(GetMemberValue(), typeof(string));
                         }
                         catch
                         {
@@ -261,7 +261,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         try
                         {
-                            (_widget as Label).Text = (String)Convert.ChangeType(GetMemberValue(), typeof(String));
+                            (_widget as Label).Text = (string)Convert.ChangeType(GetMemberValue(), typeof(string));
                         }
                         catch
                         {
@@ -280,7 +280,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         try
                         {
-                            (_widget as FileChooserButton).SetFilename((String)Convert.ChangeType(GetMemberValue(), typeof(String)));
+                            (_widget as FileChooserButton).SetFilename((string)Convert.ChangeType(GetMemberValue(), typeof(string)));
                         }
                         catch
                         {

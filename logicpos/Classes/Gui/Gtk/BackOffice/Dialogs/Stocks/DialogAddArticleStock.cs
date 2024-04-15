@@ -91,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pTreeView, DialogFlags.Modal, pDialogMode, pXPGuidObject)
         {
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
 
             this.Title = windowTitle;
 
@@ -103,7 +103,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 SetSizeRequest(500, 660);
             }
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png");
             InitUI();
             //InitNotes();
             ValidateDialog();
@@ -525,7 +525,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? String.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryCodeValidation.Validate();
 
@@ -563,7 +563,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
 
-                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? String.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.Value = newArticle;
 
@@ -897,7 +897,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     return;
                 }
                 entrySelected.CodeEntry.Text = entrySelected.Value.Code;
-                entrySelected.EntryQtdValidation.Text = String.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
+                entrySelected.EntryQtdValidation.Text = string.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
                 ValidateDialog();
             }
             catch (Exception ex)

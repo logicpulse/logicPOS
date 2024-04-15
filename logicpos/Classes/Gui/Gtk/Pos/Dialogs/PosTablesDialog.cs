@@ -21,8 +21,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private Size _sizePosTableButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosTableButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private readonly String _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
-        private readonly String _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
+        private readonly string _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
+        private readonly string _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
         //UI
         private readonly Fixed _fixedContent;
         private TablePad _tablePadPlace;
@@ -53,9 +53,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private TableViewMode _currentViewMode = TableViewMode.Orders;
         private readonly TableFilterMode _FilterMode;
         //Base Queries
-        private readonly String _sqlPlaceBase;
-        private readonly String _sqlPlaceBaseOrder;
-        private readonly String _sqlPlaceBaseTable;
+        private readonly string _sqlPlaceBase;
+        private readonly string _sqlPlaceBaseOrder;
+        private readonly string _sqlPlaceBaseTable;
 
         //Public Properties
         private Guid _currentTableButtonOid;
@@ -68,13 +68,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders");
             //TODO:THEME
             //Size windowSize = new Size(837, 650);
             Size windowSize = new Size(720, 580);
-            String fileDefaultWindowIcon = string.Empty;
-			/* IN009035 */
-            String fileActionViewOrders = string.Empty;
+            string fileDefaultWindowIcon = string.Empty;
+            /* IN009035 */
+            string fileActionViewOrders = string.Empty;
             /* IN008024 */
             if (!SettingsApp.IsDefaultTheme)
             {
@@ -88,12 +88,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //ActionArea Icons
-            String fileActionTableReservation = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_reservation.png");
-            String fileActionTableFilterAll = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_all.png");
-            String fileActionTableFilterFree = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_free.png");
-            String fileActionTableFilterOpen = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_open.png");
-            String fileActionTableFilterReserved = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_reserved.png");
-            String fileActionTableViewTables = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_view_tables.png");
+            string fileActionTableReservation = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_reservation.png");
+            string fileActionTableFilterAll = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_all.png");
+            string fileActionTableFilterFree = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_free.png");
+            string fileActionTableFilterOpen = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_open.png");
+            string fileActionTableFilterReserved = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_reserved.png");
+            string fileActionTableViewTables = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_view_tables.png");
 
             //Parameters
             _FilterMode = pFilterMode;
@@ -250,7 +250,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //TablePad Tables
             //String sql = string.Format(@"SELECT om.Oid as id, concat(om.Oid, ':', om.OrderStatus, ':',Place) as name, NULL as label, NULL as image 
-            String sql = string.Format(@"
+            string sql = string.Format(@"
                 SELECT 
                     om.Oid as id, Designation as name, NULL as label, NULL as image, TableStatus as status, TotalOpen as total, DateTableOpen as dateopen, DateTableClosed as dateclosed 
                 FROM 
@@ -261,7 +261,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     (om.OrderStatus = {0})"
                 , (int)OrderStatus.Open)
             ;
-            String filter = string.Format("AND (Place = '{0}')", _tablePadPlace.SelectedButtonOid);
+            string filter = string.Format("AND (Place = '{0}')", _tablePadPlace.SelectedButtonOid);
 
             //TODO:THEME
             //TableConfig tableConfig = new TableConfig(6, 5);
@@ -311,8 +311,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _hboxTableScrollers.PackStart(buttonPosScrollersTableNext, false, false, 0);
 
             //TablePad Tables
-            String sql = @"SELECT Oid as id, Designation as name, NULL as label, NULL as image, TableStatus as status, TotalOpen as total, DateTableOpen as dateopen, DateTableClosed as dateclosed FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1)";
-            String filter = string.Format("AND (Place = '{0}')", _tablePadPlace.SelectedButtonOid);
+            string sql = @"SELECT Oid as id, Designation as name, NULL as label, NULL as image, TableStatus as status, TotalOpen as total, DateTableOpen as dateopen, DateTableClosed as dateclosed FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1)";
+            string filter = string.Format("AND (Place = '{0}')", _tablePadPlace.SelectedButtonOid);
 
             //if in FilterMode (Change Table) OnlyFreeTables add TableStatus Filter
             if (_FilterMode == TableFilterMode.OnlyFreeTables) filter = string.Format("{0} AND (TableStatus = {1}  OR TableStatus IS NULL)", filter, (int)TableStatus.Free);

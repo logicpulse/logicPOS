@@ -63,7 +63,7 @@ namespace logicpos.financial.library.Classes.Reports
         /// </summary>
         private static void RegisterSystemVars()
         {
-            RegisterSystemVars(String.Empty);
+            RegisterSystemVars(string.Empty);
         }
 
         private static void RegisterSystemVars(string pAppName)
@@ -135,7 +135,7 @@ namespace logicpos.financial.library.Classes.Reports
             customVars.Add("TICKET_FOOTER_LINE1", Pref("TICKET_FOOTER_LINE1"));
             customVars.Add("TICKET_FOOTER_LINE2", Pref("TICKET_FOOTER_LINE2"));
             //Session
-            customVars.Add("SESSION_loggerGED_USER", String.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
+            customVars.Add("SESSION_loggerGED_USER", string.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
 
             if (GlobalFramework.Settings["POS_CURRENTTERMINAL"] != null)
             {

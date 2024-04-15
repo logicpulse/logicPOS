@@ -26,10 +26,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Custom Event Handlers
         public event EventHandler Clicked;
 
-        public CheckButtonBox(String pLabelText, bool pActive)
+        public CheckButtonBox(string pLabelText, bool pActive)
         {
             //Defaults
-            String fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
+            string fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
             Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
 
             int padding = 3;

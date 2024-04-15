@@ -22,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Constructor
-        public VirtualKeyBoard(String pFile)
+        public VirtualKeyBoard(string pFile)
         {
             InitKeyboard(pFile);
         }
@@ -45,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Add VirtualKey to VirtualKeyboard
         private bool AddKey(XmlReader reader)
         {
-            String currentType = "";
+            string currentType = "";
             int currentRowIndex = 0;
             int currentColIndex = 0;
             int currentLevel = 0;
@@ -112,7 +112,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Initialize VirtualKeyboard form XML File
-        private void InitKeyboard(String pFile)
+        private void InitKeyboard(string pFile)
         {
             bool debug = false;
 
@@ -145,7 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Render a CSV from VirtualKeyboard, usefull to check Keyboard Imports
-        private void ExportToCsv(String file = "virtualkeyboard.csv")
+        private void ExportToCsv(string file = "virtualkeyboard.csv")
         {
             List<VirtualKey> tmpKeyboardRow;
             VirtualKey tmpKey;
@@ -169,9 +169,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Render a CSV String with VirtualKey properties, used in ExportToCsv
-        private String GetVirtualKeyCSVProperties(String pType, int pRow, int pCol, int pLevel, VirtualKeyProperties pKeyProperties)
+        private string GetVirtualKeyCSVProperties(string pType, int pRow, int pCol, int pLevel, VirtualKeyProperties pKeyProperties)
         {
-            String result = "";
+            string result = "";
             if (pKeyProperties != null)
             {
                 result += pType + "\t";

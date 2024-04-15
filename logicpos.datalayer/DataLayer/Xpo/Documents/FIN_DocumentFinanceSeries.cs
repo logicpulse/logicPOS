@@ -16,16 +16,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID("fin_documentfinanceseries", "Code");
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         //[Indexed(Unique = true)] Series have Duplicated Codes (ex when hidden)
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -39,25 +39,25 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        private Int32 fNextDocumentNumber;
-        public Int32 NextDocumentNumber
+        private int fNextDocumentNumber;
+        public int NextDocumentNumber
         {
             get { return fNextDocumentNumber; }
-            set { SetPropertyValue<Int32>("NextDocumentNumber", ref fNextDocumentNumber, value); }
+            set { SetPropertyValue<int>("NextDocumentNumber", ref fNextDocumentNumber, value); }
         }
 
-        private Int32 fDocumentNumberRangeBegin;
-        public Int32 DocumentNumberRangeBegin
+        private int fDocumentNumberRangeBegin;
+        public int DocumentNumberRangeBegin
         {
             get { return fDocumentNumberRangeBegin; }
-            set { SetPropertyValue<Int32>("DocumentNumberRangeBegin", ref fDocumentNumberRangeBegin, value); }
+            set { SetPropertyValue<int>("DocumentNumberRangeBegin", ref fDocumentNumberRangeBegin, value); }
         }
 
-        private Int32 fDocumentNumberRangeEnd;
-        public Int32 DocumentNumberRangeEnd
+        private int fDocumentNumberRangeEnd;
+        public int DocumentNumberRangeEnd
         {
             get { return fDocumentNumberRangeEnd; }
-            set { SetPropertyValue<Int32>("DocumentNumberRangeEnd", ref fDocumentNumberRangeEnd, value); }
+            set { SetPropertyValue<int>("DocumentNumberRangeEnd", ref fDocumentNumberRangeEnd, value); }
         }
 
         private string fAcronym;

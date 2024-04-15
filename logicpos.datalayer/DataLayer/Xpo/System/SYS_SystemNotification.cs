@@ -9,8 +9,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public sys_systemnotification() : base() { }
         public sys_systemnotification(Session session) : base(session) { }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
@@ -24,11 +24,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Message", ref fMessage, value); }
         }
 
-        private Boolean fReaded;
-        public Boolean Readed
+        private bool fReaded;
+        public bool Readed
         {
             get { return fReaded; }
-            set { SetPropertyValue<Boolean>("Readed", ref fReaded, value); }
+            set { SetPropertyValue<bool>("Readed", ref fReaded, value); }
         }
 
         private DateTime fDateRead;

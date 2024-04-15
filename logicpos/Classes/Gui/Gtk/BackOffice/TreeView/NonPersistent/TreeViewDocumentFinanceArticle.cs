@@ -57,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 /*03*/
                 new GenericTreeViewColumnProperty("Quantity")
                 {
-                    Type = typeof(Decimal),
+                    Type = typeof(decimal),
                     Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"),
                     MinWidth = 70,
                     MaxWidth = 100,
@@ -66,11 +66,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
                 },
                 /*04: Used to store DefaultCurrency price, Set visible = true to show it, Default is Hidden */
-                new GenericTreeViewColumnProperty("Price") { Type = typeof(Decimal), Title = string.Format("{0}{1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false },
+                new GenericTreeViewColumnProperty("Price") { Type = typeof(decimal), Title = string.Format("{0}{1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), "*"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency, Visible = false },
                 /*05: Visible Display Value, In Current Selected Currency*/
-                new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("PriceDisplay") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*06 IN009206*/
-                new GenericTreeViewColumnProperty("Discount") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("Discount") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = 60, MaxWidth = 60, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*07 IN009206*/
                 new GenericTreeViewColumnProperty("VatExemptionReason.Acronym") { Type = typeof(fin_configurationvatexemptionreason), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason_acronym"), ChildName = "Acronym", MinWidth = 60, MaxWidth = 60, Visible = false },
                 /*08*/
@@ -87,12 +87,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     CellRenderer = new CellRendererText() { Alignment = Pango.Alignment.Right, Xalign = 1.0F, }
                 },
                 /*09*/
-                new GenericTreeViewColumnProperty("TotalNet") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("TotalNet") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_article_tab"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*10*/ /* IN009206 */
-                new GenericTreeViewColumnProperty("TotalFinal") { Type = typeof(Decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("TotalFinal") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_per_item_vat"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 //Other Invisible Fields
                 /*11*/
-                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(Decimal), Visible = false },
+                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(decimal), Visible = false },
                 /*12*/
                 new GenericTreeViewColumnProperty("PriceType") { Type = typeof(PriceType), Visible = false },
                 /*13*/
@@ -144,7 +144,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
 
                     //Init DataRow
-                    System.Object[] dataRow = new System.Object[pColumnProperties.Count];
+                    object[] dataRow = new object[pColumnProperties.Count];
 
                     //Start Loop
                     foreach (var item in articleBag)

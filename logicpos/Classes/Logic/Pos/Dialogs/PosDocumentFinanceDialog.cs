@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public ArticleBag GetArticleBag()
         {
-            Decimal customerDiscount = FrameworkUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
+            decimal customerDiscount = FrameworkUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
             ArticleBag articleBag = new ArticleBag(customerDiscount);
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;

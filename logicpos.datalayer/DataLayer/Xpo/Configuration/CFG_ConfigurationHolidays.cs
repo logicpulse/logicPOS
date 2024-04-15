@@ -16,16 +16,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationholidays), "Code");
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         [Indexed(Unique = true)]
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -47,25 +47,25 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Description", ref fDescription, value); }
         }
 
-        private Int32 fYear;
-        public Int32 Year
+        private int fYear;
+        public int Year
         {
             get { return fYear; }
-            set { SetPropertyValue<Int32>("Year", ref fYear, value); }
+            set { SetPropertyValue<int>("Year", ref fYear, value); }
         }
 
-        private Int32 fMonth;
-        public Int32 Month
+        private int fMonth;
+        public int Month
         {
             get { return fMonth; }
-            set { SetPropertyValue<Int32>("Month", ref fMonth, value); }
+            set { SetPropertyValue<int>("Month", ref fMonth, value); }
         }
 
-        private Int32 fDay;
-        public Int32 Day
+        private int fDay;
+        public int Day
         {
             get { return fDay; }
-            set { SetPropertyValue<Int32>("Day", ref fDay, value); }
+            set { SetPropertyValue<int>("Day", ref fDay, value); }
         }
 
         private bool fFixed;

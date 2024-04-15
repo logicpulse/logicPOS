@@ -14,12 +14,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             set { _entryValidation = value; }
         }
 
-        public EntryBoxValidation(Window pSourceWindow, String pLabelText, KeyboardMode pKeyboardMode) 
+        public EntryBoxValidation(Window pSourceWindow, string pLabelText, KeyboardMode pKeyboardMode) 
             : this(pSourceWindow, pLabelText, pKeyboardMode, string.Empty, false)
         {
         }
 
-        public EntryBoxValidation(Window pSourceWindow, String pLabelText, KeyboardMode pKeyboardMode, string pRule, bool pRequired, bool BOSource = false)
+        public EntryBoxValidation(Window pSourceWindow, string pLabelText, KeyboardMode pKeyboardMode, string pRule, bool pRequired, bool BOSource = false)
             : base(pSourceWindow, pLabelText, BOSource)
         {
             //EntryValidation

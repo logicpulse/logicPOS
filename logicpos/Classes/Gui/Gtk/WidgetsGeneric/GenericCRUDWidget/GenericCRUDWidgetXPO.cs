@@ -12,19 +12,19 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
     {
         private bool _hasXPGuidObjectValue;
 
-        public GenericCRUDWidgetXPO(Widget pWidget, XPGuidObject pDataSourceRow, String pFieldName, String pValidationRule = "", bool pRequired = false)
+        public GenericCRUDWidgetXPO(Widget pWidget, XPGuidObject pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
             : base(pWidget, pDataSourceRow, pFieldName, pValidationRule, pRequired)
         {
             InitObject(pWidget, null, pDataSourceRow, pFieldName, pValidationRule, pRequired);
         }
 
-        public GenericCRUDWidgetXPO(BOWidgetBox pBOWidgetBox, XPGuidObject pDataSourceRow, String pFieldName, String pValidationRule = "", bool pRequired = false)
+        public GenericCRUDWidgetXPO(BOWidgetBox pBOWidgetBox, XPGuidObject pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
             : base(pBOWidgetBox.WidgetComponent, pBOWidgetBox.LabelComponent, pDataSourceRow, pFieldName, pValidationRule, pRequired)
         {
             InitObject(pBOWidgetBox.WidgetComponent, pBOWidgetBox.LabelComponent, pDataSourceRow, pFieldName, pValidationRule, pRequired);
         }
 
-        public GenericCRUDWidgetXPO(Widget pWidget, Label pLabel, XPGuidObject pDataSourceRow, String pFieldName, String pValidationRule = "", bool pRequired = false)
+        public GenericCRUDWidgetXPO(Widget pWidget, Label pLabel, XPGuidObject pDataSourceRow, string pFieldName, string pValidationRule = "", bool pRequired = false)
             : base(pWidget, pLabel, pDataSourceRow, pFieldName, pValidationRule, pRequired)
         {
             InitObject(pWidget, pLabel, pDataSourceRow, pFieldName, pValidationRule, pRequired);

@@ -123,10 +123,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if (addSystemColumns)
             {
                 //Insert RowIndex before all Fields
-                _columnProperties.Insert(0, new GenericTreeViewColumnProperty("RowIndex") { Type = typeof(Int32), Visible = _showSystemColumns });
+                _columnProperties.Insert(0, new GenericTreeViewColumnProperty("RowIndex") { Type = typeof(int), Visible = _showSystemColumns });
 
                 //Hide Oid Field, Required Fields, Used to access collection XPGuidObjects with Lookup(Oid)
-                Boolean hasOid = _columnProperties.Contains(new GenericTreeViewColumnProperty("Oid"));
+                bool hasOid = _columnProperties.Contains(new GenericTreeViewColumnProperty("Oid"));
 
                 //Prepare ViewMode
                 switch (_treeViewMode)

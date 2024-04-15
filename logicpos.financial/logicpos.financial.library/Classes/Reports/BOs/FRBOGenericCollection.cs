@@ -77,10 +77,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
                 PropertyInfo propertyInfo;
                 //Fields Props
-                string fieldName = String.Empty;
-                string fieldType = String.Empty;
-                string fieldTypeDB = String.Empty;
-                Object fieldValue;
+                string fieldName = string.Empty;
+                string fieldType = string.Empty;
+                string fieldTypeDB = string.Empty;
+                object fieldValue;
                 int fieldIndex;
 
                 int i = 0;
@@ -138,7 +138,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                             //}
 
                             //Fix for MSSqlServer that detects UInt32 has Decimal, this way we convert it into UInt32 before above SetValue
-                            if (propertyInfo.PropertyType == typeof(UInt32))
+                            if (propertyInfo.PropertyType == typeof(uint))
                             {
                                 fieldValue = Convert.ToUInt32(rowData.Values[fieldIndex]);
                             }
@@ -287,7 +287,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             //SqlEntity: Get Entity Name from FRBO EntityAttribute or From ClassName Without FRBO
             string sqlEntity = (_objectHaveAttributes && (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Entity != null)
               ? (typeof(T).GetCustomAttribute(typeof(FRBOAttribute)) as FRBOAttribute).Entity
-              : typeof(T).Name.ToString().Replace("FRBO", String.Empty);
+              : typeof(T).Name.ToString().Replace("FRBO", string.Empty);
 
             // Used to SQLServer Groups to pass Fields, with this we ignore generated reflectes GenQueryFieldsFromFRBOObject 
             string queryFields = string.IsNullOrEmpty(pQueryFields)
@@ -300,10 +300,10 @@ namespace logicpos.financial.library.Classes.Reports.BOs
               : queryFields;
 
             //Filter
-            string sqlFilter = String.Empty;
+            string sqlFilter = string.Empty;
 
             //Get Filter From Parameters
-            if (pFilter != null && pFilter != String.Empty)
+            if (pFilter != null && pFilter != string.Empty)
             {
                 sqlFilter = string.Format(" WHERE ({0})", pFilter);
             }
@@ -314,9 +314,9 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             }
 
             //Group
-            string sqlGroup = String.Empty;
+            string sqlGroup = string.Empty;
             //Get Group From Parameters
-            if (pGroup != String.Empty)
+            if (pGroup != string.Empty)
             {
                 sqlGroup = string.Format(" GROUP BY {0}", pGroup);
             }
@@ -327,9 +327,9 @@ namespace logicpos.financial.library.Classes.Reports.BOs
             }
 
             //Order
-            string sqlOrder = String.Empty;
+            string sqlOrder = string.Empty;
             //Get Order From Parameters
-            if (pOrder != String.Empty)
+            if (pOrder != string.Empty)
             {
                 sqlOrder = string.Format(" ORDER BY {0}", pOrder);
             }

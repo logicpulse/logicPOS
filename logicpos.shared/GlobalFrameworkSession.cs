@@ -17,7 +17,7 @@ namespace logicpos.shared
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Private Members
-        private String _file;
+        private string _file;
         private Formatting _jsonIndented;
 
         //Public Properties
@@ -65,7 +65,7 @@ namespace logicpos.shared
         }
 
         public GlobalFrameworkSession() { }
-        public GlobalFrameworkSession(String pFile)
+        public GlobalFrameworkSession(string pFile)
         {
             //Init Parameters
             _file = pFile;
@@ -162,12 +162,12 @@ namespace logicpos.shared
                 GlobalFramework.SessionApp._currentOrderMainOid = latestNonEmptyOrder;
         }
 
-        public Boolean DeleteSession()
+        public bool DeleteSession()
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-            Boolean result = false;
+            bool result = false;
 
             if (File.Exists(_file))
             {
@@ -226,7 +226,7 @@ namespace logicpos.shared
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Static Helper Functions
 
-        public static GlobalFrameworkSession InitSession(String pFile)
+        public static GlobalFrameworkSession InitSession(string pFile)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

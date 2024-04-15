@@ -120,11 +120,11 @@ namespace logicpos
                 }
             }
             //Update Table, In case user change Users in BackOffice
-            GlobalApp.WindowStartup.TablePadUser.UpdateSql();
+            GlobalApp.StartupWindow.TablePadUser.UpdateSql();
             //Required to Assign Details to Update Select User
             AssignUserDetail();
             //Show Startup Windows, or Not (Silent Mode)
-            if (pGotoStartupWindow) GlobalApp.WindowStartup.ShowAll();
+            if (pGotoStartupWindow) GlobalApp.StartupWindow.ShowAll();
         }
     }
 }

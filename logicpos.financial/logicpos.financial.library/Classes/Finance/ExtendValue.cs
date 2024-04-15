@@ -60,7 +60,7 @@ namespace logicpos.financial.library.Classes.Finance
             {
                 //throw new Exception("Valor não suportado pela Função. Verificar se há valor negativo ou nada foi informado");
                 //return "Zero Euros";
-                return String.Format("Zero {0}", moedaPlural);
+                return string.Format("Zero {0}", moedaPlural);
             }
             if (pValue > (decimal)9999999999.99)
             {
@@ -69,13 +69,13 @@ namespace logicpos.financial.library.Classes.Finance
             else //Entrada padrão do método
             {
                 //Gerar Extenso Centavos 
-                pValue = (Decimal.Round(pValue, 2));
+                pValue = (decimal.Round(pValue, 2));
 
                 try
                 {
                     // Fix Force .00 2 zeros else errors arrise
-                    pValue = Decimal.Parse(pValue.ToString("F"));
-                    dblCentavos = pValue - (Int64)pValue;
+                    pValue = decimal.Parse(pValue.ToString("F"));
+                    dblCentavos = pValue - (long)pValue;
                 }
                 catch (Exception ex)
                 {
@@ -83,7 +83,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Gerar Extenso parte Inteira
-                decimal dblValorInteiro = (Int64)pValue;
+                decimal dblValorInteiro = (long)pValue;
                 string strNumero;
                 if (dblValorInteiro > 0)
                 {
@@ -221,7 +221,7 @@ namespace logicpos.financial.library.Classes.Finance
                                         {
                                             strValorExtenso = strValorExtenso + " e ";
                                         }
-                                        strValorExtenso = strValorExtenso + ((Int64.Parse(dblValorInteiro.ToString())) > 1 ? " " + moedaPlural : " " + moedaSingular);
+                                        strValorExtenso = strValorExtenso + ((long.Parse(dblValorInteiro.ToString())) > 1 ? " " + moedaPlural : " " + moedaSingular);
                                     }
                                     bln_Unidade = false;
                                     break;
@@ -234,13 +234,13 @@ namespace logicpos.financial.library.Classes.Finance
 
                     if (dblCentavos > 0 && dblCentavos < 0.1M)
                     {
-                        strNumero = Right((Decimal.Round(dblCentavos, 2)).ToString().Trim(), 1);
+                        strNumero = Right((decimal.Round(dblCentavos, 2)).ToString().Trim(), 1);
                         strValorExtenso = strValorExtenso + ((dblCentavos > 0) ? " e " : " ")
                         + fcn_Numero_Unidade(strNumero) + ((dblCentavos > 0.01M) ? " " + moedaDecimalPlural : " " + moedaDecimalSingular);
                     }
                     else if (dblCentavos > 0.1M && dblCentavos < 0.2M)
                     {
-                        strNumero = Right(((Decimal.Round(dblCentavos, 2) - (decimal)0.1).ToString().Trim()), 1);
+                        strNumero = Right(((decimal.Round(dblCentavos, 2) - (decimal)0.1).ToString().Trim()), 1);
                         /* IN009185 */
                         strValorExtenso = strValorExtenso + ((dblCentavos > 0) ? " e " : " ")
                         + fcn_Numero_Dezena0(strNumero) + " " + moedaDecimalPlural + " ";
@@ -257,7 +257,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                         if ((dblCentavos.ToString().Trim().Length) > 2)
                         {
-                            strNumero = Right((Decimal.Round(dblCentavos, 2)).ToString().Trim(), 1);
+                            strNumero = Right((decimal.Round(dblCentavos, 2)).ToString().Trim(), 1);
                             if (int.Parse(strNumero) > 0)
                             {
                                 if (dblValorInteiro <= 0)
@@ -359,7 +359,7 @@ namespace logicpos.financial.library.Classes.Finance
                 "Noventa"
             };
 
-            return array_Dezena1[Int16.Parse(pstrDezena1) - 1].ToString();
+            return array_Dezena1[short.Parse(pstrDezena1) - 1].ToString();
         }
 
         private string fcn_Numero_Centena(string pstrCentena)

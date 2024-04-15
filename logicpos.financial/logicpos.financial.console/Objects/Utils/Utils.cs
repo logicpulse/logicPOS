@@ -22,7 +22,7 @@ namespace logicpos.financial.console.Objects
 
             //Debug Directive disabled by Mario, if enabled we cant force Hardware id in Release, if we want to ignore appHardwareId from config we just delete it
             //If assigned in Config use it, else does nothing and use default ####-####-####-####-####-####
-            if (SettingsApp.AppHardwareId != null && SettingsApp.AppHardwareId != String.Empty)
+            if (SettingsApp.AppHardwareId != null && SettingsApp.AppHardwareId != string.Empty)
             {
                 GlobalFramework.LicenceHardwareId = SettingsApp.AppHardwareId;
             }

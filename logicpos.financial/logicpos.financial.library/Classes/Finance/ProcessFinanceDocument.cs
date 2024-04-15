@@ -40,13 +40,13 @@ namespace logicpos.financial.library.Classes.Finance
                 SortedDictionary<FinanceValidationError, object> errorsValidation = ProcessFinanceDocumentValidation.ValidatePersistFinanceDocument(pParameters, pLoggedUser, pIgnoreWarning);
                 if (errorsValidation.Count > 0)
                 {
-                    String errors = String.Empty;
+                    string errors = string.Empty;
                     foreach (var item in errorsValidation)
                     {
-                        errors += String.Format("{0}- {1}", Environment.NewLine, item.Key);
+                        errors += string.Format("{0}- {1}", Environment.NewLine, item.Key);
                     }
 
-                    ProcessFinanceDocumentValidationException exception = new ProcessFinanceDocumentValidationException(new Exception(String.Format("ERROR_DETECTED{0}{1}", Environment.NewLine, errors)), errorsValidation);
+                    ProcessFinanceDocumentValidationException exception = new ProcessFinanceDocumentValidationException(new Exception(string.Format("ERROR_DETECTED{0}{1}", Environment.NewLine, errors)), errorsValidation);
                     //Throw without Errors only Exception for Muga Work, Return a simple String
                     //throw exception.Exception;
                     // Send with ExceptionErrors
@@ -291,7 +291,7 @@ namespace logicpos.financial.library.Classes.Finance
                     documentFinanceMaster.DocumentStatusDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
 
                     //Notes
-                    if (pParameters.Notes != String.Empty)
+                    if (pParameters.Notes != string.Empty)
                     {
                         documentFinanceMaster.Notes = pParameters.Notes;
                     }
@@ -1011,8 +1011,8 @@ if (GlobalFramework.AppUseParkingTicketModule)
             uint documentFinanceMasterPaymentOrd = 0;
             bool documentFullPayed = false;
             bool documentPartialPayed = false;
-            string sql = String.Empty;
-            string extended = String.Empty;
+            string sql = string.Empty;
+            string extended = string.Empty;
             //CurrentDateTime
             DateTime currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
             //XpoObjects
@@ -1095,7 +1095,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
                         documentFinancePayment.DocumentSerie = documentFinanceSerie;
 
                         //Only Assign if Not Empty
-                        if (pPaymentNotes != String.Empty) documentFinancePayment.Notes = pPaymentNotes;
+                        if (pPaymentNotes != string.Empty) documentFinancePayment.Notes = pPaymentNotes;
                     }
 
                     //Get Default defaultCurrency
@@ -1411,9 +1411,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 //Variables to diferent Document Types : DocumentFinanceMaster or DocumentFinancePayment
                 DateTime documentDate = FrameworkUtils.CurrentDateTimeAtomic();
                 decimal movementAmount = 0m;
-                string movementDescriptionDocument = String.Empty;
-                string movementDescriptionTotalDelivery = String.Empty;
-                string movementDescriptionTotalChange = String.Empty;
+                string movementDescriptionDocument = string.Empty;
+                string movementDescriptionTotalDelivery = string.Empty;
+                string movementDescriptionTotalChange = string.Empty;
                 decimal totalDelivery = 0m;
                 decimal totalChange = 0m;
 

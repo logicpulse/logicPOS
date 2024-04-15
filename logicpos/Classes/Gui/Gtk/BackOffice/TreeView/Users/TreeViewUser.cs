@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             sys_userdetail userDetail = (_dataSourceRow as sys_userdetail);
             //If User deleted Force Logout in Sytem
-            GlobalApp.WindowStartup.LogOutUser(false, userDetail);
+            GlobalApp.StartupWindow.LogOutUser(false, userDetail);
         }
     }
 }

@@ -142,7 +142,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         )
         {
             //Init private Vars from Parameters
-            String windowTitle = pWindowsTitle;
+            string windowTitle = pWindowsTitle;
             Size windowSize = pSize;// new Size(900, 700);
             _genericTreeView = pGenericTreeView;
             _genericTreeViewMode = pGenericTreeViewMode;
@@ -150,7 +150,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_actionAreaButtons = pActionAreaButtons;
 
             //Init Local Vars
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
             Size usefullAreaSize = new Size(windowSize.Width - 14, windowSize.Height - 124);
 
             //Modify default genericTreeView properties
@@ -366,7 +366,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             try
             {
-                Int32 itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
+                int itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
                 bool itemChecked = Convert.ToBoolean(model.GetValue(iter, columnIndexCheckBox));
 
                 if (itemChecked)

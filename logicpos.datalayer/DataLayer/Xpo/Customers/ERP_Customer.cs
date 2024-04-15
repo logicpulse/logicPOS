@@ -33,16 +33,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             CodeInternal = FrameworkUtils.GuidToStringId(Oid.ToString());
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         //[Indexed(Unique = true)] : Can have Duplicated Customer Codes ex Hidden Customers
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -228,19 +228,19 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Remarks", ref fRemarks, value); }
         }
 
-        private Boolean fSupplier;
-        public Boolean Supplier
+        private bool fSupplier;
+        public bool Supplier
         {
             get { return fSupplier; }
-            set { SetPropertyValue<Boolean>("Supplier", ref fSupplier, value); }
+            set { SetPropertyValue<bool>("Supplier", ref fSupplier, value); }
         }
 
         //Assign True to Temporary Customers, Customers that was created in Finance Documents without FiscalNumber
-        private Boolean fHidden;
-        public Boolean Hidden
+        private bool fHidden;
+        public bool Hidden
         {
             get { return fHidden; }
-            set { SetPropertyValue<Boolean>("Hidden", ref fHidden, value); }
+            set { SetPropertyValue<bool>("Hidden", ref fHidden, value); }
         }
 
         //CustomerType One <> Many Customer

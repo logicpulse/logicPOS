@@ -38,7 +38,7 @@ namespace logicpos
                 _tablePadFamily.Refresh();
                 //Always Apply Filter to prevent error when work in a clean database, and we create first Records
                 //Filter is "  AND (Family = '00000000-0000-0000-0000-000000000000')"
-                _tablePadSubFamily.Filter = String.Format("  AND (Family = '{0}')", _tablePadFamily.SelectedButtonOid);
+                _tablePadSubFamily.Filter = string.Format("  AND (Family = '{0}')", _tablePadFamily.SelectedButtonOid);
                 _tablePadSubFamily.Refresh();
                 _tablePadArticle.Refresh();
             }
@@ -123,7 +123,7 @@ namespace logicpos
         {
             Hide();
             //Call Shared WindowStartup LogOutUser, and Show WindowStartup
-            GlobalApp.WindowStartup.LogOutUser(true);
+            GlobalApp.StartupWindow.LogOutUser(true);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -374,7 +374,7 @@ namespace logicpos
              * TK013134 - Parking Ticket 
              * Check for cases that a table has not been opened yet
              */
-            if (GlobalApp.WindowPos.TicketList.CurrentOrderDetails != null)
+            if (GlobalApp.PosMainWindow.TicketList.CurrentOrderDetails != null)
             {
                     switch (GlobalApp.BarCodeReader.Device)
                 {
@@ -441,13 +441,13 @@ namespace logicpos
                         SelectedData xpoSelectedData = null;
                         if (GlobalFramework.DatabaseType.ToString() == "MySql" || GlobalFramework.DatabaseType.ToString() == "SQLite")
                         {
-                            String sqlQuery = @"SELECT Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc LIMIT 1";
+                            string sqlQuery = @"SELECT Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc LIMIT 1";
 
                             xpoSelectedData = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(sqlQuery);
                         }
                         else if (GlobalFramework.DatabaseType.ToString() == "MSSqlServer")
                         {
-                            String sqlQuery = @"SELECT TOP 1 Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc";
+                            string sqlQuery = @"SELECT TOP 1 Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc";
                             xpoSelectedData = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(sqlQuery);
                         }
 
@@ -527,7 +527,7 @@ namespace logicpos
 
         private bool UpdateClock()
         {
-            if (GlobalApp.WindowPos.Visible)
+            if (GlobalApp.PosMainWindow.Visible)
             {
                 _labelClock.Text = FrameworkUtils.CurrentDateTime(_clockFormat);
 

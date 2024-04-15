@@ -65,8 +65,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Init Local Vars
             Size sizeKeyboardPadDefaultKey = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeKeyboardPadDefaultKey"]);
-            String fontKeyboardPadPrimaryKey = GlobalFramework.Settings["fontKeyboardPadPrimaryKey"];
-            String fontKeyboardPadSecondaryKey = GlobalFramework.Settings["fontKeyboardPadSecondaryKey"];
+            string fontKeyboardPadPrimaryKey = GlobalFramework.Settings["fontKeyboardPadPrimaryKey"];
+            string fontKeyboardPadSecondaryKey = GlobalFramework.Settings["fontKeyboardPadSecondaryKey"];
 
             //ByPass Defaults
             if (virtualKey.L1.KeyWidth > 0)

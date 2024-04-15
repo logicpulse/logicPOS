@@ -248,7 +248,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Detected Change in User Disabled: If user was Disabled, Force Logout User
             if (!_isLoggedUser && _currentUserDisabled && !_userDetail.Disabled)
             {
-                GlobalApp.WindowStartup.LogOutUser(false, _userDetail);
+                GlobalApp.StartupWindow.LogOutUser(false, _userDetail);
             }
         }
 
@@ -264,7 +264,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _userDetail.PasswordReset = false;
                 _userDetail.PasswordResetDate = FrameworkUtils.CurrentDateTimeAtomic();
                 //Force LogOut User
-                GlobalApp.WindowStartup.LogOutUser(false, _userDetail);
+                GlobalApp.StartupWindow.LogOutUser(false, _userDetail);
             }
             catch (Exception ex)
             {

@@ -189,13 +189,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             ListStore model = GenericTreeViewModel.InitModel(_columnProperties, pGenericTreeViewMode);
 
             //Init ColumnValues Object Array
-            System.Object[] columnValues = new System.Object[_columnProperties.Count];
+            object[] columnValues = new object[_columnProperties.Count];
 
             //Start Render Model Values from Collection
-            String fieldName;
+            string fieldName;
 
             //Loop Records
-            Int32 rowIndex = -1;
+            int rowIndex = -1;
             foreach (XPGuidObject dataRow in (_XpCollection as XPCollection))
             {
                 // Increment RownIndex

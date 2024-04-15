@@ -383,7 +383,7 @@ namespace logicpos.shared.App
         // Undefined Record
         public static Guid XpoOidUndefinedRecord = new Guid("00000000-0000-0000-0000-000000000001");
         public static Guid XpoOidUserRecord = new Guid("00000000-0000-0000-0000-000000000002");
-        public static String XpoOidHiddenRecordsFilter = "00000000-0000-0000-0000-000000000%";
+        public static string XpoOidHiddenRecordsFilter = "00000000-0000-0000-0000-000000000%";
 
         //ArticleClass
         public static Guid XpoOidArticleClassCustomerCard = new Guid("49ea35ba-35f3-440f-946e-ab32578ed741");

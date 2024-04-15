@@ -29,7 +29,7 @@ namespace logicpos
         //Non Ui
         private sys_userdetail _selectedUserDetail;
 
-        public StartupWindow(String pBackgroundImage, bool needToUpdate)
+        public StartupWindow(string pBackgroundImage, bool needToUpdate)
             : base(pBackgroundImage)
         {
             //Build Window
@@ -82,7 +82,7 @@ namespace logicpos
                 SettingsApp.ConfigurationSystemCountry = (cfg_configurationcountry)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
                 SettingsApp.ConfigurationSystemCurrency = (cfg_configurationcurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
 
-                _logger.Debug(String.Format("Using System Country: [{0}], Currency: [{1}]", SettingsApp.ConfigurationSystemCountry.Designation, SettingsApp.ConfigurationSystemCurrency.Designation));
+                _logger.Debug(string.Format("Using System Country: [{0}], Currency: [{1}]", SettingsApp.ConfigurationSystemCountry.Designation, SettingsApp.ConfigurationSystemCurrency.Designation));
             }
             catch (Exception ex)
             {
@@ -190,7 +190,7 @@ namespace logicpos
                     tablePadUserButtonNext.BorderWidth = 0;
                     tablePadUserButtonNext.CanFocus = false;
                     //Objects:TablePadUser
-                    String sqlTablePadUser = @"
+                    string sqlTablePadUser = @"
                         SELECT 
                             Oid as id, Name as name, Name as label, ButtonImage as image
                         FROM 

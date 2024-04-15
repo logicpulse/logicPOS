@@ -34,11 +34,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(documentFinanceMaster.Hash);
                 string destinationFileName = "";
                 string result = CustomReport.ProcessReportFinanceDocument(CustomReportDisplayMode.Design, documentFinanceMaster.Oid, hash4Chars, copyNames, destinationFileName);
-                _logger.Debug(String.Format("Result: [{0}]", result));
+                _logger.Debug(string.Format("Result: [{0}]", result));
             }
             else
             {
-                _logger.Debug(String.Format("Null Document Found for documentType: [{0}]", nameof(fin_documentfinancemaster), docOid.ToString()));
+                _logger.Debug(string.Format("Null Document Found for documentType: [{0}]", nameof(fin_documentfinancemaster), docOid.ToString()));
             }
         }
 
@@ -863,7 +863,7 @@ OR
                     case ReportsTypeToken.REPORT_LIST_CLOSE_WORKSESSION:
                         break;
                     default:
-                        _logger.Error(String.Format("Undetected Token: [{0}]", token));
+                        _logger.Error(string.Format("Undetected Token: [{0}]", token));
                         break;
                 }
             }

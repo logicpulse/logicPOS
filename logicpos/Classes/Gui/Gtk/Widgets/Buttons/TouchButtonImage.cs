@@ -16,21 +16,21 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 
         public Widget widget;
 
-        public TouchButtonImage(String name)
+        public TouchButtonImage(string name)
             : base(name)
         {
         }
 
-        public TouchButtonImage(String name, System.Drawing.Color color, String labelText, int fontSize, String image, String overlay, int width, int height)
+        public TouchButtonImage(string name, System.Drawing.Color color, string labelText, int fontSize, string image, string overlay, int width, int height)
             : base(name)
         {
             InitObject(name, color, labelText, fontSize, image, overlay, width, height);
             base.InitObject(name, color, widget, width, height);
         }
 
-        public void InitObject(String name, System.Drawing.Color color, String labelText, int fontSize, String image, String overlay, int width, int height)
+        public void InitObject(string name, System.Drawing.Color color, string labelText, int fontSize, string image, string overlay, int width, int height)
         {
-            String stringImageFilename = _pathCache + name + ".png";
+            string stringImageFilename = _pathCache + name + ".png";
             System.Drawing.Bitmap bitmap;
 
             if (_useCachedImages && File.Exists(stringImageFilename))
@@ -54,12 +54,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             widget = gtkImage;
         }
 
-        private System.Drawing.Bitmap CreateThumbnail(String name, System.Drawing.Color color, String labelText, int fontSize, String image, String overlay, int width, int height)
+        private System.Drawing.Bitmap CreateThumbnail(string name, System.Drawing.Color color, string labelText, int fontSize, string image, string overlay, int width, int height)
         {
             bool debug = false;
 
             System.Drawing.Size targetImageSize = new System.Drawing.Size(width - (_BUTTON_INNER_BORDER * 2), height - (_BUTTON_INNER_BORDER * 2));
-            String stringResolution = "";
+            string stringResolution = "";
 
             //Create a Working Bitmap
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(targetImageSize.Width, targetImageSize.Height);

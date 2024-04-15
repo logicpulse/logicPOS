@@ -10,8 +10,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_documentfinancedetail() : base() { }
         public fin_documentfinancedetail(Session session) : base(session) { }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
@@ -32,11 +32,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        private Decimal fQuantity;
-        public Decimal Quantity
+        private decimal fQuantity;
+        public decimal Quantity
         {
             get { return fQuantity; }
-            set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
+            set { SetPropertyValue<decimal>("Quantity", ref fQuantity, value); }
         }
 
         private string fUnitMeasure;
@@ -47,18 +47,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("UnitMeasure", ref fUnitMeasure, value); }
         }
 
-        private Decimal fPrice;
-        public Decimal Price
+        private decimal fPrice;
+        public decimal Price
         {
             get { return fPrice; }
-            set { SetPropertyValue<Decimal>("Price", ref fPrice, value); }
+            set { SetPropertyValue<decimal>("Price", ref fPrice, value); }
         }
 
-        private Decimal fVat;
-        public Decimal Vat
+        private decimal fVat;
+        public decimal Vat
         {
             get { return fVat; }
-            set { SetPropertyValue<Decimal>("Vat", ref fVat, value); }
+            set { SetPropertyValue<decimal>("Vat", ref fVat, value); }
         }
 
         private string fVatExemptionReasonDesignation;
@@ -69,46 +69,46 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("VatExemptionReasonDesignation", ref fVatExemptionReasonDesignation, value); }
         }
 
-        private Decimal fDiscount;
-        public Decimal Discount
+        private decimal fDiscount;
+        public decimal Discount
         {
             get { return fDiscount; }
-            set { SetPropertyValue<Decimal>("Discount", ref fDiscount, value); }
+            set { SetPropertyValue<decimal>("Discount", ref fDiscount, value); }
         }
 
-        private Decimal fTotalNet;
-        public Decimal TotalNet
+        private decimal fTotalNet;
+        public decimal TotalNet
         {
             get { return fTotalNet; }
-            set { SetPropertyValue<Decimal>("TotalNet", ref fTotalNet, value); }
+            set { SetPropertyValue<decimal>("TotalNet", ref fTotalNet, value); }
         }
 
-        private Decimal fTotalGross;
-        public Decimal TotalGross
+        private decimal fTotalGross;
+        public decimal TotalGross
         {
             get { return fTotalGross; }
-            set { SetPropertyValue<Decimal>("TotalGross", ref fTotalGross, value); }
+            set { SetPropertyValue<decimal>("TotalGross", ref fTotalGross, value); }
         }
 
-        private Decimal fTotalDiscount;
-        public Decimal TotalDiscount
+        private decimal fTotalDiscount;
+        public decimal TotalDiscount
         {
             get { return fTotalDiscount; }
-            set { SetPropertyValue<Decimal>("TotalDiscount", ref fTotalDiscount, value); }
+            set { SetPropertyValue<decimal>("TotalDiscount", ref fTotalDiscount, value); }
         }
 
-        private Decimal fTotalTax;
-        public Decimal TotalTax
+        private decimal fTotalTax;
+        public decimal TotalTax
         {
             get { return fTotalTax; }
-            set { SetPropertyValue<Decimal>("TotalTax", ref fTotalTax, value); }
+            set { SetPropertyValue<decimal>("TotalTax", ref fTotalTax, value); }
         }
 
-        private Decimal fTotalFinal;
-        public Decimal TotalFinal
+        private decimal fTotalFinal;
+        public decimal TotalFinal
         {
             get { return fTotalFinal; }
-            set { SetPropertyValue<Decimal>("TotalFinal", ref fTotalFinal, value); }
+            set { SetPropertyValue<decimal>("TotalFinal", ref fTotalFinal, value); }
         }
 
         //Final Calculated Priced, Usefull to Clone Document ex From SourceDocuments in New Document Window
@@ -120,11 +120,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
         }
 
         //Final Calculated Priced, Usefull to Clone Document ex From SourceDocuments in New Document Window
-        private Decimal fPriceFinal;
-        public Decimal PriceFinal
+        private decimal fPriceFinal;
+        public decimal PriceFinal
         {
             get { return fPriceFinal; }
-            set { SetPropertyValue<Decimal>("PriceFinal", ref fPriceFinal, value); }
+            set { SetPropertyValue<decimal>("PriceFinal", ref fPriceFinal, value); }
         }
 
         //Custom Properties

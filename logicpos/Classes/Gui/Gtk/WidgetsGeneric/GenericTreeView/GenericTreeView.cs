@@ -397,7 +397,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         protected void AddColumns()
         {
             //Declare Vars
-            Boolean assignValue;
+            bool assignValue;
             //Create Working currentCellRendererProperties
             CellRendererText currentCellRendererProperties;
             //Used to store current TreeViewColumProperty same as _columnProperties[i]
@@ -405,7 +405,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Used to Store all PropertyInfos of TreeViewColumnProperty Object 
             PropertyInfo[] pisTreeViewColumnProperties;
             //Used to Store Current TreeViewColumnProperty Value, Used as Source to Assign to Target
-            System.Object pInfoValue;
+            object pInfoValue;
             //Used to Store PropertyInfo of TreeViewColumn, Used as Target for Assign values
             PropertyInfo piTreeViewColumn;
 
@@ -434,7 +434,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //Extract All property Infos from TreeViewColumnProperty Class to Loop and Check for Assigned Properties to assign to Column
                 currentTreeViewColumnProperty = _columnProperties[i];
                 pisTreeViewColumnProperties = typeof(GenericTreeViewColumnProperty).GetProperties(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
-                pInfoValue = new System.Object();
+                pInfoValue = new object();
                 //Loop TreeViewColumnProperty
                 foreach (PropertyInfo pInfo in pisTreeViewColumnProperties)
                 {
@@ -458,13 +458,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 assignValue = true;
                                 break;
                             case "Int32":
-                                if ((Int32)pInfoValue > 0) { assignValue = true; };
+                                if ((int)pInfoValue > 0) { assignValue = true; };
                                 break;
                             case "Single":
                                 if ((float)pInfoValue > 0) { assignValue = true; };
                                 break;
                             case "String":
-                                if ((String)pInfoValue != string.Empty) { assignValue = true; };
+                                if ((string)pInfoValue != string.Empty) { assignValue = true; };
                                 break;
                             case "FontDescription":
                                 Label labelTitle = new Label(_columnProperties[i].Title);
@@ -510,7 +510,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <summary>
         /// Convert a T2 DataSourceRow to Object Array of Values, used to Work in Insert, Append TreeView Models
         /// </summary>
-        public System.Object[] DataSourceRowToModelRow(T2 pDataSourceRow)
+        public object[] DataSourceRowToModelRow(T2 pDataSourceRow)
         {
             //Log4Net
             log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -520,17 +520,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Used to store current TreeViewColumProperty same as _columnProperties[i]
             GenericTreeViewColumnProperty currentTreeViewColumnProperty;
             //Used to Store Current TreeViewColumnProperty Value
-            System.Object pInfoValue;
+            object pInfoValue;
 
             //Used to Store columnValues to Append/Insert to Model and to Store Return 
-            System.Object[] columnValues = new System.Object[_columnProperties.Count];
+            object[] columnValues = new object[_columnProperties.Count];
 
             try
             {
                 for (int i = 0; i < _columnProperties.Count; i++)
                 {
                     pisTreeViewColumnProperties = typeof(GenericTreeViewColumnProperty).GetProperties(BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
-                    String currentFieldName;
+                    string currentFieldName;
                     foreach (PropertyInfo pInfo in pisTreeViewColumnProperties)
                     {
                         //Default FieldName
@@ -613,7 +613,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public void ModelRowInsert(T2 pDataSourceRow)
         {
             //Get TreeView Model Row Values
-            System.Object[] modelValues = DataSourceRowToModelRow(pDataSourceRow);
+            object[] modelValues = DataSourceRowToModelRow(pDataSourceRow);
 
             //Assign next RowIndex to modelValues, comes empty from XPGuidObjectToModelValues
             modelValues[0] = _totalRows;
@@ -726,7 +726,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     try
                     {
                         //Initialize modelValues from DataSourceRow
-                        System.Object[] modelValues = DataSourceRowToModelRow(_dataSourceRow);
+                        object[] modelValues = DataSourceRowToModelRow(_dataSourceRow);
 
                         //_listStoreModel.SetValues(_treeIter, modelValues);
                         _listStoreModel.SetValues(_treeIterModel, modelValues);
@@ -770,7 +770,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if (!_skipRecordDelete && _allowRecordDelete)
             {
                 ResponseType response = response = logicpos.Utils.ShowMessageTouch(
-                      GlobalApp.WindowBackOffice,
+                      GlobalApp.BackOfficeMainWindow,
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       MessageType.Question,
                       ButtonsType.YesNo,
@@ -851,7 +851,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     catch (Exception ex)
                     {
                         _logger.Error("void Delete() :: Class '" + _dataSourceRow.GetType().Name + "' : " + ex.Message, ex);
-                        String message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
+                        string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
                         logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                     }
                 }
@@ -873,7 +873,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
                 bool registerHasReferences = false;
 
-                String className = _dataSourceRow.GetType().Name;
+                string className = _dataSourceRow.GetType().Name;
                 Guid oid = Guid.Empty;
                 string code = string.Empty;
                 int countResult = 0;
@@ -1296,7 +1296,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
                                         CustomResources.UpdateLanguage(getCultureFromDB);
                                     }
-                                    logicpos.Utils.ShowMessageTouch(GlobalApp.WindowBackOffice, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), GlobalFramework.Settings["customCultureResourceDefinition"]));
+                                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), GlobalFramework.Settings["customCultureResourceDefinition"]));
 
                                 }
                                 //IN009296 ENDS
@@ -1587,7 +1587,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //(obj as TreeView).Selection
             TreeSelection selection = treeView.Selection;
             TreeModel model;
-            String output = string.Empty;
+            string output = string.Empty;
 
             // The _treeIter will point to the selected row
             if (selection.GetSelected(out model, out _treeIter))

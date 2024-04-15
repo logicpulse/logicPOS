@@ -8,14 +8,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
     {
         public Widget widget;
 
-        public TouchButtonIcon(String name, System.Drawing.Color color, String icon, System.Drawing.Size sizeIcon, int width, int height)
+        public TouchButtonIcon(string name, System.Drawing.Color color, string icon, System.Drawing.Size sizeIcon, int width, int height)
             : base(name)
         {
             InitObject(name, color, icon, sizeIcon, width, height);
             base.InitObject(name, color, widget, width, height);
         }
 
-        public void InitObject(String name, System.Drawing.Color color, String image, System.Drawing.Size sizeIcon, int width, int height)
+        public void InitObject(string name, System.Drawing.Color color, string image, System.Drawing.Size sizeIcon, int width, int height)
         {
             System.Drawing.Image imageIcon;
             Image gtkimageButton = null;

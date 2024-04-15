@@ -10,8 +10,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
         public fin_articlestock() : base() { }
         public fin_articlestock(Session session) : base(session) { }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
@@ -55,11 +55,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<fin_article>("Article", ref fArticle, value); }
         }
 
-        private Decimal fQuantity;
-        public Decimal Quantity
+        private decimal fQuantity;
+        public decimal Quantity
         {
             get { return fQuantity; }
-            set { SetPropertyValue<Decimal>("Quantity", ref fQuantity, value); }
+            set { SetPropertyValue<decimal>("Quantity", ref fQuantity, value); }
         }
 
         private decimal fPurchasePrice;

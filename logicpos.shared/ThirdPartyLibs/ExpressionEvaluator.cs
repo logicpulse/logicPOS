@@ -629,7 +629,7 @@ public class ExpressionEvaluator
     {
         if (i < expr.Length - 1)
         {
-            String op = expr.Substring(i, 2);
+            string op = expr.Substring(i, 2);
             if (operatorsDictionary.ContainsKey(op))
             {
                 stack.Push(operatorsDictionary[op]);

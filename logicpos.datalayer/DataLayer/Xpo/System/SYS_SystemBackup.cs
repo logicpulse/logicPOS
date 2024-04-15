@@ -17,8 +17,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DatabaseType>("DataBaseType", ref fDataBaseType, value); }
         }
 
-        private UInt32 fVersion;
-        public UInt32 Version
+        private uint fVersion;
+        public uint Version
         {
             get { return fVersion; }
             set { SetPropertyValue<UInt32>("Version", ref fVersion, value); }

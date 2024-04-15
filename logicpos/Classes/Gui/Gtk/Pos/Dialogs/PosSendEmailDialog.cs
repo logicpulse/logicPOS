@@ -35,7 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             // Init Local Vars
-            String windowTitle = pWindowTitle;
+            string windowTitle = pWindowTitle;
             Size windowSize = pSize;
             string windowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_send_email.png");
 

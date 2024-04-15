@@ -43,7 +43,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
         private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string PrinterDesignation)
         {
             List<int> copyNames = CustomReport.CopyNames(pDocumentFinanceMaster.DocumentType.PrintCopies);
-            return SystemPrintInsert(pDocumentFinanceMaster, null, PrinterDesignation, 1, copyNames, false, String.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
+            return SystemPrintInsert(pDocumentFinanceMaster, null, PrinterDesignation, 1, copyNames, false, string.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
         }
 
         private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive)
@@ -55,12 +55,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
         private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string PrinterDesignation)
         {
             List<int> copyNames = CustomReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
-            return SystemPrintInsert(null, pDocumentFinancePayment, PrinterDesignation, 1, copyNames, false, String.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
+            return SystemPrintInsert(null, pDocumentFinancePayment, PrinterDesignation, 1, copyNames, false, string.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
         }
 
         private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames)
         {
-            return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, String.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
+            return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, string.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
         }
 
         private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive, sys_userdetail pUserDetail, pos_configurationplaceterminal pConfigurationPlaceTerminal)
@@ -72,7 +72,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 //Start UnitOfWork
                 using (UnitOfWork uowSession = new UnitOfWork())
                 {
-                    string designation = String.Empty;
+                    string designation = string.Empty;
                     //Get Objects into Current UOW Session
                     sys_userdetail userDetail = (sys_userdetail)FrameworkUtils.GetXPGuidObject(uowSession, typeof(sys_userdetail), pUserDetail.Oid);
                     pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
@@ -91,7 +91,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         UserDetail = userDetail,
                         Terminal = configurationPlaceTerminal
                     };
-                    if (pPrintMotive != String.Empty) systemPrint.PrintMotive = pPrintMotive;
+                    if (pPrintMotive != string.Empty) systemPrint.PrintMotive = pPrintMotive;
 
                     //Mode: DocumentFinanceMaster
                     if (pDocumentFinanceMaster != null)
@@ -201,7 +201,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 printCopies.Add(i);
             }
 
-            return PrintFinanceDocument(pSession, pDocumentFinanceMaster, printCopies, false, String.Empty);
+            return PrintFinanceDocument(pSession, pDocumentFinanceMaster, printCopies, false, string.Empty);
         }
 
         public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster, List<int> pCopyNames, bool pSecondCopy, string pMotive)
@@ -365,7 +365,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Used for Money Movements and Open/Close Terminal/Day Sessions
 
-        public static bool PrintCashDrawerOpenAndMoneyInOut(sys_configurationprinters pPrinter, String pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
+        public static bool PrintCashDrawerOpenAndMoneyInOut(sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {
             bool result = false;
 

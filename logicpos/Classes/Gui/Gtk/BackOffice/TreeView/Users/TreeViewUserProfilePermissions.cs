@@ -17,8 +17,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
     internal class TreeViewUserProfilePermissions : GenericTreeViewXPO
     {
         //Settings
-        private readonly String _fontGenericTreeViewColumnTitle = GlobalFramework.Settings["fontGenericTreeViewColumnTitle"];
-        private readonly String _fontGenericTreeViewColumn = GlobalFramework.Settings["fontGenericTreeViewColumn"];
+        private readonly string _fontGenericTreeViewColumnTitle = GlobalFramework.Settings["fontGenericTreeViewColumnTitle"];
+        private readonly string _fontGenericTreeViewColumn = GlobalFramework.Settings["fontGenericTreeViewColumn"];
 
         private readonly TreeView _treeViewPermissionItem = new TreeView();
         private readonly ListStore _listStoreModelPermissionItem = new ListStore(typeof(string), typeof(string), typeof(bool));
@@ -134,9 +134,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Event
             buttonApplyPrivileges.Clicked += delegate
             {
-                GlobalApp.WindowBackOffice.Accordion.UpdateMenuPrivileges();
+                GlobalApp.BackOfficeMainWindow.Accordion.UpdateMenuPrivileges();
                 //Force Update MainWindow Pos Privilegs ex TollBar Buttons etc
-                GlobalApp.WindowPos.TicketList.UpdateTicketListButtons();
+                GlobalApp.PosMainWindow.TicketList.UpdateTicketListButtons();
             };
             //Add to Extra Slot
             Navigator.ExtraSlot.PackStart(buttonApplyPrivileges, false, false, 0);

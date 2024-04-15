@@ -29,7 +29,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
         public string DocumentTypeResourceStringReport { get; set; }
 
         [FRBO(Field = "ftWayBill")]
-        public Boolean DocumentTypeWayBill { get; set; }                                //ftWayBill AS DocumentTypeWayBill,
+        public bool DocumentTypeWayBill { get; set; }                                //ftWayBill AS DocumentTypeWayBill,
 
         //DocumentFinanceMaster
         [FRBO(Field = "fmOid")]
@@ -190,7 +190,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Documents
         public string ATDocCodeID { get; set; }                                         //fmATDocCodeID AS ATDocCodeID,
 
         [FRBO(Field = "fmPayed")]
-        public Boolean Payed { get; set; }                                              //fmPayed AS Payed,
+        public bool Payed { get; set; }                                              //fmPayed AS Payed,
 
         [FRBO(Field = "fmPayedDate")]
         public DateTime PayedDate { get; set; }                                         //fmPayedDate AS PayedDate

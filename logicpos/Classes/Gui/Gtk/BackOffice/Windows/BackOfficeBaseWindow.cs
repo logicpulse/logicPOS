@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         protected Label _labelClock;
         protected Label _labelUpdate;
         protected HBox _hboxStatusBar;
-        protected String _clockFormat;
+        protected string _clockFormat;
         protected Image _imageLogo = new Image();
         protected Label _reseller;
         public int _widthAccordion = 200;
@@ -71,9 +71,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
             System.Drawing.Size sizeIconQuit = new System.Drawing.Size(20, 20);
             System.Drawing.Size sizeButton = new System.Drawing.Size(20, 20);
-            String fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
-            String fontDescriptionParentLowRes = GlobalFramework.Settings["fontDescriptionParentLowRes"];
-            String fontDescription = GlobalFramework.Settings["fontDescriptionParentLowRes"];
+            string fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
+            string fontDescriptionParentLowRes = GlobalFramework.Settings["fontDescriptionParentLowRes"];
+            string fontDescription = GlobalFramework.Settings["fontDescriptionParentLowRes"];
             //Settings
             //Redimensionar Botões do accordion para 1024
             fontDescription = fontPosBackOfficeParent;
@@ -149,11 +149,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Style StatusBarFont
             Pango.FontDescription fontDescriptionStatusBar = Pango.FontDescription.FromString(fontBackOfficeStatusBar);
-            String _dashboardIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_dashboard.png");
-            String _updateIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_update.png");
-            String _exitIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png");
-            String _backPOSIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_front_office.png");
-            String _iconDashBoard = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
+            string _dashboardIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_dashboard.png");
+            string _updateIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_update.png");
+            string _exitIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png");
+            string _backPOSIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_front_office.png");
+            string _iconDashBoard = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
 
             //Active Content
             _labelActiveContent = new Label() { WidthRequest = 300 };
@@ -356,7 +356,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void BackOfficeMainWindow_DeleteEvent(object o, DeleteEventArgs args)
         {
             Hide();
-            GlobalApp.WindowPos.ShowAll();
+            GlobalApp.PosMainWindow.ShowAll();
             //Prevent Window Destroy, When user Uses Close
             args.RetVal = true;
         }

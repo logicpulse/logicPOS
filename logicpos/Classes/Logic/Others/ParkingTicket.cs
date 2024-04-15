@@ -28,12 +28,12 @@ namespace logicpos.Classes.Logic.Others
         {
             _logger.Debug("void GetTicketDetailFromWS([ " + ean + " ])");
 
-            Boolean hasOrder = null != GlobalApp.WindowPos.TicketList.CurrentOrderDetails.Lines;
-            Boolean ticketExists = false;
+            bool hasOrder = null != GlobalApp.PosMainWindow.TicketList.CurrentOrderDetails.Lines;
+            bool ticketExists = false;
 
             if (hasOrder) /* Checks for duplicates in current order */
             {
-                foreach (var line in GlobalApp.WindowPos.TicketList.CurrentOrderDetails.Lines)
+                foreach (var line in GlobalApp.PosMainWindow.TicketList.CurrentOrderDetails.Lines)
                 {
                     if (line.Designation.Contains(ean))
                     {
@@ -50,10 +50,10 @@ namespace logicpos.Classes.Logic.Others
                 // http://ws.test.cloud.time.track.pt/service.asmx?op=payTicket
 
                 //Always Change Mode to Ticket
-                if (GlobalApp.WindowPos.TicketList.ListMode != TicketListMode.Ticket)
+                if (GlobalApp.PosMainWindow.TicketList.ListMode != TicketListMode.Ticket)
                 {
-                    GlobalApp.WindowPos.TicketList.ListMode = TicketListMode.Ticket;
-                    GlobalApp.WindowPos.TicketList.UpdateModel();
+                    GlobalApp.PosMainWindow.TicketList.ListMode = TicketListMode.Ticket;
+                    GlobalApp.PosMainWindow.TicketList.UpdateModel();
                 }
                 ////If ticketModule and ticket not in the system
                 //if (GlobalFramework.AppUseParkingTicketModule && ticketExists)
@@ -66,21 +66,21 @@ namespace logicpos.Classes.Logic.Others
                 }
                 else if (GlobalFramework.AppUseParkingTicketModule && parkingTicketResult.Date == null && ean.Length == 13)
                 {
-                    GlobalApp.WindowPos.TicketList.ArticleNotFound();
+                    GlobalApp.PosMainWindow.TicketList.ArticleNotFound();
                 }
 				//IN009279 Parking ticket Service - implementar Cartão cliente
                 else if (parkingTicketResult.Ean.Length == 13)
                 {
-                    GlobalApp.WindowPos.UpdateWorkSessionUI();
-                    GlobalApp.WindowPos.TicketList.UpdateOrderStatusBar();
-                    GlobalApp.WindowPos.TicketList.InsertOrUpdate(SettingsApp.XpoOidArticleParkingTicket, parkingTicketResult);
+                    GlobalApp.PosMainWindow.UpdateWorkSessionUI();
+                    GlobalApp.PosMainWindow.TicketList.UpdateOrderStatusBar();
+                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(SettingsApp.XpoOidArticleParkingTicket, parkingTicketResult);
                 }
                 else
                 {
                     //GlobalApp.WindowPos.UpdateWorkSessionUI();
                     //GlobalApp.WindowPos.TicketList.UpdateOrderStatusBar();
                     //Guid XpoOidArticleParkingCard = Guid.NewGuid();
-                    GlobalApp.WindowPos.TicketList.InsertOrUpdate(SettingsApp.XpoOidArticleParkingCard, parkingTicketResult);
+                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(SettingsApp.XpoOidArticleParkingCard, parkingTicketResult);
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace logicpos.Classes.Logic.Others
                 catch (WebException ex)
                 {
                     _logger.Error("ParkingTicketResult GetTicketInformation([ " + ean + " ]) :: " + ex.Message, ex);
-                    GlobalApp.WindowPos.TicketList.WsNotFound();
+                    GlobalApp.PosMainWindow.TicketList.WsNotFound();
                     parkingTicketResult = null;
                     // throw ex;
                 }
@@ -154,7 +154,7 @@ namespace logicpos.Classes.Logic.Others
                 Date = ticketInformationItem["date"].ToString(),
                 Minutes = ticketInformationItem["minutes"].ToString(),
                 Quantity = ticketInformationItem["quantity"].ToString(),
-                Price = Decimal.Parse(ticketInformationItem["price"].ToString()),
+                Price = decimal.Parse(ticketInformationItem["price"].ToString()),
                 AlreadyPaid = Convert.ToBoolean(ticketInformationItem["alreadyPaid"]),
                 AlreadyExit = Convert.ToBoolean(ticketInformationItem["alreadyExit"].ToString()),
                 Description = ticketInformationItem["description"].ToString(),
@@ -173,7 +173,7 @@ namespace logicpos.Classes.Logic.Others
             {
                 Date = parkingCardInformation["date"].ToString(),
                 Quantity = parkingCardInformation["quantity"].ToString(),
-                Price = Decimal.Parse(parkingCardInformation["price"].ToString()),
+                Price = decimal.Parse(parkingCardInformation["price"].ToString()),
             };
 
             return parkingTicketResult;

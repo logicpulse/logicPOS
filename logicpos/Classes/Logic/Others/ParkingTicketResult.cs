@@ -16,7 +16,7 @@ namespace logicpos.Classes.Logic.Others
         //xs:element name =\"quantity\" type=\"xs:string\" minOccurs=\"0\" /
         public string Quantity { get; set; }
         //xs:element name =\"price\" type=\"xs:string\" minOccurs=\"0\" /
-        public Decimal Price { get; set; }
+        public decimal Price { get; set; }
         //xs:element name =\"description\" type=\"xs:string\" minOccurs=\"0\" /
         public string Description { get; set; }
         

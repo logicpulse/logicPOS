@@ -10,11 +10,9 @@ using logicpos.shared.Classes.Others;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -61,12 +59,12 @@ namespace logicpos.shared.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //DateTime
 
-        public static String CurrentDateTime()
+        public static string CurrentDateTime()
         {
             return CurrentDateTime(SettingsApp.DateTimeFormat);
         }
 
-        public static String CurrentDateTime(String pDateTimeFormat)
+        public static string CurrentDateTime(string pDateTimeFormat)
         {
             return CurrentDateTimeAtomic().ToString(pDateTimeFormat, System.Globalization.CultureInfo.GetCultureInfo(GlobalFramework.CurrentCulture.Name));
             //return CurrentDateTimeAtomic().ToString("F", System.Globalization.CultureInfo.GetCultureInfo(GlobalFramework.CurrentCulture.Name));
@@ -221,7 +219,7 @@ namespace logicpos.shared.App
             {
                 if (startDateTime.DayOfWeek != DayOfWeek.Saturday && startDateTime.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : String.Empty;
+                    string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : string.Empty;
                     if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
 
                     if ((pWithHoydays && !IsHoliday(startDateTime)) || !pWithHoydays)
@@ -241,7 +239,7 @@ namespace logicpos.shared.App
             bool debug = false;
             //Remove CurrentDay
             DateTime result = DateTimeToMidnightDate(pDateTime);
-            string isHoliday = String.Empty;
+            string isHoliday = string.Empty;
             int i = 0;
             while (i < pDays)
             {
@@ -251,8 +249,8 @@ namespace logicpos.shared.App
                 string isWeekEnd;
                 if (result.DayOfWeek != DayOfWeek.Saturday && result.DayOfWeek != DayOfWeek.Sunday)
                 {
-                    isWeekEnd = String.Empty;
-                    isHoliday = (IsHoliday(result)) ? "<Holiday>" : String.Empty;
+                    isWeekEnd = string.Empty;
+                    isHoliday = (IsHoliday(result)) ? "<Holiday>" : string.Empty;
 
                     if ((pWithHoydays && !IsHoliday(result)) || !pWithHoydays)
                     {
@@ -452,13 +450,13 @@ namespace logicpos.shared.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //UTF8
 
-        public static byte[] Utf8Encode(String pSource)
+        public static byte[] Utf8Encode(string pSource)
         {
             //Encode string to UTF8
             return UTF8Encoding.UTF8.GetBytes(pSource);
         }
 
-        public static String Utf8Decode(byte[] pSource)
+        public static string Utf8Decode(byte[] pSource)
         {
             //String from UTF8 encoding
             return UTF8Encoding.UTF8.GetString(pSource);
@@ -480,7 +478,7 @@ namespace logicpos.shared.App
             return null;
         }
 
-        public static String GetMacAddressString()
+        public static string GetMacAddressString()
         {
             PhysicalAddress physicalAddress = GetMacAddress();
             return physicalAddress.ToString();
@@ -521,7 +519,7 @@ namespace logicpos.shared.App
 
         private static string SHA1SignMessage(string pPrivateKey, byte[] pMessage, bool pDebug = false)
         {
-            String tempPath = Convert.ToString(GlobalFramework.Path["temp"]);
+            string tempPath = Convert.ToString(GlobalFramework.Path["temp"]);
 
             //Init RSACryptoServiceProvider with Key
             RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
@@ -675,9 +673,9 @@ namespace logicpos.shared.App
             DataTable resultDataTable = new DataTable();
 
             //Add Columns
-            String fieldName;
-            String fieldType;
-            String fieldValue;
+            string fieldName;
+            string fieldType;
+            string fieldValue;
 
             foreach (SelectStatementResultRow row in xPSelectData.Meta)
             {
@@ -690,7 +688,7 @@ namespace logicpos.shared.App
             foreach (SelectStatementResultRow rowData in xPSelectData.Data)
             {
                 //Init a new DataRow
-                String[] dataRow = new String[xPSelectData.Meta.Length];
+                string[] dataRow = new string[xPSelectData.Meta.Length];
 
                 foreach (SelectStatementResultRow rowMeta in xPSelectData.Meta)
                 {
@@ -703,7 +701,7 @@ namespace logicpos.shared.App
                     }
                     else
                     {
-                        fieldValue = String.Empty;
+                        fieldValue = string.Empty;
                     }
                     dataRow[xPSelectData.GetFieldIndex(fieldName)] = fieldValue;
                 }
@@ -720,7 +718,7 @@ namespace logicpos.shared.App
         /// <param name="pFieldValue"></param>
         /// <param name="pFieldType"></param>
         /// <returns></returns>
-        public static String FormatDataTableFieldFromType(string pFieldValue, string pFieldType)
+        public static string FormatDataTableFieldFromType(string pFieldValue, string pFieldType)
         {
             string resultFieldValue;
             switch (pFieldType)
@@ -728,13 +726,13 @@ namespace logicpos.shared.App
                 case "Decimal":
                 //Required for SQLite, it uses Int64 has Decimal?
                 case "Int64":
-                    Decimal valueDecimal;
-                    Decimal.TryParse(pFieldValue, out valueDecimal);
+                    decimal valueDecimal;
+                    decimal.TryParse(pFieldValue, out valueDecimal);
                     resultFieldValue = DecimalToString(valueDecimal);
                     break;
                 case "Double":
-                    Double valueDouble;
-                    Double.TryParse(pFieldValue, out valueDouble);
+                    double valueDouble;
+                    double.TryParse(pFieldValue, out valueDouble);
                     resultFieldValue = DoubleToString(valueDouble);
                     break;
                 default:
@@ -756,13 +754,13 @@ namespace logicpos.shared.App
 
         public static int GetNextTableFieldInt(string pTable, string pField)
         {
-            return GetNextTableFieldInt(pTable, pField, String.Empty);
+            return GetNextTableFieldInt(pTable, pField, string.Empty);
         }
 
         public static int GetNextTableFieldInt(string pTable, string pField, string pFilter)
         {
             int result = -1;
-            string filter = (pFilter != String.Empty) ? string.Format(" WHERE {0}", pFilter) : String.Empty;
+            string filter = (pFilter != string.Empty) ? string.Format(" WHERE {0}", pFilter) : string.Empty;
             try
             {
                 string sql = string.Format("SELECT MAX({0}) FROM {1}{2};", pField, pTable, filter);
@@ -771,13 +769,13 @@ namespace logicpos.shared.App
                 {
                     _logger.Debug(string.Format("GetNextTableFieldInt(): resultInt.GetType(): [{0}]", resultInt.GetType()));
 
-                    if (resultInt.GetType() == typeof(Int16))
+                    if (resultInt.GetType() == typeof(short))
                     {
-                        result = (Int16)((Int16)resultInt + 1);
+                        result = (short)((short)resultInt + 1);
                     }
-                    else if (resultInt.GetType() == typeof(Int32))
+                    else if (resultInt.GetType() == typeof(int))
                     {
-                        result = (Int32)((Int32)resultInt + 1);
+                        result = (int)((int)resultInt + 1);
                     }
                     return result;
                 }
@@ -970,7 +968,7 @@ namespace logicpos.shared.App
 
         public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken)
         {
-            return Audit(pSession, pLoggedUser, pLoggedTerminal, pAuditTypeToken, String.Empty);
+            return Audit(pSession, pLoggedUser, pLoggedTerminal, pAuditTypeToken, string.Empty);
         }
 
         public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken, string pDescription = "")
@@ -994,7 +992,7 @@ namespace logicpos.shared.App
                     pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
                     //get AuditType Object
                     sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
-                    string description = (pDescription != String.Empty) ? pDescription
+                    string description = (pDescription != string.Empty) ? pDescription
                       : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) != null)
                       ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
@@ -1059,7 +1057,7 @@ namespace logicpos.shared.App
             System.Diagnostics.Process proc = new System.Diagnostics.Process();
             proc.EnableRaisingEvents = false;
             proc.StartInfo.FileName = pFileName;
-            if (pArguments != String.Empty) proc.StartInfo.Arguments = pArguments;
+            if (pArguments != string.Empty) proc.StartInfo.Arguments = pArguments;
             proc.Start();
             proc.WaitForExit();
         }
@@ -1120,7 +1118,7 @@ namespace logicpos.shared.App
         //TODO: Changed to ExecuteExternalProcess by Mario, to be Generic, Was ShowPOS_Composer
         public static void ExecuteExternalProcess(string pExe)
         {
-            ExecuteExternalProcess(pExe, String.Empty);
+            ExecuteExternalProcess(pExe, string.Empty);
         }
         public static void ExecuteExternalProcess(string pExe, string pArgs)
         {
@@ -1129,7 +1127,7 @@ namespace logicpos.shared.App
                 var proc = new Process();
 
                 proc.StartInfo.FileName = pExe;
-                if (pArgs != null || pArgs != String.Empty) proc.StartInfo.Arguments = pArgs;
+                if (pArgs != null || pArgs != string.Empty) proc.StartInfo.Arguments = pArgs;
                 proc.Start();
 
                 // GlobalApp.WindowReportsWinForm = new logicpos.Classes.Gui.WinForms.BackOffice.Windows.BackOfficeReportWindow();
@@ -1168,7 +1166,7 @@ namespace logicpos.shared.App
 
         //Return os windows,unix,macosx
         //http://docs.go-mono.com/index.aspx?link=T%3ASystem.PlatformID
-        public static String OSVersion()
+        public static string OSVersion()
         {
             OperatingSystem os = Environment.OSVersion;
             PlatformID pid = os.Platform;
@@ -1189,7 +1187,7 @@ namespace logicpos.shared.App
                     result = "macosx";
                     break;
                 default:
-                    result = String.Empty;
+                    result = string.Empty;
                     break;
             }
             return result;
@@ -1221,28 +1219,27 @@ namespace logicpos.shared.App
         }
 
         //Replace Slash with OSSlash ex windows=\ and Linux=/
-        public static String OSSlash(String pPath)
+        public static string OSSlash(string pPath)
         {
-            if (pPath != null)
+            if (pPath == null)
             {
-                //TODO: FIX
-                string result = pPath.Replace('\\', '/'/*Path.DirectorySeparatorChar*/);
-                //_logger.Debug(string.Format("OSSlash(): [{0}] : original pPath:[{1}] : result pPath: [{2}]", Path.DirectorySeparatorChar, pPath, result));
-                return result;
+                return string.Empty;
             }
-            else
-            {
-                return String.Empty;
-            }
+
+            //TODO: FIX
+            string result = pPath.Replace('\\', '/'/*Path.DirectorySeparatorChar*/);
+            //_logger.Debug(string.Format("OSSlash(): [{0}] : original pPath:[{1}] : result pPath: [{2}]", Path.DirectorySeparatorChar, pPath, result));
+            return result;
+
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Colors
 
         //Converts a Color to String using TypeConverter, used to Store values in Appsettings
-      
 
-  
+
+
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Financial 
@@ -1527,7 +1524,7 @@ namespace logicpos.shared.App
 
         public static string StringListToCommaDelimitedString<T>(List<T> pList, char pSeparator)
         {
-            string result = String.Empty;
+            string result = string.Empty;
 
             try
             {
@@ -1570,7 +1567,7 @@ namespace logicpos.shared.App
                         var line = streamReader.ReadLine();
                         var values = line.Split(pSplitter);
 
-                        if (values.Length == 2 && !String.IsNullOrEmpty(values[0]) && !String.IsNullOrEmpty(values[1]))
+                        if (values.Length == 2 && !string.IsNullOrEmpty(values[0]) && !string.IsNullOrEmpty(values[1]))
                         {
                             string val1 = values[0];
                             string val2 = values[1];
@@ -1697,7 +1694,7 @@ namespace logicpos.shared.App
             return resultPermissions;
         }
 
-        public static bool HasPermissionTo(String pToken)
+        public static bool HasPermissionTo(string pToken)
         {
             bool result;
             if (GlobalFramework.LoggedUserPermissions != null && GlobalFramework.LoggedUserPermissions.ContainsKey(pToken))
@@ -1887,7 +1884,7 @@ namespace logicpos.shared.App
         //Overload From SaftDocumentType Enum
         public static sys_systemnotification ProcessFinanceDocumentToInvoice(Session pSession, Guid pSystemNotificationTypeGuid, SaftDocumentType pSaftDocumentType, string pExtraFilter, int pDaysBack)
         {
-            string filter = String.Empty;
+            string filter = string.Empty;
 
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(SaftDocumentType = {0})", Convert.ToInt16(pSaftDocumentType)));
             XPCollection xpcDocumentFinanceType = new XPCollection(pSession, typeof(fin_documentfinancetype), criteriaOperator);
@@ -1897,7 +1894,7 @@ namespace logicpos.shared.App
                 foreach (fin_documentfinancetype item in xpcDocumentFinanceType)
                 {
                     i++;
-                    filter += (string.Format("DocumentType = '{0}'{1}", item.Oid, (i < xpcDocumentFinanceType.Count) ? " OR " : String.Empty));
+                    filter += (string.Format("DocumentType = '{0}'{1}", item.Oid, (i < xpcDocumentFinanceType.Count) ? " OR " : string.Empty));
                 }
                 filter = string.Format("({0})", filter);
             }
@@ -1933,7 +1930,7 @@ namespace logicpos.shared.App
 
                 //Extra Filter 
                 string filter = pFilter;
-                if (pExtraFilter != String.Empty) filter = string.Format("{0} AND {1}", filter, pExtraFilter);
+                if (pExtraFilter != string.Empty) filter = string.Format("{0} AND {1}", filter, pExtraFilter);
                 filter = string.Format("{0} AND (Date <= '{1} 23:59:59')", filter, dateFilterFrom.ToString(SettingsApp.DateFormat));
 
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(filter);
@@ -1949,7 +1946,7 @@ namespace logicpos.shared.App
                 if (xpcDocumentFinanceMaster.Count > 0)
                 {
                     int i = 0;
-                    String documentsMessage = String.Empty;
+                    string documentsMessage = string.Empty;
                     int documentBackUtilDays = 0;
 
                     //Generate DocumentNumber List documentsMessage
@@ -2336,7 +2333,7 @@ namespace logicpos.shared.App
                 resultObject = methodInfo.Invoke(GlobalFramework.PluginSoftwareVendor, methodParameters);
             }
 
-            if (debug) _logger.Debug(String.Format("SoftwareVendor {0} Value: [{1}]", property, resultObject));
+            if (debug) _logger.Debug(string.Format("SoftwareVendor {0} Value: [{1}]", property, resultObject));
 
             if (resultObject != null)
             {

@@ -5,7 +5,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Articles
     [FRBO(Entity = "fin_article")]
     public class FRBOArticle : FRBOBaseObject
     {
-        public UInt32 Ord { get; set; }
+        public uint Ord { get; set; }
         public string Code { get; set; }
         public string CodeDealer { get; set; }
         public string Designation { get; set; }

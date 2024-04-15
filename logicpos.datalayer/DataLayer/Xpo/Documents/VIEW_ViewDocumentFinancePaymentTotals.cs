@@ -16,11 +16,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("DocumentOid", ref pDocumentOid, value); }
         }
 
-        private Decimal pTotal;
-        public Decimal Total
+        private decimal pTotal;
+        public decimal Total
         {
             get { return pTotal; }
-            set { SetPropertyValue<Decimal>("Total", ref pTotal, value); }
+            set { SetPropertyValue<decimal>("Total", ref pTotal, value); }
         }
     }
 }

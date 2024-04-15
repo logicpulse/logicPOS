@@ -44,12 +44,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Events
         public event EventHandler Changed;
 
-        public EntryBoxValidationFilePickerMultiImages(Window pSourceWindow, String pLabelText, FileFilter pFileFilter)
+        public EntryBoxValidationFilePickerMultiImages(Window pSourceWindow, string pLabelText, FileFilter pFileFilter)
             : this(pSourceWindow, pLabelText, pFileFilter, new List<string>())
         {
         }
 
-        public EntryBoxValidationFilePickerMultiImages(Window pSourceWindow, String pLabelText, FileFilter pFileFilter, List<string> pInitialFileList)
+        public EntryBoxValidationFilePickerMultiImages(Window pSourceWindow, string pLabelText, FileFilter pFileFilter, List<string> pInitialFileList)
         {
             //Parameters
             _sourceWindow = pSourceWindow;

@@ -23,7 +23,7 @@ namespace logicpos.financial.library.Classes.WorkSession
 
         public static pos_worksessionperiod GetSessionPeriod(WorkSessionPeriodType pWorkSessionPeriodType)
         {
-            string whereTerminal = String.Empty;
+            string whereTerminal = string.Empty;
             if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
             {
                 whereTerminal = string.Format("Terminal = '{0}' AND ", GlobalFramework.LoggedTerminal.Oid);
@@ -54,7 +54,7 @@ namespace logicpos.financial.library.Classes.WorkSession
             try
             {
                 string periodType = (pWorkSessionPeriodType == WorkSessionPeriodType.Day) ? "Day" : "Terminal";
-                string description = (pDescription != String.Empty) ? string.Format(" - {0}", pDescription) : String.Empty;
+                string description = (pDescription != string.Empty) ? string.Format(" - {0}", pDescription) : string.Empty;
                 pos_configurationplaceterminal terminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
                 DateTime dateTime = FrameworkUtils.CurrentDateTimeAtomic();
 
@@ -154,7 +154,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 using (UnitOfWork uowSession = new UnitOfWork())
                 {
                     uint paymentMethodOrd = 0;
-                    string paymentMethodToken = String.Empty;
+                    string paymentMethodToken = string.Empty;
                     MovementTypeTotal movementTypeTotal = MovementTypeTotal.None;
                     pos_worksessionperiod workSessionPeriod;
                     fin_configurationpaymentmethod configurationPaymentMethod;
@@ -301,8 +301,8 @@ namespace logicpos.financial.library.Classes.WorkSession
             ;
 
             decimal resultTotal = 0.0m;
-            string sqlWhereTypeTotal = String.Empty;
-            string sqlWherePeriod = String.Empty;
+            string sqlWhereTypeTotal = string.Empty;
+            string sqlWherePeriod = string.Empty;
 
             if (pMovementTypeTotal != MovementTypeTotal.None)
             {
@@ -380,8 +380,8 @@ namespace logicpos.financial.library.Classes.WorkSession
         public static string GetSessionPeriodMovementTotalDebug(pos_worksessionperiod pWorkSessionPeriod, bool pOutputToLog)
         {
             string resultDetail = string.Format("WorkSessionPeriod:[{0}] Type:[{1}]", pWorkSessionPeriod.Oid, pWorkSessionPeriod.PeriodType);
-            string resultValues = String.Empty;
-            string resultFields = String.Empty;
+            string resultValues = string.Empty;
+            string resultFields = string.Empty;
 
             foreach (MovementTypeTotal typeTotal in Enum.GetValues(typeof(MovementTypeTotal)))
             {
@@ -395,12 +395,12 @@ namespace logicpos.financial.library.Classes.WorkSession
             return result;
         }
 
-        public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(String pMoventTypeToken)
+        public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(string pMoventTypeToken)
         {
             return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(GlobalFramework.SessionXpo, GlobalFramework.WorkSessionPeriodTerminal, pMoventTypeToken);
         }
 
-        public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(pos_worksessionperiod pWorkSessionPeriod, String pMoventTypeToken)
+        public static decimal GetSessionPeriodCashDrawerOpenOrCloseAmount(pos_worksessionperiod pWorkSessionPeriod, string pMoventTypeToken)
         {
             return GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(GlobalFramework.SessionXpo, pWorkSessionPeriod, pMoventTypeToken);
         }
@@ -408,13 +408,13 @@ namespace logicpos.financial.library.Classes.WorkSession
         /// <summary>
         /// Get Last CASHDRAWER_OPEN/CASHDRAWER_CLOSE Value, Required WorkSessionPeriod, to Re-Print Sessions from Other Terminals, do not use GlobalFramework.LoggedTerminal.Oid
         /// </summary>
-        public static decimal GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(Session pSession, pos_worksessionperiod pWorkSessionPeriod, String pMoventTypeToken)
+        public static decimal GetSessionPeriodTerminalCashDrawerOpenOrCloseAmount(Session pSession, pos_worksessionperiod pWorkSessionPeriod, string pMoventTypeToken)
         {
             //If Has a Valid pWorkSessionPeriod get Terminal from it, else use logged Terminal
             Guid whereTerminalGuid = (pWorkSessionPeriod != null) ? pWorkSessionPeriod.Terminal.Oid : GlobalFramework.LoggedTerminal.Oid;
 
             //Required, CASHDRAWER_OPEN always comes from WorkSessionPeriod, and CASHDRAWER_CLOSE comes from latest cash close record (DESC)
-            string whereOpen = (pMoventTypeToken == "CASHDRAWER_OPEN") ? string.Format(" AND wspPeriod = '{0}'", pWorkSessionPeriod.Oid) : String.Empty;
+            string whereOpen = (pMoventTypeToken == "CASHDRAWER_OPEN") ? string.Format(" AND wspPeriod = '{0}'", pWorkSessionPeriod.Oid) : string.Empty;
 
             string sql = string.Format(@"
                 SELECT 
@@ -507,11 +507,11 @@ namespace logicpos.financial.library.Classes.WorkSession
                 //  cptTerminalOrd
 
                 int i = 0;
-                string wherePeriod = String.Empty;
-                string whereSeparator = String.Empty;
+                string wherePeriod = string.Empty;
+                string whereSeparator = string.Empty;
                 foreach (string item in listPeriod)
                 {
-                    whereSeparator = (i > 0) ? " OR " : String.Empty;
+                    whereSeparator = (i > 0) ? " OR " : string.Empty;
                     wherePeriod += string.Format("{0}wspPeriod = '{1}'", whereSeparator, item);
                     i++;
                 }
@@ -519,7 +519,7 @@ namespace logicpos.financial.library.Classes.WorkSession
                 //Shared for Both Modes
                 wherePeriod = string.Format(" AND ({0})", wherePeriod);
                 //Require to Add for OPEN Mode
-                string whereClose = (!pEnableOpenMode) ? " OR wmtMovementTypeToken = 'CASHDRAWER_IN' OR wmtMovementTypeToken = 'CASHDRAWER_OUT'" : String.Empty;
+                string whereClose = (!pEnableOpenMode) ? " OR wmtMovementTypeToken = 'CASHDRAWER_IN' OR wmtMovementTypeToken = 'CASHDRAWER_OUT'" : string.Empty;
 
                 //Final Query
                 sqlCashDrawerAmount = string.Format(sqlCashDrawerAmount, whereClose, wherePeriod);

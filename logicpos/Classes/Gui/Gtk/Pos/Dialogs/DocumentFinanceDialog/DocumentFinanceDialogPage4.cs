@@ -73,11 +73,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         }
 
         //Constructor
-        public DocumentFinanceDialogPage4(Window pSourceWindow, String pPageName) 
+        public DocumentFinanceDialogPage4(Window pSourceWindow, string pPageName) 
             : this(pSourceWindow, pPageName, "", null, true) { }
-        public DocumentFinanceDialogPage4(Window pSourceWindow, String pPageName, Widget pWidget) 
+        public DocumentFinanceDialogPage4(Window pSourceWindow, string pPageName, Widget pWidget) 
             : this(pSourceWindow, pPageName, "", pWidget, true) { }
-        public DocumentFinanceDialogPage4(Window pSourceWindow, String pPageName, String pPageIcon, Widget pWidget, bool pEnabled = true)
+        public DocumentFinanceDialogPage4(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
             : base(pSourceWindow, pPageName, pPageIcon, pWidget, pEnabled)
         {
             //Init private vars

@@ -607,16 +607,16 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //certCP.Import(CaminhoCertificado, SenhaCertificado, X509KeyStorageFlags.DefaultKeySet);
             certCP.Import(_pathPublicKey);
 
-            String publicKey = certCP.PublicKey.Key.ToXmlString(false);
+            string publicKey = certCP.PublicKey.Key.ToXmlString(false);
 
-            String stCreationDate = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.ff") + "Z";
+            string stCreationDate = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.ff") + "Z";
 
             RijndaelManaged rijndaelCipher = new RijndaelManaged();
             rijndaelCipher.GenerateKey();
             rijndaelCipher.Mode = CipherMode.ECB;
             rijndaelCipher.Padding = PaddingMode.PKCS7;
             string simetricKey = rijndaelCipher.Key.ToString();
-            Byte[] simetricKeyByte = rijndaelCipher.Key;
+            byte[] simetricKeyByte = rijndaelCipher.Key;
             SymmetricAlgorithm rijn = SymmetricAlgorithm.Create();
             rijn.Key = rijndaelCipher.IV;
             rijn.IV = rijndaelCipher.IV;
@@ -637,7 +637,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             _dateOfCriationEncrypted = Convert.ToBase64String(msCreationDate.ToArray());
             RSACryptoServiceProvider AlgRSA = new RSACryptoServiceProvider();
             AlgRSA.FromXmlString(publicKey);
-            Byte[] Chave = AlgRSA.Encrypt(rijn.Key, false);
+            byte[] Chave = AlgRSA.Encrypt(rijn.Key, false);
             _symetricKeyEncrypted = Convert.ToBase64String(Chave);
         }
 

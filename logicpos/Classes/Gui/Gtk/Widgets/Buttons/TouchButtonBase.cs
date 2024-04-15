@@ -26,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             set { _currentButtonOid = value; }
         }
 
-        public TouchButtonBase(String pName)
+        public TouchButtonBase(string pName)
         {
             Name = pName;
             BorderWidth = 1;
@@ -39,13 +39,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             //Clicked += delegate {_logger.Debug("TouchButtonBase() ButtonPress: button.Name=" + Name);};
         }
 
-        public TouchButtonBase(String pName, System.Drawing.Color pColor, Widget pWidget, int pWidth, int pHeight)
+        public TouchButtonBase(string pName, System.Drawing.Color pColor, Widget pWidget, int pWidth, int pHeight)
             : this(pName)
         {
             InitObject(pName, pColor, pWidget, pWidth, pHeight);
         }
 
-        public void InitObject(String pName, System.Drawing.Color pColor, Widget pWidget, int pWidth, int pHeight)
+        public void InitObject(string pName, System.Drawing.Color pColor, Widget pWidget, int pWidth, int pHeight)
         {
             WidthRequest = pWidth;
             HeightRequest = pHeight;

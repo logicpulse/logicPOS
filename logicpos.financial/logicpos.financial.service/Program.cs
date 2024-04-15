@@ -471,12 +471,12 @@ namespace logicpos.financial.service
                 //Started Running Tasks
                 _timerRunningTasks = true;
 
-                _logger.Debug(String.Format("Send Documents to AT"));
+                _logger.Debug(string.Format("Send Documents to AT"));
 				//Financial.service - Correções no envio de documentos AT [IN:014494]
 				//Now only works in prodution
                 if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocuments"]) || Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocumentsWayBill"]))
                 {
-                    _logger.Debug(String.Format("ServiceATSendDocuments True"));
+                    _logger.Debug(string.Format("ServiceATSendDocuments True"));
                     Utils.ServiceSendPendentDocuments();
                 }
 

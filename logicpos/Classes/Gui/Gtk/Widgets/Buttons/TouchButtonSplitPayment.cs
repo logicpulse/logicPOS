@@ -29,19 +29,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         private string _selectedPaymentMethodButtonName;
         public string SelectedPaymentMethodButtonName { get => _selectedPaymentMethodButtonName; set => _selectedPaymentMethodButtonName = value; }
 
-        public TouchButtonSplitPayment(String pName)
+        public TouchButtonSplitPayment(string pName)
             : base(pName)
         {
         }
 
-        public TouchButtonSplitPayment(String pName, Color pColor, String pLabelText, String pFont, int pWidth, int pHeight)
+        public TouchButtonSplitPayment(string pName, Color pColor, string pLabelText, string pFont, int pWidth, int pHeight)
             : base(pName)
         {
             InitObject(pName, pColor, pLabelText, pFont);
             base.InitObject(pName, pColor, _widget, pWidth, pHeight);
         }
 
-        public void InitObject(String pName, Color pColor, String pLabelText, String pFont)
+        public void InitObject(string pName, Color pColor, string pLabelText, string pFont)
         {
             //Init Parameters
             _buttonColor = pColor;

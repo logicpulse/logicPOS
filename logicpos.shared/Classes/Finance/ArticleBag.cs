@@ -353,7 +353,7 @@ namespace logicpos.shared.Classes.Finance
                     {
                         result[article.Class.Acronym] += item.Value.TotalFinal;
                     }
-                    if (debug) _logger.Debug(String.Format("Acronym: [{0}], TotalFinal : [{1}], ClassTotalFinal: [{2}]", article.Class.Acronym, item.Value.TotalFinal, result[article.Class.Acronym]));
+                    if (debug) _logger.Debug(string.Format("Acronym: [{0}], TotalFinal : [{1}], ClassTotalFinal: [{2}]", article.Class.Acronym, item.Value.TotalFinal, result[article.Class.Acronym]));
                 }
             }
             catch (Exception ex)
@@ -524,7 +524,7 @@ namespace logicpos.shared.Classes.Finance
                     item.Value.Code,
                     item.Key.Designation,
                     item.Value.Quantity,
-                    String.Empty,//PriceUser no Used
+                    string.Empty,//PriceUser no Used
                     item.Key.Discount,
                     item.Key.Vat,
                     item.Key.Price,

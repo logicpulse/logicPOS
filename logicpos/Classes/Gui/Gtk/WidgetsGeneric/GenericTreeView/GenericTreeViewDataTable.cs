@@ -87,23 +87,23 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             ListStore model = GenericTreeViewModel.InitModel(_columnProperties, pGenericTreeViewMode);
 
             //Init ColumnValues Object Array
-            System.Object[] columnValues = new System.Object[_columnProperties.Count];
+            object[] columnValues = new object[_columnProperties.Count];
 
             //Start Render Model Values from Collection
-            String fieldName;
+            string fieldName;
 
             //Always add Index to Rows, NOT USED: Check if existe before Add to prevent Refresh Add Again
-            dataTable.Columns.Add("Index", typeof(Int32)).SetOrdinal(0);//Put in Index 0, First Column
+            dataTable.Columns.Add("Index", typeof(int)).SetOrdinal(0);//Put in Index 0, First Column
 
             //If Detect CheckBox Mode, Insert CheckBox Column in DataTable
             if (_treeViewMode == GenericTreeViewMode.CheckBox)
             {
                 //NOT USED: Check if existe before Add to prevent Refresh Add Again "if (dataTable.Columns.IndexOf("CheckBox") < 0)"
-                dataTable.Columns.Add("CheckBox", typeof(Boolean)).SetOrdinal(1);//Put in Index 1, After Index
+                dataTable.Columns.Add("CheckBox", typeof(bool)).SetOrdinal(1);//Put in Index 1, After Index
             }
 
             //Loop Records
-            Int32 rowIndex = -1;
+            int rowIndex = -1;
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 //Increase RowIndex
@@ -172,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <returns>Column Value</returns>
         public override object DataSourceRowGetColumnValue(DataRow pDataSourceRow, int pColumnIndex, string pFieldName = "")
         {
-            String fieldName = pFieldName;
+            string fieldName = pFieldName;
             object fieldValue = null;
 
             if (pDataSourceRow.Table.Columns.Contains(fieldName))
@@ -205,7 +205,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Initialize DataTableScheme 
             DataTable dataTableScheme = GenericTreeViewColumnProperty.ColumnPropertiesToDataTableScheme(_columnProperties);
             //Initialize DataRow
-            System.Object[] rowArray = new System.Object[_columnProperties.Count];
+            object[] rowArray = new object[_columnProperties.Count];
             int i = -1;//Leave 0 for Column Propertiy Index
             foreach (GenericTreeViewColumnProperty column in _columnProperties)
             {
@@ -215,7 +215,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //_logger.Debug(string.Format("column.Name: [{0}], column.Type: [{1}]", column.Name, column.Type));
 
                 //Always add a Typed Default value, ex String, Guid, Enum etc
-                if (column.Type == typeof(String))
+                if (column.Type == typeof(string))
                 {
                     //String dont have parameterless constructor
                     defaultFieldValue = string.Empty;
@@ -231,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 }
 
                 //String dont have a parameterless constructor
-                defaultFieldValue = (column.Type == typeof(String)) ? string.Empty : Activator.CreateInstance(column.Type);
+                defaultFieldValue = (column.Type == typeof(string)) ? string.Empty : Activator.CreateInstance(column.Type);
 
                 rowArray[i] = (column.InitialValue != null)
                   ? column.InitialValue

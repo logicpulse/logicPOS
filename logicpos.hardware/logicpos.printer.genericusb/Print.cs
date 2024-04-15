@@ -39,7 +39,7 @@ namespace logicpos.printer.genericusb
 
         public static void USBPrint(string printerName, byte[] document)
         {
-            _logger.Debug(String.Format("USBPrint to printerName: [{0}], document: [{1}]", printerName, document.ToString()));
+            _logger.Debug(string.Format("USBPrint to printerName: [{0}], document: [{1}]", printerName, document.ToString()));
 
             UsbDevice usbDevice;
             UsbEndpointWriter usbWriter;
@@ -115,7 +115,7 @@ namespace logicpos.printer.genericusb
             }
             catch (Exception ex)
             {
-                _logger.Error((usbErrorCode != ErrorCode.None ? usbErrorCode + ":" : String.Empty) + ex.Message);
+                _logger.Error((usbErrorCode != ErrorCode.None ? usbErrorCode + ":" : string.Empty) + ex.Message);
             }
         }
 

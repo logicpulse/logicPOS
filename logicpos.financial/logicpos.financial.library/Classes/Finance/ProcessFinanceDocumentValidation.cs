@@ -732,7 +732,7 @@ namespace logicpos.financial.library.Classes.Finance
                                     hasArticlesWithoutReference = true;
                                 }
                                 //Chedcfk if has articles without required Reason
-                                if (String.IsNullOrEmpty(item.Value.Reason))
+                                if (string.IsNullOrEmpty(item.Value.Reason))
                                 {
                                     hasArticlesWithoutReason = true;
                                 }
@@ -961,7 +961,7 @@ namespace logicpos.financial.library.Classes.Finance
                 totalDocumentsDiference = (totalInvoicesDebit - totalCreditNotes);
                 totalPaymentDiference = Math.Round(totalDocumentsDiference - paymentAmount, SettingsApp.DecimalRoundTo);
 
-                if (_debug) _logger.Debug(String.Format(
+                if (_debug) _logger.Debug(string.Format(
                     "PaymentAmount: [{0}], InvoicesDebit: [{1}], CreditNotes: [{2}], DocumentsDiference: [{3}], PaymentDiference:[{4}]",
                     paymentAmount, totalInvoicesDebit, totalCreditNotes, totalDocumentsDiference, totalPaymentDiference)
                 );
@@ -1074,7 +1074,7 @@ namespace logicpos.financial.library.Classes.Finance
                 if (!result)
                 {
                     ResultAdd(item.Key);
-                    if (_debug) _logger.Debug(String.Format("Key: [{0}], Name: [{1}], Value: [{2}], Type: [{3}], Rule: [{4}], Required: [{5}]", item.Key, item.Value.Name, value, (type != null) ? type.ToString() : "NULL", item.Value.Rule, item.Value.Required));
+                    if (_debug) _logger.Debug(string.Format("Key: [{0}], Name: [{1}], Value: [{2}], Type: [{3}], Rule: [{4}], Required: [{5}]", item.Key, item.Value.Name, value, (type != null) ? type.ToString() : "NULL", item.Value.Rule, item.Value.Required));
                 }
             }
         }

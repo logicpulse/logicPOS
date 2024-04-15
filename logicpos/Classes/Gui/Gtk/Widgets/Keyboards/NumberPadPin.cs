@@ -22,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Private Members
         private readonly Window _sourceWindow;
         private int _tempCursorPosition = 0;
-        private Boolean _entryPinShowStatus = false;
+        private bool _entryPinShowStatus = false;
         private readonly Label _labelStatus;
         //Used to store New Password in Memory, to Compare with Confirmation
         private string _passwordNew;
@@ -377,7 +377,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 var resultObject = GlobalFramework.SessionXpo.ExecuteScalar(sql);
 
-                if (resultObject != null && resultObject.GetType() == typeof(String) && CryptographyUtils.SaltedString.ValidateSaltedString(resultObject.ToString(), password))
+                if (resultObject != null && resultObject.GetType() == typeof(string) && CryptographyUtils.SaltedString.ValidateSaltedString(resultObject.ToString(), password))
                 {
                     _entryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
                     _entryPin.Visibility = false;

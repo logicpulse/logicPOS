@@ -414,7 +414,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.WriteLine(copyRightText, WriteLineTextMode.Small);
 
             /* IN009211 - it was printing empty label */
-            if (!String.IsNullOrEmpty(GlobalFramework.LicenceCompany))
+            if (!string.IsNullOrEmpty(GlobalFramework.LicenceCompany))
             {
                 string licenseText = string.Format(
                     resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_licensed_to"),

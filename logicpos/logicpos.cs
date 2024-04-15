@@ -57,7 +57,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 240), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_contact_support"));
+                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 240), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_contact_support"));
             }
             finally
             {
@@ -144,7 +144,7 @@ namespace logicpos
                         /* IN009034 */
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                         Environment.Exit(0);
                     }
                 }
@@ -168,7 +168,7 @@ namespace logicpos
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                     throw; // TO DO
                 }
 
@@ -183,7 +183,7 @@ namespace logicpos
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
                         string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(endMessage, Environment.NewLine));
+                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(endMessage, Environment.NewLine));
                         Environment.Exit(0);
                     }
                 }
@@ -251,7 +251,7 @@ namespace logicpos
                     string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
                     _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
 
-                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(endMessage, Environment.NewLine));
+                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(endMessage, Environment.NewLine));
                     Environment.Exit(0);
                 }
 
@@ -264,7 +264,7 @@ namespace logicpos
                 string culture = GlobalFramework.PreferenceParameters["CULTURE"];
 
                 /* IN008013 */
-                if (String.IsNullOrEmpty(culture))
+                if (string.IsNullOrEmpty(culture))
                 {
                     culture = GlobalFramework.Settings["customCultureResourceDefinition"];
                 }
@@ -345,7 +345,7 @@ namespace logicpos
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
                     _logger.Debug("void Init() :: XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme) :: " + ex);
-                    Utils.ShowMessageTouchErrorRenderTheme(GlobalApp.WindowStartup, ex.Message);
+                    Utils.ShowMessageTouchErrorRenderTheme(GlobalApp.StartupWindow, ex.Message);
                 }
 
                 //Init FastReports Custom Functions and Custom Vars
@@ -400,8 +400,8 @@ namespace logicpos
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    _logger.Debug(String.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
-                    Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_plugin_softwarevendor_not_registered"));
+                    _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
+                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_plugin_softwarevendor_not_registered"));
                 }
 
                 // TK013134: HardCoded Modules : PakingTicket
@@ -479,7 +479,7 @@ namespace logicpos
             //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
             if (!validDirectoryBackup)
             {
-                ResponseType response = Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_create_directory_backups"), Convert.ToString(GlobalFramework.Path["backups"])));
+                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_create_directory_backups"), Convert.ToString(GlobalFramework.Path["backups"])));
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
@@ -488,7 +488,7 @@ namespace logicpos
             if (GlobalFramework.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
             {
                 /* IN009163 and IN009164 - Opt to auto-backup flow */
-                _autoBackupFlowIsEnabled = Boolean.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
+                _autoBackupFlowIsEnabled = bool.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
 
                 /* IN009164 */
                 if (_autoBackupFlowIsEnabled)
@@ -527,7 +527,7 @@ namespace logicpos
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
-                Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
+                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
                 Environment.Exit(0);
             }
             //Dont check changed files if Developer, Uncomment to Enable
@@ -558,7 +558,7 @@ namespace logicpos
                     //If Not IgnoreProtection, show alert and exit
                     if (!SettingsApp.ProtectedFilesIgnoreProtection)
                     {
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected"), filesMessage));
+                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected"), filesMessage));
                         Environment.Exit(0);
                     }
                 }
@@ -600,7 +600,7 @@ namespace logicpos
             //Run in BackOffice Mode
             if (pAppMode == AppMode.Backoffice)
             {
-                GlobalApp.WindowBackOffice = new BackOfficeMainWindow();
+                GlobalApp.BackOfficeMainWindow = new BackOfficeMainWindow();
             }
             //Run in POS Mode
             else
@@ -618,7 +618,7 @@ namespace logicpos
                     _logger.Debug("Init windowImageFileName ");
                     string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                     _logger.Debug("StartupWindow " + windowImageFileName);
-                    GlobalApp.WindowStartup = new StartupWindow(windowImageFileName, needToUpdate);
+                    GlobalApp.StartupWindow = new StartupWindow(windowImageFileName, needToUpdate);
 
 
                 }

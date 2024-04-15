@@ -149,7 +149,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             bool result;
             //Update UI
-            GlobalApp.WindowPos.UpdateWorkSessionUI();
+            GlobalApp.PosMainWindow.UpdateWorkSessionUI();
            
 
             //ProcessWorkSessionPeriod.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true );
@@ -172,8 +172,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //Update UI
-                            GlobalApp.WindowPos.UpdateWorkSessionUI();
-                            GlobalApp.WindowPos.TicketList.UpdateOrderStatusBar();
+                            GlobalApp.PosMainWindow.UpdateWorkSessionUI();
+                            GlobalApp.PosMainWindow.TicketList.UpdateOrderStatusBar();
 
                             //Here we already have GlobalFramework.WorkSessionPeriodTerminal, assigned on ProcessWorkSessionPeriod.SessionPeriodStart
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
@@ -196,7 +196,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation"));
 
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.WindowPos.TouchButtonPosToolbarNewFinanceDocument.Sensitive = false;
+                            GlobalApp.PosMainWindow.TouchButtonPosToolbarNewFinanceDocument.Sensitive = false;
                             //Show ClosePeriodMessage
                             //ShowClosePeriodMessage(dialogCashDrawer, workSessionPeriodTerminal);
                             if (pResponse == ResponseType.Yes)
@@ -205,7 +205,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, GlobalFramework.LoggedTerminal.ThermalPrinter, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "ticket_title_worksession_terminal_open"), 0.0m, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
                             }
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.WindowPos.TouchButtonPosToolbarNewFinanceDocument.Sensitive = true;
+                            GlobalApp.PosMainWindow.TouchButtonPosToolbarNewFinanceDocument.Sensitive = true;
 
                         }
                         else
@@ -369,8 +369,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //Update UI
-                            GlobalApp.WindowPos.UpdateWorkSessionUI();
-                            GlobalApp.WindowPos.LabelCurrentTable.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "status_message_open_cashdrawer");
+                            GlobalApp.PosMainWindow.UpdateWorkSessionUI();
+                            GlobalApp.PosMainWindow.LabelCurrentTable.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "status_message_open_cashdrawer");
 
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
                             workSessionPeriodTerminal = GlobalFramework.SessionXpo.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodTerminal.Oid);
@@ -394,7 +394,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation"));
 
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.WindowPos.TouchButtonPosToolbarNewFinanceDocument.Sensitive = false;
+                            GlobalApp.PosMainWindow.TouchButtonPosToolbarNewFinanceDocument.Sensitive = false;
                             //Show ClosePeriodMessage
                             ShowClosePeriodMessage(dialogCashDrawer, workSessionPeriodTerminal);
 

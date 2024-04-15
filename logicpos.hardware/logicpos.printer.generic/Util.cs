@@ -138,15 +138,15 @@ namespace logicpos.printer.generic
 
             printer.SetFont(48);
 
-            printer.WriteLine(String.Format("{0:0.00}", (dTotal)).PadLeft(32));
+            printer.WriteLine(string.Format("{0:0.00}", (dTotal)).PadLeft(32));
 
-            printer.WriteLine("VAT 10,0%" + String.Format("{0:0.00}", (dTotal * VAT / 100)).PadLeft(23));
+            printer.WriteLine("VAT 10,0%" + string.Format("{0:0.00}", (dTotal * VAT / 100)).PadLeft(23));
 
-            printer.WriteLine(String.Format("$ {0:0.00}", dTotal * VAT / 100 + dTotal).PadLeft(16),
+            printer.WriteLine(string.Format("$ {0:0.00}", dTotal * VAT / 100 + dTotal).PadLeft(16),
                 ThermalPrinter.PrintingStyle.DoubleWidth);
 
             printer.LineFeed();
-            printer.WriteLine("CASH" + String.Format("{0:0.00}", (double)total / 100).PadLeft(38));
+            printer.WriteLine("CASH" + string.Format("{0:0.00}", (double)total / 100).PadLeft(38));
             printer.LineFeed();
             printer.LineFeed();
             printer.SetAlignCenter();
@@ -177,7 +177,7 @@ namespace logicpos.printer.generic
 
             printer.WriteToBuffer(item.ToUpper());
             printer.Indent(25);
-            string sPrice = String.Format("{0:0.00}", (double)price / 100);
+            string sPrice = string.Format("{0:0.00}", (double)price / 100);
 
             sPrice = sPrice.PadLeft(7);
 
@@ -412,7 +412,7 @@ namespace logicpos.printer.generic
                     {
                         try
                         {
-                            printText += (new String(' ', pObject.Col - 1 - printText.Length)) + pObject.Text;
+                            printText += (new string(' ', pObject.Col - 1 - printText.Length)) + pObject.Text;
                         }
                         catch
                         {
@@ -1140,7 +1140,7 @@ namespace logicpos.printer.generic
                                 {
                                     //Partir linha
                                     string totalExtensoSource = dataLoop.Rows[0]["TotalExtenso"].ToString();
-                                    string totalExtenso = String.Empty;
+                                    string totalExtenso = string.Empty;
                                     int maxCharsPerLine = 48;
                                     int length = 0;
                                     if (totalExtensoSource.Length > maxCharsPerLine)

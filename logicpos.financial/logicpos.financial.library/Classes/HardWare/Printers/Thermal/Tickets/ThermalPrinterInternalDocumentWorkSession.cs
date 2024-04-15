@@ -593,7 +593,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             string filter = string.Empty;
             string queryModeWhere = string.Empty;
 
-            if (pFilter != String.Empty) filter = pFilter;
+            if (pFilter != string.Empty) filter = pFilter;
 
             switch (pQueryModeWhere)
             {

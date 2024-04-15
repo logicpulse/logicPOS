@@ -88,7 +88,7 @@ namespace DansCSharpLibrary.BinarySerialization
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Write(String pFilePath)
+        public static void Write(string pFilePath)
         {
             //Init List<Person>
             List<Person> people = new List<Person>();
@@ -107,7 +107,7 @@ namespace DansCSharpLibrary.BinarySerialization
             BinarySerialization.WriteToBinaryFile<List<Person>>(Path.Combine(pFilePath, "people.bin"), people);
         }
 
-        public static void Read(String pFilePath)
+        public static void Read(string pFilePath)
         {
             Person person1 = BinarySerialization.ReadFromBinaryFile<Person>(Path.Combine(pFilePath, "person1.bin"));
             Person person2 = BinarySerialization.ReadFromBinaryFile<Person>(Path.Combine(pFilePath, "person2.bin"));

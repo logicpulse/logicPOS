@@ -17,16 +17,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             HavePrice = true;
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         [Indexed(Unique = true)]
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -40,11 +40,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        private Boolean fHavePrice;
-        public Boolean HavePrice
+        private bool fHavePrice;
+        public bool HavePrice
         {
             get { return fHavePrice; }
-            set { SetPropertyValue<Boolean>("HavePrice", ref fHavePrice, value); }
+            set { SetPropertyValue<bool>("HavePrice", ref fHavePrice, value); }
         }
 
         //ArticleType One <> Many Article

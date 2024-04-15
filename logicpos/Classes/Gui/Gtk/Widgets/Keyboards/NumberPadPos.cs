@@ -11,15 +11,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     internal class NumberPadPos : NumberPad
     {
-        public NumberPadPos(String name, Color colorButton, Color colorRightButton, String fontButton, String fontRightButton, byte buttonWidth, byte rightButtonWidth, byte buttonHeight, byte padding = 0)
+        public NumberPadPos(string name, Color colorButton, Color colorRightButton, string fontButton, string fontRightButton, byte buttonWidth, byte rightButtonWidth, byte buttonHeight, byte padding = 0)
             : base(name, colorButton, fontButton, buttonWidth, buttonHeight, padding)
         {
             //Init Local Vars
             Size sizeIcon = new Size(28, 28);
-            String icon1 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_1_splitaccount.png");
-            String icon2 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_2_messages.png");
-            String icon3 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_3_gifts.png");
-            String icon4 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_4_weight.png");
+            string icon1 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_1_splitaccount.png");
+            string icon2 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_2_messages.png");
+            string icon3 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_3_gifts.png");
+            string icon4 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_4_weight.png");
 
             Color colorFont = Color.Black;
 

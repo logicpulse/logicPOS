@@ -43,17 +43,17 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         }
 
         public TicketColumn(string pName, string pText, int pWidth)
-            : this(pName, pText, pWidth, TicketColumnsAlign.Left, typeof(String), "")
+            : this(pName, pText, pWidth, TicketColumnsAlign.Left, typeof(string), "")
         {
         }
 
         public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlign pAlign)
-            : this(pName, pText, pWidth, pAlign, typeof(String), string.Empty)
+            : this(pName, pText, pWidth, pAlign, typeof(string), string.Empty)
         {
         }
 
         public TicketColumn(string pName, string pText, int pWidth, TicketColumnsAlign pAlign, Type pDateType)
-            : this(pName, pText, pWidth, pAlign, typeof(String), "")
+            : this(pName, pText, pWidth, pAlign, typeof(string), "")
         {
         }
 

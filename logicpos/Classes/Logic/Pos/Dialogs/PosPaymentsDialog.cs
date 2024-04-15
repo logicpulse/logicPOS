@@ -1132,7 +1132,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             try
             {
-                Int32 itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
+                int itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
                 bool itemChecked = Convert.ToBoolean(model.GetValue(iter, columnIndexCheckBox));
 
                 string token1 = string.Empty;
@@ -1147,24 +1147,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     //Prepare articleBag Key and Props
                     articleBagKey = new ArticleBagKey(
                       (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")],
-                      (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
-                      (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
-                      (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
-                      (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
+                      (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
+                      (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
+                      (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
+                      (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
                     );
                     articleBagProps = new ArticleBagProperties(
                       (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PlaceOid")],
                       (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("TableOid")],
                       (PriceType)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceType")],
-                      (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
+                      (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
                       Convert.ToDecimal(dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Quantity")]),
-                      (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
+                      (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
                     );
                     //Token Work
                     if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")].Equals(System.DBNull.Value))
-                        token1 = (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
+                        token1 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
                     if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")].Equals(System.DBNull.Value))
-                        token2 = (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
+                        token2 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
                     if (token1 != string.Empty) articleBagProps.Token1 = token1;
                     if (token2 != string.Empty) articleBagProps.Token2 = token2;
                     //Send to Bag
@@ -1187,7 +1187,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
             DataTable dataTable = _dialogPartialPayment.GenericTreeView.DataSource;
-            Int32 itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
+            int itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
             bool itemChecked = Convert.ToBoolean(model.GetValue(iter, columnIndexCheckBox));
 
             try
@@ -1195,7 +1195,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (itemChecked)
                 {
                     //Get Money pad title based on line selected (Desigantion & Price)
-                    decimal priceFinal = decimal.Round((Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
+                    decimal priceFinal = decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2);
                     string priceFinalText = FrameworkUtils.DecimalToStringCurrency(priceFinal);
 
                     string moneyPadTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price") + " :: " + (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")] + " :: " +
@@ -1207,7 +1207,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     if (result.Response == ResponseType.Ok && newValuePrice > 0)
                     {
-                        if (newValuePrice > decimal.Round((Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2))
+                        if (newValuePrice > decimal.Round((decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceFinal")], 2))
                         {
                             logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, "Valor Errado", "Valor inserido superior ao total");
                         }
@@ -1233,24 +1233,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             //Prepare articleBag Key and Props
                             articleBagKey = new ArticleBagKey(
                               (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Oid")],
-                              (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
-                              (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
-                              (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
-                              (Decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
+                              (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Designation")],
+                              (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Price")],
+                              (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Discount")],
+                              (decimal)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Vat")]
                             );
                             articleBagProps = new ArticleBagProperties(
                               (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PlaceOid")],
                               (Guid)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("TableOid")],
                               (PriceType)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("PriceType")],
-                              (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
+                              (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Code")],
                               quantity,
-                              (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
+                              (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("UnitMeasure")]
                             );
                             //Token Work
                             if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")].Equals(System.DBNull.Value))
-                                token1 = (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
+                                token1 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token1")];
                             if (!dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")].Equals(System.DBNull.Value))
-                                token2 = (String)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
+                                token2 = (string)dataTable.Rows[itemIndex].ItemArray[dataTable.Columns.IndexOf("Token2")];
                             if (token1 != string.Empty) articleBagProps.Token1 = token1;
                             if (token2 != string.Empty) articleBagProps.Token2 = token2;
 

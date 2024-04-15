@@ -225,8 +225,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             TouchButtonIconWithText result = null;
             try
             {
-                String fileIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pIcon);
-                String fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
+                string fileIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pIcon);
+                string fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
                 Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
                 Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);

@@ -28,19 +28,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             set { _tableStatus = value; }
         }
 
-        public TouchButtonTable(String pName)
+        public TouchButtonTable(string pName)
             : base(pName)
         {
         }
 
-        public TouchButtonTable(String pName, Color pColor, String pLabelText, String pFont, int pWidth, int pHeight, TableStatus pTableStatus, decimal pTotal, DateTime pDateOpen, DateTime pDateClosed)
+        public TouchButtonTable(string pName, Color pColor, string pLabelText, string pFont, int pWidth, int pHeight, TableStatus pTableStatus, decimal pTotal, DateTime pDateOpen, DateTime pDateClosed)
             : base(pName)
         {
             InitObject(pName, pColor, pLabelText, pFont, pTableStatus, pTotal, pDateOpen, pDateClosed);
             base.InitObject(pName, pColor, _widget, pWidth, pHeight);
         }
 
-        public void InitObject(String pName, Color pColor, String pLabelText, String pFont, TableStatus pTableStatus, decimal pTotal, DateTime pDateOpen, DateTime pDateClosed)
+        public void InitObject(string pName, Color pColor, string pLabelText, string pFont, TableStatus pTableStatus, decimal pTotal, DateTime pDateOpen, DateTime pDateClosed)
         {
             //Init Parameters
             _buttonColor = pColor;

@@ -17,16 +17,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacetable), "Code");
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         [Indexed(Unique = true)]
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -62,11 +62,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<TableStatus>("TableStatus", ref fTableStatus, value); }
         }
 
-        private Decimal fTotalOpen;
-        public Decimal TotalOpen
+        private decimal fTotalOpen;
+        public decimal TotalOpen
         {
             get { return fTotalOpen; }
-            set { SetPropertyValue<Decimal>("TotalOpen", ref fTotalOpen, value); }
+            set { SetPropertyValue<decimal>("TotalOpen", ref fTotalOpen, value); }
         }
 
         private DateTime fDateTableOpen;

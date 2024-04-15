@@ -33,17 +33,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Private Members
-        private readonly String _fontKeyboardPadTextEntry = GlobalFramework.Settings["fontKeyboardPadTextEntry"];
+        private readonly string _fontKeyboardPadTextEntry = GlobalFramework.Settings["fontKeyboardPadTextEntry"];
         private readonly VirtualKeyBoard _virtualKeyBoard;
         private readonly int _spacing = 10;
         private bool _isCapsEnabled = false;
-        private String _activeDiacritical;
+        private string _activeDiacritical;
         private ModifierKeys _activeModifierKey = ModifierKeys.None;
         private VBox _vboxKeyboardRows;
         private VBox _vboxNumPadRows;
 
         //Constructor
-        public KeyBoardPad(String pFile)
+        public KeyBoardPad(string pFile)
         {
             //ParseXML into VirtualKeyBoard Object
             _virtualKeyBoard = new VirtualKeyBoard(pFile);
@@ -155,7 +155,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             List<VirtualKey> currentKeyboardRow;
             VirtualKey currentKey;
-            Char charKey;
+            char charKey;
             Color _colorKeyboardPadKeyDefaultFont = GlobalFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
             Color _colorKeyboardPadKeySecondaryFont = GlobalFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
 
@@ -298,11 +298,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void keyboardPadKey_Clicked(object sender, EventArgs e)
         {
             KeyboardPadKey vKey = (KeyboardPadKey)sender;
-            Char _unicodeChar;
+            char _unicodeChar;
             bool _requireUpdate = false;
             bool _skipInsert = false;
             int _tempCursorPosition;
-            String _stringChar;
+            string _stringChar;
 
             int selectionStart, selectionEnd;
             _textEntry.GetSelectionBounds(out selectionStart, out selectionEnd);

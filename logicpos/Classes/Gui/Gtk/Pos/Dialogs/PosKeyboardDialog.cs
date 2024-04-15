@@ -12,12 +12,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         private readonly KeyBoardPad _keyboardPad;
         //Public Properties
-        public String Text
+        public string Text
         {
             get { return _keyboardPad.TextEntry.Text; }
             set { _keyboardPad.TextEntry.Text = value; }
         }
-        public String Rule
+        public string Rule
         {
             get { return _keyboardPad.TextEntry.Rule; }
             set { _keyboardPad.TextEntry.Rule = value; }
@@ -28,13 +28,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         //Constructor
-        public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, String pTextEntry, String pValidationRule): base(pSourceWindow, pDialogFlags)
+        public PosKeyboardDialog(Window pSourceWindow, DialogFlags pDialogFlags, KeyboardMode pKeyboardMode, string pTextEntry, string pValidationRule): base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_virtual_keyboard");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_keyboard.png");
-            String fileKeyboardXML = FrameworkUtils.OSSlash(GlobalFramework.Path["keyboards"] + @"163.xml");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_keyboard.png");
+            string fileKeyboardXML = FrameworkUtils.OSSlash(GlobalFramework.Path["keyboards"] + @"163.xml");
 
             //Init Content
             Fixed fixedContent = new Fixed();
@@ -67,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Override Responses - Required to Keep Keyboard in Memory
         protected override void OnResponse(ResponseType pResponse)
         {
-            Boolean useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
+            bool useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
 
             if (useBaseDialogWindowMask && this.WindowMaskBackground.Visible) this.WindowMaskBackground.Hide();
 
@@ -80,8 +80,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public static decimal RequestDecimalValue(Window pSourceWindow, decimal pDefaultValue, bool pUseDefaultValue = true)
         {
             decimal result;
-            String regexDecimalGreaterThanZero = SettingsApp.RegexDecimalGreaterThanZero;
-            String defaultValue = (pUseDefaultValue) ? FrameworkUtils.DecimalToString(pDefaultValue) : string.Empty;
+            string regexDecimalGreaterThanZero = SettingsApp.RegexDecimalGreaterThanZero;
+            string defaultValue = (pUseDefaultValue) ? FrameworkUtils.DecimalToString(pDefaultValue) : string.Empty;
 
             PosKeyboardDialog dialog = new PosKeyboardDialog(pSourceWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, defaultValue, regexDecimalGreaterThanZero);
             int response = dialog.Run();
@@ -102,8 +102,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public static string RequestAlfaNumericValue(Window pSourceWindow, KeyboardMode pKeyboardMode, string pDefaultValue, bool pUseDefaultValue = true)
         {
             string result;
-            String regexAlfaNumeric = SettingsApp.RegexAlfaNumeric;
-            String defaultValue = (pUseDefaultValue) ? pDefaultValue : string.Empty;
+            string regexAlfaNumeric = SettingsApp.RegexAlfaNumeric;
+            string defaultValue = (pUseDefaultValue) ? pDefaultValue : string.Empty;
 
             PosKeyboardDialog dialog = new PosKeyboardDialog(pSourceWindow, DialogFlags.DestroyWithParent, pKeyboardMode, defaultValue, regexAlfaNumeric);
             int response = dialog.Run();

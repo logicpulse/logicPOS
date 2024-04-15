@@ -120,7 +120,7 @@ namespace logicpos.financial.library.Classes.Finance
                         }
                         else
                         {
-                            result = String.Empty;
+                            result = string.Empty;
                         }
                         break;
 

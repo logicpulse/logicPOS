@@ -111,9 +111,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
 
             //Init Local Vars
-            String windowTitle = _windowTitle;
+            string windowTitle = _windowTitle;
             Size windowSize = new Size(540, 568);
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
 			
 			/* IN009010 */
             if (!ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY.Equals(_reportsQueryDialogMode))

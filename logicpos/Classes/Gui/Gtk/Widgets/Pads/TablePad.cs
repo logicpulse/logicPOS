@@ -44,7 +44,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Constructor Parameters
         private readonly uint _rows;
         private readonly uint _columns;
-        private readonly String _buttonNamePrefix;
+        private readonly string _buttonNamePrefix;
         protected Color _colorButton;
         protected int _buttonWidth;
         protected int _buttonHeight;
@@ -70,8 +70,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             get { return _selectedButton; }
             set { _selectedButton = value; }
         }
-        private String _sql;
-        public String Sql
+        private string _sql;
+        public string Sql
         {
             get { return _sql; }
             set
@@ -80,8 +80,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 UpdateSql();
             }
         }
-        private String _filter;
-        public String Filter
+        private string _filter;
+        public string Filter
         {
             get { return _filter; }
             set
@@ -90,8 +90,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 UpdateSql();
             }
         }
-        private String _order;
-        public String Order
+        private string _order;
+        public string Order
         {
             get { return _order; }
             set { _order = value; }
@@ -100,7 +100,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Declare public Button Event, to Expose Button Clicks
         public event EventHandler Clicked;
 
-        public TablePad(String pSql, String pOrder, String pFilter, Guid pActiveButtonOid, bool pToggleMode, uint pRows, uint pColumns, String pButtonNamePrefix, Color pColorButton, int pButtonWidth, int pButtonHeight, TouchButtonBase buttonPrev, TouchButtonBase buttonNext)
+        public TablePad(string pSql, string pOrder, string pFilter, Guid pActiveButtonOid, bool pToggleMode, uint pRows, uint pColumns, string pButtonNamePrefix, Color pColorButton, int pButtonWidth, int pButtonHeight, TouchButtonBase buttonPrev, TouchButtonBase buttonNext)
             : base(pRows, pColumns, true)
         {
             //_logger.Debug(string.Format("TablePad():{0}pSql: [{1}]{0}pOrder: [{2}]{0}pFilter: [{3}]", Environment.NewLine, pSql, pOrder, pFilter));
@@ -145,7 +145,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 bool _hasChilds = false;
 
                 //Local Vars
-                String executeSql;
+                string executeSql;
                 TouchButtonBase buttonCurrent = null;
 
                 //Reset CurrentButtonOid, Or Assign it to initialActiveButtonOid if Defined in TablePad Constructor
@@ -269,7 +269,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(GlobalApp.WindowPos, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
+                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
                     };
                 }
                 else

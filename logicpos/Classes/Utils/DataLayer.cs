@@ -605,7 +605,7 @@ namespace logicpos
         /// <param name="table"></param>
         /// <param name="column"></param>
         /// <returns></returns>
-        public static bool isColumnExists(String table, String column, Session pXpoSession)
+        public static bool isColumnExists(string table, string column, Session pXpoSession)
         {
             try
             {

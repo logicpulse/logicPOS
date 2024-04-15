@@ -16,16 +16,16 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_configurationpricetype), "Code");
         }
 
-        private UInt32 fOrd;
-        public UInt32 Ord
+        private uint fOrd;
+        public uint Ord
         {
             get { return fOrd; }
             set { SetPropertyValue<UInt32>("Ord", ref fOrd, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         [Indexed(Unique = true)]
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
@@ -39,12 +39,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Designation", ref fDesignation, value); }
         }
 
-        private Int32 fEnumValue;
+        private int fEnumValue;
         [Indexed(Unique = true)]
-        public Int32 EnumValue
+        public int EnumValue
         {
             get { return fEnumValue; }
-            set { SetPropertyValue<Int32>("EnumValue", ref fEnumValue, value); }
+            set { SetPropertyValue<int>("EnumValue", ref fEnumValue, value); }
         }
 
         //ConfigurationPriceType One <> Many ConfigurationPlace

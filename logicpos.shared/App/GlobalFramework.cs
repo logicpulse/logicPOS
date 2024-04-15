@@ -20,29 +20,29 @@ namespace logicpos.shared.App
         public static CultureInfo CurrentCultureNumberFormat;
         //Licence
         public static bool LicenceRegistered = false;
-        public static String LicenceVersion;
-        public static String LicenceDate;
-        public static String LicenceName;
-        public static String LicenceCompany;
-        public static String LicenceNif;
-        public static String LicenceAddress;
-        public static String LicenceEmail;
-        public static String LicenceTelephone;
-        public static String LicenceHardwareId;
-        public static String LicenceReseller;
+        public static string LicenceVersion;
+        public static string LicenceDate;
+        public static string LicenceName;
+        public static string LicenceCompany;
+        public static string LicenceNif;
+        public static string LicenceAddress;
+        public static string LicenceEmail;
+        public static string LicenceTelephone;
+        public static string LicenceHardwareId;
+        public static string LicenceReseller;
         public static bool LicenceModuleStocks;
         public static DateTime LicenceUpdateDate;
         public static DataTable DtLicenceKeys;
         //TK016248 - BackOffice - Check New Version 
-        public static String ServerVersion;
+        public static string ServerVersion;
         //AT - Only Used in logicerp.Modules.FINANCIAL | LogicposHelper
         public static Hashtable AT;
         //Database
-        public static String DatabaseServer;
-        public static String DatabaseName;
-        public static String DatabaseUser;
-        public static String DatabasePassword;
-        public static String DatabaseVersion;
+        public static string DatabaseServer;
+        public static string DatabaseName;
+        public static string DatabaseUser;
+        public static string DatabasePassword;
+        public static string DatabaseVersion;
         //WorkSession
         public static pos_worksessionperiod WorkSessionPeriodDay;
         public static pos_worksessionperiod WorkSessionPeriodTerminal;

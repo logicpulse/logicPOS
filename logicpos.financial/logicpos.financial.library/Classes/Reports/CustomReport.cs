@@ -37,13 +37,13 @@ namespace logicpos.financial.library.Classes.Reports
         private readonly bool _forceReleaseMode = false;
 
         //Constructor Parameters
-        private readonly string _reportFileName = String.Empty;
+        private readonly string _reportFileName = string.Empty;
         //Other
         private bool _addCodeData = true;
         //Other Static
         private static bool _secondCopy;
         // Used Only in DocumentFinance Documents to Show Document Hash
-        private string _hash4Chars = String.Empty;
+        private string _hash4Chars = string.Empty;
         public string Hash4Chars
         {
             get { return _hash4Chars; }
@@ -169,7 +169,7 @@ namespace logicpos.financial.library.Classes.Reports
 
         public string Process(CustomReportDisplayMode pViewMode, string pDestinationFileName = "")
         {
-            string result = String.Empty;
+            string result = string.Empty;
 
             //Prepare Modes
             switch (pViewMode)
@@ -193,7 +193,7 @@ namespace logicpos.financial.library.Classes.Reports
                         }
                         if (textSecondPrint != null)
                         {
-                            textSecondPrint.Text = (_secondCopy && i < 1) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_second_print") : String.Empty;
+                            textSecondPrint.Text = (_secondCopy && i < 1) ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_second_print") : string.Empty;
                         }
                         //Store PreparedFiles in Custom SystemVariable, Required to PageNo in Reports ex "[ToInt32([PreparedPages]) + [Page]]"
                         //Else Page start aways in 1, when we call prepare, and we cannot have a usefull Page Counter working with .Prepare
@@ -225,9 +225,9 @@ namespace logicpos.financial.library.Classes.Reports
                 case CustomReportDisplayMode.ExportXls:
                 case CustomReportDisplayMode.Print:
                     //Prepare FileName
-                    string fileName = String.Empty;
-                    string fileNameExport = String.Empty;
-                    if (pDestinationFileName != String.Empty)
+                    string fileName = string.Empty;
+                    string fileNameExport = string.Empty;
+                    if (pDestinationFileName != string.Empty)
                     {
                         fileName = pDestinationFileName;
                         fileNameExport = pDestinationFileName;
@@ -237,7 +237,7 @@ namespace logicpos.financial.library.Classes.Reports
                     {
                         string dateTimeFileFormat = SettingsApp.FileFormatDateTime;
                         string dateTime = FrameworkUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
-                        string reportName = (this.ReportInfo.Name != String.Empty) ? string.Format("_{0}", this.ReportInfo.Name) : String.Empty;
+                        string reportName = (this.ReportInfo.Name != string.Empty) ? string.Format("_{0}", this.ReportInfo.Name) : string.Empty;
 
                         if (pViewMode == CustomReportDisplayMode.ExportXls || FrameworkUtils.OSVersion() == "windows")
                         {
@@ -468,7 +468,7 @@ namespace logicpos.financial.library.Classes.Reports
 
 
                     //Add Hash Validation if Defined (In DocumentFinance Only)
-                    if (_hash4Chars != String.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", _hash4Chars, textObjectOverlaySoftwareCertification.Text);
+                    if (_hash4Chars != string.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", _hash4Chars, textObjectOverlaySoftwareCertification.Text);
 
                 } /* IN005975 and IN005979 for Mozambique deployment */
                 else if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryMozambique)
@@ -496,7 +496,7 @@ namespace logicpos.financial.library.Classes.Reports
                         localDate);
 
                     //Add Hash Validation if Defined (In DocumentFinance Only)
-                    if (_hash4Chars != String.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", _hash4Chars, textObjectOverlaySoftwareCertification.Text);
+                    if (_hash4Chars != string.Empty) textObjectOverlaySoftwareCertification.Text = string.Format("{0} - {1}", _hash4Chars, textObjectOverlaySoftwareCertification.Text);
 
                 }
             }
@@ -534,7 +534,7 @@ namespace logicpos.financial.library.Classes.Reports
 
         public static string ProcessReportFinanceDocument(CustomReportDisplayMode pViewMode, Guid pDocumentFinanceMasterOid, string pHash4Chars, List<int> pCopyNames, string pDestinationFileName = "")
         {
-            return ProcessReportFinanceDocument(pViewMode, pDocumentFinanceMasterOid, pHash4Chars, pCopyNames, false, String.Empty, pDestinationFileName);
+            return ProcessReportFinanceDocument(pViewMode, pDocumentFinanceMasterOid, pHash4Chars, pCopyNames, false, string.Empty, pDestinationFileName);
         }
 
         public static string ProcessReportFinanceDocument(CustomReportDisplayMode pViewMode, Guid pDocumentFinanceMasterOid, string pHash4Chars, List<int> pCopyNames, bool pSecondCopy, string pMotive, string pDestinationFileName = "")
@@ -1049,7 +1049,7 @@ namespace logicpos.financial.library.Classes.Reports
                 customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
 
-                string query = String.Format(@"SELECT cfOid as Oid, fdVat as Vat, ftDocumentTypeDesignation AS DocumentTypeDesignation, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax, SUM(fdTotalFinal) AS TotalFinal
+                string query = string.Format(@"SELECT cfOid as Oid, fdVat as Vat, ftDocumentTypeDesignation AS DocumentTypeDesignation, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax, SUM(fdTotalFinal) AS TotalFinal
                                 FROM view_documentfinance
                                 WHERE fdVat IS NOT NULL AND cfOid IS NOT NULL
                                 AND (ftDocumentTypeAcronym = 'FT' OR ftDocumentTypeAcronym = 'FS'  OR ftDocumentTypeAcronym = 'FR') AND fmOid IN (select Oid From fin_documentfinancemaster where Oid = fmOid and DocumentStatusStatus <> 'A')
@@ -1100,7 +1100,7 @@ namespace logicpos.financial.library.Classes.Reports
                 customReport.SetParameterValue("Report Filter", filterHumanReadable);
 
 
-                string query = String.Format(@"SELECT cfOid as Oid, fdVat as Vat, acDesignation AS ArticleClassDesignation, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax, SUM(fdTotalFinal) AS TotalFinal
+                string query = string.Format(@"SELECT cfOid as Oid, fdVat as Vat, acDesignation AS ArticleClassDesignation, SUM(fdTotalNet) AS TotalNet, SUM(fdTotalTax) AS TotalTax, SUM(fdTotalFinal) AS TotalFinal
                                 FROM view_documentfinance
                                 WHERE arClass IS NOT NULL AND cfOid IS NOT NULL
                                 AND fmOid NOT IN (select DocumentParent From fin_documentfinancemaster where DocumentParent = fmOid AND DocumentStatusStatus <> 'A' AND (ftDocumentTypeAcronym = 'NC' OR ftDocumentTypeAcronym = 'ND' ))
@@ -1154,7 +1154,7 @@ namespace logicpos.financial.library.Classes.Reports
                 //customReport.SetParameterValue("Factura No", 280);
 
                 //Prepare and Declare FRBOGenericCollections
-                FRBOGenericCollection<FRBOSystemAuditView> gcSystemAudit = new FRBOGenericCollection<FRBOSystemAuditView>(filter, String.Empty, "SauDate");
+                FRBOGenericCollection<FRBOSystemAuditView> gcSystemAudit = new FRBOGenericCollection<FRBOSystemAuditView>(filter, string.Empty, "SauDate");
 
                 // Decrypt Phase
                 if (GlobalFramework.PluginSoftwareVendor != null)
@@ -1589,7 +1589,7 @@ namespace logicpos.financial.library.Classes.Reports
                 string reportTitleStringPostfix = tuppleResourceString.Item2;
 
                 //Report Parameters
-                customReport.SetParameterValue("Report Title", String.Format("{0}{1}", reportTitleString, reportTitleStringPostfix));
+                customReport.SetParameterValue("Report Title", string.Format("{0}{1}", reportTitleString, reportTitleStringPostfix));
                 customReport.SetParameterValue("Report_FileName_loggero", GlobalFramework.PreferenceParameters["REPORT_FILENAME_loggerO"]);
                 customReport.SetParameterValue("Report_FileName_loggero_Small", GlobalFramework.PreferenceParameters["REPORT_FILENAME_loggerO_SMALL"]);
                 if (!string.IsNullOrEmpty(filterHumanReadable)) customReport.SetParameterValue("Report Filter", filterHumanReadable);
@@ -1760,7 +1760,7 @@ namespace logicpos.financial.library.Classes.Reports
         public static string DocumentMasterCreatePDF(fin_documentfinancemaster pDocumentFinanceMaster)
         {
             //return DocumentMasterCreatePDF(pDocumentFinanceMaster, String.Empty, CustomReportDisplayMode.ExportPDFSilent);
-            return DocumentMasterCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinanceMaster, String.Empty);
+            return DocumentMasterCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinanceMaster, string.Empty);
         }
 
         public static string DocumentMasterCreatePDF(fin_documentfinancemaster pDocumentFinanceMaster, string pDestinationFileName)
@@ -1772,7 +1772,7 @@ namespace logicpos.financial.library.Classes.Reports
         //public static string DocumentMasterCreatePDF(DocumentFinanceMaster pDocumentFinanceMaster, string pDestinationFileName, CustomReportDisplayMode pCustomReportDisplayMode)
         public static string DocumentMasterCreatePDF(CustomReportDisplayMode pDisplayMode, fin_documentfinancemaster pDocumentFinanceMaster, string pDestinationFileName)
         {
-            string result = String.Empty;
+            string result = string.Empty;
             try
             {
                 //Generate Default CopyNames from DocumentType
@@ -1793,7 +1793,7 @@ namespace logicpos.financial.library.Classes.Reports
 
         public static string DocumentPaymentCreatePDF(fin_documentfinancepayment pDocumentFinancePayment)
         {
-            return DocumentPaymentCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinancePayment, String.Empty);
+            return DocumentPaymentCreatePDF(CustomReportDisplayMode.ExportPDFSilent, pDocumentFinancePayment, string.Empty);
         }
 
         public static string DocumentPaymentCreatePDF(fin_documentfinancepayment pDocumentFinancePayment, string pDestinationFileName)
@@ -1803,7 +1803,7 @@ namespace logicpos.financial.library.Classes.Reports
 
         public static string DocumentPaymentCreatePDF(CustomReportDisplayMode pDisplayMode, fin_documentfinancepayment pDocumentFinancePayment, string pDestinationFileName)
         {
-            string result = String.Empty;
+            string result = string.Empty;
             try
             {
                 //Generate Default CopyNames from DocumentType
@@ -1958,7 +1958,7 @@ namespace logicpos.financial.library.Classes.Reports
         //Get CopyNames Delimted String from Generic List
         public static string CopyNamesCommaDelimited(List<int> pCopyNames)
         {
-            string result = String.Empty;
+            string result = string.Empty;
 
             try
             {

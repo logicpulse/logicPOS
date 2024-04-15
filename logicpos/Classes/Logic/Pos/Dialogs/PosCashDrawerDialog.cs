@@ -215,7 +215,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         /// </summary>
         /// <param name="pLastMovementTypeAmount"></param>
         /// <returns></returns>
-        private Boolean IsCashDrawerAmountValid(decimal pLastMovementTypeAmount)
+        private bool IsCashDrawerAmountValid(decimal pLastMovementTypeAmount)
         {
             decimal totalInCashDrawer;
 

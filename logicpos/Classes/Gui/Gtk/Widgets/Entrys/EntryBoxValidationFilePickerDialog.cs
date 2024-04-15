@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Custom Events
         public event EventHandler ClosePopup;
 
-        public EntryBoxValidationFilePickerDialog(Window pSourceWindow, String pLabelText, string pRule, bool pRequired, FileFilter pFileFilter)
+        public EntryBoxValidationFilePickerDialog(Window pSourceWindow, string pLabelText, string pRule, bool pRequired, FileFilter pFileFilter)
             : base(pSourceWindow, pLabelText, KeyboardMode.None, pRule, pRequired)
         {
             //Parameters

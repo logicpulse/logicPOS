@@ -132,7 +132,7 @@ namespace logicpos.Classes.Gui.Gtk.Samples
 
             try
             {
-                Int32 itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
+                int itemIndex = Convert.ToInt32(model.GetValue(iter, columnIndexIndex).ToString());
                 bool itemChecked = Convert.ToBoolean(model.GetValue(iter, columnIndexCheckBox));
 
                 if (itemChecked)

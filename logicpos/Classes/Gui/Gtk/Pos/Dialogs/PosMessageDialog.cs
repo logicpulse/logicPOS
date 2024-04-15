@@ -15,27 +15,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     {
         private TextView _textviewLog;
 
-        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, String pMessage, String pImageDialog = "")
+        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pMessage, string pImageDialog = "")
             : this(pSourceWindow, pDialogFlags, new System.Drawing.Size(700, 500), pMessage, pImageDialog)
         {
         }
 
-        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, String pMessage, String pImageDialog = "")
+        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pMessage, string pImageDialog = "")
             : this(pSourceWindow, pDialogFlags, pSize, pMessage, null, pImageDialog)
         {
         }
 
-        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, String pTitle, String pMessage, String pImageWindowIcon, String pImageDialog = "")
+        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pTitle, string pMessage, string pImageWindowIcon, string pImageDialog = "")
             : this(pSourceWindow, pDialogFlags, pSize, pTitle, pMessage, null, pImageWindowIcon, pImageDialog)
         {
         }
 
         //Shortcut to Dialog with Button with ResponseType and ButtonLabel
-        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, String pMessage, MessageType pMessageType, ResponseType pResponseType, String pButtonLabel, String pImageDialog = "", bool pCconfirmDialogOnEnter = true, bool pWindowTitleCloseButton = true)
+        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pMessage, MessageType pMessageType, ResponseType pResponseType, string pButtonLabel, string pImageDialog = "", bool pCconfirmDialogOnEnter = true, bool pWindowTitleCloseButton = true)
             : base(pSourceWindow, pDialogFlags)
         {
-            String fileImageDialogBaseMessageTypeIcon = FrameworkUtils.OSSlash(GlobalFramework.Settings["fileImageDialogBaseMessageTypeIcon"]);
-            String fileImagePath = string.Format(fileImageDialogBaseMessageTypeIcon, Enum.GetName(typeof(MessageType), pMessageType).ToLower());
+            string fileImageDialogBaseMessageTypeIcon = FrameworkUtils.OSSlash(GlobalFramework.Settings["fileImageDialogBaseMessageTypeIcon"]);
+            string fileImagePath = string.Format(fileImageDialogBaseMessageTypeIcon, Enum.GetName(typeof(MessageType), pMessageType).ToLower());
 
             TouchButtonIconWithText button = new TouchButtonIconWithText("touchButton_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, pButtonLabel, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
 
@@ -48,24 +48,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             InitObject(pSourceWindow, pDialogFlags, pSize, string.Empty, pMessage, actionAreaButtons, fileImagePath, pImageDialog);
         }
 
-        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, String pMessage, ActionAreaButtons pActionAreaButtons, String pImageDialog = "")
+        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pMessage, ActionAreaButtons pActionAreaButtons, string pImageDialog = "")
             : base(pSourceWindow, pDialogFlags)
         {
             InitObject(pSourceWindow, pDialogFlags, pSize, string.Empty, pMessage, pActionAreaButtons, string.Empty, pImageDialog);
         }
 
-        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, String pTitle, String pMessage, ActionAreaButtons pActionAreaButtons, String pImageWindowIcon, String pImageDialog = "")
+        public PosMessageDialog(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pTitle, string pMessage, ActionAreaButtons pActionAreaButtons, string pImageWindowIcon, string pImageDialog = "")
             : base(pSourceWindow, pDialogFlags)
         {
             InitObject(pSourceWindow, pDialogFlags, pSize, pTitle, pMessage, pActionAreaButtons, pImageWindowIcon, pImageDialog);
         }
 
-        private void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, String pTitle, String pMessage, ActionAreaButtons pActionAreaButtons, String pImageWindowIcon, String pImageDialog = "")
+        private void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, System.Drawing.Size pSize, string pTitle, string pMessage, ActionAreaButtons pActionAreaButtons, string pImageWindowIcon, string pImageDialog = "")
         {
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog");
             System.Drawing.Size windowSize = pSize;
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_default.png");
 
             if (!pTitle.Equals(string.Empty))
             {
@@ -108,7 +108,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             //Add content, with or without ImageDialog
-            String fileImageDialog = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pImageDialog);
+            string fileImageDialog = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pImageDialog);
             if (pImageDialog != string.Empty && File.Exists(fileImageDialog))
             {
                 Gdk.Pixbuf pixBuf = logicpos.Utils.FileToPixBuf(fileImageDialog);

@@ -33,27 +33,27 @@ namespace logicpos.datalayer.DataLayer.Xpo
             CodeInternal = FrameworkUtils.GuidToStringId(Oid.ToString());
         }
 
-        private UInt32 _Ord;
-        public UInt32 Ord
+        private uint _Ord;
+        public uint Ord
         {
             get { return _Ord; }
             set { SetPropertyValue<UInt32>("Ord", ref _Ord, value); }
         }
 
-        private UInt32 fCode;
+        private uint fCode;
         [Indexed(Unique = true)]
-        public UInt32 Code
+        public uint Code
         {
             get { return fCode; }
             set { SetPropertyValue<UInt32>("Code", ref fCode, value); }
         }
 
-        private String fCodeInternal;
+        private string fCodeInternal;
         [Indexed(Unique = true), Size(30)]
-        public String CodeInternal
+        public string CodeInternal
         {
             get { return fCodeInternal; }
-            set { SetPropertyValue<String>("CodeInternal", ref fCodeInternal, value); }
+            set { SetPropertyValue<string>("CodeInternal", ref fCodeInternal, value); }
         }
 
         private string fName;
@@ -189,11 +189,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("Password", ref fPassword, value); }
         }
 
-        private Boolean fPasswordReset;
-        public Boolean PasswordReset
+        private bool fPasswordReset;
+        public bool PasswordReset
         {
             get { return fPasswordReset; }
-            set { SetPropertyValue<Boolean>("PasswordReset", ref fPasswordReset, value); }
+            set { SetPropertyValue<bool>("PasswordReset", ref fPasswordReset, value); }
         }
 
         private DateTime fPasswordResetDate;

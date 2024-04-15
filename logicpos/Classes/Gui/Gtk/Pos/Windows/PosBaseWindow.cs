@@ -1,7 +1,6 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Extensions;
-using logicpos.resources.Resources.Localization;
 using System;
 using System.Drawing;
 using System.IO;
@@ -10,100 +9,124 @@ namespace logicpos
 {
     public abstract class PosBaseWindow : Gtk.Window
     {
-        //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //Protected
-        /* IN008024 */
-        //protected string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
         protected EventBox _eventBoxMinimize;
         protected bool _showMinimize;
+        public StartupWindow SourceWindow { get; set; }
+        public EventBox ScreenArea { get; set; }
 
-        //Public Properties
-        //SourceWindow
-        private StartupWindow _sourceWindow;
-        public StartupWindow SourceWindow
+        private dynamic GetTheme()
         {
-            get { return (_sourceWindow); }
-            set { _sourceWindow = value; /*TransientFor = _sourceWindow;*/ }
-        }
-        //ScreenArea
-        protected EventBox _eventboxScreenArea;
-        public EventBox ScreenArea
-        {
-            get { return _eventboxScreenArea; }
-            set { _eventboxScreenArea = value; }
-        }
-
-        //Constructor
-        public PosBaseWindow(String pFileImageBackground)
-            : base(Gtk.WindowType.Toplevel)
-        {
-            _logger.Debug("PosBaseWindow: " + pFileImageBackground);
-            //Init Theme Object
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
-            var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
-            //Shared error Message
+            var theme = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+            return theme;
+        }
+
+        private int GetScreenWidthFromTheme(dynamic theme)
+            => Convert.ToInt16(theme.Globals.ScreenWidth);
+
+        private int GetScreenHeightFromTheme(dynamic theme)
+            => Convert.ToInt16(theme.Globals.ScreenHeight);
+
+        private Color GetScreenBackgroundColorOuterFromTheme(dynamic theme)
+            => (theme.Globals.ScreenBackgroundColorOuter as string)
+            .StringToColor();
+
+        private Color GetScreenBackgroundColorFromTheme(dynamic theme)
+            => (theme.Globals.ScreenBackgroundColor as string).StringToColor();
+
+        private string GetAppIconFileLocation()
+        {
+            return FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icos\application.ico"));
+        }
+
+        private void SetAppIcon()
+        {
+            string appIconFileLocation = GetAppIconFileLocation();
+
+            if (File.Exists(appIconFileLocation)) Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(appIconFileLocation));
+        }
+
+        private void ConfigureScreen(
+            int screenWidth,
+            int screenHeight,
+            Color screenBackgroundColor,
+            string backgroundImageFileLocation)
+        {
+            ScreenArea = new EventBox();
+            ScreenArea.ModifyBg(StateType.Normal, screenBackgroundColor.ToGdkColor());
+            ScreenArea.WidthRequest = screenWidth;
+            ScreenArea.HeightRequest = screenHeight;
+
+            if (backgroundImageFileLocation != string.Empty)
+            {
+                ScreenArea.Style = Utils.GetThemeStyleBackground(backgroundImageFileLocation);
+            }
+        }
+
+        private void InitializeUI(
+            int screenWidth,
+            int screenHeight,
+            Color screenBackgroundColorOuter)
+        {
+            SetDefaultSize(screenWidth, screenHeight);
+            WindowPosition = WindowPosition.Center;
+            Modal = true;
+            Fullscreen();
+            ModifyBg(StateType.Normal, screenBackgroundColorOuter.ToGdkColor());
+        }
+
+        private void ConfigureAlignment()
+        {
+            Alignment alignment = new Alignment(0.5f, 0.5f, 0.0f, 0.0f);
+            alignment.Add(ScreenArea);
+
+            Add(alignment);
+        }
+
+        public PosBaseWindow(string backgroundImageFileLocation)
+            : base(WindowType.Toplevel)
+        {
+            _logger.Debug("PosBaseWindow: " + backgroundImageFileLocation);
+
+            var theme = GetTheme();
+
             string errorMessage = "Node: <Window ID=\"PosBaseWindow\">";
 
-            //Assign Theme Vars + UI
-            if (themeWindow != null)
-            {
-                try
-                {
-                    _logger.Debug("themeWindow: " + themeWindow);
-
-                    //Globals
-                    Name = Convert.ToString(themeWindow.Globals.Name);
-                    int screenWidth = Convert.ToInt16(themeWindow.Globals.ScreenWidth);
-                    int screenHeight = Convert.ToInt16(themeWindow.Globals.ScreenHeight);
-                    Color screenBackgroundColorOuter = (themeWindow.Globals.ScreenBackgroundColorOuter as string).StringToColor();
-                    Color screenBackgroundColor = (themeWindow.Globals.ScreenBackgroundColor as string).StringToColor();
-
-                    //Check Requirenments
-                    CheckMonitorGeometry(screenWidth, screenHeight);
-
-                    //Init UI
-                    SetDefaultSize(screenWidth, screenHeight);
-                    WindowPosition = WindowPosition.Center;
-                    Modal = true;
-                    Fullscreen();
-                    ModifyBg(StateType.Normal, screenBackgroundColorOuter.ToGdkColor());
-
-                    //Icon
-                    string fileImageAppIcon = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icos\application.ico"));
-                    if (File.Exists(fileImageAppIcon)) Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
-
-                    _eventboxScreenArea = new EventBox();
-                    _eventboxScreenArea.ModifyBg(StateType.Normal, screenBackgroundColor.ToGdkColor());
-                    _eventboxScreenArea.WidthRequest = screenWidth;
-                    _eventboxScreenArea.HeightRequest = screenHeight;
-
-                    Alignment _alignmentWindow = new Alignment(0.5f, 0.5f, 0.0f, 0.0f)
-                    {
-                        _eventboxScreenArea
-                    };
-                    Add(_alignmentWindow);
-
-                    DeleteEvent += PosBaseWindow_DeleteEvent;
-                    _logger.Debug("Theme Background: " + pFileImageBackground);
-
-                    //Theme Background
-                    if (pFileImageBackground != string.Empty)
-                    {
-                        _eventboxScreenArea.Style = Utils.GetThemeStyleBackground(pFileImageBackground);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                    Utils.ShowMessageTouchErrorRenderTheme(this, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
-                }
-            }
-            else
+            if (theme == null)
             {
                 Utils.ShowMessageTouchErrorRenderTheme(this, errorMessage);
+                _logger.Debug("PosBaseWindow end");
             }
+
+            try
+            {
+                Name = Convert.ToString(theme.Globals.Name);
+                int screenWidth = GetScreenWidthFromTheme(theme);
+                int screenHeight = GetScreenHeightFromTheme(theme);
+                Color screenBackgroundColorOuter = GetScreenBackgroundColorOuterFromTheme(theme);
+                Color screenBackgroundColor = GetScreenBackgroundColorFromTheme(theme);
+
+                CheckMonitorGeometry(screenWidth, screenHeight);
+
+                InitializeUI(screenWidth, screenHeight, screenBackgroundColorOuter);
+
+                SetAppIcon();
+
+                ConfigureScreen(screenWidth, screenHeight, screenBackgroundColor, backgroundImageFileLocation);
+
+                ConfigureAlignment();
+
+                DeleteEvent += PosBaseWindow_DeleteEvent;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex.Message, ex);
+                Utils.ShowMessageTouchErrorRenderTheme(this, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
+            }
+
             _logger.Debug("PosBaseWindow end");
         }
 
@@ -111,34 +134,44 @@ namespace logicpos
         {
             Hide();
 
-            //Pos
-            if (SourceWindow != null)
-            {
-                SourceWindow.ShowAll();
-            }
-            //Startup Window
-            else
+            if (SourceWindow == null)
             {
                 LogicPos.Quit(this);
-            };
+            }
 
-            //Prevent Window Destroy, When user Uses Close
+            SourceWindow.ShowAll();
+
             args.RetVal = true;
         }
 
-        protected void CheckMonitorGeometry(int pWidth, int pHeight)
+        private int GetMonitorNumber()
+        {
+            return string.IsNullOrEmpty(GlobalFramework.Settings["appScreen"])
+                    ? 0
+                    : Convert.ToInt32(GlobalFramework.Settings["appScreen"]);
+        }
+
+        protected void CheckMonitorGeometry(int width, int height)
         {
             try
             {
-                Gdk.Screen screen = this.Screen;
-                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(string.IsNullOrEmpty(GlobalFramework.Settings["appScreen"])
-                    ? 0
-                    : Convert.ToInt32(GlobalFramework.Settings["appScreen"]));
-                if (monitorGeometry.Width < pWidth || monitorGeometry.Height < pHeight)
+                Gdk.Screen screen = Screen;
+                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(GetMonitorNumber());
+
+                if (monitorGeometry.Width < width || monitorGeometry.Height < height)
                 {
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_low_resolution_detected"), pWidth, pHeight));
+                    Utils.ShowMessageTouch(
+                        this, 
+                        DialogFlags.Modal, 
+                        MessageType.Error, 
+                        ButtonsType.Ok, 
+                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
+                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_low_resolution_detected"), 
+                        width, 
+                        height));
                     Environment.Exit(0);
                 }
+
             }
             catch (Exception ex)
             {

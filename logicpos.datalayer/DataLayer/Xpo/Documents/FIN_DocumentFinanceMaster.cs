@@ -530,11 +530,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<string>("FiscalNumber", ref fEntityFiscalNumber, value); }
         }
 
-        private Boolean fPayed;
-        public Boolean Payed
+        private bool fPayed;
+        public bool Payed
         {
             get { return fPayed; }
-            set { SetPropertyValue<Boolean>("Payed", ref fPayed, value); }
+            set { SetPropertyValue<bool>("Payed", ref fPayed, value); }
         }
 
         private DateTime fPayedDate;
@@ -544,11 +544,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<DateTime>("PayedDate", ref fPayedDate, value); }
         }
 
-        private Boolean fPrinted;
-        public Boolean Printed
+        private bool fPrinted;
+        public bool Printed
         {
             get { return fPrinted; }
-            set { SetPropertyValue<Boolean>("Printed", ref fPrinted, value); }
+            set { SetPropertyValue<bool>("Printed", ref fPrinted, value); }
         }
 
         private fin_documentordermain fSourceOrderMain;
@@ -608,11 +608,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
             set { SetPropertyValue<sys_systemauditat>("ATValidAuditResult", ref fATValidAuditResult, value); }
         }
 
-        private Boolean fATResendDocument;
-        public Boolean ATResendDocument
+        private bool fATResendDocument;
+        public bool ATResendDocument
         {
             get { return fATResendDocument; }
-            set { SetPropertyValue<Boolean>("ATResendDocument", ref fATResendDocument, value); }
+            set { SetPropertyValue<bool>("ATResendDocument", ref fATResendDocument, value); }
         }
 
         //DocumentFinanceMaster One <> Many SystemAuditATWS

@@ -96,7 +96,7 @@ namespace DansCSharpLibrary.JsonSerialization
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Write(String pFilePath)
+        public static void Write(string pFilePath)
         {
             //Init List<Person>
             List<Person> people = new List<Person>();
@@ -115,7 +115,7 @@ namespace DansCSharpLibrary.JsonSerialization
             JsonSerialization.WriteToJsonFile<List<Person>>(Path.Combine(pFilePath, "people.json"), people);
         }
 
-        public static void Read(String pFilePath)
+        public static void Read(string pFilePath)
         {
             Person person1 = JsonSerialization.ReadFromJsonFile<Person>(Path.Combine(pFilePath, "person1.json"));
             Person person2 = JsonSerialization.ReadFromJsonFile<Person>(Path.Combine(pFilePath, "person2.json"));

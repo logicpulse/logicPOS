@@ -422,14 +422,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             Hide();
             //Call Shared WindowStartup LogOutUser, and Show WindowStartup
-            GlobalApp.WindowStartup.LogOutUser(true);
+            GlobalApp.StartupWindow.LogOutUser(true);
         }
 
         private void ClickedSystemPos(object sender, EventArgs e)
         {
             Hide();
             //Show WindowStartup
-            GlobalApp.WindowPos.ShowAll();
+            GlobalApp.PosMainWindow.ShowAll();
         }
 
         private void ClickedSystemNotification(object sender, EventArgs e)

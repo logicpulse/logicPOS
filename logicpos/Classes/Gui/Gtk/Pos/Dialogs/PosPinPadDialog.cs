@@ -22,15 +22,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             _notLoginAuth = pNotLoginAuth;
             //Dialog compile time preferences
-            Boolean showCancel = false;
+            bool showCancel = false;
             int DialogHeight = (showCancel) ? 465 : 440;//465 : 400;
             //Init Local Vars Parameters
             _selectedUserDetail = pUserDetail;
             //Init Local Vars
-            String windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_request_user_pin");
+            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
-            String fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
-            String fontNumberPadPinButtonKeysTextAndLabel = GlobalFramework.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
+            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
+            string fontNumberPadPinButtonKeysTextAndLabel = GlobalFramework.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
             ActionAreaButtons actionAreaButtons;
 
             //Init Content

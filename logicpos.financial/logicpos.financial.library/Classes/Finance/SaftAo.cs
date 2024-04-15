@@ -617,12 +617,12 @@ namespace logicpos.financial.library.Classes.Finance
         private static void SourceDocuments_DocumentType(SaftDocumentType pSaftDocumentType)
         {
             //Shared for SaftDocumentType
-            string documentNodeName = String.Empty;
-            string documentNodeNameChild = String.Empty;
-            string documentNodeNameChildNo = String.Empty;
-            string documentNodeKeyWord = String.Empty;
-            string documentNodeFilter = String.Empty;
-            string documentNodeFilterTotalControl = String.Empty;
+            string documentNodeName = string.Empty;
+            string documentNodeNameChild = string.Empty;
+            string documentNodeNameChildNo = string.Empty;
+            string documentNodeKeyWord = string.Empty;
+            string documentNodeFilter = string.Empty;
+            string documentNodeFilterTotalControl = string.Empty;
              
             switch (pSaftDocumentType)
             {
@@ -1826,16 +1826,16 @@ namespace logicpos.financial.library.Classes.Finance
 
         private static void WriteElement(string pElementName, object pElementValue)
         {
-            WriteElement(pElementName, pElementValue, String.Empty);
+            WriteElement(pElementName, pElementValue, string.Empty);
         }
 
         private static void WriteElement(string pElementName, object pElementValue, string pElementValueIfNull)
         {
             try
             {
-                if ((pElementValue != null && (pElementValue as string) != String.Empty) || pElementValueIfNull != String.Empty)
+                if ((pElementValue != null && (pElementValue as string) != string.Empty) || pElementValueIfNull != string.Empty)
                 {
-                    string elementValue = (pElementValue != null && pElementValue.ToString() != String.Empty) ? pElementValue.ToString() : pElementValueIfNull;
+                    string elementValue = (pElementValue != null && pElementValue.ToString() != string.Empty) ? pElementValue.ToString() : pElementValueIfNull;
                     _xmlWriter.WriteStartElement(pElementName);
                     _xmlWriter.WriteString(elementValue);
                     _xmlWriter.WriteEndElement();

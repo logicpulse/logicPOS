@@ -178,7 +178,7 @@ namespace logicpos.financial.library.Classes.Finance
             uint ordAndCode = 10;
             uint ordAndCodeInc = 10;
             int terminalInc = 1;
-            string acronym, designation, output = String.Empty, acronymAudit;
+            string acronym, designation, output = string.Empty, acronymAudit;
             Dictionary<string,string> acronymPrefixCreatedSeries = new Dictionary<string,string>();
             fin_documentfinanceseries documentFinanceSeries = null;
             //Used to add DocumentFinanceYearSerieTerminal to list to delete outside of Loop

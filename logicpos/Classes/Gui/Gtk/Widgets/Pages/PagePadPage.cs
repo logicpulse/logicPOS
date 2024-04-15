@@ -19,15 +19,15 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Protected
 
         //Public Fields
-        private String _pageName;
-        public String PageName
+        private string _pageName;
+        public string PageName
         {
             get { return _pageName; }
             set { _pageName = value; }
         }
 
-        private String _pageIcon;
-        public String PageIcon
+        private string _pageIcon;
+        public string PageIcon
         {
             get { return _pageIcon; }
             set { _pageIcon = value; }
@@ -66,8 +66,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public abstract void Validate();
 
         //Constructors
-        public PagePadPage(Window pSourceWindow, String pPageName, Widget pWidget) : this(pSourceWindow, pPageName, "", pWidget) { }
-        public PagePadPage(Window pSourceWindow, String pPageName, String pPageIcon, Widget pWidget, bool pEnabled = true)
+        public PagePadPage(Window pSourceWindow, string pPageName, Widget pWidget) : this(pSourceWindow, pPageName, "", pWidget) { }
+        public PagePadPage(Window pSourceWindow, string pPageName, string pPageIcon, Widget pWidget, bool pEnabled = true)
         {
             //Parameters
             _sourceWindow = pSourceWindow;

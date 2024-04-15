@@ -68,7 +68,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
             _maxCharsPerLineNormalBold = pMaxCharsPerLineNormalBold;
             _maxCharsPerLineSmall = pMaxCharsPerLineSmall;
             //Other
-            _line = new String(_lineChar, _maxCharsPerLineNormal);
+            _line = new string(_lineChar, _maxCharsPerLineNormal);
         }
 
         public void PrintBuffer()

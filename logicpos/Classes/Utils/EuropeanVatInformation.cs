@@ -25,7 +25,7 @@ namespace logicpos
             // we should return Empty.
             catch (RegexMatchTimeoutException)
             {
-                return String.Empty;
+                return string.Empty;
             }
         }
 

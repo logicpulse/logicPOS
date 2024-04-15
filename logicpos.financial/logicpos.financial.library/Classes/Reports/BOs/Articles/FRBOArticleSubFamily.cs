@@ -6,8 +6,8 @@ namespace logicpos.financial.library.Classes.Reports.BOs.Articles
     [FRBO(Entity = "fin_articlesubfamily")]
     public class FRBOArticleSubFamily : FRBOBaseObject
     {
-        public UInt32 Ord { get; set; }
-        public UInt32 Code { get; set; }
+        public uint Ord { get; set; }
+        public uint Code { get; set; }
         public string Designation { get; set; }
         public string ButtonLabel { get; set; }
         public bool ButtonLabelHide { get; set; }

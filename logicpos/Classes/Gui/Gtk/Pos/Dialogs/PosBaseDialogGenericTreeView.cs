@@ -16,14 +16,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Protected Members
         protected DialogMode _dialogMode;
         //Validation Rules
-        protected String _regexAlfa = SettingsApp.RegexAlfa;
-        protected String _regexAlfaNumeric = SettingsApp.RegexAlfaNumeric;
-        protected String _regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
-        protected String _regexDecimal = SettingsApp.RegexDecimal;
-        protected String _regexDecimalGreaterThanZero = SettingsApp.RegexDecimalGreaterThanZero;
-        protected String _regexDecimalGreaterEqualThanZero = SettingsApp.RegexDecimalGreaterEqualThanZero;
-        protected String _regexGuid = SettingsApp.RegexGuid;
-        protected String _regexPercentage = SettingsApp.RegexPercentage;
+        protected string _regexAlfa = SettingsApp.RegexAlfa;
+        protected string _regexAlfaNumeric = SettingsApp.RegexAlfaNumeric;
+        protected string _regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
+        protected string _regexDecimal = SettingsApp.RegexDecimal;
+        protected string _regexDecimalGreaterThanZero = SettingsApp.RegexDecimalGreaterThanZero;
+        protected string _regexDecimalGreaterEqualThanZero = SettingsApp.RegexDecimalGreaterEqualThanZero;
+        protected string _regexGuid = SettingsApp.RegexGuid;
+        protected string _regexPercentage = SettingsApp.RegexPercentage;
 
         //Public Properties, to have access to/from TreeView EventHandlers
         protected T _dataSourceRow;

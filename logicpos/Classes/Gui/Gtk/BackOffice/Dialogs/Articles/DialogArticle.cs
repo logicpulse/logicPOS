@@ -69,8 +69,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private CheckButton _checkButtonComposite;
         private CheckButton _checkButtonUniqueArticles;
         private ICollection <Tuple<fin_articleserialnumber, Entry, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, GenericCRUDWidgetXPO, HBox>> _serialNumberCollection;
-        private readonly String iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
-        private readonly String iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+        private readonly string iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+        private readonly string iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
 
         private int _totalCompositeEntrys = 0;
 
@@ -781,7 +781,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         _entryBoxSelectArticle1.Value = articleChild;
                         _entryBoxSelectArticle1.EntryValidation.Text = articleChild.Designation;
-                        _entryBoxSelectArticle1.EntryQtdValidation.Text = String.Format("{0:0.##}", articleLine.Quantity);
+                        _entryBoxSelectArticle1.EntryQtdValidation.Text = string.Format("{0:0.##}", articleLine.Quantity);
                         _entryBoxSelectArticle1.CodeEntry.Text = articleChild.Code;
 
                         _genericCRUDWidgetXPO = (this._crudWidgetList.GetFieldWidget(string.Format("{0} linha {1}: {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"), 1, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"))) as GenericCRUDWidgetXPO);
@@ -843,7 +843,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                         var childQuantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
 
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? String.Format("{0:0.##}", childQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", childQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryCodeValidation.Validate();
 
@@ -870,7 +870,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                     decimal quantity = (pXPOEntry.Value.DefaultQuantity > 0) ? pXPOEntry.Value.DefaultQuantity : 1;
 
-                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? String.Format("{0:0.##}", quantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", quantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.Value = newArticle;
 
@@ -1017,7 +1017,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 NewEntryBoxSelectArticle.Value = articleChild;
                 NewEntryBoxSelectArticle.EntryValidation.Text = articleChild.Designation;
-                NewEntryBoxSelectArticle.EntryQtdValidation.Text = String.Format("{0:0.##}", pArticleComposition.Quantity);
+                NewEntryBoxSelectArticle.EntryQtdValidation.Text = string.Format("{0:0.##}", pArticleComposition.Quantity);
                 NewEntryBoxSelectArticle.CodeEntry.Text = articleChild.Code;
 
                 //Events
@@ -1289,7 +1289,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     return;
                 }
                 entrySelected.CodeEntry.Text = entrySelected.Value.Code;
-                entrySelected.EntryQtdValidation.Text = String.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
+                entrySelected.EntryQtdValidation.Text = string.Format("{0:0.##}", entrySelected.Value.DefaultQuantity);
             }
             catch (Exception ex)
             {
