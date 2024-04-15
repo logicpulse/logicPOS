@@ -181,7 +181,6 @@
     <Compile Include="Classes\Logic\Pos\Dialogs\PosSplitPaymentsDialog.cs" />
     <Compile Include="Classes\Utils\ExcelProcessing.cs" />
     <Compile Include="Classes\Utils\ExpressionEvaluatorExtended.cs" />
-    <Compile Include="Classes\Utils\GraphUtils.cs" />
     <Compile Include="Classes\Utils\SingleProgramInstance.cs" />
     <Compile Include="Classes\Utils\EuropeanVatInformation.cs" />
     <Compile Include="Classes\Utils\Win32APIWindowHelper.cs" />
