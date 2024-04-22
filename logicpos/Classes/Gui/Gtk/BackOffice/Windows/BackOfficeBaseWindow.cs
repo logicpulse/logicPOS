@@ -8,6 +8,8 @@ using logicpos.resources.Resources.Localization;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using System.Collections.Generic;
 using logicpos.Extensions;
+using logicpos.shared.App;
+using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -71,9 +73,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
             System.Drawing.Size sizeIconQuit = new System.Drawing.Size(20, 20);
             System.Drawing.Size sizeButton = new System.Drawing.Size(20, 20);
-            string fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
-            string fontDescriptionParentLowRes = GlobalFramework.Settings["fontDescriptionParentLowRes"];
-            string fontDescription = GlobalFramework.Settings["fontDescriptionParentLowRes"];
+            string fontPosBackOfficeParent = DataLayerFramework.Settings["fontPosBackOfficeParent"];
+            string fontDescriptionParentLowRes = DataLayerFramework.Settings["fontDescriptionParentLowRes"];
+            string fontDescription = DataLayerFramework.Settings["fontDescriptionParentLowRes"];
             //Settings
             //Redimensionar Botões do accordion para 1024
             fontDescription = fontPosBackOfficeParent;
@@ -90,32 +92,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //IN009296 BackOffice - Mudar a língua da aplicação 
             try
             {
-                string sql = string.Format("UPDATE cfg_configurationpreferenceparameter SET value = '{0}' WHERE token = 'CULTURE'", GlobalFramework.Settings["customCultureResourceDefinition"]);
-                GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                string sql = string.Format("UPDATE cfg_configurationpreferenceparameter SET value = '{0}' WHERE token = 'CULTURE'", DataLayerFramework.Settings["customCultureResourceDefinition"]);
+                DataLayerFramework.SessionXpo.ExecuteScalar(sql);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
             }
             /* IN006045 */
-            //_clockFormat = GlobalFramework.Settings["dateTimeFormatStatusBar"];
-            _clockFormat = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "backoffice_datetime_format_status_bar");
+            //_clockFormat = DataLayerFramework.Settings["dateTimeFormatStatusBar"];
+            _clockFormat = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "backoffice_datetime_format_status_bar");
 
-            string fontBackOfficeStatusBar = GlobalFramework.Settings["fontPosStatusBar"];
-            string fileImageBackOfficeLogoLong = FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logo_backoffice_long.png");
-            string fileImageBackOfficeLogo = logicpos.Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]);
+            string fontBackOfficeStatusBar = DataLayerFramework.Settings["fontPosStatusBar"];
+            string fileImageBackOfficeLogoLong = SharedUtils.OSSlash(DataLayerFramework.Path["themes"] + @"Default\Images\logo_backoffice_long.png");
+            string fileImageBackOfficeLogo = logicpos.Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]);
 
             //Colors
-            System.Drawing.Color colorBackOfficeContentBackground = GlobalFramework.Settings["colorBackOfficeContentBackground"].StringToColor();
-            System.Drawing.Color colorBackOfficeStatusBarBackground = GlobalFramework.Settings["colorBackOfficeStatusBarBackground"].StringToColor();
-            System.Drawing.Color colorBackOfficeAccordionFixBackground = GlobalFramework.Settings["colorBackOfficeAccordionFixBackground"].StringToColor();
-            System.Drawing.Color colorBackOfficeStatusBarFont = GlobalFramework.Settings["colorBackOfficeStatusBarFont"].StringToColor();
-            System.Drawing.Color colorBackOfficeStatusBarBottomBackground = GlobalFramework.Settings["colorBackOfficeStatusBarBottomBackground"].StringToColor();
+            System.Drawing.Color colorBackOfficeContentBackground = DataLayerFramework.Settings["colorBackOfficeContentBackground"].StringToColor();
+            System.Drawing.Color colorBackOfficeStatusBarBackground = DataLayerFramework.Settings["colorBackOfficeStatusBarBackground"].StringToColor();
+            System.Drawing.Color colorBackOfficeAccordionFixBackground = DataLayerFramework.Settings["colorBackOfficeAccordionFixBackground"].StringToColor();
+            System.Drawing.Color colorBackOfficeStatusBarFont = DataLayerFramework.Settings["colorBackOfficeStatusBarFont"].StringToColor();
+            System.Drawing.Color colorBackOfficeStatusBarBottomBackground = DataLayerFramework.Settings["colorBackOfficeStatusBarBottomBackground"].StringToColor();
             System.Drawing.Color colorLabelReseller = System.Drawing.Color.White;
             ModifyBg(StateType.Normal, colorBackOfficeContentBackground.ToGdkColor());
 
             //Icon
-            string fileImageAppIcon = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], SettingsApp.AppIcon));
+            string fileImageAppIcon = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], POSSettings.AppIcon));
             if (File.Exists(fileImageAppIcon)) Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
             //Start Pack UI
@@ -127,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Reseller
             _reseller = new Label();
-            _reseller.Text = string.Format(" Powered by {0}©", GlobalFramework.LicenceReseller);
+            _reseller.Text = string.Format(" Powered by {0}©", SharedFramework.LicenseReseller);
             _reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
             _reseller.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             _reseller.Justify = Justification.Left;
@@ -135,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Logo
             try
             {
-                if (GlobalFramework.LicenceReseller != null && GlobalFramework.LicenceReseller.ToString() != "Logicpulse" && GlobalFramework.LicenceReseller.ToString().ToLower() != "") 
+                if (SharedFramework.LicenseReseller != null && SharedFramework.LicenseReseller.ToString() != "Logicpulse" && SharedFramework.LicenseReseller.ToString().ToLower() != "") 
                     _imageLogo = new Image(fileImageBackOfficeLogo);
                 else _imageLogo = new Image(fileImageBackOfficeLogoLong);
                 //_imageLogo.WidthRequest = _widthAccordion + Convert.ToInt16(borderWidth) * 3;
@@ -149,11 +151,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             //Style StatusBarFont
             Pango.FontDescription fontDescriptionStatusBar = Pango.FontDescription.FromString(fontBackOfficeStatusBar);
-            string _dashboardIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_dashboard.png");
-            string _updateIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_update.png");
-            string _exitIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png");
-            string _backPOSIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_pos_front_office.png");
-            string _iconDashBoard = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
+            string _dashboardIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_dashboard.png");
+            string _updateIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_update.png");
+            string _exitIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_pos_close_backoffice.png");
+            string _backPOSIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_pos_front_office.png");
+            string _iconDashBoard = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
 
             //Active Content
             _labelActiveContent = new Label() { WidthRequest = 300 };
@@ -162,13 +164,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _labelActiveContent.SetAlignment(0.0F, 0.5F);
 
             //TerminalInfo : Terminal : User
-            _labelTerminalInfo = new Label(string.Format("{0} : {1}", GlobalFramework.LoggedTerminal.Designation, GlobalFramework.LoggedUser.Name));
+            _labelTerminalInfo = new Label(string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name));
             _labelTerminalInfo.ModifyFont(fontDescriptionStatusBar);
             _labelTerminalInfo.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             _labelTerminalInfo.SetAlignment(0.5F, 0.5F);
 
             //Clock
-            _labelClock = new Label(FrameworkUtils.CurrentDateTime(_clockFormat));
+            _labelClock = new Label(SharedUtils.CurrentDateTime(_clockFormat));
             _labelClock.ModifyFont(fontDescriptionStatusBar);
             _labelClock.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             _labelClock.SetAlignment(1.0F, 0.5F);
@@ -176,7 +178,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Pack HBox StatusBar
             _hboxStatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             _hboxStatusBar.PackStart(_imageLogo, false, false, 0);
-            if (GlobalFramework.LicenceReseller != null && GlobalFramework.LicenceReseller.ToString() != "Logicpulse" && LicenceManagement.IsLicensed) _hboxStatusBar.PackStart(_reseller, false, false, 0);
+            if (SharedFramework.LicenseReseller != null && SharedFramework.LicenseReseller.ToString() != "Logicpulse" && LicenceManagement.IsLicensed) _hboxStatusBar.PackStart(_reseller, false, false, 0);
             _hboxStatusBar.PackStart(_labelActiveContent, false, false, 0);
             _hboxStatusBar.PackStart(_labelTerminalInfo, true, true, 0);
 
@@ -192,7 +194,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 
             }
 
-            if (GlobalFramework.AppUseBackOfficeMode)
+            if (SharedFramework.AppUseBackOfficeMode)
             {
                 EventBox eventBoxMinimize = logicpos.Utils.GetMinimizeEventBox();
                 eventBoxMinimize.ButtonReleaseEvent += delegate {
@@ -204,9 +206,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             _imageLogo.Dispose();
             _dashboardButton = new TouchButtonIconWithText("DASHBOARD_ICON", ("168, 204, 79").StringToColor(), "Dashboard", fontDescription, ("61, 61, 61").StringToColor(), _dashboardIcon, sizeIconDashboard, _widthAccordion, _heightAccordion, true);
-            _exitButton = new TouchButtonIconWithText("EXIT_BUTTON", ("201, 102, 88").StringToColor(), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quit"), fontDescription, ("255, 255, 255").StringToColor(), _exitIcon, sizeButton, _widthAccordion, _heightAccordion, true);
+            _exitButton = new TouchButtonIconWithText("EXIT_BUTTON", ("201, 102, 88").StringToColor(), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quit"), fontDescription, ("255, 255, 255").StringToColor(), _exitIcon, sizeButton, _widthAccordion, _heightAccordion, true);
             _backPOS = new TouchButtonIconWithText("POS", ("168, 204, 79").StringToColor(), "LogicPOS", fontDescription, ("61, 61, 61").StringToColor(), _backPOSIcon, sizeButton, _widthAccordion, _heightAccordion, true);
-            _NewVersion = new TouchButtonIconWithText("Update_Button", ("168, 204, 79").StringToColor(), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_update_pos"), fontDescription, ("61, 61, 61").StringToColor(), _updateIcon, sizeButton, _widthAccordion, _heightAccordion, true);
+            _NewVersion = new TouchButtonIconWithText("Update_Button", ("168, 204, 79").StringToColor(), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_update_pos"), fontDescription, ("61, 61, 61").StringToColor(), _updateIcon, sizeButton, _widthAccordion, _heightAccordion, true);
             _labelClock.ModifyFont(fontDescriptionStatusBar);
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //StatusBar
@@ -226,7 +228,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _fixAccordion.Add(_dashboardButton);
                         
             //Redimensionar Botões do Backoffice para 1024x768
-            if (!GlobalFramework.AppUseBackOfficeMode)
+            if (!SharedFramework.AppUseBackOfficeMode)
             {
                 if (GlobalApp.boScreenSize.Height <= 800)
                 {
@@ -253,18 +255,18 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
 			
 			//TK016248 - BackOffice - Check New Version 
-            string appVersion = FrameworkUtils.ProductVersion.Replace("v", ""); 
+            string appVersion = SharedUtils.ProductVersion.Replace("v", ""); 
 
             bool needToUpdate = false;
             //GlobalFramework.ServerVersion = "1.3.0000";
-            if (GlobalFramework.ServerVersion != null)
+            if (SharedFramework.ServerVersion != null)
             {
                 try
                 {
                     string[] tmpNew = appVersion.Split('.');
                     long tmpNewVer = int.Parse(tmpNew[0]) * 10000000 + int.Parse(tmpNew[1]) * 10000 + int.Parse(tmpNew[2]);
 
-                    string[] tmpOld = GlobalFramework.ServerVersion.ToString().Split('.');
+                    string[] tmpOld = SharedFramework.ServerVersion.ToString().Split('.');
                     long tmpOldVer = int.Parse(tmpOld[0]) * 10000000 + int.Parse(tmpOld[1]) * 10000 + int.Parse(tmpOld[2]);
 
                     if (tmpNewVer < tmpOldVer)
@@ -279,11 +281,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 if (needToUpdate)
                 {
-                    if (GlobalFramework.AppUseBackOfficeMode)
+                    if (SharedFramework.AppUseBackOfficeMode)
                     {
                         if (GlobalApp.boScreenSize.Height <= 800)
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
+                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_new_version"), SharedFramework.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal,("61, 61, 61").StringToColor().ToGdkColor());
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
@@ -294,7 +296,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         }
                         else
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
+                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_new_version"), SharedFramework.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal, ("61, 61, 61").StringToColor().ToGdkColor());
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
@@ -308,7 +310,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (GlobalApp.boScreenSize.Height <= 800)
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
+                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_new_version"), SharedFramework.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal, ("61, 61, 61").StringToColor().ToGdkColor());
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
@@ -319,7 +321,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         }
                         else
                         {
-                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_new_version"), GlobalFramework.ServerVersion.ToString())));
+                            _labelUpdate = new Label(string.Format(string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_new_version"), SharedFramework.ServerVersion.ToString())));
                             _labelUpdate.ModifyFont(fontDescriptionStatusBar);
                             _labelUpdate.ModifyFg(StateType.Normal, ("61, 61, 61").StringToColor().ToGdkColor());
                             _labelUpdate.SetAlignment(1.0F, 0.5F);
@@ -401,7 +403,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (clickedButton.ExternalAppFileName != null)
                         {
-                            FrameworkUtils.ExecuteExternalProcess(clickedButton.ExternalAppFileName);
+                            SharedUtils.ExecuteExternalProcess(clickedButton.ExternalAppFileName);
                         }
                     }
                 }
@@ -420,7 +422,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
         private bool UpdateClock()
         {
-            _labelClock.Text = FrameworkUtils.CurrentDateTime(_clockFormat);
+            _labelClock.Text = SharedUtils.CurrentDateTime(_clockFormat);
             // returning true means that the timeout routine should be invoked
             // again after the timeout period expires. Returning false would
             // terminate the timeout.

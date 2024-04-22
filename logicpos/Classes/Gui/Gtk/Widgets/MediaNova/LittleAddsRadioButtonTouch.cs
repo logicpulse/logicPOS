@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.datalayer.App;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -30,7 +31,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public LittleAddsRadioButtonTouch(List<LittleAddsWidget> pLittleAddsList, string pInitialValue)
         {
             //Init FontDescription
-            Pango.FontDescription fontDescriptionEntry = Pango.FontDescription.FromString(GlobalFramework.Settings["fontEntryBoxValue"]);
+            Pango.FontDescription fontDescriptionEntry = Pango.FontDescription.FromString(DataLayerFramework.Settings["fontEntryBoxValue"]);
 
             //Parameters
             RadioButton groupButton = null;

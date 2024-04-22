@@ -1,16 +1,13 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.Classes.Formatters;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -30,17 +27,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Override Default Value with Parameter Default Value, this way we can have diferent Default Values for GenericTreeView
             fin_warehouse defaultValue = (pDefaultValue != null) ? pDefaultValue as fin_warehouse : null;
             //Override Default DialogType with Parameter Dialog Type, this way we can have diferent DialogTypes for GenericTreeView
-            Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationWarehouse); 
+            Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogConfigurationWarehouse);
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(DataLayerFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"), Expand = false },
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"), Expand = false },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -57,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria);
             var sortingCollection = new SortingCollection
             {
                 new SortProperty("Code", DevExpress.Xpo.DB.SortingDirection.Ascending)

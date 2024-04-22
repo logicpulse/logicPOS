@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Globalization;
-using logicpos.resources.Resources.Localization;
 
 namespace logicpos.shared.App
 {
@@ -17,9 +15,9 @@ namespace logicpos.shared.App
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static readonly DocumentType TRANSPORT_DOCUMENT  = new DocumentType(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gt"), SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide, logicpos.shared.Enums.DocumentType.WayBill, "GT", false, true,  0, true,    true, true, 2, false);
-        public static readonly DocumentType CREDIT_SLIP         = new DocumentType(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_nc"), SettingsApp.XpoOidDocumentFinanceTypeCreditNote,          logicpos.shared.Enums.DocumentType.Invoice, "NC", false, false, 1, false,   true, true, 1, false);
-        public static readonly DocumentType DELIVERY_NOTE       = new DocumentType(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gr"), SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote,        logicpos.shared.Enums.DocumentType.WayBill, "GR", false, true,  0, true,    true, true, 2, false);
+        public static readonly DocumentType TRANSPORT_DOCUMENT = new DocumentType(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gt"), SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide, Enums.DocumentType.WayBill, "GT", false, true, 0, true, true, true, 2, false);
+        public static readonly DocumentType CREDIT_SLIP = new DocumentType(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_nc"), SharedSettings.XpoOidDocumentFinanceTypeCreditNote, Enums.DocumentType.Invoice, "NC", false, false, 1, false, true, true, 1, false);
+        public static readonly DocumentType DELIVERY_NOTE = new DocumentType(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_gr"), SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote, Enums.DocumentType.WayBill, "GR", false, true, 0, true, true, true, 2, false);
 
         public static IEnumerable<DocumentType> Values
         {
@@ -52,18 +50,18 @@ namespace logicpos.shared.App
         /// <param name="documentTypeGlobal"></param>
         private DocumentType(string designation, Guid oid, logicpos.shared.Enums.DocumentType documentTypeGlobal, string acronym, bool payed, bool credit, int creditDebit, bool wayBill, bool wsAtDocument, bool saftAuditFile, int saftDocumentType, bool stockMode)
         {
-            Designation         = designation;
-            Oid                 = oid;
-            DocumentTypeGlobal  = documentTypeGlobal;
-            Acronym             = acronym;
-            Payed               = payed;
-            Credit              = credit;
-            CreditDebit         = creditDebit;
-            WayBill             = wayBill;
-            WsAtDocument        = wsAtDocument;
-            SaftAuditFile       = saftAuditFile;
-            SaftDocumentType    = saftDocumentType;
-            StockMode           = stockMode;
+            Designation = designation;
+            Oid = oid;
+            DocumentTypeGlobal = documentTypeGlobal;
+            Acronym = acronym;
+            Payed = payed;
+            Credit = credit;
+            CreditDebit = creditDebit;
+            WayBill = wayBill;
+            WsAtDocument = wsAtDocument;
+            SaftAuditFile = saftAuditFile;
+            SaftDocumentType = saftDocumentType;
+            StockMode = stockMode;
         }
 
         /// <summary>

@@ -1,10 +1,12 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Reports;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using System;
@@ -12,7 +14,7 @@ using System.Collections.Generic;
 
 namespace logicpos.financial.library.App
 {
-    public class FrameworkUtils : logicpos.shared.App.FrameworkUtils
+    public class FinancialLibraryUtils 
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -63,7 +65,7 @@ namespace logicpos.financial.library.App
             {
                 new SortProperty("Ord", SortingDirection.Ascending)
             };
-            XPCollection xpcDocumentFinanceType = GetXPCollectionFromCriteria(GlobalFramework.SessionXpo, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
+            XPCollection xpcDocumentFinanceType = SharedUtils.GetXPCollectionFromCriteria(DataLayerFramework.SessionXpo, typeof(fin_documentfinancetype), criteriaOperator, sortingCollection);
 
             try
             {
@@ -96,65 +98,65 @@ namespace logicpos.financial.library.App
                 //Invoice,SimplifiedInvoice,InvoiceAndPayment
                 if (
                     //SaftDocumentType = 1
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeInvoice ||
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
                     //pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill ||
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
                     //SaftDocumentType = 0
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput
                 )
                 {
                     //Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
                     //- Fatura simplificada em documentos de origem, para inserir nº contribuinte após emissão de fatura
-                    if (SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                    if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                     {      
                         result = new Guid[] {
                         //SaftDocumentType = 2
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment,
-                        SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote,
-                        SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput,
-                        SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide,
-                        SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
-                        SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide,
-                        SettingsApp.XpoOidDocumentFinanceTypeReturnGuide,
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                        SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote,
+                        SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput,
+                        SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide,
+                        SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
+                        SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide,
+                        SharedSettings.XpoOidDocumentFinanceTypeReturnGuide,
                         //SaftDocumentType = 3 
-                        SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument,
-                        SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument,
+                        SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice,
                         //SaftDocumentType = 0 
-                        SettingsApp.XpoOidDocumentFinanceTypeBudget,
-                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice };
+                        SharedSettings.XpoOidDocumentFinanceTypeBudget,
+                        SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice };
                     }
                     else
                     {
                         result = new Guid[] {
                         //SaftDocumentType = 2
-                        SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote,
-                        SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide,
-                        SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
-                        SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide,
-                        SettingsApp.XpoOidDocumentFinanceTypeReturnGuide,
+                        SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote,
+                        SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide,
+                        SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide,
+                        SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide,
+                        SharedSettings.XpoOidDocumentFinanceTypeReturnGuide,
                         //SaftDocumentType = 3 
-                        SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument,
-                        SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument,
+                        SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice,
                         //SaftDocumentType = 0 
-                        SettingsApp.XpoOidDocumentFinanceTypeBudget,
-                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice };
+                        SharedSettings.XpoOidDocumentFinanceTypeBudget,
+                        SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice };
                     }
                    
                 }
                 //CreditNote
                 else if (
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeCreditNote
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
                 )
                 {
                     result = new Guid[] { 
                         //SaftDocumentType = 1
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill,
-                        SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill,
+                        SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
                     };
                 }
                 //MovementOfGoods,WorkingDocuments
@@ -162,52 +164,52 @@ namespace logicpos.financial.library.App
                     //SaftDocumentType = 2
                     // pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote || /* IN009175 */
                     // pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide || /* IN009175 */
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide ||
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeReturnGuide ||
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide ||
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide ||
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeReturnGuide ||
                     //SaftDocumentType = 3
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument ||
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument ||
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice
                 )
                 {
                     result = new Guid[] { 
                         //SaftDocumentType = 1
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
                         //SaftDocumentType = 3 
-                        SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument,
+                        SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument,
                         //SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice,
                         //SaftDocumentType = 0
-                        SettingsApp.XpoOidDocumentFinanceTypeBudget,
-                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice
+                        SharedSettings.XpoOidDocumentFinanceTypeBudget,
+                        SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
                     };
                 }
                 /* IN009175 - Transport Documents ("Guia de Transporte" and "Guia de Remessa") */
                 else if (
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide ||
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote
                     )
                 { /* #TODO check this list and all others here */
                     result = new Guid[] { 
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment,
-                        SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument,
-                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment,
+                        SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument,
+                        SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
                     };
                 }
                 //DocumentFinanceTypeInvoiceWayBill
                 else if (
-                    pDocumentFinanceType == SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill
+                    pDocumentFinanceType == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill
                 )
                 {
                     result = new Guid[] { 
                         //SaftDocumentType = 3
-                        SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument,
-                        SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice,
-                        SettingsApp.XpoOidDocumentFinanceTypeBudget,
-                        SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice
+                        SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument,
+                        SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice,
+                        SharedSettings.XpoOidDocumentFinanceTypeBudget,
+                        SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
                     };
                 }
                 //All Other Documents
@@ -334,11 +336,11 @@ namespace logicpos.financial.library.App
                     {
                         //Get Total Already Credit Items in this Document
                         sql = string.Format("SELECT Quantity AS Total FROM fin_documentfinancedetail WHERE DocumentMaster = '{0}' AND Article = '{1}';", pDocumentParent.Oid, item.Key.ArticleOid);
-                        resultParentDocument = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                        resultParentDocument = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                         totalParentDocument = (resultParentDocument != null) ? Convert.ToDecimal(resultParentDocument) : 0.0m;
 
-                        sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", SettingsApp.XpoOidDocumentFinanceTypeCreditNote, pDocumentParent.Oid, item.Key.ArticleOid);
-                        resultAlreadyCredited = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                        sql = string.Format("SELECT SUM(fdQuantity) AS Total FROM view_documentfinance WHERE ftOid = '{0}' AND fmDocumentParent = '{1}' AND fdArticle = '{2}';", SharedSettings.XpoOidDocumentFinanceTypeCreditNote, pDocumentParent.Oid, item.Key.ArticleOid);
+                        resultAlreadyCredited = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                         totalAlreadyCredited = (resultAlreadyCredited != null) ? Convert.ToDecimal(resultAlreadyCredited) : 0.0m;
 
                         if (debug) _logger.Debug(string.Format(
@@ -394,12 +396,12 @@ namespace logicpos.financial.library.App
 	                    CreatedAt
                     ;",
                     pCustomer,
-                    SettingsApp.XpoOidDocumentFinanceTypeInvoice,
-                    SettingsApp.XpoOidDocumentFinanceTypeCreditNote,
-                    SettingsApp.XpoOidDocumentFinanceTypeDebitNote
+                    SharedSettings.XpoOidDocumentFinanceTypeInvoice,
+                    SharedSettings.XpoOidDocumentFinanceTypeCreditNote,
+                    SharedSettings.XpoOidDocumentFinanceTypeDebitNote
                 );
 
-                SelectedData selectedData = GlobalFramework.SessionXpo.ExecuteQuery(sql);
+                SelectedData selectedData = DataLayerFramework.SessionXpo.ExecuteQuery(sql);
 
                 //Add to result from SelectedData
                 foreach (var item in selectedData.ResultSet[0].Rows)
@@ -442,7 +444,7 @@ namespace logicpos.financial.library.App
                     pDocumentType
                 );
 
-                SelectedData selectedData = GlobalFramework.SessionXpo.ExecuteQuery(sql);
+                SelectedData selectedData = DataLayerFramework.SessionXpo.ExecuteQuery(sql);
 
                 //Add to result from SelectedData
                 foreach (var item in selectedData.ResultSet[0].Rows)
@@ -471,11 +473,11 @@ namespace logicpos.financial.library.App
                 foreach (var item in pArticleBag)
                 {
                     //Get Article
-                    article = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
+                    article = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                     //Assign Required if ArticleClassCustomerCard Detected
-                    if (article.Type.Oid == SettingsApp.XpoOidArticleClassCustomerCard
+                    if (article.Type.Oid == SharedSettings.XpoOidArticleClassCustomerCard
                         && (
-                            pCustomer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                            pCustomer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
                             || string.IsNullOrEmpty(pCustomer.CardNumber)
                         )
                     )
@@ -518,7 +520,7 @@ namespace logicpos.financial.library.App
             {
                 result = string.Format(
                     "(Disabled IS NULL OR Disabled  <> 1) AND (DocumentType = '{0}' OR DocumentType = '{1}' OR DocumentType = '{2}') AND Payed = 0 AND DocumentStatusStatus <> 'A'"
-                    , SettingsApp.XpoOidDocumentFinanceTypeInvoice, SettingsApp.XpoOidDocumentFinanceTypeCreditNote, SettingsApp.XpoOidDocumentFinanceTypeDebitNote
+                    , SharedSettings.XpoOidDocumentFinanceTypeInvoice, SharedSettings.XpoOidDocumentFinanceTypeCreditNote, SharedSettings.XpoOidDocumentFinanceTypeDebitNote
                 );
                 //Add Customer Filter if Defined
                 if (pCustomer != Guid.Empty)
@@ -548,16 +550,16 @@ namespace logicpos.financial.library.App
             //Declare local Variables
             fin_documentfinancemaster lastDocument = null;
             fin_documentfinancemaster result = null;
-            Guid currentOrderMainOid = GlobalFramework.SessionApp.CurrentOrderMainOid;
+            Guid currentOrderMainOid = SharedFramework.SessionApp.CurrentOrderMainOid;
             _logger.Debug("fin_documentfinancemaster GetOrderMainLastDocumentConference(bool pGenerateNewIfDiferentFromArticleBag = false) :: currentOrderMainOid: " + currentOrderMainOid);
             OrderMain currentOrderMain = null;
             
             try
             {
                 /* IN009179 - System.Collections.Generic.KeyNotFoundException */
-                if (GlobalFramework.SessionApp.OrdersMain.Count > 0)
+                if (SharedFramework.SessionApp.OrdersMain.Count > 0)
                 {
-                    currentOrderMain = GlobalFramework.SessionApp.OrdersMain[currentOrderMainOid];
+                    currentOrderMain = SharedFramework.SessionApp.OrdersMain[currentOrderMainOid];
                 }
                 else
                 {
@@ -575,14 +577,14 @@ namespace logicpos.financial.library.App
                     ORDER BY 
 	                    CreatedAt DESC;
                     "
-                    , SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument
+                    , SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument
                     , currentOrderMain.PersistentOid
                 );
 
-                var sqlResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
 
                 //Get LastDocument Object
-                if (sqlResult != null) lastDocument = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(Convert.ToString(sqlResult)));
+                if (sqlResult != null) lastDocument = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), new Guid(Convert.ToString(sqlResult)));
 
                 //If GenerateNewIfDiferentFromArticleBag Enabled compare ArticleBag with Document and If is diferent Generate a New One
                 if (pGenerateNewIfDiferentFromArticleBag)
@@ -596,12 +598,12 @@ namespace logicpos.financial.library.App
                         )
                     {
                         //Prepare ProcessFinanceDocumentParameter
-                        ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument, articleBag)
+                        ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument, articleBag)
                         {
-                            Customer = SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                            Customer = SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
                         };
 
-                        fin_documentordermain orderMain = (fin_documentordermain)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentordermain), currentOrderMain.PersistentOid);
+                        fin_documentordermain orderMain = (fin_documentordermain)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentordermain), currentOrderMain.PersistentOid);
                         processFinanceDocumentParameter.SourceOrderMain = orderMain;
                         if (lastDocument != null)
                         {
@@ -620,7 +622,7 @@ namespace logicpos.financial.library.App
                         {
                             //Assign Result Document to New Document
                             //Get Object outside UOW else we have a problem with "A first chance exception of type 'System.ObjectDisposedException'"
-                            result = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), newDocument.Oid);
+                            result = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), newDocument.Oid);
 
                             ////Old Code that changes last Conference Document to Status "A", it is not Required, Confirmed with Carlos Bento, we must Leave it without status changes
                             //if (lastDocument != null) 
@@ -658,8 +660,8 @@ namespace logicpos.financial.library.App
 
             try
             {
-                string filterCriteria = string.Format("Oid = '{0}'", SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
-                result = (GetXPGuidObjectFromCriteria(typeof(erp_customer), filterCriteria) as erp_customer);
+                string filterCriteria = string.Format("Oid = '{0}'", SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity.ToString());
+                result = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(erp_customer), filterCriteria) as erp_customer);
             }
             catch (Exception ex)
             {
@@ -694,7 +696,7 @@ namespace logicpos.financial.library.App
             try
             {
                 if (
-                    pTotalFinal > SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue &&
+                    pTotalFinal > SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue &&
                     (
                         IsFinalConsumerEntity(pFiscalNumber) ||
                         (

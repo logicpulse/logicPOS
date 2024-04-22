@@ -14,13 +14,15 @@ using System.Drawing;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Extensions;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal partial class PosCashDrawerDialog : PosBaseDialog
     {
         //Settings
-        private readonly int _decimalRoundTo = SettingsApp.DecimalRoundTo;
+        private readonly int _decimalRoundTo = SharedSettings.DecimalRoundTo;
         //Private Properties
         //ResponseType (Above 10)
         private readonly ResponseType _responseTypePrint = (ResponseType)11;
@@ -75,11 +77,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _sourceWindow = pSourceWindow;
 
                 //If has a valid open session
-                if (GlobalFramework.WorkSessionPeriodTerminal != null)
+                if (SharedFramework.WorkSessionPeriodTerminal != null)
                 {
 					//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
                     //Get From MoneyInCashDrawer, Includes CASHDRAWER_START and Money Movements
-                    _totalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(GlobalFramework.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
+                    _totalAmountInCashDrawer = ProcessWorkSessionPeriod.GetSessionPeriodMovementTotal(SharedFramework.WorkSessionPeriodTerminal, MovementTypeTotal.MoneyInCashDrawer);
                     if (_totalAmountInCashDrawer < 0) _totalAmountInCashDrawer = _totalAmountInCashDrawer * (-1);
                 }
                 //Dont have Open Terminal Session YET, use from last Closed CashDrawer
@@ -91,14 +93,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
                 //Init Local Vars
-                string windowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cashdrawer"), FrameworkUtils.DecimalToStringCurrency(_totalAmountInCashDrawer));
+                string windowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_cashdrawer"), SharedUtils.DecimalToStringCurrency(_totalAmountInCashDrawer));
                 Size windowSize = new Size(462, 310);//400 With Other Payments
-                string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
-                string fileActionPrint = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
+                string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_cash_drawer.png");
+                string fileActionPrint = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_print.png");
 
                 //Get SeletedData from WorkSessionMovementType Buttons
                 string executeSql = @"SELECT Oid, Token, ResourceString, ButtonIcon, Disabled FROM pos_worksessionmovementtype WHERE (Token LIKE 'CASHDRAWER_%') AND (Disabled IS NULL or Disabled  <> 1) ORDER BY Ord;";
-                XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(executeSql);
+                XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(executeSql);
                 //Init Dictionary
                 string buttonBagKey;
                 bool buttonDisabled;
@@ -116,10 +118,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     touchButtonIconWithText = new TouchButtonIconWithText(
                       string.Format("touchButton{0}_Green", buttonBagKey),
                       Color.Transparent/*_colorBaseDialogDefaultButtonBackground*/,
-                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], row.Values[xPSelectData.GetFieldIndex("ResourceString")].ToString()),
+                      resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], row.Values[xPSelectData.GetFieldIndex("ResourceString")].ToString()),
                       _fontBaseDialogButton,
                       _colorBaseDialogDefaultButtonFont,
-                     FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], row.Values[xPSelectData.GetFieldIndex("ButtonIcon")].ToString())),
+                     SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], row.Values[xPSelectData.GetFieldIndex("ButtonIcon")].ToString())),
                       _sizeBaseDialogDefaultButtonIcon,
                       _sizeBaseDialogDefaultButton.Width,
                       _sizeBaseDialogDefaultButton.Height
@@ -138,7 +140,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Initial Button Status, Based on Open/Close Terminal Session
                 string initialButtonToken;
-                if (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
+                if (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
                     buttonBag["CASHDRAWER_OPEN"].Sensitive = false;
                     buttonBag["CASHDRAWER_CLOSE"].Sensitive = true;
@@ -159,22 +161,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Initial Dialog Values
                 _selectedCashDrawerButton = buttonBag[initialButtonToken];
                 _selectedCashDrawerButton.ModifyBg(StateType.Normal, _colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
-                _selectedMovementType = (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_worksessionmovementtype), _selectedCashDrawerButton.CurrentButtonOid);
+                _selectedMovementType = (pos_worksessionmovementtype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_worksessionmovementtype), _selectedCashDrawerButton.CurrentButtonOid);
                 _selectedMovementType.Token = initialButtonToken;
 
                 //EntryAmountMoney
-                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_money"), KeyboardMode.Money, SettingsApp.RegexDecimalGreaterEqualThanZero, true);
+                _entryBoxMovementAmountMoney = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_money"), KeyboardMode.Money, SharedSettings.RegexDecimalGreaterEqualThanZero, true);
                 _entryBoxMovementAmountMoney.EntryValidation.Changed += delegate { ValidateDialog(); };
 				//Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
-                _entryBoxMovementAmountMoney.EntryValidation.Text = FrameworkUtils.DecimalToString(_totalAmountInCashDrawer);
+                _entryBoxMovementAmountMoney.EntryValidation.Text = SharedUtils.DecimalToString(_totalAmountInCashDrawer);
 
                 //TODO: Enable Other Payments
                 //EntryAmountOtherPayments
-                //_entryBoxMovementAmountOtherPayments = new EntryBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_other_payments, KeyboardModes.Money, regexDecimalGreaterThanZero, false);
+                //_entryBoxMovementAmountOtherPayments = new EntryBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_other_payments, KeyboardModes.Money, regexDecimalGreaterThanZero, false);
                 //_entryBoxMovementAmountOtherPayments.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //EntryDescription
-                _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_description"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
+                _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_description"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
                 _entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //VBox

@@ -218,7 +218,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
                     {
                         
                         string newDirectory = saveFileDialog1.FileName;
-                        System.IO.File.Copy(PdfViewer.DocPath, newDirectory, true);   
+                        File.Copy(PdfViewer.DocPath, newDirectory, true);   
 
                     }
                     catch (Win32Exception)
@@ -247,7 +247,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
                     {
                         string xlsPath = Path.ChangeExtension(PdfViewer.DocPath, ".xlsx");
                         string newDirectory = saveFileDialog1.FileName;
-                        System.IO.File.Copy(xlsPath, newDirectory, true);
+                        File.Copy(xlsPath, newDirectory, true);
                         System.Diagnostics.Process.Start(newDirectory);
                         File.Delete(xlsPath);
                         //saveFileDialog1.FileName = PdfViewer.DocPath;

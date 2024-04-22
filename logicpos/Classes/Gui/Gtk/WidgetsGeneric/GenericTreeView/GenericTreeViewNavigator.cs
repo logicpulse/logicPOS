@@ -1,11 +1,11 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.Extensions;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
 
@@ -127,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //    set { _genericTreeViewSearchWithButtons = value; }
         //}
 
-        
+
 
         //public Properties
         public int CurrentPage { get; set; }
@@ -157,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Container For Search, ExtraButtons and Navigator Buttons
             HBox hboxNavigator = new HBox(false, 0);
             HBox hboxNavigatorButtons = new HBox(true, 0);
-           
+
             string name = _genericTreeView.Toplevel.ToString();
             bool buttonMoreFilterVisible = false;
             if (name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinanceMaster" || name == "logicpos.Classes.Gui.Gtk.BackOffice.TreeViewDocumentFinancePayment") { buttonMoreFilterVisible = true; }
@@ -172,14 +172,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //}
 
             //Initialize Buttons     
-            _buttonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
-            _buttonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
-            _buttonInsert = GetNewButton("touchButtonInsert_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
-            _buttonView = GetNewButton("touchButtonView_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
-            _buttonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
-            _buttonDelete = GetNewButton("touchButtonDelete_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
-            _buttonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
-            //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
+            _buttonPrevRecord = GetNewButton("touchButtonPrev_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            _buttonNextRecord = GetNewButton("touchButtonNext_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
+            _buttonInsert = GetNewButton("touchButtonInsert_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
+            _buttonView = GetNewButton("touchButtonView_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
+            _buttonUpdate = GetNewButton("touchButtonUpdate_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
+            _buttonDelete = GetNewButton("touchButtonDelete_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
+            _buttonRefresh = GetNewButton("touchButtonRefresh_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
+            //_buttonClose = GetNewButton("touchButtonPosToolbarApplicationClose_Red", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_pos, @"Icons/icon_pos_toolbar_application_close.png");
 
             //Events
             //GenericTreeView : Shared
@@ -225,12 +225,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             TouchButtonIconWithText result = null;
             try
             {
-                string fileIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pIcon);
-                string fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
+                string fileIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + pIcon);
+                string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;
-                Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
-                Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
-                Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
+                Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+                Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
+                Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
 
                 result = new TouchButtonIconWithText(pId, colorBaseDialogActionAreaButtonBackground, pLabel, fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height);
             }
@@ -295,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 }
                 else
                 {
-                    
+
                     if (_buttonView != null && _buttonView.Sensitive) _buttonView.Sensitive = false;
                     if (_buttonUpdate != null && _buttonUpdate.Sensitive) _buttonUpdate.Sensitive = false;
                     if (_buttonDelete != null && _buttonDelete.Sensitive) _buttonDelete.Sensitive = false;

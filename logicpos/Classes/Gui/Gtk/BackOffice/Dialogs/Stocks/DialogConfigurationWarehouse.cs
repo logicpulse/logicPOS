@@ -1,17 +1,17 @@
 ﻿using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.App;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
-using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using System.Drawing;
+using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.Extensions;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
-using logicpos.shared.Classes.Utils;
-using logicpos.Extensions;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 {
@@ -22,13 +22,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         private readonly fin_warehouselocation _Warehouselocation;
         private ScrolledWindow _scrolledWindow;
         private VBox vboxTab2;
-        private readonly string iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
-        private readonly string iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+        private readonly string iconAddRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+        private readonly string iconClearRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
 
         public DialogConfigurationWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pFlags, DialogMode pDialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"));
             _warehouseLocationCollection = new List<Tuple<fin_warehouselocation, Entry, BOWidgetBox, TouchButtonIcon, TouchButtonIcon, GenericCRUDWidgetXPO, HBox>>();
             if (logicpos.Utils.IsLinux) SetSizeRequest(500, 373);
             else SetSizeRequest(500, 450);
@@ -45,20 +45,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 try
                 {
                     //IN009261 BackOffice - Inserir mais auto-completes nos forms
-                    if (GlobalFramework.DatabaseType.ToString() == "MSSqlServer")
+                    if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM fin_warehouse");
-                        lastArticleCode = GlobalFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
                     }
-                    else if (GlobalFramework.DatabaseType.ToString() == "SQLite")
+                    else if (DataLayerFramework.DatabaseType.ToString() == "SQLite")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM fin_warehouse");
-                        lastArticleCode = GlobalFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
                     }
-                    else if (GlobalFramework.DatabaseType.ToString() == "MySql")
+                    else if (DataLayerFramework.DatabaseType.ToString() == "MySql")
                     {
                         string lastArticleSql = string.Format("SELECT MAX(CAST(code AS UNSIGNED)) as Cast FROM fin_warehouse;");
-                        lastArticleCode = GlobalFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                        lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
                     }
 
                 }
@@ -72,35 +72,35 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxOrd = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
+                BOWidgetBox boxOrd = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxOrd, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxOrd, _dataSourceRow, "Ord", SettingsApp.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxOrd, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SettingsApp.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
 
                 //Designation
                 Entry entryDesignation = new Entry();
-                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
+                BOWidgetBox boxDesignation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), entryDesignation);
                 vboxTab1.PackStart(boxDesignation, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SettingsApp.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxDesignation, _dataSourceRow, "Designation", SharedSettings.RegexAlfaNumericExtended, true));
 
                 //Default
-                CheckButton checkButtonDefault = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_default_warehouse"));
+                CheckButton checkButtonDefault = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_default_warehouse"));
                 vboxTab1.PackStart(checkButtonDefault, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDefault, _dataSourceRow, "IsDefault"));
 
                 //Disabled
-                CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));
-                if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = SettingsApp.BOXPOObjectsStartDisabled;
+                CheckButton checkButtonDisabled = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled"));
+                if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 _crudWidgetList.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, _dataSourceRow, "Disabled"));
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
 
                 //Tab1
                 vboxTab2 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
@@ -114,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 {
                     foreach (var location in _Warehouse.WarehouseLocation)
                     {
-                        XPGuidObject getLocationFromWarehouse = FrameworkUtils.GetXPGuidObject(typeof(fin_warehouselocation), location.Oid);
+                        XPGuidObject getLocationFromWarehouse = DataLayerUtils.GetXPGuidObject(typeof(fin_warehouselocation), location.Oid);
                         PopulateWarehouseLocationEntrys(getLocationFromWarehouse);
                     }
                 }
@@ -127,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
                 if (lcode != 10 && entryCode.Text == "") { entryOrd.Text = lcode.ToString(); entryCode.Text = lcode.ToString(); }
 
                 //Append Tab
-                _notebook.AppendPage(_scrolledWindow, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_locations"))); 
+                _notebook.AppendPage(_scrolledWindow, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_locations")));
             }
             catch (System.Exception ex)
             {
@@ -149,8 +149,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
 
                 //Localização
                 Entry entryLocation = new Entry();
-                BOWidgetBox boxLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), entryLocation);
-                GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxLocation, pDataSourceRow, "Designation", SettingsApp.RegexAlfaNumeric, true);
+                BOWidgetBox boxLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), entryLocation);
+                GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxLocation, pDataSourceRow, "Designation", SharedSettings.RegexAlfaNumeric, true);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 hboxLocation.PackStart(boxLocation);
 
@@ -187,7 +187,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Configuration
         {
             try
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+                ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion));
 
                 if (responseType == ResponseType.Yes)
                 {

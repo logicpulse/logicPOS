@@ -2,15 +2,13 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.Classes.Formatters;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -33,32 +31,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : typeof(DialogArticleWarehouse);
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(DataLayerFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Warehouse") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), Expand = true },
-                new GenericTreeViewColumnProperty("Location") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), Expand = true },
-                new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("ArticleSerialNumber") { ChildName = "SerialNumber", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), Expand = true },
-                new GenericTreeViewColumnProperty("Quantity") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("Warehouse") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), Expand = true },
+                new GenericTreeViewColumnProperty("Location") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), Expand = true },
+                new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("ArticleSerialNumber") { ChildName = "SerialNumber", Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), Expand = true },
+                new GenericTreeViewColumnProperty("Quantity") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
             //Configure Criteria/XPCollection/Model
             //Default Criteria with XpoOidUndefinedRecord
             // Override Criteria adding XpoOidHiddenRecordsFilter
-            CriteriaOperator criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (Disabled = 0 OR Disabled IS NULL) AND (Quantity <> 0) AND (Oid NOT LIKE '{shared.App.SettingsApp.XpoOidHiddenRecordsFilter}')");
+            CriteriaOperator criteria = CriteriaOperator.Parse($"({pXpoCriteria}) AND (Disabled = 0 OR Disabled IS NULL) AND (Quantity <> 0) AND (Oid NOT LIKE '{shared.App.SharedSettings.XpoOidHiddenRecordsFilter}')");
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
 
-            int TopReturnedObj = SettingsApp.PaginationRowsPerPage;
-            if (pSourceWindow.Title != logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")))
+            int TopReturnedObj = POSSettings.PaginationRowsPerPage;
+            if (pSourceWindow.Title != logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")))
             {
                 TopReturnedObj = 100000000;
             }
 
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria) { TopReturnedObjects = TopReturnedObj * base.CurrentPageNumber };
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria) { TopReturnedObjects = TopReturnedObj * CurrentPageNumber };
             var sortingCollection = new SortingCollection
             {
                 new SortProperty("Warehouse", DevExpress.Xpo.DB.SortingDirection.Ascending)

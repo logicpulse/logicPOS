@@ -4,8 +4,10 @@ using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
@@ -146,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     
                      countQuerySql = string.Format("SELECT COUNT(*) AS Count FROM {0} WHERE {1};", _databaseSourceObject, _filterValue);
 
-                    DataTable dataTable = FrameworkUtils.GetDataTableFromQuery(countQuerySql);
+                    DataTable dataTable = SharedUtils.GetDataTableFromQuery(countQuerySql);
                     count = Convert.ToInt32(Convert.ToDecimal(dataTable.Rows[0].ItemArray[0]));
                 }
                 catch (Exception ex)
@@ -162,7 +164,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (count <= 0)
                 {
 					/* IN009062 */
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_report_filter_no_records_with_criteria"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(500, 240), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_report_filter_no_records_with_criteria"));
                     //Keep Running
                     this.Run();
                 }
@@ -229,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 if (fieldName != null && dynamicSelectedXPOObject != null)
                 {
-                    if (dynamicSelectedXPOObject.Oid != SettingsApp.XpoOidUndefinedRecord)
+                    if (dynamicSelectedXPOObject.Oid != SharedSettings.XpoOidUndefinedRecord)
                     {
                         filterSelectionBoxs += string.Format("{0} = '{1}'{2}", fieldName, dynamicSelectedXPOObject.Oid, " AND ");
                         filterSelectionBoxsHumanReadable += string.Format("'{0}', ", humanReadbleValue);
@@ -266,7 +268,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Combine final where Filter
             if (!Enums.Reports.ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY.Equals(_reportsQueryDialogMode))
             {
-                string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, _dateStart.ToString(SettingsApp.DateTimeFormat), _dateEnd.ToString(SettingsApp.DateTimeFormat));
+                string datesFilter = string.Format("{0} >= '{1}' AND {0} <= '{2}'", filterDateField, _dateStart.ToString(SharedSettings.DateTimeFormat), _dateEnd.ToString(SharedSettings.DateTimeFormat));
                 filter = (!string.IsNullOrEmpty(filterSelectionBoxs))
                     ? string.Format("({0}) AND ({1})", datesFilter, filterSelectionBoxs)
                     : string.Format("({0})", datesFilter);
@@ -280,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //}
                 // HumanReadable
                 /* IN006004 */
-                string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart.ToString(SettingsApp.DateTimeFormat), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd.ToString(SettingsApp.DateTimeFormat));
+                string datesFilterHumanReadable = string.Format(" {0} '{1}', {2} '{3}' ", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart.ToString(SharedSettings.DateTimeFormat), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd.ToString(SharedSettings.DateTimeFormat));
                 filterHumanReadable = (!string.IsNullOrEmpty(filterSelectionBoxsHumanReadable))
                     ? string.Format("{0}, {1}", datesFilterHumanReadable, filterSelectionBoxsHumanReadable)
                     : datesFilterHumanReadable;
@@ -292,16 +294,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 /* IN009204 - RCs should be removed from this report, only AT Financial documents here */
                 if (Enums.Reports.ReportsQueryDialogMode.COMPANY_BILLING.Equals(_reportsQueryDialogMode))
                 {
-                    string documentTypeOid = SettingsApp.XpoOidDocumentFinanceTypePayment.ToString();
-                    string documentTypeDesignation = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc");
+                    string documentTypeOid = SharedSettings.XpoOidDocumentFinanceTypePayment.ToString();
+                    string documentTypeDesignation = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc");
                     /* Based on "view_documentfinancecustomerbalancedetails" we are removing RCs ("a009168d-fed1-4f52-b9e3-77e280b18ff5") */
                     filter += $" AND DocumentTypeOid <> '{documentTypeOid}'";
-                    // filterHumanReadable += $", {resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type} <> '{documentTypeDesignation}'";
+                    // filterHumanReadable += $", {resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type} <> '{documentTypeDesignation}'";
                 }
             }
 
             result.Add(filter);
-            result.Add(string.Format("{0}: [{1}]", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_filter"), filterHumanReadable));
+            result.Add(string.Format("{0}: [{1}]", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_filter"), filterHumanReadable));
 
             // Return Result Filter List
             return result;
@@ -321,9 +323,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //{
             //    _logger.Debug("BREAK");
             //}
-            T1 defaultValue = (T1)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(T1), SettingsApp.XpoOidUndefinedRecord);            
-            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", SettingsApp.XpoOidUndefinedRecord,SettingsApp.XpoOidUserRecord, extraFilter));
-            resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, SettingsApp.RegexGuid, true);
+            T1 defaultValue = (T1)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(T1), SharedSettings.XpoOidUndefinedRecord);            
+            CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("((Disabled IS NULL OR Disabled  <> 1) OR (Oid = '{0}') OR (Oid = '{1}')) {2}", SharedSettings.XpoOidUndefinedRecord,SharedSettings.XpoOidUserRecord, extraFilter));
+            resultObject = new XPOEntryBoxSelectRecordValidation<T1, T2>(this, labelText, fieldDisplayValue, "Oid", (defaultValue as T1), criteriaOperator, SharedSettings.RegexGuid, true);
             resultObject.Name = typeof(T1).Name;
             resultObject.EntryValidation.IsEditable = true;
             resultObject.ClosePopup += _entryBoxSelectShared_ClosePopup;

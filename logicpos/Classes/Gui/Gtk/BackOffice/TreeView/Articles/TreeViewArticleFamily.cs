@@ -8,6 +8,7 @@ using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -32,10 +33,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("Printer") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_device_printer"), ChildName = "Designation" },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("Printer") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_device_printer"), ChildName = "Designation" },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -49,7 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 criteria = CriteriaOperator.Parse($"(DeletedAt IS NULL)");
             }
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             //TODO: Clean Comments : Moved Events to XPOWidget - Capture Events - VIEW DialogArticleFamily _crudWidgetList.BeforeUpdate and _crudWidgetList.AfterUpdate
             //this.RecordBeforeInsert += delegate { 

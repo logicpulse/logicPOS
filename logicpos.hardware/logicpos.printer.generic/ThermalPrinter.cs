@@ -82,7 +82,7 @@ namespace logicpos.printer.generic
 		{
             string textStrip = ReplaceDiacritics(text);
 
-            _binaryStream.Write(UTF8Encoding.Default.GetBytes(textStrip));
+            _binaryStream.Write(System.Text.Encoding.Default.GetBytes(textStrip));
 		}
 
         public string ReplaceDiacritics(string source)
@@ -1092,7 +1092,7 @@ namespace logicpos.printer.generic
                 graph.FillRectangle(brush, new RectangleF(0, 0, widthBMP, heightBMP));
                 graph.DrawImage(myBitmap, ((int)widthBMP - scaleWidth) / 2, ((int)heightBMP - scaleHeight) / 2, scaleWidth, scaleHeight);
 
-                bmp.Save(Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+                bmp.Save(Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp", ImageFormat.Bmp);
                 bmpFilename = Path.GetDirectoryName(bmpFilename) + "\\" + Path.GetFileNameWithoutExtension(bmpFilename) + "_temp" + ".bmp";
 
             }

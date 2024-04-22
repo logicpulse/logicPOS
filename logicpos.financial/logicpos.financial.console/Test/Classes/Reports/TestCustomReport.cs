@@ -1,6 +1,7 @@
 ﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.console.App;
 using logicpos.financial.library.Classes.Reports;
+using logicpos.shared.App;
 using System;
 
 namespace logicpos.financial.console.Test.Classes.Reports
@@ -9,7 +10,7 @@ namespace logicpos.financial.console.Test.Classes.Reports
     {
         public static string DocumentMasterCreatePDF()
         {
-            fin_documentfinancemaster documentFinanceMaster = TestProcessFinanceDocument.PersistFinanceDocument(SettingsApp.XpoOidDocumentFinanceTypeInvoice);
+            fin_documentfinancemaster documentFinanceMaster = TestProcessFinanceDocument.PersistFinanceDocument(SharedSettings.XpoOidDocumentFinanceTypeInvoice);
             string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
             Console.WriteLine(string.Format("fileName: [{0}]", fileName));
             return fileName;

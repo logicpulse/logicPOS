@@ -1,8 +1,8 @@
-﻿using DevExpress.Data.Filtering;
-using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.shared.App;
 using System;
+using static logicpos.datalayer.App.DataLayerUtils;
 
 namespace logicpos.shared.Classes.Orders
 {
@@ -55,11 +55,12 @@ namespace logicpos.shared.Classes.Orders
             _oid = pTableOid;
             try
             {
-                pos_configurationplacetable table = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
-                
+                pos_configurationplacetable table = (pos_configurationplacetable)GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
+
                 //If table is null, select Table with code 10
-                if (table == null) { 
-                    table = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable; 
+                if (table == null)
+                {
+                    table = (pos_configurationplacetable)SharedUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable;
                 }
                 _name = table.Designation;
                 //Enum is not Zero Indexed

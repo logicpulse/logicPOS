@@ -13,6 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
+using logicpos.financial.library.App;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -37,7 +40,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     {
                         //Get Parameters
 						//TK016249 - Impressoras - Diferenciação entre Tipos
-                        GlobalFramework.UsingThermalPrinter = false;
+                        SharedFramework.UsingThermalPrinter = false;
                         ProcessFinanceDocumentParameter processFinanceDocumentParameter = GetFinanceDocumentParameter();
 
                         //If error in Save or Update Customer
@@ -66,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 if (_pagePad3.ArticleBag != null && _pagePad3.ArticleBag.Count > 0)
                 {
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_finance_dialog_confirm_cancel"));
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_finance_dialog_confirm_cancel"));
                     if (response == ResponseType.No)
                     {
                         //Keep Running
@@ -94,7 +97,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public ArticleBag GetArticleBag()
         {
-            decimal customerDiscount = FrameworkUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
+            decimal customerDiscount = SharedUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
             ArticleBag articleBag = new ArticleBag(customerDiscount);
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
@@ -106,18 +109,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             fin_documentfinancemaster sourceFinanceMaster = null;
             string referencesReason = string.Empty;
             if (
-                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote
+                _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
                 && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value != null
                 && _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid != new Guid()
             )
             {
                 Guid guidDocumentParent = _pagePad1.EntryBoxSelectSourceDocumentFinance.Value.Oid;
                 //Get Source Document
-                sourceFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), guidDocumentParent);
+                sourceFinanceMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), guidDocumentParent);
                 referencesReason = _pagePad1.EntryBoxReason.EntryValidation.Text;
             };
 
-            if(_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
+            if(_pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
             {
 
                 List<DataRow> dataRows = new List<DataRow>();
@@ -172,10 +175,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 PricePropertiesSourceMode.FromPriceUser,
                 false, //PriceWithVat : Always use PricesWithoutVat in Invoices
                 Convert.ToDecimal(item["PriceFinal"]),
-                FrameworkUtils.StringToDecimal(item["Quantity"].ToString()),
-                FrameworkUtils.StringToDecimal(item["Discount"].ToString()),
-                FrameworkUtils.StringToDecimal(customerDiscount.ToString()),
-                FrameworkUtils.StringToDecimal(configurationVatRate.Value.ToString())
+                SharedUtils.StringToDecimal(item["Quantity"].ToString()),
+                SharedUtils.StringToDecimal(item["Discount"].ToString()),
+                SharedUtils.StringToDecimal(customerDiscount.ToString()),
+                SharedUtils.StringToDecimal(configurationVatRate.Value.ToString())
             );
 
                 //Documentos - Arredondamentos de preço [IN:016536]
@@ -194,7 +197,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   new Guid(item["Oid"].ToString()),
                   article.Designation,
                   Convert.ToDecimal(item["Price"]),     //Always use Price in DefaultCurrency
-                  FrameworkUtils.StringToDecimal(item["Discount"].ToString()),
+                  SharedUtils.StringToDecimal(item["Discount"].ToString()),
                   configurationVatRate.Value,
                     //If has a Valid ConfigurationVatExemptionReason use it Else send New Guid
                   (configurationVatExemptionReason != null) ? configurationVatExemptionReason.Oid : new Guid()
@@ -212,7 +215,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (!string.IsNullOrEmpty(item["SerialNumber"].ToString()))
                 {
                     articleBagProps.SerialNumber = item["SerialNumber"].ToString();
-                    articleBagProps.Notes += resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number") + ": " + item["SerialNumber"].ToString();
+                    articleBagProps.Notes += resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number") + ": " + item["SerialNumber"].ToString();
                 }
 
                 // Notes
@@ -261,7 +264,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 _pagePad2.EntryBoxSelectCustomerCountry.Value,
                 _pagePad2.EntryBoxSelectCustomerFiscalNumber.EntryValidation.Text,
                 _pagePad2.EntryBoxSelectCustomerCardNumber.EntryValidation.Text,
-                FrameworkUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text),
+                SharedUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text),
                 _pagePad2.EntryBoxCustomerNotes.EntryValidation.Text
             );
 
@@ -277,7 +280,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 if (resultObject.GetType() == typeof(ConstraintViolationException))
                 {
                     Exception ex = (Exception)resultObject;
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
+                    ResponseType response = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), ex.InnerException.Message);
                 }
                 customer = null;
             }
@@ -307,7 +310,7 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
             //TotalDelivery: If Money force TotalDelivery to be equal to TotalFinal
             if (result.PaymentMethod != null && result.PaymentMethod != new Guid())
             {
-                fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationpaymentmethod), result.PaymentMethod);
+                fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationpaymentmethod), result.PaymentMethod);
                 if (paymentMethod.Token == "MONEY")
                 {
                     result.TotalDelivery = _pagePad3.ArticleBag.TotalFinal;
@@ -421,20 +424,20 @@ _pagePad2.EntryBoxCustomerEmail.EntryValidation.Text,
                 )
                 {
                     logicpos.Utils.ShowMessageTouch(
-                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
+                        this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), 
                         string.Format(
-                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), 
-                            FrameworkUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit), 
-                            FrameworkUtils.DecimalToStringCurrency(articleBag.TotalFinal)
+                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_customer_card_credit"), 
+                            SharedUtils.DecimalToStringCurrency(_pagePad2.EntryBoxSelectCustomerName.Value.CardCredit), 
+                            SharedUtils.DecimalToStringCurrency(articleBag.TotalFinal)
                         )
                     );
                     result = false;
                 }
 
                 //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
-                if (result && ! FrameworkUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
+                if (result && ! FinancialLibraryUtils.IsCustomerCardValidForArticleBag(articleBag, _pagePad2.EntryBoxSelectCustomerName.Value))
                 {
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_invalid_customer_card_detected"));
                     result = false;
                 }
             }

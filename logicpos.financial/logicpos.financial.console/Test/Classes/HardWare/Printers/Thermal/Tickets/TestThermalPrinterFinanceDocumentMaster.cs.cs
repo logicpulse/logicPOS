@@ -1,4 +1,5 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.console.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using System;
@@ -16,7 +17,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
             try
             {
                 //Parameters
-                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), SettingsApp.XpoPrintFinanceDocument);
+                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), ConsoleSettings.XpoPrintFinanceDocument);
                 //Print Document
                 if (documentFinanceMaster != null)
                 {
@@ -28,7 +29,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
                 }
                 else
                 {
-                    Console.WriteLine(string.Format("ERROR: DocumentFinanceMaster NULL: {0}", SettingsApp.XpoPrintFinanceDocument));
+                    Console.WriteLine(string.Format("ERROR: DocumentFinanceMaster NULL: {0}", ConsoleSettings.XpoPrintFinanceDocument));
                 }
             }
             catch (Exception ex)

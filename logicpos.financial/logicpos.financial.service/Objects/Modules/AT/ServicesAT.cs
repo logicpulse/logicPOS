@@ -1,7 +1,9 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.service.App;
+using logicpos.shared.App;
 using System;
 using System.Configuration;
 using System.IO;
@@ -81,16 +83,16 @@ namespace logicpos.financial.service.Objects.Modules.AT
         private static string GetServicesATFilePublicKey(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATTestModeFilePublicKey"])
-                : string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATProdModeFilePublicKey"])
+                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATTestModeFilePublicKey"])
+                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATProdModeFilePublicKey"])
             ;
         }
 
         private static string GetServicesATFileCertificate(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATTestModeFileCertificate"])
-                : string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATProdModeFileCertificate"])
+                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATTestModeFileCertificate"])
+                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATProdModeFileCertificate"])
             ;
         }
 
@@ -98,31 +100,31 @@ namespace logicpos.financial.service.Objects.Modules.AT
         {
             return (pTestMode)
                 ? "599999993"
-                : GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                :SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
         }
 
         private static string GetServicesATAccountFiscalNumber(bool pTestMode)
         {
-            //GlobalFramework.Settings["servicesATProdModeAccountFiscalNumber"];
+            //DataLayerFramework.Settings["servicesATProdModeAccountFiscalNumber"];
             return (pTestMode)
                 ? "599999993/0037"
-                : GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
+                :SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
         }
 
         private static string GetServicesATAccountPassword(bool pTestMode)
         {
-            //GlobalFramework.Settings["servicesATProdModeAccountPassword"];
+            //DataLayerFramework.Settings["servicesATProdModeAccountPassword"];
             return (pTestMode)
                 ? "testes1234"
-                : GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
+                :SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
         }
 
         private static string GetServicesATCertificatePassword(bool pTestMode)
         {
-            //GlobalFramework.Settings["servicesATProdModeCertificatePassword"];
+            //DataLayerFramework.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
-                : GlobalFramework.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
+                : SharedFramework.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -169,7 +171,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
         public ServicesAT(fin_documentfinancemaster pFinanceMaster)
         {
             //Init Settings Main Config Settings
-            GlobalFramework.Settings = ConfigurationManager.AppSettings;
+            DataLayerFramework.Settings = ConfigurationManager.AppSettings;
             
             //Parameters
             _documentMaster = pFinanceMaster;
@@ -181,9 +183,9 @@ namespace logicpos.financial.service.Objects.Modules.AT
             _wayBillMode = (_documentMaster.DocumentType.WayBill);
 
             //Init WebService parameters and Files
-            _pathSaveSoap = string.Format(@"{0}{1}", GlobalFramework.Path["temp"], "soapsend.xml");
-            _pathSaveSoapResult = string.Format(@"{0}{1}", GlobalFramework.Path["temp"], "soapresult.xml");
-            _pathSaveSoapResultError = string.Format(@"{0}{1}", GlobalFramework.Path["temp"], "soapresult_error.xml");
+            _pathSaveSoap = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], "soapsend.xml");
+            _pathSaveSoapResult = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], "soapresult.xml");
+            _pathSaveSoapResultError = string.Format(@"{0}{1}", DataLayerFramework.Path["temp"], "soapresult_error.xml");
             _urlWebService = (!_wayBillMode) ? GetServicesATDCUri(false) : GetServicesATWBUri(testMode, false);
             _urlSoapAction = (!_wayBillMode) ? ServicesATUriDocumentsSOAPAction : ServicesATUriDocumentsWayBillSOAPAction;
             _pathPublicKey = GetServicesATFilePublicKey(testMode);
@@ -198,8 +200,8 @@ namespace logicpos.financial.service.Objects.Modules.AT
             //Override Default Paths: If Works in Service mode need FullPath to Files, and a user running service, to bypass windows service user
             if (!Environment.UserInteractive)
             {
-                _pathPublicKey = string.Format(@"{0}\{1}", SettingsApp.AppPath, _pathPublicKey).Replace('/', '\\');
-                _pathCertificate = string.Format(@"{0}\{1}", SettingsApp.AppPath, _pathCertificate).Replace('/', '\\'); ;
+                _pathPublicKey = string.Format(@"{0}\{1}", FinancialServiceSettings.AppPath, _pathPublicKey).Replace('/', '\\');
+                _pathCertificate = string.Format(@"{0}\{1}", FinancialServiceSettings.AppPath, _pathCertificate).Replace('/', '\\'); ;
             }
             // Show Logs if in Console/Interactive Mode (Not in Service Mode)
             else
@@ -411,7 +413,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             /* IN009150 (IN009075) */
             string entityFiscalNumber = "";
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber)) { entityFiscalNumber = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars
@@ -422,7 +424,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             string sbContentCustomerTax;
             //Diferent sbContentCustomerTax if OutSide Portugal
-            if (_documentMaster.EntityCountryOid.Equals(SettingsApp.XpoOidConfigurationCountryPortugal))
+            if (_documentMaster.EntityCountryOid.Equals(SharedSettings.XpoOidConfigurationCountryPortugal))
             {
                 sbContentCustomerTax = string.Format("    <CustomerTaxID>{0}</CustomerTaxID>", customerTaxID);
             }
@@ -498,13 +500,13 @@ namespace logicpos.financial.service.Objects.Modules.AT
             // string entityCountry        = "";
             string entityFiscalNumber   = "";
 
-            if (!string.IsNullOrEmpty(_documentMaster.EntityName))          { entityName = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality))      { entityCity = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
-            // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
-            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityName))          { entityName = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityName); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityAddress))       { entityAddress = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityAddress); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityZipCode))       { entityZipCode = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityZipCode); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityCity))          { entityCity = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCity); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityLocality))      { entityCity = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityLocality); }
+            // if (!string.IsNullOrEmpty(_documentMaster.EntityCountry))       { entityCountry = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityCountry); }
+            if (!string.IsNullOrEmpty(_documentMaster.EntityFiscalNumber))  { entityFiscalNumber = SharedFramework.PluginSoftwareVendor.Decrypt(_documentMaster.EntityFiscalNumber); }
             /* IN009150 - end */
 
             //Init Local Vars
@@ -581,7 +583,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
             sb.Append("       </AddressFrom>");
             //Dont Sent MovementEndTime, not required
             //sb.Append("       <MovementEndTime>" + _documentMaster.MovementEndTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime) + "</MovementEndTime>");
-            sb.Append("       <MovementStartTime>" + _movementStartTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime) + "</MovementStartTime>");
+            sb.Append("       <MovementStartTime>" + _movementStartTime.ToString(SharedSettings.DateTimeFormatCombinedDateTime) + "</MovementStartTime>");
             //VehicleID
             if (!string.IsNullOrEmpty(_documentMaster.ShipFromDeliveryID)) sb.Append("       <VehicleID>" + _documentMaster.ShipFromDeliveryID + "</VehicleID>");
             //Line
@@ -677,7 +679,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 //cert.Import(_pathCertificate, _atPasswordCertificate, X509KeyStorageFlags.Exportable);
 
                 // New Method : Import Certificate From VendorPlugin
-                X509Certificate2 cert = GlobalFramework.PluginSoftwareVendor.ImportCertificate(testMode, _pathCertificate);
+                X509Certificate2 cert = SharedFramework.PluginSoftwareVendor.ImportCertificate(testMode, _pathCertificate);
 
                 // Output Certificate 
                 Utils.Log(string.Format("Cert Subject: [{0}], NotBefore: [{1}], NotAfter: [{2}]", cert.Subject, cert.NotBefore, cert.NotAfter));
@@ -711,7 +713,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
                 response.Close();
 
                 //Save Result to File
-                System.IO.File.WriteAllText(_pathSaveSoapResult, responseFromServer);
+                File.WriteAllText(_pathSaveSoapResult, responseFromServer);
 
                 //GetSoapResult
                 _soapResult = (!_wayBillMode) ? GetSoapResultDC() : GetSoapResultWB();
@@ -736,7 +738,7 @@ namespace logicpos.financial.service.Objects.Modules.AT
                     //Store Result to use 2 times, else second time is string.Empty
                     string streamResult = streamReader.ReadToEnd();
                     //Save Result Error to File
-                    System.IO.File.WriteAllText(_pathSaveSoapResultError, streamResult);
+                    File.WriteAllText(_pathSaveSoapResultError, streamResult);
                     //Log
                     Utils.Log(string.Format("Send ProtocolError StreamResult: [{0}]", streamResult), true);
                     return streamResult;
@@ -821,10 +823,10 @@ namespace logicpos.financial.service.Objects.Modules.AT
 
             try
             {
-                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), _documentMaster.Oid);
+                fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), _documentMaster.Oid);
                 //Always Add to sys_systemauditat Log
                 SystemAuditATWSType systemAuditATWSType = (!_wayBillMode) ? SystemAuditATWSType.Document : SystemAuditATWSType.DocumentWayBill;
-                var systemAuditATWS = new sys_systemauditat(GlobalFramework.SessionXpo)
+                var systemAuditATWS = new sys_systemauditat(DataLayerFramework.SessionXpo)
                 {
                     Date = DateTime.Now,
                     Type = systemAuditATWSType,

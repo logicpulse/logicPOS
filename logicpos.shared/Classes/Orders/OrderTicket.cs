@@ -45,7 +45,7 @@ namespace logicpos.shared.Classes.Orders
             //Reference to Parent OrderMain
             _orderMain = pOrderMain;
             _priceType = pPriceType;
-            _dateStart = FrameworkUtils.CurrentDateTimeAtomic();
+            _dateStart = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
             _orderDetails = new OrderDetail(this);
         }
     }

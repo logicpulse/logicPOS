@@ -12,10 +12,10 @@ namespace logicpos
         {
             if (debug)
             {
-                Console.WriteLine("Gtk.Rc.ModuleDir:" + Gtk.Rc.ModuleDir);
+                Console.WriteLine("Gtk.Rc.ModuleDir:" + Rc.ModuleDir);
             }
 
-            if (useTheme) Gtk.Rc.ParseString(@"
+            if (useTheme) Rc.ParseString(@"
 
 ##:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 

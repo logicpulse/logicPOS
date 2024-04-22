@@ -1,4 +1,5 @@
-﻿using System;
+﻿using logicpos.shared.App;
+using System;
 
 namespace logicpos.App
 {
@@ -17,13 +18,13 @@ namespace logicpos.App
             try
             {
                 //Override default Licence values with SettingsApp.LicenceRegistered
-                if (SettingsApp.LicenceRegistered)
+                if (POSSettings.LicenceRegistered)
                 {
                     result = true;
                 }
                 else
                 {
-                    result = GlobalFramework.LicenceRegistered;
+                    result = SharedFramework.LicenceRegistered;
                 }
             }
             catch (Exception ex)

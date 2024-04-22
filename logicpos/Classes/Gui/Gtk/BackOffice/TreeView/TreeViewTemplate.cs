@@ -9,6 +9,7 @@ using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.datalayer.App;
 
 //Note
 //1) To disable navigator butons ex INS,DEL, use privileges
@@ -36,10 +37,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true }
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true }
             };
-            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_disabled });
+            //columnProperties.Add(new GenericTreeViewColumnProperty("Disabled") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_disabled });
 
             //Configure Criteria/XPCollection/Model
             //CriteriaOperator.Parse("Code >= 100 and Code <= 9999");
@@ -54,7 +55,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             SortProperty[] sortProperty = new SortProperty[1];
             sortProperty[0] = new SortProperty("Designation", SortingDirection.Ascending);
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
 
             //Call Base Initializer
             base.InitObject(

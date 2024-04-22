@@ -81,8 +81,8 @@ namespace DansCSharpLibrary.BinarySerialization
     //Test With:
     //using DansCSharpLibrary.BinarySerialization;
     //..
-    //TestSerialization.Write(GlobalFramework.Path["temp"].ToString());
-    //TestSerialization.Read(GlobalFramework.Path["temp"].ToString());
+    //TestSerialization.Write(DataLayerFramework.Path["temp"].ToString());
+    //TestSerialization.Read(DataLayerFramework.Path["temp"].ToString());
     public static class TestSerialization
     {
         //Log4Net

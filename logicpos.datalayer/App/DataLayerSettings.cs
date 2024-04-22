@@ -5,15 +5,15 @@ using System;
 
 namespace logicpos.datalayer.App
 {
-    public abstract class SettingsApp
+    public static class DataLayerSettings
     {
         // Application Mode
-        public static AppOperationMode AppMode = FrameworkUtils.GetAppMode();
+        public static AppOperationMode AppMode = DataLayerUtils.GetAppMode();
         /* IN008024 */
-        public static CustomAppOperationMode CustomAppOperationMode = FrameworkUtils.GetCustomAppOperationMode();
-        public static bool IsDefaultTheme = FrameworkUtils.IsDefaultAppOperationTheme();
+        public static CustomAppOperationMode CustomAppOperationMode = DataLayerUtils.GetCustomAppOperationMode();
+        public static bool IsDefaultTheme = DataLayerUtils.IsDefaultAppOperationTheme();
         /* IN008024: It has been opted to remove old themes (based on database properties "cfg_configurationpreferenceparameter.APP_THEME") implementation 
-         *  GlobalFramework.PreferenceParameters["APP_THEME"] >>> The only option here was "Default" because we don't had other themes available.
+         * SharedFramework.PreferenceParameters["APP_THEME"] >>> The only option here was "Default" because we don't had other themes available.
          */
         public static string AppTheme = "Default";
 

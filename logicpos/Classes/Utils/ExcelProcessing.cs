@@ -8,8 +8,10 @@ using logicpos.App;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.financial.library.App;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -57,7 +59,7 @@ namespace logicpos
                 {
                     case ImportExportFileOpen.OpenExcelArticles:
 
-                        string windowName = (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_articles"));
+                        string windowName = (resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_articles"));
                         FileFilter fileFilterBackups = Utils.GetFileFilterImportExport();
                         PosFilePickerDialog dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         ResponseType response = (ResponseType)dialog.Run();
@@ -90,7 +92,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.OpenExcelCostumers:
 
-                        windowName = (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer"));
+                        windowName = (resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Open, windowName);
                         response = (ResponseType)dialog.Run();
@@ -123,7 +125,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.ExportArticles:
 
-                        windowName = (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_articles"));
+                        windowName = (resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_articles"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
@@ -157,7 +159,7 @@ namespace logicpos
 
                     case ImportExportFileOpen.ExportCustomers:
 
-                        windowName = (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer"));
+                        windowName = (resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"));
                         fileFilterBackups = Utils.GetFileFilterImportExport();
                         dialog = new PosFilePickerDialog(pSourceWindow, DialogFlags.DestroyWithParent, fileFilterBackups, FileChooserAction.Save, windowName);
                         response = (ResponseType)dialog.Run();
@@ -244,13 +246,13 @@ namespace logicpos
                     {
                         case ImportExportFileOpen.OpenExcelArticles:
                             _threadImport = new Thread(() => result = SaveArticles(dtResult, pSourceWindow));
-                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_import_articles"));
+                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_import_articles"));
                             _threadImport.Abort();
                             //SaveArticles(dtResult, pSourceWindow);
                             break;
                         case ImportExportFileOpen.OpenExcelCostumers:
                             _threadImport = new Thread(() => result = SaveCostumers(dtResult, pSourceWindow));
-                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_import_customers"));
+                            Utils.ThreadStart(pSourceWindow, _threadImport, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_import_customers"));
                             _threadImport.Abort();
                             //SaveCostumers(dtResult, pSourceWindow);
                             break;
@@ -260,22 +262,22 @@ namespace logicpos
                     }
                     if(result == 1)
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_successfully"));
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_successfully"));
                     }
                     else if(result == -1)
                     {
-                       Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_partial_import"));
+                       Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_partial_import"));
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_error"));
+                        Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_error"));
                     }
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error("ReadExcel: Error proccess file " + ex.Message, ex);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_error")));
+                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_import_error")));
             }
 
             return dtResult;
@@ -286,22 +288,22 @@ namespace logicpos
             string lastArticleCode = "0";
             try
             {
-                if (GlobalFramework.DatabaseType.ToString() == "MSSqlServer")
+                if (DataLayerFramework.DatabaseType.ToString() == "MSSqlServer")
                 {
                     string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM {0}", tableName);
-                    lastArticleCode = GlobalFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                    lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
                     return lastArticleCode;
                 }
-                else if (GlobalFramework.DatabaseType.ToString() == "SQLite")
+                else if (DataLayerFramework.DatabaseType.ToString() == "SQLite")
                 {
                     string lastArticleSql = string.Format("SELECT MAX(CAST(Code AS INT))FROM {0}", tableName);
-                    lastArticleCode = GlobalFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                    lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
                     return lastArticleCode;
                 }
-                else if (GlobalFramework.DatabaseType.ToString() == "MySql")
+                else if (DataLayerFramework.DatabaseType.ToString() == "MySql")
                 {
                     string lastArticleSql = string.Format("SELECT MAX(code) as max FROM {0}", tableName);
-                    lastArticleCode = GlobalFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
+                    lastArticleCode = DataLayerFramework.SessionXpo.ExecuteScalar(lastArticleSql).ToString();
                 }
                 return lastArticleCode;
             }
@@ -325,7 +327,7 @@ namespace logicpos
             string articleSubFamily = "0";
 
             Dictionary<string, string> articlesInDbCollection = new Dictionary<string, string>();
-            var articlesInDb = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(queryOrderedString);
+            var articlesInDb = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(queryOrderedString);
 
 
             for (int w = 0; w < articlesInDb.ResultSet[0].Rows.Length; w++)
@@ -365,7 +367,7 @@ namespace logicpos
                         article.Disabled = false;
                         article.Notes = null;
                         string articleCreatedAt = dateTime;
-                        string articleCreatedBy = GlobalFramework.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
+                        string articleCreatedBy = DataLayerFramework.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
                         article.CreatedWhere = null;
                         string articleUpdatedAt = dateTime;
                         string articleUpdatedBy = articleCreatedBy;
@@ -422,7 +424,7 @@ namespace logicpos
                             if (row.ItemArray.GetValue(5) != null || row.ItemArray.GetValue(5).ToString() != "")
                             {
                                 sql = string.Format("SELECT OID FROM fin_configurationvatrate where Value = '{0}'", Convert.ToDecimal(row.ItemArray.GetValue(5)).ToString("F").Replace(",", "."));
-                                articleVatOnTable = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                                articleVatOnTable = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
                                 articleVatDirectSelling = articleVatOnTable;
                             }
 
@@ -430,7 +432,7 @@ namespace logicpos
                             if (row.ItemArray.GetValue(2) != null || row.ItemArray.GetValue(2).ToString() != "")
                             {
                                 sql = string.Format("SELECT OID FROM fin_articlefamily where Designation = '{0}'", row.ItemArray.GetValue(2));
-                                var sqlquery = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                                var sqlquery = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                                 if (sqlquery == null && row.ItemArray.GetValue(2) != null)
                                 {
                                     string tableName = "fin_articlefamily";
@@ -441,7 +443,7 @@ namespace logicpos
                                                          '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')",
                                                                 oidFamily, articleCreatedAt, articleCreatedBy, articleUpdatedAt,
                                                                 articleUpdatedBy, lastCode, lastCode, row.ItemArray.GetValue(2));
-                                    GlobalFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
+                                    DataLayerFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
                                     articleFamily = oidFamily.ToString();
                                 }
                                 else { articleFamily = sqlquery.ToString(); }
@@ -453,7 +455,7 @@ namespace logicpos
                             if (row.ItemArray.GetValue(3) != null)
                             {
                                 sql = string.Format("SELECT OID FROM fin_articlesubfamily where Designation = '{0}'", row.ItemArray.GetValue(3));
-                                var sqlquery = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                                var sqlquery = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                                 if (sqlquery == null && row.ItemArray.GetValue(3) != null)
                                 {
                                     string tableName = "fin_articlesubfamily";
@@ -463,7 +465,7 @@ namespace logicpos
                                                          '{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}')",
                                                                 oidSubFamily, articleCreatedAt, articleCreatedBy, articleUpdatedAt,
                                                                 articleUpdatedBy, lastCode, lastCode, row.ItemArray.GetValue(3), articleFamily);
-                                    GlobalFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
+                                    DataLayerFramework.SessionXpo.ExecuteNonQuery(sqlInsertFamily);
                                     articleSubFamily = oidSubFamily.ToString();
                                 }
                                 else { articleSubFamily = sqlquery.ToString(); }
@@ -474,7 +476,7 @@ namespace logicpos
 
                                 if (!articlesInDbCollection.ContainsKey(row.ItemArray.GetValue(1).ToString()))
                                 {
-                                    string user = GlobalFramework.LoggedUser.ToString();
+                                    string user = DataLayerFramework.LoggedUser.ToString();
                                     sql = string.Format(@"insert into fin_article (Oid, Notes, CreatedAt, CreatedBy, CreatedWhere, UpdatedAt, 
                                                 UpdatedBy, UpdatedWhere, ButtonImage, Price1, Price1Promotion, Price2, Price2Promotion,
                                                 Price3, Price3Promotion, Price4, Price4Promotion, Price5, Price5Promotion, Discount, DefaultQuantity, 
@@ -489,7 +491,7 @@ namespace logicpos
                                                                 article.Price5Promotion, article.Discount, article.DefaultQuantity, articleFavorite, articleType,
                                                                 articleClass, articleUnitMeasure, articleUnitSize, articleVatOnTable, articleVatDirectSelling,
                                                                 article.Code, article.Ord, article.Designation, articleFamily, articleSubFamily).Replace("''", "NULL");
-                                    GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
+                                    DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
                                 }
                                 else
                                 {
@@ -503,7 +505,7 @@ namespace logicpos
                                                                 article.Price5Promotion, article.Discount, article.DefaultQuantity, articleFavorite, articleType,
                                                                 articleClass, articleUnitMeasure, articleUnitSize, articleVatOnTable, articleVatDirectSelling,
                                                                 article.Code, article.Ord, article.Designation, articleFamily, articleSubFamily, Eoid).Replace("''", "NULL");
-                                    GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
+                                    DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
                                 }
                             }
                             catch (Exception ex)
@@ -547,7 +549,7 @@ namespace logicpos
             string dateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string queryCostumerString = "SELECT * FROM erp_customer";
             Dictionary<string, string> costumersInDbCollection = new Dictionary<string, string>();
-            var costumersInDb = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(queryCostumerString);
+            var costumersInDb = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(queryCostumerString);
 
             for (int w = 0; w < costumersInDb.ResultSet[0].Rows.Length; w++)
             {
@@ -560,7 +562,7 @@ namespace logicpos
             }
             for (int j = 1; j < costumersInDb.ResultSet[1].Rows.Length; j++)
             {
-                costumersInDbCollection.Add(CryptorEngine.Decrypt(costumersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, SettingsApp.SecretKey), costumersInDb.ResultSet[1].Rows[j].Values[0].ToString());
+                costumersInDbCollection.Add(CryptorEngine.Decrypt(costumersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, FinancialLibrarySettings.SecretKey), costumersInDb.ResultSet[1].Rows[j].Values[0].ToString());
             }
 
             try
@@ -583,7 +585,7 @@ namespace logicpos
                     costumer.Disabled = false;
                     costumer.Notes = null;
                     string costumerCreatedAt = dateTime;
-                    string costumerCreatedBy = GlobalFramework.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
+                    string costumerCreatedBy = DataLayerFramework.LoggedUser.Oid.ToString().Replace("logicpos.datalayer.DataLayer.Xpo.sys_userdetail", "");
                     costumer.CreatedWhere = null;
                     string costumerUpdatedAt = dateTime;
                     string costumerUpdatedBy = costumerCreatedBy;
@@ -594,22 +596,22 @@ namespace logicpos
 
                     if (row.ItemArray.GetValue(0).ToString() != "") { costumer.Code = Convert.ToUInt32(row.ItemArray.GetValue(0)); } else { costumer.Code = (Convert.ToUInt32(GetLastCodeFromTable("erp_customer")) + 10); }
                     if (row.ItemArray.GetValue(0).ToString() != "") { costumer.Ord = Convert.ToUInt32(row.ItemArray.GetValue(0)); } else { costumer.Ord = (Convert.ToUInt32(GetLastCodeFromTable("erp_customer")) + 10); }
-                    if (row.ItemArray.GetValue(1).ToString() != "") costumer.FiscalNumber = CryptorEngine.Encrypt(row.ItemArray.GetValue(1).ToString(), true, SettingsApp.SecretKey); else costumer.FiscalNumber = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
-                    if (row.ItemArray.GetValue(2).ToString() != "") costumer.Name = CryptorEngine.Encrypt(row.ItemArray.GetValue(2).ToString(), true, SettingsApp.SecretKey); else costumer.Name = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
-                    if (row.ItemArray.GetValue(3).ToString() != "") costumer.Address = CryptorEngine.Encrypt(row.ItemArray.GetValue(3).ToString(), true, SettingsApp.SecretKey); else costumer.Address = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
-                    if (row.ItemArray.GetValue(4).ToString() != "") costumer.Locality = CryptorEngine.Encrypt(row.ItemArray.GetValue(4).ToString(), true, SettingsApp.SecretKey); else costumer.Locality = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
-                    if (row.ItemArray.GetValue(5).ToString() != "") costumer.ZipCode = CryptorEngine.Encrypt(row.ItemArray.GetValue(5).ToString(), true, SettingsApp.SecretKey); else costumer.ZipCode = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
-                    if (row.ItemArray.GetValue(6).ToString() != "") costumer.City = CryptorEngine.Encrypt(row.ItemArray.GetValue(6).ToString(), true, SettingsApp.SecretKey); else costumer.City = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
-                    if (row.ItemArray.GetValue(7).ToString() != "") costumer.Phone = CryptorEngine.Encrypt(row.ItemArray.GetValue(7).ToString(), true, SettingsApp.SecretKey); else costumer.Phone = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
-                    if (row.ItemArray.GetValue(8).ToString() != "") costumer.MobilePhone = CryptorEngine.Encrypt(row.ItemArray.GetValue(8).ToString(), true, SettingsApp.SecretKey); else costumer.MobilePhone = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
-                    if (row.ItemArray.GetValue(9).ToString() != "") costumer.Email = CryptorEngine.Encrypt(row.ItemArray.GetValue(9).ToString(), true, SettingsApp.SecretKey); else costumer.Email = CryptorEngine.Encrypt("", true, SettingsApp.SecretKey);
+                    if (row.ItemArray.GetValue(1).ToString() != "") costumer.FiscalNumber = CryptorEngine.Encrypt(row.ItemArray.GetValue(1).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.FiscalNumber = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(2).ToString() != "") costumer.Name = CryptorEngine.Encrypt(row.ItemArray.GetValue(2).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Name = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(3).ToString() != "") costumer.Address = CryptorEngine.Encrypt(row.ItemArray.GetValue(3).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Address = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(4).ToString() != "") costumer.Locality = CryptorEngine.Encrypt(row.ItemArray.GetValue(4).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Locality = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(5).ToString() != "") costumer.ZipCode = CryptorEngine.Encrypt(row.ItemArray.GetValue(5).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.ZipCode = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(6).ToString() != "") costumer.City = CryptorEngine.Encrypt(row.ItemArray.GetValue(6).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.City = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(7).ToString() != "") costumer.Phone = CryptorEngine.Encrypt(row.ItemArray.GetValue(7).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Phone = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(8).ToString() != "") costumer.MobilePhone = CryptorEngine.Encrypt(row.ItemArray.GetValue(8).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.MobilePhone = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
+                    if (row.ItemArray.GetValue(9).ToString() != "") costumer.Email = CryptorEngine.Encrypt(row.ItemArray.GetValue(9).ToString(), true, FinancialLibrarySettings.SecretKey); else costumer.Email = CryptorEngine.Encrypt("", true, FinancialLibrarySettings.SecretKey);
 
                     try
                     {
 
                         if (!costumersInDbCollection.ContainsKey(row.ItemArray.GetValue(1).ToString()) && costumer.FiscalNumber != "")
                         {
-                            string user = GlobalFramework.LoggedUser.ToString();
+                            string user = DataLayerFramework.LoggedUser.ToString();
                             string sql = string.Format(@"insert into erp_customer (Oid, CreatedAt, CreatedBy, CreatedWhere, UpdatedAt, 
                                                 UpdatedBy, UpdatedWhere, code, ord, Name, Address, locality, ZipCode, City, Phone, MobilePhone, Email,
                                                 CustomerType, PriceType, Country, FiscalNumber, CodeInternal) 
@@ -619,7 +621,7 @@ namespace logicpos
                                                 costumer.Address, costumer.Locality, costumer.ZipCode, costumer.City, costumer.Phone,
                                                 costumer.MobilePhone, costumer.Email, customerType, priceType, country, costumer.FiscalNumber, oid.ToString().Replace("-", "").Substring(0, 21)
                                                 ).Replace("''", "NULL");
-                            GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
+                            DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
                         }
                         else
                         {
@@ -631,7 +633,7 @@ namespace logicpos
                                                 costumerUpdatedAt, costumerUpdatedBy, costumer.UpdatedWhere, costumer.Code, costumer.Ord, costumer.Name,
                                                 costumer.Address, costumer.Locality, costumer.ZipCode, costumer.City, costumer.Phone,
                                                 costumer.MobilePhone, costumer.Email, customerType, priceType, country, costumer.FiscalNumber, Eoid).Replace("''", "NULL");
-                            GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
+                            DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
                         }
                     }
                     catch (Exception ex)
@@ -661,7 +663,7 @@ namespace logicpos
                                         FROM fin_article t1 , fin_articlefamily t2 , fin_articlesubfamily t3,  fin_configurationvatrate t4
                                         WHERE t1.Family = t2.Oid AND t1.SubFamily = t3.Oid AND t1.VatOnTable = t4.Oid";
 
-            if (SettingsApp.AppMode == AppOperationMode.Retail)
+            if (DataLayerSettings.AppMode == AppOperationMode.Retail)
             {
                 queryOrderedString = @"SELECT t1.Code, t1.Designation, t2.Designation As Family, t3.Designation As SubFamily, t1.Price1, t4.Value AS VAT
                                         FROM fin_article t1 , fin_articlefamily t2 , fin_articlesubfamily t3,  fin_configurationvatrate t4
@@ -692,7 +694,7 @@ namespace logicpos
                 switch (pImportFrom)
                 {
                     case ImportExportFileOpen.ExportArticles:
-                        var articlesInDb = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(queryOrderedString);
+                        var articlesInDb = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(queryOrderedString);
 
                         for (int w = 0; w < articlesInDb.ResultSet[0].Rows.Length; w++)
                         {
@@ -740,20 +742,20 @@ namespace logicpos
                         }
                         bool result = false;
                         _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_articles"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
                         }
                         break;
 
                     case ImportExportFileOpen.ExportCustomers:
 
-                        var customersInDb = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(queryCostumerString);
+                        var customersInDb = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(queryCostumerString);
 
                         for (int w = 0; w < customersInDb.ResultSet[0].Rows.Length; w++)
                         {
@@ -812,27 +814,27 @@ namespace logicpos
                         for (int j = 2; j < customersInDb.ResultSet[1].Rows.Length; j++)
                         {
                             importFromDBdataTable.Rows.Add(customersInDb.ResultSet[1].Rows[j].Values[indexCode],
-                            customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, SettingsApp.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexName] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexName].ToString(), true, SettingsApp.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexAddress] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexAddress].ToString(), true, SettingsApp.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexLocality] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexLocality].ToString(), true, SettingsApp.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexZipCode] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexZipCode].ToString(), true, SettingsApp.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexCity] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexCity].ToString(), true, SettingsApp.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexPhone] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexPhone].ToString(), true, SettingsApp.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone].ToString(), true, SettingsApp.SecretKey),
-                            customersInDb.ResultSet[1].Rows[j].Values[indexEmail] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexEmail].ToString(), true, SettingsApp.SecretKey));
+                            customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexFiscalNumber].ToString(), true, FinancialLibrarySettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexName] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexName].ToString(), true, FinancialLibrarySettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexAddress] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexAddress].ToString(), true, FinancialLibrarySettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexLocality] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexLocality].ToString(), true, FinancialLibrarySettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexZipCode] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexZipCode].ToString(), true, FinancialLibrarySettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexCity] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexCity].ToString(), true, FinancialLibrarySettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexPhone] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexPhone].ToString(), true, FinancialLibrarySettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexMobilePhone].ToString(), true, FinancialLibrarySettings.SecretKey),
+                            customersInDb.ResultSet[1].Rows[j].Values[indexEmail] == null ? "" : CryptorEngine.Decrypt(customersInDb.ResultSet[1].Rows[j].Values[indexEmail].ToString(), true, FinancialLibrarySettings.SecretKey));
                         }
                         result = false;
                         _threadExport = new Thread(() => result = ExportExcel(importFromDBdataTable, path, true, pSourceWindow));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_customers"));
-                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_export_articles"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_export_customers"));
+                        Utils.ThreadStart(pSourceWindow, _threadExport, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_exported_successfully"));
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
+                            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "Empty Database");
                         }
                         break;
 
@@ -844,7 +846,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_export_error"));
+                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_export_error"));
             }
 
         }

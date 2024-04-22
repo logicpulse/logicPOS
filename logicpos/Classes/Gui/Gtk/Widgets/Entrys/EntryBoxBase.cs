@@ -1,14 +1,10 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.App;
 using logicpos.Extensions;
-using System;
-using System.Collections.Generic;
+using logicpos.shared.App;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -69,9 +65,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Parameters
             _sourceWindow = pSourceWindow;
             //Defaults
-            Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-            string fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
-            string fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
+            Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+            string fontLabel = DataLayerFramework.Settings["fontEntryBoxLabel"];
+            string fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
             int padding = 2;
             //This
             this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -94,17 +90,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Finish
             Add(_vbox);
         }
-		//Artigos Compostos [IN:016522]
-        public EntryBoxBase(Window pSourceWindow, string pLabelText, bool pBOsource=false)
+        //Artigos Compostos [IN:016522]
+        public EntryBoxBase(Window pSourceWindow, string pLabelText, bool pBOsource = false)
         {
             if (!pBOsource)
             {
                 //Parameters
                 _sourceWindow = pSourceWindow;
                 //Defaults
-                Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                string fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
-                string fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
+                Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                string fontLabel = DataLayerFramework.Settings["fontEntryBoxLabel"];
+                string fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
                 int padding = 2;
                 //This
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -133,16 +129,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _sourceWindow = pSourceWindow;
                 //Defaults
                 Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
-                Color validLabel = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+                Color validLabel = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
 
                 string fontLabel = "10";
                 string fontEntry = "9";
                 int padding = 2;
                 if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
                 {
-                    colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                    fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
-                    fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
+                    colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                    fontLabel = DataLayerFramework.Settings["fontEntryBoxLabel"];
+                    fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
                 }
 
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -171,16 +167,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _sourceWindow = pSourceWindow;
                 //Defaults
                 Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
-                Color validLabel =GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+                Color validLabel = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
 
                 string fontLabel = "10";
                 string fontEntry = "9";
                 int padding = 2;
                 if (pSourceWindow.GetType() == typeof(PosArticleStockDialog))
                 {
-                    colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                    fontLabel = GlobalFramework.Settings["fontEntryBoxLabel"];
-                    fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
+                    colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                    fontLabel = DataLayerFramework.Settings["fontEntryBoxLabel"];
+                    fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
                 }
 
 
@@ -194,11 +190,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label = new Label(pLabelText);
                 _label.ModifyFont(fontDescriptionLabel);
                 _label.SetAlignment(0, 2.5F);
-                _label2 = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code") + "   ");
+                _label2 = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code") + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
                 _label2.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label2.SetAlignment(0, 0.5F);
-                _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity"));
+                _label3 = new Label("                                                         " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_ticketlist_label_quantity"));
                 _label3.ModifyFont(fontDescriptionLabel);
                 _label3.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label3.SetAlignment(0, 0.5F);
@@ -234,7 +230,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public TouchButtonIcon AddButton(string pObjectName, string pFileNameIcon)
         {
-            string icon = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], pFileNameIcon));
+            string icon = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], pFileNameIcon));
             TouchButtonIcon result = GetButton(pObjectName, icon);
             _hbox.PackStart(result, false, false, 0);
             return result;
@@ -259,7 +255,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Prepare KeyBoard
             if (keyboardMode != KeyboardMode.None)
             {
-                string iconKeyboard = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_keyboard.png"));
+                string iconKeyboard = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_keyboard.png"));
                 _buttonKeyBoard = GetButton(iconKeyboard);
                 _hbox.PackStart(_buttonKeyBoard, false, false, 0);
                 _buttonKeyBoard.Clicked += delegate
@@ -333,13 +329,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             else if (keyboardMode == KeyboardMode.Money)
             {
-                PosMoneyPadDialog dialog = new PosMoneyPadDialog(_sourceWindow, DialogFlags.DestroyWithParent, FrameworkUtils.StringToDecimal(text));
+                PosMoneyPadDialog dialog = new PosMoneyPadDialog(_sourceWindow, DialogFlags.DestroyWithParent, SharedUtils.StringToDecimal(text));
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
                 {
-                    string input = FrameworkUtils.DecimalToString(dialog.Amount);
-                    if (input != null) 
-                    { 
+                    string input = SharedUtils.DecimalToString(dialog.Amount);
+                    if (input != null)
+                    {
                         if (pBoxObject.GetType() == typeof(EntryValidation))
                         {
                             (pBoxObject as EntryValidation).Text = input;

@@ -1,9 +1,11 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.App;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 
 namespace logicpos.financial.library.Classes.Stocks
@@ -17,12 +19,12 @@ namespace logicpos.financial.library.Classes.Stocks
 
         public static bool Add(ProcessArticleStockMode pMode, erp_customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, fin_article pArticle, decimal pQuantity, string pNotes)
         {
-            return Add(GlobalFramework.SessionXpo, pMode, pCustomer, 10, pDocumentDate, pDocumentNumber, pArticle, pQuantity, pNotes);
+            return Add(DataLayerFramework.SessionXpo, pMode, pCustomer, 10, pDocumentDate, pDocumentNumber, pArticle, pQuantity, pNotes);
         }
 
         public static bool Add(Session pSession, ProcessArticleStockMode pMode, erp_customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, fin_article pArticle, decimal pQuantity, string pNotes)
         {
-            return Add(GlobalFramework.SessionXpo, pMode, null, pCustomer, 10, pDocumentDate, pDocumentNumber, pArticle, pQuantity, pNotes);
+            return Add(DataLayerFramework.SessionXpo, pMode, null, pCustomer, 10, pDocumentDate, pDocumentNumber, pArticle, pQuantity, pNotes);
         }
 
         public static bool Add(Session pSession, ProcessArticleStockMode pMode, fin_documentfinancedetail pDocumentDetail, erp_customer pCustomer, int pOrd, DateTime pDocumentDate, string pDocumentNumber, fin_article pArticle, decimal pQuantity, string pNotes)
@@ -47,14 +49,14 @@ namespace logicpos.financial.library.Classes.Stocks
 
                 //Get Objects in same Session
                 //Gestão de Stocks - Ajuste de Stock diretamente no Artigo (BackOffice) [IN:016530]
-                erp_customer customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidUserRecord);
+                erp_customer customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                 if (pCustomer != null)
                 {
                     customer = (erp_customer)pSession.GetObjectByKey(typeof(erp_customer), pCustomer.Oid);
                 }
                 fin_article article = (fin_article)pSession.GetObjectByKey(typeof(fin_article), pArticle.Oid);
-                pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)pSession.GetObjectByKey(typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid);
-                sys_userdetail userDetail = (sys_userdetail)pSession.GetObjectByKey(typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
+                pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)pSession.GetObjectByKey(typeof(pos_configurationplaceterminal), DataLayerFramework.LoggedTerminal.Oid);
+                sys_userdetail userDetail = (sys_userdetail)pSession.GetObjectByKey(typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid);
 
                 fin_articlestock articleStock = new fin_articlestock(pSession)
                 {
@@ -87,10 +89,10 @@ namespace logicpos.financial.library.Classes.Stocks
                 switch (pMode)
                 {
                     case ProcessArticleStockMode.Out:
-                        FrameworkUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_stock_movement_out"), article.Designation, FrameworkUtils.DecimalToString(quantity, SettingsApp.DecimalFormatStockQuantity)));
+                        SharedUtils.Audit("STOCK_MOVEMENT_OUT", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_stock_movement_out"), article.Designation, SharedUtils.DecimalToString(quantity, SharedSettings.DecimalFormatStockQuantity)));
                         break;
                     case ProcessArticleStockMode.In:
-                        FrameworkUtils.Audit("STOCK_MOVEMENT_IN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_stock_movement_in"), article.Designation, FrameworkUtils.DecimalToString(quantity, SettingsApp.DecimalFormatStockQuantity)));
+                        SharedUtils.Audit("STOCK_MOVEMENT_IN", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_stock_movement_in"), article.Designation, SharedUtils.DecimalToString(quantity, SharedSettings.DecimalFormatStockQuantity)));
                         break;
                 }
 

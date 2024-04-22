@@ -1,7 +1,9 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.printer.generic;
+using logicpos.shared.App;
 using System;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
@@ -42,7 +44,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         }
 
         public ThermalPrinterGeneric(sys_configurationprinters pPrinter)
-            : this(pPrinter, SettingsApp.PrinterThermalEncoding)
+            : this(pPrinter, SharedSettings.PrinterThermalEncoding)
         {
         }
 
@@ -51,9 +53,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 			//TK016249 - Impressoras - Diferenciação entre Tipos
             //: this(pPrinter, pEncoding, SettingsApp.PrinterThermalMaxCharsPerLineNormal, SettingsApp.PrinterThermalMaxCharsPerLineNormalBold, SettingsApp.PrinterThermalMaxCharsPerLineSmall)
             : this(pPrinter, pEncoding,
-                  (GlobalFramework.LoggedTerminal.ThermalPrinter != null && GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal > 0) ? GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal : SettingsApp.PrinterThermalMaxCharsPerLineNormal,
-                  (GlobalFramework.LoggedTerminal.ThermalPrinter != null && GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold > 0) ? GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold : SettingsApp.PrinterThermalMaxCharsPerLineNormalBold,
-                  (GlobalFramework.LoggedTerminal.ThermalPrinter != null && GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall > 0) ? GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall : SettingsApp.PrinterThermalMaxCharsPerLineSmall
+                  (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal > 0) ? DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal : SharedSettings.PrinterThermalMaxCharsPerLineNormal,
+                  (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold > 0) ? DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold : SharedSettings.PrinterThermalMaxCharsPerLineNormalBold,
+                  (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall > 0) ? DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall : SharedSettings.PrinterThermalMaxCharsPerLineSmall
                   )
         {
         }
@@ -177,16 +179,16 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                         SetFont(0);
                         break;
                     case WriteLineTextMode.DoubleWidth:
-                        base.WriteLine_DoubleWidth(pLine);
+                        WriteLine_DoubleWidth(pLine);
                         break;
                     case WriteLineTextMode.DoubleHeight:
-                        base.WriteLine_DoubleHeight(pLine);
+                        WriteLine_DoubleHeight(pLine);
                         break;
                     case WriteLineTextMode.DoubleWidthBold:
-                        base.WriteLine_DoubleWidthBold(pLine);
+                        WriteLine_DoubleWidthBold(pLine);
                         break;
                     case WriteLineTextMode.DoubleHeightBold:
-                        base.WriteLine_DoubleHeightBold(pLine);
+                        WriteLine_DoubleHeightBold(pLine);
                         break;
                     case WriteLineTextMode.Bold:
                         WriteLine_Bold(pLine);
@@ -212,8 +214,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
 
             WriteLine(_line);
             WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineNormal));
-            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineNormal), (byte)ThermalPrinter.PrintingStyle.Bold);
-            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineSmall), (byte)ThermalPrinter.PrintingStyle.DoubleWidth);
+            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineNormal), (byte)PrintingStyle.Bold);
+            WriteLine("ÁÉÍÓÚ-1234567890-1234567890-1234567890-1234567890-1234567890-1234567890".Substring(0, _maxCharsPerLineSmall), (byte)PrintingStyle.DoubleWidth);
             WriteLine("LINE");
             LineFeed();
             Cut(true);

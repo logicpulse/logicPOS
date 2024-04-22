@@ -9,16 +9,19 @@ using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Utils;
 using logicpos.financial.library.Classes.WorkSession;
 using logicpos.shared;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using static logicpos.datalayer.App.DataLayerUtils;
 
 namespace logicpos
 {
@@ -57,7 +60,16 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 240), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_contact_support"));
+                Utils.ShowMessageTouch(
+                    GlobalApp.StartupWindow, 
+                    DialogFlags.Modal, 
+                    new Size(500, 240), 
+                    MessageType.Error, 
+                    ButtonsType.Ok, 
+                    resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                    "global_error"), 
+                    resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                    "app_error_contact_support"));
             }
             finally
             {
@@ -84,23 +96,23 @@ namespace logicpos
             {
                 //Used to Force create DatabaseScema and Fixtures with XPO (Non Script Mode): Requirements for Work: Empty or Non Exist Database
                 //Notes: OnError "An exception of type 'DevExpress.Xpo.DB.Exceptions.SchemaCorrectionNeededException'", UnCheck [X] Break when this exception is user-unhandled and continue, watch log and wait until sucefull message appear
-                bool xpoCreateDatabaseAndSchema = SettingsApp.XPOCreateDatabaseAndSchema;
+                bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
                 bool xpoCreateDatabaseObjectsWithFixtures = xpoCreateDatabaseAndSchema;
                 //Prepare AutoCreateOption
                 AutoCreateOption xpoAutoCreateOption = (xpoCreateDatabaseAndSchema) ? AutoCreateOption.DatabaseAndSchema : AutoCreateOption.None;
 
                 //Init Settings Main Config Settings
-                //GlobalFramework.Settings = ConfigurationManager.AppSettings;
+                //DataLayerFramework.Settings = ConfigurationManager.AppSettings;
 
                 //Override Licence data with Encrypted File Data
-                if (File.Exists(SettingsApp.LicenceFileName))
+                if (File.Exists(POSSettings.LicenceFileName))
                 {
-                    Utils.AssignLicence(SettingsApp.LicenceFileName, true);
+                    Utils.AssignLicence(POSSettings.LicenceFileName, true);
                 }
 
                 //Other Global App Settings
-                GlobalApp.MultiUserEnvironment = Convert.ToBoolean(GlobalFramework.Settings["appMultiUserEnvironment"]);
-                GlobalApp.UseVirtualKeyBoard = Convert.ToBoolean(GlobalFramework.Settings["useVirtualKeyBoard"]);
+                GlobalApp.MultiUserEnvironment = Convert.ToBoolean(datalayer.App.DataLayerFramework.Settings["appMultiUserEnvironment"]);
+                GlobalApp.UseVirtualKeyBoard = Convert.ToBoolean(datalayer.App.DataLayerFramework.Settings["useVirtualKeyBoard"]);
 
                 //Init App Notifications
                 GlobalApp.Notifications = new System.Collections.Generic.Dictionary<string, bool>
@@ -109,20 +121,20 @@ namespace logicpos
                 };
 
                 //System
-                GlobalApp.FilePickerStartPath = System.IO.Directory.GetCurrentDirectory();
+                GlobalApp.FilePickerStartPath = Directory.GetCurrentDirectory();
 
                 //Get DataBase Details
-                GlobalFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), GlobalFramework.Settings["databaseType"]);
+                datalayer.App.DataLayerFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType),datalayer.App.DataLayerFramework.Settings["databaseType"]);
                 //Override default Database name with parameter from config
-                string configDatabaseName = GlobalFramework.Settings["databaseName"];
-                GlobalFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? SettingsApp.DatabaseName : configDatabaseName;
+                string configDatabaseName = datalayer.App.DataLayerFramework.Settings["databaseName"];
+                SharedFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? POSSettings.DatabaseName : configDatabaseName;
                 //Xpo Connection String
-                string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
+                string xpoConnectionString = string.Format(datalayer.App.DataLayerFramework.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
                 Utils.AssignConnectionStringToSettings(xpoConnectionString);
 
                 //Removed Protected Files
                 //ProtectedFiles, Before Create Database from Scripts, usefull if Scripts are modified by User
-                if (SettingsApp.ProtectedFilesUse) GlobalApp.ProtectedFiles = InitProtectedFiles();
+                if (POSSettings.ProtectedFilesUse) GlobalApp.ProtectedFiles = InitProtectedFiles();
 
                 //Check if Database Exists if Not Create it from Scripts
                 bool databaseCreated = false;
@@ -133,8 +145,12 @@ namespace logicpos
                     try
                     {
                         // Launch Scripts
-                        SettingsApp.firstBoot = true;
-                        databaseCreated = DataLayer.CreateDatabaseSchema(xpoConnectionString, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName, out needToUpdate);
+                        POSSettings.firstBoot = true;
+                        databaseCreated = DataLayer.CreateDatabaseSchema(
+                            xpoConnectionString, 
+                            datalayer.App.DataLayerFramework.DatabaseType, 
+                            SharedFramework.DatabaseName, 
+                            out needToUpdate);
                     }
                     catch (Exception ex)
                     {
@@ -144,11 +160,11 @@ namespace logicpos
                         /* IN009034 */
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
-                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                         Environment.Exit(0);
                     }
                 }
-                SettingsApp.firstBoot = false;
+                POSSettings.firstBoot = false;
                 //Init XPO Connector DataLayer
                 try
                 {
@@ -159,7 +175,7 @@ namespace logicpos
                     _logger.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
 
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
-                    GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    datalayer.App.DataLayerFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
                 catch (Exception ex)
                 {
@@ -168,12 +184,12 @@ namespace logicpos
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                     throw; // TO DO
                 }
 
                 //Check Valid Database Scheme
-                if (!xpoCreateDatabaseAndSchema && !FrameworkUtils.IsRunningOnMono())
+                if (!xpoCreateDatabaseAndSchema && !SharedUtils.IsRunningOnMono())
                 {
                     bool isSchemaValid = DataLayer.IsSchemaValid(xpoConnectionString);
                     _logger.Debug(string.Format("void Init() :: Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
@@ -183,7 +199,7 @@ namespace logicpos
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
                         string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(endMessage, Environment.NewLine));
+                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(endMessage, Environment.NewLine));
                         Environment.Exit(0);
                     }
                 }
@@ -195,8 +211,8 @@ namespace logicpos
                 {
                     try
                     {
-                        string sql = string.Format(@"SELECT Version FROM sys_databaseversion;", GlobalFramework.DatabaseName);
-                        GlobalFramework.DatabaseVersion = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                        string sql = string.Format(@"SELECT Version FROM sys_databaseversion;", SharedFramework.DatabaseName);
+                        GlobalFramework.DatabaseVersion = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
 
                         string[] tmpDatabaseVersion = GlobalFramework.DatabaseVersion.Split('.');
                         long tmpDatabaseVersionNumber = int.Parse(tmpDatabaseVersion[0]) * 10000000 + int.Parse(tmpDatabaseVersion[1]) * 10000 + int.Parse(tmpDatabaseVersion[2]);
@@ -207,10 +223,10 @@ namespace logicpos
                         if (tmpDatabaseVersionNumber > tmpSoftwareVersionNumber)
                         {
                             GlobalApp.DialogThreadNotify.WakeupMain();
-                            //throw new InvalidOperationException(string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
+                            //throw new InvalidOperationException(string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
                             string fileName = "\\LPUpdater\\LPUpdater.exe";
-                            string lPathToUpdater = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
-                            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
+                            string lPathToUpdater = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName));
+                            Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_message_database_version")) + " : " + GlobalFramework.DatabaseVersion);
                             System.Diagnostics.Process.Start(lPathToUpdater);
                             Environment.Exit(0);
                         }
@@ -218,28 +234,28 @@ namespace logicpos
                     catch(Exception Ex)
                     {
                         GlobalApp.DialogThreadNotify.Close();
-                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),  Ex.Message);
+                        Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),  Ex.Message);
                         Environment.Exit(0);
                     }
                 }
 #endif
                 // Assign PluginSoftwareVendor Reference to DataLayer SettingsApp to use In Date Protection, we Required to assign it Statically to Prevent Circular References
                 // Required to be here, before it is used in above lines, ex Utils.GetTerminal()
-                if (GlobalFramework.PluginSoftwareVendor != null) logicpos.datalayer.App.SettingsApp.PluginSoftwareVendor = GlobalFramework.PluginSoftwareVendor;
+                if (SharedFramework.PluginSoftwareVendor != null) datalayer.App.DataLayerSettings.PluginSoftwareVendor = SharedFramework.PluginSoftwareVendor;
 
                 //If not in Xpo create database Scheme Mode, Get Terminal from Db
                 if (!xpoCreateDatabaseAndSchema)
                 {
-                    GlobalFramework.LoggedTerminal = Utils.GetTerminal();
+                    datalayer.App.DataLayerFramework.LoggedTerminal = Utils.GetTerminal();
                 }
 
                 //After Assigned LoggedUser
                 if (xpoCreateDatabaseObjectsWithFixtures)
                 {
-                    InitFixtures.InitUserAndTerminal(GlobalFramework.SessionXpo);
-                    InitFixtures.InitOther(GlobalFramework.SessionXpo);
-                    InitFixtures.InitDocumentFinance(GlobalFramework.SessionXpo);
-                    InitFixtures.InitWorkSession(GlobalFramework.SessionXpo);
+                    InitFixtures.InitUserAndTerminal(datalayer.App.DataLayerFramework.SessionXpo);
+                    InitFixtures.InitOther(datalayer.App.DataLayerFramework.SessionXpo);
+                    InitFixtures.InitDocumentFinance(datalayer.App.DataLayerFramework.SessionXpo);
+                    InitFixtures.InitWorkSession(datalayer.App.DataLayerFramework.SessionXpo);
                 }
 
                 //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
@@ -251,22 +267,22 @@ namespace logicpos
                     string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
                     _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
 
-                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(endMessage, Environment.NewLine));
+                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(endMessage, Environment.NewLine));
                     Environment.Exit(0);
                 }
 
                 //Init PreferenceParameters
-                GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
+                SharedFramework.PreferenceParameters = SharedUtils.GetPreferencesParameters();
                 //Init Preferences Path
                 MainApp.InitPathsPrefs();
 
                 //CultureInfo/Localization
-                string culture = GlobalFramework.PreferenceParameters["CULTURE"];
+                string culture = SharedFramework.PreferenceParameters["CULTURE"];
 
                 /* IN008013 */
                 if (string.IsNullOrEmpty(culture))
                 {
-                    culture = GlobalFramework.Settings["customCultureResourceDefinition"];
+                    culture = datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"];
                 }
 
 
@@ -281,27 +297,27 @@ namespace logicpos
                 //{
                 //    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 //}                
-                GlobalFramework.CurrentCulture = GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
+                SharedFramework.CurrentCulture = SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
 
                 /* IN006018 and IN007009 */
                 _logger.Debug(string.Format("CUSTOM CULTURE :: CurrentUICulture '{0}' in use.", CultureInfo.CurrentUICulture));
 
                 //Always use en-US NumberFormat because of mySql Requirements
-                GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
+                SharedFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(POSSettings.CultureNumberFormat);
 
                 //Init AppSession
                 string appSessionFile = Utils.GetSessionFileName();
                 if (databaseCreated && File.Exists(appSessionFile)) File.Delete(appSessionFile);
-                GlobalFramework.SessionApp = GlobalFrameworkSession.InitSession(appSessionFile);
+                SharedFramework.SessionApp = GlobalFrameworkSession.InitSession(appSessionFile);
 
                 //Try to Get open Session Day/Terminal for this Terminal
-                GlobalFramework.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
-                GlobalFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
+                SharedFramework.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
+                SharedFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Use Detected ScreenSize
-                string appScreenSize = string.IsNullOrEmpty(GlobalFramework.Settings["appScreenSize"])
-                    ? GlobalFramework.PreferenceParameters["APP_SCREEN_SIZE"]
-                    : GlobalFramework.Settings["appScreenSize"];
+                string appScreenSize = string.IsNullOrEmpty(datalayer.App.DataLayerFramework.Settings["appScreenSize"])
+                    ? SharedFramework.PreferenceParameters["APP_SCREEN_SIZE"]
+                    : datalayer.App.DataLayerFramework.Settings["appScreenSize"];
                 if (appScreenSize.Replace(" ", string.Empty).Equals("0,0") || string.IsNullOrEmpty(appScreenSize))
                 {
                     // Force Unknown Screen Size
@@ -326,11 +342,11 @@ namespace logicpos
                 // Add Variables to ExpressionEvaluator.Variables Singleton
                 GlobalApp.ExpressionEvaluator.Variables.Add("globalScreenSize", GlobalApp.ScreenSize);
                 //to used in shared projects
-                GlobalFramework.screenSize = GlobalApp.ScreenSize;
+                SharedFramework.ScreenSize = GlobalApp.ScreenSize;
                 //Parse and store Theme in Singleton
                 try
                 {
-                    GlobalApp.Theme = XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme);
+                    GlobalApp.Theme = XmlToObjectParser.ParseFromFile(POSSettings.FileTheme);
                     // Use with dynamic Theme properties like: 
                     // GlobalApp.Theme.Theme.Frontoffice.Window[0].Globals.Name = PosBaseWindow
                     // GlobalApp.Theme.Theme.Frontoffice.Window[1].Objects.TablePadUser.Position = 50,50
@@ -349,37 +365,37 @@ namespace logicpos
                 }
 
                 //Init FastReports Custom Functions and Custom Vars
-                CustomFunctions.Register(SettingsApp.AppName);
+                CustomFunctions.Register(POSSettings.AppName);
 
                 //Hardware : Init Display
-                if (GlobalFramework.LoggedTerminal.PoleDisplay != null)
+                if (datalayer.App.DataLayerFramework.LoggedTerminal.PoleDisplay != null)
                 {
                     GlobalApp.UsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
-                    GlobalApp.UsbDisplay.WriteCentered(string.Format("{0} {1}", SettingsApp.AppName, FrameworkUtils.ProductVersion), 1);
-                    GlobalApp.UsbDisplay.WriteCentered(SettingsApp.AppUrl, 2);
+                    GlobalApp.UsbDisplay.WriteCentered(string.Format("{0} {1}", POSSettings.AppName, SharedUtils.ProductVersion), 1);
+                    GlobalApp.UsbDisplay.WriteCentered(POSSettings.AppUrl, 2);
                     GlobalApp.UsbDisplay.EnableStandBy();
                 }
 
                 //Hardware : Init BarCodeReader 
-                if (GlobalFramework.LoggedTerminal.BarcodeReader != null)
+                if (datalayer.App.DataLayerFramework.LoggedTerminal.BarcodeReader != null)
                 {
                     GlobalApp.BarCodeReader = new InputReader();
                 }
 
                 //Hardware : Init WeighingBalance
-                if (GlobalFramework.LoggedTerminal.WeighingMachine != null)
+                if (datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine != null)
                 {
                     //Protecções de integridade das BD's [IN:013327]
                     //Check if port is used by pole display
-                    if (GlobalFramework.LoggedTerminal.WeighingMachine.PortName == GlobalFramework.LoggedTerminal.PoleDisplay.COM)
+                    if (datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine.PortName == datalayer.App.DataLayerFramework.LoggedTerminal.PoleDisplay.COM)
                     {
-                        _logger.Debug(string.Format("Port " + GlobalFramework.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
+                        _logger.Debug(string.Format("Port " + datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
                     }
                     else
                     {
-                        if (Utils.IsPortOpen(GlobalFramework.LoggedTerminal.WeighingMachine.PortName))
+                        if (Utils.IsPortOpen(datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine.PortName))
                         {
-                            GlobalApp.WeighingBalance = new WeighingBalance(GlobalFramework.LoggedTerminal.WeighingMachine);
+                            GlobalApp.WeighingBalance = new WeighingBalance(datalayer.App.DataLayerFramework.LoggedTerminal.WeighingMachine);
                             //_logger.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen())); }
                         }
 
@@ -388,20 +404,29 @@ namespace logicpos
                 }
 
                 //Send To Log
-                _logger.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
+                _logger.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", SharedUtils.ProductVersion, SharedUtils.ProductAssembly.ImageRuntimeVersion, LicenceManagement.IsLicensed));
 
                 //Audit
-                FrameworkUtils.Audit("APP_START", string.Format("{0} {1} clr {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, FrameworkUtils.ProductAssembly.ImageRuntimeVersion));
-                if (databaseCreated) FrameworkUtils.Audit("DATABASE_CREATE");
+                SharedUtils.Audit("APP_START", string.Format("{0} {1} clr {2}", POSSettings.AppName, SharedUtils.ProductVersion, SharedUtils.ProductAssembly.ImageRuntimeVersion));
+                if (databaseCreated) SharedUtils.Audit("DATABASE_CREATE");
 
                 // Plugin Errors Messages
-                if (GlobalFramework.PluginSoftwareVendor == null || !GlobalFramework.PluginSoftwareVendor.IsValidSecretKey(SettingsApp.SecretKey))
+                if (SharedFramework.PluginSoftwareVendor == null || !SharedFramework.PluginSoftwareVendor.IsValidSecretKey(FinancialLibrarySettings.SecretKey))
                 {
                     /* IN009034 */
                     GlobalApp.DialogThreadNotify.WakeupMain();
 
-                    _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", SettingsApp.SecretKey));
-                    Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_plugin_softwarevendor_not_registered"));
+                    _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", FinancialLibrarySettings.SecretKey));
+                    Utils.ShowMessageTouch(
+                        GlobalApp.StartupWindow, 
+                        DialogFlags.Modal, 
+                        new Size(650, 380), 
+                        MessageType.Error, 
+                        ButtonsType.Ok, 
+                        resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                        "global_error"), 
+                        resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                        "dialog_message_error_plugin_softwarevendor_not_registered"));
                 }
 
                 // TK013134: HardCoded Modules : PakingTicket
@@ -409,38 +434,38 @@ namespace logicpos
                 {
                     // Override default AppUseParkingTicketModule
                     /* IN009239 */
-                    //GlobalFramework.AppUseParkingTicketModule = Convert.ToBoolean(GlobalFramework.Settings["appMultiUserEnvironment"]);
-                    CustomAppOperationMode customAppOperationMode = FrameworkUtils.GetCustomAppOperationMode();
-                    GlobalFramework.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
+                    //GlobalFramework.AppUseParkingTicketModule = Convert.ToBoolean(DataLayerFramework.Settings["appMultiUserEnvironment"]);
+                    CustomAppOperationMode customAppOperationMode = GetCustomAppOperationMode();
+                    SharedFramework.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
 
                     //TK016235 BackOffice - Mode
-                    GlobalFramework.AppUseBackOfficeMode = CustomAppOperationMode.BACKOFFICE.Equals(customAppOperationMode);
+                    SharedFramework.AppUseBackOfficeMode = CustomAppOperationMode.BACKOFFICE.Equals(customAppOperationMode);
 
                     // Init Global Object GlobalApp.ParkingTicket
-                    if (GlobalFramework.AppUseParkingTicketModule)
+                    if (SharedFramework.AppUseParkingTicketModule)
                     {
                         GlobalApp.ParkingTicket = new ParkingTicket();
                     }
                 }
                 catch (Exception)
                 {
-                    _logger.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GlobalFramework.AppUseParkingTicketModule));
+                    _logger.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", SharedFramework.AppUseParkingTicketModule));
                 }
 
 
                 //Create SystemNotification
-                FrameworkUtils.SystemNotification();
+                SharedUtils.SystemNotification();
 
                 //Activate stock module for debug
 #if DEBUG 
-                GlobalFramework.LicenceModuleStocks = true;
-                SettingsApp.AppCompanyName = GlobalFramework.LicenceCompany = GlobalFramework.LicenceReseller = "Logicpulse";
+                SharedFramework.LicenseModuleStocks = true;
+                SharedSettings.AppCompanyName = SharedFramework.LicenseCompany = SharedFramework.LicenseReseller = "Logicpulse";
 #endif
 
                 //Clean Documents Folder on New Database, else we have Document files that dont correspond to Database
-                if (databaseCreated && Directory.Exists(GlobalFramework.Path["documents"].ToString()))
+                if (databaseCreated && Directory.Exists(datalayer.App.DataLayerFramework.Path["documents"].ToString()))
                 {
-                    string documentsFolder = GlobalFramework.Path["documents"].ToString();
+                    string documentsFolder = datalayer.App.DataLayerFramework.Path["documents"].ToString();
                     System.IO.DirectoryInfo di = new DirectoryInfo(documentsFolder);
                     if (di.GetFiles().Length > 0)
                     {
@@ -472,31 +497,31 @@ namespace logicpos
         /// </summary>
         private void InitBackupTimerProcess()
         {
-            bool xpoCreateDatabaseAndSchema = SettingsApp.XPOCreateDatabaseAndSchema;
-            bool validDirectoryBackup = FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
+            bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
+            bool validDirectoryBackup = SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(datalayer.App.DataLayerFramework.Path["backups"])));
             _logger.Debug("void InitBackupTimerProcess() :: xpoCreateDatabaseAndSchema [ " + xpoCreateDatabaseAndSchema + " ] :: validDirectoryBackup [ " + validDirectoryBackup + " ]");
 
             //Show Dialog if Cant Create Backups Directory (Extra Protection for Shared Network Folders)
             if (!validDirectoryBackup)
             {
-                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_create_directory_backups"), Convert.ToString(GlobalFramework.Path["backups"])));
+                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_create_directory_backups"), Convert.ToString(datalayer.App.DataLayerFramework.Path["backups"])));
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
 
             //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
-            if (GlobalFramework.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
+            if (SharedFramework.PluginSoftwareVendor != null && validDirectoryBackup && !xpoCreateDatabaseAndSchema)
             {
                 /* IN009163 and IN009164 - Opt to auto-backup flow */
-                _autoBackupFlowIsEnabled = bool.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
+                _autoBackupFlowIsEnabled = bool.Parse(SharedFramework.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
 
                 /* IN009164 */
                 if (_autoBackupFlowIsEnabled)
                 {
                     /* IN009164 - considering these variables are only used for automatic backup purposes, will be settled only when Auto-Backup Flow is enabled */
-                    _backupDatabaseTimeSpan = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
-                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
-                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(GlobalFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
+                    _backupDatabaseTimeSpan = TimeSpan.Parse(SharedFramework.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
+                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(SharedFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
+                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(SharedFramework.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
                     /* IN009164 - TimeoutHandler() for UpdateBackupTimer() will not be created if Auto-Backup Flow is enabled */
                     StartBackupTimer();
                 }
@@ -508,15 +533,15 @@ namespace logicpos
         private ProtectedFiles InitProtectedFiles()
         {
             bool debug = true;
-            string filePath = SettingsApp.ProtectedFilesFileName;
-            List<string> fileList = SettingsApp.ProtectedFilesList;
+            string filePath = POSSettings.ProtectedFilesFileName;
+            List<string> fileList = POSSettings.ProtectedFilesList;
 
             ProtectedFiles protectedFiles;
             //ReCreate File MODE
-            if (SettingsApp.ProtectedFilesRecreateCSV)
+            if (POSSettings.ProtectedFilesRecreateCSV)
             {
                 protectedFiles = new ProtectedFiles(fileList, filePath);
-                string md5FromFile = FrameworkUtils.MD5HashFile(filePath);
+                string md5FromFile = SharedUtils.MD5HashFile(filePath);
                 //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
                 //string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!
                 //    {0}- Assign false to 'SettingsApp.ProtectedFilesRecreateCsv'.
@@ -527,7 +552,7 @@ namespace logicpos
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
-                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
+                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
                 Environment.Exit(0);
             }
             //Dont check changed files if Developer, Uncomment to Enable
@@ -556,9 +581,19 @@ namespace logicpos
                     }
 
                     //If Not IgnoreProtection, show alert and exit
-                    if (!SettingsApp.ProtectedFilesIgnoreProtection)
+                    if (!POSSettings.ProtectedFilesIgnoreProtection)
                     {
-                        Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected"), filesMessage));
+                        Utils.ShowMessageTouch(
+                            GlobalApp.StartupWindow, 
+                            DialogFlags.Modal, 
+                            new Size(800, 400), 
+                            MessageType.Error, 
+                            ButtonsType.Close, 
+                            resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                            "global_error"), string.Format(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                            "dialog_message_error_protected_files_invalid_files_detected"), 
+                            filesMessage));
+
                         Environment.Exit(0);
                     }
                 }
@@ -572,7 +607,7 @@ namespace logicpos
         {
             bool result = false;
             string[] files = new string[pFileList.Count + 1];
-            string filename = string.Format("{0}{1}", GlobalFramework.Path["temp"], "protected.zip");
+            string filename = string.Format("{0}{1}", datalayer.App.DataLayerFramework.Path["temp"], "protected.zip");
 
             try
             {
@@ -580,10 +615,10 @@ namespace logicpos
                 {
                     files[i] = pFileList[i];
                 }
-                files[pFileList.Count] = SettingsApp.ProtectedFilesFileName;
+                files[pFileList.Count] = POSSettings.ProtectedFilesFileName;
 
                 //Empty password, to zip without password
-                result = Utils.ZipPack(files, filename, string.Empty);
+                result = shared.Classes.Utils.Utils.ZipPack(files, filename, string.Empty);
             }
             catch (Exception ex)
             {
@@ -646,14 +681,14 @@ namespace logicpos
             try
             {
                 //Audit
-                if (pAudit) FrameworkUtils.Audit("APP_CLOSE");
+                if (pAudit) SharedUtils.Audit("APP_CLOSE");
                 //Before use DeleteSession()
                 /* IN005943 */
-                GlobalFramework.SessionApp.CleanSession();
-                GlobalFramework.SessionApp.Write();
+                SharedFramework.SessionApp.CleanSession();
+                SharedFramework.SessionApp.Write();
                 //GlobalFramework.SessionApp.DeleteSession();
                 //Disconnect SessionXpo
-                GlobalFramework.SessionXpo.Disconnect();
+                datalayer.App.DataLayerFramework.SessionXpo.Disconnect();
             }
             catch (Exception ex)
             {
@@ -666,7 +701,16 @@ namespace logicpos
 
         public static void Quit(Window pSourceWindow)
         {
-            ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(400, 300), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quit_title"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quit_message"));
+            ResponseType responseType = Utils.ShowMessageTouch(
+                pSourceWindow, 
+                DialogFlags.Modal, 
+                new Size(400, 300), 
+                MessageType.Question, 
+                ButtonsType.YesNo, 
+                resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                "global_quit_title"), 
+                resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                "global_quit_message"));
 
             if (responseType == ResponseType.Yes)
             {
@@ -682,7 +726,7 @@ namespace logicpos
             try
             {
                 // Every second call update_status' (1000 milliseconds)
-                GLib.Timeout.Add(SettingsApp.BackupTimerInterval, new GLib.TimeoutHandler(UpdateBackupTimer));
+                GLib.Timeout.Add(POSSettings.BackupTimerInterval, new GLib.TimeoutHandler(UpdateBackupTimer));
             }
             catch (Exception ex)
             {
@@ -695,7 +739,7 @@ namespace logicpos
             _logger.Debug("bool UpdateBackupTimer()");
             bool debug = false;
 
-            DateTime currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
+            DateTime currentDateTime = CurrentDateTimeAtomic();
             DateTime currentDateTimeLastBackup = DataBaseBackup.GetLastBackupDate();
             TimeSpan timeSpanDiference = currentDateTime - currentDateTimeLastBackup;
 

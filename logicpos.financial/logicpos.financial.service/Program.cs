@@ -1,5 +1,6 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.service.App;
@@ -9,6 +10,7 @@ using logicpos.financial.service.Test.Modules.AT;
 using logicpos.financial.servicewcf;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
+using logicpos.shared.App;
 using Microsoft.Win32;
 using System;
 using System.Collections;
@@ -18,7 +20,6 @@ using System.Globalization;
 using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Description;
-using System.Threading;
 
 namespace logicpos.financial.service
 {
@@ -42,7 +43,7 @@ namespace logicpos.financial.service
         private static readonly int _servicePort = 50391;
         public static int ServicePort
         {
-            get { return Program._servicePort; }
+            get { return _servicePort; }
         }
         //Timer
         private static System.Timers.Timer _timer = null;
@@ -51,7 +52,7 @@ namespace logicpos.financial.service
         private static void Main(string[] args)
         {
             //Init Settings Main Config Settings
-           GlobalFramework.Settings = ConfigurationManager.AppSettings;
+            DataLayerFramework.Settings = ConfigurationManager.AppSettings;
 
             //Base Bootstrap Init from LogicPos
             Init();
@@ -68,7 +69,7 @@ namespace logicpos.financial.service
                 using (var service = new Service())
                 {
                     _logger.Debug("Service.Run(service)");
-                    Service.Run(service);
+                    System.ServiceProcess.ServiceBase.Run(service);
                 }
             }
             //Console Mode
@@ -110,20 +111,20 @@ namespace logicpos.financial.service
                 //Utils.Log(string.Format("BootStrap {0}....", SettingsApp.AppName));
 
                 // Init Paths
-                GlobalFramework.Path = new Hashtable
+                DataLayerFramework.Path = new Hashtable
                 {
-                    { "temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]) },
-                    { "certificates", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]) },
-                    { "plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]) }
+                    { "temp", SharedUtils.OSSlash(DataLayerFramework.Settings["pathTemp"]) },
+                    { "certificates", SharedUtils.OSSlash(DataLayerFramework.Settings["pathCertificates"]) },
+                    { "plugins", SharedUtils.OSSlash(DataLayerFramework.Settings["pathPlugins"]) }
                 };
                 //Create Directories
-                FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
-                FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["certificates"])));
+                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["temp"])));
+                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["certificates"])));
 
                 // Protection for plugins Path
-                if (GlobalFramework.Path["plugins"] == null || ! Directory.Exists(GlobalFramework.Path["plugins"].ToString()))
+                if (DataLayerFramework.Path["plugins"] == null || !Directory.Exists(DataLayerFramework.Path["plugins"].ToString()))
                 {
-                    Utils.Log($"Missing pathPlugins: {GlobalFramework.Settings["pathPlugins"]}. Please correct path in config! ex \"c:\\Program Files (x86)\\Logicpulse\"");
+                    Utils.Log($"Missing pathPlugins: {DataLayerFramework.Settings["pathPlugins"]}. Please correct path in config! ex \"c:\\Program Files (x86)\\Logicpulse\"");
                     //Output only if in Console Mode
                     if (Environment.UserInteractive)
                     {
@@ -140,13 +141,13 @@ namespace logicpos.financial.service
                 AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
 
                 //Get DataBase Details
-                GlobalFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), GlobalFramework.Settings["databaseType"]);
-                GlobalFramework.DatabaseName = SettingsApp.DatabaseName;
+               DataLayerFramework.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), DataLayerFramework.Settings["databaseType"]);
+                SharedFramework.DatabaseName = FinancialServiceSettings.DatabaseName;
                 //Override default Database name with parameter from config
-                string configDatabaseName = GlobalFramework.Settings["databaseName"];
-                GlobalFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? SettingsApp.DatabaseName : configDatabaseName;
+                string configDatabaseName = DataLayerFramework.Settings["databaseName"];
+                SharedFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? FinancialServiceSettings.DatabaseName : configDatabaseName;
                 //Xpo Connection String
-                string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
+                string xpoConnectionString = string.Format(DataLayerFramework.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
 
                 //Init XPO Connector DataLayer
                 try
@@ -160,12 +161,12 @@ namespace logicpos.financial.service
                     _logger.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
 
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
-                    GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    DataLayerFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
 
                     //if (XpoDefault.DataLayer != null)
                     ////Utils.Log("DataLayer...");
-                    ////GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
-                    //if (GlobalFramework.SessionXpo != null)
+                    ////DataLayerFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    //if (DataLayerFramework.SessionXpo != null)
                     //    //Utils.Log("SessionXpo...");
                 }
                 catch (Exception ex)
@@ -182,64 +183,64 @@ namespace logicpos.financial.service
                 }
 
                 //PreferenceParameters
-                GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
+                SharedFramework.PreferenceParameters = SharedUtils.GetPreferencesParameters();
 
                 //Check parameters in debug
                 //try
                 //{
-                //    foreach (var pref in GlobalFramework.PreferenceParameters)
+                //    foreach (var pref inSharedFramework.PreferenceParameters)
                 //    {
                 //        _logger.Debug(string.Format(pref.Key + ": " + pref.Value));
                 //    }
                 //}catch(Exception Ex) { _logger.Debug(Ex.Message); }
 
                 //CultureInfo/Localization
-               string culture = GlobalFramework.PreferenceParameters["CULTURE"];
+                string culture = SharedFramework.PreferenceParameters["CULTURE"];
                 if (!string.IsNullOrEmpty(culture))
                 {
                     /* IN006018 and IN007009 */
                     //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 }
-                
-                GlobalFramework.CurrentCulture = new CultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
-                if (GlobalFramework.CurrentCulture == null)
+
+                SharedFramework.CurrentCulture = new CultureInfo(DataLayerFramework.Settings["customCultureResourceDefinition"]);
+                if (SharedFramework.CurrentCulture == null)
                 {
                     //Get Culture from DB
                     string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                    string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
-                    GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
-                    if(GlobalFramework.CurrentCulture != null)
-                    _logger.Debug(GlobalFramework.CurrentCulture.DisplayName);
+                    string getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                    SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                    if (SharedFramework.CurrentCulture != null)
+                        _logger.Debug(SharedFramework.CurrentCulture.DisplayName);
                     else
                     {
                         _logger.Debug("No culture loaded");
                     }
                 }
                 //Always use en-US NumberFormat because of MySql Requirements
-                GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
+                SharedFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(FinancialServiceSettings.CultureNumberFormat);
 
                 //SettingsApp
-                string companyCountryOid = GlobalFramework.PreferenceParameters["COMPANY_COUNTRY_OID"];
-                string systemCurrencyOid = GlobalFramework.PreferenceParameters["SYSTEM_CURRENCY_OID"];
-                SettingsApp.ConfigurationSystemCountry = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid(companyCountryOid));
-                SettingsApp.ConfigurationSystemCurrency = (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcurrency), new Guid(systemCurrencyOid));
+                string companyCountryOid = SharedFramework.PreferenceParameters["COMPANY_COUNTRY_OID"];
+                string systemCurrencyOid = SharedFramework.PreferenceParameters["SYSTEM_CURRENCY_OID"];
+                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid(companyCountryOid));
+                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcurrency), new Guid(systemCurrencyOid));
 
                 //After Construct Settings (ex Required path["certificates"])
-                Utils.Log(string.Format("BootStrap {0}....", SettingsApp.AppName));
+                Utils.Log(string.Format("BootStrap {0}....", FinancialServiceSettings.AppName));
 
                 //Show WS Mode
-                Utils.Log(string.Format("ServiceATEnableTestMode: [{0}]", SettingsApp.ServiceATEnableTestMode));
+                Utils.Log(string.Format("ServiceATEnableTestMode: [{0}]", FinancialServiceSettings.ServiceATEnableTestMode));
 
                 // Protection to Check if all Required values are met
                 if (!HasAllRequiredValues())
                 {
-                    throw new Exception($"Error! Invalid Parameters Met! Required parameters missing! Check parameters: AccountFiscalNumber: [{SettingsApp.ServicesATAccountFiscalNumber}], ATAccountPassword: [{SettingsApp.ServicesATAccountPassword}], TaxRegistrationNumber: [{SettingsApp.ServicesATTaxRegistrationNumber}]");
+                    throw new Exception($"Error! Invalid Parameters Met! Required parameters missing! Check parameters: AccountFiscalNumber: [{FinancialServiceSettings.ServicesATAccountFiscalNumber}], ATAccountPassword: [{FinancialServiceSettings.ServicesATAccountPassword}], TaxRegistrationNumber: [{FinancialServiceSettings.ServicesATTaxRegistrationNumber}]");
                 }
                 if (!Utils.IsLinux)
                 {
                     SystemEvents.PowerModeChanged += OnPowerChange;
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -250,7 +251,7 @@ namespace logicpos.financial.service
         private static void InitPlugins()
         {
             // Check Path before launch error found Plugin
-            string pathPlugins = GlobalFramework.Path["plugins"].ToString();
+            string pathPlugins = DataLayerFramework.Path["plugins"].ToString();
             if (string.IsNullOrEmpty(pathPlugins))
             {
                 // Error Missing pluginPath
@@ -261,16 +262,16 @@ namespace logicpos.financial.service
                 Environment.Exit(0);
             }
             // Init PluginContainer
-            GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
+            SharedFramework.PluginContainer = new PluginContainer(DataLayerFramework.Path["plugins"].ToString());
 
             // PluginSoftwareVendor
-            GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
-            if (GlobalFramework.PluginSoftwareVendor != null)
+            SharedFramework.PluginSoftwareVendor = (SharedFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
+            if (SharedFramework.PluginSoftwareVendor != null)
             {
                 // Show Loaded Plugin
-                _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), SharedFramework.PluginSoftwareVendor.Name));
                 // Init Plugin
-                SettingsApp.InitSoftwareVendorPluginSettings();
+                SharedSettings.InitSoftwareVendorPluginSettings();
             }
             else
             {
@@ -285,9 +286,9 @@ namespace logicpos.financial.service
 
         private static bool HasAllRequiredValues()
         {
-            return !(string.IsNullOrEmpty(SettingsApp.ServicesATAccountFiscalNumber)
-                || string.IsNullOrEmpty(SettingsApp.ServicesATAccountPassword)
-                || string.IsNullOrEmpty(SettingsApp.ServicesATTaxRegistrationNumber)
+            return !(string.IsNullOrEmpty(FinancialServiceSettings.ServicesATAccountFiscalNumber)
+                || string.IsNullOrEmpty(FinancialServiceSettings.ServicesATAccountPassword)
+                || string.IsNullOrEmpty(FinancialServiceSettings.ServicesATTaxRegistrationNumber)
             );
         }
 
@@ -378,7 +379,7 @@ namespace logicpos.financial.service
         {
             Console.Clear();
 
-            Utils.Log(string.Format("{0} : Database: [{1}]", SettingsApp.AppName, SettingsApp.DatabaseName));
+            Utils.Log(string.Format("{0} : Database: [{1}]", FinancialServiceSettings.AppName, FinancialServiceSettings.DatabaseName));
             Utils.Log(_line);
 
             int i = 0;
@@ -436,11 +437,11 @@ namespace logicpos.financial.service
 
         public static void StartTimer()
         {
-            if (SettingsApp.ServiceTimerEnabled)
+            if (FinancialServiceSettings.ServiceTimerEnabled)
             {
-                _logger.Debug("Service StartTimer to " + SettingsApp.ServiceTimer.Hour + ":" + SettingsApp.ServiceTimer.Minute);
+                _logger.Debug("Service StartTimer to " + FinancialServiceSettings.ServiceTimer.Hour + ":" + FinancialServiceSettings.ServiceTimer.Minute);
                 DateTime nowTime = DateTime.Now;
-                DateTime oneAmTime = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, SettingsApp.ServiceTimer.Hour, SettingsApp.ServiceTimer.Minute, 0, 0);
+                DateTime oneAmTime = new DateTime(nowTime.Year, nowTime.Month, nowTime.Day, FinancialServiceSettings.ServiceTimer.Hour, FinancialServiceSettings.ServiceTimer.Minute, 0, 0);
                 if (nowTime > oneAmTime)
                     oneAmTime = oneAmTime.AddDays(1);
 
@@ -453,7 +454,7 @@ namespace logicpos.financial.service
 
         public static void StopTimer()
         {
-            if (SettingsApp.ServiceTimerEnabled && _timer != null)
+            if (FinancialServiceSettings.ServiceTimerEnabled && _timer != null)
             {
                 //_logger.Debug("Service StopTimer");
                 _timer.Stop();
@@ -465,16 +466,16 @@ namespace logicpos.financial.service
         {
             if (!_timerRunningTasks)
             {
-                
+
                 StopTimer();
                 //Stop();
                 //Started Running Tasks
                 _timerRunningTasks = true;
 
                 _logger.Debug(string.Format("Send Documents to AT"));
-				//Financial.service - Correções no envio de documentos AT [IN:014494]
-				//Now only works in prodution
-                if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocuments"]) || Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocumentsWayBill"]))
+                //Financial.service - Correções no envio de documentos AT [IN:014494]
+                //Now only works in prodution
+                if (Convert.ToBoolean(DataLayerFramework.Settings["ServiceATSendDocuments"]) || Convert.ToBoolean(DataLayerFramework.Settings["ServiceATSendDocumentsWayBill"]))
                 {
                     _logger.Debug(string.Format("ServiceATSendDocuments True"));
                     Utils.ServiceSendPendentDocuments();

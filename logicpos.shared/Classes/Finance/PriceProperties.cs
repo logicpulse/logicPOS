@@ -287,7 +287,7 @@ namespace logicpos.shared.Classes.Finance
         {
             PropertyInfo[] pis = this.GetType().GetProperties(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
 
-            StreamWriter sw = new StreamWriter(string.Format("{0}output.txt", GlobalFramework.Path["temp"]), true);
+            StreamWriter sw = new StreamWriter(string.Format("{0}output.txt", DataLayerFramework.Path["temp"]), true);
             sw.WriteLine(pLabel);
 
             foreach (PropertyInfo p in pis)

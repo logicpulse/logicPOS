@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
 using logicpos.Extensions;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
 
@@ -30,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly TouchButtonIconWithText _buttonFinishOrder;
         private readonly TouchButtonIconWithText _buttonPayments;
         private readonly TouchButtonIconWithText _buttonBarCode;
-		//IN009279 Parking ticket Service - implementar Cartão cliente
+        //IN009279 Parking ticket Service - implementar Cartão cliente
         private readonly TouchButtonIconWithText _buttonCardCode;
         //private TouchButtonIconWithText _buttonSendTicket;
         //Public Properties
@@ -199,8 +199,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Size buttonBarCodeSize = logicpos.Utils.StringToSize(themeButtons.ButtonBarCode.Size);
             string buttonBarCodeImageFileName = themeButtons.ButtonBarCode.ImageFileName;
             bool buttonBarCodeVisible = Convert.ToBoolean(themeButtons.ButtonBarCode.Visible);
-			
-			//IN009279 Parking ticket Service - implementar Cartão cliente
+
+            //IN009279 Parking ticket Service - implementar Cartão cliente
             //Buttons:ButtonCardCode
             string buttonCardCodeName = themeButtons.ButtonCardCode.Name;
             string buttonCardCodeText = themeButtons.ButtonCardCode.Text;
@@ -208,7 +208,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Size buttonCardCodeSize = logicpos.Utils.StringToSize(themeButtons.ButtonPayments.Size);
             string buttonCardCodeImageFileName = themeButtons.ButtonCardCode.ImageFileName;
             bool buttonCardCodeVisible = Convert.ToBoolean(themeButtons.ButtonCardCode.Visible);
-            
+
 
             //Local Func to Get Shared Buttons
             Func<string, string, Size, string, TouchButtonIconWithText> getButton = (pObjectName, pText, pSize, pImageFileName)
@@ -247,9 +247,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _buttonGifts.Sensitive = false;
             _buttonMessages.Sensitive = false;
             //_buttonSplitAccount.Sensitive = false;
-			
-			//IN009279 Parking ticket Service - implementar Cartão cliente
-            if (GlobalFramework.AppUseParkingTicketModule)
+
+            //IN009279 Parking ticket Service - implementar Cartão cliente
+            if (SharedFramework.AppUseParkingTicketModule)
             {
                 _buttonCardCode.Visible = true;
                 buttonCardCodeVisible = true;
@@ -270,7 +270,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Put Buttons/Theme
             Fixed fix = new Fixed() { BorderWidth = 10 };
-            
+
             if (buttonSelectTableVisible) fix.Put(_buttonSelectTable, buttonSelectTablePosition.X, buttonSelectTablePosition.Y);
             if (buttonPrevVisible) fix.Put(_buttonPrev, buttonPrevPosition.X, buttonPrevPosition.Y);
             if (buttonNextVisible) fix.Put(_buttonNext, buttonNextPosition.X, buttonNextPosition.Y);

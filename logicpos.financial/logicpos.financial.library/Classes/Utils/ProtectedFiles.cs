@@ -25,7 +25,7 @@ namespace logicpos.financial.library.Classes.Utils
                 //Convert filename to Os filePaths
                 for (int i = 0; i < fileList.Count; i++)
                 {
-                    string fileName = FrameworkUtils.OSSlash(fileList[i]);
+                    string fileName = SharedUtils.OSSlash(fileList[i]);
                     fileList[i] = fileName;
                     if (File.Exists(fileName))
                     {
@@ -81,7 +81,7 @@ namespace logicpos.financial.library.Classes.Utils
             bool result = false;
             try
             {
-                Dictionary<string, string> filesDictionary = FrameworkUtils.CSVFileToDictionary(pFilePath);
+                Dictionary<string, string> filesDictionary = SharedUtils.CSVFileToDictionary(pFilePath);
                 //Clear before Load 
                 if (this.Count > 0) this.Clear();
 
@@ -114,7 +114,7 @@ namespace logicpos.financial.library.Classes.Utils
                 string md5Encryptd = this[pKey].Md5Encrypted;
                 string md5FromMem = this[pKey].Md5;
                 //get Fresh Hash
-                string md5FromFile = FrameworkUtils.MD5HashFile(pKey);
+                string md5FromFile = SharedUtils.MD5HashFile(pKey);
                 //Check if created are equal to encrypted in memory, if false user change file after BootStrap
                 bool valid = SaltedString.ValidateSaltedString(md5Encryptd, md5FromFile);
                 //Update Protected File
@@ -150,7 +150,7 @@ namespace logicpos.financial.library.Classes.Utils
             List<string> result = new List<string>();
             foreach (var item in pFileList)
             {
-                string fileName = FrameworkUtils.OSSlash(item);
+                string fileName = SharedUtils.OSSlash(item);
                 if (! this.ContainsKey(fileName))
                 {
                     if (_debug) _logger.Debug(string.Format("Miss filename : [{0}]", fileName));
@@ -173,7 +173,7 @@ namespace logicpos.financial.library.Classes.Utils
                 getMissingFiles
             };
             //Get Distinct Filenames
-            List<string> result = FrameworkUtils.MergeGenericLists(listList);
+            List<string> result = SharedUtils.MergeGenericLists(listList);
 
             return result;
         }

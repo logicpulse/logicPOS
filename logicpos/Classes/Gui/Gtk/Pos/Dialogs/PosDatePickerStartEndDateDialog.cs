@@ -3,7 +3,9 @@ using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
 
@@ -37,7 +39,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //pastMonths=0 to Work in Curent Month Range, pastMonths=1 Works in Past Month, pastMonths=2 Two months Ago etc
             int pastMonths = 1;
-            DateTime workingDate = FrameworkUtils.CurrentDateTimeAtomic().AddMonths(-pastMonths);
+            DateTime workingDate = DataLayerUtils.CurrentDateTimeAtomic().AddMonths(-pastMonths);
             DateTime firstDayOfMonth = new DateTime(workingDate.Year, workingDate.Month, 1);
             DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
             DateTime dateTimeStart = firstDayOfMonth;
@@ -60,22 +62,22 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _dateEnd = pDateEnd;
 
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicket_startend");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicket_startend");
             Size windowSize = new Size(300, 255);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
 
             //Init Content
             _fixedContent = new Fixed();
 
             //Init DateEntry Start
-            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart, SettingsApp.RegexDate, true);
-            _entryBoxDateStart.EntryValidation.Text = _dateStart.ToString(SettingsApp.DateFormat);
+            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart, SharedSettings.RegexDate, true);
+            _entryBoxDateStart.EntryValidation.Text = _dateStart.ToString(SharedSettings.DateFormat);
             _entryBoxDateStart.EntryValidation.Validate();
             _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;
             _entryBoxDateStart.EntryValidation.Changed += entryBoxDateStartEntryValidation_Changed;
             //Init DateEntry End
-            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd, SettingsApp.RegexDate, true);
-            _entryBoxDateEnd.EntryValidation.Text = _dateEnd.ToString(SettingsApp.DateFormat);
+            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd, SharedSettings.RegexDate, true);
+            _entryBoxDateEnd.EntryValidation.Text = _dateEnd.ToString(SharedSettings.DateFormat);
             _entryBoxDateEnd.EntryValidation.Validate();
             _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;
             _entryBoxDateEnd.EntryValidation.Changed += entryBoxDateEndEntryValidation_Changed;

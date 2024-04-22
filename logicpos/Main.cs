@@ -2,8 +2,10 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
+using logicpos.datalayer.App;
 using logicpos.plugin.contracts;
 using logicpos.plugin.library;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Configuration;
@@ -36,13 +38,13 @@ namespace logicpos
             try
             {
                 // Show current Configuration File
-                _logger.Debug(string.Format("Use configuration file: [{0}]", System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
+                _logger.Debug(string.Format("Use configuration file: [{0}]", AppDomain.CurrentDomain.SetupInformation.ConfigurationFile));
 
                 /* IN009203 - Mutex block */
                 using (_singleProgramInstance)
                 {
                     // Init Settings Main Config Settings
-                    GlobalFramework.Settings = ConfigurationManager.AppSettings;
+                    DataLayerFramework.Settings = ConfigurationManager.AppSettings;
 
                     // BootStrap Paths
                     InitPaths();
@@ -63,8 +65,8 @@ namespace logicpos
                     FirstSteps();
 
                     // Flush pending events to keep the GUI reponsive
-                    while (Gtk.Application.EventsPending())
-                        Gtk.Application.RunIteration();
+                    while (Application.EventsPending())
+                        Application.RunIteration();
 
                     /* IN009203 - prevent lauching multiple instances of application */
                     if (_singleProgramInstance.IsSingleInstance)
@@ -79,9 +81,9 @@ namespace logicpos
 
                             /* IN006018 and IN007009 */
                             //logicpos.shared.App.CustomRegion.RegisterCustomRegion();
-                            //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
+                            //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(DataLayerFramework.Settings["customCultureResourceDefinition"]);
                         }
-                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"));
+                        Utils.ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_pos_instance_already_running"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"));
                         return;
                     }
                 }
@@ -100,18 +102,18 @@ namespace logicpos
                 SetCulture();
 
                 // Init PluginContainer
-                GlobalFramework.PluginContainer = new PluginContainer(GlobalFramework.Path["plugins"].ToString());
+                SharedFramework.PluginContainer = new PluginContainer(DataLayerFramework.Path["plugins"].ToString());
 
                 // PluginSoftwareVendor
-                GlobalFramework.PluginSoftwareVendor = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
-                if (GlobalFramework.PluginSoftwareVendor != null)
+                SharedFramework.PluginSoftwareVendor = (SharedFramework.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>());
+                if (SharedFramework.PluginSoftwareVendor != null)
                 {
                     // Show Loaded Plugin
-                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), GlobalFramework.PluginSoftwareVendor.Name));
+                    _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ISoftwareVendor), SharedFramework.PluginSoftwareVendor.Name));
                     // Init Plugin
-                    SettingsApp.InitSoftwareVendorPluginSettings();
+                    SharedSettings.InitSoftwareVendorPluginSettings();
                     // Check if all Resources are Embedded
-                    GlobalFramework.PluginSoftwareVendor.ValidateEmbeddedResources();
+                    SharedFramework.PluginSoftwareVendor.ValidateEmbeddedResources();
                 }
                 else
                 {
@@ -123,16 +125,16 @@ namespace logicpos
 
 
                 // Init Stock Module
-                GlobalFramework.StockManagementModule = (GlobalFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+                POSFramework.StockManagementModule = (SharedFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
 
                 // Try to Get LicenceManager IntellilockPlugin if in Release 
                 if (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger)
                 {
-                    GlobalFramework.PluginLicenceManager = (GlobalFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
+                   SharedFramework.PluginLicenceManager = (SharedFramework.PluginContainer.GetFirstPluginOfType<ILicenceManager>());
                     // Show Loaded Plugin
-                    if (GlobalFramework.PluginLicenceManager != null)
+                    if (SharedFramework.PluginLicenceManager != null)
                     {
-                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager), GlobalFramework.PluginLicenceManager.Name));
+                        _logger.Debug(string.Format("Registered plugin: [{0}] Name : [{1}]", typeof(ILicenceManager),SharedFramework.PluginLicenceManager.Name));
                     }
                 }
 
@@ -157,7 +159,7 @@ namespace logicpos
         {
 
 
-            if (GlobalFramework.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
+            if (SharedFramework.PluginLicenceManager != null && (!Debugger.IsAttached || _forceShowPluginLicenceWithDebugger))
             {
                 _logger.Debug("void StartApp() :: Boot LogicPos after LicenceManager.IntellilockPlugin");
                 // Boot LogicPos after LicenceManager.IntellilockPlugin
@@ -198,29 +200,29 @@ namespace logicpos
         private static void InitPaths()
         {
             // Init Paths
-            GlobalFramework.Path = new Hashtable
+            DataLayerFramework.Path = new Hashtable
             {
-                { "assets", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathAssets"]) },
-                { "images", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathImages"]) },
-                { "keyboards", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathKeyboards"]) },
-                { "themes", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathThemes"]) },
-                { "sounds", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathSounds"]) },
-                { "resources", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathResources"]) },
-                { "reports", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathReports"]) },
-                { "temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]) },
-                { "cache", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCache"]) },
-                { "plugins", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathPlugins"]) },
-                { "documents", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathDocuments"]) },
-                { "certificates", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]) }
+                { "assets", SharedUtils.OSSlash(DataLayerFramework.Settings["pathAssets"]) },
+                { "images", SharedUtils.OSSlash(DataLayerFramework.Settings["pathImages"]) },
+                { "keyboards", SharedUtils.OSSlash(DataLayerFramework.Settings["pathKeyboards"]) },
+                { "themes", SharedUtils.OSSlash(DataLayerFramework.Settings["pathThemes"]) },
+                { "sounds", SharedUtils.OSSlash(DataLayerFramework.Settings["pathSounds"]) },
+                { "resources", SharedUtils.OSSlash(DataLayerFramework.Settings["pathResources"]) },
+                { "reports", SharedUtils.OSSlash(DataLayerFramework.Settings["pathReports"]) },
+                { "temp", SharedUtils.OSSlash(DataLayerFramework.Settings["pathTemp"]) },
+                { "cache", SharedUtils.OSSlash(DataLayerFramework.Settings["pathCache"]) },
+                { "plugins", SharedUtils.OSSlash(DataLayerFramework.Settings["pathPlugins"]) },
+                { "documents", SharedUtils.OSSlash(DataLayerFramework.Settings["pathDocuments"]) },
+                { "certificates", SharedUtils.OSSlash(DataLayerFramework.Settings["pathCertificates"]) }
             };
             //Create Directories
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["cache"])));
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["documents"])));
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\Other", Convert.ToString(GlobalFramework.Path["resources"]))));
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GlobalFramework.Path["resources"]), GlobalFramework.Settings["databaseType"], @"Database\MSSqlServer")));
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GlobalFramework.Path["resources"]), GlobalFramework.Settings["databaseType"], @"Database\SQLite")));
-            FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(GlobalFramework.Path["resources"]), GlobalFramework.Settings["databaseType"], @"Database\MySql")));
+            SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["temp"])));
+            SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["cache"])));
+            SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["documents"])));
+            SharedUtils.CreateDirectory(SharedUtils.OSSlash(string.Format(@"{0}Database\Other", Convert.ToString(DataLayerFramework.Path["resources"]))));
+            SharedUtils.CreateDirectory(SharedUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(DataLayerFramework.Path["resources"]), DataLayerFramework.Settings["databaseType"], @"Database\MSSqlServer")));
+            SharedUtils.CreateDirectory(SharedUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(DataLayerFramework.Path["resources"]), DataLayerFramework.Settings["databaseType"], @"Database\SQLite")));
+            SharedUtils.CreateDirectory(SharedUtils.OSSlash(string.Format(@"{0}Database\{1}\Other", Convert.ToString(DataLayerFramework.Path["resources"]), DataLayerFramework.Settings["databaseType"], @"Database\MySql")));
         }
 
         public static void InitPathsPrefs()
@@ -229,11 +231,11 @@ namespace logicpos
             {
                 // PreferencesValues
                 // Require to add end Slash, Prefs DirChooser dont add extra Slash in the End
-                GlobalFramework.Path.Add("backups", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_BACKUPS"] + '/'));
-                GlobalFramework.Path.Add("saftpt", FrameworkUtils.OSSlash(GlobalFramework.PreferenceParameters["PATH_SAFTPT"] + '/'));
+                DataLayerFramework.Path.Add("backups", SharedUtils.OSSlash(SharedFramework.PreferenceParameters["PATH_BACKUPS"] + '/'));
+                DataLayerFramework.Path.Add("saftpt", SharedUtils.OSSlash(SharedFramework.PreferenceParameters["PATH_SAFTPT"] + '/'));
                 //Create Directories
-                FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["backups"])));
-                FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["saftpt"])));
+                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["backups"])));
+                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["saftpt"])));
             }
             catch (Exception ex)
             {
@@ -249,17 +251,17 @@ namespace logicpos
                 if (!Utils.IsLinux)
                 {
                     string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                    GlobalFramework.SessionXpo = Utils.SessionXPO();
-                    string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                    DataLayerFramework.SessionXpo = Utils.SessionXPO();
+                    string getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
                     if (!Utils.getCultureFromOS(getCultureFromDB))
                     {
-                        GlobalFramework.CurrentCulture = new CultureInfo("pt-PT");
-                        GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                        SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
+                        DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                     }
                     else
                     {
-                        GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
-                        GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                        DataLayerFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
+                        SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
                     }
                 }
             }
@@ -268,16 +270,16 @@ namespace logicpos
 
                 if (!Utils.getCultureFromOS(ConfigurationManager.AppSettings["customCultureResourceDefinition"]))
                 {
-                    GlobalFramework.CurrentCulture = new CultureInfo("pt-PT");
-                    GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    SharedFramework.CurrentCulture = new CultureInfo("pt-PT");
+                    DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
                 else
                 {
-                    GlobalFramework.CurrentCulture = new CultureInfo(GlobalFramework.Settings["customCultureResourceDefinition"]);
-                    GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                    SharedFramework.CurrentCulture = new CultureInfo(DataLayerFramework.Settings["customCultureResourceDefinition"]);
+                    DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                 }
 
-                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", GlobalFramework.Settings["customCultureResourceDefinition"]));
+                _logger.Error(string.Format("Missing Culture in DataBase or DB not created yet, using {0} from config.", DataLayerFramework.Settings["customCultureResourceDefinition"]));
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using System;
@@ -13,25 +14,25 @@ namespace logicpos.financial.library.Classes.WorkSession
         //No DocumentFinanceMaster|DocumentFinancePayment - With and Without Session
         public static bool PersistWorkSessionMovement(pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
-            return PersistWorkSessionMovement(GlobalFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, null, null, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
+            return PersistWorkSessionMovement(DataLayerFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, null, null, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
         }
 
         public static bool PersistWorkSessionMovement(Session pSession, pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
-            return PersistWorkSessionMovement(GlobalFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, null, null, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
+            return PersistWorkSessionMovement(DataLayerFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, null, null, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
         }
 
         //Main Method  - With and Without Session
         public static bool PersistWorkSessionMovement(pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
-            return PersistWorkSessionMovement(GlobalFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, pDocumentFinanceMaster, pDocumentFinancePayment, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
+            return PersistWorkSessionMovement(DataLayerFramework.SessionXpo, pWorkSessionPeriod, pWorkSessionMovementType, pDocumentFinanceMaster, pDocumentFinancePayment, pUserDetail, pTerminal, pDate, pMovementAmount, pDescription);
         }
 
         public static bool PersistWorkSessionMovement(Session pSession, pos_worksessionperiod pWorkSessionPeriod, pos_worksessionmovementtype pWorkSessionMovementType, fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, sys_userdetail pUserDetail, pos_configurationplaceterminal pTerminal, DateTime pDate, decimal pMovementAmount, string pDescription, uint pOrd = 1)
         {
             //Prevent Deleted Objects, Get Fresh Objects
-            sys_userdetail userDetail = pSession.GetObjectByKey<sys_userdetail>(GlobalFramework.LoggedUser.Oid);
-            pos_configurationplaceterminal terminal = pSession.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
+            sys_userdetail userDetail = pSession.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
+            pos_configurationplaceterminal terminal = pSession.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
             pos_worksessionmovementtype workSessionMovementType = pSession.GetObjectByKey<pos_worksessionmovementtype>(pWorkSessionMovementType.Oid);
 
             try

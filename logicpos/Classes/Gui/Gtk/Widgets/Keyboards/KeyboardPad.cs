@@ -2,6 +2,7 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.datalayer.App;
 using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
 using System;
@@ -33,7 +34,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         //Private Members
-        private readonly string _fontKeyboardPadTextEntry = GlobalFramework.Settings["fontKeyboardPadTextEntry"];
+        private readonly string _fontKeyboardPadTextEntry = DataLayerFramework.Settings["fontKeyboardPadTextEntry"];
         private readonly VirtualKeyBoard _virtualKeyBoard;
         private readonly int _spacing = 10;
         private bool _isCapsEnabled = false;
@@ -145,7 +146,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                 }
             }
         }
@@ -156,8 +157,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             List<VirtualKey> currentKeyboardRow;
             VirtualKey currentKey;
             char charKey;
-            Color _colorKeyboardPadKeyDefaultFont = GlobalFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
-            Color _colorKeyboardPadKeySecondaryFont = GlobalFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
+            Color _colorKeyboardPadKeyDefaultFont = DataLayerFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
+            Color _colorKeyboardPadKeySecondaryFont = DataLayerFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
 
             //loop rows
             for (int i = 0; i < _virtualKeyBoard.KeyBoard.Count; i++)
@@ -374,7 +375,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
+                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error_keyboardpad"));
                     };
                     break;
                 //Show/Hide Number Lock
@@ -437,7 +438,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Get unicodeChar from UnicodeId after Caps
                     _unicodeChar = logicpos.Utils.UnicodeHexadecimalStringToChar(vKeyProperties.UnicodeId);
                     //Modifie _unicodeChar Keys ex Culture Decimal Separator . with , [3,15 = Key NumberPad .]
-                    //if (vKey.Properties.RowIndex == 3 && vKey.Properties.ColIndex == 15) _unicodeChar = (char) GlobalFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+                    //if (vKey.Properties.RowIndex == 3 && vKey.Properties.ColIndex == 15) _unicodeChar = (char) SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
                     //Always Disable Modifiers Keys After Use
                     if (_activeModifierKey != ModifierKeys.None)
                     {

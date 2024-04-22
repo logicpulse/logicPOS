@@ -2,13 +2,12 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -33,10 +32,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ticket_number"), MinWidth = 50 },
-                new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_name"), ChildName = "Name", MinWidth = 100 },
-                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
+                new GenericTreeViewColumnProperty("TicketId") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ticket_number"), MinWidth = 50 },
+                new GenericTreeViewColumnProperty("DateStart") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedBy") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user_name"), ChildName = "Name", MinWidth = 100 },
+                new GenericTreeViewColumnProperty("UpdatedWhere") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_terminal_name"), ChildName = "Designation", MinWidth = 100 }
             };
 
             //Sort Order
@@ -54,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 criteria = CriteriaOperator.Parse($"(DeletedAt IS NULL)");
             }
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
 
             //Call Base Initializer
             base.InitObject(

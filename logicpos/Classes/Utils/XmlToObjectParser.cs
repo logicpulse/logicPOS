@@ -1,5 +1,6 @@
 ﻿using logicpos.App;
 using logicpos.Classes.Enums.Xml;
+using logicpos.datalayer.App;
 using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
@@ -149,11 +150,11 @@ namespace logicpos
             {
                 case ReplaceType.Config:
                     patternPrefix = "Cfg";
-                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => GlobalFramework.Settings[x];
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => DataLayerFramework.Settings[x];
                     break;
                 case ReplaceType.Resource:
                     patternPrefix = "Resx";
-                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], x);
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], x);
                     break;
                 case ReplaceType.Evaluation:
                     patternPrefix = "Eval";

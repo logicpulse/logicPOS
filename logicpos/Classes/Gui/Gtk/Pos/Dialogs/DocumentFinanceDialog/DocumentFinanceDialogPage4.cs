@@ -6,8 +6,10 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
@@ -85,27 +87,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _session = (_pagePad as DocumentFinanceDialogPagePad).Session;
 
             //Initial Values
-            _intialValueConfigurationCountry = SettingsApp.ConfigurationSystemCountry;
+            _intialValueConfigurationCountry = DataLayerSettings.ConfigurationSystemCountry;
 
             //ShipTo Address
-            _entryBoxShipToAddressDetail = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericPlus, true);/* IN009253 */
+            _entryBoxShipToAddressDetail = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, true);/* IN009253 */
             _entryBoxShipToAddressDetail.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo Region
-            _entryBoxShipToRegion = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_region"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericPlus, false);/* IN009253 */
+            _entryBoxShipToRegion = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_region"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, false);/* IN009253 */
             _entryBoxShipToRegion.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo PostalCode
-            _entryBoxShipToPostalCode = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_zipcode"), KeyboardMode.Alfa, SettingsApp.ConfigurationSystemCountry.RegExZipCode, true);
+            _entryBoxShipToPostalCode = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_zipcode"), KeyboardMode.Alfa, DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, true);
             _entryBoxShipToPostalCode.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo City
-            _entryBoxShipToCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericPlus, true);/* IN009253 */
+            _entryBoxShipToCity = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_city"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericPlus, true);/* IN009253 */
             _entryBoxShipToCity.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipTo Country
             CriteriaOperator criteriaOperatorCustomerCountry = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _entryBoxSelectShipToCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, SettingsApp.RegexGuid, true);
+            _entryBoxSelectShipToCountry = new XPOEntryBoxSelectRecordValidation<cfg_configurationcountry, TreeViewConfigurationCountry>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"), "Designation", "Oid", _intialValueConfigurationCountry, criteriaOperatorCustomerCountry, SharedSettings.RegexGuid, true);
             _entryBoxSelectShipToCountry.EntryValidation.Validate(_entryBoxSelectShipToCountry.Value.Oid.ToString());
             _entryBoxSelectShipToCountry.EntryValidation.IsEditable = false;
             _entryBoxSelectShipToCountry.EntryValidation.Changed += delegate { Validate(); };
@@ -117,26 +119,26 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             };
 
             //ShipToDeliveryDate
-            _entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, SettingsApp.RegexDateTime, true, _pagePad.DateTimeFormat);
+            _entryBoxShipToDeliveryDate = new EntryBoxValidationDatePickerDialog(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date"), _pagePad.DateTimeFormat, _pagePad.InitalDateTime, KeyboardMode.AlfaNumeric, SharedSettings.RegexDateTime, true, _pagePad.DateTimeFormat);
             _entryBoxShipToDeliveryDate.EntryValidation.Sensitive = true;
             //_entryBoxShipToDeliveryDate.EntryValidation.Text = _pagePad.InitalDateTime.ToString(_pagePad.DateTimeFormat);
             _entryBoxShipToDeliveryDate.EntryValidation.Validate();
             //Assign Min Date to Validation
-            _entryBoxShipToDeliveryDate.DateTimeMin = FrameworkUtils.CurrentDateTimeAtomic();
+            _entryBoxShipToDeliveryDate.DateTimeMin = DataLayerUtils.CurrentDateTimeAtomic();
             _entryBoxShipToDeliveryDate.EntryValidation.Changed += _entryBoxShipToDeliveryDate_Changed;
             _entryBoxShipToDeliveryDate.ClosePopup += _entryBoxShipToDeliveryDate_Changed;
 
             //ShipToDeliveryID
-            _entryBoxShipToDeliveryID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_id"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxShipToDeliveryID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
             _entryBoxShipToDeliveryID.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipToWarehouseID
-            _entryBoxShipToWarehouseID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_warehouse_id"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxShipToWarehouseID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_warehouse_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
             _entryBoxShipToWarehouseID.EntryValidation.MaxLength = 50;
             _entryBoxShipToWarehouseID.EntryValidation.Changed += delegate { Validate(); };
 
             //ShipToLocationID
-            _entryBoxShipToLocationID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_location_id"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxShipToLocationID = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_location_id"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
             _entryBoxShipToLocationID.EntryValidation.MaxLength = 30;
             _entryBoxShipToLocationID.EntryValidation.Changed += delegate { Validate(); };
 

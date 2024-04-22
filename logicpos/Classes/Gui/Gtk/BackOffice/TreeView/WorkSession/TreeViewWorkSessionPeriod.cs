@@ -9,6 +9,7 @@ using logicpos.resources.Resources.Localization;
 using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -33,9 +34,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation") },
-                new GenericTreeViewColumnProperty("DateStart") { Type = typeof(DateTime), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start") },
-                new GenericTreeViewColumnProperty("DateEnd") { Type = typeof(DateTime), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end") }
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation") },
+                new GenericTreeViewColumnProperty("DateStart") { Type = typeof(DateTime), Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start") },
+                new GenericTreeViewColumnProperty("DateEnd") { Type = typeof(DateTime), Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end") }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -51,7 +52,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
             SortProperty[] sortProperty = new SortProperty[1];
             sortProperty[0] = new SortProperty("DateStart", SortingDirection.Ascending);
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
 
             //Call Base Initializer
             base.InitObject(

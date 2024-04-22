@@ -5,35 +5,28 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
+using logicpos.shared.App;
 using System;
-using System.IO;
 using Image = Gtk.Image;
 
 namespace logicpos
 {
     public partial class StartupWindow : PosBaseWindow
     {
-        //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //UI
         private NumberPadPin _numberPadPin;
-        private TablePad _tablePadUser;
-        public TablePad TablePadUser
-        {
-            get { return _tablePadUser; }
-            set { _tablePadUser = value; }
-        }
-
-        //Non Ui
+        public TablePad TablePadUser { get; set; }
         private sys_userdetail _selectedUserDetail;
 
-        public StartupWindow(string pBackgroundImage, bool needToUpdate)
-            : base(pBackgroundImage)
+        public StartupWindow(
+            string backgroundImage,
+            bool needToUpdate)
+            : base(backgroundImage)
         {
-            //Build Window
-            InitUI();
+            InitializeUI();
 
             //InitPlataform
             InitPlataformParameters();
@@ -59,10 +52,10 @@ namespace logicpos
             try
             {
                 //Get ConfigurationPreferenceParameter Values to Check if Plataform is Inited
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
 
                 if (
                     string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryOid.Value) ||
@@ -77,12 +70,12 @@ namespace logicpos
                 }
 
                 //Always Get Objects from Prefs to Singleton : with and without PosEditCompanyDetails
-                configurationPreferenceParameterCompanyCountryOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
-                configurationPreferenceParameterSystemCurrencyOid = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
-                SettingsApp.ConfigurationSystemCountry = (cfg_configurationcountry)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
-                SettingsApp.ConfigurationSystemCurrency = (cfg_configurationcurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
+                configurationPreferenceParameterCompanyCountryOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+                configurationPreferenceParameterSystemCurrencyOid = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
+                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
 
-                _logger.Debug(string.Format("Using System Country: [{0}], Currency: [{1}]", SettingsApp.ConfigurationSystemCountry.Designation, SettingsApp.ConfigurationSystemCurrency.Designation));
+                _logger.Debug(string.Format("Using System Country: [{0}], Currency: [{1}]", DataLayerSettings.ConfigurationSystemCountry.Designation, SharedSettings.ConfigurationSystemCurrency.Designation));
             }
             catch (Exception ex)
             {
@@ -90,38 +83,44 @@ namespace logicpos
             }
         }
 
-        private void InitUI()
+        private dynamic GetTheme()
         {
-            //Init Theme Object
-            Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
-            dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
-            //Shared error Message
+            var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
+            var theme = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+            return theme;
+        }
+
+        private void InitializeUI()
+        {
+
+            dynamic theme = GetTheme();
+
             string errorMessage = "Node: <Window ID=\"StartupWindow\">";
 
             //Assign Theme Vars + UI
-            if (themeWindow != null)
+            if (theme != null)
             {
                 try
                 {
                     //Globals
-                    Title = Convert.ToString(themeWindow.Globals.Name);
+                    Title = Convert.ToString(theme.Globals.Name);
                     //Objects:LabelVersion
-                    Position labelVersionPosition = Utils.StringToPosition(themeWindow.Objects.LabelVersion.Position);
-                    string labelVersionFont = themeWindow.Objects.LabelVersion.Font;
-                    Color labelVersionFontColor = (themeWindow.Objects.LabelVersion.FontColor as string).StringToGdkColor();
+                    Position labelVersionPosition = Utils.StringToPosition(theme.Objects.LabelVersion.Position);
+                    string labelVersionFont = theme.Objects.LabelVersion.Font;
+                    Color labelVersionFontColor = (theme.Objects.LabelVersion.FontColor as string).StringToGdkColor();
                     //Objects:NumberPadPin
-                    Position numberPadPinPosition = Utils.StringToPosition(themeWindow.Objects.NumberPadPin.Position);
-                    System.Drawing.Size numberPadPinButtonSize = Utils.StringToSize(themeWindow.Objects.NumberPadPin.ButtonSize);
-                    string numberPadPinFont = themeWindow.Objects.NumberPadPin.Font;
-                    System.Drawing.Color numberPadPinFontColor = (themeWindow.Objects.NumberPadPin.FontColor as string).StringToColor();
-                    uint numberPadPinRowSpacingSystemButtons = Convert.ToUInt16(themeWindow.Objects.NumberPadPin.RowSpacingSystemButtons);
-                    uint numberPadPinRowSpacingLabelStatus = Convert.ToUInt16(themeWindow.Objects.NumberPadPin.RowSpacingLabelStatus);
+                    Position numberPadPinPosition = Utils.StringToPosition(theme.Objects.NumberPadPin.Position);
+                    System.Drawing.Size numberPadPinButtonSize = Utils.StringToSize(theme.Objects.NumberPadPin.ButtonSize);
+                    string numberPadPinFont = theme.Objects.NumberPadPin.Font;
+                    System.Drawing.Color numberPadPinFontColor = (theme.Objects.NumberPadPin.FontColor as string).StringToColor();
+                    uint numberPadPinRowSpacingSystemButtons = Convert.ToUInt16(theme.Objects.NumberPadPin.RowSpacingSystemButtons);
+                    uint numberPadPinRowSpacingLabelStatus = Convert.ToUInt16(theme.Objects.NumberPadPin.RowSpacingLabelStatus);
                     //Objects:NumberPadPin:LabelStatus
-                    string numberPadPinLabelStatusFont = themeWindow.Objects.NumberPadPin.LabelStatus.Font;
-                    System.Drawing.Color numberPadPinLabelStatusFontColor = (themeWindow.Objects.NumberPadPin.LabelStatus.FontColor as string).StringToColor();
+                    string numberPadPinLabelStatusFont = theme.Objects.NumberPadPin.LabelStatus.Font;
+                    System.Drawing.Color numberPadPinLabelStatusFontColor = (theme.Objects.NumberPadPin.LabelStatus.FontColor as string).StringToColor();
                     //Objects:NumberPadPin:Size (EventBox)
-                    bool NumberPadPinVisibleWindow = Convert.ToBoolean(themeWindow.Objects.NumberPadPin.VisibleWindow);
-                    System.Drawing.Size numberPadPinSize = Utils.StringToSize(themeWindow.Objects.NumberPadPin.Size);
+                    bool NumberPadPinVisibleWindow = Convert.ToBoolean(theme.Objects.NumberPadPin.VisibleWindow);
+                    System.Drawing.Size numberPadPinSize = Utils.StringToSize(theme.Objects.NumberPadPin.Size);
 
                     //Objects:NumberPadPin:ButtonPasswordReset
                     //Position numberPadPinButtonPasswordResetPosition = Utils.StringToPosition(themeWindow.Objects.NumberPadPin.ButtonPasswordReset.Position);
@@ -130,25 +129,24 @@ namespace logicpos
                     //string numberPadPinButtonPasswordResetImageFileName = themeWindow.Objects.NumberPadPin.ButtonPasswordReset.ImageFileName;
 
                     //Objects:TablePadUserButtonPrev
-                    Position tablePadUserButtonPrevPosition = Utils.StringToPosition(themeWindow.Objects.TablePadUser.TablePadUserButtonPrev.Position);
-                    System.Drawing.Size tablePadUserButtonPrevSize = Utils.StringToSize(themeWindow.Objects.TablePadUser.TablePadUserButtonPrev.Size);
-                    string tablePadUserButtonPrevImageFileName = themeWindow.Objects.TablePadUser.TablePadUserButtonPrev.ImageFileName;
+                    Position tablePadUserButtonPrevPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonPrev.Position);
+                    System.Drawing.Size tablePadUserButtonPrevSize = Utils.StringToSize(theme.Objects.TablePadUser.TablePadUserButtonPrev.Size);
+                    string tablePadUserButtonPrevImageFileName = theme.Objects.TablePadUser.TablePadUserButtonPrev.ImageFileName;
                     //Objects:TablePadUserButtonNext
-                    Position tablePadUserButtonNextPosition = Utils.StringToPosition(themeWindow.Objects.TablePadUser.TablePadUserButtonNext.Position);
-                    System.Drawing.Size tablePadUserButtonNextSize = Utils.StringToSize(themeWindow.Objects.TablePadUser.TablePadUserButtonNext.Size);
-                    string tablePadUserButtonNextImageFileName = themeWindow.Objects.TablePadUser.TablePadUserButtonNext.ImageFileName;
+                    Position tablePadUserButtonNextPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonNext.Position);
+                    System.Drawing.Size tablePadUserButtonNextSize = Utils.StringToSize(theme.Objects.TablePadUser.TablePadUserButtonNext.Size);
+                    string tablePadUserButtonNextImageFileName = theme.Objects.TablePadUser.TablePadUserButtonNext.ImageFileName;
                     //Objects:TablePadUser
-                    Position tablePadUserPosition = Utils.StringToPosition(themeWindow.Objects.TablePadUser.Position);
-                    System.Drawing.Size tablePadUserButtonSize = Utils.StringToSize(themeWindow.Objects.TablePadUser.ButtonSize);
-                    TableConfig tablePadUserTableConfig = Utils.StringToTableConfig(themeWindow.Objects.TablePadUser.TableConfig);
-                    bool tablePadUserVisible = Convert.ToBoolean(themeWindow.Objects.TablePadUser.Visible);
+                    Position tablePadUserPosition = Utils.StringToPosition(theme.Objects.TablePadUser.Position);
+                    System.Drawing.Size tablePadUserButtonSize = Utils.StringToSize(theme.Objects.TablePadUser.ButtonSize);
+                    TableConfig tablePadUserTableConfig = Utils.StringToTableConfig(theme.Objects.TablePadUser.TableConfig);
+                    bool tablePadUserVisible = Convert.ToBoolean(theme.Objects.TablePadUser.Visible);
 
                     //Init UI
                     Fixed fix = new Fixed();
 
                     //Place Minimize EventBox
-                    bool _showMinimize = (!string.IsNullOrEmpty(GlobalFramework.Settings["appShowMinimize"]))
-&& Convert.ToBoolean(GlobalFramework.Settings["appShowMinimize"]);
+                    bool _showMinimize = (!string.IsNullOrEmpty(DataLayerFramework.Settings["appShowMinimize"])) && Convert.ToBoolean(DataLayerFramework.Settings["appShowMinimize"]);
                     if (_showMinimize)
                     {
                         EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
@@ -157,7 +155,7 @@ namespace logicpos
                     }
 
                     //NumberPadPin
-                    _numberPadPin = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height),false, true, NumberPadPinVisibleWindow, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
+                    _numberPadPin = new NumberPadPin(this, "numberPadPin", System.Drawing.Color.Transparent, numberPadPinFont, numberPadPinLabelStatusFont, numberPadPinFontColor, numberPadPinLabelStatusFontColor, Convert.ToByte(numberPadPinButtonSize.Width), Convert.ToByte(numberPadPinButtonSize.Height), false, true, NumberPadPinVisibleWindow, numberPadPinRowSpacingLabelStatus, numberPadPinRowSpacingSystemButtons);
                     //Create and Assign local touchButtonKeyPasswordReset Reference to numberPadPin.ButtonKeyResetPassword
                     //TouchButtonIcon touchButtonKeyPasswordReset = new TouchButtonIcon("touchButtonKeyPasswordReset_Green", System.Drawing.Color.Transparent, numberPadPinButtonPasswordResetImageFileName, numberPadPinButtonPasswordResetIconSize, numberPadPinButtonPasswordResetSize.Width, numberPadPinButtonPasswordResetSize.Height) { Sensitive = false };
                     //_numberPadPin.ButtonKeyResetPassword = touchButtonKeyPasswordReset;
@@ -199,7 +197,7 @@ namespace logicpos
                             (Disabled IS NULL or Disabled <> 1)
                     ";
 
-                    _tablePadUser = new TablePad(
+                    TablePadUser = new TablePad(
                         sqlTablePadUser,
                         "ORDER BY Ord",
                         "",
@@ -214,27 +212,27 @@ namespace logicpos
                         tablePadUserButtonPrev,
                         tablePadUserButtonNext
                     );
-                    _tablePadUser.SourceWindow = this;
-                    _tablePadUser.Clicked += _tablePadUser_Clicked;
+                    TablePadUser.SourceWindow = this;
+                    TablePadUser.Clicked += TablePadUser_Clicked;
 
                     //Put in Fix
                     if (tablePadUserVisible)
                     {
                         fix.Put(tablePadUserButtonPrev, tablePadUserButtonPrevPosition.X, tablePadUserButtonPrevPosition.Y);
                         fix.Put(tablePadUserButtonNext, tablePadUserButtonNextPosition.X, tablePadUserButtonNextPosition.Y);
-                        fix.Put(_tablePadUser, tablePadUserPosition.X, tablePadUserPosition.Y);
+                        fix.Put(TablePadUser, tablePadUserPosition.X, tablePadUserPosition.Y);
                     }
 
                     //Label Version
                     string appVersion = "";
-                    if(GlobalFramework.LicenceReseller != null && GlobalFramework.LicenceReseller.ToString().ToLower() != "Logicpulse" && GlobalFramework.LicenceReseller.ToString().ToLower() != "")
+                    if (SharedFramework.LicenseReseller != null && SharedFramework.LicenseReseller.ToString().ToLower() != "Logicpulse" && SharedFramework.LicenseReseller.ToString().ToLower() != "")
                     {
                         //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
-                        appVersion = string.Format("Powered by {0}© Vers. {1}", GlobalFramework.LicenceReseller, FrameworkUtils.ProductVersion);
+                        appVersion = string.Format("Powered by {0}© Vers. {1}", SharedFramework.LicenseReseller, SharedUtils.ProductVersion);
                     }
                     else
                     {
-                        appVersion = string.Format(logicpos.App.SettingsApp.AppSoftwareVersionFormat, FrameworkUtils.ProductVersion);
+                        appVersion = string.Format(SharedSettings.AppSoftwareVersionFormat, SharedUtils.ProductVersion);
                     }
                     Label labelVersion = new Label(appVersion);
                     Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
@@ -262,27 +260,27 @@ namespace logicpos
                         buttonDeveloper.Clicked += buttonDeveloper_Clicked;
                     }
                     //LOGO
-                    if (GlobalFramework.PluginLicenceManager != null)
+                    if (SharedFramework.PluginLicenceManager != null)
                     {
-                        string fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png"));
+                        string fileImageBackOfficeLogo = string.Format(SharedUtils.OSSlash(DataLayerFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png"));
 
-                        if (!string.IsNullOrEmpty(GlobalFramework.LicenceReseller) && GlobalFramework.LicenceReseller == "NewTech")
+                        if (!string.IsNullOrEmpty(SharedFramework.LicenseReseller) && SharedFramework.LicenseReseller == "NewTech")
                         {
-                            fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png"), "NT");
+                            fileImageBackOfficeLogo = string.Format(SharedUtils.OSSlash(DataLayerFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png"), "NT");
                         }
-                            
-                       // var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, (GlobalApp.ScreenSize.Width - 550), (GlobalApp.ScreenSize.Height - 550));
-                       // Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
+
+                        // var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, (GlobalApp.ScreenSize.Width - 550), (GlobalApp.ScreenSize.Height - 550));
+                        // Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
                         //Image imageLogo = new Image(pixbufImageLogo);
 
                         //fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 430, 80);
                     }
                     else
                     {
-                        Image imageLogo = new Image(Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]));
+                        Image imageLogo = new Image(Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]));
                         fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 430, 80);
                     }
-                    //string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]);
+                    //string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]);
                     ScreenArea.Add(fix);
 
                     //Force EntryPin to be the Entry with Focus
@@ -329,7 +327,7 @@ namespace logicpos
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test DocumentPaymentCreatePDF
-            //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment) GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinancePayment), new Guid("e53e779d-4af4-4323-9b2b-48f4ebf6b0c6"));
+            //DocumentFinancePayment documentFinancePayment = (DocumentFinancePayment) DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinancePayment), new Guid("e53e779d-4af4-4323-9b2b-48f4ebf6b0c6"));
             //if (documentFinancePayment != null) {
             //    string fileName = CustomReport.DocumentPaymentCreatePDF(documentFinancePayment);
             //}
@@ -359,7 +357,7 @@ namespace logicpos
 
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Create FiscalYear
-            //DocumentFinanceYears documentFinanceYears = (DocumentFinanceYears) GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceYears), new Guid("42204635-1c7b-4a13-a206-c997726009da"));
+            //DocumentFinanceYears documentFinanceYears = (DocumentFinanceYears) DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceYears), new Guid("42204635-1c7b-4a13-a206-c997726009da"));
             //ProcessFinanceDocumentSeries.DisableFiscalYear(documentFinanceYears);
 
             //DocumentFinanceYears documentFinanceYears = new DocumentFinanceYears();
@@ -390,7 +388,7 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test PosDocumentFinancePrintDialog : Used to test StandAlone Dialog
             //Guid guidDocument = new Guid("7d08282c-d705-4f01-9047-36d6d65c15d7");
-            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)FrameworkUtils.GetXPGuidObjectFromSession(GlobalFramework.SessionXpo, typeof(DocumentFinanceMaster), guidDocument);
+            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerUtils.GetXPGuidObjectFromSession(DataLayerFramework.SessionXpo, typeof(DocumentFinanceMaster), guidDocument);
             //if (documentFinanceMaster != null)
             //{
             //    documentFinanceMaster.DocumentType.PrintRequestMotive = true;
@@ -400,7 +398,7 @@ namespace logicpos
 
             //DONT FORGET ToggleAction TEST DocumentMasterCreatePDF
             //Guid guidOid = new Guid("70c9cf6d-c212-4e3a-9c3a-641bb81da85c");
-            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), guidOid);
+            //DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), guidOid);
             //string fileName = CustomReport.DocumentMasterCreatePDF(documentFinanceMaster);
             //_logger.Debug(string.Format("fileName: [{0}]", fileName));
 
@@ -440,9 +438,9 @@ namespace logicpos
             //Test Permissions
 
             /*
-            UserDetail userDetail = (UserDetail)GlobalFramework.SessionXpo.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
+            UserDetail userDetail = (UserDetail)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
             userDetail.Profile.Permissions.Reload();
-            GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions(userDetail);
+            SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions(userDetail);
             bool BACKOFFICE_ACCESS = FrameworkUtils.HasPermissionTo("BACKOFFICE_ACCESS");
             _logger.Debug(string.Format("HasPermissionTo(BACKOFFICE_ACCESS) : [{0}]", BACKOFFICE_ACCESS));
             */
@@ -461,7 +459,7 @@ namespace logicpos
             //documentFinanceTypeList.Add(documentFinanceTypeGuid1);
             documentFinanceTypeList.Add(documentFinanceTypeGuid2);
             //documentFinanceTypeList.Add(documentFinanceTypeGuid3);
-            DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
+            DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
             //From DocumentFinanceTypeList
             //bool result = FrameworkUtils.IsDocumentMasterChildOfDocumentType(documentFinanceMaster, documentFinanceTypeList);
             //_logger.Debug(string.Format("IsDocumentMasterChildOfDocumentType: [{0}]", result));
@@ -483,7 +481,7 @@ namespace logicpos
             /*
             string notificationTypeSaftDocumentTypeMovementOfGoods = "80a03838-0937-4ae3-921f-75a1e358f7bf";
             int defaultBackDaysForInvoice = 5;
-            SystemNotification systemNotification = FrameworkUtils.ProcessFinanceDocumentToInvoice(GlobalFramework.SessionXpo, new Guid(notificationTypeSaftDocumentTypeMovementOfGoods), SaftDocumentType.MovementOfGoods, "(DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
+            SystemNotification systemNotification = FrameworkUtils.ProcessFinanceDocumentToInvoice(DataLayerFramework.SessionXpo, new Guid(notificationTypeSaftDocumentTypeMovementOfGoods), SaftDocumentType.MovementOfGoods, "(DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
             _logger.Debug(string.Format("Message: [{0}]", systemNotification.Message));
             */
 
@@ -533,10 +531,10 @@ namespace logicpos
             //Required a Valid LoggedUser
 
             /*
-            GlobalFramework.LoggedUser = (UserDetail)GlobalFramework.SessionXpo.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
+            DataLayerFramework.LoggedUser = (UserDetail)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(UserDetail), new Guid("090c5684-52ba-4d7a-8bc3-a00320ef503d"));
             //Get DocumentMaster Oid
             //SELECT DocumentMaster,COUNT(*) AS Count FROM fin_documentfinancedetail GROUP BY DocumentMaster ORDER BY COUNT(*) DESC;
-            DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), new Guid("814e8065-bcc1-49f2-86c0-bdbaeaf40e41"));
+            DocumentFinanceMaster documentFinanceMaster = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), new Guid("814e8065-bcc1-49f2-86c0-bdbaeaf40e41"));
             ArticleBag articleBag = ArticleBag.DocumentFinanceMasterToArticleBag(documentFinanceMaster);
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(SettingsApp.XpoOidDocumentFinanceTypeCreditNote, articleBag);
             //Change default DocumentDateTime
@@ -634,7 +632,7 @@ namespace logicpos
             //documentFinanceMasterGuid = documentFinanceMasterNewGuid;
 
             //On Save Modify Right Values with Bad Values
-            DocumentFinanceMaster documentFinanceMasterChange = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
+            DocumentFinanceMaster documentFinanceMasterChange = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
             _logger.Debug(string.Format("DataLayer: [{0}]", documentFinanceMasterChange.Session.DataLayer));
             documentFinanceMasterChange.EntityLocality = "true";
             _logger.Debug(string.Format("Printed: [{0}], EntityName: [{1}]", 
@@ -643,7 +641,7 @@ namespace logicpos
             ));
             //documentFinanceMasterChange.Save();
 
-            DocumentFinanceMaster documentFinanceMasterCheck = (DocumentFinanceMaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
+            DocumentFinanceMaster documentFinanceMasterCheck = (DocumentFinanceMaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(DocumentFinanceMaster), documentFinanceMasterGuid);
             _logger.Debug(string.Format("DataLayer: [{0}]", documentFinanceMasterCheck.Session.DataLayer));
             _logger.Debug(string.Format("Printed: [{0}], EntityName: [{1}], EntityLocality: [{2}]", 
                 documentFinanceMasterCheck.Printed, 
@@ -668,7 +666,7 @@ namespace logicpos
             //Get BarCode Input
 
             //logicpos.Utils.ResponseText dialogResponse;
-            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
+            //dialogResponse = Utils.GetInputText(this, DialogFlags.Modal, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode, string.Empty, SettingsApp.RegexInteger, true);
             //if (dialogResponse.ResponseType == ResponseType.Ok)
             //{
             //    _logger.Debug(String.Format("BarCode: [{0}]", dialogResponse.Text));
@@ -677,8 +675,8 @@ namespace logicpos
             //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             //Test Country Code2
 
-            //cfg_configurationcountry countryPT = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
-            //cfg_configurationcountry countryAO = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
+            //cfg_configurationcountry countryPT = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("e7e8c325-a0d4-4908-b148-508ed750676a"));
+            //cfg_configurationcountry countryAO = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid("9655510a-ff58-461e-9719-c037058f10ed"));
             //_logger.Debug(String.Format("countryPT: [{0}], [{1}]", countryPT.Designation, countryPT.Code2));
             //_logger.Debug(String.Format("countryAO: [{0}], [{1}]", countryAO.Designation, countryAO.Code2));
 
@@ -791,7 +789,7 @@ namespace logicpos
             //{
             //    int size = 10;
 
-            //    erp_customer customer = new erp_customer(GlobalFramework.SessionXpo)
+            //    erp_customer customer = new erp_customer(DataLayerFramework.SessionXpo)
             //    {
             //        Name = Utils.GenerateRandomStringAlphaUpper(size),
             //        Address = Utils.GenerateRandomStringAlphaUpper(size),

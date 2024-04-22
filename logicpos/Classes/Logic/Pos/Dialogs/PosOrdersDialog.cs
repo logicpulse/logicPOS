@@ -4,10 +4,11 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using System;
@@ -22,12 +23,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Get Current OrderMain
-                OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                 //Initialize ArticleBag to Send to ProcessFinanceDocuments or Compare
                 ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(currentOrderMain);
 
                 //Get Latest DocumentConference Document without Recreate it if Diference, compare it in Above Line
-                fin_documentfinancemaster lastDocument = FrameworkUtils.GetOrderMainLastDocumentConference(false);
+                fin_documentfinancemaster lastDocument = FinancialLibraryUtils.GetOrderMainLastDocumentConference(false);
 
                 //Reprint Existing Document After compare with current ArticleBag
                 if (
@@ -43,7 +44,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     try
                     {
                         //Call Recreate New Document
-                        fin_documentfinancemaster newDocument = FrameworkUtils.GetOrderMainLastDocumentConference(true);
+                        fin_documentfinancemaster newDocument = FinancialLibraryUtils.GetOrderMainLastDocumentConference(true);
 
                         //Call Print New Document
                         FrameworkCalls.PrintFinanceDocument(this, newDocument);
@@ -55,11 +56,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         switch (ex.Message)
                         {
                             case "ERROR_MISSING_SERIE":
-                                errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
+                                errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                                 break;
                             case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                             default:
-                                errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
+                                errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
                                 break;
                         }
                         logicpos.Utils.ShowMessageTouch(
@@ -68,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                           new Size(600, 400),
                           MessageType.Error,
                           ButtonsType.Close,
-                          resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                          resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
                           errorMessage
                         );
 
@@ -88,12 +89,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void buttonPrintOrder_Clicked(object sender, EventArgs e)
         {
-            if (logicpos.Utils.ShowMessageTouchRequiredValidPrinter(this, GlobalFramework.LoggedTerminal.ThermalPrinter)) return;
-            OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+            if (logicpos.Utils.ShowMessageTouchRequiredValidPrinter(this, DataLayerFramework.LoggedTerminal.ThermalPrinter)) return;
+            OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
             Guid orderTicketOid = new Guid();
 
             string sql = string.Format(@"SELECT COUNT(*) AS Count FROM fin_documentorderticket WHERE OrderMain = '{0}';", currentOrderMain.PersistentOid);
-            var countTickets = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+            var countTickets = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
 
             //If has more than one ticket show requestTicket dialog
             if (countTickets != null && Convert.ToInt16(countTickets) > 1)
@@ -103,7 +104,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                   dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewDocumentOrderTicket>(
                     this.SourceWindow,
                     DialogFlags.DestroyWithParent,
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_select_ticket"),
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_ticket"),
                     //TODO:THEME
                     GlobalApp.MaxWindowSize,
                     null, //XpoDefaultValue
@@ -124,14 +125,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 sql = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}';", currentOrderMain.PersistentOid);
                 //_logger.Debug(string.Format("sql: [{0}]", sql));
-                orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql);
+                orderTicketOid = SharedUtils.GetGuidFromQuery(sql);
             }
 
             if (orderTicketOid != new Guid())
             {
-                fin_documentorderticket orderTicket = (fin_documentorderticket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
-				//POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
-                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(GlobalFramework.LoggedTerminal.ThermalPrinter, orderTicket);
+                fin_documentorderticket orderTicket = (fin_documentorderticket)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
+                //POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
+                ThermalPrinterInternalDocumentOrderRequest thermalPrinterInternalDocumentOrderRequest = new ThermalPrinterInternalDocumentOrderRequest(DataLayerFramework.LoggedTerminal.ThermalPrinter, orderTicket);
                 thermalPrinterInternalDocumentOrderRequest.Print();
             }
         }

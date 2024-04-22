@@ -1,30 +1,23 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
+using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.Classes.Formatters;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
-using System;
-using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
-using System.Drawing;
-using System.IO;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using Image = Gtk.Image;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using Pango;
-using Color = System.Drawing.Color;
-using Alignment = Gtk.Alignment;
 using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.financial.library.Classes.Reports;
-using Medsphere.Widgets;
-using System.Collections;
-using DevExpress.Xpo.DB;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
+using logicpos.shared.App;
+using Medsphere.Widgets;
+using Pango;
+using System;
+using System.Collections;
+using System.Drawing;
+using Alignment = Gtk.Alignment;
+using Color = System.Drawing.Color;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -50,10 +43,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly TouchButtonIconWithText botao15;
         private readonly TouchButtonIconWithText botao16;
         private readonly ICollection collectionDocuments = null;
-        private readonly string creditNoteOid = SettingsApp.XpoOidDocumentFinanceTypeCreditNote.ToString();
-        private readonly string invoiceOid = SettingsApp.XpoOidDocumentFinanceTypeInvoice.ToString();
-        private readonly string simpleInvoiceOid = SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice.ToString();
-        private readonly string invoiceAndPaymentOid = SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString();
+        private readonly string creditNoteOid = SharedSettings.XpoOidDocumentFinanceTypeCreditNote.ToString();
+        private readonly string invoiceOid = SharedSettings.XpoOidDocumentFinanceTypeInvoice.ToString();
+        private readonly string simpleInvoiceOid = SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice.ToString();
+        private readonly string invoiceAndPaymentOid = SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment.ToString();
 
         public string eventBackGround = "Backgrounds/Windows/LogicPOS_WorkFlow.png";
 
@@ -86,25 +79,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public DashBoard(Window pSourceWindow)
             : this(pSourceWindow, null, null, null, GenericTreeViewMode.Default, GenericTreeViewNavigatorMode.Default) { _sourceWindow = pSourceWindow; }
 
-        
+
         //ScreenArea
         protected EventBox _eventboxDashboard;
         protected Color _colorBaseDialogDefaultButtonFont = ("76, 72, 70").StringToColor();
         protected Color _colorBaseDialogDefaultButtonBackground = ("156, 191, 42").StringToColor();
         protected Color _colorBaseDialogActionAreaButtonFont = ("0, 0, 0").StringToColor();
-        protected Color _colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
-        //protected String _fontBaseDialogButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogButton"]);
-        protected string _fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
-        protected string _fileActionDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
-        protected string _fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-        protected string _fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+        protected Color _colorBaseDialogActionAreaButtonBackground = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
+        //protected String _fontBaseDialogButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogButton"]);
+        protected string _fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
+        protected string _fileActionDefault = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png");
+        protected string _fileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+        protected string _fileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
 
         //Colors
-        private readonly Color colorBackOfficeContentBackground = GlobalFramework.Settings["colorBackOfficeContentBackground"].StringToColor();
-        private readonly Color colorBackOfficeStatusBarBackground = GlobalFramework.Settings["colorBackOfficeStatusBarBackground"].StringToColor();
-        private readonly Color colorBackOfficeAccordionFixBackground = GlobalFramework.Settings["colorBackOfficeAccordionFixBackground"].StringToColor();
-        private readonly Color colorBackOfficeStatusBarFont = GlobalFramework.Settings["colorBackOfficeStatusBarFont"].StringToColor();
-        private readonly Color colorBackOfficeStatusBarBottomBackground = GlobalFramework.Settings["colorBackOfficeStatusBarBottomBackground"].StringToColor();
+        private readonly Color colorBackOfficeContentBackground = DataLayerFramework.Settings["colorBackOfficeContentBackground"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarBackground = DataLayerFramework.Settings["colorBackOfficeStatusBarBackground"].StringToColor();
+        private readonly Color colorBackOfficeAccordionFixBackground = DataLayerFramework.Settings["colorBackOfficeAccordionFixBackground"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarFont = DataLayerFramework.Settings["colorBackOfficeStatusBarFont"].StringToColor();
+        private readonly Color colorBackOfficeStatusBarBottomBackground = DataLayerFramework.Settings["colorBackOfficeStatusBarBottomBackground"].StringToColor();
         public Color slateBlue = Color.FromName("White");
         //private Frame frame;
         private readonly Label label;
@@ -113,14 +106,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(DataLayerFramework.Settings["fontGenericTreeViewColumn"]);
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
             var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
             _sourceWindow = pSourceWindow;
 
             Color screenBackgroundColor = (themeWindow.Globals.ScreenBackgroundColor as string).StringToColor();
-            Color white = System.Drawing.Color.White;
-            Color black = System.Drawing.Color.Black;
+            Color white = Color.White;
+            Color black = Color.Black;
 
 
             //_logger.Debug("Theme Background: " + eventBackGround);
@@ -138,25 +131,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             DateTime datenow = new DateTime();
 
             //Icons dos botões do dashboard
-            string _fileFiscalYearIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_configurations.png");
-            string _fileInsertFiscalYear = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_fiscal_year.png");
-            string _fileInsertIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_printer.png");
-            string _fileTerminalsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_terminals.png");
+            string _fileFiscalYearIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_configurations.png");
+            string _fileInsertFiscalYear = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_fiscal_year.png");
+            string _fileInsertIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_printer.png");
+            string _fileTerminalsIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_terminals.png");
 
-            string _fileArticlesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_articles.png");
-            string _fileCostumersIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_costumers.png");
-            string _fileEmployeesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_employees.png");
-            string _fileOtherTablesIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
+            string _fileArticlesIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_articles.png");
+            string _fileCostumersIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_costumers.png");
+            string _fileEmployeesIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_employees.png");
+            string _fileOtherTablesIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_other_tables.png");
 
-            string _fileDocumentsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents.png");
-            string _fileNewDocumentIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
-            string _filePayedDocumentsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
-            string _fileInsertMerchIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_documents_merch.png");
+            string _fileDocumentsIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents.png");
+            string _fileNewDocumentIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
+            string _filePayedDocumentsIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_new.png");
+            string _fileInsertMerchIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_documents_merch.png");
 
-            string _fileReportsMenuIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports.png");
-            string _fileReportsTotalIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_report.png");
-            string _fileReportsClientsIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_client.png");
-            string _fileReportsDayIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_day.png");
+            string _fileReportsMenuIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports.png");
+            string _fileReportsTotalIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_report.png");
+            string _fileReportsClientsIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_client.png");
+            string _fileReportsDayIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\BackOffice\icon_reports_sales_day.png");
 
             //Tamanho dos Icons e da Font do Texto dos botões
             Size sizeIcon = new Size(35, 35);
@@ -175,57 +168,57 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Imagem carregada aqui para o dashboard
-                string fileImageBack = FrameworkUtils.OSSlash(string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", GlobalFramework.Path["themes"], GlobalFramework.Settings["customCultureResourceDefinition"]));
+                string fileImageBack = SharedUtils.OSSlash(string.Format("{0}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{1}.png", DataLayerFramework.Path["themes"], DataLayerFramework.Settings["customCultureResourceDefinition"]));
                 System.Drawing.Image pImage = System.Drawing.Image.FromFile(fileImageBack);
                 Gdk.Pixbuf pixbuf = logicpos.Utils.ImageToPixbuf(pImage);
                 _eventboxDashboard.Style = logicpos.Utils.GetImageBackgroundDashboard(pixbuf);
                 //Buttons Configuração
-                botao1 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_ConfigurationPlaceTerminal_tab1_label"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileTerminalsIcon, sizeIcon, 105, 70);
-                botao2 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileFiscalYearIcon, sizeIcon, 105, 70);
-                botao3 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_years_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertFiscalYear, sizeIcon, 105, 70);
-                botao4 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printers"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertIcon, sizeIcon, 105, 70);
+                botao1 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_ConfigurationPlaceTerminal_tab1_label"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileTerminalsIcon, sizeIcon, 105, 70);
+                botao2 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_application_setup"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileFiscalYearIcon, sizeIcon, 105, 70);
+                botao3 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_years_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertFiscalYear, sizeIcon, 105, 70);
+                botao4 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printers"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertIcon, sizeIcon, 105, 70);
 
                 //Buttons Tabelas
-                botao5 = new TouchButtonIconWithText("BACKOFFICE_MAN_ARTICLE_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_articles"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileArticlesIcon, sizeIcon, 105, 70);
-                botao6 = new TouchButtonIconWithText("BACKOFFICE_MAN_CUSTOMER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customers"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileCostumersIcon, sizeIcon, 105, 70);
-                botao7 = new TouchButtonIconWithText("BACKOFFICE_MAN_USERDETAIL_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_users"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileEmployeesIcon, sizeIcon, 105, 70);
-                botao8 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_other_tables"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileOtherTablesIcon, sizeIcon, 105, 70);
+                botao5 = new TouchButtonIconWithText("BACKOFFICE_MAN_ARTICLE_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_articles"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileArticlesIcon, sizeIcon, 105, 70);
+                botao6 = new TouchButtonIconWithText("BACKOFFICE_MAN_CUSTOMER_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customers"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileCostumersIcon, sizeIcon, 105, 70);
+                botao7 = new TouchButtonIconWithText("BACKOFFICE_MAN_USERDETAIL_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_users"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileEmployeesIcon, sizeIcon, 105, 70);
+                botao8 = new TouchButtonIconWithText("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_other_tables"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileOtherTablesIcon, sizeIcon, 105, 70);
 
                 //Buttons Documentos
-                botao9 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_worksession_resume_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileNewDocumentIcon, sizeIcon, 105, 70);
-                botao10 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSNEW_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_document"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileDocumentsIcon, sizeIcon, 105, 70);
-                botao11 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _filePayedDocumentsIcon, sizeIcon, 105, 70);
-                botao12 = new TouchButtonIconWithText("STOCK_MERCHANDISE_ENTRY_ACCESS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertMerchIcon, sizeIcon, 105, 70);
+                botao9 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_worksession_resume_finance_documents"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileNewDocumentIcon, sizeIcon, 105, 70);
+                botao10 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSNEW_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_document"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileDocumentsIcon, sizeIcon, 105, 70);
+                botao11 = new TouchButtonIconWithText("BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_button_label_select_payments"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _filePayedDocumentsIcon, sizeIcon, 105, 70);
+                botao12 = new TouchButtonIconWithText("STOCK_MERCHANDISE_ENTRY_ACCESS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileInsertMerchIcon, sizeIcon, 105, 70);
 
                 //Buttons Relatórios
-                botao13 = new TouchButtonIconWithText("REPORT_ACCESS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reports"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsMenuIcon, sizeIcon, 105, 70);
-                botao14 = new TouchButtonIconWithText("REPORT_COMPANY_BILLING", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_company_billing_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsTotalIcon, sizeIcon, 105, 70);
-                botao15 = new TouchButtonIconWithText("REPORT_CUSTOMER_BALANCE_DETAILS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_details_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsClientsIcon, sizeIcon, 105, 70);
-                botao16 = new TouchButtonIconWithText("REPORT_SALES_DETAIL_PER_DATE", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_sales_per_date"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsDayIcon, sizeIcon, 105, 70);
+                botao13 = new TouchButtonIconWithText("REPORT_ACCESS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reports"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsMenuIcon, sizeIcon, 105, 70);
+                botao14 = new TouchButtonIconWithText("REPORT_COMPANY_BILLING", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_company_billing_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsTotalIcon, sizeIcon, 105, 70);
+                botao15 = new TouchButtonIconWithText("REPORT_CUSTOMER_BALANCE_DETAILS", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_customer_balance_details_short"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsClientsIcon, sizeIcon, 105, 70);
+                botao16 = new TouchButtonIconWithText("REPORT_SALES_DETAIL_PER_DATE", _colorBaseDialogDefaultButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_sales_per_date"), _fontBaseDialogButton, _colorBaseDialogDefaultButtonFont, _fileReportsDayIcon, sizeIcon, 105, 70);
 
                 PosReportsDialog reportsClicked = new PosReportsDialog();
 
                 //Permissões dos botões
-                botao1.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU");
-                botao2.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
-                botao3.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE");
-                botao4.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW");
+                botao1.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU");
+                botao2.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
+                botao3.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE");
+                botao4.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW");
 
-                botao5.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_ARTICLE_VIEW");
-                botao6.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_CUSTOMER_VIEW");
-                botao7.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_USERDETAIL_VIEW");
-                botao8.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW");
+                botao5.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_ARTICLE_VIEW");
+                botao6.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CUSTOMER_VIEW");
+                botao7.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_USERDETAIL_VIEW");
+                botao8.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW");
 
-                botao9.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
-                botao10.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
-                botao11.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW");
-                botao12.Sensitive = FrameworkUtils.HasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
+                botao9.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
+                botao10.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
+                botao11.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW");
+                botao12.Sensitive = SharedUtils.HasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
 
                 //Este fica comentado, porque o próprio menu dos reports tem controlo de previlégios
                 //botao13.Sensitive = FrameworkUtils.HasPermissionTo("REPORT_ACCESS");
-                botao14.Sensitive = FrameworkUtils.HasPermissionTo("REPORT_COMPANY_BILLING");
-                botao15.Sensitive = FrameworkUtils.HasPermissionTo("REPORT_CUSTOMER_BALANCE_DETAILS");
-                botao16.Sensitive = FrameworkUtils.HasPermissionTo("REPORT_SALES_DETAIL_PER_DATE");
+                botao14.Sensitive = SharedUtils.HasPermissionTo("REPORT_COMPANY_BILLING");
+                botao15.Sensitive = SharedUtils.HasPermissionTo("REPORT_CUSTOMER_BALANCE_DETAILS");
+                botao16.Sensitive = SharedUtils.HasPermissionTo("REPORT_SALES_DETAIL_PER_DATE");
 
 
                 //Actions Configurações
@@ -248,8 +241,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Actions Reports
                 botao13.Clicked += delegate { logicpos.Utils.startReportsMenuFromBackOffice(pSourceWindow); };
-                botao14.Clicked += delegate { reportsClicked.PrintReportRouter
-                    (botao14, null); };
+                botao14.Clicked += delegate
+                {
+                    reportsClicked.PrintReportRouter
+                    (botao14, null);
+                };
                 botao15.Clicked += delegate { reportsClicked.PrintReportRouter(botao15, null); };
                 botao16.Clicked += delegate { reportsClicked.PrintReportRouter(botao16, null); };
 
@@ -278,11 +274,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 try
                 {
                     string sqlCurrency = "SELECT Value FROM cfg_configurationpreferenceparameter where Token = 'SYSTEM_CURRENCY'";
-                    currency = GlobalFramework.SessionXpo.ExecuteScalar(sqlCurrency).ToString();
+                    currency = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCurrency).ToString();
                 }
                 catch
                 {
-                    currency = SettingsApp.SaftCurrencyCode;
+                    currency = SharedSettings.SaftCurrencyCode;
                 }
 
                 decimal dailyTotal = 0;
@@ -299,7 +295,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         new SortProperty("Date", SortingDirection.Ascending)
                     };
                     CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL AND (DocumentType.Oid = '{0}' OR DocumentType.Oid = '{1}' OR DocumentType.Oid = '{2}' OR DocumentType.Oid = '{3}') AND DocumentStatusReason != 'A')", invoiceOid, invoiceAndPaymentOid, simpleInvoiceOid, creditNoteOid));
-                    collectionDocuments = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinancemaster)), criteria, sortCollection, int.MaxValue, false, true);
+                    collectionDocuments = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinancemaster)), criteria, sortCollection, int.MaxValue, false, true);
 
                     datenow = DateTime.Now;
 

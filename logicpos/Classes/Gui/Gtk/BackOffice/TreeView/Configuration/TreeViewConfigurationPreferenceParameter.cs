@@ -1,13 +1,13 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -32,9 +32,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("ResourceString") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, ResourceString = true },
-                new GenericTreeViewColumnProperty("Value") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_value"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("ResourceString") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, ResourceString = true },
+                new GenericTreeViewColumnProperty("Value") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_value"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model : pXpoCriteria Parameter sent by BO
@@ -47,7 +47,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             {
                 criteria = CriteriaOperator.Parse($"(DeletedAt IS NULL)");
             }
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             this.RecordAfterUpdate += TreeViewConfigurationPreferenceParameter_RecordAfterUpdate;
 
@@ -70,14 +70,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             try
             {
-                // We Must Modify GlobalFramework.PreferenceParameters after user Change Value, if Value is Changed, this will Update in Memory GlobalFramework.PreferenceParameters Dictionary
-                if (GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
-                    !GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
+                // We Must ModifySharedFramework.PreferenceParameters after user Change Value, if Value is Changed, this will Update in MemorySharedFramework.PreferenceParameters Dictionary
+                if (SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token] == null ||
+                    !SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token].Equals(configurationPreferenceParameter.Value)
                     )
                 {
-                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
-                    GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
-                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{GlobalFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Previous Value: [{SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
+                    SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token] = configurationPreferenceParameter.Value;
+                    if (_debug) _logger.Debug($"TreeViewConfigurationPreferenceParameter: Current Value: [{SharedFramework.PreferenceParameters[configurationPreferenceParameter.Token]}]");
                 }
             }
             catch (Exception ex)

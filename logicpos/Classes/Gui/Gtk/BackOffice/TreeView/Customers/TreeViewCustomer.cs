@@ -9,6 +9,8 @@ using logicpos.shared;
 using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -33,11 +35,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Name") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_name"), MinWidth = 200, Expand = true, DecryptValue = true },
-                new GenericTreeViewColumnProperty("FiscalNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), MinWidth = 150, DecryptValue = true },
-                new GenericTreeViewColumnProperty("CardNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_card_number"), MinWidth = 150 },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Name") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_name"), MinWidth = 200, Expand = true, DecryptValue = true },
+                new GenericTreeViewColumnProperty("FiscalNumber") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), MinWidth = 150, DecryptValue = true },
+                new GenericTreeViewColumnProperty("CardNumber") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_card_number"), MinWidth = 150 },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -59,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             }
 
             SortProperty sortPropertyForCustomer = new SortProperty(sortedColumn, DevExpress.Xpo.DB.SortingDirection.Descending);
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria, sortPropertyForCustomer);
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortPropertyForCustomer);
 
             //Custom Events
             //WIP: this.CursorChanged += TreeViewCustomer_CursorChanged;
@@ -76,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             );
 
             //Protected Records
-            ProtectedRecords.Add(SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);//FinalConsumerEntity
+            ProtectedRecords.Add(SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);//FinalConsumerEntity
         }
     }
 }

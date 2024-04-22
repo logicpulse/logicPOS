@@ -5,6 +5,8 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.resources.Resources.Localization;
 using System;
 using logicpos.Classes.Enums.Keyboard;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -38,27 +40,27 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public event EventHandler ClosePopup;
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), FrameworkUtils.CurrentDateTimeAtomic(), pRule, pRequired)
+            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, pWindowTitle, FrameworkUtils.CurrentDateTimeAtomic(), pRule, pRequired)
+            :this(pSourceWindow, pLabelText, pWindowTitle, DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, string pRule, bool pRequired, string pDateFormat)
-            :this(pSourceWindow, pLabelText, pWindowTitle, FrameworkUtils.CurrentDateTimeAtomic(), pRule, pRequired, pDateFormat)
+            :this(pSourceWindow, pLabelText, pWindowTitle, DataLayerUtils.CurrentDateTimeAtomic(), pRule, pRequired, pDateFormat)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, DateTime pDateTime, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), pDateTime, pRule, pRequired)
+            :this(pSourceWindow, pLabelText, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), pDateTime, pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window pSourceWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, string pRule, bool pRequired)
-            :this(pSourceWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, SettingsApp.DateFormat)
+            :this(pSourceWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, SharedSettings.DateFormat)
         {
         }
         /* IN005974 -  KeyboardMode.AlfaNumeric makes date fields accept text */
@@ -115,7 +117,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 ResponseType response = (ResponseType)dialog.Run();
                 if (response == ResponseType.Ok)
                 {
-                    DateTime now = FrameworkUtils.CurrentDateTimeAtomic();
+                    DateTime now = DataLayerUtils.CurrentDateTimeAtomic();
                     //Get Date from Calendar Widget
                     DateTime date = dialog.Calendar.Date;
                     //Transform Date to DateTime, Date + Current Hour

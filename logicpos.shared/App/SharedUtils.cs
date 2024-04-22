@@ -2,6 +2,7 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using DevExpress.Xpo.Metadata;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.shared.Classes.Finance;
@@ -26,10 +27,10 @@ using System.Text.RegularExpressions;
 
 namespace logicpos.shared.App
 {
-    public class FrameworkUtils : logicpos.datalayer.App.FrameworkUtils
+    public static class SharedUtils
     {
         //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Strings
@@ -61,18 +62,18 @@ namespace logicpos.shared.App
 
         public static string CurrentDateTime()
         {
-            return CurrentDateTime(SettingsApp.DateTimeFormat);
+            return CurrentDateTime(SharedSettings.DateTimeFormat);
         }
 
         public static string CurrentDateTime(string pDateTimeFormat)
         {
-            return CurrentDateTimeAtomic().ToString(pDateTimeFormat, System.Globalization.CultureInfo.GetCultureInfo(GlobalFramework.CurrentCulture.Name));
-            //return CurrentDateTimeAtomic().ToString("F", System.Globalization.CultureInfo.GetCultureInfo(GlobalFramework.CurrentCulture.Name));
+            return DataLayerUtils.CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(SharedFramework.CurrentCulture.Name));
+            //return CurrentDateTimeAtomic().ToString("F", System.Globalization.CultureInfo.GetCultureInfo(SharedFramework.CurrentCulture.Name));
         }
 
         public static DateTime CurrentDateTimeAtomicMidnight()
         {
-            return DateTimeToMidnightDate(CurrentDateTimeAtomic());
+            return DateTimeToMidnightDate(DataLayerUtils.CurrentDateTimeAtomic());
         }
 
         public static DateTime DateTimeToMidnightDate(DateTime pDateTime)
@@ -85,14 +86,14 @@ namespace logicpos.shared.App
         public static string DateTimeToCombinedDateTimeString(object pValue)
         {
             DateTime tmpData = Convert.ToDateTime(pValue);
-            string result = "" + tmpData.ToString("" + SettingsApp.DateTimeFormatCombinedDateTime);
+            string result = "" + tmpData.ToString("" + SharedSettings.DateTimeFormatCombinedDateTime);
             return (result);
         }
 
         public static string DateToString(object pValue)
         {
             DateTime tmpData = Convert.ToDateTime(pValue);
-            string result = "" + tmpData.ToString("" + SettingsApp.DateTimeFormatDocumentDate);
+            string result = "" + tmpData.ToString("" + SharedSettings.DateTimeFormatDocumentDate);
             return (result);
         }
 
@@ -102,7 +103,7 @@ namespace logicpos.shared.App
 
             try
             {
-                result = pValue.ToString(SettingsApp.DateTimeFormatDocumentDate);
+                result = pValue.ToString(SharedSettings.DateTimeFormatDocumentDate);
             }
             catch (Exception ex)
             {
@@ -118,7 +119,7 @@ namespace logicpos.shared.App
 
             try
             {
-                result = pValue.ToString(SettingsApp.DateTimeFormat);
+                result = pValue.ToString(SharedSettings.DateTimeFormat);
             }
             catch (Exception ex)
             {
@@ -150,9 +151,9 @@ namespace logicpos.shared.App
             CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled is NULL) AND (Year = 0 OR Year = {0})", pYear));
             SortingCollection sortingCollection = new SortingCollection
             {
-                new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending)
+                new SortProperty("Ord", SortingDirection.Ascending)
             };
-            XPCollection xpcConfigurationHolidays = GetXPCollectionFromCriteria(GlobalFramework.SessionXpo, typeof(cfg_configurationholidays), criteriaOperator, sortingCollection);
+            XPCollection xpcConfigurationHolidays = GetXPCollectionFromCriteria(DataLayerFramework.SessionXpo, typeof(cfg_configurationholidays), criteriaOperator, sortingCollection);
 
             if (xpcConfigurationHolidays.Count > 0)
             {
@@ -160,7 +161,7 @@ namespace logicpos.shared.App
                 {
                     currentDateTime = new DateTime(pYear, item.Month, item.Day);
                     result.Add(currentDateTime, item.Fixed);
-                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
+                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}:{3}]", currentDateTime.ToString(SharedSettings.DateFormat), SharedFramework.CurrentCulture.DateTimeFormat.DayNames[(int)currentDateTime.DayOfWeek], item.Fixed, IsHoliday(currentDateTime)));
                 }
             }
             return result;
@@ -220,7 +221,7 @@ namespace logicpos.shared.App
                 if (startDateTime.DayOfWeek != DayOfWeek.Saturday && startDateTime.DayOfWeek != DayOfWeek.Sunday)
                 {
                     string isHoliday = (IsHoliday(startDateTime)) ? "Holiday" : string.Empty;
-                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
+                    if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}]", startDateTime.ToString(SharedSettings.DateFormat), SharedFramework.CurrentCulture.DateTimeFormat.DayNames[(int)startDateTime.DayOfWeek], isHoliday));
 
                     if ((pWithHoydays && !IsHoliday(startDateTime)) || !pWithHoydays)
                     {
@@ -261,7 +262,7 @@ namespace logicpos.shared.App
                 {
                     isWeekEnd = "<WeekEnd>";
                 }
-                if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(SettingsApp.DateFormat), GlobalFramework.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
+                if (debug) _logger.Debug(string.Format("DayOfWeek: [{0}:{1}:{2}{3}{4}]", i.ToString("000"), result.ToString(SharedSettings.DateFormat), SharedFramework.CurrentCulture.DateTimeFormat.DayNames[((int)result.DayOfWeek)], isWeekEnd, isHoliday));
             }
             return result;
         }
@@ -316,14 +317,14 @@ namespace logicpos.shared.App
             decimal result = 0.0m;
             try
             {
-                if (GlobalFramework.SessionApp != null
-                    && GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid)
+                if (SharedFramework.SessionApp != null
+                    && SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
                 )
                 {
                     //get CurrentOrderMain
-                    OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                    OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                     //Get Table to Get Discount
-                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                    pos_configurationplacetable xConfigurationPlaceTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                     //Get Fresh Discount From Table/Future 
                     if (xConfigurationPlaceTable != null)
                     {
@@ -341,7 +342,7 @@ namespace logicpos.shared.App
         public static PriceProperties GetArticlePrice(fin_article pArticle, TaxSellType pTaxSellType)
         {
             //get PriceType from CurrentOrderMain Table
-            OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
             return GetArticlePrice(pArticle, orderMain.Table.PriceType, pTaxSellType);
         }
 
@@ -352,14 +353,14 @@ namespace logicpos.shared.App
             decimal priceTax = 0.0m;
 
             // Get priceTax Based on AppOperationMode : in retail mode VatOnTable is always null
-            if (SettingsApp.AppMode == AppOperationMode.Default)
+            if (DataLayerSettings.AppMode == AppOperationMode.Default)
             {
                 //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
                 // Default : Restaurants with dual Tax ex Normal, TakeAway
                 if (pTaxSellType == TaxSellType.Normal && pArticle.VatOnTable != null) priceTax = pArticle.VatOnTable.Value;
                 else if (pArticle.VatDirectSelling != null) priceTax = pArticle.VatDirectSelling.Value;
             }
-            else if (SettingsApp.AppMode == AppOperationMode.Retail)
+            else if (DataLayerSettings.AppMode == AppOperationMode.Retail)
             {
                 // Mono priceTax 
                 if (pArticle.VatDirectSelling != null)
@@ -453,13 +454,13 @@ namespace logicpos.shared.App
         public static byte[] Utf8Encode(string pSource)
         {
             //Encode string to UTF8
-            return UTF8Encoding.UTF8.GetBytes(pSource);
+            return Encoding.UTF8.GetBytes(pSource);
         }
 
         public static string Utf8Decode(byte[] pSource)
         {
             //String from UTF8 encoding
-            return UTF8Encoding.UTF8.GetString(pSource);
+            return Encoding.UTF8.GetString(pSource);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -486,7 +487,7 @@ namespace logicpos.shared.App
 
         public static string GetFQDN()
         {
-            string domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
+            string domainName = IPGlobalProperties.GetIPGlobalProperties().DomainName;
             string hostName = Dns.GetHostName();
             string fqdn;
             if (!hostName.Contains(domainName))
@@ -519,7 +520,7 @@ namespace logicpos.shared.App
 
         private static string SHA1SignMessage(string pPrivateKey, byte[] pMessage, bool pDebug = false)
         {
-            string tempPath = Convert.ToString(GlobalFramework.Path["temp"]);
+            string tempPath = Convert.ToString(DataLayerFramework.Path["temp"]);
 
             //Init RSACryptoServiceProvider with Key
             RSACryptoServiceProvider rsaCryptoServiceProvider = new RSACryptoServiceProvider();
@@ -532,9 +533,9 @@ namespace logicpos.shared.App
 
             if (pDebug)
             {
-                System.IO.File.WriteAllBytes(tempPath + "encrypt.txt", pMessage);
-                System.IO.File.WriteAllBytes(tempPath + "encrypted.sha1", signature);
-                System.IO.File.WriteAllText(tempPath + "encrypted.b64", signatureBase64);
+                File.WriteAllBytes(tempPath + "encrypt.txt", pMessage);
+                File.WriteAllBytes(tempPath + "encrypted.sha1", signature);
+                File.WriteAllText(tempPath + "encrypted.b64", signatureBase64);
             }
 
             return signatureBase64;
@@ -610,20 +611,20 @@ namespace logicpos.shared.App
 
         public static XPGuidObject GetXPGuidObjectFromCriteria(Type pXPGuidObjectType, string pCriteriaFilter)
         {
-            return GetXPGuidObjectFromCriteria(GlobalFramework.SessionXpo, pXPGuidObjectType, pCriteriaFilter);
+            return GetXPGuidObjectFromCriteria(DataLayerFramework.SessionXpo, pXPGuidObjectType, pCriteriaFilter);
         }
 
         public static XPGuidObject GetXPGuidObjectFromCriteria(Session pSession, Type pXPGuidObjectType, string pCriteriaFilter)
         {
             CriteriaOperator criteria = CriteriaOperator.Parse(pCriteriaFilter);
-            XPGuidObject result = (GlobalFramework.SessionXpo.FindObject(pXPGuidObjectType, criteria) as XPGuidObject);
+            XPGuidObject result = (DataLayerFramework.SessionXpo.FindObject(pXPGuidObjectType, criteria) as XPGuidObject);
             return result;
         }
 
         //Helper Method to get XPCollections
         public static XPCollection GetXPCollectionFromCriteria(Type pXPGuidObjectType)
         {
-            return GetXPCollectionFromCriteria(GlobalFramework.SessionXpo, pXPGuidObjectType, null, null);
+            return GetXPCollectionFromCriteria(DataLayerFramework.SessionXpo, pXPGuidObjectType, null, null);
         }
 
         public static XPCollection GetXPCollectionFromCriteria(Session pSession, Type pXPGuidObjectType)
@@ -650,7 +651,7 @@ namespace logicpos.shared.App
         //}
         public static XPSelectData GetSelectedDataFromQuery(string pSql)
         {
-            return GetSelectedDataFromQuery(GlobalFramework.SessionXpo, pSql);
+            return GetSelectedDataFromQuery(DataLayerFramework.SessionXpo, pSql);
         }
 
         public static XPSelectData GetSelectedDataFromQuery(Session pSession, string pSql)
@@ -662,7 +663,7 @@ namespace logicpos.shared.App
 
         public static DataTable GetDataTableFromQuery(string pSql)
         {
-            return GetDataTableFromQuery(GlobalFramework.SessionXpo, pSql);
+            return GetDataTableFromQuery(DataLayerFramework.SessionXpo, pSql);
         }
 
         public static DataTable GetDataTableFromQuery(Session pSession, string pSql)
@@ -746,7 +747,7 @@ namespace logicpos.shared.App
         {
             SortingCollection sortingCollection = new SortingCollection
             {
-                new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending)
+                new SortProperty("Ord", SortingDirection.Ascending)
             };
             //sortingCollection.Add(new SortProperty("Designation", DevExpress.Xpo.DB.SortingDirection.Ascending));
             return sortingCollection;
@@ -764,7 +765,7 @@ namespace logicpos.shared.App
             try
             {
                 string sql = string.Format("SELECT MAX({0}) FROM {1}{2};", pField, pTable, filter);
-                var resultInt = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                var resultInt = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                 if (resultInt != null)
                 {
                     _logger.Debug(string.Format("GetNextTableFieldInt(): resultInt.GetType(): [{0}]", resultInt.GetType()));
@@ -797,7 +798,7 @@ namespace logicpos.shared.App
         /// <returns></returns>
         public static Guid GetGuidFromQuery(string pSql)
         {
-            return GetGuidFromQuery(GlobalFramework.SessionXpo, pSql);
+            return GetGuidFromQuery(DataLayerFramework.SessionXpo, pSql);
         }
 
         public static Guid GetGuidFromQuery(Session pSession, string pSql)
@@ -828,7 +829,7 @@ namespace logicpos.shared.App
 
         public static XPGuidObject GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
         {
-            return GetXPGuidObjectFromField(GlobalFramework.SessionXpo, pType, pSearchField, pSearchValue);
+            return GetXPGuidObjectFromField(DataLayerFramework.SessionXpo, pType, pSearchField, pSearchValue);
         }
 
         public static XPGuidObject GetXPGuidObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)
@@ -837,7 +838,7 @@ namespace logicpos.shared.App
             Guid guid = GetGuidFromQuery(pSession, executeSql);
             if (guid != Guid.Empty)
             {
-                return (XPGuidObject)GetXPGuidObject(pSession, pType, guid);
+                return (XPGuidObject)DataLayerUtils.GetXPGuidObject(pSession, pType, guid);
             }
             else
             {
@@ -891,7 +892,7 @@ namespace logicpos.shared.App
 
             NumberStyles numberStyle = NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
 
-            if (!decimal.TryParse(pInput, numberStyle, GlobalFramework.CurrentCulture.NumberFormat, out result))
+            if (!decimal.TryParse(pInput, numberStyle, SharedFramework.CurrentCulture.NumberFormat, out result))
             {
                 decimal.TryParse(pInput, numberStyle, CultureInfo.InvariantCulture.NumberFormat, out result);
             }
@@ -901,17 +902,17 @@ namespace logicpos.shared.App
 
         public static string DecimalToString(decimal pInput)
         {
-            return DecimalToString(pInput, GlobalFramework.CurrentCulture);
+            return DecimalToString(pInput, SharedFramework.CurrentCulture);
         }
 
         public static string DecimalToString(decimal pInput, CultureInfo pCulture)
         {
-            return DecimalToString(pInput, pCulture, SettingsApp.DecimalFormat);
+            return DecimalToString(pInput, pCulture, SharedSettings.DecimalFormat);
         }
 
         public static string DecimalToString(decimal pInput, string pDecimalFormat)
         {
-            return DecimalToString(pInput, GlobalFramework.CurrentCulture, pDecimalFormat);
+            return DecimalToString(pInput, SharedFramework.CurrentCulture, pDecimalFormat);
         }
 
         public static string DecimalToString(decimal pInput, CultureInfo pCulture, string pDecimalFormat)
@@ -921,7 +922,7 @@ namespace logicpos.shared.App
 
         public static string DecimalToStringCurrency(decimal pInput)
         {
-            return DecimalToStringCurrency(pInput, SettingsApp.ConfigurationSystemCurrency.Acronym);
+            return DecimalToStringCurrency(pInput, SharedSettings.ConfigurationSystemCurrency.Acronym);
         }
 
         public static string DecimalToStringCurrency(decimal pInput, string pCurrencyAcronym)
@@ -931,12 +932,12 @@ namespace logicpos.shared.App
 
         public static string DoubleToString(double pInput)
         {
-            return pInput.ToString(SettingsApp.DecimalFormat, GlobalFramework.CurrentCulture.NumberFormat);
+            return pInput.ToString(SharedSettings.DecimalFormat, SharedFramework.CurrentCulture.NumberFormat);
         }
 
         public static string DoubleToStringCurrency(double pInput)
         {
-            return string.Format("{0}{1}", DoubleToString(pInput), SettingsApp.ConfigurationSystemCurrency.Acronym);
+            return string.Format("{0}{1}", DoubleToString(pInput), SharedSettings.ConfigurationSystemCurrency.Acronym);
         }
 
         //Used to Format a String into a Decimal Format String ex (string) 1 converted to (string) 1.00
@@ -945,7 +946,7 @@ namespace logicpos.shared.App
             string result = DecimalToString(StringToDecimal(pInput));
 
             //Linux Protection Crash, if value is ,00 its Crash, add 0 to prevent it, ex 0,00
-            if (result[0] == Convert.ToChar(GlobalFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator))
+            if (result[0] == Convert.ToChar(SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator))
             {
                 result = string.Format("{0}{1}", 0, result);
             }
@@ -958,9 +959,9 @@ namespace logicpos.shared.App
         public static bool Audit(string pAuditTypeToken, string pDescription = "")
         {
             return Audit(
-                GlobalFramework.SessionXpo,
-                (GlobalFramework.LoggedUser != null) ? GlobalFramework.LoggedUser : null,
-                (GlobalFramework.LoggedTerminal != null) ? GlobalFramework.LoggedTerminal : null,
+                DataLayerFramework.SessionXpo,
+                DataLayerFramework.LoggedUser ?? null,
+                DataLayerFramework.LoggedTerminal ?? null,
                 pAuditTypeToken,
                 pDescription
             );
@@ -974,7 +975,7 @@ namespace logicpos.shared.App
         public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken, string pDescription = "")
         {
             bool result = false;
-            DateTime dateTime = CurrentDateTimeAtomic();
+            DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
             string executeSql = string.Format(@"SELECT Oid FROM sys_systemaudittype WHERE (Disabled IS NULL or Disabled  <> 1) AND Token = '{0}';", pAuditTypeToken);
 
             //Check if has a Valid LoggedUser else Assign NULL to INSERT, usefull to log stuff when User is not Yet Logged
@@ -988,13 +989,13 @@ namespace logicpos.shared.App
                 if (!guidAuditType.Equals(Guid.Empty))
                 {
                     //Fresh User and Terminal, to prevent Object Delection Problem
-                    sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
-                    pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
+                    sys_userdetail xpoUserDetail = (pLoggedUser != null) ? (sys_userdetail)DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
+                    pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
                     //get AuditType Object
-                    sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
+                    sys_systemaudittype xpoAuditType = (sys_systemaudittype)DataLayerUtils.GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
                     string description = (pDescription != string.Empty) ? pDescription
-                      : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) != null)
-                      ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) : xpoAuditType.Designation;
+                      : (xpoAuditType.ResourceString != null && resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) != null)
+                      ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], xpoAuditType.ResourceString) : xpoAuditType.Designation;
 
                     sys_systemaudit systemAudit = new sys_systemaudit(pSession)
                     {
@@ -1102,7 +1103,7 @@ namespace logicpos.shared.App
         {
             get
             {
-                return System.Reflection.Assembly.GetExecutingAssembly().ImageRuntimeVersion;
+                return Assembly.GetExecutingAssembly().ImageRuntimeVersion;
             }
         }
 
@@ -1111,7 +1112,7 @@ namespace logicpos.shared.App
         {
             get
             {
-                return System.Reflection.Assembly.GetExecutingAssembly();
+                return Assembly.GetExecutingAssembly();
             }
         }
 
@@ -1143,7 +1144,7 @@ namespace logicpos.shared.App
         {
             try
             {
-                string tmpPath = OSSlash(Convert.ToString(GlobalFramework.Path["cache"]));
+                string tmpPath = OSSlash(Convert.ToString(DataLayerFramework.Path["cache"]));
                 if (Directory.Exists(tmpPath))
                 {
                     Directory.Delete(tmpPath, true);
@@ -1199,7 +1200,7 @@ namespace logicpos.shared.App
 
             try
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_POS_PDF_VIEWER"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_POS_PDF_VIEWER"]);
             }
             catch (Exception ex)
             {
@@ -1369,7 +1370,7 @@ namespace logicpos.shared.App
 
         public static decimal GetPartialPaymentPayedItems(Guid pDocumentOrderMain, Guid pArticle)
         {
-            return GetPartialPaymentPayedItems(GlobalFramework.SessionXpo, pDocumentOrderMain, pArticle);
+            return GetPartialPaymentPayedItems(DataLayerFramework.SessionXpo, pDocumentOrderMain, pArticle);
         }
 
         public static decimal GetPartialPaymentPayedItems(Session pSession, Guid pDocumentOrderMain, Guid pArticle)
@@ -1401,7 +1402,7 @@ namespace logicpos.shared.App
 
         public static Dictionary<string, string> GetPreferencesParameters()
         {
-            return GetPreferencesParameters(GlobalFramework.SessionXpo);
+            return GetPreferencesParameters(DataLayerFramework.SessionXpo);
         }
 
         public static Dictionary<string, string> GetPreferencesParameters(Session pSession)
@@ -1432,7 +1433,7 @@ namespace logicpos.shared.App
 
         /// <summary>
         /// Get value from dictionary with LINQ
-        /// Deprecated: better to get it with key ex GlobalFramework.PreferenceParameters[token]
+        /// Deprecated: better to get it with key exSharedFramework.PreferenceParameters[token]
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
@@ -1442,7 +1443,7 @@ namespace logicpos.shared.App
 
         //    try
         //    {
-        //        result = GlobalFramework.PreferenceParameters.FirstOrDefault(k => k.Key.Contains(token)).Value;
+        //        result =SharedFramework.PreferenceParameters.FirstOrDefault(k => k.Key.Contains(token)).Value;
         //    }
         //    catch (Exception ex)
         //    {
@@ -1656,7 +1657,7 @@ namespace logicpos.shared.App
 
         public static Dictionary<string, bool> GetUserPermissions()
         {
-            return GetUserPermissions(GlobalFramework.LoggedUser);
+            return GetUserPermissions(DataLayerFramework.LoggedUser);
         }
 
         public static Dictionary<string, bool> GetUserPermissions(sys_userdetail pUser)
@@ -1697,9 +1698,9 @@ namespace logicpos.shared.App
         public static bool HasPermissionTo(string pToken)
         {
             bool result;
-            if (GlobalFramework.LoggedUserPermissions != null && GlobalFramework.LoggedUserPermissions.ContainsKey(pToken))
+            if (SharedFramework.LoggedUserPermissions != null && SharedFramework.LoggedUserPermissions.ContainsKey(pToken))
             {
-                result = GlobalFramework.LoggedUserPermissions[pToken];
+                result = SharedFramework.LoggedUserPermissions[pToken];
             }
             else
             {
@@ -1716,7 +1717,7 @@ namespace logicpos.shared.App
         //Create SystemNotification
         public static void SystemNotification()
         {
-            SystemNotification(GlobalFramework.SessionXpo);
+            SystemNotification(DataLayerFramework.SessionXpo);
         }
 
         public static void SystemNotification(Session pSession)
@@ -1732,7 +1733,7 @@ namespace logicpos.shared.App
             try
             {
                 //Settings
-                string cultureFinancialRules = GlobalFramework.Settings["cultureFinancialRules"];
+                string cultureFinancialRules = DataLayerFramework.Settings["cultureFinancialRules"];
 
                 //Local Vars
                 uint ord = 1;
@@ -1763,10 +1764,10 @@ namespace logicpos.shared.App
 
                 //:::: Notification : WelcomeMessage ::::
                 //Check existing Notification before Create
-                systemNotificationType = (sys_systemnotificationtype)pSession.GetObjectByKey(typeof(sys_systemnotificationtype), SettingsApp.XpoOidSystemNotificationTypeNewTerminalRegistered);
+                systemNotificationType = (sys_systemnotificationtype)pSession.GetObjectByKey(typeof(sys_systemnotificationtype), SharedSettings.XpoOidSystemNotificationTypeNewTerminalRegistered);
                 if (systemNotificationType != null)
                 {
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", SettingsApp.XpoOidSystemNotificationTypeNewTerminalRegistered, GlobalFramework.LoggedTerminal.Oid));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND TerminalLastRead = '{1}'", SharedSettings.XpoOidSystemNotificationTypeNewTerminalRegistered, DataLayerFramework.LoggedTerminal.Oid));
                     xpcSystemNotification = new XPCollection(pSession, typeof(sys_systemnotification), criteriaOperator);
                     //Create Notification
                     if (xpcSystemNotification.Count == 0)
@@ -1774,7 +1775,7 @@ namespace logicpos.shared.App
                         systemNotification = new sys_systemnotification(pSession);
                         systemNotification.Ord = ord;
                         systemNotification.NotificationType = systemNotificationType;
-                        systemNotification.Message = string.Format(systemNotificationType.Message, GlobalFramework.LoggedTerminal.Designation);
+                        systemNotification.Message = string.Format(systemNotificationType.Message, DataLayerFramework.LoggedTerminal.Designation);
                         systemNotification.Save();
                         ord++;
                         if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
@@ -1787,7 +1788,7 @@ namespace logicpos.shared.App
                 systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange);
                 if (systemNotificationType != null)
                 {
-                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND UserLastRead = '{1}'", SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange, GlobalFramework.LoggedUser));
+                    criteriaOperator = CriteriaOperator.Parse(string.Format("NotificationType = '{0}' AND UserLastRead = '{1}'", SettingsApp.XpoOidSystemNotificationTypeFirstLoginRequestPasswordChange, DataLayerFramework.LoggedUser));
                     xpcSystemNotification = new XPCollection(pSession, typeof(SystemNotification), criteriaOperator);
                     //Create Notification
                     if (xpcSystemNotification.Count == 0)
@@ -1795,7 +1796,7 @@ namespace logicpos.shared.App
                         systemNotification = new SystemNotification(pSession);
                         systemNotification.Ord = ord;
                         systemNotification.NotificationType = systemNotificationType;
-                        systemNotification.Message = string.Format(systemNotificationType.Message, GlobalFramework.LoggedUser.Login, GlobalFramework.LoggedUser.Name);
+                        systemNotification.Message = string.Format(systemNotificationType.Message, DataLayerFramework.LoggedUser.Login, DataLayerFramework.LoggedUser.Name);
                         systemNotification.Save();
                         ord++;
                         if (debug) _logger.Debug(string.Format("Notification created: [{0}]", systemNotificationType.Designation));
@@ -1827,16 +1828,16 @@ namespace logicpos.shared.App
                 */
 
                 //Financial Culture Notifications
-                //switch (GlobalFramework.CurrentCulture.ToString())
+                //switch (SharedFramework.CurrentCulture.ToString())
                 switch (cultureFinancialRules)
                 {
                     case "pt-PT":
-                        int defaultBackDaysForInvoice = SettingsApp.XpoOidSystemNotificationDaysBackWhenFiltering;
+                        int defaultBackDaysForInvoice = SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering;
 
                         //:::: Notification : CurrentAccountDocumentsToInvoice ::::
                         //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                         //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice);
-                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SettingsApp.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
+                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice, SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput, "(Payed = 0 OR Payed IS NULL)", defaultBackDaysForInvoice);
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
@@ -1846,7 +1847,7 @@ namespace logicpos.shared.App
                         //:::: Notification : ConsignationInvoiceDocumentsToInvoice ::::
                         //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
                         //systemNotificationType = (SystemNotificationType)pSession.GetObjectByKey(typeof(SystemNotificationType), SettingsApp.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice);
-                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SettingsApp.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
+                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice, SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice, "(DocumentChild IS NULL)", defaultBackDaysForInvoice);
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
@@ -1855,7 +1856,7 @@ namespace logicpos.shared.App
 
                         //:::: Notification : SaftDocumentType.MovementOfGoodsToInvoice ::::
                         //ProcessFinanceDocumentToInvoice to Create Notification in Spool for CurrentAccount Documents
-                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SettingsApp.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods, SaftDocumentType.MovementOfGoods, "(DocumentChild IS NULL AND DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
+                        systemNotification = ProcessFinanceDocumentToInvoice(pSession, SharedSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods, SaftDocumentType.MovementOfGoods, "(DocumentChild IS NULL AND DocumentStatusStatus = 'N')", defaultBackDaysForInvoice);
                         if (systemNotification != null)
                         {
                             systemNotification.Ord = ord; systemNotification.Save(); ord++;
@@ -1914,7 +1915,7 @@ namespace logicpos.shared.App
             int ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = 0;
             try
             {
-                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(GlobalFramework.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
+                ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(SharedFramework.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
             }
             catch (Exception)
             {
@@ -1931,10 +1932,10 @@ namespace logicpos.shared.App
                 //Extra Filter 
                 string filter = pFilter;
                 if (pExtraFilter != string.Empty) filter = string.Format("{0} AND {1}", filter, pExtraFilter);
-                filter = string.Format("{0} AND (Date <= '{1} 23:59:59')", filter, dateFilterFrom.ToString(SettingsApp.DateFormat));
+                filter = string.Format("{0} AND (Date <= '{1} 23:59:59')", filter, dateFilterFrom.ToString(SharedSettings.DateFormat));
 
                 CriteriaOperator criteriaOperator = CriteriaOperator.Parse(filter);
-                SortProperty sortProperty = new SortProperty("CreatedAt", DevExpress.Xpo.DB.SortingDirection.Ascending);
+                SortProperty sortProperty = new SortProperty("CreatedAt", SortingDirection.Ascending);
                 XPCollection xpcDocumentFinanceMaster = new XPCollection(pSession, typeof(fin_documentfinancemaster), criteriaOperator, sortProperty);
 
                 // Debug Helper
@@ -1965,7 +1966,14 @@ namespace logicpos.shared.App
                             // Increment notifications counter
                             totalNotificatedDocuments++;
                             // Add To Message
-                            documentsMessage += string.Format("- {0} : {1} : {2} {3} : (#{4})", item.DocumentNumber, item.Date, documentBackUtilDays, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_day_days"), item.Notifications.Count + 1);
+                            documentsMessage += string.Format(
+                                "- {0} : {1} : {2} {3} : (#{4})", 
+                                item.DocumentNumber, item.Date, 
+                                documentBackUtilDays, 
+                                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], 
+                                "global_day_days"), 
+                                item.Notifications.Count + 1);
+
                             //Add New Line if not Last Document
                             if (i < xpcDocumentFinanceMaster.Count) documentsMessage += Environment.NewLine;
                         }
@@ -2091,7 +2099,7 @@ namespace logicpos.shared.App
                         //Cut Text
                         result.Text = pValue.Substring(0, pMaxLength);
                     }
-                    lengthLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_characters"), result.Length, pMaxLength);
+                    lengthLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_characters"), result.Length, pMaxLength);
                 }
 
                 result.Words = GetNumWords(result.Text);
@@ -2103,7 +2111,7 @@ namespace logicpos.shared.App
                         result.Words = pMaxWords;
                         result.Text = GetWords(result.Text, pMaxWords);
                     }
-                    maxWordsLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_words"), result.Words, pMaxWords);
+                    maxWordsLabelText = string.Format("{0}: {1}/{2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_words"), result.Words, pMaxWords);
                 }
 
                 if (result.Length > 0)
@@ -2146,7 +2154,7 @@ namespace logicpos.shared.App
             };
 
             //Check if is a Blank GUID 
-            if (pValidate == new Guid().ToString() && pRegExRule == SettingsApp.RegexGuid)
+            if (pValidate == new Guid().ToString() && pRegExRule == SharedSettings.RegexGuid)
             {
                 return false;
             }
@@ -2178,7 +2186,7 @@ namespace logicpos.shared.App
                 try
                 {
                     //typeConverter.ConvertFrom(pValue);
-                    typeConverter.ConvertFrom(null, GlobalFramework.CurrentCultureNumberFormat, pValue);
+                    typeConverter.ConvertFrom(null, SharedFramework.CurrentCultureNumberFormat, pValue);
                     return true;
                 }
                 catch (Exception)
@@ -2324,13 +2332,13 @@ namespace logicpos.shared.App
         {
             object resultObject = null;
 
-            if (GlobalFramework.PluginSoftwareVendor != null)
+            if (SharedFramework.PluginSoftwareVendor != null)
             {
-                Type thisType = GlobalFramework.PluginSoftwareVendor.GetType();
+                Type thisType = SharedFramework.PluginSoftwareVendor.GetType();
                 string methodName = string.Format("Get{0}", property);
                 MethodInfo methodInfo = thisType.GetMethod(methodName);
                 object[] methodParameters = null;
-                resultObject = methodInfo.Invoke(GlobalFramework.PluginSoftwareVendor, methodParameters);
+                resultObject = methodInfo.Invoke(SharedFramework.PluginSoftwareVendor, methodParameters);
             }
 
             if (debug) _logger.Debug(string.Format("SoftwareVendor {0} Value: [{1}]", property, resultObject));
@@ -2374,7 +2382,7 @@ namespace logicpos.shared.App
         public static int GetNumWords(string pText)
         {
             int result = 0;
-            int minWordLengthConsidered = Convert.ToInt16(GlobalFramework.Settings["MinWordLengthConsidered"]);
+            int minWordLengthConsidered = Convert.ToInt16(DataLayerFramework.Settings["MinWordLengthConsidered"]);
 
             //Require to pass string to PreparedCutWord 
             string text = PrepareCutWord(pText);
@@ -2395,63 +2403,11 @@ namespace logicpos.shared.App
             return (result);
         }
 
-        private string CutWords(string pText, int pMaxWords)
-        {
-            //Init Local Vars
-            string result = "";
-            int tmpCounter = 0;
-            bool tmpCutted = false;
-            int minWordLengthConsidered = Convert.ToInt16(GlobalFramework.Settings["MinWordLengthConsidered"]);
-
-            //Require to pass string to PreparedCutWord 
-            string text = PrepareCutWord(pText);
-
-            if (pMaxWords == 0)
-            {
-                result = text;
-            }
-            else if (text != null)
-            {
-                string[] res = text.Split(' ');
-                for (int i = 0; i < res.Length; i++)
-                {
-                    if (res[i] != "")
-                    {
-                        if (res[i].Length >= minWordLengthConsidered)
-                        {
-                            if (tmpCounter < pMaxWords)
-                            {
-                                result += res[i] + " ";
-                                tmpCounter++;
-                            }
-                            else
-                            {
-                                result = text.Substring(0, text.IndexOf(res[i], result.Length));
-                                tmpCutted = true;
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            result += res[i];
-                        }
-                    }
-                }
-            }
-
-            if (tmpCutted != true)
-            {
-                result = text;
-            }
-
-            return (result);
-        }
-
         public static string GetWords(string pText, int pNoWords)
         {
             string result = string.Empty;
 
-            int minWordLengthConsidered = Convert.ToInt16(GlobalFramework.Settings["MinWordLengthConsidered"]);
+            int minWordLengthConsidered = Convert.ToInt16(DataLayerFramework.Settings["MinWordLengthConsidered"]);
 
             pText = pText.Replace("\n", " ");
             pText = pText.Replace(".", " ");

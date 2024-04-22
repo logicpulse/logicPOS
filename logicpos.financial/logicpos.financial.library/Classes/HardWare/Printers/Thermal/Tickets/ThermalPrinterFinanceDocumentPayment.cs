@@ -1,10 +1,12 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports.BOs;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -45,10 +47,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 //Call base PrintDocumentMaster();
-                base.PrintDocumentMaster(_documentFinancePaymentList[0].DocumentTypeResourceString, _documentFinancePaymentList[0].PaymentRefNo, _documentFinancePaymentList[0].DocumentDate);
+                PrintDocumentMaster(_documentFinancePaymentList[0].DocumentTypeResourceString, _documentFinancePaymentList[0].PaymentRefNo, _documentFinancePaymentList[0].DocumentDate);
 
                 //Call base PrintCustomer();
-                base.PrintCustomer(
+                PrintCustomer(
                     _documentFinancePaymentList[0].EntityName,
                     _documentFinancePaymentList[0].EntityAddress,
                     _documentFinancePaymentList[0].EntityZipCode,
@@ -62,16 +64,16 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 PrintExtendedValue();
 
                 //Call base PrintDocumentPaymentDetails();
-                base.PrintDocumentPaymentDetails(_documentFinancePaymentList[0].PaymentMethodDesignation, _documentFinancePaymentList[0].CurrencyAcronym);
+                PrintDocumentPaymentDetails(_documentFinancePaymentList[0].PaymentMethodDesignation, _documentFinancePaymentList[0].CurrencyAcronym);
 
                 //Call base PrintNotes();
-                if (!string.IsNullOrEmpty(_documentFinancePaymentList[0].Notes)) base.PrintNotes(_documentFinancePaymentList[0].Notes.ToString());
+                if (!string.IsNullOrEmpty(_documentFinancePaymentList[0].Notes)) PrintNotes(_documentFinancePaymentList[0].Notes.ToString());
 
                 //Call base PrintDocumentTypeFooterString();
                 PrintDocumentTypeFooterString(_documentFinancePaymentList[0].DocumentTypeResourceStringReport);
 
                 //Call Base CertificationText Without Hash
-                base.PrintCertificationText();
+                PrintCertificationText();
             }
             catch (Exception ex)
             {
@@ -85,10 +87,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             {
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), 11, TicketColumnsAlign.Left),
-                    new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number_acronym"), 0, TicketColumnsAlign.Left),
-                    new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
-                    new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("DocumentDate", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), 11, TicketColumnsAlign.Left),
+                    new TicketColumn("DocumentNumber", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number_acronym"), 0, TicketColumnsAlign.Left),
+                    new TicketColumn("DocumentTotal", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_total"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
+                    new TicketColumn("TotalPayed", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_payed_acronym"), 10, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"),
                     new TicketColumn("Payed", "L", 1, TicketColumnsAlign.Right, typeof(bool))
                 };
                 //Prepare Table with Padding
@@ -133,7 +135,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 dataRow[0] = pFinancePaymentDocument.DocumentDate;
                 dataRow[1] = pFinancePaymentDocument.DocumentNumber;
                 //dataRow[2] = (item.CreditAmount > 0 && item.DocumentTotal > item.CreditAmount) 
-                //    ? FrameworkUtils.DecimalToString((item.DocumentTotal - item.CreditAmount) * _documentFinancePayment.ExchangeRate)
+                //    ? SharedUtils.DecimalToString((item.DocumentTotal - item.CreditAmount) * _documentFinancePayment.ExchangeRate)
                 //    : string.Empty;
                 dataRow[2] = pFinancePaymentDocument.DocumentTotal * _documentFinancePayment.ExchangeRate;
                 dataRow[3] = pFinancePaymentDocument.CreditAmount * _documentFinancePayment.ExchangeRate;
@@ -163,8 +165,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
-                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total");
-                dataRow[1] = FrameworkUtils.DecimalToString(_documentFinancePaymentList[0].PaymentAmount * _documentFinancePaymentList[0].ExchangeRate);
+                dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total");
+                dataRow[1] = SharedUtils.DecimalToString(_documentFinancePaymentList[0].PaymentAmount * _documentFinancePaymentList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
                 //Configure Ticket Column Properties
@@ -194,7 +196,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 string extended = _documentFinancePayment.ExtendedValue;
 
                 //Require to generated/override default Exchanged with document ExchangeRate Extended Value (Foreign Curency)
-                if (_documentFinancePaymentList[0].CurrencyAcronym != SettingsApp.ConfigurationSystemCurrency.Acronym)
+                if (_documentFinancePaymentList[0].CurrencyAcronym != SharedSettings.ConfigurationSystemCurrency.Acronym)
                 {
                     //Get ExtendedValue
                     ExtendValue extendValue = new ExtendValue();
@@ -202,7 +204,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
 
                 //ExtendedValue
-                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_extended_label"), WriteLineTextMode.Bold);
+                _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_extended_label"), WriteLineTextMode.Bold);
                 _thermalPrinterGeneric.WriteLine(extended);
 
                 //Line Feed

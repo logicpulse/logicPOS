@@ -1,4 +1,6 @@
 ﻿using logicpos.App;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -150,7 +152,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             List<VirtualKey> tmpKeyboardRow;
             VirtualKey tmpKey;
 
-            TextWriter textWriter = new StreamWriter(FrameworkUtils.OSSlash(GlobalFramework.Path["temp"] + file));
+            TextWriter textWriter = new StreamWriter(SharedUtils.OSSlash(DataLayerFramework.Path["temp"] + file));
             textWriter.WriteLine("type\tglyph\trow\tcol\tlevel\tibmid\tdeadkey\tdiacritical\tnotengraved\tcharactername\tunicodeid\tkeywidtht\tnumpad\thidel2\tbold\thalign");
 
             for (int i = 0; i < _internalKeyBoard.Count; i++)

@@ -71,14 +71,14 @@ namespace logicpos.shared
             _file = pFile;
             //Default
             _currentOrderMainOid = Guid.Empty;
-            _sessionDateStart = FrameworkUtils.CurrentDateTimeAtomic();
+            _sessionDateStart = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
             _loggergedUsers = new Dictionary<Guid, DateTime>();
             _ordersMain = new Dictionary<Guid, OrderMain>();
         }
 
         public bool Write()
         {
-            if (GlobalFramework.SessionApp != null && (GlobalFramework.SessionApp.OrdersMain.Count == 0 && GlobalFramework.SessionApp.LoggedUsers.Count == 0))
+            if (SharedFramework.SessionApp != null && (SharedFramework.SessionApp.OrdersMain.Count == 0 && SharedFramework.SessionApp.LoggedUsers.Count == 0))
             {
                 //Empty Session May Delete
                 try
@@ -97,7 +97,7 @@ namespace logicpos.shared
                 //Write Session
                 try
                 {
-                    _sessionUpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
+                    _sessionUpdatedAt = datalayer.App.DataLayerUtils.CurrentDateTimeAtomic();
                     JsonSerialization.WriteToJsonFile<GlobalFrameworkSession>(_file, this, false, _jsonIndented);
                     return true;
                 }
@@ -119,12 +119,12 @@ namespace logicpos.shared
         {
             try
             {
-                foreach (Guid item in GlobalFramework.SessionApp.LoggedUsers.Keys)
+                foreach (Guid item in SharedFramework.SessionApp.LoggedUsers.Keys)
                 {
-                    sys_userdetail user = (sys_userdetail)FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), item);
-                    FrameworkUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_used_forced_loggerout"), user.Name));
+                    sys_userdetail user = (sys_userdetail)datalayer.App.DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), item);
+                    SharedUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_used_forced_loggerout"), user.Name));
                 }
-                GlobalFramework.SessionApp.LoggedUsers.Clear();
+                SharedFramework.SessionApp.LoggedUsers.Clear();
             }
             catch (Exception ex)
             {
@@ -158,8 +158,8 @@ namespace logicpos.shared
                     break;
                 }
             }
-            if (!GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp._currentOrderMainOid))
-                GlobalFramework.SessionApp._currentOrderMainOid = latestNonEmptyOrder;
+            if (!SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp._currentOrderMainOid))
+                SharedFramework.SessionApp._currentOrderMainOid = latestNonEmptyOrder;
         }
 
         public bool DeleteSession()
@@ -233,7 +233,7 @@ namespace logicpos.shared
 
             GlobalFrameworkSession appSession;
             Formatting jsonIndented;
-            bool _appSessionFileJsonIndented = Convert.ToBoolean(SettingsApp.AppSessionFileJsonIndented);
+            bool _appSessionFileJsonIndented = Convert.ToBoolean(SharedSettings.AppSessionFileJsonIndented);
             if (_appSessionFileJsonIndented) { jsonIndented = Formatting.Indented; } else { jsonIndented = Formatting.None; };
 
             if (File.Exists(pFile))

@@ -1,8 +1,10 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,7 +39,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         }
 
         public ThermalPrinterBaseTemplate(sys_configurationprinters pPrinter)
-            : this(pPrinter, SettingsApp.PrinterThermalImageCompanyLogo)
+            : this(pPrinter, SharedSettings.PrinterThermalImageCompanyLogo)
         {
         }
 
@@ -53,7 +55,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _companyLogo = pCompanyLogo;
 
                 //Init Custom Vars From FastReport
-                _customVars = GlobalFramework.FastReportCustomVars;
+                _customVars =  SharedFramework.FastReportCustomVars;
                 //_systemVars = GlobalFramework.FastReportSystemVars;
                 //Test FastReport Helpers with
                 //_customVars["COMPANY_NAME"])) | _systemVars["APP_NAME"])) | CustomFunctions.Res("global_printed_on_date")
@@ -102,16 +104,16 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _thermalPrinterGeneric.SetAlignCenter();
 
                 string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_FILENAME_loggerO';";
-                string result = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                string result = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
 
                 string logo = string.Format(
                     @"{0}{1}",
-                    GlobalFramework.Path["assets"],
+                    DataLayerFramework.Path["assets"],
                     _companyLogo
                 );
 
                 sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_PRINT_COMERCIAL_NAME';";
-                var printComercialName = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                var printComercialName = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
 
                 //Print Logo or Name + BusinessName
                 //TK016249 - Impressoras - Diferenciação entre Tipos
@@ -119,7 +121,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 string companyBusinessName = _customVars["COMPANY_BUSINESS_NAME"];
                 if (string.IsNullOrEmpty(companyBusinessName)) companyBusinessName = "";
 
-                if (File.Exists(logo) && GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
+                if (File.Exists(logo) && DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
                 {
                     if (!string.IsNullOrEmpty(result))
                     {
@@ -195,7 +197,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Print Notes
                 if (pNotes != string.Empty)
                 {
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(pNotes);
                     //Line Feed
                     _thermalPrinterGeneric.LineFeed();
@@ -218,14 +220,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 _thermalPrinterGeneric.SetFont(1);
 
                 //User : Terminal
-                _thermalPrinterGeneric.WriteLine(string.Format("{0} - {1}", GlobalFramework.LoggedUser.Name, GlobalFramework.LoggedTerminal.Designation));
+                _thermalPrinterGeneric.WriteLine(string.Format("{0} - {1}", DataLayerFramework.LoggedUser.Name, DataLayerFramework.LoggedTerminal.Designation));
                 _thermalPrinterGeneric.LineFeed();
 
                 //Printed On | Company|App|Version
                 _thermalPrinterGeneric.WriteLine(string.Format("{1}: {2}{0}{3}: {4} {5}"
                     , Environment.NewLine
                     , CustomFunctions.Res("global_printed_on_date")
-                    , FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateTimeFormat)
+                    , DataLayerUtils.CurrentDateTimeAtomic().ToString(SharedSettings.DateTimeFormat)
                     , _customVars["APP_COMPANY"]
                     , _customVars["APP_NAME"]
                     , _customVars["APP_VERSION"]
@@ -243,7 +245,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Finish With Cut and Print Buffer
                 //TK016249 - Impressoras - Diferenciação entre Tipos
-                _thermalPrinterGeneric.Cut(true, GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalCutCommand);
+                _thermalPrinterGeneric.Cut(true, DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalCutCommand);
             }
             catch (Exception ex)
             {

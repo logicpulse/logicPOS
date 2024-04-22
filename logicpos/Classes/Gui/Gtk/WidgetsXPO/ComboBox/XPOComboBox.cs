@@ -1,9 +1,9 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 
@@ -54,14 +54,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
         {
             //Required to Force Combo to be same Height has Entrys
             HeightRequest = 23;
-            if(logicpos.Utils.IsLinux) HeightRequest = 32;
+            if (logicpos.Utils.IsLinux) HeightRequest = 32;
 
             //Parameters
             _xpoSession = pXpoSession;
             _xpoObjectType = pXPGuidObjectType;
             _fieldLabel = pFieldLabel;
 
-            
+
 
             // Override Criteria with hide Undefined Records Criteria
             // Tip : Leave == null here and ignore warnings/suggestions, else it wont work as expected
@@ -69,11 +69,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             {
                 //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here
                 //pCriteria = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SettingsApp.XpoOidUndefinedRecord));
-                pCriteria = CriteriaOperator.Parse(string.Format("(Oid <> '{0}')", SettingsApp.XpoOidUndefinedRecord));
+                pCriteria = CriteriaOperator.Parse(string.Format("(Oid <> '{0}')", SharedSettings.XpoOidUndefinedRecord));
             }
 
             //Init Collection  based on xpoObjectType
-            if (pXPCollection != null) _XpCollection = pXPCollection; 
+            if (pXPCollection != null) _XpCollection = pXPCollection;
             else _XpCollection = new XPCollection(_xpoSession, _xpoObjectType, pCriteria, pSortProperty);
 
             //Init CellRenderer
@@ -116,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (pSortProperty != null) _XpCollection.Sorting.Add(pSortProperty);
 
             //Add Default Sorting Order, if Not Assigned by Parameter
-            if (_XpCollection.Sorting.Count == 0) _XpCollection.Sorting = FrameworkUtils.GetXPCollectionDefaultSortingCollection();
+            if (_XpCollection.Sorting.Count == 0) _XpCollection.Sorting = SharedUtils.GetXPCollectionDefaultSortingCollection();
 
             //Store TreeIters in Dictionary
             _treeInterDictionary = new Dictionary<Guid, TreeIter>();
@@ -125,7 +125,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _comboBoxListStore = new ListStore(typeof(string), typeof(XPGuidObject));
 
             //Aways Default to Null Value - Undefined, even if Collection is Empty
-            tempItemIter = _comboBoxListStore.AppendValues(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_combobox_undefined"), null);
+            tempItemIter = _comboBoxListStore.AppendValues(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_combobox_undefined"), null);
             _treeInterDictionary.Add(new Guid(), tempItemIter);
             //Default Selected
             currentItemIter = tempItemIter;

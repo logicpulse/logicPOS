@@ -2,7 +2,7 @@
 
 namespace logicpos.financial.console.App
 {
-    public class GlobalApp
+    public static class ConsoleGlobalApp
     {
         public static sys_configurationprinters PrinterExportPDF;
         public static sys_configurationprinters PrinterThermal;

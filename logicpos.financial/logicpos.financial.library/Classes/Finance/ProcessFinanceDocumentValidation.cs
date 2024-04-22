@@ -1,6 +1,8 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.App;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using System;
@@ -252,7 +254,7 @@ namespace logicpos.financial.library.Classes.Finance
         //Constructors
         public static SortedDictionary<FinanceValidationError, object> ValidatePersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
         {
-            Guid userDetailGuid = (GlobalFramework.LoggedUser != null) ? GlobalFramework.LoggedUser.Oid : Guid.Empty;
+            Guid userDetailGuid = (DataLayerFramework.LoggedUser != null) ? DataLayerFramework.LoggedUser.Oid : Guid.Empty;
             return ValidatePersistFinanceDocument(pParameters, userDetailGuid, pIgnoreWarning);
         }
 
@@ -268,7 +270,7 @@ namespace logicpos.financial.library.Classes.Finance
             try
             {
                 // Override Default with Config Value
-                _requireToChooseVatExemptionReason = Convert.ToBoolean(GlobalFramework.Settings["requireToChooseVatExemptionReason"]);
+                _requireToChooseVatExemptionReason = Convert.ToBoolean(DataLayerFramework.Settings["requireToChooseVatExemptionReason"]);
             }
             catch (Exception)
             {
@@ -283,28 +285,28 @@ namespace logicpos.financial.library.Classes.Finance
             {
                 //Get XPGuidObjects from Parameters
                 fin_documentfinancetype documentType = (pParameters.DocumentType != null && pParameters.DocumentType != Guid.Empty)
-                    ? (fin_documentfinancetype)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancetype), pParameters.DocumentType)
+                    ? (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancetype), pParameters.DocumentType)
                     : null;
                 erp_customer customer = (pParameters.Customer != null && pParameters.Customer != Guid.Empty)
-                    ? (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), pParameters.Customer)
+                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), pParameters.Customer)
                     : null;
                 fin_documentfinancemaster documentParent = (pParameters.DocumentParent != null && pParameters.DocumentParent != Guid.Empty)
-                    ? (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancemaster), pParameters.DocumentParent)
+                    ? (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancemaster), pParameters.DocumentParent)
                     : null;
                 erp_customer customerParentDocument = (documentParent != null && documentParent.EntityOid != Guid.Empty)
-                    ? (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), documentParent.EntityOid)
+                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), documentParent.EntityOid)
                     : null;
                 cfg_configurationcurrency configurationCurrency = (pParameters.Currency != null && pParameters.Currency != Guid.Empty)
-                    ? (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcurrency), pParameters.Currency)
+                    ? (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcurrency), pParameters.Currency)
                     : null;
                 cfg_configurationcountry countryShipTo = (pParameters.ShipTo != null && pParameters.ShipTo.CountryGuid != Guid.Empty)
-                    ? (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), pParameters.ShipTo.CountryGuid)
+                    ? (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), pParameters.ShipTo.CountryGuid)
                     : null;
                 cfg_configurationcountry countryShipFrom = (pParameters.ShipFrom != null && pParameters.ShipFrom.CountryGuid != Guid.Empty)
-                    ? (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), pParameters.ShipFrom.CountryGuid)
+                    ? (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), pParameters.ShipFrom.CountryGuid)
                     : null;
                 fin_configurationpaymentmethod configurationPaymentMethod = (pParameters.PaymentMethod != null && pParameters.PaymentMethod != Guid.Empty)
-                    ? (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod)
+                    ? (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod)
                     : null;
                 //Helper Variables
                 if (customer != null) _countryCode2 = customer.Country.Code2;
@@ -317,32 +319,32 @@ namespace logicpos.financial.library.Classes.Finance
 || FiscalNumber.IsSingularEntity(customer.FiscalNumber, customer.Country.Code2);
                 //RegEx
                 //If not Saft Document Type 2, required greater than zero in Price, else we can have zero or greater from Document Type 2 (ex Transportation Guide)
-                string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? SettingsApp.RegexDecimalGreaterThanZero : SettingsApp.RegexDecimalGreaterEqualThanZero;
+                string regExArticlePrice = (documentType != null && documentType.SaftDocumentType != SaftDocumentType.MovementOfGoods) ? SharedSettings.RegexDecimalGreaterThanZero : SharedSettings.RegexDecimalGreaterEqualThanZero;
                 //Never Override SettingsApp.FinanceRuleSimplifiedInvoiceMaxValue|FinanceRuleRequiredCustomerDetailsAboveValue values to be Sync with LogicPos UI
-                int financeRuleSimplifiedInvoiceMaxTotal = SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal;
-                int financeRuleSimplifiedInvoiceMaxTotalServices = SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices;
-                int financeRuleRequiredCustomerDetailsAboveValue = SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue;
+                int financeRuleSimplifiedInvoiceMaxTotal = SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal;
+                int financeRuleSimplifiedInvoiceMaxTotalServices = SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices;
+                int financeRuleRequiredCustomerDetailsAboveValue = SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue;
 
                 //Required Fields
 
                 //P1
                 bool requiredPaymentCondition = (
-                    pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeInvoice ||
-                    pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice ||
-                    pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeBudget ||
-                    pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice
+                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
+                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice ||
+                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
+                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice
                 );
                 bool requiredPaymentMethod = (
-                    pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                    pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                    pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
                 );
-                bool requireParentDocument = (pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeCreditNote);
+                bool requireParentDocument = (pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeCreditNote);
 
                 //P2
                 bool requireAllCustomerFields = (
                     //SimplifiedInvoice
                     (
-                        pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice &&
+                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice &&
                         pParameters.ArticleBag.TotalFinal > financeRuleRequiredCustomerDetailsAboveValue &&
                         !customerIsSingularEntity
                     )
@@ -365,117 +367,117 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //Global
                 _fields.Add(FinanceValidationError.ERROR_RULE_ARTICLEBAG_GLOBAL_DISCOUNT_INVALID,
-                    new ProcessFinanceDocumentValidationField("ArticleBag.Discount", (pParameters.ArticleBag != null) ? pParameters.ArticleBag.DiscountGlobal : 0.0m, SettingsApp.RegexPercentage, true)
+                    new ProcessFinanceDocumentValidationField("ArticleBag.Discount", (pParameters.ArticleBag != null) ? pParameters.ArticleBag.DiscountGlobal : 0.0m, SharedSettings.RegexPercentage, true)
                 );
                 //P1
                 _fields.Add(FinanceValidationError.ERROR_FIELD_DOCUMENT_TYPE_INVALID,
-                    new ProcessFinanceDocumentValidationField("DocumentType", pParameters.DocumentType, SettingsApp.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("DocumentType", pParameters.DocumentType, SharedSettings.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_PAYMENT_CONDITION_INVALID,
-                    new ProcessFinanceDocumentValidationField("PaymentCondition", pParameters.PaymentCondition, SettingsApp.RegexGuid, requiredPaymentCondition)
+                    new ProcessFinanceDocumentValidationField("PaymentCondition", pParameters.PaymentCondition, SharedSettings.RegexGuid, requiredPaymentCondition)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_PAYMENT_METHOD_INVALID,
-                    new ProcessFinanceDocumentValidationField("PaymentMethod", pParameters.PaymentMethod, SettingsApp.RegexGuid, requiredPaymentMethod)
+                    new ProcessFinanceDocumentValidationField("PaymentMethod", pParameters.PaymentMethod, SharedSettings.RegexGuid, requiredPaymentMethod)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CURRENCY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Currency", pParameters.Currency, SettingsApp.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Currency", pParameters.Currency, SharedSettings.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_DOCUMENT_PARENT_INVALID,
-                    new ProcessFinanceDocumentValidationField("DocumentParent", pParameters.DocumentParent, SettingsApp.RegexGuid, requireParentDocument)
+                    new ProcessFinanceDocumentValidationField("DocumentParent", pParameters.DocumentParent, SharedSettings.RegexGuid, requireParentDocument)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_NOTES_INVALID,
-                    new ProcessFinanceDocumentValidationField("Notes", pParameters.Notes, SettingsApp.RegexAlfaNumericExtended, false)
+                    new ProcessFinanceDocumentValidationField("Notes", pParameters.Notes, SharedSettings.RegexAlfaNumericExtended, false)
                 );
                 //P2
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_NAME_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Name", (customer != null) ? customer.Name : string.Empty, SettingsApp.RegexAlfaNumericExtended, requireCustomerName)
+                    new ProcessFinanceDocumentValidationField("Customer.Name", (customer != null) ? customer.Name : string.Empty, SharedSettings.RegexAlfaNumericExtended, requireCustomerName)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_ADDRESS_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Address", (customer != null) ? customer.Address : string.Empty, SettingsApp.RegexAlfaNumericExtended, requireAllCustomerFields)
+                    new ProcessFinanceDocumentValidationField("Customer.Address", (customer != null) ? customer.Address : string.Empty, SharedSettings.RegexAlfaNumericExtended, requireAllCustomerFields)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_LOCALITY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Locality", (customer != null) ? customer.Locality : string.Empty, SettingsApp.RegexAlfaNumericExtended, false)
+                    new ProcessFinanceDocumentValidationField("Customer.Locality", (customer != null) ? customer.Locality : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
                 );
                 //If customer undefined Defaults to SettingsApp.ConfigurationSystemCountry.RegExZipCode
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_ZIPCODE_INVALID,
-                new ProcessFinanceDocumentValidationField("Customer.ZipCode", (customer != null && customer.ZipCode != null) ? customer.ZipCode : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExZipCode : SettingsApp.ConfigurationSystemCountry.RegExZipCode, requireAllCustomerFields)
+                new ProcessFinanceDocumentValidationField("Customer.ZipCode", (customer != null && customer.ZipCode != null) ? customer.ZipCode : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExZipCode : DataLayerSettings.ConfigurationSystemCountry.RegExZipCode, requireAllCustomerFields)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_CITY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.City", (customer != null && customer.City != null) ? customer.City : string.Empty, SettingsApp.RegexAlfa, requireAllCustomerFields)
+                    new ProcessFinanceDocumentValidationField("Customer.City", (customer != null && customer.City != null) ? customer.City : string.Empty, SharedSettings.RegexAlfa, requireAllCustomerFields)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_COUNTRY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Country", (customer != null && customer.Country != null) ? customer.Country.Oid : Guid.Empty, SettingsApp.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Customer.Country", (customer != null && customer.Country != null) ? customer.Country.Oid : Guid.Empty, SharedSettings.RegexGuid, true)
                 );
                 //If customer undefined Defaults to SettingsApp.ConfigurationSystemCountry.RegExFiscalNumber
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_FISCAL_NUMBER_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.FiscalNumber", (customer != null && customer.FiscalNumber != null) ? customer.FiscalNumber : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExFiscalNumber : SettingsApp.ConfigurationSystemCountry.RegExFiscalNumber, requireFiscalNumber)
+                    new ProcessFinanceDocumentValidationField("Customer.FiscalNumber", (customer != null && customer.FiscalNumber != null) ? customer.FiscalNumber : string.Empty, (customer != null && customer.Country != null) ? customer.Country.RegExFiscalNumber : DataLayerSettings.ConfigurationSystemCountry.RegExFiscalNumber, requireFiscalNumber)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_CARDNUMBER_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.CardNumber", (customer != null && customer.CardNumber != null) ? customer.CardNumber : string.Empty, SettingsApp.RegexAlfaNumericExtended, false)
+                    new ProcessFinanceDocumentValidationField("Customer.CardNumber", (customer != null && customer.CardNumber != null) ? customer.CardNumber : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_DISCOUNT_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer.Discount", (customer != null) ? customer.Discount : 0.0m, SettingsApp.RegexPercentage, true)
+                    new ProcessFinanceDocumentValidationField("Customer.Discount", (customer != null) ? customer.Discount : 0.0m, SharedSettings.RegexPercentage, true)
                 );
                 //P4
                 if (pParameters.ShipTo != null && countryShipTo != null)
                 {
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_ADDRESS_DETAIL_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.AddressDetail", (pParameters.ShipTo != null) ? pParameters.ShipTo.AddressDetail : string.Empty, SettingsApp.RegexAlfaNumericExtended, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.AddressDetail", (pParameters.ShipTo != null) ? pParameters.ShipTo.AddressDetail : string.Empty, SharedSettings.RegexAlfaNumericExtended, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_REGION_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.Region", (pParameters.ShipTo != null) ? pParameters.ShipTo.Region : string.Empty, SettingsApp.RegexAlfa, false)
+                        new ProcessFinanceDocumentValidationField("ShipTo.Region", (pParameters.ShipTo != null) ? pParameters.ShipTo.Region : string.Empty, SharedSettings.RegexAlfa, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_POSTALCODE_INVALID,
                         new ProcessFinanceDocumentValidationField("ShipTo.PostalCode", (pParameters.ShipTo != null) ? pParameters.ShipTo.PostalCode : string.Empty, countryShipTo.RegExZipCode, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_CITY_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.City", (pParameters.ShipTo != null) ? pParameters.ShipTo.City : string.Empty, SettingsApp.RegexAlfa, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.City", (pParameters.ShipTo != null) ? pParameters.ShipTo.City : string.Empty, SharedSettings.RegexAlfa, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_COUNTRY_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.Country", (pParameters.ShipTo != null) ? pParameters.ShipTo.CountryGuid : Guid.Empty, SettingsApp.RegexGuid, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.Country", (pParameters.ShipTo != null) ? pParameters.ShipTo.CountryGuid : Guid.Empty, SharedSettings.RegexGuid, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_DELIVERYDATE_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryDate", (pParameters.ShipTo != null && pParameters.ShipTo.DeliveryDate != DateTime.MinValue) ? pParameters.ShipTo.DeliveryDate.ToString(SettingsApp.DateTimeFormat) : string.Empty, SettingsApp.RegexDateTime, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryDate", (pParameters.ShipTo != null && pParameters.ShipTo.DeliveryDate != DateTime.MinValue) ? pParameters.ShipTo.DeliveryDate.ToString(SharedSettings.DateTimeFormat) : string.Empty, SharedSettings.RegexDateTime, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_DELIVERYID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryID", (pParameters.ShipTo != null) ? pParameters.ShipTo.DeliveryID : string.Empty, SettingsApp.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipTo.DeliveryID", (pParameters.ShipTo != null) ? pParameters.ShipTo.DeliveryID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_WAREHOUSEID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.WarehouseID", (pParameters.ShipTo != null) ? pParameters.ShipTo.WarehouseID : string.Empty, SettingsApp.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipTo.WarehouseID", (pParameters.ShipTo != null) ? pParameters.ShipTo.WarehouseID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPTO_LOCATIONID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipTo.LocationID", (pParameters.ShipTo != null) ? pParameters.ShipTo.LocationID : string.Empty, SettingsApp.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipTo.LocationID", (pParameters.ShipTo != null) ? pParameters.ShipTo.LocationID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
                     );
                 }
                 //P5
                 if (pParameters.ShipTo != null && countryShipFrom != null)
                 {
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_ADDRESS_DETAIL_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.AddressDetail", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.AddressDetail : string.Empty, SettingsApp.RegexAlfaNumericExtended, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.AddressDetail", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.AddressDetail : string.Empty, SharedSettings.RegexAlfaNumericExtended, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_REGION_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.Region", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.Region : string.Empty, SettingsApp.RegexAlfa, false)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.Region", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.Region : string.Empty, SharedSettings.RegexAlfa, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_POSTALCODE_INVALID,
                         new ProcessFinanceDocumentValidationField("ShipFrom.PostalCode", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.PostalCode : string.Empty, countryShipFrom.RegExZipCode, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_CITY_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.City", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.City : string.Empty, SettingsApp.RegexAlfa, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.City", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.City : string.Empty, SharedSettings.RegexAlfa, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_COUNTRY_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.Country", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.CountryGuid : Guid.Empty, SettingsApp.RegexGuid, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.Country", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.CountryGuid : Guid.Empty, SharedSettings.RegexGuid, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYDATE_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", (pParameters.ShipFrom != null && pParameters.ShipFrom.DeliveryDate != DateTime.MinValue) ? pParameters.ShipFrom.DeliveryDate.ToString(SettingsApp.DateTimeFormat) : string.Empty, SettingsApp.RegexDateTime, requiredWayBillModeFields)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", (pParameters.ShipFrom != null && pParameters.ShipFrom.DeliveryDate != DateTime.MinValue) ? pParameters.ShipFrom.DeliveryDate.ToString(SharedSettings.DateTimeFormat) : string.Empty, SharedSettings.RegexDateTime, requiredWayBillModeFields)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.DeliveryID : string.Empty, SettingsApp.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.DeliveryID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_WAREHOUSEID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.WarehouseID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.WarehouseID : string.Empty, SettingsApp.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.WarehouseID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.WarehouseID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
                     );
                     _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_LOCATIONID_INVALID,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.LocationID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.LocationID : string.Empty, SettingsApp.RegexAlfaNumericExtended, false)
+                        new ProcessFinanceDocumentValidationField("ShipFrom.LocationID", (pParameters.ShipFrom != null) ? pParameters.ShipFrom.LocationID : string.Empty, SharedSettings.RegexAlfaNumericExtended, false)
                     );
                 }
 
@@ -488,7 +490,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (deliveryDate < shippingDate)
                     {
                         _fields.Add(FinanceValidationError.ERROR_FIELD_SHIPFROM_DELIVERYDATE_BEFORE_SHIPPINGDATE,
-                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", string.Empty, SettingsApp.RegexDateTime, true));
+                        new ProcessFinanceDocumentValidationField("ShipFrom.DeliveryDate", string.Empty, SharedSettings.RegexDateTime, true));
                     }
                 }
 
@@ -497,32 +499,32 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_OID_INVALID,
-                    new ProcessFinanceDocumentValidationField("Oid", null, SettingsApp.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Oid", null, SharedSettings.RegexGuid, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_CODE_INVALID,
-                    new ProcessFinanceDocumentValidationField("Code", null, SettingsApp.RegexAlfaNumericArticleCode, true)
+                    new ProcessFinanceDocumentValidationField("Code", null, SharedSettings.RegexAlfaNumericArticleCode, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_DESIGNATION_INVALID,
-                    new ProcessFinanceDocumentValidationField("Designation", null, SettingsApp.RegexAlfaNumericExtended, true)
+                    new ProcessFinanceDocumentValidationField("Designation", null, SharedSettings.RegexAlfaNumericExtended, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_PRICE_INVALID,
                     new ProcessFinanceDocumentValidationField("Price", null, regExArticlePrice, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_QUANTITY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Quantity", null, SettingsApp.RegexDecimalGreaterEqualThanZero, true)
+                    new ProcessFinanceDocumentValidationField("Quantity", null, SharedSettings.RegexDecimalGreaterEqualThanZero, true)
                 );
                 //Removed : Framework LogicErp dont send ACRONYM : Search all ERROR_FIELD_ARTICLE_UNIT_MEASURE_ACRONYM_INVALID occurences
                 //_fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_UNIT_MEASURE_ACRONYM_INVALID,
                 //    new ProcessFinanceDocumentValidationField("UnitMeasure.Acronym", null, SettingsApp.RegexAlfaNumeric, true)
                 //);
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_DISCOUNT_INVALID,
-                    new ProcessFinanceDocumentValidationField("Discount", null, SettingsApp.RegexPercentage, true)
+                    new ProcessFinanceDocumentValidationField("Discount", null, SharedSettings.RegexPercentage, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_VAT_RATE_INVALID,
-                    new ProcessFinanceDocumentValidationField("VatRate", null, SettingsApp.RegexPercentage, true)
+                    new ProcessFinanceDocumentValidationField("VatRate", null, SharedSettings.RegexPercentage, true)
                 );
                 _fieldsArticle.Add(FinanceValidationError.ERROR_FIELD_ARTICLE_VAT_EXEMPTION_REASON_INVALID,
-                    new ProcessFinanceDocumentValidationField("VatExemptionReason", null, SettingsApp.RegexGuid, false)
+                    new ProcessFinanceDocumentValidationField("VatExemptionReason", null, SharedSettings.RegexGuid, false)
                 );
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::            
@@ -538,7 +540,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-                if (GlobalFramework.LoggedTerminal == null)
+                if (DataLayerFramework.LoggedTerminal == null)
                 {
                     ResultAdd(FinanceValidationError.ERROR_RULE_loggerGED_TERMINAL_INVALID);
                 }
@@ -547,7 +549,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //Required a Valid LoggedTerminal
 
                 fin_documentfinanceseries documentFinanceSerie = null;
-                if (GlobalFramework.LoggedTerminal != null)
+                if (DataLayerFramework.LoggedTerminal != null)
                 {
                     documentFinanceSerie = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType).Serie;
                 }
@@ -563,9 +565,9 @@ namespace logicpos.financial.library.Classes.Finance
                 switch (pParameters.SourceMode)
                 {
                     case PersistFinanceDocumentSourceMode.CurrentOrderMain:
-                        if (GlobalFramework.SessionApp == null
-                            || GlobalFramework.SessionApp.OrdersMain == null
-                            || GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid] == null
+                        if (SharedFramework.SessionApp == null
+                            || SharedFramework.SessionApp.OrdersMain == null
+                            || SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid] == null
                         )
                         {
                             ResultAdd(FinanceValidationError.ERROR_RULE_SOURCE_MODE_ORDERMAIN_EMPTY);
@@ -590,9 +592,9 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Customer <> ParentDocument.Customer (And ConferenceDocument)
 				// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
-                if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument)
+                if (customer != null && customerParentDocument != null && customer != customerParentDocument && documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                 {
-                    if (!SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice))
+                    if (!SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid) && (documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice || documentParent.DocumentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_PARENT_DOCUMENT_CUSTOMER_AND_CURRENT_DOCUMENT_CUSTOMER_INVALID);
                     }                       
@@ -646,9 +648,9 @@ namespace logicpos.financial.library.Classes.Finance
 
                 if (pParameters.PaymentCondition == Guid.Empty &&
                     (
-                        pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeInvoice ||
-                        pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice ||
-                        pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeBudget
+                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
+                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
+                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeBudget
                     )
                 )
                 {
@@ -660,8 +662,8 @@ namespace logicpos.financial.library.Classes.Finance
 
                 if (pParameters.PaymentMethod == Guid.Empty &&
                     (
-                        pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                        pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment
+                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                        pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment
                     )
                 )
                 {
@@ -671,7 +673,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //SimplifiedInvoice
 
-                if (pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice)
+                if (pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice)
                 {
                     //Check if SimplifiedInvoice is Service Total > MaxTotalServices
                     if (pParameters.ArticleBag.GetClassTotals("S") > financeRuleSimplifiedInvoiceMaxTotalServices)
@@ -690,13 +692,13 @@ namespace logicpos.financial.library.Classes.Finance
                 //ParentDocuments
 
                 //Get Valid Parent Documents
-                Guid[] validParentDocuments = FrameworkUtils.GetDocumentTypeValidSourceDocuments(pParameters.DocumentType);
+                Guid[] validParentDocuments = FinancialLibraryUtils.GetDocumentTypeValidSourceDocuments(pParameters.DocumentType);
 
                 //If has a ParentDocument, Check if is a Valid One for current document type, else trigger Error
                 if (documentParent != null && !validParentDocuments.Contains<Guid>(documentParent.DocumentType.Oid))
                 {
                     //If Moçambique Ignore - Moçambique - Pedidos da reunião 13/10/2020 [IN:014327]
-                    if (SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                    if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_PARENT_DOCUMENT_INVALID);
                     }
@@ -704,7 +706,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //ParentDocuments: Credit Note
-                if (pParameters.DocumentType == SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
+                if (pParameters.DocumentType == SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
                 {
                     if (documentParent == null)
                     {
@@ -739,7 +741,7 @@ namespace logicpos.financial.library.Classes.Finance
                             }
                         }
 
-                        if (FrameworkUtils.GetCreditNoteValidation(documentParent, pParameters.ArticleBag))
+                        if (FinancialLibraryUtils.GetCreditNoteValidation(documentParent, pParameters.ArticleBag))
                         {
                             hasArticlesQuantityGreaterThanUnCredit = true;
                         }
@@ -753,16 +755,16 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //ParentDocument : Customer <> ParentDocument Customer
 
-                if (documentType != null && customer != null && customer.Oid == SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                if (documentType != null && customer != null && customer.Oid == SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
                     && (
-                        documentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoice
-                        && documentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice
-                        && documentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument
+                        documentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice
+                        && documentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                        && documentType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument
                         )
                     )
                 {
                     //Has an Exception to base Rule, is Valid if is Derived from a Parent Document 
-                    if (documentParent != null && documentParent.EntityOid != SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity)
+                    if (documentParent != null && documentParent.EntityOid != SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity)
                     {
                         ResultAdd(FinanceValidationError.ERROR_RULE_DOCUMENT_FINANCE_TYPE_WITH_FINAL_CONSUMER_INVALID);
                     }
@@ -774,12 +776,12 @@ namespace logicpos.financial.library.Classes.Finance
                 if (documentType != null && customer != null
                     &&
                     (
-                        documentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoice ||
-                        documentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                        documentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                        documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
+                        documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                        documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                     )
                     &&
-                    FrameworkUtils.IsInValidFinanceDocumentCustomer(
+                    FinancialLibraryUtils.IsInValidFinanceDocumentCustomer(
                         pParameters.ArticleBag.TotalFinal,
                         customer.Name,
                         customer.Address,
@@ -796,7 +798,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
                 //Customer Card: Amount Invalid and Recharge Card Invalid
 
-                if (!FrameworkUtils.IsCustomerCardValidForArticleBag(pParameters.ArticleBag, customer))
+                if (!FinancialLibraryUtils.IsCustomerCardValidForArticleBag(pParameters.ArticleBag, customer))
                 {
                     ResultAdd(FinanceValidationError.ERROR_RULE_CUSTOMER_CARD_RECHARGE_CARD_ARTICLE_DETECTED_WITH_CUSTOMER_CARD_INVALID);
                 }
@@ -857,13 +859,13 @@ namespace logicpos.financial.library.Classes.Finance
             {
                 //Get XPGuidObjects from Parameters
                 erp_customer customer = (pCustomer != null && pCustomer != Guid.Empty)
-                    ? (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), pCustomer)
+                    ? (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), pCustomer)
                     : null;
                 fin_configurationpaymentmethod paymentMethod = (pPaymentMethod != null && pPaymentMethod != Guid.Empty)
-                    ? (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_configurationpaymentmethod), pPaymentMethod)
+                    ? (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_configurationpaymentmethod), pPaymentMethod)
                     : null;
                 cfg_configurationcurrency currency = (pConfigurationCurrency != null && pConfigurationCurrency != Guid.Empty)
-                    ? (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcurrency), pConfigurationCurrency)
+                    ? (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcurrency), pConfigurationCurrency)
                     : null;
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -871,19 +873,19 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CUSTOMER_INVALID,
-                    new ProcessFinanceDocumentValidationField("Customer", customer.Oid, SettingsApp.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Customer", customer.Oid, SharedSettings.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_PAYMENT_METHOD_INVALID,
-                    new ProcessFinanceDocumentValidationField("PaymentMethod", paymentMethod.Oid, SettingsApp.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("PaymentMethod", paymentMethod.Oid, SharedSettings.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_CURRENCY_INVALID,
-                    new ProcessFinanceDocumentValidationField("Currency", currency.Oid, SettingsApp.RegexGuid, true)
+                    new ProcessFinanceDocumentValidationField("Currency", currency.Oid, SharedSettings.RegexGuid, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_PAYMENT_AMOUNT_INVALID,
-                    new ProcessFinanceDocumentValidationField("PaymentAmount", pPaymentAmount, SettingsApp.RegexDecimalGreaterEqualThanZero, true)
+                    new ProcessFinanceDocumentValidationField("PaymentAmount", pPaymentAmount, SharedSettings.RegexDecimalGreaterEqualThanZero, true)
                 );
                 _fields.Add(FinanceValidationError.ERROR_FIELD_NOTES_INVALID,
-                    new ProcessFinanceDocumentValidationField("Notes", pPaymentNotes, SettingsApp.RegexAlfaNumericExtended, false)
+                    new ProcessFinanceDocumentValidationField("Notes", pPaymentNotes, SharedSettings.RegexAlfaNumericExtended, false)
                 );
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::            
@@ -891,7 +893,7 @@ namespace logicpos.financial.library.Classes.Finance
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
                 //Validate Invoice Documents
-                List<Guid> validCustomerPaymentInvoices = FrameworkUtils.GetValidDocumentsForPayment(customer.Oid, SettingsApp.XpoOidDocumentFinanceTypeInvoice);
+                List<Guid> validCustomerPaymentInvoices = FinancialLibraryUtils.GetValidDocumentsForPayment(customer.Oid, SharedSettings.XpoOidDocumentFinanceTypeInvoice);
                 foreach (var item in pInvoices)
                 {
                     if (!validCustomerPaymentInvoices.Contains(item.Oid)
@@ -903,7 +905,7 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Validate Invoice Documents
-                List<Guid> validCustomerPaymentCreditNotes = FrameworkUtils.GetValidDocumentsForPayment(customer.Oid, SettingsApp.XpoOidDocumentFinanceTypeCreditNote);
+                List<Guid> validCustomerPaymentCreditNotes = FinancialLibraryUtils.GetValidDocumentsForPayment(customer.Oid, SharedSettings.XpoOidDocumentFinanceTypeCreditNote);
                 foreach (var item in pCreditNotes)
                 {
                     if (!validCustomerPaymentCreditNotes.Contains(item.Oid)
@@ -940,7 +942,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (customer.Oid != item.EntityOid) hasDocumentsDiferentFromTargetCustomer = true;
                     //TotalInvoicesDebit
                     sqlInvoices = string.Format(sqlInvoicesBase, item.Oid);
-                    sqlResult = GlobalFramework.SessionXpo.ExecuteScalar(sqlInvoices);
+                    sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sqlInvoices);
                     totalInvoicesDebit += (sqlResult != null) ? Convert.ToDecimal(sqlResult) : item.TotalFinal;
                 }
 
@@ -959,7 +961,7 @@ namespace logicpos.financial.library.Classes.Finance
 
                 //Calc Diferences
                 totalDocumentsDiference = (totalInvoicesDebit - totalCreditNotes);
-                totalPaymentDiference = Math.Round(totalDocumentsDiference - paymentAmount, SettingsApp.DecimalRoundTo);
+                totalPaymentDiference = Math.Round(totalDocumentsDiference - paymentAmount, SharedSettings.DecimalRoundTo);
 
                 if (_debug) _logger.Debug(string.Format(
                     "PaymentAmount: [{0}], InvoicesDebit: [{1}], CreditNotes: [{2}], DocumentsDiference: [{3}], PaymentDiference:[{4}]",
@@ -1063,7 +1065,7 @@ namespace logicpos.financial.library.Classes.Finance
                     _logger.Debug("BREAKPOINT");
                 }
 
-                bool result = FrameworkUtils.Validate(value, item.Value.Rule, item.Value.Required);
+                bool result = SharedUtils.Validate(value, item.Value.Rule, item.Value.Required);
 
                 //Extra Validation for types that have more than RegEx Requirements
                 if (result && item.Key == FinanceValidationError.ERROR_FIELD_CUSTOMER_FISCAL_NUMBER_INVALID)
@@ -1136,17 +1138,17 @@ namespace logicpos.financial.library.Classes.Finance
                     validationFieldVat.Value = item.Key.Vat;
                     validationFieldVatExemptionReason.Value = item.Key.VatExemptionReasonOid;
                     //Validate ValidationField: Oid
-                    if (!FrameworkUtils.Validate(validationFieldOid.Value.ToString(), validationFieldOid.Rule, validationFieldOid.Required))
+                    if (!SharedUtils.Validate(validationFieldOid.Value.ToString(), validationFieldOid.Rule, validationFieldOid.Required))
                     {
                         hasArticlesWithInvalidOid = true;
                     }
                     //Validate ValidationField: Code
-                    if (!FrameworkUtils.Validate(validationFieldCode.Value.ToString(), validationFieldCode.Rule, validationFieldCode.Required))
+                    if (!SharedUtils.Validate(validationFieldCode.Value.ToString(), validationFieldCode.Rule, validationFieldCode.Required))
                     {
                         hasArticlesWithInvalidCode = true;
                     }
                     //Validate ValidationField: Designation
-                    if (!FrameworkUtils.Validate(validationFieldDesignation.Value.ToString(), validationFieldDesignation.Rule, validationFieldDesignation.Required))
+                    if (!SharedUtils.Validate(validationFieldDesignation.Value.ToString(), validationFieldDesignation.Rule, validationFieldDesignation.Required))
                     {
                         hasArticlesWithInvalidDesignation = true;
                     }
@@ -1166,17 +1168,17 @@ namespace logicpos.financial.library.Classes.Finance
                     //    hasArticlesWithInvalidUnitMeasureAcronym = true;
                     //}
                     //Validate ValidationField: Discount
-                    if (!FrameworkUtils.Validate(validationFieldDiscount.Value.ToString(), validationFieldDiscount.Rule, validationFieldDiscount.Required))
+                    if (!SharedUtils.Validate(validationFieldDiscount.Value.ToString(), validationFieldDiscount.Rule, validationFieldDiscount.Required))
                     {
                         hasArticlesWithInvalidDiscount = true;
                     }
                     //Validate ValidationField: Vat
-                    if (!FrameworkUtils.Validate(validationFieldVat.Value.ToString(), validationFieldVat.Rule, validationFieldVat.Required))
+                    if (!SharedUtils.Validate(validationFieldVat.Value.ToString(), validationFieldVat.Rule, validationFieldVat.Required))
                     {
                         hasArticlesWithInvalidVat = true;
                     }
                     //Validate ValidationField: VatExemptionReason
-                    if (!FrameworkUtils.Validate(validationFieldVatExemptionReason.Value.ToString(), validationFieldVatExemptionReason.Rule, (item.Key.Vat == 0.0m)))
+                    if (!SharedUtils.Validate(validationFieldVatExemptionReason.Value.ToString(), validationFieldVatExemptionReason.Rule, (item.Key.Vat == 0.0m)))
                     {
                         hasArticlesWithInvalidVatExemptionReason = true;
                     }
@@ -1184,7 +1186,7 @@ namespace logicpos.financial.library.Classes.Finance
                     //Rules Validation
 
                     //If is a ConsignationInvoice all Articles must have VatRateDutyFree Vat
-                    if (pDocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice)
+                    if (pDocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice)
                     {
                         if (item.Key.Vat != 0.0m)
                         {
@@ -1192,7 +1194,7 @@ namespace logicpos.financial.library.Classes.Finance
                             hasArticlesWithoutVatRateDutyFree = true;
                         }
 
-                        if (item.Key.VatExemptionReasonOid != SettingsApp.XpoOidConfigurationVatExemptionReasonM99)
+                        if (item.Key.VatExemptionReasonOid != SharedSettings.XpoOidConfigurationVatExemptionReasonM99)
                         {
                             hasArticlesWithInvalidVatExemptionReason = true;
                             hasArticlesWithoutVatExemptionReasonM99 = true;

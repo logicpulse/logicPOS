@@ -1,9 +1,11 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,7 +29,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         }
 
         public ThermalPrinterBaseFinanceTemplate(sys_configurationprinters pPrinter, fin_documentfinancetype pDocumentType, List<int> pCopyNames, bool pSecondCopy)
-            : base(pPrinter, SettingsApp.PrinterThermalImageCompanyLogo)
+            : base(pPrinter, SharedSettings.PrinterThermalImageCompanyLogo)
         {
             //Assign Parameter Properties
             _documentType = pDocumentType;
@@ -50,15 +52,15 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 for (int i = 0; i < _copyNames.Count; i++)
                 {
                     //Call Base Template PrintHeader
-                    base.PrintHeader();
+                    PrintHeader();
                     //PrintExtendedHeader
                     PrintExtendedHeader();
 
                     //Get CopyName Position, ex 0[Original], 4[Quadriplicate], we cant use I, else 0[Original], 1[Duplicate]
                     int copyNameIndex = _copyNames[i] + 1;
                     //Overrided by Child Classes
-                    _copyName = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_print_copy_title{0}", copyNameIndex));
-                    if (_secondCopy && i < 1) _copyName = string.Format("{0}/{1}", _copyName, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_print_second_print"));
+                    _copyName = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_print_copy_title{0}", copyNameIndex));
+                    if (_secondCopy && i < 1) _copyName = string.Format("{0}/{1}", _copyName, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_print_second_print"));
                     //_logger.Debug(String.Format("copyName: [{0}], copyNameIndex: [{1}]", _copyName, copyNameIndex));
 
                     //Call Child Content (Overrided)
@@ -68,7 +70,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     PrintFooterExtended();
 
                     //Call Base Template PrintFooter
-                    base.PrintFooter();
+                    PrintFooter();
                 }
 
                 //End Job
@@ -95,12 +97,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
             _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
 			/* IN009055 block */
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
-            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
-            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fax, _customVars["COMPANY_FAX"]);
-            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email"), _customVars["COMPANY_EMAIL"]);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
+            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
+            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fax, _customVars["COMPANY_FAX"]);
+            //_thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"), _customVars["COMPANY_EMAIL"]);
             _thermalPrinterGeneric.WriteLine(_customVars["COMPANY_WEBSITE"], false); /* IN009211 */
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "prefparam_company_fiscalnumber"), _customVars["COMPANY_FISCALNUMBER"]);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "prefparam_company_fiscalnumber"), _customVars["COMPANY_FISCALNUMBER"]);
             _thermalPrinterGeneric.LineFeed();
 
             //Reset to Left
@@ -111,7 +113,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         protected void PrintDocumentMaster(string pDocumentTypeResourceString, string pDocumentID, string pDocumentDateTime)
         {
             //Call Base PrintTitle()
-            base.PrintTitles(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], pDocumentTypeResourceString), pDocumentID);
+            PrintTitles(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], pDocumentTypeResourceString), pDocumentID);
 
             //Set Align Center
             _thermalPrinterGeneric.SetAlignCenter();
@@ -133,16 +135,16 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             string name = pName;
 
             /* IN009055: pFiscalNumber real value is overwritten by GetFRBOFinancePayment(Guid pDocumentFinancePaymentOid) method */
-            if (SettingsApp.FinanceFinalConsumerFiscalNumberDisplay.Equals(pFiscalNumber) || SettingsApp.FinanceFinalConsumerFiscalNumber.Equals(pFiscalNumber))
+            if (SharedSettings.FinanceFinalConsumerFiscalNumberDisplay.Equals(pFiscalNumber) || SharedSettings.FinanceFinalConsumerFiscalNumber.Equals(pFiscalNumber))
             {
                 //fiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
                 fiscalNumber = string.Empty; /* show the Fical Number display value is not necessary */
-                name = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_final_consumer");
+                name = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_final_consumer");
             }
 
 			/* IN009055 block - begin */
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer"), name, false);
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_address"), pAddress, false);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), name, false);
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), pAddress, false);
 
             string addressDetails = pCountry;
 
@@ -159,7 +161,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 addressDetails = string.Format("{0} - {1}", pCity, pCountry);
             }
             _thermalPrinterGeneric.WriteLine(addressDetails, false); /* When FS, no details */
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), fiscalNumber, false); /* Do not print Fiscal Number when empty */
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), fiscalNumber, false); /* Do not print Fiscal Number when empty */
             /* IN009055  block - end */
             _thermalPrinterGeneric.LineFeed();
         }
@@ -200,7 +202,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             if (!string.IsNullOrEmpty(pPaymentCondition))
             {
                 dataRow = dataTable.NewRow();
-                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_conditions");
+                dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_conditions");
                 dataRow[1] = pPaymentCondition;
                 dataTable.Rows.Add(dataRow);
             }
@@ -208,13 +210,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             if (!string.IsNullOrEmpty(pPaymentMethod))
             {
                 dataRow = dataTable.NewRow();
-                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_method_field"); /* IN009055 */
+                dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_method_field"); /* IN009055 */
                 dataRow[1] = pPaymentMethod;
                 dataTable.Rows.Add(dataRow);
             }
             //Add Row : Currency
             dataRow = dataTable.NewRow();
-            dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_currency_field"); /* IN009055 */
+            dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency_field"); /* IN009055 */
             dataRow[1] = pCurrency;
             dataTable.Rows.Add(dataRow);
 
@@ -242,7 +244,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             //Differ from Payments and Other Document Types
-            string message = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], pDocumentTypeMessage);
+            string message = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], pDocumentTypeMessage);
             if (pDocumentTypeMessage != string.Empty && message != null) _thermalPrinterGeneric.WriteLine(message);
 
             //Line Feed
@@ -309,7 +311,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             _thermalPrinterGeneric.SetBarcodeWidth(4);
-            _thermalPrinterGeneric.PrintBarcode(logicpos.printer.generic.ThermalPrinter.BarcodeType.qrcode, myData);
+            _thermalPrinterGeneric.PrintBarcode(printer.generic.ThermalPrinter.BarcodeType.qrcode, myData);
             _thermalPrinterGeneric.SetBarcodeWidth(2);
             _thermalPrinterGeneric.LineFeed();
             _thermalPrinterGeneric.LineFeed();
@@ -351,25 +353,25 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
             /* IN009211 */
             string copyRightText = string.Format(
-                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_copyright") + " {0}",
-                SettingsApp.SaftProductID
+                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_copyright") + " {0}",
+                SharedSettings.SaftProductID
             );
 
             string certificationText;
 
             //Write Certification,CopyRight and License Text 
-            if (SettingsApp.XpoOidConfigurationCountryPortugal.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+            if (SharedSettings.XpoOidConfigurationCountryPortugal.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
                 string prefix = (_documentType.SaftDocumentType == SaftDocumentType.Payments)
-                    ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted")
-                    : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
+                    ? resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_emitted")
+                    : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
                 ;
                 //Processed|Emitted with certified Software Nº {0}/AT
                 certificationText = string.Format(
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification"),
                     prefix,
-                    SettingsApp.SaftSoftwareCertificateNumber
+                    SharedSettings.SaftSoftwareCertificateNumber
                 );
 
                 //Add Hash Validation if Defined (In DocumentFinance Only)
@@ -379,34 +381,34 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 }
             }
             /* IN005975 and IN005979 for Mozambique deployment */
-            else if (SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+            else if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
             {/* IN009055 - related to IN006047 */
 				/* {Processado por computador} || Autorização da Autoridade Tributária: {DAFM1 - 0198 / 2018} */
                 certificationText = string.Format(
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_short"),
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_moz_tax_authority_cert_number") + "\n" + 
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_short"),
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_moz_tax_authority_cert_number") + "\n" + 
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed")
                  );
             }
 			//TK016268 Angola - Certificação 
-            else if (SettingsApp.XpoOidConfigurationCountryAngola.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+            else if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
-                string prefix = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"); ;
+                string prefix = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed"); ;
                 //Current Year
                 string localDate = DateTime.Now.Year.ToString();
                 //Processed|Emitted with certified Software Nº {0}/AT
                 certificationText = string.Format(
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_ao"),
                     prefix,
-                    SettingsApp.SaftSoftwareCertificateNumberAO,
-                    SettingsApp.SaftProductIDAO,
+                    SharedSettings.SaftSoftwareCertificateNumberAO,
+                    SharedSettings.SaftProductIDAO,
                     localDate);  
             }
 
             else {
 				/* All other countries: "Processado por computador" */
-                certificationText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed");
+                certificationText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_report_overlay_software_certification_processed");
             }
 
             _thermalPrinterGeneric.WriteLine(certificationText, WriteLineTextMode.Small);
@@ -414,11 +416,11 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.WriteLine(copyRightText, WriteLineTextMode.Small);
 
             /* IN009211 - it was printing empty label */
-            if (!string.IsNullOrEmpty(GlobalFramework.LicenceCompany))
+            if (!string.IsNullOrEmpty(SharedFramework.LicenseCompany))
             {
                 string licenseText = string.Format(
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_licensed_to"),
-                    GlobalFramework.LicenceCompany
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_licensed_to"),
+                    SharedFramework.LicenseCompany
             );
                 _thermalPrinterGeneric.WriteLine(licenseText, WriteLineTextMode.Small);
             }

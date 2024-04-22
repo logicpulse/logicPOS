@@ -1,19 +1,18 @@
 ﻿using DevExpress.Data.Filtering;
-using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.Extensions;
+using logicpos.shared.App;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -93,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", (_dataSourceRow as fin_articlestock).Customer, criteriaOperatorSupplier, SettingsApp.RegexGuid, true, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", (_dataSourceRow as fin_articlestock).Customer, criteriaOperatorSupplier, SharedSettings.RegexGuid, true, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -106,9 +105,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 //_entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), (_dataSourceRow as fin_articlestock).Date, SettingsApp.RegexDate, true, SettingsApp.DateFormat, true);
+                _entryBoxDocumentDateIn = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), (_dataSourceRow as fin_articlestock).Date, SharedSettings.RegexDate, true, SharedSettings.DateFormat, true);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
-                _entryBoxDocumentDateIn.EntryValidation.Text = (_dataSourceRow as fin_articlestock).Date.ToString(SettingsApp.DateFormat);
+                _entryBoxDocumentDateIn.EntryValidation.Text = (_dataSourceRow as fin_articlestock).Date.ToString(SharedSettings.DateFormat);
                 _entryBoxDocumentDateIn.EntryValidation.Validate();
                 _entryBoxDocumentDateIn.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
                 //_entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
@@ -117,10 +116,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
 
                 //DocumentNumber
-                Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                string _fileIconListFinanceDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
+                Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                string _fileIconListFinanceDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
                 HBox hBoxDocument = new HBox(false, 0);
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false, true);
+                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
                 if ((_dataSourceRow as fin_articlestock).DocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = (_dataSourceRow as fin_articlestock).DocumentNumber;
                 //_entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
@@ -130,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 vboxTab3.PackStart(_entryBoxDocumentNumber, false, false, 0);
 
                 //Quantity
-                _entryBoxQuantity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"), KeyboardMode.None, SettingsApp.RegexDecimal, false, true);
+                _entryBoxQuantity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"), KeyboardMode.None, SharedSettings.RegexDecimal, false, true);
                 _entryBoxQuantity.WidthRequest = 40;
                 _entryBoxQuantity.EntryValidation.Text = (_dataSourceRow as fin_articlestock).Quantity.ToString();
                 _entryBoxQuantity.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
@@ -139,7 +138,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 vboxTab3.PackStart(_entryBoxQuantity, false, false, 0);
 
                 //Price
-                _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SettingsApp.RegexDecimal, false, true);
+                _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimal, false, true);
                 _entryBoxPrice1.WidthRequest = 40;
                 _entryBoxPrice1.EntryValidation.Text = (_dataSourceRow as fin_articlestock).PurchasePrice.ToString();
                 _entryBoxPrice1.Sensitive = ((_dataSourceRow as fin_articlestock).DocumentMaster == null);
@@ -149,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
 
                 //SerialNumber 
-                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, "Número de série", "SerialNumber", "Oid", (_dataSourceRow as fin_articlestock).ArticleSerialNumber, null, SettingsApp.RegexGuid, true, true);
+                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, "Número de série", "SerialNumber", "Oid", (_dataSourceRow as fin_articlestock).ArticleSerialNumber, null, SharedSettings.RegexGuid, true, true);
                 _entryBoxArticleSerialNumber.EntryValidation.IsEditable = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.InlineCompletion = false;
@@ -161,7 +160,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 _notebook.AppendPage(vboxTab3, new Label("Movimento de Entrada"));
 
-                base.buttonOk.Clicked += ButtonOk_Clicked;
+                buttonOk.Clicked += ButtonOk_Clicked;
 
             }
             catch (System.Exception ex)
@@ -179,14 +178,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 {
                     (_dataSourceRow as fin_articlestock).Customer = _entryBoxSelectSupplier.Value;
                     (_dataSourceRow as fin_articlestock).DocumentNumber = _entryBoxDocumentNumber.EntryValidation.Text;
-                    (_dataSourceRow as fin_articlestock).PurchasePrice = FrameworkUtils.StringToDecimal(_entryBoxPrice1.EntryValidation.Text);
+                    (_dataSourceRow as fin_articlestock).PurchasePrice = SharedUtils.StringToDecimal(_entryBoxPrice1.EntryValidation.Text);
                     (_dataSourceRow as fin_articlestock).Date = _entryBoxDocumentDateIn.Value;
-                    (_dataSourceRow as fin_articlestock).Quantity = FrameworkUtils.StringToDecimal(_entryBoxQuantity.EntryValidation.Text);
+                    (_dataSourceRow as fin_articlestock).Quantity = SharedUtils.StringToDecimal(_entryBoxQuantity.EntryValidation.Text);
                     if (AttachedFile != null) (_dataSourceRow as fin_articlestock).AttachedFile = AttachedFile;
                     (_dataSourceRow as fin_articlestock).Save();
                     _logger.Debug("Sock Moviment In Changed with sucess");
 
-                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), GlobalFramework.ServerVersion));
+                    ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_operation_successfully"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs_short"), SharedFramework.ServerVersion));
                 }
 
             }

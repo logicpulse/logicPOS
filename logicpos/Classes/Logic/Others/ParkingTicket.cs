@@ -1,12 +1,9 @@
 ﻿using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
-using logicpos.shared.Classes.Orders;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System;
-using System.IO;
 using System.Net;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace logicpos.Classes.Logic.Others
 {
@@ -60,27 +57,27 @@ namespace logicpos.Classes.Logic.Others
                 //{
                 //    GlobalApp.WindowPos.TicketList.ArticleNotFound();
                 //}
-                if (GlobalFramework.AppUseParkingTicketModule && parkingTicketResult == null)
+                if (SharedFramework.AppUseParkingTicketModule && parkingTicketResult == null)
                 {
-                    
+
                 }
-                else if (GlobalFramework.AppUseParkingTicketModule && parkingTicketResult.Date == null && ean.Length == 13)
+                else if (SharedFramework.AppUseParkingTicketModule && parkingTicketResult.Date == null && ean.Length == 13)
                 {
                     GlobalApp.PosMainWindow.TicketList.ArticleNotFound();
                 }
-				//IN009279 Parking ticket Service - implementar Cartão cliente
+                //IN009279 Parking ticket Service - implementar Cartão cliente
                 else if (parkingTicketResult.Ean.Length == 13)
                 {
                     GlobalApp.PosMainWindow.UpdateWorkSessionUI();
                     GlobalApp.PosMainWindow.TicketList.UpdateOrderStatusBar();
-                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(SettingsApp.XpoOidArticleParkingTicket, parkingTicketResult);
+                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(SharedSettings.XpoOidArticleParkingTicket, parkingTicketResult);
                 }
                 else
                 {
                     //GlobalApp.WindowPos.UpdateWorkSessionUI();
                     //GlobalApp.WindowPos.TicketList.UpdateOrderStatusBar();
                     //Guid XpoOidArticleParkingCard = Guid.NewGuid();
-                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(SettingsApp.XpoOidArticleParkingCard, parkingTicketResult);
+                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(SharedSettings.XpoOidArticleParkingCard, parkingTicketResult);
                 }
             }
         }
@@ -95,7 +92,7 @@ namespace logicpos.Classes.Logic.Others
         {
             ParkingTicketResult parkingTicketResult = new ParkingTicketResult();
             AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
-			//IN009279 Parking ticket Service - implementar Cartão cliente
+            //IN009279 Parking ticket Service - implementar Cartão cliente
             if (ean.Length == 13)
             {
 
@@ -123,7 +120,7 @@ namespace logicpos.Classes.Logic.Others
             }
             else
             {
-			//IN009279
+                //IN009279
                 if (!accessTrackParkingTicketService.getCardInformation(ean))
                 {
                     DateTime localDate = DateTime.Now;
@@ -132,11 +129,11 @@ namespace logicpos.Classes.Logic.Others
                     accessTrackParkingTicketService.addInCard(ean, dateNow);
                 }
                 string sql = "SELECT Price1 FROM[logicposdb].[dbo].[fin_article] where Oid = '32829702-33fa-48d5-917c-4c1db8720777'";
-                var getCardPrice = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                var getCardPrice = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                 parkingTicketResult.Price = Convert.ToInt32(getCardPrice);
                 parkingTicketResult.Ean = ean;
                 string sql2 = "SELECT DefaultQuantity FROM[logicposdb].[dbo].[fin_article] where Oid = '32829702-33fa-48d5-917c-4c1db8720777'";
-                var getDefaultQuantitysql = GlobalFramework.SessionXpo.ExecuteScalar(sql2);
+                var getDefaultQuantitysql = DataLayerFramework.SessionXpo.ExecuteScalar(sql2);
 
                 int quantity = Convert.ToInt32(getDefaultQuantitysql);
                 parkingTicketResult.Quantity = quantity.ToString();
@@ -165,7 +162,7 @@ namespace logicpos.Classes.Logic.Others
 
             return parkingTicketResult;
         }
-		//IN009279
+        //IN009279
         private static ParkingTicketResult parkingCardInformation(System.Data.DataRow parkingCardInformation)
         {
 

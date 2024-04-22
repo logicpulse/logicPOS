@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationcurrency), "Code");
         }
 
         private uint fOrd;

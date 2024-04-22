@@ -1,10 +1,10 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using System;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System.Drawing;
 using System.IO;
 
@@ -42,7 +42,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosInputTextDialog(Window pSourceWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pInitialValue, string pRule, bool pRequired)
-            :this (pSourceWindow, pDialogFlags, pSize, pWindowTitle, pWindowIcon, pEntryLabel, pInitialValue, KeyboardMode.AlfaNumeric, pRule, pRequired)
+            : this(pSourceWindow, pDialogFlags, pSize, pWindowTitle, pWindowIcon, pEntryLabel, pInitialValue, KeyboardMode.AlfaNumeric, pRule, pRequired)
         {
         }
 
@@ -55,7 +55,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (!File.Exists(pWindowIcon))
             {
-                pWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
+                pWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_system.png");
             }
 
             //Always assign  pInitialValue to Dialog.Value
@@ -79,10 +79,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //ActionArea Buttons
             TouchButtonIconWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             TouchButtonIconWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-			buttonOk.Sensitive = _entryBoxValidation.EntryValidation.Validated;
+            buttonOk.Sensitive = _entryBoxValidation.EntryValidation.Validated;
 
             //After Button Construction
-            _entryBoxValidation.EntryValidation.Changed += delegate { 
+            _entryBoxValidation.EntryValidation.Changed += delegate
+            {
                 _value = _entryBoxValidation.EntryValidation.Text;
                 buttonOk.Sensitive = _entryBoxValidation.EntryValidation.Validated;
             };

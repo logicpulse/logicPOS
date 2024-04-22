@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -33,32 +35,32 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(DataLayerFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_date"), MinWidth = 140 },
-                new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 120 }, /* IN009067 */
+                new GenericTreeViewColumnProperty("Date") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_date"), MinWidth = 140 },
+                new GenericTreeViewColumnProperty("DocumentNumber") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), MinWidth = 120 }, /* IN009067 */
                 //#if (DEBUG)
-                new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_status"), MinWidth = 50, MaxWidth = 50 },
+                new GenericTreeViewColumnProperty("DocumentStatusStatus") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_status"), MinWidth = 50, MaxWidth = 50 },
                 //#endif
                 new GenericTreeViewColumnProperty("EntityName")
                 {
-                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_entity"),
+                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_entity"),
                     MinWidth = 260,
                     MaxWidth = 260,
                     FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
                 new GenericTreeViewColumnProperty("EntityFiscalNumber")
                 {
-                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"),
+                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"),
                     MinWidth = 100,
                     FormatProvider = new FormatterDecrypt() /* IN009075 - FormatterDecrypt() created */
                 }, /* IN009067 */
                 new GenericTreeViewColumnProperty("TotalFinal")
                 { /* IN009166 */
-                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_final"),
+                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_final"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
                     FormatProvider = new FormatterDecimalCurrency(),
@@ -117,7 +119,7 @@ GROUP BY
             columnProperties.Add(new GenericTreeViewColumnProperty("TotalOfCredit")
             {
                 Query = queryForTotalOfCredit,
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
+                Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_total_credit_rc_nc_based"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
@@ -177,17 +179,17 @@ SELECT
 (
 	CASE  
 		WHEN DFM.DocumentType IN (
-            '{SettingsApp.XpoOidDocumentFinanceTypeBudget}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeCreditNote}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeReturnGuide}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide}'
+            '{SharedSettings.XpoOidDocumentFinanceTypeBudget}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide}'
         ) THEN NULL 
 		ELSE (
 			DFM.TotalFinal - (
@@ -262,7 +264,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             {
                 //This Query Exists 3 Locations, Find it and change in all Locations - Required "GROUP BY fmaOid,fmaTotalFinal" to work with SQLServer
                 Query = queryForTotalDebit,
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_debit"),
+                Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_debit"),
                 MinWidth = 100,
                 //Alignment = 1.0F,
                 FormatProvider = new FormatterDecimalCurrency(),
@@ -280,7 +282,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             columnProperties.Add(new GenericTreeViewColumnProperty("RelatedDocuments")
             {
                 Query = relatedDocumentsQuery,
-                Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc"),
+                Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc"),
                 MinWidth = 100
             });
 
@@ -303,7 +305,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             }
             //New Sort collection for pagination created (3/7/19) IN009223 IN009227
             SortingCollection sortCollection = new SortingCollection(sortProperty);
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = SettingsApp.PaginationRowsPerPage * base.CurrentPageNumber, Sorting = sortCollection };
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage * CurrentPageNumber, Sorting = sortCollection };
 
             //Call Base Initializer
             base.InitObject(

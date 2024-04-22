@@ -17,6 +17,8 @@ using logicpos.financial.library.Classes.Stocks;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.financial.library.Classes.Reports;
+using logicpos.shared.App;
+using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -61,7 +63,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             {
                 if(pType == typeof(decimal) && pFieldName == "Price")
                 {
-                    result = !(Math.Round(Convert.ToDecimal(FrameworkUtils.StringToDecimal(Convert.ToString(pSource))),2).Equals(Math.Round(Convert.ToDecimal(FrameworkUtils.StringToDecimal(Convert.ToString(pTarget))),2)));
+                    result = !(Math.Round(Convert.ToDecimal(SharedUtils.StringToDecimal(Convert.ToString(pSource))),2).Equals(Math.Round(Convert.ToDecimal(SharedUtils.StringToDecimal(Convert.ToString(pTarget))),2)));
                 }
                 else
                 {
@@ -170,7 +172,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_validation_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error"), invalidFields));
+                ResponseType response = logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.DestroyWithParent | DialogFlags.Modal, new Size(500, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_validation_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_field_validation_error"), invalidFields));
             };
 
             return result;
@@ -219,14 +221,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 if (!string.IsNullOrEmpty((item.Widget as Entry).Text))
                                 {
-                                    item.SetMemberValue(Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, GlobalFramework.CurrentCultureNumberFormat));
+                                    item.SetMemberValue(Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, SharedFramework.CurrentCultureNumberFormat));
                                 }
                                 else
                                 {
                                     item.SetMemberValue(null);
                                 };
                                 //With Reflection Property
-                                //item.Property.SetValue(item.Source, Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, GlobalFramework.CurrentCultureNumberFormat));
+                                //item.Property.SetValue(item.Source, Convert.ChangeType((item.Widget as Entry).Text, item.FieldType, SharedFramework.CurrentCultureNumberFormat));
                             };
                         }
 
@@ -306,11 +308,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             {
                                 if (!string.IsNullOrEmpty((item.Widget as EntryBoxValidation).EntryValidation.Text))
                                 {
-                                    //_logger.Debug(string.Format("Message1: [{0}/{1}/{2}/{3}]", item.FieldType, item.FieldName, (item.Widget as EntryBoxValidation).EntryValidation.Text, GlobalFramework.CurrentCultureNumberFormat));
+                                    //_logger.Debug(string.Format("Message1: [{0}/{1}/{2}/{3}]", item.FieldType, item.FieldName, (item.Widget as EntryBoxValidation).EntryValidation.Text, SharedFramework.CurrentCultureNumberFormat));
                                     //Extra protection to convert string to Decimal, else may occur errors when work with en-US
                                     if (item.FieldType == typeof(decimal))
                                     {
-                                        item.SetMemberValue(FrameworkUtils.StringToDecimal((item.Widget as EntryBoxValidation).EntryValidation.Text));
+                                        item.SetMemberValue(SharedUtils.StringToDecimal((item.Widget as EntryBoxValidation).EntryValidation.Text));
                                     }
                                     else
                                     {
@@ -424,7 +426,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                logicpos.Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                logicpos.Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                 result = false;
             }
 
@@ -452,7 +454,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         {
             if (pResponse == ResponseType.Ok)
             {
-                if (pDialog.GetType() == typeof(DialogAddArticleStock) && GlobalFramework.LicenceModuleStocks)
+                if (pDialog.GetType() == typeof(DialogAddArticleStock) && SharedFramework.LicenseModuleStocks)
                 {
                     ProcessArticleStockParameter res = DialogAddArticleStock.GetProcessArticleStockParameter(pDialog as DialogAddArticleStock);
                     List<fin_articleserialnumber> barCodeLabelList = new List<fin_articleserialnumber>();
@@ -476,18 +478,18 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                         res.Quantity = 1;
                                         res.SerialNumber = itemS.Key;
                                         res.AssociatedArticles = itemS.Value;
-                                        GlobalFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
+                                        POSFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
                                         string sql = string.Format("SELECT Oid FROM fin_articleserialnumber WHERE SerialNumber = '{0}';", res.SerialNumber.ToString());
-                                        var serialNumberOid = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                                        var serialNumberOid = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                                         if (serialNumberOid != null)
                                         {
-                                            fin_articleserialnumber serialNumber = (fin_articleserialnumber)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(serialNumberOid.ToString()));
+                                            fin_articleserialnumber serialNumber = (fin_articleserialnumber)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(serialNumberOid.ToString()));
                                             barCodeLabelList.Add(serialNumber);
                                         }
                                     }
                                 }
                                 else {
-                                    GlobalFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
+                                    POSFramework.StockManagementModule.Add(ProcessArticleStockMode.In, res);
                                 }
                                 if (barCodeLabelList.Count > 0)
                                 {

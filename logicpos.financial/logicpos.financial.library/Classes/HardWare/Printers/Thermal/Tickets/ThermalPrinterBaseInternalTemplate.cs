@@ -1,6 +1,8 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
@@ -8,7 +10,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
     public abstract class ThermalPrinterBaseInternalTemplate : ThermalPrinterBaseTemplate
     {
         public ThermalPrinterBaseInternalTemplate(sys_configurationprinters pPrinter)
-            : base(pPrinter, SettingsApp.PrinterThermalImageCompanyLogo)
+            : base(pPrinter, SharedSettings.PrinterThermalImageCompanyLogo)
         {
         }
 
@@ -19,7 +21,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 //Call Base Template PrintHeader
-                base.PrintHeader(true); /* IN009055 - when is Order, true */
+                PrintHeader(true); /* IN009055 - when is Order, true */
 
                 //Call Child Content (Overrided)
                 PrintContent();
@@ -27,7 +29,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Call PrintFooterExtended
                 PrintFooterExtended();
                 //Call Base Template PrintFooter
-                base.PrintFooter();
+                PrintFooter();
 
                 //End Job
                 PrintBuffer();
@@ -48,10 +50,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             //Extended Footer Text
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer2"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer2"));
             _thermalPrinterGeneric.LineFeed();
-            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer3"));
+            _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer3"));
 
             //Reset to Left
             _thermalPrinterGeneric.SetAlignLeft();

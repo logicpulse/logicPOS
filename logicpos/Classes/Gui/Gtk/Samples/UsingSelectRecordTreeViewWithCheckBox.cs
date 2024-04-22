@@ -5,8 +5,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
 using System;
 using System.Data;
 
@@ -28,7 +27,7 @@ namespace logicpos.Classes.Gui.Gtk.Samples
         private DataTable _resultDataTable = new DataTable();
 
         //Constructor
-        public UsingSelectRecordTreeViewWithCheckBox(Window pSourceWindow) 
+        public UsingSelectRecordTreeViewWithCheckBox(Window pSourceWindow)
         {
             _sourceWindow = pSourceWindow;
         }
@@ -50,7 +49,7 @@ namespace logicpos.Classes.Gui.Gtk.Samples
               new PosSelectRecordDialog<DataTable, DataRow, TreeViewTerminalSeries>(
                 _sourceWindow,
                 DialogFlags.DestroyWithParent,
-                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
+                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
                 GlobalApp.MaxWindowSize,
                 null, //pDefaultValue : Require to Send a DataRow
                 GenericTreeViewMode.CheckBox,
@@ -77,10 +76,10 @@ namespace logicpos.Classes.Gui.Gtk.Samples
                     //Update Dialog Title
                     bool itemChecked = (bool)_dialogSelectRecord.GenericTreeView.DataSourceRow.ItemArray[indexColumnCheckBox];
                     string designation = (string)_dialogSelectRecord.GenericTreeView.DataSourceRow.ItemArray[indexColumnDesignation];
-                    _dialogSelectRecord.WindowTitle = 
-                        (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0) 
-                        ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"), _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation) 
-                        : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record")
+                    _dialogSelectRecord.WindowTitle =
+                        (_dialogSelectRecord.GenericTreeView.MarkedCheckBoxs > 0)
+                        ? string.Format("{0} : MarkedCheckBoxs:[{1}] : Last:[{2}]", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"), _dialogSelectRecord.GenericTreeView.MarkedCheckBoxs, designation)
+                        : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record")
                     ;
                 }
             };
@@ -107,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.Samples
                 {
                     //Init _resultDataTable, Clone Structure from _dialogSelectRecord.GenericTreeView.DataSource
                     _resultDataTable = _dialogSelectRecord.GenericTreeView.DataSource.Clone();
-                    
+
                     //Single Record Mode - Default - USED HERE ONLY TO TEST Both Dialogs Modes (Default and CheckBox)
                     if (dialog.GenericTreeViewMode == GenericTreeViewMode.Default)
                     {

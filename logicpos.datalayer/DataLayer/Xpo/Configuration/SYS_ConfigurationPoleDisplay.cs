@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(sys_configurationpoledisplay), "Code");
             VID = "0x0000";
             PID = "0x0000";
             EndPoint = "Ep01";

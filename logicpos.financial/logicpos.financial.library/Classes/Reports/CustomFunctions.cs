@@ -1,7 +1,9 @@
 ﻿using FastReport.Utils;
+using logicpos.datalayer.App;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -12,7 +14,7 @@ namespace logicpos.financial.library.Classes.Reports
     public static class CustomFunctions
     {
         //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static ResourceManager _resourceManager;
         private static bool _lowerCaseResource;
 
@@ -68,13 +70,13 @@ namespace logicpos.financial.library.Classes.Reports
 
         private static void RegisterSystemVars(string pAppName)
         {
-            if (GlobalFramework.FastReportSystemVars == null)
+            if (SharedFramework.FastReportSystemVars == null)
             {
                 Dictionary<string, string> systemVars = new Dictionary<string, string>
                 {
                     { "PreparedPages", "0" }
                 };
-                GlobalFramework.FastReportSystemVars = systemVars;
+                SharedFramework.FastReportSystemVars = systemVars;
             }
         }
 
@@ -86,25 +88,25 @@ namespace logicpos.financial.library.Classes.Reports
             Dictionary<string, string> customVars = new Dictionary<string, string>
             {
                 //App
-                { "APP_COMPANY", SettingsApp.AppCompanyName },
+                { "APP_COMPANY", SharedSettings.AppCompanyName },
                 { "APP_NAME", pAppName },
-                { "APP_VERSION", FrameworkUtils.ProductVersion },
-                { "DATE", FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateFormat) }
+                { "APP_VERSION", SharedUtils.ProductVersion },
+                { "DATE", DataLayerUtils.CurrentDateTimeAtomic().ToString(SharedSettings.DateFormat) }
             };
-            if (SettingsApp.ConfigurationSystemCurrency != null)
+            if (SharedSettings.ConfigurationSystemCurrency != null)
             {
-                customVars.Add("SYSTEM_CURRENCY_LABEL", SettingsApp.ConfigurationSystemCurrency.Designation);
-                customVars.Add("SYSTEM_CURRENCY_ACRONYM", SettingsApp.ConfigurationSystemCurrency.Acronym);
-                customVars.Add("SYSTEM_CURRENCY_SYMBOL", SettingsApp.ConfigurationSystemCurrency.Symbol);
+                customVars.Add("SYSTEM_CURRENCY_LABEL", SharedSettings.ConfigurationSystemCurrency.Designation);
+                customVars.Add("SYSTEM_CURRENCY_ACRONYM", SharedSettings.ConfigurationSystemCurrency.Acronym);
+                customVars.Add("SYSTEM_CURRENCY_SYMBOL", SharedSettings.ConfigurationSystemCurrency.Symbol);
             }
             //Licence
-            customVars.Add("LICENCE_NAME", GlobalFramework.LicenceName);
-            customVars.Add("LICENCE_COMPANY", GlobalFramework.LicenceCompany);
-            customVars.Add("LICENCE_NIF", GlobalFramework.LicenceNif);
-            customVars.Add("LICENCE_ADDRESS", GlobalFramework.LicenceAddress);
-            customVars.Add("LICENCE_EMAIL", GlobalFramework.LicenceEmail);
-            customVars.Add("LICENCE_TELEPHONE", GlobalFramework.LicenceTelephone);
-            customVars.Add("LICENCE_RESELLER", GlobalFramework.LicenceReseller);
+            customVars.Add("LICENCE_NAME", SharedFramework.LicenseName);
+            customVars.Add("LICENCE_COMPANY", SharedFramework.LicenseCompany);
+            customVars.Add("LICENCE_NIF", SharedFramework.LicenseNif);
+            customVars.Add("LICENCE_ADDRESS", SharedFramework.LicenseAddress);
+            customVars.Add("LICENCE_EMAIL", SharedFramework.LicenseEmail);
+            customVars.Add("LICENCE_TELEPHONE", SharedFramework.LicenseTelephone);
+            customVars.Add("LICENCE_RESELLER", SharedFramework.LicenseReseller);
             //PreferencesParameters
             customVars.Add("COMPANY_NAME", Pref("COMPANY_NAME"));
             customVars.Add("COMPANY_BUSINESS_NAME", Pref("COMPANY_BUSINESS_NAME"));
@@ -137,12 +139,12 @@ namespace logicpos.financial.library.Classes.Reports
             //Session
             customVars.Add("SESSION_loggerGED_USER", string.Empty);//Not Yet Assigned (BootStrap), This is Assigned on Report Constructor
 
-            if (GlobalFramework.Settings["POS_CURRENTTERMINAL"] != null)
+            if (DataLayerFramework.Settings["POS_CURRENTTERMINAL"] != null)
             {
-                customVars.Add("SESSION_loggerGED_TERMINAL", GlobalFramework.Settings["POS_CURRENTTERMINAL"]);
+                customVars.Add("SESSION_loggerGED_TERMINAL", DataLayerFramework.Settings["POS_CURRENTTERMINAL"]);
             }
 
-            GlobalFramework.FastReportCustomVars = customVars;
+             SharedFramework.FastReportCustomVars = customVars;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -158,9 +160,9 @@ namespace logicpos.financial.library.Classes.Reports
             try
             {
                 string result = string.Format("UNDEFINED [{0}]", pKey);
-                if (GlobalFramework.FastReportCustomVars.ContainsKey(pKey.ToUpper()))
+                if ( SharedFramework.FastReportCustomVars.ContainsKey(pKey.ToUpper()))
                 {
-                    result = GlobalFramework.FastReportCustomVars[pKey.ToUpper()];
+                    result =  SharedFramework.FastReportCustomVars[pKey.ToUpper()];
                 }
                 return result;
             }
@@ -190,7 +192,7 @@ namespace logicpos.financial.library.Classes.Reports
                   : string.Format("UNDEFINED [{0}]", resourceName);
                 if(resourceName == "global_documentfinance_type_title_fs")
                 {
-                    result = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
+                    result = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_fs");
                 }
 
                 //_logger.Debug(string.Format("Message: [{0}]", resourceName));
@@ -200,9 +202,9 @@ namespace logicpos.financial.library.Classes.Reports
                 /*if (!SettingsApp.ConfigurationSystemCountry.Equals(SettingsApp.XpoOidConfigurationCountryPortugal))
                     if (resourceName.Equals("global_documentfinance_type_report_invoice_footer_at"))
                     {
-                        if (GlobalFramework.CurrentCulture.Name.Equals("pt-PT"))
+                        if (SharedFramework.CurrentCulture.Name.Equals("pt-PT"))
                             result = result.Replace(" - Alinea f) do n.5 do art. 36 do CIVA", string.Empty);
-                        else if (GlobalFramework.CurrentCulture.Name.Equals("fr-FR"))
+                        else if (SharedFramework.CurrentCulture.Name.Equals("fr-FR"))
                             result = result.Replace(" - Alinea f) n.5 de l´art. 36 du Code de la IVA", string.Empty);
                         else 
                             result = result.Replace(" - paragraph f) n.5 of art. 36 of the Vat Code", string.Empty);
@@ -226,8 +228,8 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                string result = (GlobalFramework.PreferenceParameters.ContainsKey(pToken.ToUpper()))
-                  ? GlobalFramework.PreferenceParameters[pToken.ToUpper()]
+                string result = (SharedFramework.PreferenceParameters.ContainsKey(pToken.ToUpper()))
+                  ? SharedFramework.PreferenceParameters[pToken.ToUpper()]
                   : string.Format("UNDEFINED [{0}]", pToken);
 
                 return result;
@@ -248,8 +250,8 @@ namespace logicpos.financial.library.Classes.Reports
         {
             try
             {
-                string result = (GlobalFramework.FastReportCustomVars.ContainsKey(pToken.ToUpper()))
-                  ? GlobalFramework.FastReportCustomVars[pToken.ToUpper()]
+                string result = ( SharedFramework.FastReportCustomVars.ContainsKey(pToken.ToUpper()))
+                  ?  SharedFramework.FastReportCustomVars[pToken.ToUpper()]
                   : string.Format("UNDEFINED [{0}]", pToken);
                 return result;
             }
@@ -339,7 +341,7 @@ namespace logicpos.financial.library.Classes.Reports
         //        result = GlobalFramework.LicenceName;
         //        break;
         //      case "company":
-        //        result = GlobalFramework.LicenceCompany;
+        //        result = SharedFramework.LicenseCompany;
         //        break;
         //      case "nif":
         //        result = GlobalFramework.LicenceNif;
@@ -354,7 +356,7 @@ namespace logicpos.financial.library.Classes.Reports
         //        result = GlobalFramework.LicenceTelephone;
         //        break;
         //      case "hardwareid":
-        //        result = GlobalFramework.LicenceHardwareId;
+        //        result = SharedFramework.LicenseHardwareId;
         //        break;
         //      default:
         //        result = "UNDEFINED LICENCE DATA";

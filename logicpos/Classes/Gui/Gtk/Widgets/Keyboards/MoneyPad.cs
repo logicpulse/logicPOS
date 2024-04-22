@@ -1,8 +1,9 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
 
@@ -14,16 +15,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly decimal _decimalMoneyButtonL1Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL1Value"]);
-        private readonly decimal _decimalMoneyButtonL2Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL2Value"]);
-        private readonly decimal _decimalMoneyButtonL3Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL3Value"]);
-        private readonly decimal _decimalMoneyButtonL4Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL4Value"]);
-        private readonly decimal _decimalMoneyButtonL5Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonL5Value"]);
-        private readonly decimal _decimalMoneyButtonR1Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR1Value"]);
-        private readonly decimal _decimalMoneyButtonR2Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR2Value"]);
-        private readonly decimal _decimalMoneyButtonR3Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR3Value"]);
-        private readonly decimal _decimalMoneyButtonR4Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR4Value"]);
-        private readonly decimal _decimalMoneyButtonR5Value = FrameworkUtils.StringToDecimal(GlobalFramework.Settings["decimalMoneyButtonR5Value"]);
+        private readonly decimal _decimalMoneyButtonL1Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL1Value"]);
+        private readonly decimal _decimalMoneyButtonL2Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL2Value"]);
+        private readonly decimal _decimalMoneyButtonL3Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL3Value"]);
+        private readonly decimal _decimalMoneyButtonL4Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL4Value"]);
+        private readonly decimal _decimalMoneyButtonL5Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonL5Value"]);
+        private readonly decimal _decimalMoneyButtonR1Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR1Value"]);
+        private readonly decimal _decimalMoneyButtonR2Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR2Value"]);
+        private readonly decimal _decimalMoneyButtonR3Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR3Value"]);
+        private readonly decimal _decimalMoneyButtonR4Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR4Value"]);
+        private readonly decimal _decimalMoneyButtonR5Value = SharedUtils.StringToDecimal(DataLayerFramework.Settings["decimalMoneyButtonR5Value"]);
         //UI
         private readonly NumberPad _numberPad;
         private readonly EntryValidation _entryDeliveryValue;
@@ -59,19 +60,19 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public MoneyPad(Window pSourceWindow, decimal pInitialValue = 0.0m)
         {
             //Settings
-            string fontMoneyPadButtonKeys = GlobalFramework.Settings["fontMoneyPadButtonKeys"];
-            string fontMoneyPadTextEntry = GlobalFramework.Settings["fontMoneyPadTextEntry"];
+            string fontMoneyPadButtonKeys = DataLayerFramework.Settings["fontMoneyPadButtonKeys"];
+            string fontMoneyPadTextEntry = DataLayerFramework.Settings["fontMoneyPadTextEntry"];
             //ButtonLabels
-            string moneyButtonL1Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value);
-            string moneyButtonL2Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value);
-            string moneyButtonL3Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonL3Value);
-            string moneyButtonL4Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonL4Value);
-            string moneyButtonL5Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonL5Value);
-            string moneyButtonR1Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonR1Value);
-            string moneyButtonR2Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonR2Value);
-            string moneyButtonR3Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonR3Value);
-            string moneyButtonR4Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonR4Value);
-            string moneyButtonR5Label = FrameworkUtils.DecimalToStringCurrency(_decimalMoneyButtonR5Value);
+            string moneyButtonL1Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value);
+            string moneyButtonL2Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value);
+            string moneyButtonL3Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL3Value);
+            string moneyButtonL4Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL4Value);
+            string moneyButtonL5Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonL5Value);
+            string moneyButtonR1Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR1Value);
+            string moneyButtonR2Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR2Value);
+            string moneyButtonR3Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR3Value);
+            string moneyButtonR4Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR4Value);
+            string moneyButtonR5Label = SharedUtils.DecimalToStringCurrency(_decimalMoneyButtonR5Value);
 
             //Local Vars
             Color colorFont = Color.White;
@@ -79,8 +80,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Size moneyButtonSize = new Size(100, 64);
 
             //Delivery Entry
-            string initialValue = (pInitialValue > 0) ? FrameworkUtils.DecimalToString(pInitialValue) : string.Empty;
-            _entryDeliveryValue = new EntryValidation(pSourceWindow, KeyboardMode.None, SettingsApp.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
+            string initialValue = (pInitialValue > 0) ? SharedUtils.DecimalToString(pInitialValue) : string.Empty;
+            _entryDeliveryValue = new EntryValidation(pSourceWindow, KeyboardMode.None, SharedSettings.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
             _entryDeliveryValue.ModifyFont(Pango.FontDescription.FromString(fontMoneyPadTextEntry));
             //Dialog Validated Equal to Entry, Its the Only Entry in Dialog
             _validated = _entryDeliveryValue.Validated;
@@ -150,7 +151,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             EntryValidation entry = (EntryValidation)sender;
             _validated = entry.Validated;
-            _deliveryValue = FrameworkUtils.StringToDecimal(_entryDeliveryValue.Text);
+            _deliveryValue = SharedUtils.StringToDecimal(_entryDeliveryValue.Text);
             EntryChanged?.Invoke(sender, e);
         }
 
@@ -232,7 +233,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
 
             _deliveryValue += pAmount;
-            _entryDeliveryValue.Text = FrameworkUtils.DecimalToString(_deliveryValue);
+            _entryDeliveryValue.Text = SharedUtils.DecimalToString(_deliveryValue);
         }
     }
 }

@@ -2,11 +2,9 @@
 
 namespace logicpos.financial.console.App
 {
-    public class SettingsApp : logicpos.financial.library.App.SettingsApp
+    public class ConsoleSettings 
     {
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Developer
-
+      
         #if (DEBUG) 
         public static string DatabaseName = "logicposdb_20160919_scripts";
         public static string AppHardwareId = "92A4-3CA3-0CFD-4FF4-2962-5379";
@@ -15,15 +13,8 @@ namespace logicpos.financial.console.App
         public static string AppHardwareId = String.Empty;
         #endif
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Application
-
         public static string AppName = "Framework Console Test Project";
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Formats
-
-        //Dont change This, Required to use . in many things like SAF-T etc
         public static string CultureNumberFormat = "pt-PT";
         
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

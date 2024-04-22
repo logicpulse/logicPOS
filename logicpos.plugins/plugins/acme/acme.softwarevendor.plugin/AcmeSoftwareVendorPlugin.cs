@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using logicpos;
 using System.Security.Cryptography.X509Certificates;
+using logicpos.shared.App;
+using logicpos.datalayer.App;
 
 namespace acme.softwarevendor.plugin
 {
@@ -31,152 +33,152 @@ namespace acme.softwarevendor.plugin
 
         public string GetAppSoftwareName()
         {
-            return SettingsApp.AppSoftwareName;
+            return AcmeSettings.AppSoftwareName;
         }
 
         public string GetAppCompanyName()
         {
-            return SettingsApp.AppCompanyName;
+            return AcmeSettings.AppCompanyName;
         }
 
         public string GetAppCompanyPhone()
         {
-            return SettingsApp.AppCompanyPhone;
+            return AcmeSettings.AppCompanyPhone;
         }
 
         public string GetAppCompanyEmail()
         {
-            return SettingsApp.AppCompanyEmail;
+            return AcmeSettings.AppCompanyEmail;
         }
 
         public string GetAppCompanyWeb()
         {
-            return SettingsApp.AppCompanyWeb;
+            return AcmeSettings.AppCompanyWeb;
         }
 
         public string GetAppSoftwareVersionFormat()
         {
-            return SettingsApp.AppSoftwareVersionFormat;
+            return AcmeSettings.AppSoftwareVersionFormat;
         }
 
         public string GetAppSoftwareATWSProdModeCertificatePassword()
         {
-            return SettingsApp.AppSoftwareATWSProdModeCertificatePassword;
+            return AcmeSettings.AppSoftwareATWSProdModeCertificatePassword;
         }
 
         public string GetFileFormatDateTime()
         {
-            return SettingsApp.FileFormatDateTime;
+            return AcmeSettings.FileFormatDateTime;
         }
 
         public string GetFileFormatSaftPT()
         {
-            return SettingsApp.FileFormatSaftPT;
+            return AcmeSettings.FileFormatSaftPT;
         }
 
         public int GetDocumentsPadLength()
         {
-            return SettingsApp.DocumentsPadLength;
+            return AcmeSettings.DocumentsPadLength;
         }
 
         public string GetDateTimeFormatDocumentDate()
         {
-            return SettingsApp.DateTimeFormatDocumentDate;
+            return AcmeSettings.DateTimeFormatDocumentDate;
         }
 
         public string GetDateTimeFormatCombinedDateTime()
         {
-            return SettingsApp.DateTimeFormatCombinedDateTime;
+            return AcmeSettings.DateTimeFormatCombinedDateTime;
         }
 
         public string GetFinanceFinalConsumerFiscalNumber()
         {
-            return SettingsApp.FinanceFinalConsumerFiscalNumber;
+            return AcmeSettings.FinanceFinalConsumerFiscalNumber;
         }
 
         public string GetFinanceFinalConsumerFiscalNumberDisplay()
         {
-            return SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
+            return AcmeSettings.FinanceFinalConsumerFiscalNumberDisplay;
         }
 
         public string GetDecimalFormatSAFTPT()
         {
-            return SettingsApp.DecimalFormatSAFTPT;
+            return AcmeSettings.DecimalFormatSAFTPT;
         }
 
         public string GetDecimalFormatGrossTotalSAFTPT()
         {
-            return SettingsApp.DecimalFormatGrossTotalSAFTPT;
+            return AcmeSettings.DecimalFormatGrossTotalSAFTPT;
         }
 
         public int GetDecimalRoundTo()
         {
-            return SettingsApp.DecimalRoundTo;
+            return AcmeSettings.DecimalRoundTo;
         }
 
         public string GetSaftProductID()
         {
-            return SettingsApp.SaftProductID;
+            return AcmeSettings.SaftProductID;
         }
 
         public string GetSaftProductCompanyTaxID()
         {
-            return SettingsApp.SaftProductCompanyTaxID;
+            return AcmeSettings.SaftProductCompanyTaxID;
         }
 
         public string GetSaftSoftwareCertificateNumber()
         {
-            return SettingsApp.SaftSoftwareCertificateNumber;
+            return AcmeSettings.SaftSoftwareCertificateNumber;
         }
 
         public string GetSaftVersionPrefix()
         {
-            return SettingsApp.SaftVersionPrefix;
+            return AcmeSettings.SaftVersionPrefix;
         }
 
         public string GetSaftVersion()
         {
-            return SettingsApp.SaftVersion;
+            return AcmeSettings.SaftVersion;
         }
 
         public int GetHashControl()
         {
-            return SettingsApp.HashControl;
+            return AcmeSettings.HashControl;
         }
 
         public string GetTaxAccountingBasis()
         {
-            return SettingsApp.TaxAccountingBasis;
+            return AcmeSettings.TaxAccountingBasis;
         }
 
         public string GetSaftCurrencyCode()
         {
-            return SettingsApp.SaftCurrencyCode;
+            return AcmeSettings.SaftCurrencyCode;
         }
 
         public int GetFinanceRuleSimplifiedInvoiceMaxTotal()
         {
-            return SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal;
+            return AcmeSettings.FinanceRuleSimplifiedInvoiceMaxTotal;
         }
 
         public int GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
         {
-            return SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices;
+            return AcmeSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices;
         }
 
         public int GetFinanceRuleRequiredCustomerDetailsAboveValue()
         {
-            return SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue;
+            return AcmeSettings.FinanceRuleRequiredCustomerDetailsAboveValue;
         }
 
         public bool GetDocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix()
         {
-            return SettingsApp.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix;
+            return AcmeSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix;
         }
 
         public string GetDocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat()
         {
-            return SettingsApp.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat;
+            return AcmeSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat;
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -184,7 +186,7 @@ namespace acme.softwarevendor.plugin
 
         public bool IsValidSecretKey(string secretKey)
         {
-            return (secretKey.Equals(SettingsApp.SecretKey));
+            return (secretKey.Equals(AcmeSettings.SecretKey));
         }
 
         public string SignDataToSHA1Base64(string secretKey, string encryptData, bool debug = false)
@@ -208,7 +210,7 @@ namespace acme.softwarevendor.plugin
             {
                 try
                 {
-                    result = Utils.ZipPack(files, fileDestination, SettingsApp.BackupPassword);
+                    result = Utils.ZipPack(files, fileDestination, AcmeSettings.BackupPassword);
                 }
                 catch (Exception ex)
                 {
@@ -227,7 +229,7 @@ namespace acme.softwarevendor.plugin
             {
                 try
                 {
-                    result = Utils.ZipUnPack(fileName, destinationPath, SettingsApp.BackupPassword, flattenFoldersOnExtract);
+                    result = Utils.ZipUnPack(fileName, destinationPath, AcmeSettings.BackupPassword, flattenFoldersOnExtract);
                 }
                 catch (Exception ex)
                 {
@@ -255,16 +257,16 @@ namespace acme.softwarevendor.plugin
             {
                 // Get TemplateContent
                 Stream stream = GetType().Module.Assembly.GetManifestResourceStream(resourceTemplateLocation);
-                string templateContent = FrameworkUtils.StreamToString(stream);
+                string templateContent = SharedUtils.StreamToString(stream);
                 // Get ReportContent
                 stream = GetType().Module.Assembly.GetManifestResourceStream(resourceReportLocation);
-                string reportContent = FrameworkUtils.StreamToString(stream);
+                string reportContent = SharedUtils.StreamToString(stream);
 
                 string randomPrefix = Utils.GenerateRandomString(8);
                 string targetTemplateFileName = $"{randomPrefix}.{templateBase}";
-                string targetTemplateFilePath = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["temp"], targetTemplateFileName));
+                string targetTemplateFilePath = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["temp"], targetTemplateFileName));
                 string targetReportFileName = $"{randomPrefix}.{reportName}";
-                string targetReportFilePath = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["temp"], targetReportFileName));
+                string targetReportFilePath = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["temp"], targetReportFileName));
 
                 // Replace templateBase (TemplateBase.frx) with targetTemplateFileName, WE MUST Change Template Name in Template Childs Sub Reports
                 if (reportContent.Contains(templateBase))
@@ -307,7 +309,7 @@ namespace acme.softwarevendor.plugin
             string resourceBaseLocation = "acme.softwarevendor.plugin.Resources.Reports.UserReports.{0}";
             string[] files = Directory.GetFiles(resourcePathLocation, "*.frx");
             List<string> emmbededFilesMissing = new List<string>();
-            var resources = GlobalFramework.PluginSoftwareVendor.GetType().Assembly.GetManifestResourceNames();
+            var resources = SharedFramework.PluginSoftwareVendor.GetType().Assembly.GetManifestResourceNames();
             foreach (var item in files)
             {
                 string fileName = item.Replace(resourcePathLocation, string.Empty);
@@ -341,7 +343,7 @@ namespace acme.softwarevendor.plugin
 
             try
             {
-                result = CryptorEngine.Encrypt(toEncrypt, true, SettingsApp.SecretKey);
+                result = CryptorEngine.Encrypt(toEncrypt, true, AcmeSettings.SecretKey);
             }
             catch (Exception ex)
             {
@@ -357,7 +359,7 @@ namespace acme.softwarevendor.plugin
 
             try
             {
-                result = CryptorEngine.Decrypt(cipherString, true, SettingsApp.SecretKey);
+                result = CryptorEngine.Decrypt(cipherString, true, AcmeSettings.SecretKey);
             }
             catch (Exception ex)
             {
@@ -380,8 +382,8 @@ namespace acme.softwarevendor.plugin
             //cert.Import(_pathCertificate, _passwordCertificate, X509KeyStorageFlags.DefaultKeySet);
             //From FileSystem "Resources\Certificates"
             string password = (testModeEnabled) 
-                ? SettingsApp.AppSoftwareATWSProdModeCertificatePassword
-                : SettingsApp.AppSoftwareATWSTestModeCertificatePassword;
+                ? AcmeSettings.AppSoftwareATWSProdModeCertificatePassword
+                : AcmeSettings.AppSoftwareATWSTestModeCertificatePassword;
             //Import Certificate
             cert.Import(pathCertificate, password, X509KeyStorageFlags.Exportable);
             

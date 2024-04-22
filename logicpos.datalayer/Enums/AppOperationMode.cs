@@ -75,7 +75,7 @@ namespace logicpos.datalayer.Enums
 
         public static CustomAppOperationMode GetAppOperationMode(string appOperationModeToken)
         {
-            CustomAppOperationMode result = CustomAppOperationMode.DEFAULT;
+            CustomAppOperationMode result = DEFAULT;
 
             if (!string.IsNullOrEmpty(appOperationModeToken))
             {

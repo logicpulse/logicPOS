@@ -38,7 +38,7 @@ namespace logicpos.printer.generic
 
         public static BitmapData GetBitmapData(string bmpFileName)
         {
-            using (var bitmap = (Bitmap)Bitmap.FromFile(bmpFileName))
+            using (var bitmap = (Bitmap)Image.FromFile(bmpFileName))
             {
                 var threshold = 127;
                 var index = 0;

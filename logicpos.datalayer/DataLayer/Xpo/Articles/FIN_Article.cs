@@ -13,11 +13,11 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_article), "Ord");
-            Type = this.Session.GetObjectByKey<fin_articletype>(SettingsApp.XpoOidArticleDefaultType);
-            Class = this.Session.GetObjectByKey<fin_articleclass>(SettingsApp.XpoOidArticleDefaultClass);
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(fin_article), "Ord");
+            Type = this.Session.GetObjectByKey<fin_articletype>(DataLayerSettings.XpoOidArticleDefaultType);
+            Class = this.Session.GetObjectByKey<fin_articleclass>(DataLayerSettings.XpoOidArticleDefaultClass);
 
-            if (SettingsApp.AppMode == AppOperationMode.Default)
+            if (DataLayerSettings.AppMode == AppOperationMode.Default)
             {
                 //Force users to choose Tax for both modes Normal and TakeAway
                 VatOnTable = null;
@@ -26,12 +26,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
             else
             {
                 VatOnTable = null;
-                VatDirectSelling = this.Session.GetObjectByKey<fin_configurationvatrate>(SettingsApp.XpoOidArticleDefaultVatDirectSelling);
+                VatDirectSelling = this.Session.GetObjectByKey<fin_configurationvatrate>(DataLayerSettings.XpoOidArticleDefaultVatDirectSelling);
             }
 
-            UnitMeasure = this.Session.GetObjectByKey<cfg_configurationunitmeasure>(SettingsApp.XpoOidArticleDefaultUnitMeasure);
-            UnitSize = this.Session.GetObjectByKey<cfg_configurationunitsize>(SettingsApp.XpoOidArticleDefaultUnitSize);
-            Template = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(SettingsApp.XpoOidArticleDefaultTemplate);
+            UnitMeasure = this.Session.GetObjectByKey<cfg_configurationunitmeasure>(DataLayerSettings.XpoOidArticleDefaultUnitMeasure);
+            UnitSize = this.Session.GetObjectByKey<cfg_configurationunitsize>(DataLayerSettings.XpoOidArticleDefaultUnitSize);
+            Template = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(DataLayerSettings.XpoOidArticleDefaultTemplate);
         }
 
         private uint fOrd;

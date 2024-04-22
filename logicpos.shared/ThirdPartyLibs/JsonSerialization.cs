@@ -89,8 +89,8 @@ namespace DansCSharpLibrary.JsonSerialization
     //Test With:
     //using DansCSharpLibrary.JsonSerialization;
     //..
-    //TestSerialization.Write(GlobalFramework.Path["temp"].ToString());
-    //TestSerialization.Read(GlobalFramework.Path["temp"].ToString());
+    //TestSerialization.Write(DataLayerFramework.Path["temp"].ToString());
+    //TestSerialization.Read(DataLayerFramework.Path["temp"].ToString());
     public static class TestSerialization
     {
         //Log4Net

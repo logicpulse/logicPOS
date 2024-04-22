@@ -1,9 +1,11 @@
-﻿using System;
+﻿using logicpos.datalayer.App;
+using logicpos.shared.App;
+using System;
 using System.IO;
 
 namespace logicpos.financial.service.App
 {
-    public class SettingsApp : financial.library.App.SettingsApp
+    public static class FinancialServiceSettings 
     {
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Developer
@@ -32,14 +34,14 @@ namespace logicpos.financial.service.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Add On Parameters to Console Service Project
 
-        //private static string _pathCertificates = FrameworkUtils.OSSlash(GlobalFramework.Settings["pathCertificates"]);
+        //private static string _pathCertificates = SharedUtils.OSSlash(DataLayerFramework.Settings["pathCertificates"]);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Service Configuration
 
-        public static bool ServiceTimerEnabled = Convert.ToBoolean(GlobalFramework.Settings["serviceTimerEnabled"]);
-        public static double ServiceTimerInterval = Convert.ToDouble(GlobalFramework.Settings["serviceTimerInterval"]);
-        public static DateTime ServiceTimer = DateTime.ParseExact((GlobalFramework.Settings["serviceTimer"]), "H:mm", null, System.Globalization.DateTimeStyles.None); 
+        public static bool ServiceTimerEnabled = Convert.ToBoolean(DataLayerFramework.Settings["serviceTimerEnabled"]);
+        public static double ServiceTimerInterval = Convert.ToDouble(DataLayerFramework.Settings["serviceTimerInterval"]);
+        public static DateTime ServiceTimer = DateTime.ParseExact((DataLayerFramework.Settings["serviceTimer"]), "H:mm", null, System.Globalization.DateTimeStyles.None);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // AT Web Services
@@ -70,7 +72,7 @@ namespace logicpos.financial.service.App
         public static Uri ServicesATUriDocumentsWayBillSOAPAction = new Uri("https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/");
 
         //From Shared Parameters
-        public static int ServicesATRequestTimeout = Convert.ToInt16(GlobalFramework.Settings["servicesATRequestTimeout"]);
+        public static int ServicesATRequestTimeout = Convert.ToInt16(DataLayerFramework.Settings["servicesATRequestTimeout"]);
         public static string ServicesATWBFilePublicKey { get { return GetServicesATFilePublicKey(ServiceATEnableTestMode); } }
         public static string ServicesATWBFileCertificate { get { return GetServicesATFileCertificate(ServiceATEnableTestMode); } }
         public static string ServicesATWBCertificatePassword { get { return GetServicesATCertificatePassword(ServiceATEnableTestMode); } }
@@ -87,9 +89,9 @@ namespace logicpos.financial.service.App
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]))
+            if (!string.IsNullOrEmpty(SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]))
             {
-                result = !Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]);
+                result = !Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_MODE_ENABLED"]);
             }
 
             return result;
@@ -99,9 +101,9 @@ namespace logicpos.financial.service.App
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]))
+            if (!string.IsNullOrEmpty(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]))
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
             }
 
             return result;
@@ -111,9 +113,9 @@ namespace logicpos.financial.service.App
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]))
+            if (!string.IsNullOrEmpty(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]))
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
             }
 
             return result;
@@ -123,9 +125,9 @@ namespace logicpos.financial.service.App
         {
             bool result = false;
 
-            if (!string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]))
+            if (!string.IsNullOrEmpty(SharedFramework.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]))
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_WAYBILL_AGRICULTURAL_MODE_ENABLED"]);
             }
 
             return result;
@@ -137,16 +139,16 @@ namespace logicpos.financial.service.App
         private static string GetServicesATFilePublicKey(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATTestModeFilePublicKey"])
-                : string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATProdModeFilePublicKey"])
+                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATTestModeFilePublicKey"])
+                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATProdModeFilePublicKey"])
             ;
         }
 
         private static string GetServicesATFileCertificate(bool pTestMode)
         {
             return (pTestMode)
-                ? string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATTestModeFileCertificate"])
-                : string.Format(@"{0}{1}", GlobalFramework.Path["certificates"], GlobalFramework.Settings["servicesATProdModeFileCertificate"])
+                ? string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATTestModeFileCertificate"])
+                : string.Format(@"{0}{1}", DataLayerFramework.Path["certificates"], DataLayerFramework.Settings["servicesATProdModeFileCertificate"])
             ;
         }
 
@@ -154,31 +156,31 @@ namespace logicpos.financial.service.App
         {
             return (pTestMode)
                 ? "599999993"
-                : GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                : SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
         }
 
         private static string GetServicesATAccountFiscalNumber(bool pTestMode)
         {
-            //GlobalFramework.Settings["servicesATProdModeAccountFiscalNumber"];
+            //DataLayerFramework.Settings["servicesATProdModeAccountFiscalNumber"];
             return (pTestMode)
                 ? "599999993/0037"
-                : GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
+                : SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_FISCAL_NUMBER"];
         }
 
         private static string GetServicesATAccountPassword(bool pTestMode)
         {
-            //GlobalFramework.Settings["servicesATProdModeAccountPassword"];
+            //DataLayerFramework.Settings["servicesATProdModeAccountPassword"];
             return (pTestMode)
                 ? "testes1234"
-                : GlobalFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
+                : SharedFramework.PreferenceParameters["SERVICE_AT_PRODUCTION_ACCOUNT_PASSWORD"];
         }
 
         private static string GetServicesATCertificatePassword(bool pTestMode)
         {
-            //GlobalFramework.Settings["servicesATProdModeCertificatePassword"];
+            //DataLayerFramework.Settings["servicesATProdModeCertificatePassword"];
             return (pTestMode)
                 ? "TESTEwebservice"
-                : GlobalFramework.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
+                : SharedFramework.PluginSoftwareVendor.GetAppSoftwareATWSProdModeCertificatePassword();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

@@ -6,9 +6,11 @@ using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -83,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _databaseSourceObject = pDatabaseSourceObject;
             //pastMonths=0 to Work in Curent Month Range, pastMonths=1 Works in Past Month, pastMonths=2 Two months Ago etc
             int pastMonths = 0;
-            DateTime workingDate = FrameworkUtils.CurrentDateTimeAtomic().AddMonths(-pastMonths);
+            DateTime workingDate = DataLayerUtils.CurrentDateTimeAtomic().AddMonths(-pastMonths);
 
             /* IN005974 */
             //DateTime firstDayOfYear = new DateTime(workingDate.Year, 1, 1);
@@ -93,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //DateTime dateTimeEnd = lastDayOfMonth.AddHours(23).AddMinutes(59).AddSeconds(59);
             DateTime dateTimeEnd = workingDate;
 
-            _windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter");
+            _windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter");
 
             _windowTitle = windowTitle;
 
@@ -113,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = _windowTitle;
             Size windowSize = new Size(540, 568);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
 			
 			/* IN009010 */
             if (!ReportsQueryDialogMode.CUSTOMER_BALANCE_SUMMARY.Equals(_reportsQueryDialogMode))
@@ -123,15 +125,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _dateEnd = pDateEnd;
 
                 //Init DateEntry Start
-                _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart, SettingsApp.RegexDate, true);
-                _entryBoxDateStart.EntryValidation.Text = _dateStart.ToString(SettingsApp.DateFormat);
+                _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_start"), _dateStart, SharedSettings.RegexDate, true);
+                _entryBoxDateStart.EntryValidation.Text = _dateStart.ToString(SharedSettings.DateFormat);
                 _entryBoxDateStart.EntryValidation.Validate();
                 _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;
                 /* IN005974 - now, date field also accepts text */ // _entryBoxDateStart.KeyReleaseEvent += entryBoxDateStart_Text;
                 _entryBoxDateStart.EntryValidation.Changed += entryBoxDateStart_Changed;
                 //Init DateEntry End
-                _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd, SettingsApp.RegexDate, true);
-                _entryBoxDateEnd.EntryValidation.Text = _dateEnd.ToString(SettingsApp.DateFormat);
+                _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date_end"), _dateEnd, SharedSettings.RegexDate, true);
+                _entryBoxDateEnd.EntryValidation.Text = _dateEnd.ToString(SharedSettings.DateFormat);
                 _entryBoxDateEnd.EntryValidation.Validate();
                 _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;
                 /* IN005974 - now, date field also accepts text */ // _entryBoxDateEnd.KeyReleaseEvent += entryBoxDateEnd_Text;
@@ -163,14 +165,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _scrolledWindow.ResizeMode = ResizeMode.Parent;
             //ActionArea Buttons
 			// IN009223 IN009227
-            string fileActionFilter = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_clean_filter.png");
-            string fileActionExportPdf = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_export_pdf.png");
-            string fileActionExportXls = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_export_xls.png");
+            string fileActionFilter = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_clean_filter.png");
+            string fileActionExportPdf = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_export_pdf.png");
+            string fileActionExportXls = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_export_xls.png");
 
-            _buttonCleanFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.CleanFilter,"Clean Filter", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter_clear"), fileActionFilter);
+            _buttonCleanFilter = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.CleanFilter,"Clean Filter", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter_clear"), fileActionFilter);
             //Export to Xls/pdf
-            _buttonExportPdf = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.ExportPdf, "touchButtonPosToolbarFinanceDocuments_Red", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_export_pdf"), fileActionExportPdf);
-            _buttonExportXls = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.ExportXls, "touchButtonPosToolbarFinanceDocuments_Green", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_export_xls"), fileActionExportXls);
+            _buttonExportPdf = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.ExportPdf, "touchButtonPosToolbarFinanceDocuments_Red", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_export_pdf"), fileActionExportPdf);
+            _buttonExportXls = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.ExportXls, "touchButtonPosToolbarFinanceDocuments_Green", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_export_xls"), fileActionExportXls);
 
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
@@ -193,7 +195,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //actionAreaButtons.Add(_actionAreaButtonCleanFilter);
                 if(_reportsQueryDialogMode != ReportsQueryDialogMode.FILTER_STOCK_MOVIMENTS && _reportsQueryDialogMode != ReportsQueryDialogMode.FILTER_ARTICLE_HISTORY && _reportsQueryDialogMode != ReportsQueryDialogMode.FILTER_ARTICLE_WAREHOUSE)
                 {
-                    windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filter");
+                    windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filter");
                 }
                 
             }
@@ -366,59 +368,59 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (_reportsQueryDialogMode == ReportsQueryDialogMode.FILTER_DOCUMENTS_UNPAYED)
                     {
                         string extraFilter = $@" AND (
-Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeCreditNote}'
+Oid = '{SharedSettings.XpoOidUndefinedRecord}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}'
 )".Replace(Environment.NewLine, string.Empty);
-                        _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
+                        _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
                         _selectionBoxs.Add(typeof(fin_documentfinancetype).Name, _entryBoxSelectDocumentFinanceType);
                         
                     }
                     else if (_reportsQueryDialogMode == ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION)
                     {
                         string extraFilter = $@" AND (
-Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeBudget}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeCreditNote}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeReturnGuide}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice}'
+Oid = '{SharedSettings.XpoOidUndefinedRecord}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeBudget}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeReturnGuide}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice}'
 )".Replace(Environment.NewLine, string.Empty);
-                    _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
+                    _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
                     _selectionBoxs.Add(typeof(fin_documentfinancetype).Name, _entryBoxSelectDocumentFinanceType);
 
                     }// IN009223 IN009227 - End
                     else {
                         // Leave Indentation, this will be converted to inline
                         string extraFilter = $@" AND (
-Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoice}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeDebitNote}' OR
-Oid = '{SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice}'
+Oid = '{SharedSettings.XpoOidUndefinedRecord}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeInvoice}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}' OR 
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeDebitNote}' OR
+Oid = '{SharedSettings.XpoOidDocumentFinanceTypeConsignationInvoice}'
 )".Replace(Environment.NewLine, string.Empty);
-                        _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
+                        _entryBoxSelectDocumentFinanceType = SelectionBoxFactory<fin_documentfinancetype, TreeViewDocumentFinanceType>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinanceseries_documenttype"), "Designation", extraFilter);
                         _selectionBoxs.Add(typeof(fin_documentfinancetype).Name, _entryBoxSelectDocumentFinanceType);
                     }
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(pos_configurationplaceterminal)))
                 {
-                    _entryBoxSelectConfigurationPlaceTerminal = SelectionBoxFactory<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_configurationplaceterminal"));
+                    _entryBoxSelectConfigurationPlaceTerminal = SelectionBoxFactory<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_configurationplaceterminal"));
                     _selectionBoxs.Add(typeof(pos_configurationplaceterminal).Name, _entryBoxSelectConfigurationPlaceTerminal);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(sys_userdetail)))
                 {
-                    _entryBoxSelectUserDetail = SelectionBoxFactory<sys_userdetail, TreeViewUser>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user"), "Name");
+                    _entryBoxSelectUserDetail = SelectionBoxFactory<sys_userdetail, TreeViewUser>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user"), "Name");
                     _selectionBoxs.Add(typeof(sys_userdetail).Name, _entryBoxSelectUserDetail);
                 }
 
@@ -426,11 +428,11 @@ Oid = '{SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice}'
                 {
                     if(_reportsQueryDialogMode == ReportsQueryDialogMode.FILTER_ARTICLE_STOCK_SUPPLIER)
                     {
-                        _entryBoxSelectCustomer = SelectionBoxFactory<erp_customer, TreeViewCustomer>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer"), "Name", "AND (Supplier = 1)");
+                        _entryBoxSelectCustomer = SelectionBoxFactory<erp_customer, TreeViewCustomer>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), "Name", "AND (Supplier = 1)");
                     }
                     else
                     {
-                        _entryBoxSelectCustomer = SelectionBoxFactory<erp_customer, TreeViewCustomer>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_customer"), "Name");
+                        _entryBoxSelectCustomer = SelectionBoxFactory<erp_customer, TreeViewCustomer>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_customer"), "Name");
                     }
                     
                     _selectionBoxs.Add(typeof(erp_customer).Name, _entryBoxSelectCustomer);
@@ -438,87 +440,87 @@ Oid = '{SettingsApp.XpoOidDocumentFinanceTypeConsignationInvoice}'
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(fin_configurationpaymentmethod)))
                 {
-                    _entryBoxSelectConfigurationPaymentMethod = SelectionBoxFactory<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_method"));
+                    _entryBoxSelectConfigurationPaymentMethod = SelectionBoxFactory<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_method"));
                     _selectionBoxs.Add(typeof(fin_configurationpaymentmethod).Name, _entryBoxSelectConfigurationPaymentMethod);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(fin_configurationpaymentcondition)))
                 {
-                    _entryBoxSelectConfigurationPaymentCondition = SelectionBoxFactory<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_condition"));
+                    _entryBoxSelectConfigurationPaymentCondition = SelectionBoxFactory<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_condition"));
                     _selectionBoxs.Add(typeof(fin_configurationpaymentcondition).Name, _entryBoxSelectConfigurationPaymentCondition);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(fin_configurationvatrate)))
                 {
-                    _entryBoxSelectVatRate = SelectionBoxFactory<fin_configurationvatrate, TreeViewConfigurationVatRate>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rates"));
+                    _entryBoxSelectVatRate = SelectionBoxFactory<fin_configurationvatrate, TreeViewConfigurationVatRate>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rates"));
                     _selectionBoxs.Add(typeof(fin_configurationvatrate).Name, _entryBoxSelectVatRate);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(cfg_configurationcurrency)))
                 {
-                    _entryBoxSelectConfigurationCurrency = SelectionBoxFactory<cfg_configurationcurrency, TreeViewConfigurationCurrency>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCurrency"));
+                    _entryBoxSelectConfigurationCurrency = SelectionBoxFactory<cfg_configurationcurrency, TreeViewConfigurationCurrency>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationCurrency"));
                     _selectionBoxs.Add(typeof(cfg_configurationcurrency).Name, _entryBoxSelectConfigurationCurrency);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(cfg_configurationcountry)))
                 {
-                    _entryBoxSelectShipFromCountry = SelectionBoxFactory<cfg_configurationcountry, TreeViewConfigurationCountry>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_country"));
+                    _entryBoxSelectShipFromCountry = SelectionBoxFactory<cfg_configurationcountry, TreeViewConfigurationCountry>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_country"));
                     _selectionBoxs.Add(typeof(cfg_configurationcountry).Name, _entryBoxSelectShipFromCountry);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(fin_article)))
                 {
-                    _entryBoxSelectArticle = SelectionBoxFactory<fin_article, TreeViewArticle>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_articles"));
+                    _entryBoxSelectArticle = SelectionBoxFactory<fin_article, TreeViewArticle>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_articles"));
                     _selectionBoxs.Add(typeof(fin_article).Name, _entryBoxSelectArticle);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(fin_articleserialnumber)))
                 {
-                    _entryBoxSelectArticleSerialNumber = SelectionBoxFactory<fin_articleserialnumber, TreeViewArticleSerialNumber>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"),"SerialNumber");
+                    _entryBoxSelectArticleSerialNumber = SelectionBoxFactory<fin_articleserialnumber, TreeViewArticleSerialNumber>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"),"SerialNumber");
                     _selectionBoxs.Add(typeof(fin_articleserialnumber).Name, _entryBoxSelectArticleSerialNumber);
                 }
 
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(fin_warehouse)))
                 {
-                    _entryBoxSelectWarehouse = SelectionBoxFactory<fin_warehouse, TreeViewWarehouse>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"));
+                    _entryBoxSelectWarehouse = SelectionBoxFactory<fin_warehouse, TreeViewWarehouse>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"));
                     _selectionBoxs.Add(typeof(fin_warehouse).Name, _entryBoxSelectWarehouse);
                 }
 
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(fin_articlefamily)))
                 {
-                    _entryBoxSelectArticleFamily = SelectionBoxFactory<fin_articlefamily, TreeViewArticleFamily>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_families"));
+                    _entryBoxSelectArticleFamily = SelectionBoxFactory<fin_articlefamily, TreeViewArticleFamily>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_families"));
                     _selectionBoxs.Add(typeof(fin_articlefamily).Name, _entryBoxSelectArticleFamily);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(fin_articlesubfamily)))
                 {
-                    _entryBoxSelectArticleSubFamily = SelectionBoxFactory<fin_articlesubfamily, TreeViewArticleSubFamily>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_subfamilies"));
+                    _entryBoxSelectArticleSubFamily = SelectionBoxFactory<fin_articlesubfamily, TreeViewArticleSubFamily>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_subfamilies"));
                     _selectionBoxs.Add(typeof(fin_articlesubfamily).Name, _entryBoxSelectArticleSubFamily);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(pos_configurationplace)))
                 {
-                    _entryBoxSelectPlace = SelectionBoxFactory<pos_configurationplace, TreeViewConfigurationPlace>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_places"));
+                    _entryBoxSelectPlace = SelectionBoxFactory<pos_configurationplace, TreeViewConfigurationPlace>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_places"));
                     _selectionBoxs.Add(typeof(pos_configurationplace).Name, _entryBoxSelectPlace);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(pos_configurationplacetable)))
                 {
-                    _entryBoxSelectPlaceTable = SelectionBoxFactory<pos_configurationplacetable, TreeViewConfigurationPlaceTable>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_place_tables"));
+                    _entryBoxSelectPlaceTable = SelectionBoxFactory<pos_configurationplacetable, TreeViewConfigurationPlaceTable>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_place_tables"));
                     _selectionBoxs.Add(typeof(pos_configurationplacetable).Name, _entryBoxSelectPlaceTable);
                 }
 
                 if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(sys_systemaudittype)))
                 {
-                    _entryBoxSelectSystemAuditType = SelectionBoxFactory<sys_systemaudittype, TreeViewSystemAuditType>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_audit_type"));
+                    _entryBoxSelectSystemAuditType = SelectionBoxFactory<sys_systemaudittype, TreeViewSystemAuditType>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_audit_type"));
                     _selectionBoxs.Add(typeof(sys_systemaudittype).Name, _entryBoxSelectSystemAuditType);
                 }
 
                 if (_reportsQueryDialogMode == ReportsQueryDialogMode.FILTER_ARTICLE_STOCK_SUPPLIER)
                 {
-                    _entryBoxSelectDocumentNumber = SelectionBoxFactory<fin_articlestock, TreeViewArticleStock>(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), "DocumentNumber");
+                    _entryBoxSelectDocumentNumber = SelectionBoxFactory<fin_articlestock, TreeViewArticleStock>(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), "DocumentNumber");
                     _selectionBoxs.Add(typeof(fin_articlestock).Name, _entryBoxSelectDocumentNumber);
                 }
             }

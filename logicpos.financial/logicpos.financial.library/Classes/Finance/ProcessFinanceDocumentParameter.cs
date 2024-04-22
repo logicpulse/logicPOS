@@ -1,5 +1,6 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using System;
@@ -150,7 +151,7 @@ namespace logicpos.financial.library.Classes.Finance
             get { return _documentDateTime; }
             set { _documentDateTime = value; }
         }
-        
+
         //Optional: PaymentConditions
         private Guid _paymentConditions;
         public Guid PaymentCondition
@@ -266,11 +267,11 @@ namespace logicpos.financial.library.Classes.Finance
         public ProcessFinanceDocumentParameter(Guid pDocumentType, ArticleBag pArticleBag)
         {
             //Init Default Values
-            _documentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
+            _documentDateTime = DataLayerUtils.CurrentDateTimeAtomic();
             _sourceMode = PersistFinanceDocumentSourceMode.CurrentOrderMain;
             _totalDelivery = 0.0m;
             _totalChange = 0.0m;
-            _currency = SettingsApp.ConfigurationSystemCurrency.Oid;
+            _currency = SharedSettings.ConfigurationSystemCurrency.Oid;
             //_discount = 0.0m;
             _exchangeRate = 1.0m;
 

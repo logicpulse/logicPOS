@@ -5,7 +5,9 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.License;
+using logicpos.datalayer.App;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using Pango;
 using System;
 
@@ -64,14 +66,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_license");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_license");
             System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_license.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_license.png");
 
             //If detected empty Hardware Id from Parameters, get it from IntelliLock
             if (string.IsNullOrEmpty(pHardwareId))
             {
-                _hardwareId = GlobalFramework.PluginLicenceManager.GetHardwareID();
+                _hardwareId =SharedFramework.PluginLicenceManager.GetHardwareID();
             }
             else
             {
@@ -79,12 +81,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Files
-            string fileActionRegister = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_register.png");
-            string fileActionContinue = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+            string fileActionRegister = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_register.png");
+            string fileActionContinue = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
 
             //ActionArea Buttons
-            _buttonRegister = new TouchButtonIconWithText("touchButtonRegister_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_register"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionRegister, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
-            _buttonContinue = new TouchButtonIconWithText("touchButtonContinue_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_continue"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionContinue, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            _buttonRegister = new TouchButtonIconWithText("touchButtonRegister_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_register"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionRegister, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonContinue = new TouchButtonIconWithText("touchButtonContinue_DialogActionArea", System.Drawing.Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_licence_continue"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionContinue, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Close);
 
             //ActionArea
@@ -108,7 +110,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Files
-            string fileAppBanner = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Licence\licence.png");
+            string fileAppBanner = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Licence\licence.png");
             //Init
             int padding = 2;
             //Init Fonts
@@ -133,12 +135,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _hboxMain.PackStart(vboxMain, true, true, (uint)padding);
 
             //Pack VBoxMain : Welcome
-            Label labelWelcome = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_license_label_welcome"));
+            Label labelWelcome = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_welcome"));
             labelWelcome.SetAlignment(0.0F, 0.0F);
             labelWelcome.ModifyFont(FontDescription.FromString("Arial 9 bold"));
             vboxMain.PackStart(labelWelcome, false, false, (uint)padding);
             //Pack VBoxMain : Info
-            Label lableInfo = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_license_label_info"));
+            Label lableInfo = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_info"));
             lableInfo.WidthRequest = 630;
             lableInfo.ModifyFont(FontDescription.FromString("Arial 9"));
             lableInfo.Wrap = true;
@@ -157,55 +159,55 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             hboxInner.PackStart(vboxInnerRight, false, false, (uint)padding * 2);
 
             //VBoxInnerLeft 
-            Label labelInternetRegistration = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_license_label_internet_registration"));
+            Label labelInternetRegistration = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_internet_registration"));
             labelInternetRegistration.SetAlignment(0.0F, 0.0F);
             labelInternetRegistration.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerLeft.PackStart(labelInternetRegistration, false, false, 0);
 
             //EntryBoxName
-            _entryBoxName = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_name"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, true);
+            _entryBoxName = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_name"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
             _entryBoxName.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxName.EntryValidation.Text = mockName;
             _entryBoxName.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxName, false, false, 0);
 
             //EntryBoxCompany
-            _entryBoxCompany = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_company"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, true);
+            _entryBoxCompany = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_company"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
             _entryBoxCompany.EntryValidation.Text = mockCompany;
             _entryBoxCompany.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxCompany.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxCompany, false, false, 0);
 
             //EntryFiscalNumber
-            _entryBoxFiscalNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), KeyboardMode.Numeric, SettingsApp.RegexIntegerGreaterThanZero, true);
+            _entryBoxFiscalNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_number"), KeyboardMode.Numeric, SharedSettings.RegexIntegerGreaterThanZero, true);
             _entryBoxFiscalNumber.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxFiscalNumber.EntryValidation.Text = mockFiscalNumber;
             _entryBoxFiscalNumber.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxFiscalNumber, false, false, 0);
 
             //EntryBoxAddress
-            _entryBoxAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, true);
+            _entryBoxAddress = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_address"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
             _entryBoxAddress.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxAddress.EntryValidation.Text = mockAddress;
             _entryBoxAddress.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxAddress, false, false, 0);
 
             //EntryBoxEmail
-            _entryBoxEmail = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email"), KeyboardMode.AlfaNumeric, SettingsApp.RegexEmail, true);
+            _entryBoxEmail = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"), KeyboardMode.AlfaNumeric, SharedSettings.RegexEmail, true);
             _entryBoxEmail.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxEmail.EntryValidation.Text = mockEmail;
             _entryBoxEmail.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxEmail, false, false, 0);
 
             //EntryBoxPhone
-            _entryBoxPhone = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_phone"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, true);
+            _entryBoxPhone = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_phone"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, true);
             _entryBoxPhone.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxPhone.EntryValidation.Text = mockPhone;
             _entryBoxPhone.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxPhone, false, false, 0);
 
             //EntryBoxHardwareId
-            _entryBoxHardwareId = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true);
+            _entryBoxHardwareId = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_hardware_id"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true);
             _entryBoxHardwareId.EntryValidation.ModifyFont(FontDescription.FromString("Courier 6 bold"));
             _entryBoxHardwareId.EntryValidation.Text = _hardwareId;
             _entryBoxHardwareId.EntryValidation.Sensitive = false;
@@ -213,38 +215,38 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerLeft.PackStart(_entryBoxHardwareId, false, false, 0);
 
             //EntryBoxSoftwareKey
-            _entryBoxSoftwareKey = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_software_key"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxSoftwareKey = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_software_key"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericExtended, false);
             _entryBoxSoftwareKey.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxSoftwareKey.EntryValidation.Text = mockSoftwareKey;
             _entryBoxSoftwareKey.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxSoftwareKey, false, false, 0);
 
             //VBoxInnerRight
-            Label labelWithoutInternetRegistration = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_registration"));
+            Label labelWithoutInternetRegistration = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_registration"));
             labelWithoutInternetRegistration.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetRegistration.ModifyFont(FontDescription.FromString("Arial 9"));
             vboxInnerRight.PackStart(labelWithoutInternetRegistration, false, false, 0);
 
             //Info
-            Label labelWithoutInternetContactInfo = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_contact_info"));
+            Label labelWithoutInternetContactInfo = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_license_label_without_internet_contact_info"));
             labelWithoutInternetContactInfo.Wrap = true;
             labelWithoutInternetContactInfo.ModifyFont(FontDescription.FromString("Arial 9"));
             labelWithoutInternetContactInfo.SetAlignment(0.0F, 0.0F);
             vboxInnerRight.PackStart(labelWithoutInternetContactInfo, false, false, 0);
 
             //Company
-            Label labelWithoutInternetContactCompanyNameLabel = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_company"));
+            Label labelWithoutInternetContactCompanyNameLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_company"));
             labelWithoutInternetContactCompanyNameLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyNameLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyNameValue = new Label(SettingsApp.AppCompanyName);
+            Label labelWithoutInternetContactCompanyNameValue = new Label(SharedSettings.AppCompanyName);
             labelWithoutInternetContactCompanyNameValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyNameValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameValue, false, false, 0);
 
             //Phone
-            string[] primaryPhones = SettingsApp.AppCompanyPhone.Split(new string[] { " / " }, StringSplitOptions.None);
-            Label labelWithoutInternetContactCompanyPhoneLabel = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_phone"));
+            string[] primaryPhones = SharedSettings.AppCompanyPhone.Split(new string[] { " / " }, StringSplitOptions.None);
+            Label labelWithoutInternetContactCompanyPhoneLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_phone"));
             labelWithoutInternetContactCompanyPhoneLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyPhoneLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneLabel, false, false, (uint)padding * 2);
@@ -254,21 +256,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneValue, false, false, 0);
 
             //Email
-            Label labelWithoutInternetContactCompanyEmailLabel = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email"));
+            Label labelWithoutInternetContactCompanyEmailLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email"));
             labelWithoutInternetContactCompanyEmailLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyEmailLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyEmailLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyEmailValue = new Label(SettingsApp.AppCompanyEmail);
+            Label labelWithoutInternetContactCompanyEmailValue = new Label(SharedSettings.AppCompanyEmail);
             labelWithoutInternetContactCompanyEmailValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyEmailValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyEmailValue, false, false, 0);
 
             //Email
-            Label labelWithoutInternetContactCompanyWebLabel = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_website"));
+            Label labelWithoutInternetContactCompanyWebLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_website"));
             labelWithoutInternetContactCompanyWebLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyWebValue = new Label(SettingsApp.AppCompanyWeb);
+            Label labelWithoutInternetContactCompanyWebValue = new Label(SharedSettings.AppCompanyWeb);
             labelWithoutInternetContactCompanyWebValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebValue, false, false, 0);
@@ -300,14 +302,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void ActionRegister()
         {
-            if (!GlobalFramework.PluginLicenceManager.ConnectToWS())
+            if (!SharedFramework.PluginLicenceManager.ConnectToWS())
             {
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_error"));
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_error"));
 
                 return;
             }
 
-            if (GlobalFramework.PluginLicenceManager == null)
+            if (SharedFramework.PluginLicenceManager == null)
             {
                 return;
             }
@@ -317,7 +319,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Returns ByteWrite File
-                registredLicence = GlobalFramework.PluginLicenceManager.ActivateLicense(
+                registredLicence =SharedFramework.PluginLicenceManager.ActivateLicense(
                     _entryBoxName.EntryValidation.Text,
                     _entryBoxCompany.EntryValidation.Text,
                     _entryBoxFiscalNumber.EntryValidation.Text,
@@ -329,20 +331,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     _entryBoxSoftwareKey.EntryValidation.Text
                 );
 
-                string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(), GlobalFramework.PluginLicenceManager.GetLicenseFilename());
+                string completeFilePath = string.Format("{0}{1}", LicenseRouter.GetCurrentDirectory(),SharedFramework.PluginLicenceManager.GetLicenseFilename());
                 completeFilePath = completeFilePath.Replace("\\", "/");
                 //Used to generate diferent license file names per HardwareId : to Enable find "completeFilePath"
                 //string completeFilePath = GetCurrentDirectory() + string.Format("logicpos_{0}.license", textBoxHardwareID.Text);
 
                 if (!LicenseRouter.WriteByteArrayToFile(registredLicence, completeFilePath))
                 {
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_save_license_error"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_save_license_error"));
                     return;
                 }
                 else
                 {
                     this.Destroy();
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_aplication_registered"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_aplication_registered"));
                     this.Destroy();
                     Environment.Exit(0);
                 }
@@ -351,7 +353,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 _logger.Error(ex.Message, ex);
 
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_timeout"));
+                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_ws_connection_timeout"));
 
                 //Keep Running
                 this.Run();

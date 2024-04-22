@@ -4,10 +4,12 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Stocks;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -77,7 +79,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (pDataSourceRow != null) _dataSourceRow = pDataSourceRow;
 
             //TODO: try to prevent NULL Error
-            //_dataSourceRow = GlobalFramework.SessionXpo.GetObjectByKey<XPGuidObject>(_dataSourceRow.Oid);
+            //_dataSourceRow = DataLayerFramework.SessionXpo.GetObjectByKey<XPGuidObject>(_dataSourceRow.Oid);
             //TODO: Validar se o erro de editar dá erro de acesso objecto eliminado.
             //APPEAR when we Try to ReEdit Terminal, after assign Printer
             //An exception of type 'System.NullReferenceException' occurred in logicpos.exe but was not handled in user code
@@ -97,7 +99,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             this.Resizable = false;
             this.WindowPosition = WindowPosition.Center;
             //Grey Window : Luis|Muga
-            //this.ModifyBg(StateType.Normal, Utils.StringToGTKColor(GlobalFramework.Settings["colorBackOfficeContentBackground"]));
+            //this.ModifyBg(StateType.Normal, Utils.StringToGTKColor(DataLayerFramework.Settings["colorBackOfficeContentBackground"]));
 
             //Accelerators
             AccelGroup accelGroup = new AccelGroup();
@@ -107,7 +109,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (pDataSourceRow != null) _crudWidgetList = new GenericCRUDWidgetListXPO(_dataSourceRow.Session);
 
             //Icon
-            string fileImageAppIcon = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], SettingsApp.AppIcon));
+            string fileImageAppIcon = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], POSSettings.AppIcon));
             if (File.Exists(fileImageAppIcon)) Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
             //Init StatusBar
@@ -127,13 +129,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void InitButtons()
         {
             //Settings
-            string fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
-            string tmpFileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-            string tmpFileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-            System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
-            System.Drawing.Size sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
-            System.Drawing.Color colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
-            System.Drawing.Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+            string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
+            string tmpFileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+            string tmpFileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+            System.Drawing.Size sizeBaseDialogActionAreaButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
+            System.Drawing.Size sizeBaseDialogActionAreaButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButton"]);
+            System.Drawing.Color colorBaseDialogActionAreaButtonBackground = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
+            System.Drawing.Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
 
             //TODO:THEME
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
@@ -143,8 +145,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 sizeBaseDialogActionAreaButtonIcon.Height -= 10;
             };
 
-            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, tmpFileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            _buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, tmpFileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            _buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, tmpFileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            _buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, tmpFileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
 
             //If DialogMode in View Mode, dont Show Ok Button
             if (_dialogMode != DialogMode.View)
@@ -181,12 +183,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Remove ShadowType and Border
             //entryMultiline.ScrolledWindow.ShadowType = ShadowType.None;
             entryMultiline.ScrolledWindow.BorderWidth = 0;
-            Label labelMultiline = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"));
+            Label labelMultiline = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"));
             vbox.PackStart(entryMultiline, true, true, 0);
-            _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryMultiline, labelMultiline, DataSourceRow, "Notes", SettingsApp.RegexAlfaNumericExtended, false));
+            _crudWidgetList.Add(new GenericCRUDWidgetXPO(entryMultiline, labelMultiline, DataSourceRow, "Notes", SharedSettings.RegexAlfaNumericExtended, false));
 
             //Append Tab
-            _notebook.AppendPage(vbox, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes")));
+            _notebook.AppendPage(vbox, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes")));
         }
 
         protected override void OnResponse(ResponseType pResponse)
@@ -229,26 +231,26 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 var getArticleStock = Convert.ToDecimal(_dataSourceRow.Session.ExecuteScalar(stockQuery));
                                 if (Convert.ToDecimal(getArticleStock.ToString()) != (_dataSourceRow as fin_article).Accounting)
                                 {
-                                    var own_customer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidUserRecord);
+                                    var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                                     if (own_customer != null)
                                     {
                                         if (string.IsNullOrEmpty(own_customer.Name))
                                         {
                                             //update owner customer for internal stock moviments
-                                            own_customer.FiscalNumber = GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
-                                            own_customer.Name = GlobalFramework.PreferenceParameters["COMPANY_NAME"];
+                                            own_customer.FiscalNumber = SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                                            own_customer.Name = SharedFramework.PreferenceParameters["COMPANY_NAME"];
                                             own_customer.Save();
                                         }
                                     }
                                     if ((_dataSourceRow as fin_article).Accounting > getArticleStock)
                                     {
                                         decimal quantity = (_dataSourceRow as fin_article).Accounting - getArticleStock;
-                                        ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, own_customer, 1, DateTime.Now, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+                                        ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, own_customer, 1, DateTime.Now, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
                                     }
                                     else
                                     {
                                         decimal quantity = getArticleStock - (_dataSourceRow as fin_article).Accounting;
-                                        ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.Out, own_customer, 1, DateTime.Now, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+                                        ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.Out, own_customer, 1, DateTime.Now, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
                                     }
 
                                 }
@@ -257,17 +259,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         //New article
                         catch
                         {
-                            ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, null, 1, DateTime.Now, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), (_dataSourceRow as fin_article).Accounting, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+                            ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, null, 1, DateTime.Now, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), (_dataSourceRow as fin_article).Accounting, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
                         }
 
                     }
                     //Delete Articles compositions with deleted Parents
                     string sqlDelete = string.Format("DELETE FROM [fin_articlecomposition] WHERE [Article] IS NULL;");
-                    GlobalFramework.SessionXpo.ExecuteQuery(sqlDelete);
+                    DataLayerFramework.SessionXpo.ExecuteQuery(sqlDelete);
                     _logger.Debug("Delete() :: articles composition with null parents'" + "'  ");
                     //Delete Articles SerialNumber emptys 
                     //sqlDelete = string.Format("DELETE FROM [fin_articleserialnumber] WHERE [SerialNumber] IS NULL;");
-                    //GlobalFramework.SessionXpo.ExecuteQuery(sqlDelete);
+                    //DataLayerFramework.SessionXpo.ExecuteQuery(sqlDelete);
                     //_logger.Debug("Delete() :: articles serialnumber with null value'" + "'  ");
 
                     _dataSourceRow.Reload();
@@ -288,7 +290,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //UpdatedBy
                 VBox vboxUpdatedBy = new VBox(true, 0);
-                Label labelUpdatedBy = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_user_update"));
+                Label labelUpdatedBy = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_user_update"));
                 Label labelUpdatedByValue = new Label(string.Empty);
                 labelUpdatedBy.SetAlignment(0.0F, 0.5F);
                 labelUpdatedByValue.SetAlignment(0.0F, 0.5F);
@@ -299,7 +301,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //CreatedAt
                 VBox vboxCreatedAt = new VBox(true, 0);
-                Label labelCreatedAt = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_created"));
+                Label labelCreatedAt = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_created"));
                 Label labelCreatedAtValue = new Label(string.Empty);
                 //labelCreatedAt.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
                 //labelCreatedAtValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
@@ -310,7 +312,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //UpdatedAt
                 VBox vboxUpdatedAt = new VBox(true, 0);
-                Label labelUpdatedAt = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated_for_base_dialog"));
+                Label labelUpdatedAt = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated_for_base_dialog"));
                 Label labelUpdatedAtValue = new Label(string.Empty);
                 //labelUpdatedAt.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));
                 //labelUpdatedAtValue.ModifyFg(StateType.Normal, Utils.ColorToGdkColor(System.Drawing.Color.White));

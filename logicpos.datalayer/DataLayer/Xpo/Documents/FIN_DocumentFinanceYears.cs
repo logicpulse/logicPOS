@@ -13,12 +13,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Code");
-            int currentYear = FrameworkUtils.CurrentDateTimeAtomic().Year;
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(fin_documentfinanceyears), "Code");
+            int currentYear = DataLayerUtils.CurrentDateTimeAtomic().Year;
             FiscalYear = currentYear;
             Acronym = string.Format("{0}{1}{2}", FiscalYear, "A", Code/10);
-            Designation = string.Format("{0} {1} {2}{3}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), FiscalYear, "A", Code/10);
+            Designation = string.Format("{0} {1} {2}{3}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year"), FiscalYear, "A", Code/10);
         }
 
         private uint fOrd;

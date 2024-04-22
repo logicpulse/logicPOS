@@ -1,28 +1,26 @@
 ﻿using Gtk;
-using logicpos.financial;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
+using logicpos.datalayer.App;
 using logicpos.datalayer.Enums;
+using logicpos.shared.App;
 using logicpos.shared.Enums;
 using System;
 using System.Drawing;
-using logicpos.App;
-using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     public partial class PosTablesDialog : PosBaseDialog
     {
         //Sizes
-        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosSmallButtonScroller"]);
-        private Size _sizePosTableButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePosTableButton"]);
+        private Size _sizePosSmallButtonScroller = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePosSmallButtonScroller"]);
+        private Size _sizePosTableButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePosTableButton"]);
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
         //Files
-        private readonly string _fileScrollLeftImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
-        private readonly string _fileScrollRightImage = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
+        private readonly string _fileScrollLeftImage = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_left.png");
+        private readonly string _fileScrollRightImage = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_subfamily_article_scroll_right.png");
         //UI
         private readonly Fixed _fixedContent;
         private TablePad _tablePadPlace;
@@ -68,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_orders");
             //TODO:THEME
             //Size windowSize = new Size(837, 650);
             Size windowSize = new Size(720, 580);
@@ -76,24 +74,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             /* IN009035 */
             string fileActionViewOrders = string.Empty;
             /* IN008024 */
-            if (!SettingsApp.IsDefaultTheme)
+            if (!DataLayerSettings.IsDefaultTheme)
             {
-                fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_tables_retail.png");
-                fileActionViewOrders = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_retail_view_order.png");
+                fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_tables_retail.png");
+                fileActionViewOrders = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_retail_view_order.png");
             }
             else
             {
-                fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_tables.png");
-                fileActionViewOrders = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_view_order.png");
+                fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_tables.png");
+                fileActionViewOrders = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_view_order.png");
             }
 
             //ActionArea Icons
-            string fileActionTableReservation = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_reservation.png");
-            string fileActionTableFilterAll = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_all.png");
-            string fileActionTableFilterFree = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_free.png");
-            string fileActionTableFilterOpen = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_open.png");
-            string fileActionTableFilterReserved = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_filter_reserved.png");
-            string fileActionTableViewTables = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_table_view_tables.png");
+            string fileActionTableReservation = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_reservation.png");
+            string fileActionTableFilterAll = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_all.png");
+            string fileActionTableFilterFree = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_free.png");
+            string fileActionTableFilterOpen = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_open.png");
+            string fileActionTableFilterReserved = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_filter_reserved.png");
+            string fileActionTableViewTables = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_table_view_tables.png");
 
             //Parameters
             _FilterMode = pFilterMode;
@@ -128,24 +126,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
 
             //Table Actions  
-            _buttonTableReservation = new TouchButtonIconWithText("touchButtonTableReservation_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_table_reservation"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableReservation, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            _buttonTableReservation = new TouchButtonIconWithText("touchButtonTableReservation_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_table_reservation"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableReservation, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
             //Tables
-            _buttonTableFilterAll = new TouchButtonIconWithText("touchButtonTableFilterAll_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_all"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterAll, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false, Sensitive = false };
-            _buttonTableFilterFree = new TouchButtonIconWithText("touchButtonTableFilterFree_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_free"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterFree, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
-            _buttonTableFilterOpen = new TouchButtonIconWithText("touchButtonTableFilterOpen_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_open"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterOpen, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
-            _buttonTableFilterReserved = new TouchButtonIconWithText("touchButtonTableFilterReserved_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_reserved"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterReserved, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
+            _buttonTableFilterAll = new TouchButtonIconWithText("touchButtonTableFilterAll_Green", Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_all"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterAll, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false, Sensitive = false };
+            _buttonTableFilterFree = new TouchButtonIconWithText("touchButtonTableFilterFree_Green", Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_free"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterFree, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
+            _buttonTableFilterOpen = new TouchButtonIconWithText("touchButtonTableFilterOpen_Green", Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_open"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterOpen, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
+            _buttonTableFilterReserved = new TouchButtonIconWithText("touchButtonTableFilterReserved_Green", Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_tables_reserved"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableFilterReserved, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Visible = false };
             //Views
-            _buttonTableViewOrders = new TouchButtonIconWithText("touchButtonViewOrders_Red", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_view_orders"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionViewOrders, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
-            _buttonTableViewTables = new TouchButtonIconWithText("touchButtonViewTables_Green", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_view_tables"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableViewTables, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            _buttonTableViewOrders = new TouchButtonIconWithText("touchButtonViewOrders_Red", Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_view_orders"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionViewOrders, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+            _buttonTableViewTables = new TouchButtonIconWithText("touchButtonViewTables_Green", Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_orders_button_label_view_tables"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileActionTableViewTables, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
             //Orders
-            //_buttonOrderChangeTable = new TouchButtonIconWithText("touchButtonOrderChangeTable_Red", Color.Transparent, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_change_table, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionDefault, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
+            //_buttonOrderChangeTable = new TouchButtonIconWithText("touchButtonOrderChangeTable_Red", Color.Transparent, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_change_table, _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionDefault, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height) { Sensitive = false };
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
             //Orders
             //actionAreaButtons.Add(new ActionAreaButton(_buttonOrderChangeTable, _responseTypeOrderChangeTable));
             //Tables
-            if (SettingsApp.IsDefaultTheme)/* IN008024 */
+            if (DataLayerSettings.IsDefaultTheme)/* IN008024 */
             {
                 actionAreaButtons.Add(new ActionAreaButton(_buttonTableFilterAll, (ResponseType)_tablesStatusShowAllIndex));
                 actionAreaButtons.Add(new ActionAreaButton(_buttonTableFilterFree, (ResponseType)TableStatus.Free));
@@ -186,7 +184,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void BuildPlace()
         {
             //Colors
-            //Color colorPosButtonFamilyBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosButtonFamilyBackground"]);
+            //Color colorPosButtonFamilyBackground = FrameworkUtils.StringToColor(DataLayerFramework.Settings["colorPosButtonFamilyBackground"]);
 
             //Scrollers
             TouchButtonIcon buttonPosScrollersPlacePrev = new TouchButtonIcon("buttonPosScrollersTablePrev", Color.White, _fileScrollLeftImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
@@ -206,18 +204,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //TableConfig tableConfig = new TableConfig(6, 1);
             TableConfig tableConfig = new TableConfig(5, 1);
             _tablePadPlace = new TablePad(
-                _sqlPlaceBaseOrder, 
-                "ORDER BY Ord", 
-                "", 
-                Guid.Empty, 
-                true, 
-                tableConfig.Rows, 
-                tableConfig.Columns, 
-                "buttonPlaceId", 
-                Color.Transparent, 
-                _sizePosTableButton.Width, 
-                _sizePosTableButton.Height, 
-                buttonPosScrollersPlacePrev, 
+                _sqlPlaceBaseOrder,
+                "ORDER BY Ord",
+                "",
+                Guid.Empty,
+                true,
+                tableConfig.Rows,
+                tableConfig.Columns,
+                "buttonPlaceId",
+                Color.Transparent,
+                _sizePosTableButton.Width,
+                _sizePosTableButton.Height,
+                buttonPosScrollersPlacePrev,
                 buttonPosScrollersPlaceNext
             );
             //Click Event
@@ -232,7 +230,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void BuildOrders()
         {
             //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosButtonArticleBackground"]);
+            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(DataLayerFramework.Settings["colorPosButtonArticleBackground"]);
 
             //Scrollers
             TouchButtonIcon buttonPosScrollersOrderPrev = new TouchButtonIcon("buttonPosScrollersOrderPrev", Color.White, _fileScrollLeftImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
@@ -267,18 +265,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //TableConfig tableConfig = new TableConfig(6, 5);
             TableConfig tableConfig = new TableConfig(5, 4);
             _tablePadOrder = new TablePadTable(
-                sql, 
-                "ORDER BY Ord", 
-                filter, 
-                Guid.Empty, 
+                sql,
+                "ORDER BY Ord",
+                filter,
+                Guid.Empty,
                 true,
-                tableConfig.Rows, 
-                tableConfig.Columns, 
-                "buttonOrderId", 
-                Color.Transparent, 
-                _sizePosTableButton.Width, 
-                _sizePosTableButton.Height, 
-                buttonPosScrollersOrderPrev, 
+                tableConfig.Rows,
+                tableConfig.Columns,
+                "buttonOrderId",
+                Color.Transparent,
+                _sizePosTableButton.Width,
+                _sizePosTableButton.Height,
+                buttonPosScrollersOrderPrev,
                 buttonPosScrollersOrderNext
               );
 
@@ -294,7 +292,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void BuildTable()
         {
             //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(GlobalFramework.Settings["colorPosButtonArticleBackground"]);
+            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(DataLayerFramework.Settings["colorPosButtonArticleBackground"]);
 
             //Scrollers
             TouchButtonIcon buttonPosScrollersTablePrev = new TouchButtonIcon("buttonPosScrollersTablePrev", Color.White, _fileScrollLeftImage, _sizeIconScrollLeftRight, _sizePosSmallButtonScroller.Width, _sizePosSmallButtonScroller.Height);
@@ -319,27 +317,27 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Prepare current table
             Guid currentTableOid = Guid.Empty;
-            if (GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid)
-              && GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].Table != null)
+            if (SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
+              && SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].Table != null)
             {
-                currentTableOid = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].Table.Oid;
+                currentTableOid = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid].Table.Oid;
             }
 
             //Initialize TablePad
             TableConfig tableConfig = new TableConfig(5, 4);
             _tablePadTable = new TablePadTable(
-                sql, 
-                "ORDER BY Ord", 
-                filter, 
-                currentTableOid, 
+                sql,
+                "ORDER BY Ord",
+                filter,
+                currentTableOid,
                 true,
-                tableConfig.Rows, 
-                tableConfig.Columns, 
-                "buttonTableId", 
-                Color.Transparent, 
-                _sizePosTableButton.Width, 
-                _sizePosTableButton.Height, 
-                buttonPosScrollersTablePrev, 
+                tableConfig.Rows,
+                tableConfig.Columns,
+                "buttonTableId",
+                Color.Transparent,
+                _sizePosTableButton.Width,
+                _sizePosTableButton.Height,
+                buttonPosScrollersTablePrev,
                 buttonPosScrollersTableNext
             );
 

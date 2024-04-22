@@ -1,5 +1,6 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.console.App;
@@ -9,6 +10,7 @@ using logicpos.financial.console.Test.Classes.HardWare.Printers.Thermal;
 using logicpos.financial.console.Test.WS;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.WorkSession;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,7 +36,7 @@ namespace logicpos.financial.console
         private static void Main(string[] args)
         {
             //Init Settings Main Config Settings
-            GlobalFramework.Settings = ConfigurationManager.AppSettings;
+            DataLayerFramework.Settings = ConfigurationManager.AppSettings;
             //Base Bootstrap Init from LogicPos
             Init();
             //Extra Bootstrap for Console App
@@ -48,7 +50,7 @@ namespace logicpos.financial.console
         //LogicPos BootStrap
         private static void Init()
         {
-            Console.WriteLine(string.Format("BootStrap {0}....", SettingsApp.AppName));
+            Console.WriteLine(string.Format("BootStrap {0}....", ConsoleSettings.AppName));
 
             try
             {
@@ -56,45 +58,45 @@ namespace logicpos.financial.console
                 AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
 
                 //Init Settings Main Config Settings
-                //GlobalFramework.Settings = ConfigurationManager.AppSettings;
+                //DataLayerFramework.Settings = ConfigurationManager.AppSettings;
 
                 //CultureInfo/Localization
-                string culture = GlobalFramework.Settings["culture"];
+                string culture = DataLayerFramework.Settings["culture"];
                 if (!string.IsNullOrEmpty(culture))
                 {
                     /* IN006018 and IN007009 */
                     //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
                 }
-                //GlobalFramework.CurrentCulture = CultureInfo.CurrentUICulture;
+                //SharedFramework.CurrentCulture = CultureInfo.CurrentUICulture;
                 string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";                
-                string getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
-                GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                string getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
 
                 //Always use en-US NumberFormat because of mySql Requirements
-                GlobalFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(SettingsApp.CultureNumberFormat);
+                SharedFramework.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(ConsoleSettings.CultureNumberFormat);
 
                 // Init Paths
-                GlobalFramework.Path = new Hashtable
+                DataLayerFramework.Path = new Hashtable
                 {
-                    { "temp", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathTemp"]) },
-                    { "saftpt", FrameworkUtils.OSSlash(GlobalFramework.Settings["pathSaftPt"]) }
+                    { "temp", SharedUtils.OSSlash(DataLayerFramework.Settings["pathTemp"]) },
+                    { "saftpt", SharedUtils.OSSlash(DataLayerFramework.Settings["pathSaftPt"]) }
                 };
                 //Create Directories
-                FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["temp"])));
-                FrameworkUtils.CreateDirectory(FrameworkUtils.OSSlash(Convert.ToString(GlobalFramework.Path["saftpt"])));
+                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["temp"])));
+                SharedUtils.CreateDirectory(SharedUtils.OSSlash(Convert.ToString(DataLayerFramework.Path["saftpt"])));
 
                 //Get DataBase Details
-                GlobalFramework.DatabaseType = (DatabaseType) Enum.Parse(typeof(DatabaseType), GlobalFramework.Settings["databaseType"]);
-                GlobalFramework.DatabaseName = SettingsApp.DatabaseName; 
+               DataLayerFramework.DatabaseType = (DatabaseType) Enum.Parse(typeof(DatabaseType), DataLayerFramework.Settings["databaseType"]);
+                SharedFramework.DatabaseName = ConsoleSettings.DatabaseName; 
                 //Xpo Connection String
-                string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
+                string xpoConnectionString = string.Format(DataLayerFramework.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
 
                 //Init XPO Connector DataLayer
                 try
                 {
                     _logger.Debug(string.Format("Init XpoDefault.DataLayer: [{0}]", xpoConnectionString));
                     XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
-                    GlobalFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
+                    DataLayerFramework.SessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
                 }
                 catch (Exception ex)
                 {
@@ -103,21 +105,21 @@ namespace logicpos.financial.console
                 }
 
                 //Get Terminal from Db
-                GlobalFramework.LoggedTerminal = Utils.GetTerminal();
+                DataLayerFramework.LoggedTerminal = Utils.GetTerminal();
 
                 //SettingsApp
-                SettingsApp.ConfigurationSystemCountry = (cfg_configurationcountry)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid(GlobalFramework.Settings["xpoOidConfigurationCountrySystemCountry"]));
-                SettingsApp.ConfigurationSystemCurrency = (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(cfg_configurationcurrency), new Guid(GlobalFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]));
+                DataLayerSettings.ConfigurationSystemCountry = (cfg_configurationcountry)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcountry), new Guid(DataLayerFramework.Settings["xpoOidConfigurationCountrySystemCountry"]));
+                SharedSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(cfg_configurationcurrency), new Guid(DataLayerFramework.Settings["xpoOidConfigurationCurrencySystemCurrency"]));
 
                 //PreferenceParameters
-                GlobalFramework.PreferenceParameters = FrameworkUtils.GetPreferencesParameters();
+               SharedFramework.PreferenceParameters = SharedUtils.GetPreferencesParameters();
 
                 //Try to Get open Session Day/Terminal for this Terminal
-                GlobalFramework.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
-                GlobalFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
+                SharedFramework.WorkSessionPeriodDay = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Day);
+                SharedFramework.WorkSessionPeriodTerminal = ProcessWorkSessionPeriod.GetSessionPeriod(WorkSessionPeriodType.Terminal);
 
                 //Init FastReports Custom Functions and Custom Vars
-                CustomFunctions.Register(SettingsApp.AppName);
+                CustomFunctions.Register(ConsoleSettings.AppName);
 
                 //Init AppSession
                 //string appSessionFile = SettingsApp.AppSessionFile;
@@ -146,20 +148,20 @@ namespace logicpos.financial.console
                 //ResourceManager rm = new ResourceManager("Namespace.LanguageLocalization", logicpos.financial.library.Classes);
                 
                 //Override Paths
-                GlobalFramework.Path["assets"] = @"c:\SVN\logicpos\trunk\src\logicpos\Assets\";
-                GlobalFramework.Path["reports"] = @"c:\SVN\logicpos\trunk\src\logicpos\Resources\Reports\";
+                DataLayerFramework.Path["assets"] = @"c:\SVN\logicpos\trunk\src\logicpos\Assets\";
+                DataLayerFramework.Path["reports"] = @"c:\SVN\logicpos\trunk\src\logicpos\Resources\Reports\";
                 //Get Terminal from DB
-                GlobalFramework.LoggedUser = (sys_userdetail)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userdetail), new Guid(GlobalFramework.Settings["xpoOidUserDetailDefaultLoggedUser"]));
+                DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userdetail), new Guid(DataLayerFramework.Settings["xpoOidUserDetailDefaultLoggedUser"]));
                 //Get Permissions
-                GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions();
+                SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions();
                 //Override Terminal Printer (PDF)
-                //GlobalFramework.LoggedTerminal.Printer = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.LoggedTerminalPrinter);
-                GlobalApp.PrinterExportPDF = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.XpoOidPrinterExportPDF);
-                GlobalApp.PrinterThermal = (sys_configurationprinters)GlobalFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.XpoOidPrinterThermal);
+                //DataLayerFramework.LoggedTerminal.Printer = (sys_configurationprinters)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), SettingsApp.LoggedTerminalPrinter);
+                ConsoleGlobalApp.PrinterExportPDF = (sys_configurationprinters)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), ConsoleSettings.XpoOidPrinterExportPDF);
+                ConsoleGlobalApp.PrinterThermal = (sys_configurationprinters)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(sys_configurationprinters), ConsoleSettings.XpoOidPrinterThermal);
 
-                if (GlobalFramework.LoggedTerminal == null) _logger.Debug("Invalid Printer. Working Without Printer");
+                if (DataLayerFramework.LoggedTerminal == null) _logger.Debug("Invalid Printer. Working Without Printer");
                 //Override Licence
-                GlobalFramework.LicenceCompany = "Logicpulse : Demonstração";
+                SharedFramework.LicenseCompany = "Logicpulse : Demonstração";
             }
             catch (Exception ex)
             {
@@ -217,38 +219,38 @@ namespace logicpos.financial.console
                 {
                     "02) TestThermalPrinterGeneric.OpenDoor()",
                     () =>
-                    TestThermalPrinterGeneric.OpenDoor(GlobalApp.PrinterThermal)
+                    TestThermalPrinterGeneric.OpenDoor(ConsoleGlobalApp.PrinterThermal)
                 },
                 //Thermal Printer test Documents
                 {
                     "03) TestThermalPrinterGeneric.Print()",
                     () =>
-                    TestThermalPrinterGeneric.Print(GlobalApp.PrinterThermal)
+                    TestThermalPrinterGeneric.Print(ConsoleGlobalApp.PrinterThermal)
                 },
                 {
                     "04) TestThermalPrinterFinanceDocument.Print()",
                     () =>
-                    TestThermalPrinterFinanceDocumentMaster.Print(GlobalApp.PrinterThermal)
+                    TestThermalPrinterFinanceDocumentMaster.Print(ConsoleGlobalApp.PrinterThermal)
                 },
                 {
                     "05) TestThermalPrinterFinanceDocumentPayment.Print()",
                     () =>
-                    TestThermalPrinterFinanceDocumentPayment.Print(GlobalApp.PrinterThermal)
+                    TestThermalPrinterFinanceDocumentPayment.Print(ConsoleGlobalApp.PrinterThermal)
                 },
                 {
                     "06) TestThermalPrinterInternalDocumentOrderRequest.Print()",
                     () =>
-                    TestThermalPrinterInternalDocumentOrderRequest.Print(GlobalApp.PrinterThermal)
+                    TestThermalPrinterInternalDocumentOrderRequest.Print(ConsoleGlobalApp.PrinterThermal)
                 },
                 {
                     "07) TestThermalPrinterInternalDocumentCashDrawer.Print()",
                     () =>
-                    TestThermalPrinterInternalDocumentCashDrawer.Print(GlobalApp.PrinterThermal)
+                    TestThermalPrinterInternalDocumentCashDrawer.Print(ConsoleGlobalApp.PrinterThermal)
                 },
                 {
                     "08) TestThermalPrinterInternalDocumentWorkSession.Print()",
                     () =>
-                    TestThermalPrinterInternalDocumentWorkSession.Print(GlobalApp.PrinterThermal)
+                    TestThermalPrinterInternalDocumentWorkSession.Print(ConsoleGlobalApp.PrinterThermal)
                 }
             };
         }
@@ -322,7 +324,7 @@ namespace logicpos.financial.console
         {
             Console.Clear();
 
-            Console.WriteLine(string.Format("{0} : Database: [{1}]", SettingsApp.AppName, SettingsApp.DatabaseName));
+            Console.WriteLine(string.Format("{0} : Database: [{1}]", ConsoleSettings.AppName, ConsoleSettings.DatabaseName));
             Console.WriteLine(_line);
 
             int i = 0;

@@ -66,7 +66,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms.ToolBars
 			var btn = new ToolStripDropDownButton(Properties.PdfToolStrip.btnZoomComboText);
 			btn.Name = "btnDropDownZoomEx";
 			btn.ToolTipText = Properties.PdfToolStrip.btnZoomComboToolTipText;
-			btn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			btn.DisplayStyle = ToolStripItemDisplayStyle.Text;
 			btn.DropDownOpening += ZoomLevel_DropDownOpening;
 
 			ToolStripMenuItem item = null;

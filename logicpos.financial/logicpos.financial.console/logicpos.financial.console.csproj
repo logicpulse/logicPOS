@@ -70,10 +70,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App\FrameworkUtils.cs" />
-    <Compile Include="App\GlobalApp.cs" />
-    <Compile Include="App\GlobalFramework.cs" />
-    <Compile Include="App\SettingsApp.cs" />
+    <Compile Include="App\ConsoleGlobalApp.cs" />
+    <Compile Include="App\ConsoleSettings.cs" />
     <Compile Include="Objects\Utils\Utils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

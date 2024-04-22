@@ -8,7 +8,7 @@ namespace logicpos
 {
     public class SingleProgramInstance : IDisposable
     {
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly Mutex _mutex;
         private bool _owned = false;
 

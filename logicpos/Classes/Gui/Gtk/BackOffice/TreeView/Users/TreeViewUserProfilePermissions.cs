@@ -2,23 +2,22 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
     internal class TreeViewUserProfilePermissions : GenericTreeViewXPO
     {
         //Settings
-        private readonly string _fontGenericTreeViewColumnTitle = GlobalFramework.Settings["fontGenericTreeViewColumnTitle"];
-        private readonly string _fontGenericTreeViewColumn = GlobalFramework.Settings["fontGenericTreeViewColumn"];
+        private readonly string _fontGenericTreeViewColumnTitle = DataLayerFramework.Settings["fontGenericTreeViewColumnTitle"];
+        private readonly string _fontGenericTreeViewColumn = DataLayerFramework.Settings["fontGenericTreeViewColumn"];
 
         private readonly TreeView _treeViewPermissionItem = new TreeView();
         private readonly ListStore _listStoreModelPermissionItem = new ListStore(typeof(string), typeof(string), typeof(bool));
@@ -48,12 +47,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
             Type xpObjectTypeUserProfile = typeof(sys_userprofile);
 
-            XPCollection xpCollectionUserProfile = new XPCollection(GlobalFramework.SessionXpo, xpObjectTypeUserProfile, criteria);
+            XPCollection xpCollectionUserProfile = new XPCollection(DataLayerFramework.SessionXpo, xpObjectTypeUserProfile, criteria);
 
             List<GenericTreeViewColumnProperty> columnPropertiesUserProfile = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_profiles"), MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user_profiles"), MaxWidth = 150 }
             };
 
             InitObject(pSourceWindow, xpCollectionUserProfile, xPGuidObjectType, typeDialogClass, columnPropertiesUserProfile, showStatusBar);
@@ -65,8 +64,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             SortProperty sortPropertyPermissionItem = new SortProperty("Ord", DevExpress.Xpo.DB.SortingDirection.Ascending);
 
             CriteriaOperator criteriaOperatorPermissionItem = CriteriaOperator.Parse("(Disabled IS NULL OR Disabled  <> 1)");
-            _xpCollectionUserPermissionItem = new XPCollection(GlobalFramework.SessionXpo, _xpObjectTypeUserPermissionItem, criteriaOperatorPermissionItem, sortPropertyPermissionItem);
-            _xpCollectionUserPermissionProfile = new XPCollection(GlobalFramework.SessionXpo, _xpObjectTypeUserPermissionProfile, null);
+            _xpCollectionUserPermissionItem = new XPCollection(DataLayerFramework.SessionXpo, _xpObjectTypeUserPermissionItem, criteriaOperatorPermissionItem, sortPropertyPermissionItem);
+            _xpCollectionUserPermissionProfile = new XPCollection(DataLayerFramework.SessionXpo, _xpObjectTypeUserPermissionProfile, null);
 
             //Parameters
             _sourceWindow = pSourceWindow;
@@ -79,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _modelFirstCustomFieldIndex = (_treeViewMode == GenericTreeViewMode.Default) ? 1 : 2;
 
             //Sorting
-            _dataSource.Sorting = FrameworkUtils.GetXPCollectionDefaultSortingCollection();
+            _dataSource.Sorting = SharedUtils.GetXPCollectionDefaultSortingCollection();
             //Prepare listStoreModel 
             //_listStoreModel = GenericTreeViewModel.XPCollectionToModel(_dataSource, _columnProperties);
             InitDataModel(_dataSource, _columnProperties, GenericTreeViewMode.Default);
@@ -107,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (_showStatusBar)
             {
                 _statusbar = new Statusbar() { HasResizeGrip = false };
-                _statusbar.Push(0, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_statusbar"));
+                _statusbar.Push(0, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_statusbar"));
             };
 
             //Treeview
@@ -127,10 +126,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //TODO:THEME
             //if (GlobalApp.ScreenSize.Width >= 800)
             //{
-            TouchButtonIconWithText buttonApplyPrivileges = Navigator.GetNewButton("touchButtonApplyPrivileges_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_user_apply_privileges"), @"Icons/icon_pos_nav_refresh.png");
+            TouchButtonIconWithText buttonApplyPrivileges = Navigator.GetNewButton("touchButtonApplyPrivileges_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_user_apply_privileges"), @"Icons/icon_pos_nav_refresh.png");
             //buttonApplyPrivileges.WidthRequest = 110;
             //Apply Permissions
-            buttonApplyPrivileges.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
+            buttonApplyPrivileges.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
             //Event
             buttonApplyPrivileges.Clicked += delegate
             {
@@ -188,14 +187,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             TreeViewColumn tmpColId = _treeViewPermissionItem.AppendColumn("ID", new CellRendererText(), "text", 0);
             tmpColId.Visible = false;
 
-            TreeViewColumn tmpColProperty = _treeViewPermissionItem.AppendColumn(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_privilege_property"), new CellRendererText() { FontDesc = _fontDesc }, "text", 1);
+            TreeViewColumn tmpColProperty = _treeViewPermissionItem.AppendColumn(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_privilege_property"), new CellRendererText() { FontDesc = _fontDesc }, "text", 1);
             //Config Column Title
             Label labelPropertyTitle = new Label(tmpColProperty.Title);
             labelPropertyTitle.Show();
             labelPropertyTitle.ModifyFont(_fontDescTitle);
             tmpColProperty.Widget = labelPropertyTitle;
 
-            TreeViewColumn tmpColActivo = _treeViewPermissionItem.AppendColumn(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_privilege_active"), _cellRendererTogglePermissionItem, "active", 2);
+            TreeViewColumn tmpColActivo = _treeViewPermissionItem.AppendColumn(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_privilege_active"), _cellRendererTogglePermissionItem, "active", 2);
             tmpColActivo.MaxWidth = 100;
             //Config Column Title
             Label labelActivoTitle = new Label(tmpColActivo.Title);
@@ -224,7 +223,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void UpdateState(string pOid, bool pNewValue)
         {
             //UserProfile _currentXPObject = (UserProfile)_dataSource.Lookup(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
-            sys_userprofile _currentXPObject = (sys_userprofile)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userprofile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
+            sys_userprofile _currentXPObject = (sys_userprofile)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userprofile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
             bool needToInsert = true;
             for (int i = 0; i < _xpCollectionUserPermissionItem.Count; i++)
             {
@@ -247,7 +246,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                     //((UserPermissionProfile)_xpCollection3[j]).Disabled = !pNewValue;
                                     //((UserPermissionProfile)_xpCollectionUserPermissionProfile[j]).Delete();
                                     //Mario Fix: Get Fresh Object else Gives Object Deleted Stress
-                                    tmpUserPermissionProfile = (sys_userpermissionprofile)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userpermissionprofile), tmpUserPermissionProfile.Oid);
+                                    tmpUserPermissionProfile = (sys_userpermissionprofile)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userpermissionprofile), tmpUserPermissionProfile.Oid);
                                     tmpUserPermissionProfile.Delete();
                                     _xpCollectionUserPermissionProfile.Reload();
                                 }
@@ -256,11 +255,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                         if (needToInsert)
                         {
-                            sys_userpermissionprofile tmpUserPermissionProfileUpdate = (sys_userpermissionprofile)Activator.CreateInstance(_xpObjectTypeUserPermissionProfile, GlobalFramework.SessionXpo);
+                            sys_userpermissionprofile tmpUserPermissionProfileUpdate = (sys_userpermissionprofile)Activator.CreateInstance(_xpObjectTypeUserPermissionProfile, DataLayerFramework.SessionXpo);
                             tmpUserPermissionProfileUpdate.Reload();
                             tmpUserPermissionProfileUpdate.UserProfile = _currentXPObject;
                             //Mario Fix: Get Fresh Object else Gives Object Deleted Stress
-                            tmpUserPermissionItem = (sys_userpermissionitem)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userpermissionitem), tmpUserPermissionItem.Oid);
+                            tmpUserPermissionItem = (sys_userpermissionitem)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userpermissionitem), tmpUserPermissionItem.Oid);
                             tmpUserPermissionProfileUpdate.PermissionItem = tmpUserPermissionItem;
                             tmpUserPermissionProfileUpdate.Granted = !pNewValue;
                             tmpUserPermissionProfileUpdate.Save();
@@ -290,7 +289,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _listStoreModelPermissionItem.Clear();
 
             //UserProfile _currentXPObject = (UserProfile)_dataSource.Lookup(new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
-            sys_userprofile _currentXPObject = (sys_userprofile)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userprofile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
+            sys_userprofile _currentXPObject = (sys_userprofile)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userprofile), new Guid("" + TreeView.Model.GetValue(_treeIter, _modelFirstCustomFieldIndex)));
 
             for (int i = 0; i < _xpCollectionUserPermissionItem.Count; i++)
             {

@@ -6,6 +6,8 @@ using logicpos.resources.Resources.Localization;
 using logicpos.shared;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.App;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -16,10 +18,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Init Local Vars
             Size sizeIcon = new Size(28, 28);
-            string icon1 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_1_splitaccount.png");
-            string icon2 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_2_messages.png");
-            string icon3 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_3_gifts.png");
-            string icon4 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_numberpad_4_weight.png");
+            string icon1 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_1_splitaccount.png");
+            string icon2 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_2_messages.png");
+            string icon3 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_3_gifts.png");
+            string icon4 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_numberpad_4_weight.png");
 
             Color colorFont = Color.Black;
 
@@ -27,10 +29,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Table.Homogeneous = false;
             Table.NColumns = 4;
 
-            TouchButtonIconWithText buttonKeySplitAccount = new TouchButtonIconWithText("buttonKeySplitAccount", colorRightButton, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_split_account"), fontRightButton, colorFont, icon1, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyMessages = new TouchButtonIconWithText("buttonKeyMessages", colorRightButton, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_messages"), fontRightButton, colorFont, icon2, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyGifts = new TouchButtonIconWithText("buttonKeyGifts", colorRightButton, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_gifts"), fontRightButton, colorFont, icon3, sizeIcon, rightButtonWidth, buttonHeight);
-            TouchButtonIconWithText buttonKeyWeight = new TouchButtonIconWithText("buttonKeyWeight", colorRightButton, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_weight"), fontRightButton, colorFont, icon4, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeySplitAccount = new TouchButtonIconWithText("buttonKeySplitAccount", colorRightButton, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_split_account"), fontRightButton, colorFont, icon1, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyMessages = new TouchButtonIconWithText("buttonKeyMessages", colorRightButton, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_messages"), fontRightButton, colorFont, icon2, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyGifts = new TouchButtonIconWithText("buttonKeyGifts", colorRightButton, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_gifts"), fontRightButton, colorFont, icon3, sizeIcon, rightButtonWidth, buttonHeight);
+            TouchButtonIconWithText buttonKeyWeight = new TouchButtonIconWithText("buttonKeyWeight", colorRightButton, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_weight"), fontRightButton, colorFont, icon4, sizeIcon, rightButtonWidth, buttonHeight);
             buttonKeyMessages.Sensitive = false;
             buttonKeyGifts.Sensitive = false;
 

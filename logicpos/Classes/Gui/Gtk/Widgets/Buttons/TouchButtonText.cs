@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             : base(pName)
         {
             InitObject(pName, pColor, pLabelText, pFont, pColorFont, pWidth, pHeight);
-            base.InitObject(pName, pColor, _widget, pWidth, pHeight);
+            InitObject(pName, pColor, _widget, pWidth, pHeight);
         }
 
         public void InitObject(string pName, Color pColor, string pLabelText, string pFont, Color pColorFont, int pWidth, int pHeight)

@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.datalayer.App;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,8 +22,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly string _fontGenericTreeViewColumnTitle = GlobalFramework.Settings["fontGenericTreeViewColumnTitle"];
-        private readonly string _fontGenericTreeViewColumn = GlobalFramework.Settings["fontGenericTreeViewColumn"];
+        private readonly string _fontGenericTreeViewColumnTitle = DataLayerFramework.Settings["fontGenericTreeViewColumnTitle"];
+        private readonly string _fontGenericTreeViewColumn = DataLayerFramework.Settings["fontGenericTreeViewColumn"];
 
         //Aditional TreeView ColumnProperties
         public GenericTreeViewColumnPropertyType PropertyType { get; set; }

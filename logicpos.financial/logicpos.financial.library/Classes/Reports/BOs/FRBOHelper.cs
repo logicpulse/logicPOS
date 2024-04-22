@@ -1,7 +1,9 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Reflection;
 
@@ -67,15 +69,15 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
             try
             {
-                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
+                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancemaster), pDocumentFinanceMasterOid);
 
                 bool retificationDocuments = (
-                     documentFinanceMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote
+                     documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote
                 );
                 /* IN009173 */
                 bool isTransportDocument = (
-                    documentFinanceMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide ||
-                    documentFinanceMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote
+                    documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide ||
+                    documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote
                 );
 
                 string sqlFilter = string.Format("fmOid = '{0}'", documentFinanceMaster.Oid.ToString());
@@ -92,14 +94,14 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
                 //Override Default Values
                 //If Simplified Invoice - Remove Customer Details (If System Country Equal to PT)
-                if (SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryPortugal)
-                    || SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryMozambique) /* IN005986 */
-                    || SettingsApp.ConfigurationSystemCountry.Oid.Equals(SettingsApp.XpoOidConfigurationCountryAngola)) /* IN009230 - Angola is now added to this rule */
+                if (DataLayerSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryPortugal)
+                    || DataLayerSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryMozambique) /* IN005986 */
+                    || DataLayerSettings.ConfigurationSystemCountry.Oid.Equals(SharedSettings.XpoOidConfigurationCountryAngola)) /* IN009230 - Angola is now added to this rule */
                 {
                     /* IN009230 - now, only when Final Customer we have data cleaned */
                     //if (SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice.Equals(new Guid(documentFinanceMasterView.DocumentType)) 
                     //    || FrameworkUtils.GetFinalConsumerEntity().Oid.ToString() == documentFinanceMasterView.EntityOid) //Added
-                    if (FrameworkUtils.GetFinalConsumerEntity().Oid.ToString() == documentFinanceMasterView.EntityOid) //Added
+                    if (FinancialLibraryUtils.GetFinalConsumerEntity().Oid.ToString() == documentFinanceMasterView.EntityOid) //Added
                     {
                         documentFinanceMasterView.EntityName = string.Empty;
                         documentFinanceMasterView.EntityAddress = string.Empty;
@@ -108,13 +110,13 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                         documentFinanceMasterView.EntityCountry = string.Empty;
                         documentFinanceMasterView.EntityLocality = string.Empty;
                         /* IN009230 */
-                        documentFinanceMasterView.EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
+                        documentFinanceMasterView.EntityFiscalNumber = SharedSettings.FinanceFinalConsumerFiscalNumberDisplay;
 
                         customerDataHasBeenCleaned = true;
                     }
                     /* IN009230 - "If" content removed from here to the just before block of code */
                     //Detect if is FinalConsumer with FiscalNumber 999999990 and Hide it
-                    //erp_customer customer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                    //erp_customer customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                     //if (documentFinanceMasterView.EntityFiscalNumber == customer.FiscalNumber)
                     //{
                     //    documentFinanceMasterView.EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
@@ -124,21 +126,21 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 /* IN009075 - decrypt phase */
                 if (!customerDataHasBeenCleaned)
                 {
-                    documentFinanceMasterView.EntityName = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityName);
-                    documentFinanceMasterView.EntityAddress = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityAddress);
-                    documentFinanceMasterView.EntityZipCode = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityZipCode);
-                    documentFinanceMasterView.EntityCity = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCity);
-                    documentFinanceMasterView.EntityLocality = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityLocality);
-                    // documentFinanceMasterView.EntityCountry = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCountry);
+                    documentFinanceMasterView.EntityName = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityName);
+                    documentFinanceMasterView.EntityAddress = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityAddress);
+                    documentFinanceMasterView.EntityZipCode = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityZipCode);
+                    documentFinanceMasterView.EntityCity = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCity);
+                    documentFinanceMasterView.EntityLocality = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityLocality);
+                    // documentFinanceMasterView.EntityCountry = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityCountry);
                     // EntityLocality???
                     /* IN009230 */
-                    documentFinanceMasterView.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityFiscalNumber);
+                    documentFinanceMasterView.EntityFiscalNumber = SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMasterView.EntityFiscalNumber);
                 }
 
                 /* IN009173 - add Parent document number to Notes field */
                 if (isTransportDocument && documentFinanceMaster.DocumentParent != null)
                 {
-                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     if (!string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += " | ";
                     notes += documentFinanceMasterView.Notes;
                     documentFinanceMasterView.Notes = notes;
@@ -148,7 +150,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 /* Add ATDocCodeID to Notes field */
                 if (!string.IsNullOrEmpty(documentFinanceMasterView.ATDocCodeID))
                 {
-                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_at_atdoccodeid"), documentFinanceMasterView.ATDocCodeID);
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_at_atdoccodeid"), documentFinanceMasterView.ATDocCodeID);
                     if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += " | "/*Environment.NewLine*/;
                     notes += documentFinanceMasterView.Notes;
                     documentFinanceMasterView.Notes = notes;
@@ -159,14 +161,14 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 {
                     //TK016319 - Certificação Angola - Alterações para teste da AGT
 					//Notas de Credito
-                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
-                    if (SettingsApp.XpoOidConfigurationCountryAngola.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                    string notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                    if (SharedSettings.XpoOidConfigurationCountryAngola.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                     {
-                        notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_source_document_NC_ND"), documentFinanceMaster.DocumentParent.DocumentNumber);
+                        notes = string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_source_document_NC_ND"), documentFinanceMaster.DocumentParent.DocumentNumber);
                     }                        
                     /* IN009252 - "Reason" added to "fin_documentfinancemaster.Notes" */
                     if (! string.IsNullOrEmpty(documentFinanceMasterView.Notes)) notes += Environment.NewLine; /* " | " */
-                    notes += string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reason"), documentFinanceMasterView.Notes);
+                    notes += string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reason"), documentFinanceMasterView.Notes);
                     documentFinanceMasterView.Notes = notes;
                 }
 
@@ -203,7 +205,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
 
             try
             {
-                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentfinancepayment), pDocumentFinancePaymentOid);
+                fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentfinancepayment), pDocumentFinancePaymentOid);
 
                 string sqlFilter = string.Format("fpaOid = '{0}'", pDocumentFinancePaymentOid.ToString());
 
@@ -226,14 +228,14 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                     gcDocumentFinancePayment.List[0].EntityFiscalNumber = XPGuidObject.DecryptIfNeeded(gcDocumentFinancePayment.List[0].EntityFiscalNumber).ToString();
 
                 //If FinalConsumer - Clean Output Data
-                if (gcDocumentFinancePayment.List[0].EntityFiscalNumber == SettingsApp.FinanceFinalConsumerFiscalNumber)
+                if (gcDocumentFinancePayment.List[0].EntityFiscalNumber == SharedSettings.FinanceFinalConsumerFiscalNumber)
                 {
                     gcDocumentFinancePayment.List[0].EntityName = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityAddress = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityZipCode = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityCity = string.Empty;
                     gcDocumentFinancePayment.List[0].EntityLocality = string.Empty;
-                    gcDocumentFinancePayment.List[0].EntityFiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
+                    gcDocumentFinancePayment.List[0].EntityFiscalNumber = SharedSettings.FinanceFinalConsumerFiscalNumberDisplay;
                 }
 
                 //Render Child Bussiness Objects

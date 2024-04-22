@@ -2,23 +2,20 @@
 using logicpos.App;
 using logicpos.Classes.Enums.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 
 namespace logicpos
 {
     public partial class StartupWindow
     {
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Events
-
-        private void _tablePadUser_Clicked(object sender, EventArgs e)
+        private void TablePadUser_Clicked(object sender, EventArgs e)
         {
             TouchButtonBase button = (TouchButtonBase)sender;
 
-            //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            _tablePadUser.SelectedButtonOid = button.CurrentButtonOid;
+            TablePadUser.SelectedButtonOid = button.CurrentButtonOid;
 
             //Assign User Detail to Member Reference
             AssignUserDetail();
@@ -63,17 +60,14 @@ namespace logicpos
             Utils.ShowBackOffice(this);
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Logic
-
         //Assign Selected UserDetail to classe Member
         private void AssignUserDetail()
         {
-            try 
-	        {	        
-                if (_tablePadUser.SelectedButtonOid != null) 
+            try
+            {
+                if (TablePadUser.SelectedButtonOid != null)
                 {
-                    _selectedUserDetail = (FrameworkUtils.GetXPGuidObject(typeof(sys_userdetail), _tablePadUser.SelectedButtonOid) as sys_userdetail);
+                    _selectedUserDetail = (datalayer.App.DataLayerUtils.GetXPGuidObject(typeof(sys_userdetail), TablePadUser.SelectedButtonOid) as sys_userdetail);
                     if (_selectedUserDetail != null)
                     {
                         //Change NumberPadPinMode Mode
@@ -82,8 +76,8 @@ namespace logicpos
                         if (_selectedUserDetail.PasswordReset)
                         {
                             //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
-                                string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), _selectedUserDetail.Name, SettingsApp.DefaultValueUserDetailAccessPin)
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                                string.Format(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_user_request_change_password"), _selectedUserDetail.Name, DataLayerSettings.DefaultValueUserDetailAccessPin)
                             );
                         }
                     }
@@ -91,32 +85,32 @@ namespace logicpos
 
                 //Grab Focus
                 _numberPadPin.EntryPin.GrabFocus();
-	        }
-	        catch (Exception ex)
-	        {
+            }
+            catch (Exception ex)
+            {
                 _logger.Error(ex.Message, ex);
-	        }        
+            }
         }
 
         //Main Logout User Method, Shared for FrontOffice and BackOffice
         public void LogOutUser(bool pShowStartup)
         {
-            LogOutUser(pShowStartup, GlobalFramework.LoggedUser);
+            LogOutUser(pShowStartup, datalayer.App.DataLayerFramework.LoggedUser);
         }
 
         public void LogOutUser(bool pGotoStartupWindow, sys_userdetail pUserDetail)
         {
             if (
-                GlobalFramework.SessionApp.LoggedUsers.ContainsKey(pUserDetail.Oid))
+                SharedFramework.SessionApp.LoggedUsers.ContainsKey(pUserDetail.Oid))
             {
-                GlobalFramework.SessionApp.LoggedUsers.Remove(pUserDetail.Oid);
-                GlobalFramework.SessionApp.Write();
-                FrameworkUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerout"), pUserDetail.Name));
+                SharedFramework.SessionApp.LoggedUsers.Remove(pUserDetail.Oid);
+                SharedFramework.SessionApp.Write();
+                SharedUtils.Audit("USER_loggerOUT", string.Format(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_user_loggerout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
-                if (GlobalFramework.LoggedUser.Equals(pUserDetail))
+                if (datalayer.App.DataLayerFramework.LoggedUser.Equals(pUserDetail))
                 {
-                    GlobalFramework.LoggedUser = null;
-                    GlobalFramework.LoggedUserPermissions = null;
+                    datalayer.App.DataLayerFramework.LoggedUser = null;
+                    SharedFramework.LoggedUserPermissions = null;
                 }
             }
             //Update Table, In case user change Users in BackOffice

@@ -2,6 +2,7 @@
 using logicpos.App;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Data;
@@ -37,17 +38,17 @@ namespace logicpos.Classes.Logic.License
             _loadApp = true;
 
 #if (DEBUG)
-            GlobalFramework.LicenceDate = DateTime.Now.ToString("dd/MM/yyyy");
-            GlobalFramework.LicenceVersion = "POS_CORPORATE";
-            GlobalFramework.LicenceName = "DEBUG";
-            GlobalFramework.LicenceHardwareId = "####-####-####-####-####-####";
+            SharedFramework.LicenseDate = DateTime.Now.ToString("dd/MM/yyyy");
+            SharedFramework.LicenseVersion = "POS_CORPORATE";
+            SharedFramework.LicenseName = "DEBUG";
+            SharedFramework.LicenseHardwareId = "####-####-####-####-####-####";
             //Company Details
-            GlobalFramework.LicenceCompany = "Empresa Demonstração";
-            GlobalFramework.LicenceNif = "NIF Demonstração";
-            GlobalFramework.LicenceAddress = "Morada Demonstração";
-            GlobalFramework.LicenceEmail = "mail@demonstracao.tld";
-            GlobalFramework.LicenceTelephone = "DEBUG";
-            GlobalFramework.LicenceModuleStocks = true;
+            SharedFramework.LicenseCompany = "Empresa Demonstração";
+            SharedFramework.LicenseNif = "NIF Demonstração";
+            SharedFramework.LicenseAddress = "Morada Demonstração";
+            SharedFramework.LicenseEmail = "mail@demonstracao.tld";
+            SharedFramework.LicenseTelephone = "DEBUG";
+            SharedFramework.LicenseModuleStocks = true;
 #else
             if (showDebug)
             {
@@ -80,8 +81,8 @@ namespace logicpos.Classes.Logic.License
                     byte[] registredLicence = new byte[0];
 
                     hardwareID = GlobalFramework.PluginLicenceManager.GetHardwareID();
-                    GlobalFramework.LicenceHardwareId = hardwareID;
-                    _logger.Debug("Detected hardwareID: " + GlobalFramework.LicenceHardwareId);
+                    SharedFramework.LicenseHardwareId = hardwareID;
+                    _logger.Debug("Detected hardwareID: " + SharedFramework.LicenseHardwareId);
 
                     //Try Update Licence    
                     try
@@ -120,7 +121,7 @@ namespace logicpos.Classes.Logic.License
 
                             WriteByteArrayToFile(registredLicence, completeFilePath);
 
-                            logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_updated"));
+                            logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_updated"));
 
                             return;
                         }
@@ -132,7 +133,7 @@ namespace logicpos.Classes.Logic.License
                     //Detected Blocked Version : Code must be here to works with Online and Offline Mode
                     if (version == "LOGICPOS_BLOCK")
                     {
-                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_blocked"));
+                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_license_blocked"));
 
                         return;
                     }
@@ -211,7 +212,7 @@ namespace logicpos.Classes.Logic.License
         /// </summary>
         private static void StartPOSFrontOffice()
         {
-            if (!GlobalFramework.AppUseBackOfficeMode)
+            if (!SharedFramework.AppUseBackOfficeMode)
             {
                 LogicPos logicPos = new LogicPos();
                 logicPos.StartApp(AppMode.FrontOffice);
@@ -225,39 +226,39 @@ namespace logicpos.Classes.Logic.License
 
         public static void GetLicenceInfo()
         {
-            if (GlobalFramework.DtLicenceKeys == null)
+            if (SharedFramework.DtLicenseKeys == null)
             {
-                GlobalFramework.DtLicenceKeys = new DataTable("keysLicence");
-                GlobalFramework.DtLicenceKeys.Columns.Add("name", typeof(string));
-                GlobalFramework.DtLicenceKeys.Columns.Add("value", typeof(string));
+                SharedFramework.DtLicenseKeys = new DataTable("keysLicence");
+                SharedFramework.DtLicenseKeys.Columns.Add("name", typeof(string));
+                SharedFramework.DtLicenseKeys.Columns.Add("value", typeof(string));
             }
-            GlobalFramework.DtLicenceKeys.Rows.Clear();
+            SharedFramework.DtLicenseKeys.Rows.Clear();
 
-            GlobalFramework.LicenceDate = DateTime.Now.ToString("dd/MM/yyyy");
-            GlobalFramework.LicenceVersion = "LOGICPOS_LICENSED";
-            GlobalFramework.LicenceName = "Nome DEMO";
-            GlobalFramework.LicenceCompany = "Empresa DEMO";
-            GlobalFramework.LicenceNif = "NIF DEMO";
-            GlobalFramework.LicenceAddress = "Morada DEMO";
-            GlobalFramework.LicenceEmail = "Email DEMO";
-            GlobalFramework.LicenceTelephone = "Telefone DEMO";
-            GlobalFramework.LicenceReseller = "LogicPulse";
-            GlobalFramework.ServerVersion = "1.0";
-            GlobalFramework.LicenceUpdateDate = DateTime.Now.AddDays(-1);
+            SharedFramework.LicenseDate = DateTime.Now.ToString("dd/MM/yyyy");
+            SharedFramework.LicenseVersion = "LOGICPOS_LICENSED";
+            SharedFramework.LicenseName = "Nome DEMO";
+            SharedFramework.LicenseCompany = "Empresa DEMO";
+            SharedFramework.LicenseNif = "NIF DEMO";
+            SharedFramework.LicenseAddress = "Morada DEMO";
+            SharedFramework.LicenseEmail = "Email DEMO";
+            SharedFramework.LicenseTelephone = "Telefone DEMO";
+            SharedFramework.LicenseReseller = "LogicPulse";
+            SharedFramework.ServerVersion = "1.0";
+            SharedFramework.LicenceUpdateDate = DateTime.Now.AddDays(-1);
 #if DEBUG
-            GlobalFramework.LicenceVersion = "LOGICPOS_CORPORATE";
-            GlobalFramework.LicenceName = "DEBUG";
-            GlobalFramework.LicenceCompany = "DEBUG";
-            GlobalFramework.LicenceAddress = "DEBUG";
-            GlobalFramework.LicenceEmail = "DEBUG";
-            GlobalFramework.LicenceTelephone = "DEBUG";
-            GlobalFramework.LicenceModuleStocks = true;
-            GlobalFramework.LicenceReseller = "Logicpulse";
+            SharedFramework.LicenseVersion = "LOGICPOS_CORPORATE";
+            SharedFramework.LicenseName = "DEBUG";
+            SharedFramework.LicenseCompany = "DEBUG";
+            SharedFramework.LicenseAddress = "DEBUG";
+            SharedFramework.LicenseEmail = "DEBUG";
+            SharedFramework.LicenseTelephone = "DEBUG";
+            SharedFramework.LicenseModuleStocks = true;
+            SharedFramework.LicenseReseller = "Logicpulse";
 #endif
 
-            SortedList sortedList = GlobalFramework.PluginLicenceManager.GetLicenseInformation();
+            SortedList sortedList =SharedFramework.PluginLicenceManager.GetLicenseInformation();
 
-            GlobalFramework.ServerVersion = GlobalFramework.PluginLicenceManager.GetCurrentVersion();
+            SharedFramework.ServerVersion =SharedFramework.PluginLicenceManager.GetCurrentVersion();
             //GlobalFramework.ServerVersion = "2.0.0.0";
 
             if (showDebug)
@@ -270,42 +271,42 @@ namespace logicpos.Classes.Logic.License
                 string key = sortedList.GetKey(i).ToString();
                 string value = sortedList.GetByIndex(i).ToString();
                 _logger.Debug("Licence Key:" + key + "=" + value);
-                GlobalFramework.DtLicenceKeys.Rows.Add(key, value);
+                SharedFramework.DtLicenseKeys.Rows.Add(key, value);
                 switch (key)
                 {
                     case "version":
-                        GlobalFramework.LicenceVersion = value;
+                        SharedFramework.LicenseVersion = value;
                         break;
                     case "data":
-                        GlobalFramework.LicenceDate = value;
+                        SharedFramework.LicenseDate = value;
                         break;
                     case "name":
-                        GlobalFramework.LicenceName = value;
+                        SharedFramework.LicenseName = value;
                         break;
                     case "company":
-                        GlobalFramework.LicenceCompany = value;
+                        SharedFramework.LicenseCompany = value;
                         break;
                     case "nif":
-                        GlobalFramework.LicenceNif = value;
+                        SharedFramework.LicenseNif = value;
                         break;
                     case "adress":
-                        GlobalFramework.LicenceAddress = value;
+                        SharedFramework.LicenseAddress = value;
                         break;
                     case "email":
-                        GlobalFramework.LicenceEmail = value;
+                        SharedFramework.LicenseEmail = value;
                         break;
                     case "telefone":
-                        GlobalFramework.LicenceTelephone = value;
+                        SharedFramework.LicenseTelephone = value;
                         break;
                     case "reseller":
-                        GlobalFramework.LicenceReseller = value;
-                        SettingsApp.AppCompanyName = value;
+                        SharedFramework.LicenseReseller = value;
+                        SharedSettings.AppCompanyName = value;
                         break;
                     case "logicpos_Module_Stocks":
-                        GlobalFramework.LicenceModuleStocks = Convert.ToBoolean(value);
+                        SharedFramework.LicenseModuleStocks = Convert.ToBoolean(value);
                         break;
                     case "all_UpdateExpirationDate":
-                        GlobalFramework.LicenceUpdateDate = Convert.ToDateTime(value);
+                        SharedFramework.LicenceUpdateDate = Convert.ToDateTime(value);
                         break;
                     default:
                         break;
@@ -315,7 +316,7 @@ namespace logicpos.Classes.Logic.License
 
         public static bool NeedToRegister()
         {
-            if (!GlobalFramework.PluginLicenceManager.IsLicensed())
+            if (!SharedFramework.PluginLicenceManager.IsLicensed())
             {
                 if (showDebug)
                 {
@@ -340,7 +341,7 @@ namespace logicpos.Classes.Logic.License
 
         public static string GetCurrentDirectory()
         {
-            string currentDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string currentDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             if (!currentDir.EndsWith(@"\"))
             {
                 currentDir = currentDir + @"/";
@@ -353,7 +354,7 @@ namespace logicpos.Classes.Logic.License
         {
             try
             {
-                byte[] bytes = System.IO.File.ReadAllBytes(filePath);
+                byte[] bytes = File.ReadAllBytes(filePath);
                 return bytes;
             }
             catch (Exception ex)

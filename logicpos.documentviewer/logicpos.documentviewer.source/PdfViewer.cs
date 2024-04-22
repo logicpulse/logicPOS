@@ -2011,7 +2011,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">A System.Windows.Forms.MouseEventArgs that contains the event data.</param>
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 if (Document != null)
                 {
@@ -2039,7 +2039,7 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         /// <param name="e">A System.Windows.Forms.MouseEventArgs that contains the event data.</param>
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 if (Document != null)
                 {
@@ -2659,8 +2659,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         private PointF GetRenderLocation(SizeF size)
         {
             var cSize = new Size(
-                Size.Width - System.Windows.Forms.SystemInformation.VerticalScrollBarWidth,
-                Size.Height - System.Windows.Forms.SystemInformation.HorizontalScrollBarHeight
+                Size.Width - SystemInformation.VerticalScrollBarWidth,
+                Size.Height - SystemInformation.HorizontalScrollBarHeight
                 );
             float xleft = 0+Padding.Left;
             float ytop = 0+Padding.Top;
@@ -2700,8 +2700,8 @@ namespace Patagames.Pdf.Net.Controls.WinForms
         private SizeF GetRenderSize(int index)
         {
             var cSize = new Size(
-                Size.Width - System.Windows.Forms.SystemInformation.VerticalScrollBarWidth,
-                Size.Height - System.Windows.Forms.SystemInformation.HorizontalScrollBarHeight
+                Size.Width - SystemInformation.VerticalScrollBarWidth,
+                Size.Height - SystemInformation.HorizontalScrollBarHeight
                 );
             double w, h;
             Pdfium.FPDF_GetPageSizeByIndex(Document.Handle, index, out w, out h);

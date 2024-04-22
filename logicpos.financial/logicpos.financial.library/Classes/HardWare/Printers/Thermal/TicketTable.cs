@@ -1,8 +1,10 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,7 +29,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         }
         
         public TicketTable(string pSql, List<TicketColumn> pColumnsProperties, int pTableWidth)
-            : this(GlobalFramework.SessionXpo, pSql, pColumnsProperties, pTableWidth)
+            : this(DataLayerFramework.SessionXpo, pSql, pColumnsProperties, pTableWidth)
         {
         }
 
@@ -77,7 +79,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
         private void Load(string pSql)
         {
             //Get SelectedData
-            XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(_session, pSql);
+            XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(_session, pSql);
             //Add Columns
             string fieldName;
             string fieldType;
@@ -103,7 +105,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                     //Check if is Not Null
                     if (rowData.Values[xPSelectData.GetFieldIndex(fieldName)] != null)
                     {
-                        fieldValue = FrameworkUtils.FormatDataTableFieldFromType(rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(), fieldType);
+                        fieldValue = SharedUtils.FormatDataTableFieldFromType(rowData.Values[xPSelectData.GetFieldIndex(fieldName)].ToString(), fieldType);
                     }
                     else
                     {
@@ -146,7 +148,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal
                     //Check if is Not Null
                     if (rowData[fieldName] != null)
                     {
-                        fieldValue = FrameworkUtils.FormatDataTableFieldFromType(rowData[fieldName].ToString(), fieldType);
+                        fieldValue = SharedUtils.FormatDataTableFieldFromType(rowData[fieldName].ToString(), fieldType);
                     }
                     else
                     {

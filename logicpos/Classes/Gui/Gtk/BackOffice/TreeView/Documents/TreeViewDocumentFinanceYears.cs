@@ -4,9 +4,10 @@ using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Finance;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -34,14 +35,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("FiscalYear") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year") },
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("FiscalYear") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_fiscal_year") },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model : Use Default Filter
             CriteriaOperator criteria = (ReferenceEquals(pXpoCriteria, null)) ? CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)") : pXpoCriteria;
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria);
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria);
 
             //Protection to Disable Series Before Creating Year
             this.RecordBeforeInsert += TreeViewDocumentFinanceYears_RecordBeforeInsert;
@@ -75,8 +76,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         new Size(600, 400),
                         MessageType.Question,
                         ButtonsType.YesNo,
-                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_series_fiscal_year_close_current"),
-                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_fiscal_year_close_current"), currentDocumentFinanceYear.Designation)
+                        resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_series_fiscal_year_close_current"),
+                        string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_fiscal_year_close_current"), currentDocumentFinanceYear.Designation)
                     );
 
                     //Override Insert CRUD ShowDialog using SkipRecordInsert, this prevent create Record
@@ -118,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 treeViewDocumentFinanceSeries.Refresh();
                 if (treeViewDocumentFinanceYearSerieTerminal != null) treeViewDocumentFinanceYearSerieTerminal.Refresh();
                 //Apply Permissions ButtonCreateDocumentFinanceSeries
-                treeViewDocumentFinanceSeries.ButtonCreateDocumentFinanceSeries.Sensitive = FrameworkUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES");
+                treeViewDocumentFinanceSeries.ButtonCreateDocumentFinanceSeries.Sensitive = SharedUtils.HasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_MANAGE_SERIES");
 
                 //Request Create Series for all Type of Finance Documents
                 ResponseType responseType = logicpos.Utils.ShowMessageTouch(
@@ -127,8 +128,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     new Size(600, 400),
                     MessageType.Question,
                     ButtonsType.YesNo,
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_document_type_series")
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_series_create_series"),
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_series_create_document_type_series")
                 );
 
                 if (responseType == ResponseType.Yes)

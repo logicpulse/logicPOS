@@ -5,7 +5,10 @@ using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.App;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using System;
@@ -71,14 +74,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             );
 
             //Settings
-            string fontGenericTreeViewFinanceDocumentArticleColumnTitle = GlobalFramework.Settings["fontGenericTreeViewFinanceDocumentArticleColumnTitle"];
-            string fontGenericTreeViewFinanceDocumentArticleColumn = GlobalFramework.Settings["fontGenericTreeViewFinanceDocumentArticleColumn"];
+            string fontGenericTreeViewFinanceDocumentArticleColumnTitle = DataLayerFramework.Settings["fontGenericTreeViewFinanceDocumentArticleColumnTitle"];
+            string fontGenericTreeViewFinanceDocumentArticleColumn = DataLayerFramework.Settings["fontGenericTreeViewFinanceDocumentArticleColumn"];
             //Format Columns FontSizes for Touch
             _treeViewArticles.FormatColumnPropertiesForTouch(fontGenericTreeViewFinanceDocumentArticleColumnTitle, fontGenericTreeViewFinanceDocumentArticleColumn);
             //Disable View Button
             _treeViewArticles.Navigator.ButtonView.Sensitive = false;
 
-            if(!GlobalFramework.AppUseBackOfficeMode) _treeViewArticles.Columns[18].Visible = false;
+            if(!SharedFramework.AppUseBackOfficeMode) _treeViewArticles.Columns[18].Visible = false;
 
             PackStart(_treeViewArticles);
 
@@ -87,13 +90,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             {
                 //FORCE Assign FriendlyId to Designation
                 fin_article article = (_treeViewArticles.DataSourceRow["Article.Code"] as fin_article);
-                treeViewArticlesRecordAfterChange();
+                TreeViewArticlesRecordAfterChange();
             };
-            _treeViewArticles.RecordAfterDelete += delegate { treeViewArticlesRecordAfterChange(); };
-            _treeViewArticles.RecordAfterUpdate += delegate { treeViewArticlesRecordAfterChange(); };
+            _treeViewArticles.RecordAfterDelete += delegate { TreeViewArticlesRecordAfterChange(); };
+            _treeViewArticles.RecordAfterUpdate += delegate { TreeViewArticlesRecordAfterChange(); };
         }
 
-        private void treeViewArticlesRecordAfterChange()
+        private void TreeViewArticlesRecordAfterChange()
         {
             //Recreate ArticleBag
             _articleBag = _posDocumentFinanceDialog.GetArticleBag();
@@ -113,9 +116,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         {
             //If not a Invoice|InvoiceAndPayment|Simplified Invoice
             if (_treeViewArticles.DataSource.Rows.Count > 0 
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoice 
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment 
-                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoice 
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment 
+                && _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid != SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
             )
             {
                 _validated = true;
@@ -123,7 +126,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Check TotalFinal with Current Customer Details
             else if (
                 _treeViewArticles.DataSource.Rows.Count > 0 &&
-                FrameworkUtils.IsInValidFinanceDocumentCustomer(
+                FinancialLibraryUtils.IsInValidFinanceDocumentCustomer(
                     _articleBag.TotalFinal, 
                     _pagePad2.EntryBoxSelectCustomerName.EntryValidation.Text,
                     _pagePad2.EntryBoxCustomerAddress.EntryValidation.Text,
@@ -134,24 +137,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 )
             )
             {
-                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(_posDocumentFinanceDialog, _articleBag.TotalFinal, SettingsApp.FinanceRuleRequiredCustomerDetailsAboveValue);
+                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(_posDocumentFinanceDialog, _articleBag.TotalFinal, SharedSettings.FinanceRuleRequiredCustomerDetailsAboveValue);
                 _validated = false;
             }
             //If Simplified Invoice, Check if Total Document and Total Services is Not Greater than Max Value
             else if (
                 _treeViewArticles.DataSource.Rows.Count > 0 &&
                 (
-                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice 
+                    _pagePad1.EntryBoxSelectDocumentFinanceType.Value.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice 
                     && (
                         //Check Total Final and Total Services
-                        _articleBag.TotalFinal > SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal ||
-                        _articleBag.GetClassTotals("S") > SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices
+                        _articleBag.TotalFinal > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal ||
+                        _articleBag.GetClassTotals("S") > SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices
                     )
                 )
             )
             {
                 //In New Finance Dialog Mode we cant change to Invoice-Payment
-                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_posDocumentFinanceDialog, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog, _articleBag.TotalFinal, SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotal, _articleBag.GetClassTotals("S"), SettingsApp.FinanceRuleSimplifiedInvoiceMaxTotalServices);
+                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceed(_posDocumentFinanceDialog, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog, _articleBag.TotalFinal, SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotal, _articleBag.GetClassTotals("S"), SharedSettings.FinanceRuleSimplifiedInvoiceMaxTotalServices);
                 _validated = false;
             }
             else
@@ -184,13 +187,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 {
                     fin_article article;
                     //Get Discount from Select Customer
-                    decimal discountGlobal = FrameworkUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
+                    decimal discountGlobal = SharedUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
                     decimal exchangeRate = _pagePad1.EntryBoxSelectConfigurationCurrency.Value.ExchangeRate;
 
                     //Update DataTable Rows
                     foreach (DataRow item in _treeViewArticles.DataSource.Rows)
                     {
-                        article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
+                        article = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), new Guid(item.ItemArray[item.Table.Columns["Oid"].Ordinal].ToString()));
 
                         //Calc PriceProperties
                         PriceProperties priceProperties = PriceProperties.GetPriceProperties(
@@ -204,13 +207,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                         );
 
                         //Finnally Update DataSourceRow Value with calculated PriceProperties
-                        if (debug) _logger.Debug(string.Format("#1:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", FrameworkUtils.DecimalToString(Convert.ToDecimal(_treeViewArticles.DataSourceRow["TotalFinal"])), FrameworkUtils.DecimalToString(discountGlobal)));
+                        if (debug) _logger.Debug(string.Format("#1:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", SharedUtils.DecimalToString(Convert.ToDecimal(_treeViewArticles.DataSourceRow["TotalFinal"])), SharedUtils.DecimalToString(discountGlobal)));
                         //Update Display Values with ExchangeRate Multiplier
                         item["PriceDisplay"] = priceProperties.PriceNet * exchangeRate;
                         item["TotalNet"] = (priceProperties.TotalNet * exchangeRate);
                         item["TotalFinal"] = priceProperties.TotalFinal * exchangeRate;
                         item["PriceFinal"] = priceProperties.PriceFinal * exchangeRate;
-                        if (debug) _logger.Debug(string.Format("#2:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", FrameworkUtils.DecimalToString(Convert.ToDecimal(_treeViewArticles.DataSourceRow["TotalFinal"])), FrameworkUtils.DecimalToString(discountGlobal)));
+                        if (debug) _logger.Debug(string.Format("#2:TotalFinal DataSourceRow: [{0}], discountGlobal: [{1}]", SharedUtils.DecimalToString(Convert.ToDecimal(_treeViewArticles.DataSourceRow["TotalFinal"])), SharedUtils.DecimalToString(discountGlobal)));
                     }
                     //Call Refresh, Recreate TreeView from Model
                     _treeViewArticles.Refresh();

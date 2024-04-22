@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.Drawing;
@@ -13,10 +14,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Private Members
         private readonly string _l1LabelText;
         private readonly string _l2LabelText;
-        private readonly Color _colorKeyboardPadKeyDefaultFont = GlobalFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
-        private readonly Color _colorKeyboardPadKeySecondaryFont = GlobalFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
-        private readonly Color _colorKeyboardPadKeyBackground = GlobalFramework.Settings["colorKeyboardPadKeyBackground"].StringToColor();
-        private readonly Color _colorKeyboardPadKeyBackgroundActive = GlobalFramework.Settings["colorKeyboardPadKeyBackgroundActive"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyDefaultFont = DataLayerFramework.Settings["colorKeyboardPadKeyDefaultFont"].StringToColor();
+        private readonly Color _colorKeyboardPadKeySecondaryFont = DataLayerFramework.Settings["colorKeyboardPadKeySecondaryFont"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyBackground = DataLayerFramework.Settings["colorKeyboardPadKeyBackground"].StringToColor();
+        private readonly Color _colorKeyboardPadKeyBackgroundActive = DataLayerFramework.Settings["colorKeyboardPadKeyBackgroundActive"].StringToColor();
 
         //Public Properties
         private Label _labelL1;
@@ -64,9 +65,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (virtualKey.L2 != null) { _l2LabelText = virtualKey.L2.Glyph; } else { _l2LabelText = ""; };
 
             //Init Local Vars
-            Size sizeKeyboardPadDefaultKey = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeKeyboardPadDefaultKey"]);
-            string fontKeyboardPadPrimaryKey = GlobalFramework.Settings["fontKeyboardPadPrimaryKey"];
-            string fontKeyboardPadSecondaryKey = GlobalFramework.Settings["fontKeyboardPadSecondaryKey"];
+            Size sizeKeyboardPadDefaultKey = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeKeyboardPadDefaultKey"]);
+            string fontKeyboardPadPrimaryKey = DataLayerFramework.Settings["fontKeyboardPadPrimaryKey"];
+            string fontKeyboardPadSecondaryKey = DataLayerFramework.Settings["fontKeyboardPadSecondaryKey"];
 
             //ByPass Defaults
             if (virtualKey.L1.KeyWidth > 0)

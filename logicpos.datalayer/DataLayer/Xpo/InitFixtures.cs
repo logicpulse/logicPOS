@@ -459,7 +459,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             cfg_configurationholidays configurationHolidays1 = new cfg_configurationholidays(_session) { Ord = 10, Code = 10, Designation = "Feriado", Day = 1, Month = 1, Year = 1, Fixed = true }; configurationHolidays1.Save();
 
             //SystemNotification      
-            sys_systemnotification systemNotification1 = new sys_systemnotification(GlobalFramework.SessionXpo) { Message = "Welcome Message" };
+            sys_systemnotification systemNotification1 = new sys_systemnotification(DataLayerFramework.SessionXpo) { Message = "Welcome Message" };
             systemNotification1.Save();
 
             //SystemBackup
@@ -491,7 +491,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                 }
 
                 //DocumentFinanceDetailOrderReference
-                var documentFinanceDetailOrderReference1 = new fin_documentfinancedetailorderreference(_session) { OriginatingON = "ORDER#001", OrderDate = System.DateTime.Now }; documentFinanceDetailOrderReference1.Save();
+                var documentFinanceDetailOrderReference1 = new fin_documentfinancedetailorderreference(_session) { OriginatingON = "ORDER#001", OrderDate = DateTime.Now }; documentFinanceDetailOrderReference1.Save();
 
                 //DocumentFinanceDetailReference
                 var documentFinanceDetailReference1 = new fin_documentfinancedetailreference(_session) { Reference = "ORDER#001", Reason = "ORDER#001" }; documentFinanceDetailReference1.Save();

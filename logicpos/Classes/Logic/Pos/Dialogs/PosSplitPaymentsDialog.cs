@@ -2,10 +2,12 @@
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
@@ -105,13 +107,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (debug) _logger.Debug(string.Format("\t[{0}],[{1}],[{2}]", item.Key.Designation, item.Value.Quantity, item.Value.TotalFinal));
                     }
 
-                    erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), processFinanceDocumentParameter.Customer);
-                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), processFinanceDocumentParameter.PaymentMethod);
-                    cfg_configurationcurrency currency = (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(typeof(cfg_configurationcurrency), processFinanceDocumentParameter.Currency);
+                    erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), processFinanceDocumentParameter.Customer);
+                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), processFinanceDocumentParameter.PaymentMethod);
+                    cfg_configurationcurrency currency = (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(typeof(cfg_configurationcurrency), processFinanceDocumentParameter.Currency);
                     // Compose labelPaymentDetails
-                    string totalFinal = FrameworkUtils.DecimalToStringCurrency(processFinanceDocumentParameter.ArticleBag.TotalFinal, currency.Acronym);
-                    string totalDelivery = FrameworkUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalDelivery, currency.Acronym);
-                    string totalChange = FrameworkUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalChange, currency.Acronym);
+                    string totalFinal = SharedUtils.DecimalToStringCurrency(processFinanceDocumentParameter.ArticleBag.TotalFinal, currency.Acronym);
+                    string totalDelivery = SharedUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalDelivery, currency.Acronym);
+                    string totalChange = SharedUtils.DecimalToStringCurrency(processFinanceDocumentParameter.TotalChange, currency.Acronym);
                     string moneyExtra = (paymentMethod.Token.Equals("MONEY")) ? $" : ({totalDelivery}/{totalChange})" : string.Empty;
                     // Override default labelPaymentDetails
                     labelPaymentDetails = $"{customer.Name} : {paymentMethod.Designation} : {totalFinal}{moneyExtra}";
@@ -199,8 +201,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 // Init Object to Use priceTax on above Loop
                 //Get Place Objects to extract TaxSellType Normal|TakeWay, Place, Tables etc
-                OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-                pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
+                OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                pos_configurationplace configurationPlace = (pos_configurationplace)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
 
                 // Loop articleBag, and Add the quantity for Each Split (Total Article Quantity / numberOfSplits)
                 foreach (var article in articleBag)
@@ -270,7 +272,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Only change ArticleBag
                     if (item.ProcessFinanceDocumentParameter != null)
                     {
-                        fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
+                        fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
                         decimal totalDelivery = (paymentMethod.Token.Equals("MONEY"))
                             ? item.ProcessFinanceDocumentParameter.TotalDelivery
                             : item.ArticleBag.TotalFinal;
@@ -292,8 +294,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     UpdateTouchButtonSplitPaymentLabels(item);
 
                     // Update Window Title
-                    //if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment, numberOfSplits, FrameworkUtils.DecimalToStringCurrency(totalFinal));
-                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment"), numberOfSplits, FrameworkUtils.DecimalToStringCurrency(_totalPerSplit));
+                    //if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment, numberOfSplits, SharedUtils.DecimalToStringCurrency(totalFinal));
+                    if (WindowTitle != null) WindowTitle = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment"), numberOfSplits, SharedUtils.DecimalToStringCurrency(_totalPerSplit));
                 }
             }
             catch (Exception ex)
@@ -330,7 +332,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (item.ProcessFinanceDocumentParameter != null)
                     {
                         if (debug) _logger.Debug(string.Format("TotalFinal: [#{0}]:[{1}]", i,
-                            FrameworkUtils.DecimalToStringCurrency(item.ProcessFinanceDocumentParameter.ArticleBag.TotalFinal).PadLeft(padLeftChars, ' ')
+                            SharedUtils.DecimalToStringCurrency(item.ProcessFinanceDocumentParameter.ArticleBag.TotalFinal).PadLeft(padLeftChars, ' ')
                         ));
 
                         // PersistFinanceDocument
@@ -338,7 +340,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         //Update Display
                         if (item.DocumentFinanceMaster != null)
                         {
-                            fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
+                            fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), item.ProcessFinanceDocumentParameter.PaymentMethod);
                             if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowPayment(paymentMethod.Designation, item.ProcessFinanceDocumentParameter.TotalDelivery, item.ProcessFinanceDocumentParameter.TotalChange);
                         }
                     }
@@ -346,19 +348,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //If has Working Order
                 if (
-                    GlobalFramework.SessionApp.OrdersMain != null &&
-                    GlobalFramework.SessionApp.CurrentOrderMainOid != null &&
-                    GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid)
+                    SharedFramework.SessionApp.OrdersMain != null &&
+                    SharedFramework.SessionApp.CurrentOrderMainOid != null &&
+                    SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid)
                 )
                 {
                     // Get Current working orderMain
-                    OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                    OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                     if (debug) _logger.Debug(string.Format("Working on currentOrderMain.PersistentOid: [{0}]", currentOrderMain.PersistentOid));
                     //Get OrderDetail
                     OrderDetail currentOrderDetails = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].OrderDetails;
 
                     // Get configurationPlace to get Tax
-                    pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
+                    pos_configurationplace configurationPlace = (pos_configurationplace)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
                 }
 
                 return true;
@@ -391,9 +393,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Arredondamento de valores na divisão de contas gera perdas no valor e quantidade [IN:005944]
                 //if (_articleBag.TotalFinal < checkTotal * _splitPaymentButtons.Count && touchButtonSplitPayment == _splitPaymentButtons[_splitPaymentButtons.Count - 1])
                 //{
-                //    var totalPSplit = Convert.ToDecimal(FrameworkUtils.DecimalToString(checkTotal));
-                //    var totalPTotal = Convert.ToDecimal(FrameworkUtils.DecimalToString(_articleBag.TotalFinal));
-                //    var missingRoundPayment = Convert.ToDecimal(FrameworkUtils.DecimalToString(totalPTotal - (totalPSplit * _splitPaymentButtons.Count)));
+                //    var totalPSplit = Convert.ToDecimal(SharedUtils.DecimalToString(checkTotal));
+                //    var totalPTotal = Convert.ToDecimal(SharedUtils.DecimalToString(_articleBag.TotalFinal));
+                //    var missingRoundPayment = Convert.ToDecimal(SharedUtils.DecimalToString(totalPTotal - (totalPSplit * _splitPaymentButtons.Count)));
 
                 //    touchButtonSplitPayment.ArticleBag.TotalFinal += missingRoundPayment;
                 //    //if(missingRoundPayment > 0)

@@ -19,7 +19,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 //Call Base Template PrintHeader
-                base.PrintTitles();
+                PrintTitles();
                 
                 //Align Center
                 _thermalPrinterGeneric.SetAlignCenter();

@@ -19,18 +19,18 @@ namespace logicpos.datalayer.DataLayer.Xpo
             // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
             InitEncryptedAttributes<sys_userdetail>();
 
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_userdetail), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_userdetail), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(sys_userdetail), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(sys_userdetail), "Code");
             //Required for New Users
-            AccessPin = CryptographyUtils.SaltedString.GenerateSaltedString(SettingsApp.DefaultValueUserDetailAccessPin);
+            AccessPin = CryptographyUtils.SaltedString.GenerateSaltedString(DataLayerSettings.DefaultValueUserDetailAccessPin);
             PasswordReset = true;
-            ButtonImage = string.Format("{0}{1}", GlobalFramework.Path["assets"], SettingsApp.DefaultValueUserDetailButtonImage);
+            ButtonImage = string.Format("{0}{1}", DataLayerFramework.Path["assets"], DataLayerSettings.DefaultValueUserDetailButtonImage);
         }
 
         protected override void OnNewRecordSaving()
         {
             //Required for SAF-T
-            CodeInternal = FrameworkUtils.GuidToStringId(Oid.ToString());
+            CodeInternal = DataLayerUtils.GuidToStringId(Oid.ToString());
         }
 
         private uint _Ord;

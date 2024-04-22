@@ -1,16 +1,14 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.datalayer.DataLayer.Xpo.Articles;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.datalayer.DataLayer.Xpo.Articles;
-using logicpos.datalayer.Enums;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -33,13 +31,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             Type typeDialogClass = (pDialogType != null) ? pDialogType : null;
 
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(DataLayerFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, MinWidth = 200 },
-                new GenericTreeViewColumnProperty("SerialNumber") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), Expand = true, MinWidth = 200 },
+                new GenericTreeViewColumnProperty("Article") { ChildName = "Designation", Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true, MinWidth = 200 },
+                new GenericTreeViewColumnProperty("SerialNumber") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), Expand = true, MinWidth = 200 },
                 new GenericTreeViewColumnProperty("IsSold") { Title = "Vendido", Expand = false },
                 new GenericTreeViewColumnProperty("Status") { Title = "Estado", Expand = true, MinWidth = 150 },
                 new GenericTreeViewColumnProperty("Article") { ChildName = "IsComposed", Title = "Artigo Composto", Expand = false },
@@ -51,7 +49,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     DecryptValue = true,
                     MinWidth = 100
                 },
-                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "PurchasePrice", Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_purchase_price"), Expand = false },
+                new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "PurchasePrice", Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_purchase_price"), Expand = false },
                 new GenericTreeViewColumnProperty("StockMovimentIn") { ChildName = "DocumentNumber", Title = "Documento Origem", Expand = true },
                 new GenericTreeViewColumnProperty("StockMovimentOut")
                 {
@@ -62,7 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 },
                 new GenericTreeViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouse WHERE Oid = (SELECT Warehouse FROM fin_warehouselocation WHERE Oid = '{0}');", ChildName = "Warehouse", Title = "Armazem", Expand = true },
                 new GenericTreeViewColumnProperty("ArticleWarehouse") { Query = "SELECT Designation as Result FROM fin_warehouselocation WHERE Oid = '{0}';", ChildName = "Location", Title = "Localização", Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
             //Configure Criteria/XPCollection/Model
@@ -88,12 +86,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             };
 
             int TopReturnedObj = 50;
-            if(pSourceWindow.Title != logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")))
+            if (pSourceWindow.Title != logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movements")))
             {
                 TopReturnedObj = 100000000;
             }
 
-            XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria) { TopReturnedObjects = TopReturnedObj, Sorting = sortingCollection };         
+            XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria) { TopReturnedObjects = TopReturnedObj, Sorting = sortingCollection };
 
             //Call Base Initializer
             base.InitObject(

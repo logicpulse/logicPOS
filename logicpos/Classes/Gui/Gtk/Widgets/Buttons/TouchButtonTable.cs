@@ -1,13 +1,11 @@
 ﻿using Gtk;
-using logicpos.App;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
 using logicpos.datalayer.Enums;
+using logicpos.Extensions;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
-using logicpos.Extensions;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 {
@@ -37,7 +35,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             : base(pName)
         {
             InitObject(pName, pColor, pLabelText, pFont, pTableStatus, pTotal, pDateOpen, pDateClosed);
-            base.InitObject(pName, pColor, _widget, pWidth, pHeight);
+            InitObject(pName, pColor, _widget, pWidth, pHeight);
         }
 
         public void InitObject(string pName, Color pColor, string pLabelText, string pFont, TableStatus pTableStatus, decimal pTotal, DateTime pDateOpen, DateTime pDateClosed)
@@ -47,8 +45,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             _tableStatus = pTableStatus;
 
             //Settings
-            _colorPosTablePadTableTableStatusOpenButtonBackground = GlobalFramework.Settings["colorPosTablePadTableTableStatusOpenButtonBackground"].StringToColor();
-            _colorPosTablePadTableTableStatusReservedButtonBackground = GlobalFramework.Settings["colorPosTablePadTableTableStatusReservedButtonBackground"].StringToColor();
+            _colorPosTablePadTableTableStatusOpenButtonBackground = DataLayerFramework.Settings["colorPosTablePadTableTableStatusOpenButtonBackground"].StringToColor();
+            _colorPosTablePadTableTableStatusReservedButtonBackground = DataLayerFramework.Settings["colorPosTablePadTableTableStatusReservedButtonBackground"].StringToColor();
 
             //Initialize UI Components
             VBox vbox = new VBox(true, 5) { BorderWidth = 5 };
@@ -83,12 +81,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                     SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Open:
-                    _labelTotalOrStatus.Text = FrameworkUtils.DecimalToStringCurrency(pTotal);
-                    if (pDateOpen != null) labelDateTableOpenOrClosed.Text = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_table_open_at"), pDateOpen.ToString(SettingsApp.DateTimeFormatHour));
+                    _labelTotalOrStatus.Text = SharedUtils.DecimalToStringCurrency(pTotal);
+                    if (pDateOpen != null) labelDateTableOpenOrClosed.Text = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_table_open_at"), pDateOpen.ToString(SharedSettings.DateTimeFormatHour));
                     SetBackgroundColor(_colorPosTablePadTableTableStatusOpenButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Reserved:
-                    _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reserved_table");
+                    _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reserved_table");
                     SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 default:
@@ -100,16 +98,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         public void ChangeTableStatus(Guid pTableOid, TableStatus pTableStatus)
         {
             //Get Target Table
-            pos_configurationplacetable xTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
+            pos_configurationplacetable xTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplacetable), pTableOid);
             //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
 
             if (pTableStatus == TableStatus.Reserved)
             {
-                _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reserved_table");
+                _labelTotalOrStatus.Text = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reserved_table");
                 _eventBoxTotalOrStatus.VisibleWindow = true;
                 SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Reserved;
-                FrameworkUtils.Audit("TABLE_RESERVED", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_reserved"), xTable.Designation));
+                SharedUtils.Audit("TABLE_RESERVED", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_reserved"), xTable.Designation));
             }
             else
             {
@@ -117,7 +115,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
                 _eventBoxTotalOrStatus.VisibleWindow = false;
                 SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Free;
-                FrameworkUtils.Audit("TABLE_UNRESERVED", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_unreserved"), xTable.Designation));
+                SharedUtils.Audit("TABLE_UNRESERVED", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_unreserved"), xTable.Designation));
             }
             //_logger.Debug(string.Format("1 pTableStatus: [{0}] [{1}]", xTable.Designation, pTableStatus));
             //Update Status State  

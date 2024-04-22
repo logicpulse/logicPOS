@@ -1,176 +1,80 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Diagnostics;
 
 namespace logicpos.shared.App
 {
-    public abstract class SettingsApp : logicpos.datalayer.App.SettingsApp
+    public static class SharedSettings 
     {
-        //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Developer Mode
-
-#if (DEBUG)
-        //Used to Disable Protected Files Check etc
-        public static bool DeveloperMode = true;
-        //Developer Mode : Use PDF Print
-        public static bool PrintPDFEnabled = false;
+#if DEBUG
+        public static bool DeveloperMode { get; set; } = true;
+        public static bool PrintPDFEnabled { get; set; } = false;
 #else
-        public static bool DeveloperMode = false;
-        public static bool PrintPDFEnabled = false;
+        public static bool DeveloperMode {get;set;} = false;
+        public static bool PrintPDFEnabled {get;set} = false;
 #endif
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Application
+        public static string AppSoftwareName { get; set; }
+        public static string AppCompanyName { get; set; }
+        public static string AppCompanyPhone { get; set; }
+        public static string AppCompanyEmail { get; set; }
+        public static string AppCompanyWeb { get; set; }
+        public static string AppSoftwareVersionFormat { get; set; }
+        public static string AppSessionFile { get; set; } = "appsession_{0}.json";
+        public static bool AppSessionFileJsonIndented { get; set; } = true;
 
-        //Overrided by SoftwareVendor Plugin - ex: "LogicPos"
-        public static string AppSoftwareName;
-        //Overrided by SoftwareVendor Plugin - ex: "LogicPulse"
-        public static string AppCompanyName;
-        //Overrided by SoftwareVendor Plugin - ex: "+351 233 042 347"
-        public static string AppCompanyPhone;
-        //Overrided by SoftwareVendor Plugin - ex: "comercial@logicpulse.com"
-        public static string AppCompanyEmail;
-        //Overrided by SoftwareVendor Plugin - ex: "http://www.logicpulse.com"
-        public static string AppCompanyWeb;
-        //Overrided by SoftwareVendor Plugin - ex: "string.Format("Powered by {0}© Vers. {{0}}", AppCompanyName)"
-        public static string AppSoftwareVersionFormat;
+        public static bool EnablePosSessionApp { get; set; } = false;
+        public static bool EnablePosWorkSessionPeriod { get; set; } = false;
+        public static bool EnablePosTables { get; set; } = false;
 
-        public static string AppSessionFile = "appsession_{0}.json";
-        public static bool AppSessionFileJsonIndented = true;
+        public static Guid XpoOidConfigurationCountryPortugal { get; set; } = new Guid("e7e8c325-a0d4-4908-b148-508ed750676a");
+        public static string XpoOidConfigurationCountryPortugalCode2 { get; set; } = "PT";
+        public static Guid XpoOidConfigurationCurrencyEuro { get; set; } = new Guid("28dd2a3a-0083-11e4-96ce-00ff2353398c");
+        public static cfg_configurationcurrency ConfigurationSystemCurrency { get; set; } = null;
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Override Settings
+        public static Guid XpoOidConfigurationCountryMozambique { get; set; } = new Guid("16fcd7f2-e885-48d8-9f8e-9d224cc36f32");
+        public static string XpoOidConfigurationCountryMozambiqueCode2 { get; set; } = "MZ";
+        public static Guid XpoOidConfigurationCurrencyMetical { get; set; } = new Guid("28d16be0-0083-11e4-96ce-00ff2353398c");
+        public static Guid XpoOidConfigurationCurrencyUSDollar { get; set; } = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
 
-        public static bool EnablePosSessionApp = false;
-        public static bool EnablePosWorkSessionPeriod = false;
-        public static bool EnablePosTables = false;
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Country : for Country Finance Rules
+        public static Guid XpoOidConfigurationCountryAngola { get; set; } = new Guid("9655510a-ff58-461e-9719-c037058f10ed");
+        public static string XpoOidConfigurationCountryAngolaCode2 { get; set; } = "AO";
+        public static Guid XpoOidConfigurationCurrencyKwanza { get; set; } = new Guid("28da9212-3423-11e4-96ce-00ff2353398c");
 
-        //Defaults if Not Defined in Config
-        public static Guid XpoOidConfigurationCountryPortugal = new Guid("e7e8c325-a0d4-4908-b148-508ed750676a");
-        public static string XpoOidConfigurationCountryPortugalCode2 = "PT";
-        public static Guid XpoOidConfigurationCurrencyEuro = new Guid("28dd2a3a-0083-11e4-96ce-00ff2353398c");
-        public static cfg_configurationcurrency ConfigurationSystemCurrency = null;//Assigned on InitPlataformParameters()
+        public static string DateFormat { get; set; } = "yyyy-MM-dd";
+        public static string DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
+        public static string DateTimeFormatHour { get; set; } = "HH:mm:ss";
 
-        /* IN005975 and IN005979 for Mozambique deployment */
-        /// <summary>
-        /// Mozambique Oid
-        /// </summary>
-        public static Guid XpoOidConfigurationCountryMozambique = new Guid("16fcd7f2-e885-48d8-9f8e-9d224cc36f32");
-        /// <summary>
-        /// Mozambique ContryCode2
-        /// </summary>
-        public static string XpoOidConfigurationCountryMozambiqueCode2 = "MZ";
-        /// <summary>
-        /// Mozambique Currency
-        /// </summary>
-        public static Guid XpoOidConfigurationCurrencyMetical = new Guid("28d16be0-0083-11e4-96ce-00ff2353398c");
-        /* IN005976 for Mozambique deployment */
-        /// <summary>
-        /// Mozambique Default Currency. Used when issuing invoices for Mozambique and presenting a foreign currency as per requested by "AT" of MOZ.
-        /// </summary>
-        public static Guid XpoOidConfigurationCurrencyUSDollar = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
+        public static string DecimalFormat { get; set; } = "0.00";
+        public static string DecimalFormatCurrency { get; set; } = "0.00";
+        public static string DecimalFormatStockQuantity { get; set; } = "0.00000000";
 
-        /* IN009230 - Angola details */
-        /// <summary>
-        /// Angola Oid
-        /// </summary>
-        public static Guid XpoOidConfigurationCountryAngola = new Guid("9655510a-ff58-461e-9719-c037058f10ed");
-        /// <summary>
-        /// Angola ContryCode2
-        /// </summary>
-        public static string XpoOidConfigurationCountryAngolaCode2 = "AO";
-        /// <summary>
-        /// Angola Currency
-        /// </summary>
-        public static Guid XpoOidConfigurationCurrencyKwanza = new Guid("28da9212-3423-11e4-96ce-00ff2353398c");
+        public static string FileFormatDateTime { get; set; }
+        public static string FileFormatSaftPT { get; set; }
+        public static string FileFormatSaftAO { get; set; }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //DateTime Format
+        public static string BackupPassword { get; set; }
 
-        public static string DateFormat = "yyyy-MM-dd";
-        public static string DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
-        public static string DateTimeFormatHour = "HH:mm:ss";
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Decimal Format
-        public static string DecimalFormat = "0.00";
-        public static string DecimalFormatCurrency = "0.00";
-        //This will work to show output, usefull for SplitPayments, and to Round Quantities like 0.000000000000001 in ArticleBag, else we cand Remove its Key
-        public static string DecimalFormatStockQuantity = "0.00000000";
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Files/File Formats
-
-        //FileFormat Used in SAF-T(PT)/Backups Etc
-        //Overrided by SoftwareVendor Plugin - ex: "yyyyMMdd_HHmmss"
-        public static string FileFormatDateTime;
-        //filename_countrycode_version_date.extension
-        //Overrided by SoftwareVendor Plugin - ex: "saf-t_{0}_{1}_{2}.xml"
-        public static string FileFormatSaftPT;
-        public static string FileFormatSaftAO;
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //DataBase Backup System
-
-        //Overrided by SoftwareVendor Plugin - ex: "hiddenpassword"
-        public static string BackupPassword;
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //SAF-T PT
-
-        //SAF-T(PT) : Formats 
-        //Overrided by SoftwareVendor Plugin - ex: 6
-        public static int DocumentsPadLength;
-        //SAF-T(PT) : DateTime Formats 
-        //Overrided by SoftwareVendor Plugin - ex: "yyyy-MM-dd"
-        //Leave Default Here, in case we dont have Plugin Registered
-        public static string DateTimeFormatDocumentDate = "yyyy-MM-dd";
-        //Overrided by SoftwareVendor Plugin - ex: "yyyy-MM-ddTHH:mm:ss"
-        //Leave Default Here, in case we dont have Plugin Registered
-        public static string DateTimeFormatCombinedDateTime = "yyyy-MM-ddTHH:mm:ss";
-        //Overrided by SoftwareVendor Plugin - ex: "999999990"
-        public static string FinanceFinalConsumerFiscalNumber;
-        //Overrided by SoftwareVendor Plugin - ex: "---------"
-        public static string FinanceFinalConsumerFiscalNumberDisplay;
-        //SAF-T(PT) : Decimal Format
-        //Overrided by SoftwareVendor Plugin - ex: "0.00000000"
-        public static string DecimalFormatSAFTPT;
-        //Overrided by SoftwareVendor Plugin - ex: "0.00"
-        public static string DecimalFormatGrossTotalSAFTPT;
-        //Used to Compare, Round first, Compare After
-        //Overrided by SoftwareVendor Plugin - ex: 2
-        public static int DecimalRoundTo;
-        //RSA Private Key :Sign Finance Documents used in SHA1SignMessage()
-        //Overrided by SoftwareVendor Plugin - ex: 
-        //@"<RSAKeyValue>
-        //    <Modulus>PLACE VALUE HERE</Modulus>
-        //    <Exponent>PLACE VALUE HERE</Exponent>
-        //    <P>PLACE VALUE HERE</P>
-        //    <Q>PLACE VALUE HERE</Q>
-        //    <DP>PLACE VALUE HERE</DP>
-        //    <DQ>PLACE VALUE HERE</DQ>
-        //    <InverseQ>PLACE VALUE HERE</InverseQ>
-        //    <D>PLACE VALUE HERE</D>
-        //</RSAKeyValue>"
-        public static string RsaPrivateKey;
-        //SAFT-T XML Export Header
+        public static int DocumentsPadLength { get; set; }
+        public static string DateTimeFormatDocumentDate { get; set; } = "yyyy-MM-dd";
+        public static string DateTimeFormatCombinedDateTime { get; set; } = "yyyy-MM-ddTHH:mm:ss";
+        public static string FinanceFinalConsumerFiscalNumber { get; set; }
+        public static string FinanceFinalConsumerFiscalNumberDisplay { get; set; }
+        public static string DecimalFormatSAFTPT { get; set; }
+        public static string DecimalFormatGrossTotalSAFTPT { get; set; }
+        public static int DecimalRoundTo { get; set; }
+        public static string RsaPrivateKey { get; set; }
         public static string SaftProductID { get { return GetSaftProductID(); } }
-        //Overrided by SoftwareVendor Plugin - ex: "000000000" : Your Company FiscalNumber;
-        public static string SaftProductCompanyTaxID;
-        //Overrided by SoftwareVendor Plugin - ex: "0000" : Your Company CertificateNumber;
+        public static string SaftProductCompanyTaxID { get; set; }
         public static string SaftSoftwareCertificateNumber;
-        //Overrided by SoftwareVendor Plugin - ex: "PT"
         public static string SaftVersionPrefix;
-        //Overrided by SoftwareVendor Plugin - ex: "1.04_01"
         public static string SaftVersion;
-        //Versão da Chave Privada utilizada na criação da Assinatura 
-        //Overrided by SoftwareVendor Plugin - ex: 1
         public static int HashControl;
+
         //C — Contabilidade;
         //E — Faturação emitida por terceiros;
         //F — Faturação;
@@ -181,8 +85,7 @@ namespace logicpos.shared.App
         //T — Documentos de transporte (a).	
         //Overrided by SoftwareVendor Plugin - ex: "F"
         public static string TaxAccountingBasis;
-        //Currency Code
-        //Overrided by SoftwareVendor Plugin - ex: "EUR"
+
         public static string SaftCurrencyCode;
 
         //SAFT(PT) : Country Rules
@@ -373,9 +276,9 @@ namespace logicpos.shared.App
         //Override From Config : Replaced by Country RegexFiscalNumber & RegexZipCode
 
         //Used only in DialogUserDetail, else are used from regexFiscalNumber from Country Object
-        //public static string RegexFiscalNumber = (GlobalFramework.Settings["RegexFiscalNumber"] == String.Empty) ? @"^(PT)?[0-9]{9}$" : GlobalFramework.Settings["RegexFiscalNumber"];
+        //public static string RegexFiscalNumber = (DataLayerFramework.Settings["RegexFiscalNumber"] == String.Empty) ? @"^(PT)?[0-9]{9}$" : DataLayerFramework.Settings["RegexFiscalNumber"];
         //Move to Country Table
-        //public static string RegexZipCode = (GlobalFramework.Settings["RegexZipCode"] == String.Empty) ? @"^\d{4}(-\d{3})?$" : GlobalFramework.Settings["RegexZipCode"];
+        //public static string RegexZipCode = (DataLayerFramework.Settings["RegexZipCode"] == String.Empty) ? @"^\d{4}(-\d{3})?$" : DataLayerFramework.Settings["RegexZipCode"];
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Developer Config
@@ -523,40 +426,40 @@ namespace logicpos.shared.App
             bool debug = false;
 
             // Override SettingsApp with Defaults from SoftwareVendor Plugin
-            AppSoftwareName = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppSoftwareName), debug);
-            AppCompanyName = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyName), debug);
-            AppCompanyPhone = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyPhone), debug);
-            AppCompanyEmail = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyEmail), debug);
-            AppCompanyWeb = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyWeb), debug);
-            AppSoftwareVersionFormat = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(AppSoftwareVersionFormat), debug);
+            AppSoftwareName = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppSoftwareName), debug);
+            AppCompanyName = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyName), debug);
+            AppCompanyPhone = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyPhone), debug);
+            AppCompanyEmail = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyEmail), debug);
+            AppCompanyWeb = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppCompanyWeb), debug);
+            AppSoftwareVersionFormat = SharedUtils.GetSoftwareVendorValueAsString(nameof(AppSoftwareVersionFormat), debug);
 
-            FileFormatDateTime = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FileFormatDateTime), debug);
-            FileFormatSaftPT = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT), debug);
-            FileFormatSaftAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftAO), debug);
+            FileFormatDateTime = SharedUtils.GetSoftwareVendorValueAsString(nameof(FileFormatDateTime), debug);
+            FileFormatSaftPT = SharedUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftPT), debug);
+            FileFormatSaftAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(FileFormatSaftAO), debug);
 
-            DocumentsPadLength = FrameworkUtils.GetSoftwareVendorValueAsInt(nameof(DocumentsPadLength), debug);
-            DateTimeFormatDocumentDate = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DateTimeFormatDocumentDate), debug);
-            DateTimeFormatCombinedDateTime = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DateTimeFormatCombinedDateTime), debug);
-            FinanceFinalConsumerFiscalNumber = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumber), debug);
-            FinanceFinalConsumerFiscalNumberDisplay = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumberDisplay), debug);
-            DecimalFormatSAFTPT = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTPT), debug);
-            DecimalFormatSAFTAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTAO), debug);
-            DecimalFormatGrossTotalSAFTPT = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatGrossTotalSAFTPT), debug);
-            DecimalRoundTo = FrameworkUtils.GetSoftwareVendorValueAsInt(nameof(DecimalRoundTo), debug);
-            SaftProductCompanyTaxID = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftProductCompanyTaxID), debug);
-            SaftSoftwareCertificateNumber = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumber), debug);
-            SaftSoftwareCertificateNumberAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumberAO), debug);
-            SaftVersionPrefix = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefix), debug);
-            SaftVersionPrefixAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefixAO), debug);
-            SaftVersion = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftVersion), debug);
-            SaftVersionAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionAO), debug);
-            HashControl = FrameworkUtils.GetSoftwareVendorValueAsInt(nameof(HashControl), debug);
-            TaxAccountingBasis = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(TaxAccountingBasis), debug);
-            SaftCurrencyCode = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode), debug);
-            SaftCurrencyCodeAO = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO), debug);
+            DocumentsPadLength = SharedUtils.GetSoftwareVendorValueAsInt(nameof(DocumentsPadLength), debug);
+            DateTimeFormatDocumentDate = SharedUtils.GetSoftwareVendorValueAsString(nameof(DateTimeFormatDocumentDate), debug);
+            DateTimeFormatCombinedDateTime = SharedUtils.GetSoftwareVendorValueAsString(nameof(DateTimeFormatCombinedDateTime), debug);
+            FinanceFinalConsumerFiscalNumber = SharedUtils.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumber), debug);
+            FinanceFinalConsumerFiscalNumberDisplay = SharedUtils.GetSoftwareVendorValueAsString(nameof(FinanceFinalConsumerFiscalNumberDisplay), debug);
+            DecimalFormatSAFTPT = SharedUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTPT), debug);
+            DecimalFormatSAFTAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatSAFTAO), debug);
+            DecimalFormatGrossTotalSAFTPT = SharedUtils.GetSoftwareVendorValueAsString(nameof(DecimalFormatGrossTotalSAFTPT), debug);
+            DecimalRoundTo = SharedUtils.GetSoftwareVendorValueAsInt(nameof(DecimalRoundTo), debug);
+            SaftProductCompanyTaxID = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftProductCompanyTaxID), debug);
+            SaftSoftwareCertificateNumber = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumber), debug);
+            SaftSoftwareCertificateNumberAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftSoftwareCertificateNumberAO), debug);
+            SaftVersionPrefix = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefix), debug);
+            SaftVersionPrefixAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionPrefixAO), debug);
+            SaftVersion = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftVersion), debug);
+            SaftVersionAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftVersionAO), debug);
+            HashControl = SharedUtils.GetSoftwareVendorValueAsInt(nameof(HashControl), debug);
+            TaxAccountingBasis = SharedUtils.GetSoftwareVendorValueAsString(nameof(TaxAccountingBasis), debug);
+            SaftCurrencyCode = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCode), debug);
+            SaftCurrencyCodeAO = SharedUtils.GetSoftwareVendorValueAsString(nameof(SaftCurrencyCodeAO), debug);
 
-            DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = FrameworkUtils.GetSoftwareVendorValueAsBool(nameof(DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix), debug);
-            DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = FrameworkUtils.GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat), debug);
+            DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = SharedUtils.GetSoftwareVendorValueAsBool(nameof(DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix), debug);
+            DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = SharedUtils.GetSoftwareVendorValueAsString(nameof(DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat), debug);
         }
 
         private static string GetSaftProductID()
@@ -577,7 +480,7 @@ namespace logicpos.shared.App
 
             int result;
             //PT : Override Defaults
-            if (SettingsApp.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
+            if (DataLayerSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
                 if (Debugger.IsAttached && byPassValue)
                 {
@@ -585,9 +488,9 @@ namespace logicpos.shared.App
                 }
                 else
                 {
-                    result = (GlobalFramework.PluginSoftwareVendor != null)
+                    result = (SharedFramework.PluginSoftwareVendor != null)
                         // From Vendor Plugin
-                        ? GlobalFramework.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotal()
+                        ? SharedFramework.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotal()
                         // Default
                         : 1000;
                 }
@@ -608,7 +511,7 @@ namespace logicpos.shared.App
 
             int result;
             //PT : Override Defaults
-            if (SettingsApp.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
+            if (DataLayerSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
                 if (Debugger.IsAttached && byPassValue)
                 {
@@ -616,9 +519,9 @@ namespace logicpos.shared.App
                 }
                 else
                 {
-                    result = (GlobalFramework.PluginSoftwareVendor != null)
+                    result = (SharedFramework.PluginSoftwareVendor != null)
                         // From Vendor Plugin
-                        ? GlobalFramework.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
+                        ? SharedFramework.PluginSoftwareVendor.GetFinanceRuleSimplifiedInvoiceMaxTotalServices()
                         // Default
                         : 100;
                     ;
@@ -638,11 +541,11 @@ namespace logicpos.shared.App
             int result;
 
             //PT : Override Defaults
-            if (SettingsApp.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
+            if (DataLayerSettings.ConfigurationSystemCountry.Oid == XpoOidConfigurationCountryPortugal)
             {
-                result = (GlobalFramework.PluginSoftwareVendor != null)
+                result = (SharedFramework.PluginSoftwareVendor != null)
                     // From Vendor Plugin
-                    ? GlobalFramework.PluginSoftwareVendor.GetFinanceRuleRequiredCustomerDetailsAboveValue()
+                    ? SharedFramework.PluginSoftwareVendor.GetFinanceRuleRequiredCustomerDetailsAboveValue()
                     // Default
                     : 1000;
                 ;

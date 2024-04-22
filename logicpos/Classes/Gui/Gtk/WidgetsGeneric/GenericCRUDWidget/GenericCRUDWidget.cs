@@ -8,6 +8,8 @@ using System;
 using System.Drawing;
 using System.Reflection;
 using logicpos.Extensions;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -15,7 +17,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
     internal abstract class GenericCRUDWidget<T>
     {
         //Log4Net
-        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         //Public Properties : Parameters
         protected Widget _widget;
@@ -157,15 +159,15 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     {
                         try
                         {
-                            (_widget as Entry).Text = (string)Convert.ChangeType(GetMemberValue(), typeof(string), GlobalFramework.CurrentCultureNumberFormat);
+                            (_widget as Entry).Text = (string)Convert.ChangeType(GetMemberValue(), typeof(string), SharedFramework.CurrentCultureNumberFormat);
                             //Decimal : Replace Visual Decimal Separator if is .
-                            if (_fieldType == typeof(decimal) && GlobalFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
+                            if (_fieldType == typeof(decimal) && SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
                                 (_widget as Entry).Text = (_widget as Entry).Text.Replace('.', ',');
                             //DateTime
                             if (_fieldType == typeof(DateTime))
                             {
                                 //Cast _fieldValue to DateTime
-                                (_widget as Entry).Text = ((DateTime)_fieldValue).ToString(SettingsApp.DateTimeFormat);
+                                (_widget as Entry).Text = ((DateTime)_fieldValue).ToString(SharedSettings.DateTimeFormat);
                                 //_logger.Debug(string.Format("{0}:{1}:{2}:{3}:{4}", _dataSourceRow, _fieldName, _fieldValue, _fieldProperty, _fieldType));
                             }
                         }
@@ -336,9 +338,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             //Replace Visual Decimal Separator if is .
                             else
                             {
-                                (_widget as EntryBoxValidation).EntryValidation.Text = FrameworkUtils.DecimalToString(Convert.ToDecimal(GetMemberValue()));
+                                (_widget as EntryBoxValidation).EntryValidation.Text = SharedUtils.DecimalToString(Convert.ToDecimal(GetMemberValue()));
 
-                                if (GlobalFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
+                                if (SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
                                 {
                                     (_widget as EntryBoxValidation).EntryValidation.Text = (_widget as EntryBoxValidation).EntryValidation.Text.Replace('.', ',');
                                 }
@@ -396,8 +398,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Use Custom Validate Function ex ValidateFiscalNumberFunc() in DialogCustomer
         public void ValidateField(Func<bool> pFunc)
         {
-            Color colorEntryValidationValidFont = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
-            Color colorEntryValidationInvalidFont = GlobalFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
+            Color colorEntryValidationValidFont = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+            Color colorEntryValidationInvalidFont = DataLayerFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
 
             //Always True, in case of null pFunc
             _validatedFunc = true;
@@ -441,7 +443,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //Required + Validate
                 if ((_widget as XPOComboBox).Value != null)
                 {
-                    _validated = (FrameworkUtils.ValidateString((_widget as XPOComboBox).Value.Oid.ToString(), _validationRule));
+                    _validated = (SharedUtils.ValidateString((_widget as XPOComboBox).Value.Oid.ToString(), _validationRule));
                     //Call Validate Func Here
                     if (pFunc != null) _validatedFunc = pFunc();
 
@@ -504,7 +506,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 //Required + Validate
                 if (dynamicWiget.Value != null)
                 {
-                    _validated = (FrameworkUtils.ValidateString(dynamicWiget.Value.Oid.ToString(), _validationRule));
+                    _validated = (SharedUtils.ValidateString(dynamicWiget.Value.Oid.ToString(), _validationRule));
                     //Call Validate Func Here
                     if (pFunc != null) _validatedFunc = pFunc();
                 }
@@ -555,7 +557,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             //Required + Validate + Validate Func
             else if (pText != string.Empty)
             {
-                _validated = (FrameworkUtils.ValidateString(pText, _validationRule, _fieldType));
+                _validated = (SharedUtils.ValidateString(pText, _validationRule, _fieldType));
                 //Call Validate Func Here
                 if (pFunc != null) _validatedFunc = pFunc();
             };
@@ -564,10 +566,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         //Shared CODE for Change Widgets Colors 
         public void UpdateWidget(dynamic pCurrentWidget, bool pIsValid)
         {
-            Color colorEntryValidationValidFont = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
-            Color colorEntryValidationInvalidFont = GlobalFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
-            Color colorEntryValidationValidBackground = GlobalFramework.Settings["colorEntryValidationValidBackground"].StringToColor();
-            Color colorEntryValidationInvalidBackground = GlobalFramework.Settings["colorEntryValidationInvalidBackground"].StringToColor();
+            Color colorEntryValidationValidFont = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+            Color colorEntryValidationInvalidFont = DataLayerFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
+            Color colorEntryValidationValidBackground = DataLayerFramework.Settings["colorEntryValidationValidBackground"].StringToColor();
+            Color colorEntryValidationInvalidBackground = DataLayerFramework.Settings["colorEntryValidationInvalidBackground"].StringToColor();
 
             //Override currentWidget reference, to access inner TextView
             if (pCurrentWidget.GetType() == typeof(EntryMultiline))

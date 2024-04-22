@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationweighingmachine), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(sys_configurationweighingmachine), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(sys_configurationweighingmachine), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(sys_configurationweighingmachine), "Code");
         }
 
         private uint fOrd;

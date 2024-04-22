@@ -18,6 +18,8 @@ using logicpos.datalayer.DataLayer.Xpo.Articles;
 using System.Collections;
 using System.Collections.Generic;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
@@ -58,7 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         public DialogArticleWarehouse(Window pSourceWindow, GenericTreeViewXPO pTreeView, DialogFlags pDialogFlags, DialogMode dialogMode, XPGuidObject pXPGuidObject)
             : base(pSourceWindow, pTreeView, pDialogFlags, dialogMode, pXPGuidObject)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehose_management"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehose_management"));
             _treeViewXPO_ArticleWarehouse = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleWarehouse>(pSourceWindow);
             _treeViewXPO_StockMov = pTreeView;
             if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
@@ -87,7 +89,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 //Tab1
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-                base.buttonOk.Sensitive = false;
+                buttonOk.Sensitive = false;
 
                 if (_dataSourceRow != null && _dataSourceRow.GetType() == typeof(fin_articleserialnumber))
                 {
@@ -99,7 +101,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 
                 //Articles
                 CriteriaOperator articleCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                _articleBoxSelectRecord = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", (_dataSourceRow as fin_articlewarehouse).Article, articleCriteria, SettingsApp.RegexAlfaNumeric, true, true);
+                _articleBoxSelectRecord = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", (_dataSourceRow as fin_articlewarehouse).Article, articleCriteria, SharedSettings.RegexAlfaNumeric, true, true);
                 GenericCRUDWidgetXPO genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(_articleBoxSelectRecord, _dataSourceRow, "Article", "", true);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 _articleBoxSelectRecord.EntryValidation.IsEditable = true;
@@ -117,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                     serialNumberCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Article == '{0}'", (_dataSourceRow as fin_articlewarehouse).Article.Oid));
                 }
 
-                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"), "SerialNumber", "Oid", (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber, serialNumberCriteria, SettingsApp.RegexGuid, true, true);
+                _entryBoxArticleSerialNumber = new XPOEntryBoxSelectRecordValidation<fin_articleserialnumber, TreeViewArticleSerialNumber>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serialnumber"), "SerialNumber", "Oid", (_dataSourceRow as fin_articlewarehouse).ArticleSerialNumber, serialNumberCriteria, SharedSettings.RegexGuid, true, true);
                 _entryBoxArticleSerialNumber.EntryValidation.IsEditable = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxArticleSerialNumber.EntryValidation.Completion.InlineCompletion = false;
@@ -133,8 +135,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
                 fin_warehouse defaultWareHouse = ((_dataSourceRow as fin_articlewarehouse).Warehouse != null) ? (_dataSourceRow as fin_articlewarehouse).Warehouse : (fin_warehouse)_dataSourceRow.Session.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
                 xpoComboBoxWarehouse = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
-                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, _dataSourceRow, "Warehouse", SettingsApp.RegexAlfaNumeric, false);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouse, _dataSourceRow, "Warehouse", SharedSettings.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 vboxTab1.PackStart(boxWareHouse, false, false, 0);
 
@@ -146,20 +148,20 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 }
                 fin_warehouselocation defaultLocation = ((_dataSourceRow as fin_articlewarehouse).Location != null) ? (_dataSourceRow as fin_articlewarehouse).Location : (fin_warehouselocation)_dataSourceRow.Session.FindObject(typeof(fin_warehouselocation), criteria);
                 xpoComboBoxWarehouseLocation = new XPOComboBox(DataSourceRow.Session, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
-                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, _dataSourceRow, "Location", SettingsApp.RegexAlfaNumeric, false);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                genericCRUDWidgetXPO = new GenericCRUDWidgetXPO(boxWareHouseLocation, _dataSourceRow, "Location", SharedSettings.RegexAlfaNumeric, false);
                 _crudWidgetList.Add(genericCRUDWidgetXPO);
                 vboxTab1.PackStart(boxWareHouseLocation, false, false, 0);
 
 
                 entryQuantity = new Entry();
-                boxQuantity = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"), entryQuantity);
+                boxQuantity = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"), entryQuantity);
                 vboxTab1.PackStart(boxQuantity, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxQuantity, _dataSourceRow, "Quantity", SettingsApp.RegexDecimal, false));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxQuantity, _dataSourceRow, "Quantity", SharedSettings.RegexDecimal, false));
 
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_article_location")));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_article_location")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -233,7 +235,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", _selectedArticle.Oid);
                 boxQuantity.TooltipText = _dataSourceRow.Session.ExecuteScalar(stockQuery).ToString();
                 _selectedArticle.Accounting = Convert.ToDecimal(boxQuantity.TooltipText);
-                boxQuantity.LabelComponent.Text = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
+                boxQuantity.LabelComponent.Text = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
             }
             if (xpoComboBoxWarehouse.Value == null)
             {
@@ -265,16 +267,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 if (_selectedArticle == null || entryQuantity.Text == "0" || Convert.ToDecimal(entryQuantity.Text) > _selectedArticle.Accounting
                     || xpoComboBoxWarehouseLocation.Value == null || xpoComboBoxWarehouse.Value == null)
                 {
-                    base.buttonOk.Sensitive = false;
+                    buttonOk.Sensitive = false;
                 }
                 else
                 {
-                    base.buttonOk.Sensitive = true;
+                    buttonOk.Sensitive = true;
                 }
 
                 if (_selectedArticle != null && _entryBoxArticleSerialNumber.Value != null && Convert.ToDecimal(entryQuantity.Text) > 1)
                 {
-                    base.buttonOk.Sensitive = false;
+                    buttonOk.Sensitive = false;
                 }
 
             }
@@ -292,14 +294,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
                 EntryValidation entryValidation = (EntryValidation)sender;
                 _selectedArticle = _articleBoxSelectRecord.Value;
                 boxQuantity.TooltipText = _selectedArticle.Accounting.ToString();
-                boxQuantity.LabelComponent.Text = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
+                boxQuantity.LabelComponent.Text = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
 
                 if (_selectedArticle != null)
                 {
                     string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", _selectedArticle.Oid);
                     boxQuantity.TooltipText = _dataSourceRow.Session.ExecuteScalar(stockQuery).ToString();
                     _selectedArticle.Accounting = Convert.ToDecimal(boxQuantity.TooltipText);
-                    boxQuantity.LabelComponent.Text = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
+                    boxQuantity.LabelComponent.Text = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity") + " :: Total em Stock: " + _selectedArticle.Accounting.ToString());
                 }
 
                 ValidateDialog();

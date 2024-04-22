@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.datalayer.App;
 using logicpos.Extensions;
 using System;
 using System.IO;
@@ -12,14 +13,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             : base(name)
         {
             InitObject(name, color, labelText, font, colorFont, icon, sizeIcon, width, height, false);
-            base.InitObject(name, color, _widget, width, height);
+            InitObject(name, color, _widget, width, height);
         }
 
         public TouchButtonIconWithText(string name, System.Drawing.Color color, string labelText, string font, System.Drawing.Color colorFont, string icon, System.Drawing.Size sizeIcon, int width, int height, bool leftImg)
             : base(name)
         {
             InitObject(name, color, labelText, font, colorFont, icon, sizeIcon, width, height, true);
-            base.InitObject(name, color, _widget, width, height);
+            InitObject(name, color, _widget, width, height);
         }
 
         public Widget Content;
@@ -56,8 +57,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             }
             else
             {
-                string fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
-                string fontPosBackOfficeParentLowRes = GlobalFramework.Settings["fontPosBackOfficeParentLowRes"];
+                string fontPosBackOfficeParent = DataLayerFramework.Settings["fontPosBackOfficeParent"];
+                string fontPosBackOfficeParentLowRes = DataLayerFramework.Settings["fontPosBackOfficeParentLowRes"];
                 Pango.FontDescription fontDescription = Pango.FontDescription.FromString(fontPosBackOfficeParent);
 
                 if (GlobalApp.ScreenSize.Height == 800)

@@ -16,11 +16,13 @@ using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Logic.Others;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.Enums;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Finance;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -45,7 +47,7 @@ namespace logicpos
 {
     internal class Utils : logicpos.shared.Classes.Utils.Utils
     {
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly Hashtable commands = new Hashtable();
 
@@ -64,20 +66,20 @@ namespace logicpos
         {
             Dictionary<string, string> connectionStringToDictionary = ConnectionStringToDictionary(pConnectionString);
 
-            switch (GlobalFramework.DatabaseType)
+            switch (DataLayerFramework.DatabaseType)
             {
                 case DatabaseType.SQLite:
                 case DatabaseType.MonoLite:
                     break;
                 case DatabaseType.MSSqlServer:
-                    GlobalFramework.DatabaseServer = connectionStringToDictionary["Data Source"];
-                    GlobalFramework.DatabaseUser = connectionStringToDictionary["User ID"];
-                    GlobalFramework.DatabasePassword = connectionStringToDictionary["Password"];
+                    SharedFramework.DatabaseServer = connectionStringToDictionary["Data Source"];
+                    SharedFramework.DatabaseUser = connectionStringToDictionary["User ID"];
+                    SharedFramework.DatabasePassword = connectionStringToDictionary["Password"];
                     break;
                 case DatabaseType.MySql:
-                    GlobalFramework.DatabaseServer = connectionStringToDictionary["server"];
-                    GlobalFramework.DatabaseUser = connectionStringToDictionary["user id"];
-                    GlobalFramework.DatabasePassword = connectionStringToDictionary["password"];
+                    SharedFramework.DatabaseServer = connectionStringToDictionary["server"];
+                    SharedFramework.DatabaseUser = connectionStringToDictionary["user id"];
+                    SharedFramework.DatabasePassword = connectionStringToDictionary["password"];
                     break;
             }
         }
@@ -116,8 +118,8 @@ namespace logicpos
 
         public static void ShowMessageUnderConstruction()
         {
-            _logger.Warn(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function")));
-            ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function"), "Error");
+            _logger.Warn(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function")));
+            ShowMessageNonTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function"), "Error");
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -134,20 +136,20 @@ namespace logicpos
         public static ResponseType ShowMessageTouch(Window pSourceWindow, Gtk.DialogFlags pDialogFlags, Size pSize, MessageType pMessageType, ButtonsType pButtonsType, string pWindowTitle, string pMessage)
         {
             //Settings
-            Color colorBaseDialogActionAreaButtonBackground = GlobalFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
-            Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
-            Size sizeBaseDialogActionAreaButtonIcon = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
-            Size sizeBaseDialogActionAreaButton = Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaButton"]);
-            string fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
+            Color colorBaseDialogActionAreaButtonBackground = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonBackground"].StringToColor();
+            Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+            Size sizeBaseDialogActionAreaButtonIcon = StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButtonIcon"]);
+            Size sizeBaseDialogActionAreaButton = StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaButton"]);
+            string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
             //Images
-            string fileImageDialogBaseMessageTypeImage = FrameworkUtils.OSSlash(GlobalFramework.Settings["fileImageDialogBaseMessageTypeImage"]);
-            string fileImageDialogBaseMessageTypeIcon = FrameworkUtils.OSSlash(GlobalFramework.Settings["fileImageDialogBaseMessageTypeIcon"]);
+            string fileImageDialogBaseMessageTypeImage = SharedUtils.OSSlash(DataLayerFramework.Settings["fileImageDialogBaseMessageTypeImage"]);
+            string fileImageDialogBaseMessageTypeIcon = SharedUtils.OSSlash(DataLayerFramework.Settings["fileImageDialogBaseMessageTypeIcon"]);
             //Files
-            string fileActionOK = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
-            string fileActionCancel = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-            string fileActionYes = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png");
-            string fileActionNo = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png");
-            string fileActionClose = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
+            string fileActionOK = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_ok.png");
+            string fileActionCancel = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+            string fileActionYes = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_yes.png");
+            string fileActionNo = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_no.png");
+            string fileActionClose = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_action_close.png");
             //Init Local Vars
             string fileImageDialog, fileImageWindowIcon;
             ResponseType resultResponse = ResponseType.None;
@@ -155,11 +157,11 @@ namespace logicpos
             //Prepara ActionArea and Buttons
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
             //Init Buttons
-            TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonYes = new TouchButtonIconWithText("touchButtonYes_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_yes"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionYes, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonNo = new TouchButtonIconWithText("touchButtonNo_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_no"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionNo, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
-            TouchButtonIconWithText buttonClose = new TouchButtonIconWithText("touchButtonClose_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_close"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionClose, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionOK, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonCancel = new TouchButtonIconWithText("touchButtonCancel_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_cancel"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionCancel, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonYes = new TouchButtonIconWithText("touchButtonYes_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_yes"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionYes, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonNo = new TouchButtonIconWithText("touchButtonNo_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_no"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionNo, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
+            TouchButtonIconWithText buttonClose = new TouchButtonIconWithText("touchButtonClose_DialogActionArea", colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_close"), fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileActionClose, sizeBaseDialogActionAreaButtonIcon, sizeBaseDialogActionAreaButton.Width, sizeBaseDialogActionAreaButton.Height);
 
             //Perpare ActionAreaButtons
             switch (pButtonsType)
@@ -225,8 +227,8 @@ namespace logicpos
 
         public static ResponseType ShowMessageTouchUnderConstruction(Window pSourceWindow)
         {
-            ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function"));
-            _logger.Debug(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function")));
+            ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function"));
+            _logger.Debug(string.Format("ShowMessageUnderConstruction(): {0} {1} ", MessageType.Error, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_under_construction_function")));
             _logger.Debug(string.Format("responseType: [{0}]", responseType));
             return responseType;
         }
@@ -236,16 +238,16 @@ namespace logicpos
             //Protection when Printer is Null, ex printing Ticket Articles (Printer is Assign in Article)
             string printerDesignation = (pPrinter != null) ? pPrinter.Designation : "NULL";
             string printerNetworkName = (pPrinter != null) ? pPrinter.NetworkName : "NULL";
-            return ShowMessageTouch(pSourceWindow, Gtk.DialogFlags.Modal, new Size(800, 400), Gtk.MessageType.Error, Gtk.ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_printing_ticket"), printerDesignation, printerNetworkName, pEx.Message));
+            return ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_printing_ticket"), printerDesignation, printerNetworkName, pEx.Message));
         }
 
         public static bool ShowMessageTouchRequiredValidPrinter(Window pSourceWindow, sys_configurationprinters pPrinter)
         {
-            bool result = pPrinter == null && GlobalFramework.LoggedTerminal.ThermalPrinter == null;
+            bool result = pPrinter == null && DataLayerFramework.LoggedTerminal.ThermalPrinter == null;
 
             if (result)
             {
-                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_required_valid_printer"));
+                ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_required_valid_printer"));
             }
 
             return result;
@@ -260,8 +262,8 @@ namespace logicpos
                 && GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] == true
             )
             {
-                ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 400), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information")
-                    , string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_show_printer_undefined_on_print"), pDocumentType)
+                ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 400), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information")
+                    , string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_show_printer_undefined_on_print"), pDocumentType)
                 );
                 if (responseType == ResponseType.No) GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] = false;
             }
@@ -269,15 +271,15 @@ namespace logicpos
 
         public static void ShowMessageTouchErrorRenderTheme(Window pSourceWindow, string pErrorMessage)
         {
-            string errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_rendering_theme"), SettingsApp.FileTheme, pErrorMessage);
-            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
+            string errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "app_error_rendering_theme"), POSSettings.FileTheme, pErrorMessage);
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
             Environment.Exit(0);
         }
 
         public static void ShowMessageTouchErrorUnlicencedFunctionDisabled(Window pSourceWindow, string pErrorMessage)
         {
-            string errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_application_unlicenced_function_disabled"), pErrorMessage);
-            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
+            string errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "app_error_application_unlicenced_function_disabled"), pErrorMessage);
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
         }
 
         public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window pSourceWindow, ProcessFinanceDocumentParameter pParameters)
@@ -289,7 +291,7 @@ namespace logicpos
             {
                 fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
                 fin_documentfinanceseries documentFinanceSerie = null;
-                if (GlobalFramework.LoggedTerminal != null)
+                if (DataLayerFramework.LoggedTerminal != null)
                 {
                     documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType);
                     if (documentFinanceYearSerieTerminal != null) documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
@@ -316,7 +318,7 @@ namespace logicpos
                 //Check if DocumentDate is greater than dateLastDocumentFromSerie (If Defined) else if is First Document in Series Skip
                 if (pParameters.DocumentDateTime < dateLastDocumentFromSerie && dateLastDocumentFromSerie != DateTime.MinValue)
                 {
-                    result = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_systementry_is_less_than_last_finance_document_series"));
+                    result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_systementry_is_less_than_last_finance_document_series"));
                 }
                 else
                 {
@@ -325,7 +327,7 @@ namespace logicpos
                     //Check if DocumentDate is greater than dateLastDocument (If Defined) else if is First Document in Series Skip
                     if (pParameters.DocumentDateTime < dateTimeLastDocument && dateTimeLastDocument != DateTime.MinValue)
                     {
-                        result = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_systementry_is_less_than_last_finance_document_series"));
+                        result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_systementry_is_less_than_last_finance_document_series"));
                     }
                 }
             }
@@ -339,12 +341,12 @@ namespace logicpos
 
         public static void ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(Window pSourceWindow, decimal pCurrentTotal, decimal pMaxTotal)
         {
-            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 480), MessageType.Info, ButtonsType.Close,
-                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"),
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 480), MessageType.Info, ButtonsType.Close,
+                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"),
                 string.Format(
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer")
-                    , string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total"), FrameworkUtils.DecimalToStringCurrency(pCurrentTotal))
-                    , string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_maximum"), FrameworkUtils.DecimalToStringCurrency(pMaxTotal))
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer")
+                    , string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total"), SharedUtils.DecimalToStringCurrency(pCurrentTotal))
+                    , string.Format("{0}: {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_maximum"), SharedUtils.DecimalToStringCurrency(pMaxTotal))
                 )
             );
         }
@@ -363,12 +365,12 @@ namespace logicpos
             switch (pMode)
             {
                 case ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog:
-                    messageMode = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog");
+                    messageMode = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog");
                     messageType = MessageType.Question;
                     buttonsType = ButtonsType.YesNo;
                     break;
                 case ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog:
-                    messageMode = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog_documentfinancedialog");
+                    messageMode = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog_documentfinancedialog");
                     messageType = MessageType.Info;
                     buttonsType = ButtonsType.Close;
                     break;
@@ -381,10 +383,10 @@ namespace logicpos
                     messageMaxExceed = string.Format(
                         "{1}: {2}{0}{3}: {4}"
                         , Environment.NewLine
-                        , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total")
-                        , FrameworkUtils.DecimalToStringCurrency(pCurrentTotal)
-                        , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_maximum")
-                        , FrameworkUtils.DecimalToStringCurrency(pMaxTotal)
+                        , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total")
+                        , SharedUtils.DecimalToStringCurrency(pCurrentTotal)
+                        , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_maximum")
+                        , SharedUtils.DecimalToStringCurrency(pMaxTotal)
                     );
                 }
 
@@ -393,10 +395,10 @@ namespace logicpos
                     messageMaxExceedServices = string.Format(
                         "{1}: {2}{0}{3}: {4}"
                         , Environment.NewLine
-                        , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_services")
-                        , FrameworkUtils.DecimalToStringCurrency(pCurrentTotalServices)
-                        , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_maximum")
-                        , FrameworkUtils.DecimalToStringCurrency(pMaxTotalServices)
+                        , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_services")
+                        , SharedUtils.DecimalToStringCurrency(pCurrentTotalServices)
+                        , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_maximum")
+                        , SharedUtils.DecimalToStringCurrency(pMaxTotalServices)
                     );
                 }
 
@@ -410,9 +412,9 @@ namespace logicpos
                         message += messageMaxExceedServices;
                     }
 
-                    result = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 440), messageType, buttonsType,
-                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"),
-                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_simplified_invoice_max_value"), message, messageMode
+                    result = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(550, 440), messageType, buttonsType,
+                        resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"),
+                        string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_value_exceed_simplified_invoice_max_value"), message, messageMode
                         )
                     );
                 }
@@ -434,12 +436,12 @@ namespace logicpos
         {
             showMessage = false;
             Size size = new Size(500, 350);
-            fin_article article = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), pArticleOid);
+            fin_article article = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), pArticleOid);
             decimal articleStock;
             try
             {
                 string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", article.Oid);
-                articleStock = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(stockQuery));
+                articleStock = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(stockQuery));
             }
             catch
             {
@@ -459,7 +461,7 @@ namespace logicpos
                     try
                     {
                         string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", item.ArticleChild.Oid);
-                        childStock = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(stockQuery));
+                        childStock = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(stockQuery));
                     }
                     catch
                     {
@@ -469,7 +471,7 @@ namespace logicpos
                     var childStockAfterChanged = childStock - (pNewQuantity * item.Quantity);
                     if (childStockAfterChanged <= child.MinimumStock)
                     {
-                        childStockMessage += Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + child.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(childStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine;
+                        childStockMessage += Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + child.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + SharedUtils.DecimalToString(Convert.ToDecimal(childStock), SharedFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + SharedUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), SharedFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine;
                         childStockAlertCount++;
                     }
                 }
@@ -481,7 +483,7 @@ namespace logicpos
                 if (article.IsComposed)
                 {
                     size = new Size(650, 480);
-                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(articleStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + childStockMessage);
+                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + SharedUtils.DecimalToString(Convert.ToDecimal(articleStock), SharedFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + SharedUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), SharedFramework.CurrentCultureNumberFormat, "0.00") + childStockMessage);
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -495,7 +497,7 @@ namespace logicpos
                 }
                 else
                 {
-                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(articleStock), GlobalFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + FrameworkUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), GlobalFramework.CurrentCultureNumberFormat, "0.00"));
+                    var response = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_check_stock_question") + Environment.NewLine + Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article") + ": " + article.Designation + Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_stock") + ": " + SharedUtils.DecimalToString(Convert.ToDecimal(articleStock), SharedFramework.CurrentCultureNumberFormat, "0.00") + Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock") + ": " + SharedUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), SharedFramework.CurrentCultureNumberFormat, "0.00"));
                     if (response == ResponseType.Yes)
                     {
                         showMessage = true;
@@ -520,8 +522,8 @@ namespace logicpos
                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
                 MessageType.Error,
                 ButtonsType.Ok,
-                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_delete_record"),
-                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"))
+                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_delete_record"),
+                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"))
             ;
         }
 
@@ -532,15 +534,15 @@ namespace logicpos
                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
                 MessageType.Error,
                 ButtonsType.Ok,
-                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_update_record"),
-                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_update_record_show_protected_record"))
+                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_update_record"),
+                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_update_record_show_protected_record"))
             ;
         }
 
         public static void ShowMessageTouchUnsupportedResolutionDetectedAndExit(Window pSourceWindow, int width, int height)
         {
-            string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_unsupported_resolution_detected"), width, height);
-            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+            string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "app_error_unsupported_resolution_detected"), width, height);
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
             Environment.Exit(Environment.ExitCode);
         }
 
@@ -554,8 +556,8 @@ namespace logicpos
         /// <param name="height"></param>
         public static void ShowMessageTouchUnsupportedResolutionDetectedDialogbox(Window pSourceWindow, int width, int height)
         {
-            string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_unsupported_resolution_detected"), width, height, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_true"));
-            ResponseType dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
+            string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "app_error_unsupported_resolution_detected"), width, height, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true"));
+            ResponseType dialogResponse = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
             if (dialogResponse == ResponseType.No)
             {
                 Environment.Exit(Environment.ExitCode);
@@ -564,8 +566,8 @@ namespace logicpos
 
         public static void ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(Window pSourceWindow, decimal currentQuantity, decimal maxPossibleQuantity)
         {
-            string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities"), currentQuantity, maxPossibleQuantity);
-            Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 400), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
+            string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities"), currentQuantity, maxPossibleQuantity);
+            ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 400), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), message);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -587,7 +589,7 @@ namespace logicpos
 
         public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
         {
-            return GetInputText(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_default_input_text_dialog"), pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
+            return GetInputText(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_default_input_text_dialog"), pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
         }
 
         public static ResponseText GetInputText(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
@@ -674,7 +676,7 @@ namespace logicpos
         {
             if (pFilename != null && File.Exists(pFilename))
             {
-                var buffer = System.IO.File.ReadAllBytes(pFilename);
+                var buffer = File.ReadAllBytes(pFilename);
                 return new Gdk.Pixbuf(buffer);
             }
             else
@@ -689,8 +691,8 @@ namespace logicpos
             if (pFilename != null && File.Exists(pFilename))
             {
                 System.Drawing.Image image = System.Drawing.Image.FromFile(pFilename);
-                image = Utils.ResizeAndCrop(image, new System.Drawing.Size(pSize.Width, pSize.Height));
-                return Utils.ImageToPixbuf(image);
+                image = ResizeAndCrop(image, new System.Drawing.Size(pSize.Width, pSize.Height));
+                return ImageToPixbuf(image);
             }
             else
             {
@@ -887,7 +889,7 @@ namespace logicpos
             proc.EnableRaisingEvents = false;
             proc.StartInfo.FileName = "aplay";
             //TODO: Put Sound in config
-            proc.StartInfo.Arguments = "-t wav " + FrameworkUtils.OSSlash(GlobalFramework.Path["sounds"] + @"Clicks\button2.wav");
+            proc.StartInfo.Arguments = "-t wav " + SharedUtils.OSSlash(DataLayerFramework.Path["sounds"] + @"Clicks\button2.wav");
             proc.Start();
         }
 
@@ -984,7 +986,7 @@ namespace logicpos
 
         public static Gdk.Pixbuf ScreenCapture()
         {
-            string tempPath = Convert.ToString(GlobalFramework.Path["temp"]);
+            string tempPath = Convert.ToString(DataLayerFramework.Path["temp"]);
 
             Gdk.Window window = Gdk.Global.DefaultRootWindow;
             if (window != null)
@@ -1118,7 +1120,7 @@ namespace logicpos
 
         public static FileFilter GetFileFilterBackups()
         {
-            string databaseType = GlobalFramework.Settings["databaseType"];
+            string databaseType = DataLayerFramework.Settings["databaseType"];
             FileFilter filter = new FileFilter();
 
             filter.Name = "Database Backups";
@@ -1197,7 +1199,7 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Localization
 
-        //Test with Utils.ShowCultureInfo(GlobalFramework.CurrentCulture.ToString());
+        //Test with Utils.ShowCultureInfo(SharedFramework.CurrentCulture.ToString());
         public static void ShowCultureInfo(string pCulture)
         {
             // Creates and initializes the CultureInfo which uses the international sort.
@@ -1235,7 +1237,7 @@ namespace logicpos
         public static string GetWindowTitle(string pTitle)
         {
             //return string.Format("{0} {1} : {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, pTitle);
-            return string.Format("{0} : {1}", SettingsApp.AppName, pTitle);
+            return string.Format("{0} : {1}", POSSettings.AppName, pTitle);
         }
 
         /// <summary>
@@ -1251,20 +1253,20 @@ namespace logicpos
 
             switch (dialogMode)
             {
-                case logicpos.Classes.Enums.Dialogs.DialogMode.Insert:
-                    action = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_insert");
+                case Classes.Enums.Dialogs.DialogMode.Insert:
+                    action = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_insert");
                     break;
-                case logicpos.Classes.Enums.Dialogs.DialogMode.Update:
-                    action = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_update");
+                case Classes.Enums.Dialogs.DialogMode.Update:
+                    action = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_update");
                     break;
-                case logicpos.Classes.Enums.Dialogs.DialogMode.View:
-                    action = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_view");
+                case Classes.Enums.Dialogs.DialogMode.View:
+                    action = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_view");
                     break;
                 default:
                     break;
             }
 
-            return string.Format("{0} :: {1} {2}", SettingsApp.AppName, action, dialogWindowTitle); // FrameworkUtils.ProductVersion
+            return string.Format("{0} :: {1} {2}", POSSettings.AppName, action, dialogWindowTitle); // FrameworkUtils.ProductVersion
         }
 
         public static Size GetScreenSize()
@@ -1276,9 +1278,9 @@ namespace logicpos
                 // Moke Window only to extract its Resolution
                 Window window = new Window("");
                 Gdk.Screen screen = window.Screen;
-                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(string.IsNullOrEmpty(GlobalFramework.Settings["appScreen"])
+                Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(string.IsNullOrEmpty(DataLayerFramework.Settings["appScreen"])
                     ? 0
-                    : Convert.ToInt32(GlobalFramework.Settings["appScreen"]));
+                    : Convert.ToInt32(DataLayerFramework.Settings["appScreen"]));
                 result = new Size(monitorGeometry.Width, monitorGeometry.Height);
                 // CleanUp
                 window.Dispose();
@@ -1296,7 +1298,7 @@ namespace logicpos
 
         public static Size GetThemeScreenSize()
         {
-            return GetThemeScreenSize(Utils.GetScreenSize());
+            return GetThemeScreenSize(GetScreenSize());
         }
 
         public static Size GetThemeScreenSize(Size screenSize)
@@ -1369,7 +1371,7 @@ namespace logicpos
         {
             try
             {
-                DialogArticleCompositionSerialNumber dialog = new DialogArticleCompositionSerialNumber(pSourceWindow, Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, pXPGuidObject, pSelectedCollectionToFill, pSerialNumber);
+                DialogArticleCompositionSerialNumber dialog = new DialogArticleCompositionSerialNumber(pSourceWindow, GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, pXPGuidObject, pSelectedCollectionToFill, pSerialNumber);
                 ResponseType response = (ResponseType)dialog.Run();
                 if (response == ResponseType.Ok)
                 {
@@ -1413,8 +1415,8 @@ namespace logicpos
                 /* IN009034 */
                 GlobalApp.DialogThreadNotify.WakeupMain();
 
-                string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "app_error_unsupported_resolution_detected"), screenSize.Width, screenSize.Height, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_treeview_true"));
-                Utils.ShowMessageTouchUnsupportedResolutionDetectedDialogbox(GlobalApp.StartupWindow, screenSize.Width, screenSize.Height);
+                string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "app_error_unsupported_resolution_detected"), screenSize.Width, screenSize.Height, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_treeview_true"));
+                ShowMessageTouchUnsupportedResolutionDetectedDialogbox(GlobalApp.StartupWindow, screenSize.Width, screenSize.Height);
 
                 supportedScreenSizeEnum = ScreenSize.resDefault;
             }
@@ -1424,7 +1426,7 @@ namespace logicpos
         public static EventBox GetMinimizeEventBox()
         {
 
-            string _fileDefaultWindowIconMinimize = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
+            string _fileDefaultWindowIconMinimize = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_window_minimize.png");
             EventBox result = null;
 
             try
@@ -1475,15 +1477,15 @@ namespace logicpos
 
         public static Dialog GetThreadDialog(Window pSourceWindow, bool dbExists, string backupProcess)
         {
-            string fileWorking = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Other\working.gif");
+            string fileWorking = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Other\working.gif");
 
             Dialog dialog = new Dialog("Working", pSourceWindow, DialogFlags.Modal | DialogFlags.DestroyWithParent);
             dialog.WindowPosition = WindowPosition.Center;
             //dialog.Display = 0;
             //Mensagem alternativa para primeira instalação e versao com DB criada
             Label labelBoot;
-            if (dbExists) labelBoot = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_load"));
-            else labelBoot = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_load_first_time"));
+            if (dbExists) labelBoot = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_load"));
+            else labelBoot = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_load_first_time"));
             if (backupProcess != string.Empty) labelBoot = new Label(backupProcess);
 
             labelBoot.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 10 Bold"));
@@ -1515,7 +1517,7 @@ namespace logicpos
             foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.AllCultures))
             {
 
-                if (culture == System.Globalization.CultureInfo.CreateSpecificCulture(ci.Name).Name)
+                if (culture == CultureInfo.CreateSpecificCulture(ci.Name).Name)
                 {
                     return true;
                 }
@@ -1613,9 +1615,9 @@ namespace logicpos
 
         public static Session SessionXPO()
         {
-            string configDatabaseName = GlobalFramework.Settings["databaseName"];
-            GlobalFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? SettingsApp.DatabaseName : configDatabaseName;
-            string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
+            string configDatabaseName = DataLayerFramework.Settings["databaseName"];
+            SharedFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? POSSettings.DatabaseName : configDatabaseName;
+            string xpoConnectionString = string.Format(DataLayerFramework.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
             AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
             XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
             Session LocalSessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
@@ -1627,31 +1629,31 @@ namespace logicpos
         {
             try
             {
-                string configDatabaseName = GlobalFramework.Settings["databaseName"];
-                GlobalFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? SettingsApp.DatabaseName : configDatabaseName;
-                string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
+                string configDatabaseName = DataLayerFramework.Settings["databaseName"];
+                SharedFramework.DatabaseName = (string.IsNullOrEmpty(configDatabaseName)) ? POSSettings.DatabaseName : configDatabaseName;
+                string xpoConnectionString = string.Format(DataLayerFramework.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
                 AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
                 XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, xpoAutoCreateOption);
                 Session LocalSessionXpo = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
 
 
                 bool databaseExists = false;
-                string databaseType = System.Configuration.ConfigurationManager.AppSettings["databaseType"];
+                string databaseType = ConfigurationManager.AppSettings["databaseType"];
 
                 switch (databaseType)
                 {
                     case "SQLite":
                     case "MonoLite":
-                        string filename = string.Format("{0}.db", GlobalFramework.DatabaseName);
+                        string filename = string.Format("{0}.db", SharedFramework.DatabaseName);
                         databaseExists = (File.Exists(filename) && new FileInfo(filename).Length > 0);
                         if (databaseExists) return true;
                         else break;
                     case "MySql":
-                        string sql = string.Format("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';", GlobalFramework.DatabaseName);
+                        string sql = string.Format("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{0}';", SharedFramework.DatabaseName);
                         var resultCmd = LocalSessionXpo.ExecuteScalar(sql);
                         if (resultCmd != null)
                         {
-                            databaseExists = (resultCmd.ToString() == GlobalFramework.DatabaseName);
+                            databaseExists = (resultCmd.ToString() == SharedFramework.DatabaseName);
                             if (databaseExists) return true;
                             else break;
                         }
@@ -1659,12 +1661,12 @@ namespace logicpos
                             return false;
                     case "MSSqlServer":
                     default:
-                        sql = string.Format("SELECT name FROM sys.databases WHERE name = '{0}' AND name NOT IN ('master', 'tempdb', 'model', 'msdb');", GlobalFramework.DatabaseName);
+                        sql = string.Format("SELECT name FROM sys.databases WHERE name = '{0}' AND name NOT IN ('master', 'tempdb', 'model', 'msdb');", SharedFramework.DatabaseName);
                         resultCmd = LocalSessionXpo.ExecuteScalar(sql);
 
                         if (resultCmd != null)
                         {
-                            databaseExists = (resultCmd.ToString() == GlobalFramework.DatabaseName);
+                            databaseExists = (resultCmd.ToString() == SharedFramework.DatabaseName);
                             if (databaseExists) return true;
                             else break;
                         }
@@ -1727,13 +1729,13 @@ namespace logicpos
             try
             {
                 /* ERR201810#15 - Database backup issues */
-                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.ThreadDialogReadyEvent));
+                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(ThreadDialogReadyEvent));
                 pThread.Start();
 
                 // Proptection for Startup Windows and Backup, If dont have a valid window, dont show loading (BackGround Thread)
                 if (pSourceWindow != null)
                 {
-                    GlobalApp.DialogThreadWork = GetThreadDialog(pSourceWindow, Utils.checkIfDbExists(), backupProcess);
+                    GlobalApp.DialogThreadWork = GetThreadDialog(pSourceWindow, checkIfDbExists(), backupProcess);
                     GlobalApp.DialogThreadWork.Run();
                 }
                 /* END: ERR201810#15 */
@@ -1779,7 +1781,7 @@ namespace logicpos
         //Sample Test Routines : Used in Startup Window
         public static void LargeComputation(int pMilliseconds)
         {
-            System.Threading.Thread.Sleep(pMilliseconds);
+            Thread.Sleep(pMilliseconds);
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1871,7 +1873,7 @@ namespace logicpos
 
         //public static ConfigurationPlaceTerminal GetTerminal_OLD_WORKING_REPLACED_BY_HARDWAREID()
         //{
-        //  string terminalIdFile = FrameworkUtils.OSSlash(GlobalFramework.Settings["appTerminalIdConfigFile"]);
+        //  string terminalIdFile = SharedUtils.OSSlash(DataLayerFramework.Settings["appTerminalIdConfigFile"]);
         //  string terminalIdString = string.Empty;
         //  Guid terminalIdGuid = new Guid();
         //  ConfigurationPlaceTerminal terminalXpo = null;
@@ -1894,7 +1896,7 @@ namespace logicpos
         //    try
         //    {
         //      //Get TerminalID from Database
-        //      terminalXpo = (ConfigurationPlaceTerminal)FrameworkUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTerminal), terminalIdGuid);
+        //      terminalXpo = (ConfigurationPlaceTerminal)DataLayerUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTerminal), terminalIdGuid);
         //    }
         //    catch (Exception ex)
         //    {
@@ -1906,11 +1908,11 @@ namespace logicpos
         //  if (terminalXpo == null)
         //  {
         //    //Persist Terminal in DB
-        //    terminalXpo = new ConfigurationPlaceTerminal(GlobalFramework.SessionXpo)
+        //    terminalXpo = new ConfigurationPlaceTerminal(DataLayerFramework.SessionXpo)
         //    {
-        //      Ord = FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
-        //      Code = FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-        //      Designation = "Terminal #" + FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code")
+        //      Ord = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
+        //      Code = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+        //      Designation = "Terminal #" + DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code")
         //      //Fqdn = GetFQDN()
         //    };
         //    terminalXpo.Save();
@@ -1930,23 +1932,23 @@ namespace logicpos
             try
             {
                 // Use HardwareId from Settings, must be added manually, its a hack and its not there, in setuo, only in debug config
-                if (!string.IsNullOrEmpty(GlobalFramework.Settings["appHardwareId"]))
+                if (!string.IsNullOrEmpty(DataLayerFramework.Settings["appHardwareId"]))
                 {
-                    GlobalFramework.LicenceHardwareId = GlobalFramework.Settings["appHardwareId"];
+                    SharedFramework.LicenseHardwareId = DataLayerFramework.Settings["appHardwareId"];
                 }
                 //Debug Directive disabled by Mario, if enabled we cant force HardwareId in Release, 
                 //if we want to ignore appHardwareId from config we just delete it
                 //If assigned in Config use it, else does nothing and use default ####-####-####-####-####-####
-                else if (SettingsApp.AppHardwareId != null && SettingsApp.AppHardwareId != string.Empty)
+                else if (POSSettings.AppHardwareId != null && POSSettings.AppHardwareId != string.Empty)
                 {
-                    GlobalFramework.LicenceHardwareId = SettingsApp.AppHardwareId;
+                    SharedFramework.LicenseHardwareId = POSSettings.AppHardwareId;
                 }
 
                 try
                 {
                     //Try TerminalID from Database
                     _logger.Debug("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database");
-                    configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", GlobalFramework.LicenceHardwareId);
+                    configurationPlaceTerminal = (pos_configurationplaceterminal)SharedUtils.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", SharedFramework.LicenseHardwareId);
                 }
                 catch (Exception ex)
                 {
@@ -1959,12 +1961,12 @@ namespace logicpos
                     try
                     {
                         //Persist Terminal in DB
-                        configurationPlaceTerminal = new pos_configurationplaceterminal(GlobalFramework.SessionXpo)
+                        configurationPlaceTerminal = new pos_configurationplaceterminal(DataLayerFramework.SessionXpo)
                         {
-                            Ord = FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
-                            Code = FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-                            Designation = "Terminal #" + FrameworkUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-                            HardwareId = GlobalFramework.LicenceHardwareId
+                            Ord = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
+                            Code = DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+                            Designation = "Terminal #" + DataLayerUtils.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
+                            HardwareId = SharedFramework.LicenseHardwareId
                             //Fqdn = GetFQDN()
                         };
                         _logger.Debug("pos_configurationplaceterminal GetTerminal() :: configurationPlaceTerminal.Save()");
@@ -1976,7 +1978,7 @@ namespace logicpos
                         GlobalApp.DialogThreadNotify.WakeupMain();
 
                         _logger.Error(string.Format("pos_configurationplaceterminal GetTerminal() :: Error! Can't Register a new TerminalId [{0}] with HardwareId: [{1}], Error: [2]", configurationPlaceTerminal.Oid, configurationPlaceTerminal.HardwareId, ex.Message), ex);
-                        ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_register_new_terminal"), configurationPlaceTerminal.HardwareId));
+                        ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_register_new_terminal"), configurationPlaceTerminal.HardwareId));
                         Environment.Exit(0);
                     }
                 }
@@ -2000,7 +2002,7 @@ namespace logicpos
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Ascending);
                 XPCollection xpcWorkingSessionPeriod = new XPCollection(pSession, typeof(pos_worksessionperiod), criteriaOperator, sortProperty);
-                DateTime dateTime = FrameworkUtils.CurrentDateTimeAtomic();
+                DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
                 if (xpcWorkingSessionPeriod.Count > 0)
                 {
                     foreach (pos_worksessionperiod item in xpcWorkingSessionPeriod)
@@ -2038,8 +2040,8 @@ namespace logicpos
                     try
                     {
                         /* IN008024 */
-                        CustomAppOperationMode customAppOperationMode = SettingsApp.CustomAppOperationMode;
-                        //_logger.Debug(string.Format("fileImageBackgroundWindowPos: [{0}]", GlobalFramework.Settings["fileImageBackgroundWindowPos"]));
+                        CustomAppOperationMode customAppOperationMode = DataLayerSettings.CustomAppOperationMode;
+                        //_logger.Debug(string.Format("fileImageBackgroundWindowPos: [{0}]", DataLayerFramework.Settings["fileImageBackgroundWindowPos"]));
                         string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
                         GlobalApp.PosMainWindow = new PosMainWindow(windowImageFileName);
                     }
@@ -2119,9 +2121,9 @@ namespace logicpos
 
         public static string GetThemeFileLocation(string pFile)
         {
-            string pathThemes = GlobalFramework.Path["themes"].ToString();
+            string pathThemes = DataLayerFramework.Path["themes"].ToString();
             /* IN008024 */
-            return FrameworkUtils.OSSlash(string.Format(@"{0}{1}\{2}", pathThemes, SettingsApp.AppTheme, pFile));
+            return SharedUtils.OSSlash(string.Format(@"{0}{1}\{2}", pathThemes, DataLayerSettings.AppTheme, pFile));
         }
 
         public static Gtk.Style GetThemeStyleBackground(string pFile)
@@ -2131,7 +2133,7 @@ namespace logicpos
 
             if (fileImageBackground != null && File.Exists(fileImageBackground))
             {
-                Gdk.Pixmap pixmap = Utils.FileToPixmap(fileImageBackground);
+                Gdk.Pixmap pixmap = FileToPixmap(fileImageBackground);
 
                 if (pixmap != null)
                 {
@@ -2146,7 +2148,7 @@ namespace logicpos
             }
             else
             {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, fileImageBackground));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", DataLayerSettings.AppTheme, fileImageBackground));
                 return null;
             }
         }
@@ -2158,7 +2160,7 @@ namespace logicpos
 
             if (fileImageBackground != null && File.Exists(fileImageBackground))
             {
-                Gdk.Pixmap pixmap = Utils.FileToPixmap(fileImageBackground);
+                Gdk.Pixmap pixmap = FileToPixmap(fileImageBackground);
 
                 if (pixmap != null)
                 {
@@ -2173,7 +2175,7 @@ namespace logicpos
             }
             else
             {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, fileImageBackground));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", DataLayerSettings.AppTheme, fileImageBackground));
                 return null;
             }
         }
@@ -2183,7 +2185,7 @@ namespace logicpos
 
             if (pFile != null && File.Exists(pFile))
             {
-                Gdk.Pixmap pixmap = Utils.FileToPixmap(pFile);
+                Gdk.Pixmap pixmap = FileToPixmap(pFile);
 
                 if (pixmap != null)
                 {
@@ -2198,7 +2200,7 @@ namespace logicpos
             }
             else
             {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, pFile));
+                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", DataLayerSettings.AppTheme, pFile));
                 return null;
             }
         }
@@ -2211,7 +2213,7 @@ namespace logicpos
             {
                 if (pFilename != null)
                 {
-                    Gdk.Pixmap pixmap = Utils.PixbufToPixmap(pFilename);
+                    Gdk.Pixmap pixmap = PixbufToPixmap(pFilename);
 
                     if (pixmap != null)
                     {
@@ -2226,7 +2228,7 @@ namespace logicpos
                 }
                 else
                 {
-                    _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", SettingsApp.AppTheme, pFilename.ToString()));
+                    _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", DataLayerSettings.AppTheme, pFilename.ToString()));
                     return null;
                 }
             }
@@ -2237,7 +2239,7 @@ namespace logicpos
 
         public static void ShowNotifications(Window pSourceWindow)
         {
-            ShowNotifications(pSourceWindow, GlobalFramework.SessionXpo);
+            ShowNotifications(pSourceWindow, DataLayerFramework.SessionXpo);
         }
 
         public static void ShowNotifications(Window pSourceWindow, Session pSession)
@@ -2247,7 +2249,7 @@ namespace logicpos
 
         public static void ShowNotifications(Window pSourceWindow, Guid pLoggedUser)
         {
-            ShowNotifications(pSourceWindow, GlobalFramework.SessionXpo, pLoggedUser);
+            ShowNotifications(pSourceWindow, DataLayerFramework.SessionXpo, pLoggedUser);
         }
 
         /// <summary>
@@ -2258,7 +2260,7 @@ namespace logicpos
         /// <param name="showNotificationOnDemand"></param>
         public static void ShowNotifications(Window pSourceWindow, bool showNotificationOnDemand)
         {
-            ShowNotifications(pSourceWindow, GlobalFramework.SessionXpo, Guid.Empty, showNotificationOnDemand);
+            ShowNotifications(pSourceWindow, DataLayerFramework.SessionXpo, Guid.Empty, showNotificationOnDemand);
         }
 
         /// <summary>
@@ -2277,18 +2279,18 @@ namespace logicpos
             /* IN006001 */
             try
             {
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(TerminalTarget = '{0}' OR TerminalTarget IS NULL){1}", GlobalFramework.LoggedTerminal.Oid, extraFilter));
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(TerminalTarget = '{0}' OR TerminalTarget IS NULL){1}", DataLayerFramework.LoggedTerminal.Oid, extraFilter));
 
                 /* IN006001 - for "on demand" notification flow */
                 if (showNotificationOnDemand)
                 {
                     /* IN006001 - get date for filtering notifications that were created 'n' days before Today */
                     //Get Date Back DaysBackToFilter (Without WeekEnds and Holidays)
-                    DateTime dateFilter = FrameworkUtils.GetDateTimeBackUtilDays(
-                        FrameworkUtils.CurrentDateTimeAtomicMidnight(),
-                        SettingsApp.XpoOidSystemNotificationDaysBackWhenFiltering,
+                    DateTime dateFilter = SharedUtils.GetDateTimeBackUtilDays(
+                        SharedUtils.CurrentDateTimeAtomicMidnight(),
+                        SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering,
                         true);
-                    criteriaOperator = GroupOperator.And(criteriaOperator, CriteriaOperator.Parse(string.Format("[CreatedAt] > '{0} 23:59:59'", dateFilter.ToString(SettingsApp.DateFormat))));
+                    criteriaOperator = CriteriaOperator.And(criteriaOperator, CriteriaOperator.Parse(string.Format("[CreatedAt] > '{0} 23:59:59'", dateFilter.ToString(SharedSettings.DateFormat))));
 
                     JoinOperand joinOperand = new JoinOperand();
                     joinOperand.JoinTypeName = "sys_systemnotificationtype";
@@ -2300,18 +2302,18 @@ namespace logicpos
                      * '80A03838-0937-4AE3-921F-75A1E358F7BF': Documentos de transporte por faturar
                      * 
                      */
-                    criteriaJoin = GroupOperator.And(criteriaJoin, new InOperator("Oid", new Guid[]{
-                            SettingsApp.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice,
-                            SettingsApp.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice,
-                            SettingsApp.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods
+                    criteriaJoin = CriteriaOperator.And(criteriaJoin, new InOperator("Oid", new Guid[]{
+                            SharedSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice,
+                            SharedSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice,
+                            SharedSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods
                         }));
                     joinOperand.Condition = criteriaJoin;
 
-                    criteriaOperator = GroupOperator.And(criteriaOperator, joinOperand);
+                    criteriaOperator = CriteriaOperator.And(criteriaOperator, joinOperand);
                 }
                 else
                 {/* keep the criteria for original flow */
-                    criteriaOperator = GroupOperator.And(criteriaOperator, CriteriaOperator.Parse("[Readed] = 0"));
+                    criteriaOperator = CriteriaOperator.And(criteriaOperator, CriteriaOperator.Parse("[Readed] = 0"));
                 }
 
                 SortProperty[] sortProperty = new SortProperty[2];
@@ -2326,23 +2328,23 @@ namespace logicpos
                     foreach (sys_systemnotification item in xpcSystemNotification)
                     {
                         message = string.Format("{1}{0}{0}{2}", Environment.NewLine, item.CreatedAt, item.Message);
-                        ResponseType response = Utils.ShowMessageTouch(
+                        ResponseType response = ShowMessageTouch(
                           pSourceWindow,
                           DialogFlags.DestroyWithParent | DialogFlags.Modal,
                           new Size(700, 480),
                           MessageType.Info,
                           ButtonsType.Ok,
-                          resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_notification"),
+                          resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_notification"),
                           message
                         );
 
                         //Always OK
                         if (response == ResponseType.Ok)
                         {
-                            item.DateRead = FrameworkUtils.CurrentDateTimeAtomic();
+                            item.DateRead = DataLayerUtils.CurrentDateTimeAtomic();
                             item.Readed = true;
-                            item.UserLastRead = GlobalFramework.LoggedUser;
-                            item.TerminalLastRead = GlobalFramework.LoggedTerminal;
+                            item.UserLastRead = DataLayerFramework.LoggedUser;
+                            item.TerminalLastRead = DataLayerFramework.LoggedTerminal;
                             item.Save();
 
                             //Call ProcessNotificationsActions
@@ -2352,14 +2354,14 @@ namespace logicpos
                 }
                 else if (showNotificationOnDemand)
                 {/* IN006001 - when "on demand" request returns no results */
-                    message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_no_notification"), SettingsApp.XpoOidSystemNotificationDaysBackWhenFiltering);
-                    ResponseType response = Utils.ShowMessageTouch(
+                    message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_no_notification"), SharedSettings.XpoOidSystemNotificationDaysBackWhenFiltering);
+                    ResponseType response = ShowMessageTouch(
                       pSourceWindow,
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       new Size(700, 480),
                       MessageType.Info,
                       ButtonsType.Ok,
-                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_notification"),
+                      resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_notification"),
                       message
                     );
                 }
@@ -2367,7 +2369,7 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
-                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "There is an error when checking for notifications. Please contact the helpdesk");
+                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "There is an error when checking for notifications. Please contact the helpdesk");
             }
         }
 
@@ -2406,20 +2408,20 @@ namespace logicpos
                 byte[] isoBytes = System.Text.Encoding.Convert(utf8, iso, raw);
                 message = iso.GetString(isoBytes);
 
-                ResponseType response = Utils.ShowMessageTouch(
+                ResponseType response = ShowMessageTouch(
                          pSourceWindow,
                          DialogFlags.DestroyWithParent | DialogFlags.Modal,
                          new Size(700, 480),
                          MessageType.Info,
                          ButtonsType.Ok,
-                         resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "change_logger"),
+                         resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "change_logger"),
                          message
                        );
             }
             catch (Exception ex)
             {
                 _logger.Error("void Utils.ShowNotifications(Window pSourceWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
-                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "There is an error when checking for changelog. Please contact the helpdesk");
+                ShowMessageTouch(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "There is an error when checking for changelog. Please contact the helpdesk");
             }
         }
 
@@ -2428,7 +2430,7 @@ namespace logicpos
 
         public static string GetVirtualKeyBoardInput(Window pSourceWindow, KeyboardMode pMode, string pInitialValue, string pRegExRule)
         {
-            bool useBaseDialogWindowMask = Convert.ToBoolean(GlobalFramework.Settings["useBaseDialogWindowMask"]);
+            bool useBaseDialogWindowMask = Convert.ToBoolean(DataLayerFramework.Settings["useBaseDialogWindowMask"]);
 
             //if (GlobalApp.DialogPosKeyboard == null)
             //{
@@ -2438,11 +2440,11 @@ namespace logicpos
                 case KeyboardMode.Alfa:
                 case KeyboardMode.AlfaNumeric:
                     //On Create SourceWindow is always GlobalApp.WindowPos else if its a Dialog, when it is destroyed, in Memory Keyboard is Destroyed too, this way we keep it in Memory
-                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.PosMainWindow, Gtk.DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
+                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.PosMainWindow, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
                     break;
 
                 case KeyboardMode.Numeric:
-                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.PosMainWindow, Gtk.DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
+                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.PosMainWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
                     break;
                 default: break;
             }
@@ -2500,7 +2502,7 @@ namespace logicpos
 
             try
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_CACHED_IMAGES"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_CACHED_IMAGES"]);
             }
             catch (Exception ex)
             {
@@ -2516,7 +2518,7 @@ namespace logicpos
 
             try
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_EUROPEAN_VAT_AUTOCOMPLETE"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_EUROPEAN_VAT_AUTOCOMPLETE"]);
             }
             catch (Exception ex)
             {
@@ -2532,7 +2534,7 @@ namespace logicpos
 
             try
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_CC_DAILY_TICKET"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_CC_DAILY_TICKET"]);
             }
             catch (Exception ex)
             {
@@ -2549,7 +2551,7 @@ namespace logicpos
 
             try
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_POS_PDF_VIEWER"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_POS_PDF_VIEWER"]);
             }
             catch (Exception ex)
             {
@@ -2564,7 +2566,7 @@ namespace logicpos
             bool result;
             try
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["TICKET_PRINT_TICKET"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["TICKET_PRINT_TICKET"]);
             }
             catch (Exception ex)
             {
@@ -2580,7 +2582,7 @@ namespace logicpos
             bool result;
             try
             {
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["TICKET_PRINT_COMERCIAL_NAME"]);
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["TICKET_PRINT_COMERCIAL_NAME"]);
             }
             catch (Exception ex)
             {
@@ -2600,14 +2602,14 @@ namespace logicpos
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'PRINT_QRCODE' AND (Disabled = 0 OR Disabled is NULL);");
-                result = Convert.ToBoolean(GlobalFramework.SessionXpo.ExecuteScalar(query));
-                GlobalFramework.PrintQRCode = result;
+                result = Convert.ToBoolean(DataLayerFramework.SessionXpo.ExecuteScalar(query));
+                SharedFramework.PrintQRCode = result;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["PRINT_QRCODE"]);
-                GlobalFramework.PrintQRCode = result;
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["PRINT_QRCODE"]);
+                SharedFramework.PrintQRCode = result;
                 return true;
             }
 
@@ -2620,14 +2622,14 @@ namespace logicpos
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS' AND (Disabled = 0 OR Disabled is NULL);");
-                result = Convert.ToBoolean(GlobalFramework.SessionXpo.ExecuteScalar(query));
-                GlobalFramework.CheckStocks = result;
+                result = Convert.ToBoolean(DataLayerFramework.SessionXpo.ExecuteScalar(query));
+                SharedFramework.CheckStocks = result;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["CHECK_STOCKS"]);
-                GlobalFramework.CheckStocks = result;
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["CHECK_STOCKS"]);
+                SharedFramework.CheckStocks = result;
                 return true;
             }
 
@@ -2640,14 +2642,14 @@ namespace logicpos
             try
             {
                 string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                result = Convert.ToBoolean(GlobalFramework.SessionXpo.ExecuteScalar(query));
-                GlobalFramework.CheckStockMessage = result;
+                result = Convert.ToBoolean(DataLayerFramework.SessionXpo.ExecuteScalar(query));
+                SharedFramework.CheckStockMessage = result;
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(GlobalFramework.PreferenceParameters["CHECK_STOCKS_MESSAGE"]);
-                GlobalFramework.CheckStockMessage = result;
+                result = Convert.ToBoolean(SharedFramework.PreferenceParameters["CHECK_STOCKS_MESSAGE"]);
+                SharedFramework.CheckStockMessage = result;
                 return true;
             }
 
@@ -2694,7 +2696,7 @@ namespace logicpos
             try
             {
                 // Add default Criteria to Hide Undefined Records
-                string undefinedFilter = string.Format("Oid <> '{0}'", SettingsApp.XpoOidUndefinedRecord);
+                string undefinedFilter = string.Format("Oid <> '{0}'", SharedSettings.XpoOidUndefinedRecord);
 
                 if (pCriteria == null)
                 {
@@ -2760,23 +2762,23 @@ namespace logicpos
                     INIFile iNIFile = new INIFile(pFileName);
 
                     //Load
-                    GlobalFramework.LicenceHardwareId = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
-                    GlobalFramework.LicenceCompany = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
-                    GlobalFramework.LicenceNif = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
-                    GlobalFramework.LicenceAddress = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
-                    GlobalFramework.LicenceEmail = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
-                    GlobalFramework.LicenceTelephone = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
-                    GlobalFramework.LicenceReseller = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
+                    SharedFramework.LicenseHardwareId = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
+                    SharedFramework.LicenseCompany = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
+                    SharedFramework.LicenseNif = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
+                    SharedFramework.LicenseAddress = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
+                    SharedFramework.LicenseEmail = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
+                    SharedFramework.LicenseTelephone = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
+                    SharedFramework.LicenseReseller = CryptorEngine.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
                     //Test
                     if (pDebug)
                     {
-                        _logger.Debug(string.Format("{0}:{1}", "HardwareId", GlobalFramework.LicenceHardwareId));
-                        _logger.Debug(string.Format("{0}:{1}", "Company", GlobalFramework.LicenceCompany));
-                        _logger.Debug(string.Format("{0}:{1}", "Nif", GlobalFramework.LicenceNif));
-                        _logger.Debug(string.Format("{0}:{1}", "Address", GlobalFramework.LicenceAddress));
-                        _logger.Debug(string.Format("{0}:{1}", "Email", GlobalFramework.LicenceEmail));
-                        _logger.Debug(string.Format("{0}:{1}", "Telephone", GlobalFramework.LicenceTelephone));
-                        _logger.Debug(string.Format("{0}:{1}", "Reseller", GlobalFramework.LicenceReseller));
+                        _logger.Debug(string.Format("{0}:{1}", "HardwareId", SharedFramework.LicenseHardwareId));
+                        _logger.Debug(string.Format("{0}:{1}", "Company", SharedFramework.LicenseCompany));
+                        _logger.Debug(string.Format("{0}:{1}", "Nif", SharedFramework.LicenseNif));
+                        _logger.Debug(string.Format("{0}:{1}", "Address", SharedFramework.LicenseAddress));
+                        _logger.Debug(string.Format("{0}:{1}", "Email", SharedFramework.LicenseEmail));
+                        _logger.Debug(string.Format("{0}:{1}", "Telephone", SharedFramework.LicenseTelephone));
+                        _logger.Debug(string.Format("{0}:{1}", "Reseller", SharedFramework.LicenseReseller));
                     }
                     iNIFile.Flush();
 
@@ -2813,15 +2815,15 @@ namespace logicpos
         {
             bool customerExists = false;
             erp_customer result;
-            erp_customer finalConsumerEntity = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
-            fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpricetype), SettingsApp.XpoOidConfigurationPriceTypeDefault);
+            erp_customer finalConsumerEntity = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+            fin_configurationpricetype configurationPriceType = (fin_configurationpricetype)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpricetype), SharedSettings.XpoOidConfigurationPriceTypeDefault);
 
             SortingCollection sortCollection = new SortingCollection
             {
-                new SortProperty("Oid", DevExpress.Xpo.DB.SortingDirection.Ascending)
+                new SortProperty("Oid", SortingDirection.Ascending)
             };
             CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-            ICollection collectionCustomers = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
+            ICollection collectionCustomers = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
 
             foreach (erp_customer item in collectionCustomers)
             {
@@ -2837,11 +2839,11 @@ namespace logicpos
             {
                 changed = true;
                 //Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
-                if (string.IsNullOrEmpty(pName)) pName = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown");
-                result = new erp_customer(GlobalFramework.SessionXpo)
+                if (string.IsNullOrEmpty(pName)) pName = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "saft_value_unknown");
+                result = new erp_customer(DataLayerFramework.SessionXpo)
                 {
-                    Ord = (pFiscalNumber != string.Empty) ? FrameworkUtils.GetNextTableFieldID("erp_customer", "Ord") : 0,
-                    Code = (pFiscalNumber != string.Empty) ? FrameworkUtils.GetNextTableFieldID("erp_customer", "Code") : 0,
+                    Ord = (pFiscalNumber != string.Empty) ? DataLayerUtils.GetNextTableFieldID("erp_customer", "Ord") : 0,
+                    Code = (pFiscalNumber != string.Empty) ? DataLayerUtils.GetNextTableFieldID("erp_customer", "Code") : 0,
                     Name = pName,
                     Address = pAddress,
                     Locality = pLocality,
@@ -2869,7 +2871,7 @@ namespace logicpos
             {
                 changed = false;
                 //Require to get a Fresh Object
-                result = (erp_customer)FrameworkUtils.GetXPGuidObject(typeof(erp_customer), pCustomer.Oid);
+                result = (erp_customer)DataLayerUtils.GetXPGuidObject(typeof(erp_customer), pCustomer.Oid);
 
                 if (result != finalConsumerEntity)
                 {
@@ -2890,7 +2892,7 @@ namespace logicpos
                     //If final Consumer not save
                     if (changed && result.Oid != finalConsumerEntity.Oid)
                     {
-                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_modified"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_customer_updated_save_changes"));
+                        ResponseType responseType = ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_modified"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_customer_updated_save_changes"));
                         if (responseType == ResponseType.No)
                         {
                             changed = false;
@@ -2949,7 +2951,7 @@ namespace logicpos
 
         public static string GetSessionFileName()
         {
-            string result = Path.Combine(GlobalFramework.Path["temp"].ToString(), string.Format(SettingsApp.AppSessionFile, GlobalFramework.LicenceHardwareId));
+            string result = Path.Combine(DataLayerFramework.Path["temp"].ToString(), string.Format(SharedSettings.AppSessionFile, SharedFramework.LicenseHardwareId));
             return result;
         }
 
@@ -2965,10 +2967,10 @@ namespace logicpos
 
             try
             {
-                Color colorEntryValidationValidFont = GlobalFramework.Settings["colorEntryValidationValidFont"].StringToColor();
-                Color colorEntryValidationInvalidFont = GlobalFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
-                Color colorEntryValidationValidBackground = GlobalFramework.Settings["colorEntryValidationValidBackground"].StringToColor();
-                Color colorEntryValidationInvalidBackground = GlobalFramework.Settings["colorEntryValidationInvalidBackground"].StringToColor();
+                Color colorEntryValidationValidFont = DataLayerFramework.Settings["colorEntryValidationValidFont"].StringToColor();
+                Color colorEntryValidationInvalidFont = DataLayerFramework.Settings["colorEntryValidationInvalidFont"].StringToColor();
+                Color colorEntryValidationValidBackground = DataLayerFramework.Settings["colorEntryValidationValidBackground"].StringToColor();
+                Color colorEntryValidationInvalidBackground = DataLayerFramework.Settings["colorEntryValidationInvalidBackground"].StringToColor();
 
                 if (pValidated)
                 {
@@ -3034,22 +3036,22 @@ namespace logicpos
             try
             {
                 //COMPANY_NAME
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyName = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_NAME")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyName = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_NAME")) as cfg_configurationpreferenceparameter);
                 //COMPANY_FISCALNUMBER
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
                 //COMPANY_CAE
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCAE = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CAE")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCAE = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CAE")) as cfg_configurationpreferenceparameter);
                 //COMPANY_CIVIL_REGISTRATION
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCivilRegistration = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CIVIL_REGISTRATION")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCivilRegistration = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CIVIL_REGISTRATION")) as cfg_configurationpreferenceparameter);
                 //COMPANY_CIVIL_REGISTRATION_ID
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCivilRegistrationID = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CIVIL_REGISTRATION_ID")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCivilRegistrationID = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_CIVIL_REGISTRATION_ID")) as cfg_configurationpreferenceparameter);
                 //COMPANY_COUNTRY
                 //Assign and Save Country and Country Code 2 From entryBoxSelectCustomerCountry
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountry = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountry = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY")) as cfg_configurationpreferenceparameter);
                 configurationPreferenceParameterCompanyCountry.Value = pConfigurationCountry.Designation;
                 configurationPreferenceParameterCompanyCountry.Save();
                 //COMPANY_COUNTRY_CODE2
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
+                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (SharedUtils.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
                 configurationPreferenceParameterCompanyCountryCode2.Value = pConfigurationCountry.Code2;
                 configurationPreferenceParameterCompanyCountryCode2.Save();
 
@@ -3080,7 +3082,7 @@ namespace logicpos
                     { "xpoOidConfigurationCountrySystemCountryCountryCode2", pConfigurationCountry.Code2 },
                     { "xpoOidConfigurationCurrencySystemCurrency)", pConfigurationCurrency.Oid.ToString() }
                 };
-                Utils.AddUpdateSettings(values);
+                AddUpdateSettings(values);
 
                 result = true;
             }
@@ -3097,7 +3099,7 @@ namespace logicpos
         {
             try
             {
-                PosReportsDialog dialog = new PosReportsDialog(pSourceWindow, Gtk.DialogFlags.DestroyWithParent);
+                PosReportsDialog dialog = new PosReportsDialog(pSourceWindow, DialogFlags.DestroyWithParent);
                 int response = dialog.Run();
                 dialog.Destroy();
             }
@@ -3111,7 +3113,7 @@ namespace logicpos
         {
             try
             {
-                PosCashDialog dialog = new PosCashDialog(pSourceWindow, Gtk.DialogFlags.DestroyWithParent);
+                PosCashDialog dialog = new PosCashDialog(pSourceWindow, DialogFlags.DestroyWithParent);
                 int response = dialog.Run();
                 dialog.Destroy();
             }
@@ -3146,7 +3148,7 @@ namespace logicpos
         {
             try
             {
-                PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(pSourceWindow, Gtk.DialogFlags.DestroyWithParent, docChoice);
+                PosDocumentFinanceSelectRecordDialog dialog = new PosDocumentFinanceSelectRecordDialog(pSourceWindow, DialogFlags.DestroyWithParent, docChoice);
                 if (docChoice == 0)
                 {
                     ResponseType response = (ResponseType)dialog.Run();
@@ -3166,24 +3168,24 @@ namespace logicpos
         {
             try
             {
-                if (GlobalFramework.LicenceModuleStocks && GlobalFramework.StockManagementModule != null)
+                if (SharedFramework.LicenseModuleStocks && POSFramework.StockManagementModule != null)
                 {
                     DialogArticleStock dialog = new DialogArticleStock(pSourceWindow);
                     ResponseType response = (ResponseType)dialog.Run();
                     dialog.Destroy();
                 }
-                else if (Utils.CheckStockMessage() && !GlobalFramework.LicenceModuleStocks)
+                else if (CheckStockMessage() && !SharedFramework.LicenseModuleStocks)
                 {
-                    var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_acquire_module_stocks"));
+                    var messageDialog = ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_acquire_module_stocks"));
                     if (messageDialog == ResponseType.Ok)
                     {
                         Process.Start("https://logic-pos.com/");
                     }
 
                     string query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Value = 'False' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                    GlobalFramework.SessionXpo.ExecuteScalar(query);
+                    DataLayerFramework.SessionXpo.ExecuteScalar(query);
                     query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                    GlobalFramework.SessionXpo.ExecuteScalar(query);
+                    DataLayerFramework.SessionXpo.ExecuteScalar(query);
                     startDocumentsMenuFromBackOffice(pSourceWindow, 6);
                 }
                 else
@@ -3201,7 +3203,7 @@ namespace logicpos
         public static void startReportFromBackOffice(Window pSourceWindow)
         {
             //CustomReport.ProcessReportDocumentMasterList(displayMode
-            //           , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
+            //           , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], token.ToString().ToLower())
             //           , "[DocumentFinanceMaster.DocumentType.Ord]"
             //           , "([DocumentFinanceMaster.DocumentType.Code]) [DocumentFinanceMaster.DocumentType.Designation]",/* IN009066 */
             //           reportFilter,

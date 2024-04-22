@@ -1,6 +1,7 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
 
@@ -32,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             this.Name = name;
 
             Color colorFont = Color.White;
-            char decimalSeparator = (char)GlobalFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+            char decimalSeparator = (char)SharedFramework.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
 
             EventBox eventbox = new EventBox() { VisibleWindow = false };
             _table = new Table(4, 3, true);

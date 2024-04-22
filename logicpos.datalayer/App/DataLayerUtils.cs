@@ -6,7 +6,7 @@ using System;
 
 namespace logicpos.datalayer.App
 {
-    public class FrameworkUtils
+    public static class DataLayerUtils
     {
         //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -14,7 +14,7 @@ namespace logicpos.datalayer.App
         public static AppOperationMode GetAppMode()
         {
             AppOperationMode result = AppOperationMode.Default;
-            string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+            string appOperationModeToken = DataLayerFramework.Settings["appOperationModeToken"];
 
             try
             {
@@ -43,7 +43,7 @@ namespace logicpos.datalayer.App
         /// <returns></returns>
         public static CustomAppOperationMode GetCustomAppOperationMode()
         {
-            return CustomAppOperationMode.GetAppOperationMode(GlobalFramework.Settings["appOperationModeToken"]);
+            return CustomAppOperationMode.GetAppOperationMode(DataLayerFramework.Settings["appOperationModeToken"]);
         }
 
         /// <summary>
@@ -54,9 +54,9 @@ namespace logicpos.datalayer.App
         {
             bool isDefaultAppOperationTheme = false;
 
-            if (SettingsApp.CustomAppOperationMode != null)
+            if (DataLayerSettings.CustomAppOperationMode != null)
             {
-                isDefaultAppOperationTheme = CustomAppOperationMode.DEFAULT.AppOperationTheme.Equals(SettingsApp.CustomAppOperationMode.AppOperationTheme);
+                isDefaultAppOperationTheme = CustomAppOperationMode.DEFAULT.AppOperationTheme.Equals(DataLayerSettings.CustomAppOperationMode.AppOperationTheme);
             }
 
             return isDefaultAppOperationTheme;
@@ -75,7 +75,7 @@ namespace logicpos.datalayer.App
             {
                 string sql = string.Format("SELECT MAX({0}) FROM {1};", pField, pTable);
 
-                var resultInt = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                var resultInt = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                 if (resultInt != null)
                 {
                     result = Convert.ToUInt32(resultInt) + 1;
@@ -100,7 +100,7 @@ namespace logicpos.datalayer.App
 
         public static XPGuidObject GetXPGuidObject(Type pXPGuidObjectType, Guid pOid)
         {
-            return GetXPGuidObject(GlobalFramework.SessionXpo, pXPGuidObjectType, pOid);
+            return GetXPGuidObject(DataLayerFramework.SessionXpo, pXPGuidObjectType, pOid);
         }
 
         public static XPGuidObject GetXPGuidObject(Session pSession, Type pXPGuidObjectType, Guid pOid)
@@ -132,7 +132,7 @@ namespace logicpos.datalayer.App
             string sql = string.Empty;
             var result = new DateTime();
 
-            switch (GlobalFramework.DatabaseType)
+            switch (DataLayerFramework.DatabaseType)
             {
                 case DatabaseType.SQLite:
                 case DatabaseType.MonoLite:
@@ -152,7 +152,7 @@ namespace logicpos.datalayer.App
             {
                 try
                 {
-                    result = (DateTime)GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                    result = (DateTime)DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                 }
                 catch (Exception ex)
                 {

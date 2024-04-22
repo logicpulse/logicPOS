@@ -1,11 +1,11 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -23,8 +23,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private DocumentFinanceDialogPage5 _pagePad5;
         //UI
         private readonly TouchButtonIconWithText _buttonClearCustomer;
-        public TouchButtonIconWithText ButtonClearCustomer { 
-            get { return _buttonClearCustomer; } 
+        public TouchButtonIconWithText ButtonClearCustomer
+        {
+            get { return _buttonClearCustomer; }
         }
         private readonly TouchButtonIconWithText _buttonOk;
         private readonly TouchButtonIconWithText _buttonCancel;
@@ -33,8 +34,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly ResponseType _responseTypePreview = (ResponseType)11;
         private readonly ResponseType _responseTypeClearCustomer = (ResponseType)12;
         //DocumentFinanceArticle MaxQuantities Validate
-        private Dictionary<Guid,decimal> _validateMaxQuantities;
-        public Dictionary<Guid,decimal> ValidateMaxQuantities
+        private Dictionary<Guid, decimal> _validateMaxQuantities;
+        public Dictionary<Guid, decimal> ValidateMaxQuantities
         {
             get { return _validateMaxQuantities; }
             set { _validateMaxQuantities = value; }
@@ -56,9 +57,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             Size windowSize = new Size(790, 546);
             //Image Icons
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_document_new.png");
-            string fileActionPreview = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_preview.png");
-            string fileIconClearCustomer = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_document_new.png");
+            string fileActionPreview = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Dialogs\icon_pos_dialog_preview.png");
+            string fileIconClearCustomer = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png");
 
             InitPages();
 
@@ -70,9 +71,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //ActionArea Buttons
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-            _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
+            _buttonClearCustomer = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_payment_dialog_clear_client"), fileIconClearCustomer);
 
-            _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_preview"), fileActionPreview); /* IN009111 */
+            _buttonPreview = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "widget_generictreeviewnavigator_preview"), fileActionPreview); /* IN009111 */
             _buttonOk.Sensitive = false;
 
             //ActionArea
@@ -105,18 +106,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Assign Page Title
             _windowTitle = GetPageTitle(0);
 
-            string icon1 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png");
-            string icon2 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png");
-            string icon3 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png");
-            string icon4 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png");
-            string icon5 = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png");
+            string icon1 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png");
+            string icon2 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png");
+            string icon3 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png");
+            string icon4 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png");
+            string icon5 = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png");
 
-            _pagePad1 = new DocumentFinanceDialogPage1(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page1"), icon1, null);
-            _pagePad2 = new DocumentFinanceDialogPage2(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page2"), icon2, null);
-            _pagePad3 = new DocumentFinanceDialogPage3(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3"), icon3, null);
+            _pagePad1 = new DocumentFinanceDialogPage1(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page1"), icon1, null);
+            _pagePad2 = new DocumentFinanceDialogPage2(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page2"), icon2, null);
+            _pagePad3 = new DocumentFinanceDialogPage3(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3"), icon3, null);
             //Start in Invoice : Start Disabled
-            _pagePad4 = new DocumentFinanceDialogPage4(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page4"), icon4, null, false);
-            _pagePad5 = new DocumentFinanceDialogPage5(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page5"), icon5, null, false);
+            _pagePad4 = new DocumentFinanceDialogPage4(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page4"), icon4, null, false);
+            _pagePad5 = new DocumentFinanceDialogPage5(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page5"), icon5, null, false);
             //Assign Reference Here, After Construction
             //PagePad
             _pagePad1.PagePad2 = _pagePad2;
@@ -177,8 +178,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public string GetPageTitle(int pPageIndex)
         {
             string result = string.Format("{0} :: {1}",
-  resources.CustomResources.GetCustomResources(datalayer.App.GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_finance_document"),
-  resources.CustomResources.GetCustomResources(datalayer.App.GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
+  resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_new_finance_document"),
+  resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("window_title_dialog_document_finance_page{0}", pPageIndex + 1))
 );
 
             //Enable/Disable ClearCustomer
@@ -191,14 +192,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 cfg_configurationcurrency configurationCurrency = _pagePad1.EntryBoxSelectConfigurationCurrency.Value;
 
                 //Always Update Totals before Show Title
-                _pagePad3.ArticleBag.DiscountGlobal = FrameworkUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
+                _pagePad3.ArticleBag.DiscountGlobal = SharedUtils.StringToDecimal(_pagePad2.EntryBoxCustomerDiscount.EntryValidation.Text);
                 _pagePad3.ArticleBag.UpdateTotals();
 
                 if (_pagePad3.ArticleBag.TotalFinal > 0)
                 {
                     //Always Recreate ArticleBag before contruct ProcessFinanceDocumentParameter
                     _pagePad3.ArticleBag = GetArticleBag();
-                    result += string.Format(" : {0}", FrameworkUtils.DecimalToStringCurrency(_pagePad3.ArticleBag.TotalFinal * configurationCurrency.ExchangeRate, configurationCurrency.Acronym));
+                    result += string.Format(" : {0}", SharedUtils.DecimalToStringCurrency(_pagePad3.ArticleBag.TotalFinal * configurationCurrency.ExchangeRate, configurationCurrency.Acronym));
                     //Enable or Disabled Preview Button
                     _buttonPreview.Visible = true;
                 }

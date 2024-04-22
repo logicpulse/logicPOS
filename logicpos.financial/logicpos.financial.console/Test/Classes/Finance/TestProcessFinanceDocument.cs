@@ -1,4 +1,5 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.console.App;
 using logicpos.financial.library.Classes.Finance;
 using logicpos.financial.library.Classes.Hardware.Printers;
@@ -21,12 +22,12 @@ namespace logicpos.financial.console.Test.Classes
         public static fin_documentfinancemaster PersistFinanceDocumentMinimal(Guid pDocumentFinanceType)
         {
             //Store current Logged Details
-            sys_userdetail loggedUser = GlobalFramework.LoggedUser;
-            pos_configurationplaceterminal loggedTerminal = GlobalFramework.LoggedTerminal;
+            sys_userdetail loggedUser = DataLayerFramework.LoggedUser;
+            pos_configurationplaceterminal loggedTerminal = DataLayerFramework.LoggedTerminal;
 
             //Reset Current Logged Details
-            GlobalFramework.LoggedUser = null;
-            GlobalFramework.LoggedTerminal = null;
+            DataLayerFramework.LoggedUser = null;
+            DataLayerFramework.LoggedTerminal = null;
             fin_documentfinancemaster documentFinanceMaster = null;
 
             try
@@ -43,8 +44,8 @@ namespace logicpos.financial.console.Test.Classes
             finally
             {
                 //Restore Old Logged Details
-                GlobalFramework.LoggedUser = loggedUser;
-                GlobalFramework.LoggedTerminal = loggedTerminal;
+                DataLayerFramework.LoggedUser = loggedUser;
+                DataLayerFramework.LoggedTerminal = loggedTerminal;
             }
 
             return documentFinanceMaster;
@@ -75,11 +76,11 @@ namespace logicpos.financial.console.Test.Classes
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(pDocumentFinanceType, articleBag) {
                 SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag,
                 //P1
-                PaymentCondition = SettingsApp.XpoOidDocumentPaymentCondition,
-                PaymentMethod = SettingsApp.XpoOidDocumentPaymentMethod,
-                Currency = SettingsApp.XpoOidDocumentCurrency,
+                PaymentCondition = ConsoleSettings.XpoOidDocumentPaymentCondition,
+                PaymentMethod = ConsoleSettings.XpoOidDocumentPaymentMethod,
+                Currency = ConsoleSettings.XpoOidDocumentCurrency,
                 //P2
-                Customer = SettingsApp.XpoOidDocumentCustomer
+                Customer = ConsoleSettings.XpoOidDocumentCustomer
 
             };
 
@@ -91,7 +92,7 @@ namespace logicpos.financial.console.Test.Classes
         {
             //SourceDocument for CreditNote
             Guid xpoOidParentDocument = new Guid("316528f6-bf9b-4a6d-aa5b-530379aaa6ef");
-            fin_documentfinancemaster sourceDocument = (fin_documentfinancemaster) GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), xpoOidParentDocument);
+            fin_documentfinancemaster sourceDocument = (fin_documentfinancemaster) DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), xpoOidParentDocument);
 
             ArticleBag articleBag = TestArticleBag.GetArticleBag(false);
 
@@ -106,13 +107,13 @@ namespace logicpos.financial.console.Test.Classes
             ProcessFinanceDocumentParameter processFinanceDocumentParameter = new ProcessFinanceDocumentParameter(pDocumentFinanceType, articleBag) {
                 SourceMode = PersistFinanceDocumentSourceMode.CustomArticleBag,
                 //P1
-                PaymentCondition = SettingsApp.XpoOidDocumentPaymentCondition,
-                PaymentMethod = SettingsApp.XpoOidDocumentPaymentMethod,
-                Currency = SettingsApp.XpoOidDocumentCurrency,
+                PaymentCondition = ConsoleSettings.XpoOidDocumentPaymentCondition,
+                PaymentMethod = ConsoleSettings.XpoOidDocumentPaymentMethod,
+                Currency = ConsoleSettings.XpoOidDocumentCurrency,
                 //Used for Credit Notes
                 DocumentParent = xpoOidParentDocument,
                 //P2
-                Customer = SettingsApp.XpoOidDocumentCustomer
+                Customer = ConsoleSettings.XpoOidDocumentCustomer
 
             };
 
@@ -151,7 +152,7 @@ namespace logicpos.financial.console.Test.Classes
             //Prepare listInvoices and listCreditNotes
             foreach (Guid item in listDocuments)
             {
-                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), item);
+                fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), item);
 
                 if (documentFinanceMaster.DocumentType.Credit)
                 {
@@ -163,14 +164,14 @@ namespace logicpos.financial.console.Test.Classes
                 }
             }
 
-            fin_documentfinancepayment documentFinancePayment = ProcessFinanceDocument.PersistFinanceDocumentPayment(listInvoices, listCreditNotes, SettingsApp.XpoOidDocumentCustomer, SettingsApp.XpoOidDocumentPaymentMethod, SettingsApp.XpoOidDocumentCurrency, paymentAmount, paymentNotes);
+            fin_documentfinancepayment documentFinancePayment = ProcessFinanceDocument.PersistFinanceDocumentPayment(listInvoices, listCreditNotes, ConsoleSettings.XpoOidDocumentCustomer, ConsoleSettings.XpoOidDocumentPaymentMethod, ConsoleSettings.XpoOidDocumentCurrency, paymentAmount, paymentNotes);
 
             if (documentFinancePayment != null)
             {
                 Console.WriteLine(string.Format("documentFinancePayment.PaymentRefNo: [{0}]", documentFinancePayment.PaymentRefNo));
-                sys_configurationprinterstemplates template = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(GlobalFramework.SessionXpo, documentFinancePayment.DocumentType.Oid).Template;
+                sys_configurationprinterstemplates template = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(DataLayerFramework.SessionXpo, documentFinancePayment.DocumentType.Oid).Template;
 				//TK016249 - Impressoras - Diferenciação entre Tipos
-                PrintRouter.PrintFinanceDocumentPayment(GlobalFramework.LoggedTerminal.ThermalPrinter, documentFinancePayment);
+                PrintRouter.PrintFinanceDocumentPayment(DataLayerFramework.LoggedTerminal.ThermalPrinter, documentFinancePayment);
             }
 
             return documentFinancePayment;

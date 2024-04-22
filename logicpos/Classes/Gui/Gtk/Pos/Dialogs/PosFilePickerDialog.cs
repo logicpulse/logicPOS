@@ -1,13 +1,11 @@
 ﻿using Gtk;
 using logicpos.App;
-using logicpos.financial;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
-using System;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System.Drawing;
 using System.IO;
-using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -33,7 +31,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public PosFilePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, FileFilter pFileFilter, FileChooserAction pFileChooserAction)
            : this(pSourceWindow, pDialogFlags, pFileFilter, FileChooserAction.Open, null)
-        {            
+        {
         }
 
 
@@ -43,11 +41,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Parameters
             _fileFilter = pFileFilter;
             _fileChooserAction = pFileChooserAction;
-                      
+
             //Init Local Vars
-            string windowTitle = string.Format("{0} {1}",resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"), windowName);
+            string windowTitle = string.Format("{0} {1}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"), windowName);
             _windowSize = new Size(700, 473);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
 
             //Init Content
             _fixedContent = new Fixed();
@@ -73,12 +71,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Init Font Description
-            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(GlobalFramework.Settings["fontEntryBoxValue"]);
+            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(DataLayerFramework.Settings["fontEntryBoxValue"]);
             //Init FileChooserWidget
             _filePicker = new FileChooserWidget(_fileChooserAction, "none");
             if (_fileFilter != null) _filePicker.Filter = _fileFilter;
             //Assign FilePicker StartPath
-            if(Directory.Exists(GlobalApp.FilePickerStartPath)) _filePicker.SetCurrentFolder(GlobalApp.FilePickerStartPath);
+            if (Directory.Exists(GlobalApp.FilePickerStartPath)) _filePicker.SetCurrentFolder(GlobalApp.FilePickerStartPath);
             //Size and Put
             _filePicker.SetSizeRequest(_windowSize.Width - 13, _windowSize.Height - 120);
             _fixedContent.Put(_filePicker, 0, 0);

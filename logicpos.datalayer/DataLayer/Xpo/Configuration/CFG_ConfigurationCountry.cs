@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcountry), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationcountry), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationcountry), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationcountry), "Code");
         }
 
         //This Can be Optional

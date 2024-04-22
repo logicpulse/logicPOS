@@ -17,7 +17,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
     internal abstract class GenericTreeViewModel
     {
         //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         //Show SystemColumns in TreeView ex rowIndex, Oid
         private static readonly bool _showSystemColumns = false;

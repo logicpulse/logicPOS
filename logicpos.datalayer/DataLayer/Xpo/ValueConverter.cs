@@ -80,7 +80,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                     cs.Dispose();
             }
 
-            return ASCIIEncoding.UTF8.GetString(_result);
+            return Encoding.UTF8.GetString(_result);
         }
 
         private static string Encrypt(string Password)

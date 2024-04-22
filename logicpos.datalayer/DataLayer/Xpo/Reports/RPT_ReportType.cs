@@ -12,8 +12,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(rpt_reporttype), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(rpt_reporttype), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(rpt_reporttype), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(rpt_reporttype), "Code");
         }
 
         private uint fOrd;

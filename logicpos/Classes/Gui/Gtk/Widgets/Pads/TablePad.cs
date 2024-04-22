@@ -2,8 +2,10 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,14 +16,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     public class TablePad : Table
     {
         //Log4Net
-        protected log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         //Settings
-        private readonly int _posBaseButtonScrollerHeight = Convert.ToInt32(GlobalFramework.Settings["posBaseButtonScrollerHeight"]);
-        private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(GlobalFramework.Settings["posBaseButtonMaxCharsPerLabel"]);
-        protected int _fontPosBaseButtonSize = Convert.ToInt16(GlobalFramework.Settings["fontPosBaseButtonSize"]);
+        private readonly int _posBaseButtonScrollerHeight = Convert.ToInt32(DataLayerFramework.Settings["posBaseButtonScrollerHeight"]);
+        private readonly int _posBaseButtonMaxCharsPerLabel = Convert.ToInt16(DataLayerFramework.Settings["posBaseButtonMaxCharsPerLabel"]);
+        protected int _fontPosBaseButtonSize = Convert.ToInt16(DataLayerFramework.Settings["fontPosBaseButtonSize"]);
         //Paths/Files
-        protected string _fileBaseButtonOverlay = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_overlay.png");
+        protected string _fileBaseButtonOverlay = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_overlay.png");
         //TouchButton List        
         private List<TouchButtonBase> _listButtons;
         //TouchButton Properties
@@ -136,7 +138,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                bool useImageOverlay = Convert.ToBoolean(GlobalFramework.Settings["useImageOverlay"]);
+                bool useImageOverlay = Convert.ToBoolean(DataLayerFramework.Settings["useImageOverlay"]);
                 if (!useImageOverlay) _fileBaseButtonOverlay = null;
 
                 //When update always set page 1, start page
@@ -154,14 +156,14 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Prepare executeSql for first time
                 if (_filter != string.Empty) { executeSql = _sql + _filter; } else { executeSql = _sql; };
                 if (_order != string.Empty) { executeSql += _order; };
-                executeSql = string.Format("{0};", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(executeSql));
+                executeSql = string.Format("{0};", SharedUtils.RemoveCarriageReturnAndExtraWhiteSpaces(executeSql));
                 //_logger.Debug(string.Format("TablePad(): executeSql: [{0}]", executeSql));
 
                 //Always clear listItems
                 if (_listButtons.Count > 0) _listButtons.Clear();
 
                 //Debug
-                SelectedData xpoSelectedData = GlobalFramework.SessionXpo.ExecuteQueryWithMetadata(executeSql);
+                SelectedData xpoSelectedData = DataLayerFramework.SessionXpo.ExecuteQueryWithMetadata(executeSql);
 
                 SelectStatementResultRow[] selectStatementResultMeta = xpoSelectedData.ResultSet[0].Rows;
                 SelectStatementResultRow[] selectStatementResultData = xpoSelectedData.ResultSet[1].Rows;
@@ -171,7 +173,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //    }
 
                 // Detect Encrypted Model
-                if (GlobalFramework.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(sys_userdetail).ToLower()))
+                if (SharedFramework.PluginSoftwareVendor != null && executeSql.ToLower().Contains(nameof(sys_userdetail).ToLower()))
                 {
                     // Inject nonPropertyFields that are outside of attributes Scope and are required to exists to be decrypted
                     string[] nonPropertyFields = { "label" };
@@ -213,7 +215,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                             _strButtonName = string.Format("{0}_{1}", _buttonNamePrefix, _resultRow.Values[_fieldIndex["id"]].ToString());
                             _strButtonLabel = (_resultRow.Values[_fieldIndex["label"]] != null && _resultRow.Values[_fieldIndex["label"]].ToString() != string.Empty) ? _resultRow.Values[_fieldIndex["label"]].ToString() : _resultRow.Values[_fieldIndex["name"]].ToString();
-                            _strButtonImage = (_resultRow.Values[_fieldIndex["image"]] != null && _resultRow.Values[_fieldIndex["image"]].ToString() != string.Empty) ? FrameworkUtils.OSSlash(_resultRow.Values[_fieldIndex["image"]].ToString()) : "";
+                            _strButtonImage = (_resultRow.Values[_fieldIndex["image"]] != null && _resultRow.Values[_fieldIndex["image"]].ToString() != string.Empty) ? SharedUtils.OSSlash(_resultRow.Values[_fieldIndex["image"]].ToString()) : "";
                             if (_strButtonLabel.Length > _posBaseButtonMaxCharsPerLabel) { _strButtonLabel = _strButtonLabel.Substring(0, _posBaseButtonMaxCharsPerLabel) + "."; };
 
                             //Initialize Button
@@ -269,7 +271,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
+                        logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!");
                     };
                 }
                 else

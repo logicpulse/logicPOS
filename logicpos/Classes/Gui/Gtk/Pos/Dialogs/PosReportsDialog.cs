@@ -4,9 +4,10 @@ using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Reports;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 
@@ -20,20 +21,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         // Start Ord Code Int
         private int _userpermissionitemOrdAndCode = 1000;
 
-        public PosReportsDialog(){}
+        public PosReportsDialog() { }
 
         public PosReportsDialog(Window pSourceWindow, DialogFlags pDialogFlags)
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_reports");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_reports");
             System.Drawing.Size windowSize = new System.Drawing.Size(500, 509);//454
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_reports.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_reports.png");
 
             System.Drawing.Size sizeIcon = new System.Drawing.Size(50, 50);
 
             //Icons
-            string fileIconDefault = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_default.png");
+            string fileIconDefault = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_default.png");
 
             // InitUI
             InitUI();
@@ -45,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             // Build Accordion
-            Accordion accordion = new Accordion(GetAccordionDefinition(), SettingsApp.PrivilegesReportDialogFormat);
+            Accordion accordion = new Accordion(GetAccordionDefinition(), POSSettings.PrivilegesReportDialogFormat);
             //Accordion.Clicked += accordion_Clicked;
 
             //ViewPort
@@ -91,7 +92,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 SortProperty[] sortProperty = new SortProperty[2];
                 sortProperty[0] = new SortProperty("Ord", SortingDirection.Ascending);
                 sortProperty[1] = new SortProperty("Designation", SortingDirection.Ascending);
-                XPCollection xpoCollection = new XPCollection(GlobalFramework.SessionXpo, typeof(rpt_reporttype), criteriaOperator, sortProperty);
+                XPCollection xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, typeof(rpt_reporttype), criteriaOperator, sortProperty);
 
                 // Report : Collection (ReportType Property Navigations)
                 SortingCollection sortingCollection = new SortingCollection
@@ -104,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     // Init AccordionChild
                     Dictionary<string, AccordionNode> accordionChilds = new Dictionary<string, AccordionNode>();
 
-                    buttonLabelReportTypeString = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], reportType.ResourceString);
+                    buttonLabelReportTypeString = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], reportType.ResourceString);
                     // Try to get Resource
                     if (string.IsNullOrEmpty(buttonLabelReportTypeString))
                     {
@@ -124,7 +125,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             bool reportSensitive = true;
                             userpermissionitemToken = report.Token;
                             //Prevent Reports to non-licenced Module stocks
-                            if (report.ReportType.Oid == Guid.Parse("751c9e56-26bb-4fc8-8110-6c1e3b7c84e6") && report.Token != "REPORT_LIST_STOCK_MOVEMENTS" && !GlobalFramework.LicenceModuleStocks)
+                            if (report.ReportType.Oid == Guid.Parse("751c9e56-26bb-4fc8-8110-6c1e3b7c84e6") && report.Token != "REPORT_LIST_STOCK_MOVEMENTS" && !SharedFramework.LicenseModuleStocks)
                             {
                                 reportSensitive = false;
                             }

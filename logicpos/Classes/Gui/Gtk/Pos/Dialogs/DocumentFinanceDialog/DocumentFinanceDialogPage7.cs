@@ -1,9 +1,10 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.Classes.Finance;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
@@ -93,9 +94,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             _hboxButtons2.PackStart(buttonPrintTransportationGuideWithoutTotals, true, true, 2);
 
             //Shared : Prepare ArticleBag
-            if (GlobalFramework.SessionApp.OrdersMain.ContainsKey(GlobalFramework.SessionApp.CurrentOrderMainOid))
+            if (SharedFramework.SessionApp.OrdersMain.ContainsKey(SharedFramework.SessionApp.CurrentOrderMainOid))
             {
-                _orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                _orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                 if (_orderMain != null) _articleBag = ArticleBag.TicketOrderToArticleBag(_orderMain);
                 if (_articleBag != null && _articleBag.Count > 0)
                 {
@@ -121,7 +122,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //5.2: FT: Fatura
         private void buttonPrintInvoice_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
 
             //Prepare ProcessFinanceDocumentParameter
@@ -138,13 +139,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //5.3: FT: Cancel Invoice
         private void buttonCancelInvoice_Clicked(object sender, EventArgs e)
         {
-            string dateTimeFormatCombinedDateTime = SettingsApp.DateTimeFormatCombinedDateTime;
+            string dateTimeFormatCombinedDateTime = SharedSettings.DateTimeFormatCombinedDateTime;
             Guid documentMasterGuid = new Guid("81fcf207-ff59-4971-90cb-80d2cbdb87dc");//Document To Cancel
-            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), documentMasterGuid);
+            fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), documentMasterGuid);
 
             //Cancel Document
             documentFinanceMaster.DocumentStatusStatus = "A";
-            documentFinanceMaster.DocumentStatusDate = FrameworkUtils.CurrentDateTimeAtomic().ToString(dateTimeFormatCombinedDateTime);
+            documentFinanceMaster.DocumentStatusDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFormatCombinedDateTime);
             documentFinanceMaster.DocumentStatusReason = "Erro ao Inserir Artigos";
             documentFinanceMaster.Save();
         }
@@ -152,12 +153,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //OrderReferences
         private void buttonOrderReferences_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
             Guid orderReference = new Guid("fbec0056-71a7-4d5b-8bfa-d5e887ec585f");
 
             //DC DC2015S0001/1
-            fin_documentfinancemaster documentOrderReference = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), orderReference);
+            fin_documentfinancemaster documentOrderReference = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), orderReference);
             //Add Order References
             List<fin_documentfinancemaster> orderReferences = new List<fin_documentfinancemaster>
             {
@@ -183,11 +184,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //NC : Credit Note
         private void buttonCreditNote_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeCreditNote;
+            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeCreditNote;
             Guid reference = new Guid("daecbf1d-6211-4e74-a8cd-81795e347656");
 
             //FT FT2015S0001/16
-            fin_documentfinancemaster documentReference = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), reference);
+            fin_documentfinancemaster documentReference = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), reference);
             //Add Order References
             List<DocumentReference> references = new List<DocumentReference>
             {
@@ -211,23 +212,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
         //FT: Vats
         private void buttonPrintInvoiceVat_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
             Guid vatExemptionReasonGuid = new Guid("8311ce58-50ee-4115-9cf9-dbca86538fdd");
-            fin_configurationvatexemptionreason vatExemptionReason = (fin_configurationvatexemptionreason)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationvatexemptionreason), vatExemptionReasonGuid);
+            fin_configurationvatexemptionreason vatExemptionReason = (fin_configurationvatexemptionreason)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_configurationvatexemptionreason), vatExemptionReasonGuid);
 
             //Article:Line1
             Guid articleREDGuid = new Guid("72e8bde8-d03b-4637-90f1-fcb265658af0");
-            fin_article articleRED = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleREDGuid);
+            fin_article articleRED = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleREDGuid);
             //Article:Line2
             Guid articleISEGuid = new Guid("78638720-e728-4e96-8643-6d6267ff817b");
-            fin_article articleISE = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleISEGuid);
+            fin_article articleISE = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleISEGuid);
             //Article:Line3
             Guid articleINTGuid = new Guid("bf99351b-1556-43c4-a85c-90082fb02d05");
-            fin_article articleINT = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleINTGuid);
+            fin_article articleINT = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleINTGuid);
             //Article:Line4
             Guid articleNORGuid = new Guid("6b547918-769e-4f5b-bcd6-01af54846f73");
-            fin_article articleNOR = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleNORGuid);
+            fin_article articleNOR = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleNORGuid);
             //Place
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
@@ -254,15 +255,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         private void buttonPrintInvoiceDiscount_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
 
             //Article:Line1
             Guid article1Guid = new Guid("72e8bde8-d03b-4637-90f1-fcb265658af0");
-            fin_article article1 = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
+            fin_article article1 = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
             //Article:Line2
             Guid article2Guid = new Guid("78638720-e728-4e96-8643-6d6267ff817b");
-            fin_article article2 = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article2Guid);
+            fin_article article2 = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article2Guid);
             //Place
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
@@ -287,17 +288,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         private void buttonPrintInvoiceExchangeRate_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeInvoice;
+            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeInvoice;
             Guid customerGuid = new Guid("6223881a-4d2d-4de4-b254-f8529193da33");
             Guid currencyGuid = new Guid("28d692ad-0083-11e4-96ce-00ff2353398c");
-            cfg_configurationcurrency currency = (cfg_configurationcurrency)GlobalFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), currencyGuid);
+            cfg_configurationcurrency currency = (cfg_configurationcurrency)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(cfg_configurationcurrency), currencyGuid);
 
             //Article:Line1
             Guid article1Guid = new Guid("72e8bde8-d03b-4637-90f1-fcb265658af0");
-            fin_article article1 = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
+            fin_article article1 = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
             //Article:Line2
             Guid article2Guid = new Guid("78638720-e728-4e96-8643-6d6267ff817b");
-            fin_article article2 = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article2Guid);
+            fin_article article2 = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article2Guid);
             //Place
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
@@ -324,12 +325,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         private void buttonPrintInvoiceJohnDoe1_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice;
+            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
             Guid customerGuid = new Guid("d8ce6455-e1a4-41dc-a475-223c00de3a91");//John Doe1
 
             //Article
             Guid article1Guid = new Guid("72e8bde8-d03b-4637-90f1-fcb265658af0");
-            fin_article article1 = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
+            fin_article article1 = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
             //Place
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
@@ -353,12 +354,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
         private void buttonPrintInvoiceJohnDoe2_Clicked(object sender, EventArgs e)
         {
-            Guid documentTypeGuid = SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice;
+            Guid documentTypeGuid = SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice;
             Guid customerGuid = new Guid("f5a382bb-f826-40d8-8910-cfb18df8a41e");//John Doe2
 
             //Article
             Guid article1Guid = new Guid("32deb30d-ffa2-45e4-bca6-03569b9e8b08");
-            fin_article article1 = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
+            fin_article article1 = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
             //Place
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
@@ -387,7 +388,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Article
             Guid article1Guid = new Guid("55892c3f-de10-4076-afde-619c54100c9b");
-            fin_article article1 = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
+            fin_article article1 = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
             //Place
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table
@@ -416,7 +417,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Article
             Guid article1Guid = new Guid("55892c3f-de10-4076-afde-619c54100c9b");
-            fin_article article1 = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
+            fin_article article1 = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), article1Guid);
             //Place
             Guid placeGuid = new Guid("dd5a3869-db52-42d4-bbed-dec4adfaf62b");
             //Table

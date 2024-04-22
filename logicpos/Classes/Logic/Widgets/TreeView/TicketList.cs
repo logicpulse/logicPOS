@@ -7,10 +7,12 @@ using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.Extensions;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
@@ -39,7 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_listMode == TicketListMode.OrderMain)
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message__pos_order_cancel"));
+                ResponseType responseType = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message__pos_order_cancel"));
 
                 if (responseType == ResponseType.Yes)
                 {
@@ -49,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         _listStoreModelSelectedIndex = -1;
                         _listStoreModelTotalItems = 0;
                         //Get Reference to current OrderMain
-                        OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                        OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                         fin_documentordermain documentOrderMain = null;
                         //Get current OrderMain Article Bag, After Process Payment/PartialPayment to check if current OrderMain has Items, or is Empty
                         ArticleBag pParameters = ArticleBag.TicketOrderToArticleBag(orderMain);
@@ -69,31 +71,31 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
                                 //Change Table Status to Free
                                 pos_configurationplacetable placeTable;
-                                placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                placeTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
 
                                 placeTable.TableStatus = TableStatus.Free;
-                                FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
+                                SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
                                 placeTable.DateTableClosed = DateTime.Now;
                                 placeTable.TotalOpen = 0;
                                 placeTable.Save();
                                 //Required to Reload Objects after has been changed in Another Session(uowSession)
                                 if (documentOrderMain != null)
                                 {
-                                    documentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
+                                    documentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
                                     documentOrderMain.OrderStatus = OrderStatus.Close;
                                     documentOrderMain.Save();
                                 }
 
                                 if (documentOrderMain != null) documentOrderMain.Reload();
-                                //aceTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                //aceTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                 //placeTable.Reload();
                                 ArticleBag.TicketOrderToArticleBag(orderMain).Clear();
                                 //Clean Session if Commited without problems
                                 orderMain.OrderStatus = OrderStatus.Close;
                                 orderMain.CleanSessionOrder();
-                                GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid] = orderMain;
-                                GlobalFramework.SessionApp.DeleteEmptyTickets();
+                                SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid] = orderMain;
+                                SharedFramework.SessionApp.DeleteEmptyTickets();
                                 //obalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid].CleanSessionOrder();
                                 uowSession.CommitChanges();
                             }
@@ -255,12 +257,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 //Get Index of article with correct final price
                 _listStoreModelSelectedIndex = _currentOrderDetails.Lines.FindIndex(item => item.ArticleOid == (Guid)_listStoreModel.GetValue(_treeIter, 
-                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), SettingsApp.DecimalRoundTo) == Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
+                    (int)TicketListColumns.ArticleId) && Math.Round(Convert.ToDecimal(item.Properties.PriceFinal), SharedSettings.DecimalRoundTo) == Convert.ToDecimal(_listStoreModel.GetValue(_treeIter, (int)TicketListColumns.Price)));
 
                 decimal oldValueQuantity = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.Quantity;
                 decimal oldValuePrice = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.PriceFinal;
 
-                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), oldValuePrice);
+                MoneyPadResult result = PosMoneyPadDialog.RequestDecimalValue(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad_product_price"), oldValuePrice);
                 decimal newValuePrice = result.Value;
 
                 if (result.Response == ResponseType.Ok && newValuePrice > 0)
@@ -300,10 +302,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     //Update orderDetails 
                     CurrentOrderDetails.Update(_listStoreModelSelectedIndex, oldValueQuantity, priceProperties.PriceUser);
                     //Update TreeView Model Price
-                    _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, FrameworkUtils.DecimalToString(newValuePrice));
+                    _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Price, SharedUtils.DecimalToString(newValuePrice));
                     //Update Total
                     decimal totalLine = CurrentOrderDetails.Lines[_listStoreModelSelectedIndex].Properties.TotalFinal;
-                    _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, FrameworkUtils.DecimalToString(totalLine));
+                    _listStoreModel.SetValue(_treeIter, (int)TicketListColumns.Total, SharedUtils.DecimalToString(totalLine));
                 }
                 UpdateTicketListTotal();                
                 UpdateModel();
@@ -321,38 +323,38 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             try
             {
                 //Call Framework FinishOrder
-                OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                 //CurrentOrderDetailsAll = CurrentOrderDetails;
                 /* 
                  * TK013134 
                  * Parking Ticket Module: Checking for duplicates in Order Main after finishing order
                  */
-                if (GlobalFramework.AppUseParkingTicketModule)
+                if (SharedFramework.AppUseParkingTicketModule)
                 {
-                    orderMain.CheckForDuplicatedArticleInArticleBag(GlobalFramework.SessionXpo);
+                    orderMain.CheckForDuplicatedArticleInArticleBag(DataLayerFramework.SessionXpo);
                 }
 
-                fin_documentorderticket orderTicket = orderMain.FinishOrder(GlobalFramework.SessionXpo);
+                fin_documentorderticket orderTicket = orderMain.FinishOrder(DataLayerFramework.SessionXpo);
 
 
                 // If OrderTicket and has a ThermalPrinter connected
                 // Impressoras - Diferenciação entre Tipos [TK:016249]
-                GlobalFramework.UsingThermalPrinter = true;
-                if (GlobalFramework.LoggedTerminal.ThermalPrinter != null &&
-                    GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
+                SharedFramework.UsingThermalPrinter = true;
+                if (DataLayerFramework.LoggedTerminal.ThermalPrinter != null &&
+                    DataLayerFramework.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
                     orderTicket.OrderDetail.Count != 0)
                 {
                     //public static bool PrintOrderRequest(Window pSourceWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket pOrderTicket)
                     //IN009239 - This avoids orders being printed when in use of ParkingTicketModule
 					//Opção para imprimir ou não o ticket
                     //bool printTicket = true;
-                    //printTicket = Convert.ToBoolean(GlobalFramework.Settings["printTicket"]);
+                    //printTicket = Convert.ToBoolean(DataLayerFramework.Settings["printTicket"]);
 
 					//Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
-                    if (!GlobalFramework.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
+                    if (!SharedFramework.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
                     {
                         // TK016249 Impressoras - Diferenciação entre Tipos 
-                        FrameworkCalls.PrintOrderRequest(_sourceWindow, GlobalFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
+                        FrameworkCalls.PrintOrderRequest(_sourceWindow, DataLayerFramework.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
                     }
                     FrameworkCalls.PrintArticleRequest(_sourceWindow, orderTicket);
                 }
@@ -383,7 +385,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Request Finish Open Ticket
                 if (_listStoreModelTotalItemsTicketListMode > 0)
                 {
-                    ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_close_open_ticket"));
+                    ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_message_dialog"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_close_open_ticket"));
                     if (dialogResponse != ResponseType.Ok)
                     {
                         return;
@@ -391,16 +393,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 };
 
                 //Get Reference to current OrderMain
-                OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
 
                 //Finish Order, if Has Ticket Details
                 if (orderMain.OrderTickets[orderMain.CurrentTicketId].OrderDetails.Lines.Count > 0)
                 {
                     //Before Use FrameworkCall
-                    orderMain.FinishOrder(GlobalFramework.SessionXpo, printTicket);
+                    orderMain.FinishOrder(DataLayerFramework.SessionXpo, printTicket);
                     //TODO: Continue to implement FrameworkCall here
-                    //DocumentOrderTicket documentOrderTicket = orderMain.FinishOrder(GlobalFramework.SessionXpo, printTicket);
-                    //if (printTicket) FrameworkCalls.PrintTableTicket(_sourceWindow, GlobalFramework.LoggedTerminal.Printer, GlobalFramework.LoggedTerminal.TemplateTicket, orderMain, documentOrderTicket.Oid);
+                    //DocumentOrderTicket documentOrderTicket = orderMain.FinishOrder(DataLayerFramework.SessionXpo, printTicket);
+                    //if (printTicket) FrameworkCalls.PrintTableTicket(_sourceWindow, DataLayerFramework.LoggedTerminal.Printer, DataLayerFramework.LoggedTerminal.TemplateTicket, orderMain, documentOrderTicket.Oid);
 
                     //Reset TicketList TotalItems Counter
                     _listStoreModelTotalItemsTicketListMode = 0;
@@ -456,12 +458,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //BarCode
         private void _buttonKeyBarCode_Clicked(object sender, EventArgs e)
         {
-            string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
+            string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_input_text_barcode.png");
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_barcode_articlecode"), string.Empty, SharedSettings.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
-                if (GlobalFramework.AppUseParkingTicketModule) /* IN009239 */
+                if (SharedFramework.AppUseParkingTicketModule) /* IN009239 */
                 {
                     GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
                 }
@@ -475,12 +477,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //IN009279 CardCode scanner
         private void _buttonKeyCardCode_Clicked(object sender, EventArgs e)
         {
-            string fileWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png");
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SettingsApp.RegexAlfaNumericExtended, true);
+            string fileWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_pos_ticketpad_card_entry.png");
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(_sourceWindow, DialogFlags.Modal, fileWindowIcon, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_cardcode_small"), string.Empty, SharedSettings.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
-                if (GlobalFramework.AppUseParkingTicketModule) /* IN009239 */
+                if (SharedFramework.AppUseParkingTicketModule) /* IN009239 */
                 {
                     GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
                 }
@@ -496,7 +498,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             try
             {
-                OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                 PosOrdersDialog dialog = new PosOrdersDialog(this.SourceWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
                 ResponseType response = (ResponseType)dialog.Run();
                 dialog.Destroy();
@@ -517,9 +519,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 if (response == ResponseType.Ok)
                 {
-                    OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
-                    pos_configurationplacetable xOldTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), currentOrderMain.Table.Oid);
-                    pos_configurationplacetable xNewTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), dialog.CurrentTableOid);
+                    OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
+                    pos_configurationplacetable xOldTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplacetable), currentOrderMain.Table.Oid);
+                    pos_configurationplacetable xNewTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplacetable), dialog.CurrentTableOid);
                     //Require to Prevent A first chance exception of type 'DevExpress.Xpo.DB.Exceptions.LockingException' occurred in DevExpress.Xpo.v13.2.dll when it is Changed in Diferent Session ex UnitOfWork
                     //TODO: Confirm working with Reload Commented
                     //xOldTable.Reload();
@@ -528,8 +530,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
                         logicpos.Utils.ShowMessageTouch(
-                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_table_is_not_free")
+                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_table_is_not_free")
                         );
                     }
                     else
@@ -537,20 +539,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         //Put Old table Status to Free
                         xOldTable.TableStatus = TableStatus.Free;
                         xOldTable.Save();
-                        FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), xOldTable.Designation));
+                        SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), xOldTable.Designation));
 
                         //Put New table Status to Open
                         xNewTable.TableStatus = TableStatus.Open;
                         xNewTable.Save();
-                        FrameworkUtils.Audit("TABLE_CLOSE", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_close"), xNewTable.Designation));
+                        SharedUtils.Audit("TABLE_CLOSE", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_close"), xNewTable.Designation));
 
                         //Change DocumentOrderMain table, If OpenOrder Exists in That table
                         Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
-                        fin_documentordermain xDocumentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(typeof(fin_documentordermain), documentOrderMainOid);
+                        fin_documentordermain xDocumentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(typeof(fin_documentordermain), documentOrderMainOid);
                         if (xDocumentOrderMain != null)
                         {
                             xDocumentOrderMain.PlaceTable = xNewTable;
-                            xDocumentOrderMain.UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
+                            xDocumentOrderMain.UpdatedAt = DataLayerUtils.CurrentDateTimeAtomic();
                             xDocumentOrderMain.Save();
                         }
                         //Assign Session Data
@@ -559,7 +561,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         currentOrderMain.Table.PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
                         currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
                         currentOrderMain.Table.PlaceId = xNewTable.Place.Oid;
-                        GlobalFramework.SessionApp.Write();
+                        SharedFramework.SessionApp.Write();
                         //Finally Update Status Bar, Table Name, Totals Etc
                         UpdateOrderStatusBar();
                     }
@@ -663,7 +665,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
               dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewConfigurationVatExceptionReason>(
                 _sourceWindow,
                 DialogFlags.DestroyWithParent,
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"),
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_exemption_reason"),
                 GlobalApp.MaxWindowSize,
                 null, //XpoDefaultValue
                 criteria,

@@ -27,6 +27,8 @@ using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.financial.library.Classes.Reports;
 using System.Threading;
 using logicpos.Extensions;
+using logicpos.shared.App;
+using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -91,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public DialogArticleStock(Window pSourceWindow)
             : base(pSourceWindow, logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(pSourceWindow), DialogFlags.DestroyWithParent, DialogMode.Update, null)
         {
-            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"));
+            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3") + " - " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_stock_movements"));
             _treeViewXPO_ArticleDetails = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleDetailsStock>(this);
             _treeViewXPO_ArticleHistory = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleSerialNumber>(this, GenericTreeViewNavigatorMode.Default, GenericTreeViewMode.CheckBox);
             _treeViewXPO_ArticleWarehouse = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleWarehouse>(this);
@@ -126,7 +128,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3")));
+                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_page3")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -144,8 +146,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _treeViewXPO_StockMov.Navigator.ButtonUpdate.Clicked += ButtonUpdateStockMov_Clicked; ;
                     CriteriaOperatorLastFilterStocks = _treeViewXPO_StockMov.DataSource.Criteria;
 
-                    var _buttonMore = GetNewButton("MoreStocks", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_more"), SettingsApp.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                    var _buttonFilter = GetNewButton("FilterStocks", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter"), SettingsApp.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                    var _buttonMore = GetNewButton("MoreStocks", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                    var _buttonFilter = GetNewButton("FilterStocks", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                     _treeViewXPO_StockMov.Navigator.PackEnd(_openOriginDocumentMovbutton, false, false, 0);
                     _treeViewXPO_StockMov.Navigator.PackEnd(_openSellDocumentMovbutton, false, false, 0);
@@ -161,7 +163,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
 
                 //Append Tab
-                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_movements")));
+                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_stock_movements")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -196,8 +198,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _treeViewXPO_ArticleHistory.Navigator.PackStart(_openChangeArticleLocationbutton, false, false, 0);
                 _treeViewXPO_ArticleHistory.Navigator.ButtonDelete.Clicked += _buttonClearSerialNumber_Clicked;
 
-                var _buttonMoreArticles = GetNewButton("MoreHistory", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_more"), SettingsApp.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                var _buttonFilterArticles = GetNewButton("FilterHistory", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter"), SettingsApp.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                var _buttonMoreArticles = GetNewButton("MoreHistory", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                var _buttonFilterArticles = GetNewButton("FilterHistory", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                 _treeViewXPO_ArticleHistory.Navigator.PackEnd(_buttonMoreArticles, false, false, 0);
                 _treeViewXPO_ArticleHistory.Navigator.PackEnd(_buttonFilterArticles, false, false, 0);
@@ -210,7 +212,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _vboxTab2.Add(_treeViewXPO_ArticleHistory);
 
                 //Append Tab
-                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_history")));
+                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_history")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -227,8 +229,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 CriteriaOperatorLastFilterWarehouse = _treeViewXPO_ArticleWarehouse.DataSource.Criteria;
 
-                var _buttonMoreWarehouse = GetNewButton("MoreWarehouse", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_more"), SettingsApp.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                var _buttonFilterWarehouse = GetNewButton("FilterWarehouse", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter"), SettingsApp.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                var _buttonMoreWarehouse = GetNewButton("MoreWarehouse", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                var _buttonFilterWarehouse = GetNewButton("FilterWarehouse", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                 _treeViewXPO_ArticleWarehouse.Navigator.PackEnd(_buttonMoreWarehouse, false, false, 0);
                 _treeViewXPO_ArticleWarehouse.Navigator.PackEnd(_buttonFilterWarehouse, false, false, 0);
@@ -237,7 +239,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _buttonFilterWarehouse.Clicked += _buttonFilter_Clicked;
 
                 //Append Tab
-                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehose_management")));
+                _notebook.AppendPage(_vboxTab2, new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehose_management")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             }
@@ -304,11 +306,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (logicpos.Utils.IsLinux)
                         {
-                            System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen)));
+                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen)));
                         }
                         else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
-                            string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen));
+                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -322,7 +324,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
+                //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
             }
         }
 
@@ -335,17 +337,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     var fileToOpen = selecteRow.AttachedFile;
 
-                    System.IO.File.WriteAllBytes(selecteRow.DocumentNumber + ".pdf", fileToOpen);
+                    File.WriteAllBytes(selecteRow.DocumentNumber + ".pdf", fileToOpen);
 
                     if (File.Exists(selecteRow.DocumentNumber + ".pdf"))
                     {
                         if (logicpos.Utils.IsLinux)
                         {
-                            System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf")));
+                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf")));
                         }
                         else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
-                            string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf"));
+                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf"));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -432,7 +434,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     genericTreeView = _treeViewXPO_StockMov;
                     CriteriaOperatorLastFilter = CriteriaOperatorLastFilterStocks;
                     reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_STOCK_MOVIMENTS;
-                    windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter") + " " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "report_list_stock_movements");
+                    windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter") + " " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "report_list_stock_movements");
                     tableName = "fin_articlestock";
                 }
                 else if ((sender as TouchButtonIconWithText).Name == "FilterHistory")
@@ -440,7 +442,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     genericTreeView = _treeViewXPO_ArticleHistory;
                     CriteriaOperatorLastFilter = CriteriaOperatorLastFilterHistory;
                     reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_HISTORY;
-                    windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter") + " " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_history");
+                    windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter") + " " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_history");
                     tableName = "fin_articleserialnumber";
                 }
                 else if ((sender as TouchButtonIconWithText).Name == "FilterWarehouse")
@@ -448,7 +450,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     genericTreeView = _treeViewXPO_ArticleWarehouse;
                     CriteriaOperatorLastFilter = CriteriaOperatorLastFilterWarehouse;
                     reportsQueryDialogMode = ReportsQueryDialogMode.FILTER_ARTICLE_WAREHOUSE;
-                    windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter") + " " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal");
+                    windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_filter") + " " + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal");
                     tableName = "fin_articlewarehouse";
                 }
 
@@ -467,7 +469,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     genericTreeView.CurrentPageNumber = 1;
                     genericTreeView.DataSource.Criteria = CriteriaOperatorLastFilter;
-                    genericTreeView.DataSource.TopReturnedObjects = SettingsApp.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
+                    genericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
                     genericTreeView.Refresh();
                     dialogFilter.Destroy();
                 }
@@ -500,7 +502,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //        var splitResult4 = splitResult3.Substring(splitResult3.IndexOf("'"));
                     //        string finalResult = splitResult4.Remove(splitResult4.Length - 1);
                     //        finalResult = finalResult.Replace("'", "");
-                    //        fin_articleserialnumber filterSerialNumber = (fin_articleserialnumber)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(finalResult));
+                    //        fin_articleserialnumber filterSerialNumber = (fin_articleserialnumber)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(finalResult));
                     //        if(filterSerialNumber != null)
                     //        {
                     //            var newstring = result[0].Replace(finalResult, finalResult);
@@ -510,19 +512,19 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //}
 
                     CriteriaOperator criteriaOperatorLast = genericTreeView.DataSource.Criteria;
-                    CriteriaOperator criteriaOperator = GroupOperator.And(CriteriaOperatorLastFilter, CriteriaOperator.Parse(result[0]));
+                    CriteriaOperator criteriaOperator = CriteriaOperator.And(CriteriaOperatorLastFilter, CriteriaOperator.Parse(result[0]));
 
                     //lastData = dialog.GenericTreeView.DataSource;
 
                     genericTreeView.DataSource.Criteria = criteriaOperator;
-                    genericTreeView.DataSource.TopReturnedObjects = SettingsApp.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
+                    genericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
                     genericTreeView.Refresh();
 
                     //se retornar zero resultados apresenta dados anteriores ao filtro
                     if (genericTreeView.DataSource.Count == 0)
                     {
                         genericTreeView.DataSource.Criteria = criteriaOperatorLast;
-                        genericTreeView.DataSource.TopReturnedObjects = SettingsApp.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
+                        genericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
                         genericTreeView.Refresh();
                     }
                     dialogFilter.Destroy();
@@ -558,7 +560,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
 
                 genericTreeView.CurrentPageNumber++;
-                genericTreeView.DataSource.TopReturnedObjects = (SettingsApp.PaginationRowsPerPage * genericTreeView.CurrentPageNumber);
+                genericTreeView.DataSource.TopReturnedObjects = (POSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber);
                 genericTreeView.Refresh();
             }
             catch (System.Exception ex)
@@ -594,7 +596,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void DeleteArticleSerialNumber(fin_articleserialnumber pArticleSerialNumber)
         {
 
-            ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+            ResponseType responseType = logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion));
 
             var selectedRow = pArticleSerialNumber;
 
@@ -604,7 +606,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //Check if is sold
                 if (selectedRow.StockMovimentOut != null || selectedRow.IsSold)
                 {
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único já foi vendido", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único já foi vendido", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion));
                     return;
                 }
 
@@ -623,8 +625,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     var articleStock = new fin_articlestock(selectedRow.Session);
                     articleStock.Date = DateTime.Now;
                     articleStock.Article = selectedRow.Article;
-                    articleStock.Customer = (erp_customer)selectedRow.Session.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidUserRecord);
-                    articleStock.DocumentNumber = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_moviment");
+                    articleStock.Customer = (erp_customer)selectedRow.Session.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                    articleStock.DocumentNumber = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_moviment");
                     articleStock.Quantity = -1;
                     articleStock.Save();
 
@@ -648,7 +650,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único está associado a outro(s) artigos", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), GlobalFramework.ServerVersion));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Info, ButtonsType.Ok, "O artigo único está associado a outro(s) artigos", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), SharedFramework.ServerVersion));
                 }
             }
 
@@ -772,11 +774,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (logicpos.Utils.IsLinux)
                         {
-                            System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen)));
+                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen)));
                         }
                         else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
-                            string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen));
+                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -790,7 +792,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
+                //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
             }
         }
 
@@ -803,17 +805,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     var fileToOpen = selecteRow.StockMovimentIn.AttachedFile;
 
-                    System.IO.File.WriteAllBytes(selecteRow.StockMovimentIn.DocumentNumber + ".pdf", fileToOpen);                    
+                    File.WriteAllBytes(selecteRow.StockMovimentIn.DocumentNumber + ".pdf", fileToOpen);                    
                     
                     if (File.Exists(selecteRow.StockMovimentIn.DocumentNumber + ".pdf"))
                     {
                         if (logicpos.Utils.IsLinux)
                         {
-                            System.Diagnostics.Process.Start(FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf")));
+                            System.Diagnostics.Process.Start(SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf")));
                         }
                         else if (logicpos.Utils.UsePosPDFViewer() == true && !logicpos.Utils.IsLinux)
                         {
-                            string docPath = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf"));
+                            string docPath = SharedUtils.OSSlash(string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf"));
                             var ScreenSizePDF = GlobalApp.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
@@ -843,12 +845,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //_treeViewXPO_ArticleHistory.TreeView.ScrollToCell(_treeViewXPO_ArticleHistory.ListStoreModelFilterSort.GetPath(_treeViewXPO_ArticleHistory._treeIter), _treeViewXPO_ArticleHistory.TreeView.Columns[0], false, 0, 0);
 
 
-                //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Updated***");
+                //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Updated***");
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
+                //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
             }
         }
 
@@ -866,7 +868,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (itemChecked)
                 {
                     //Add to FinanceMasterDocuments
-                    _listArticleserialnumbers.Add((fin_articleserialnumber)FrameworkUtils.GetXPGuidObject(typeof(fin_articleserialnumber), itemGuid));
+                    _listArticleserialnumbers.Add((fin_articleserialnumber)DataLayerUtils.GetXPGuidObject(typeof(fin_articleserialnumber), itemGuid));
                 }
             }
             catch (Exception ex)
@@ -884,12 +886,12 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             TouchButtonIconWithText result = null;
             try
             {
-                string fileIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + pIcon);
-                string fontBaseDialogActionAreaButton = FrameworkUtils.OSSlash(GlobalFramework.Settings["fontBaseDialogActionAreaButton"]);
+                string fileIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + pIcon);
+                string fontBaseDialogActionAreaButton = SharedUtils.OSSlash(DataLayerFramework.Settings["fontBaseDialogActionAreaButton"]);
                 Color colorBaseDialogActionAreaButtonBackground = Color.Transparent;  
-                Color colorBaseDialogActionAreaButtonFont = GlobalFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
-                Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
-                Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
+                Color colorBaseDialogActionAreaButtonFont = DataLayerFramework.Settings["colorBaseDialogActionAreaButtonFont"].StringToColor();
+                Size sizeBaseDialogActionAreaBackOfficeNavigatorButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButton"]);
+                Size sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon"]);
 
                 result = new TouchButtonIconWithText(pId, colorBaseDialogActionAreaButtonBackground, pLabel, fontBaseDialogActionAreaButton, colorBaseDialogActionAreaButtonFont, fileIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Width, sizeBaseDialogActionAreaBackOfficeNavigatorButton.Height);
             }

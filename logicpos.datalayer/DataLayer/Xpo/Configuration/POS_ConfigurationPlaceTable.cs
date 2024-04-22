@@ -13,8 +13,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacetable), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacetable), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplacetable), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplacetable), "Code");
         }
 
         private uint fOrd;

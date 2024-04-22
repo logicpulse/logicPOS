@@ -1,8 +1,6 @@
 ﻿using Gtk;
-using logicpos.App;
+using logicpos.datalayer.App;
 using logicpos.Extensions;
-using logicpos.financial;
-using logicpos.shared;
 using System;
 using System.Drawing;
 
@@ -29,8 +27,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public CheckButtonBox(string pLabelText, bool pActive)
         {
             //Defaults
-            string fontEntry = GlobalFramework.Settings["fontEntryBoxValue"];
-            Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+            string fontEntry = DataLayerFramework.Settings["fontEntryBoxValue"];
+            Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
 
             int padding = 3;
             //This
@@ -39,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Font
             _fontDescription = Pango.FontDescription.FromString(fontEntry);
             //Construct CheckButton
-            _checkButton = new CheckButton(pLabelText) { Active = pActive, BorderWidth =  (uint) padding };
+            _checkButton = new CheckButton(pLabelText) { Active = pActive, BorderWidth = (uint)padding };
             _checkButton.Child.ModifyFont(_fontDescription);
             _checkButton.Clicked += checkButton_Clicked;
 

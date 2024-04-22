@@ -1,9 +1,9 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.library.App;
 using logicpos.financial.library.Results;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,26 +23,26 @@ namespace logicpos.financial.library.Classes.Finance
         //Get DocumentFinanceYearSerieTerminal for Logged Terminal
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Guid pDocumentType)
         {
-            return GetDocumentFinanceYearSerieTerminal(GlobalFramework.SessionXpo, pDocumentType, GlobalFramework.LoggedTerminal.Oid);
+            return GetDocumentFinanceYearSerieTerminal(DataLayerFramework.SessionXpo, pDocumentType, DataLayerFramework.LoggedTerminal.Oid);
         }
 
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType)
         {
-            return GetDocumentFinanceYearSerieTerminal(pSession, pDocumentType, GlobalFramework.LoggedTerminal.Oid);
+            return GetDocumentFinanceYearSerieTerminal(pSession, pDocumentType, DataLayerFramework.LoggedTerminal.Oid);
         }
 
         //Get DocumentFinanceYearSerieTerminal for Terminal
         public static fin_documentfinanceyearserieterminal GetDocumentFinanceYearSerieTerminal(Session pSession, Guid pDocumentType, Guid pLoggedTerminal)
         {
-            DateTime currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
+            DateTime currentDateTime = DataLayerUtils.CurrentDateTimeAtomic();
             fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
-            fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)FrameworkUtils.GetXPGuidObject(pSession, typeof(fin_documentfinancetype), pDocumentType);
+            fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)DataLayerUtils.GetXPGuidObject(pSession, typeof(fin_documentfinancetype), pDocumentType);
 
             //If DocumentTypeInvoiceWayBill Replace/Override Helper Document Type InvoiceWayBill with InvoiceWay to get Invoice Serie, 
             //this way we have Invoice Serie but DocumentMaster keeps DocumentFinanceType has DocumentFinanceTypeInvoiceWayBill
             //Usefull for Future Documents WayBill distinct code, ex have WayBill, ex Re-Print Documents in WayBillMode etc
-            Guid documentFinanceTypeSerieGuid = (documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill)
-                ? SettingsApp.XpoOidDocumentFinanceTypeInvoice
+            Guid documentFinanceTypeSerieGuid = (documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
+                ? SharedSettings.XpoOidDocumentFinanceTypeInvoice
                 : documentFinanceType.Oid
             ;
 
@@ -76,10 +76,10 @@ namespace logicpos.financial.library.Classes.Finance
             fin_documentfinanceyears result = null;
 
             string sql = @"SELECT Oid FROM fin_documentfinanceyears WHERE (Disabled = 0 OR Disabled IS NULL);";
-            var sqlResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+            var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
             if (sqlResult != null)
             {
-                result = (fin_documentfinanceyears)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinanceyears), new Guid(sqlResult.ToString()));
+                result = (fin_documentfinanceyears)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinanceyears), new Guid(sqlResult.ToString()));
             }
 
             return result;
@@ -99,7 +99,7 @@ namespace logicpos.financial.library.Classes.Finance
             bool result = false;
             if (pFilter != String.Empty) pFilter = string.Format(" AND {0}", pFilter);
             string sql = string.Format(@"SELECT Count(*) as Count FROM fin_documentfinanceseries WHERE (Disabled = 0 OR Disabled IS NULL){0};", pFilter);
-            var sqlResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+            var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
             if (sqlResult != null && Convert.ToInt16(sqlResult) > 0) result = true;
             return result;
         }
@@ -122,7 +122,7 @@ namespace logicpos.financial.library.Classes.Finance
                 try
                 {
                     //Get Object in UOW Session
-                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
+                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
 
                     //Protection, used when user Restore DB without DocumentFinanceYears Created
                     if (documentFinanceYears != null)
@@ -179,7 +179,7 @@ namespace logicpos.financial.library.Classes.Finance
             uint ordAndCodeInc = 10;
             int terminalInc = 1;
             string acronym, designation, output = string.Empty, acronymAudit;
-            Dictionary<string,string> acronymPrefixCreatedSeries = new Dictionary<string,string>();
+            Dictionary<string, string> acronymPrefixCreatedSeries = new Dictionary<string, string>();
             fin_documentfinanceseries documentFinanceSeries = null;
             //Used to add DocumentFinanceYearSerieTerminal to list to delete outside of Loop
             List<fin_documentfinanceyearserieterminal> listDeleteSerieTerminal = new List<fin_documentfinanceyearserieterminal>();
@@ -190,7 +190,7 @@ namespace logicpos.financial.library.Classes.Finance
                 try
                 {
                     //Get Object in UOW Session
-                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
+                    fin_documentfinanceyears documentFinanceYears = (fin_documentfinanceyears)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinanceyears), pDocumentFinanceYears.Oid);
 
                     //Initialize DocumentFinanceType Collection : Criteria/XPCollection/Model : Use Default Filter
                     CriteriaOperator criteria = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
@@ -235,10 +235,10 @@ namespace logicpos.financial.library.Classes.Finance
                         pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)uowSession.GetObjectByKey(typeof(pos_configurationplaceterminal), new Guid(terminal["Oid"].ToString()));
 
                         //Create DocumentFinanceSeries Acronym From Date
-                        DateTime now = FrameworkUtils.CurrentDateTimeAtomic();
+                        DateTime now = DataLayerUtils.CurrentDateTimeAtomic();
                         string acronymPrefix;
                         //AcronymPrefix ex FT[QN3T1U401]2016S001, works with Random and AcronymLastSerie modes
-                        if (SettingsApp.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix)
+                        if (SharedSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix)
                         {
                             acronymPrefix = DateToAcronymPrefix(new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second));
                         }
@@ -246,7 +246,7 @@ namespace logicpos.financial.library.Classes.Finance
                         else
                         {
                             //Get acronymPrefix in first DocumentFinanceType, not in every Document, this way we have uniform series
-                            acronymPrefix = (xpDocumentFinanceType[0] as fin_documentfinancetype).AcronymLastSerie.ToString(SettingsApp.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat);
+                            acronymPrefix = (xpDocumentFinanceType[0] as fin_documentfinancetype).AcronymLastSerie.ToString(SharedSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat);
                         }
 
                         //Add to Created List
@@ -255,7 +255,7 @@ namespace logicpos.financial.library.Classes.Finance
                         foreach (fin_documentfinancetype documentFinanceType in xpDocumentFinanceType)
                         {
                             //Ignored DocumentTypes (DocumentFinanceTypeInvoiceWayBill, this DocumentType use DocumentFinanceTypeInvoice Serie)
-                            if (documentFinanceType.Oid != SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill)
+                            if (documentFinanceType.Oid != SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
                             {
                                 //2018-05-08 : Old Format : [FT005012018S1] : Search GenDocumentNumber in ProcessFinanceDocument
                                 //acronym = string.Format("{0}{1}{2}{3}", documentFinanceType.Acronym, acronymPrefix, terminalInc.ToString("00"), pAcronym);
@@ -330,7 +330,7 @@ namespace logicpos.financial.library.Classes.Finance
                         {
                             //Audit FINANCE_SERIES_CREATED
                             acronymAudit = string.Format("{0}{1}{2}{3}", "xx", item.Key, 0.ToString("00"), pAcronym);
-                            FrameworkUtils.Audit("FINANCE_SERIES_CREATED", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_finance_series_created"), acronymAudit, item.Value, GlobalFramework.LoggedUser.Name));
+                            SharedUtils.Audit("FINANCE_SERIES_CREATED", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_finance_series_created"), acronymAudit, item.Value, DataLayerFramework.LoggedUser.Name));
                         }
                     }
                 }

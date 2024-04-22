@@ -1,9 +1,12 @@
-﻿using System;
+﻿using logicpos.datalayer.App;
+using logicpos.shared.App;
+using System;
 using System.Collections.Generic;
+using static logicpos.datalayer.App.DataLayerFramework;
 
 namespace logicpos.App
 {
-    public class SettingsApp : logicpos.financial.library.App.SettingsApp
+    public static class POSSettings 
     {
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Developer
@@ -58,9 +61,9 @@ namespace logicpos.App
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Override Settings
 
-        new public static bool EnablePosSessionApp = true;
-        new public static bool EnablePosWorkSessionPeriod = true;
-        new public static bool EnablePosTables = true;
+        public static bool EnablePosSessionApp = true;
+        public static bool EnablePosWorkSessionPeriod = true;
+        public static bool EnablePosTables = true;
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ProtectedFiles
@@ -128,11 +131,11 @@ namespace logicpos.App
         //Database Oids/Guids
 
         //Payment Defaults
-        public static Guid XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition = new Guid(GlobalFramework.Settings["xpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition"]);
-        public static Guid XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod = new Guid(GlobalFramework.Settings["xpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod"]);
+        public static Guid XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition = new Guid(Settings["xpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition"]);
+        public static Guid XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod = new Guid(Settings["xpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod"]);
 
         //ConfigurationPlaceTable
-        public static Guid XpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(GlobalFramework.Settings["xpoOidConfigurationPlaceTableDefaultOpenTable"]);
+        public static Guid XpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(Settings["xpoOidConfigurationPlaceTableDefaultOpenTable"]);
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Other
@@ -158,7 +161,7 @@ namespace logicpos.App
         //Payments Window
 
         //Use CurrentAccount or CustomerCard in PaymentsDialog
-        public static bool PosPaymentsDialogUseCurrentAccount = Convert.ToBoolean(GlobalFramework.Settings["posPaymentsDialogUseCurrentAccount"]);
+        public static bool PosPaymentsDialogUseCurrentAccount = Convert.ToBoolean(Settings["posPaymentsDialogUseCurrentAccount"]);
 
         //First time boot POS flag
         public static bool firstBoot;
@@ -260,8 +263,8 @@ namespace logicpos.App
             try
             {
                 /* IN008024 */
-                //logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = logicpos.datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(GlobalFramework.Settings["appOperationModeToken"]);
-                logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = SettingsApp.CustomAppOperationMode;
+                //logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = logicpos.datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(DataLayerFramework.Settings["appOperationModeToken"]);
+                logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = DataLayerSettings.CustomAppOperationMode;
 
                 /* 
                  * Possible themes:
@@ -270,10 +273,10 @@ namespace logicpos.App
                  */
                 result = string.Format(
                     "{0}{1}",
-                    GlobalFramework.Path["themes"],
+                    Path["themes"],
                     string.Format(
                         FileFormatThemeFile
-                        , AppTheme.ToLower() /* IN008024: Before, from Database : GlobalFramework.PreferenceParameters["APP_THEME"].ToLower() */
+                        , DataLayerSettings.AppTheme.ToLower() /* IN008024: Before, from Database :SharedFramework.PreferenceParameters["APP_THEME"].ToLower() */
                         , customAppOperationMode.AppOperationTheme.ToLower()/*  From App.Config: Default|Coffee|Bakery|Fish|Butchery|Shoe|Clothing|Hardware */
                     )
                 );
@@ -288,12 +291,12 @@ namespace logicpos.App
 
         private static bool GetServiceATSendDocuments()
         {
-            return Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
+            return Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
         }
 
         private static bool GetServiceATSendDocumentsWayBill()
         {
-            return Convert.ToBoolean(GlobalFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
+            return Convert.ToBoolean(SharedFramework.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
         }
 
         /// <summary>
@@ -310,14 +313,14 @@ namespace logicpos.App
             /* Custom scripts */
             try
             {
-                logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(GlobalFramework.Settings["appOperationModeToken"]);
+                logicpos.datalayer.Enums.CustomAppOperationMode customAppOperationMode = datalayer.Enums.CustomAppOperationMode.GetAppOperationMode(Settings["appOperationModeToken"]);
                         
-                string customCultureResourceDefinition = GlobalFramework.Settings["customCultureResourceDefinition"];
+                string customCultureResourceDefinition = Settings["customCultureResourceDefinition"];
                 string customCultureCountryPrefix = customCultureResourceDefinition.Substring(0, customCultureResourceDefinition.IndexOf('-'));         
 
                 if (demo)
                 {                    
-                    //string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+                    //string appOperationModeToken = DataLayerFramework.Settings["appOperationModeToken"];
                     string appOperationModeToken = customAppOperationMode.AppOperationModeToken;
                     //..\Resources\Database\Demos\..\..\databasedatademo_backery.sql
                     string fileName = customAppOperationMode.DatabaseDemoFileName;
@@ -339,7 +342,7 @@ namespace logicpos.App
                     /* Default or Retail */
                     string appOperationTheme = customAppOperationMode.AppOperationTheme;
 					//Utiliza SQL para BackOfficeMode
-                    if(SettingsApp.CustomAppOperationMode.AppOperationModeToken == "BackOfficeMode")
+                    if(DataLayerSettings.CustomAppOperationMode.AppOperationModeToken == "BackOfficeMode")
                     {
                         appOperationTheme = "BackOfficeMode";
                     }

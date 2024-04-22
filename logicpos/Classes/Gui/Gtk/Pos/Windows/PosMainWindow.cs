@@ -5,8 +5,10 @@ using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Logic.Others;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Drawing;
@@ -18,15 +20,15 @@ namespace logicpos
     {
 
         //Files
-        private readonly string _fileBaseButtonOverlay = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Buttons\Pos\button_overlay.png");
+        private readonly string _fileBaseButtonOverlay = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Buttons\Pos\button_overlay.png");
 
         /* IN006045 */
-        //private string _clockFormat = GlobalFramework.Settings["dateTimeFormatStatusBar"];
-        private readonly string _clockFormat = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
+        //private string _clockFormat = DataLayerFramework.Settings["dateTimeFormatStatusBar"];
+        private readonly string _clockFormat = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "frontoffice_datetime_format_status_bar");
 
-        private readonly Color _colorPosNumberPadLeftButtonBackground = GlobalFramework.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
-        private readonly Color _colorPosNumberRightButtonBackground = GlobalFramework.Settings["colorPosNumberRightButtonBackground"].StringToColor();
-        private readonly Color _colorPosHelperBoxsBackground = GlobalFramework.Settings["colorPosHelperBoxsBackground"].StringToColor();
+        private readonly Color _colorPosNumberPadLeftButtonBackground = DataLayerFramework.Settings["colorPosNumberPadLeftButtonBackground"].StringToColor();
+        private readonly Color _colorPosNumberRightButtonBackground = DataLayerFramework.Settings["colorPosNumberRightButtonBackground"].StringToColor();
+        private readonly Color _colorPosHelperBoxsBackground = DataLayerFramework.Settings["colorPosHelperBoxsBackground"].StringToColor();
         //UI
         private readonly Fixed _fixedWindow;
         private Label _labelClock;
@@ -145,8 +147,8 @@ namespace logicpos
                 this.ScreenArea.Add(_fixedWindow);
 
                 //Place Minimize EventBox : After InitUI, to be placed Above all Other
-                bool _showMinimize = (!string.IsNullOrEmpty(GlobalFramework.Settings["appShowMinimize"]))
-                    && Convert.ToBoolean(GlobalFramework.Settings["appShowMinimize"]);
+                bool _showMinimize = (!string.IsNullOrEmpty(DataLayerFramework.Settings["appShowMinimize"]))
+                    && Convert.ToBoolean(DataLayerFramework.Settings["appShowMinimize"]);
                 if (_showMinimize)
                 {
                     EventBox eventBoxMinimize = Utils.GetMinimizeEventBox();
@@ -163,7 +165,7 @@ namespace logicpos
                 this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
 
                 //Hardware Events
-                if (GlobalFramework.LoggedTerminal.BarcodeReader != null || GlobalFramework.LoggedTerminal.CardReader != null)
+                if (DataLayerFramework.LoggedTerminal.BarcodeReader != null || DataLayerFramework.LoggedTerminal.CardReader != null)
                 {
                     GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
                 }
@@ -219,10 +221,10 @@ namespace logicpos
                             new SortProperty("FiscalYear", DevExpress.Xpo.DB.SortingDirection.Ascending)
                         };
                         CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-                        ICollection collectionDocumentFinanceSeries = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
+                        ICollection collectionDocumentFinanceSeries = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
                         if (collectionDocumentFinanceSeries.Count == 0)
                         {
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
+                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warning_open_fiscal_year"));
                         }
                     }
                     catch (Exception ex)
@@ -255,14 +257,14 @@ namespace logicpos
             Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
             //LOGO
-            Image imageLogo = new Image(Utils.GetThemeFileLocation(GlobalFramework.Settings["fileImageBackOfficeLogo"]));
-            if (GlobalFramework.PluginLicenceManager != null)
+            Image imageLogo = new Image(Utils.GetThemeFileLocation(DataLayerFramework.Settings["fileImageBackOfficeLogo"]));
+            if (SharedFramework.PluginLicenceManager != null)
             {
-                string fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png"));
+                string fileImageBackOfficeLogo = string.Format(SharedUtils.OSSlash(DataLayerFramework.Path["themes"] + @"Default\Images\logicPOS_loggericpulse_loggerin.png"));
 
-                if (!string.IsNullOrEmpty(GlobalFramework.LicenceReseller) && GlobalFramework.LicenceReseller == "NewTech")
+                if (!string.IsNullOrEmpty(SharedFramework.LicenseReseller) && SharedFramework.LicenseReseller == "NewTech")
                 {
-                    fileImageBackOfficeLogo = string.Format(FrameworkUtils.OSSlash(GlobalFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png"), "NT");
+                    fileImageBackOfficeLogo = string.Format(SharedUtils.OSSlash(DataLayerFramework.Path["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_loggerin.png"), "NT");
                 }
 
                 //var bitmapImage = GlobalFramework.PluginLicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
@@ -276,7 +278,7 @@ namespace logicpos
             eventBoxImageLogo.WidthRequest = eventBoxImageLogoSize.Width;
             eventBoxImageLogo.HeightRequest = eventBoxImageLogoSize.Height;
             eventBoxImageLogo.VisibleWindow = eventBoxImageLogoVisibleWindow;
-            if (eventBoxImageLogoVisibleWindow) eventBoxImageLogo.ModifyBg(Gtk.StateType.Normal, eventBoxImageLogoBackgroundColor);
+            if (eventBoxImageLogoVisibleWindow) eventBoxImageLogo.ModifyBg(StateType.Normal, eventBoxImageLogoBackgroundColor);
             if (eventBoxImageLogoVisible) _fixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
 
             eventBoxImageLogo.Add(imageLogo);
@@ -313,16 +315,16 @@ namespace logicpos
             EventBox eventBoxStatusBar1 = new EventBox() { VisibleWindow = eventBoxStatusBar1VisibleWindow };
             eventBoxStatusBar1.WidthRequest = eventBoxStatusBar1Size.Width;
             eventBoxStatusBar1.HeightRequest = eventBoxStatusBar1Size.Height;
-            eventBoxStatusBar1.ModifyBg(Gtk.StateType.Normal, eventBoxStatusBar1BackgroundColor);
+            eventBoxStatusBar1.ModifyBg(StateType.Normal, eventBoxStatusBar1BackgroundColor);
 
             //EventBoxStatusBar1:LabelTerminalInfo
-            _labelTerminalInfo = new Label(string.Format("{0} : {1}", GlobalFramework.LoggedTerminal.Designation, GlobalFramework.LoggedUser.Name));
+            _labelTerminalInfo = new Label(string.Format("{0} : {1}", DataLayerFramework.LoggedTerminal.Designation, DataLayerFramework.LoggedUser.Name));
             _labelTerminalInfo.ModifyFont(labelTerminalInfoFont);
             _labelTerminalInfo.ModifyFg(StateType.Normal, labelTerminalInfoFontColor);
             _labelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
 
             //EventBoxStatusBar1:LabelClock
-            _labelClock = new Label(FrameworkUtils.CurrentDateTime(_clockFormat));
+            _labelClock = new Label(SharedUtils.CurrentDateTime(_clockFormat));
             _labelClock.ModifyFont(labelClockFont);
             _labelClock.ModifyFg(StateType.Normal, labelClockFontColor);
             _labelClock.SetAlignment(labelClockAlignmentX, 0.5F);
@@ -376,10 +378,10 @@ namespace logicpos
             EventBox eventBoxStatusBar2 = new EventBox() { VisibleWindow = eventBoxStatusBar2VisibleWindow };
             eventBoxStatusBar2.WidthRequest = eventBoxStatusBar2Size.Width;
             eventBoxStatusBar2.HeightRequest = eventBoxStatusBar2Size.Height;
-            eventBoxStatusBar2.ModifyBg(Gtk.StateType.Normal, eventBoxStatusBar2BackgroundColor);
+            eventBoxStatusBar2.ModifyBg(StateType.Normal, eventBoxStatusBar2BackgroundColor);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTableLabel
-            string global_table = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", SettingsApp.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
+            string global_table = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
             Label labelCurrentTableLabel = new Label(global_table);
             labelCurrentTableLabel.ModifyFont(labelCurrentTableLabelFont);
             labelCurrentTableLabel.ModifyFg(StateType.Normal, labelCurrentTableLabelFontColor);
@@ -397,13 +399,13 @@ namespace logicpos
             vboxCurrentTable.PackStart(_labelCurrentTable);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
-            Label labelTotalTableLabel = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_price_to_pay"));
+            Label labelTotalTableLabel = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_price_to_pay"));
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);
 
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTable
-            _labelTotalTable = new Label(FrameworkUtils.DecimalToStringCurrency(0));
+            _labelTotalTable = new Label(SharedUtils.DecimalToStringCurrency(0));
             _labelTotalTable.ModifyFont(labelTotalTableFont);
             _labelTotalTable.ModifyFg(StateType.Normal, labelTotalTableFontColor);
             _labelTotalTable.SetAlignment(labelTotalTableAlignmentX, 0.5F);
@@ -714,7 +716,7 @@ namespace logicpos
             EventBox eventboxToolbar = new EventBox() { VisibleWindow = eventboxToolbarVisibleWindow };
             eventboxToolbar.WidthRequest = eventboxToolbarSize.Width;
             eventboxToolbar.HeightRequest = eventboxToolbarSize.Height;
-            if (eventboxToolbarVisibleWindow) eventboxToolbar.ModifyBg(Gtk.StateType.Normal, eventboxToolbarBackgroundColor);
+            if (eventboxToolbarVisibleWindow) eventboxToolbar.ModifyBg(StateType.Normal, eventboxToolbarBackgroundColor);
             if (eventboxToolbarVisible) _fixedWindow.Put(eventboxToolbar, eventboxToolbarPosition.X, eventboxToolbarPosition.Y);
 
             //_logger.Debug("Local Func to Get Shared Buttons");
@@ -743,7 +745,7 @@ namespace logicpos
             _touchButtonPosToolbarNewFinanceDocument = getButton(buttonNewFinanceDocumentName, buttonNewFinanceDocumentText, buttonNewFinanceDocumentImageFileName);
 
             //Toggle Sensitive Buttons
-            _touchButtonPosToolbarNewFinanceDocument.Sensitive = (GlobalFramework.WorkSessionPeriodTerminal != null && GlobalFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
+            _touchButtonPosToolbarNewFinanceDocument.Sensitive = (SharedFramework.WorkSessionPeriodTerminal != null && SharedFramework.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
             //Pack Buttons
             HBox hboxToolbar = new HBox(false, 0);
             hboxToolbar.BorderWidth = 10;

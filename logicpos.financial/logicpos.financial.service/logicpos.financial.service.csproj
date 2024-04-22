@@ -56,9 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App\FrameworkUtils.cs" />
-    <Compile Include="App\GlobalFramework.cs" />
-    <Compile Include="App\SettingsApp.cs" />
+    <Compile Include="App\FinancialServiceSettings.cs" />
     <Compile Include="Objects\Modules\AT\ServicesAT.cs" />
     <Compile Include="Objects\Modules\AT\ServicesATSoapResult.cs" />
     <Compile Include="Objects\Service\IService1.cs" />

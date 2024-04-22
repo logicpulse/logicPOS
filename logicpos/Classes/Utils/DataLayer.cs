@@ -2,7 +2,9 @@
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.App;
+using logicpos.datalayer.App;
 using logicpos.datalayer.Enums;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,7 +34,7 @@ namespace logicpos
                 bool result = false;
                 string xpoConnectionString = pXpoConnectionString;
                 DatabaseType databaseType = pDatabaseType;
-                string databaseTypeString = Enum.GetName(typeof(DatabaseType), GlobalFramework.DatabaseType);
+                string databaseTypeString = Enum.GetName(typeof(DatabaseType), DataLayerFramework.DatabaseType);
                 string databaseName = pDatabaseName;
                 IDataLayer xpoDataLayer = null;
                 bool onErrorsDropDatabase = true;
@@ -44,30 +46,30 @@ namespace logicpos
                 Session xpoSession;
                 Dictionary<string, string> replace = GetReplaceables(pDatabaseType);
 
-                string sqlDatabaseSchema = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchema, databaseTypeString));
-                string sqlDatabaseSchemaLinux = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseSchemaLinux, databaseTypeString));
-                string sqlDatabaseUpdate = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseUpdate, databaseTypeString));
-                string sqlDatabaseUpdateLinux = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseUpdateLinux, databaseTypeString));
-                //string sqlDatabaseOtherDatabaseType = FrameworkUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString)); /* IN009045: Not in use */
-                string sqlDatabaseOtherCommon = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommon);
+                string sqlDatabaseSchema = SharedUtils.OSSlash(string.Format(POSSettings.FileDatabaseSchema, databaseTypeString));
+                string sqlDatabaseSchemaLinux = SharedUtils.OSSlash(string.Format(POSSettings.FileDatabaseSchemaLinux, databaseTypeString));
+                string sqlDatabaseUpdate = SharedUtils.OSSlash(string.Format(POSSettings.FileDatabaseUpdate, databaseTypeString));
+                string sqlDatabaseUpdateLinux = SharedUtils.OSSlash(string.Format(POSSettings.FileDatabaseUpdateLinux, databaseTypeString));
+                //string sqlDatabaseOtherDatabaseType = SharedUtils.OSSlash(string.Format(SettingsApp.FileDatabaseOtherDatabaseType, databaseTypeString)); /* IN009045: Not in use */
+                string sqlDatabaseOtherCommon = SharedUtils.OSSlash(POSSettings.FileDatabaseOtherCommon);
                 /* IN008024 and after IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
-                // string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), SettingsApp.CustomAppOperationMode.AppOperationTheme.ToLower());
-                string sqlDatabaseOtherCommonPluginsSoftwareVendor = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
-                string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonPluginsSoftwareVendor);
-                string sqlDatabaseData = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseData);
-                string sqlDatabaseDataDemo = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseDataDemo);
-                string sqlDatabaseViews = FrameworkUtils.OSSlash(SettingsApp.FileDatabaseViews);
-                bool useDatabaseDataDemo = Convert.ToBoolean(GlobalFramework.Settings["useDatabaseDataDemo"]);
+                // string sqlDatabaseOtherCommonAppMode = string.Format("{0}/{1}", SharedUtils.OSSlash(SettingsApp.FileDatabaseOtherCommonAppMode), SettingsApp.CustomAppOperationMode.AppOperationTheme.ToLower());
+                string sqlDatabaseOtherCommonPluginsSoftwareVendor = SharedUtils.OSSlash(POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor);
+                string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = SharedUtils.OSSlash(POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor);
+                string sqlDatabaseData = SharedUtils.OSSlash(POSSettings.FileDatabaseData);
+                string sqlDatabaseDataDemo = SharedUtils.OSSlash(POSSettings.FileDatabaseDataDemo);
+                string sqlDatabaseViews = SharedUtils.OSSlash(POSSettings.FileDatabaseViews);
+                bool useDatabaseDataDemo = Convert.ToBoolean(DataLayerFramework.Settings["useDatabaseDataDemo"]);
 
-                string version = FrameworkUtils.ProductVersion.Replace("v", "");
+                string version = SharedUtils.ProductVersion.Replace("v", "");
                 //string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-                string osVersion = FrameworkUtils.OSVersion();
+                string osVersion = SharedUtils.OSVersion();
                 switch (databaseType)
                 {
                     case DatabaseType.SQLite:
                     case DatabaseType.MonoLite:
-                        //connectionstring = string.Format(GlobalFramework.Settings["xpoConnectionString"], databaseName);
+                        //connectionstring = string.Format(DataLayerFramework.Settings["xpoConnectionString"], databaseName);
                         commands.Add("check_version", string.Format(@"SELECT name FROM sqlite_master WHERE type='table' AND name='sys_databaseversion';"));
                         commands.Add("create_version", string.Format(@"CREATE TABLE [sys_databaseversion] ([Version] [varchar](20)); INSERT INTO sys_databaseversion (version) VALUES ('{0}');", version));
                         commands.Add("select_version", string.Format(@"SELECT version FROM sys_databaseversion;"));
@@ -427,7 +429,7 @@ namespace logicpos
                         break;
                     case DatabaseType.MonoLite:
                     case DatabaseType.SQLite:
-                        //connectionstring = string.Format(GlobalFramework.Settings["xpoConnectionString"], databaseName);
+                        //connectionstring = string.Format(DataLayerFramework.Settings["xpoConnectionString"], databaseName);
                         //Replace content - Currently not used, Here only for Example
                         //result.Add("dm.Table", "dm.[Table]");
                         //result.Add("dt.Table", "dt.[Table]");
@@ -528,7 +530,7 @@ namespace logicpos
                     for (int i = 0; i < commands.Length - 1; i++)
                     {
                         //CarriageReturn \r\n = 
-                        executeCommand = string.Format("{0};", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(commands[i]));
+                        executeCommand = string.Format("{0};", SharedUtils.RemoveCarriageReturnAndExtraWhiteSpaces(commands[i]));
                         //Replace \n (Multiline Text like SEND_MAIL_FINANCE_DOCUMENTS_BODY)
                         executeCommand = executeCommand.Replace("\\n", Environment.NewLine);
 
@@ -582,7 +584,7 @@ namespace logicpos
 
                                 string errorMessage = string.Format("bool ProcessDump(Session pXpoSession, string pFilename, string pCommandSeparator, Dictionary<string, string> pReplaceables) :: Error executing Sql Command: [{0}]{1}Exception: [{2}]", executeCommand, Environment.NewLine, ex.Message);
                                 log.Error(string.Format("{0} : {1}", errorMessage, ex.Message), ex);
-                                //Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
+                                //Utils.ShowMessageTouch(null, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), errorMessage);
                                 /* IN009021 */
                                 //pXpoSession.RollbackTransaction();
                                 //return false;
@@ -669,7 +671,7 @@ namespace logicpos
                             //Ignore File if is in ignoreFilesForDeveloper List
                             if (!ignoreFilesForDeveloper.Contains(filesArray[i]))
                             {
-                                result = ProcessDump(pXpoSession, FrameworkUtils.OSSlash(filesArray[i]), pCommandSeparator, pReplaceables);
+                                result = ProcessDump(pXpoSession, SharedUtils.OSSlash(filesArray[i]), pCommandSeparator, pReplaceables);
                             }
                         }
                     }
@@ -693,11 +695,11 @@ namespace logicpos
         {
             string relatedDocumentsQuery = string.Empty;
 
-            switch (GlobalFramework.DatabaseType)
+            switch (DataLayerFramework.DatabaseType)
             {
-                case datalayer.Enums.DatabaseType.MySql:
-                case datalayer.Enums.DatabaseType.SQLite:
-                case datalayer.Enums.DatabaseType.MonoLite:
+                case DatabaseType.MySql:
+                case DatabaseType.SQLite:
+                case DatabaseType.MonoLite:
                     if (isPaymentDoc)
                     {
                         relatedDocumentsQuery = @"
@@ -776,7 +778,7 @@ FROM(
 ";
                     }
                     break;
-                case datalayer.Enums.DatabaseType.MSSqlServer:
+                case DatabaseType.MSSqlServer:
                     if (isPaymentDoc)
                     {
                         relatedDocumentsQuery = @"

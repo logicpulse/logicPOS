@@ -6,6 +6,7 @@ using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Reports.BOs;
 using logicpos.financial.library.Classes.Reports.BOs.Documents;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 
@@ -44,7 +45,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printers.Thermal
                     ORDER 
                         BY Ord
                     ;",
-                    SettingsApp.XpoPrintFinanceDocument
+                    ConsoleSettings.XpoPrintFinanceDocument
                 );
                 TicketTable ticketTable = new TicketTable(sql, columns, thermalPrinterGeneric.MaxCharsPerLineSmall);
                 ticketTable.Print(thermalPrinterGeneric);
@@ -54,7 +55,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printers.Thermal
                 thermalPrinterGeneric.PrintBuffer();
 
                 //Get Result Objects
-                ResultFRBODocumentFinanceMaster FRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(SettingsApp.XpoPrintFinanceDocument);
+                ResultFRBODocumentFinanceMaster FRBOHelperResponseProcessReportFinanceDocument = FRBOHelper.GetFRBOFinanceDocument(ConsoleSettings.XpoPrintFinanceDocument);
                 List<FRBODocumentFinanceMasterView> gcDocumentFinanceMaster = FRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List;
                 List<FRBODocumentFinanceDetail> gcDocumentFinanceDetail = FRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceDetail;
                 List<FRBODocumentFinanceMasterTotalView> gcDocumentFinanceMasterTotal = FRBOHelperResponseProcessReportFinanceDocument.DocumentFinanceMaster.List[0].DocumentFinanceMasterTotal; ;
@@ -71,7 +72,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printers.Thermal
                     _logger.Debug(string.Format("Designation: [{0}], Value :[{1}]", item.Designation, item.Value));
                 }
 
-                Dictionary<string, string> CustomVars = GlobalFramework.FastReportCustomVars;
+                Dictionary<string, string> CustomVars = SharedFramework.FastReportCustomVars;
                 _logger.Debug(string.Format("Company_Name: [{0}]", CustomVars["Company_Name"]));
 
                 //ThermalPrinterFinanceDocument thermalPrinterFinanceDocument = new ThermalPrinterFinanceDocument(pPrinter);

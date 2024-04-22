@@ -10,6 +10,8 @@ using System.Drawing;
 using System.Linq;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Extensions;
+using logicpos.shared.App;
+using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -24,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             Size windowSize = new Size(700, 360);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_preview.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_preview.png");
             
             //Parameters
             _articleBag = pArticleBag;
@@ -37,15 +39,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle;
             if (pMode == DocumentFinanceDialogPreviewMode.Preview)
             {
-                windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_documentfinance_preview_totals_mode_preview");
+                windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_documentfinance_preview_totals_mode_preview");
                 //ActionArea Buttons
-                TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
+                TouchButtonIconWithText buttonOk = new TouchButtonIconWithText("touchButtonOk_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_button_label_ok"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, _fileActionOK, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height);
                 //ActionArea
                 actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
             }
             else
             {
-                windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_documentfinance_preview_totals_mode_confirm");
+                windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_documentfinance_preview_totals_mode_confirm");
                 //ActionArea Buttons
                 TouchButtonIconWithText buttonNo = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.No);
                 TouchButtonIconWithText buttonYes = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Yes);
@@ -74,30 +76,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Pango.FontDescription fontDescriptionValue = Pango.FontDescription.FromString("11");
 
                 //Titles: Table Tax
-                Label labelTitleTaxDesignation = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"));
-                Label labelTitleTaxValue = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_tax"));
-                Label labelTitleTaxBase = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_tax_base"));
-                Label labelTitleTaxTotal = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax_acronym"));
+                Label labelTitleTaxDesignation = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"));
+                Label labelTitleTaxValue = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_tax"));
+                Label labelTitleTaxBase = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_tax_base"));
+                Label labelTitleTaxTotal = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax_acronym"));
                 //Titles: Table Totals
-                Label labelTitleDiscountCustomer = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_discount_customer") + " (%)"); /* IN009206 */
-                Label labelTitleTotalNet = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_totalnet"));
-                Label labelTitleTotalGross = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totalgross"));
-                Label labelTitleDiscountTotal = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_total_discount")); /* IN009206 */
+                Label labelTitleDiscountCustomer = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_discount_customer") + " (%)"); /* IN009206 */
+                Label labelTitleTotalNet = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_totalnet"));
+                Label labelTitleTotalGross = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totalgross"));
+                Label labelTitleDiscountTotal = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_total_discount")); /* IN009206 */
 				/* IN009206 */
-                //Label labelTitleDiscountPaymentConditions = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_discount_payment_conditions);
-                Label labelTitleTotalTax = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax")); /* IN009206 */
-                Label labelTitleTotalFinal = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totalfinal"));
+                //Label labelTitleDiscountPaymentConditions = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_discount_payment_conditions);
+                Label labelTitleTotalTax = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax")); /* IN009206 */
+                Label labelTitleTotalFinal = new Label(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totalfinal"));
 
 				//Values: Table Totals
 				/* IN009206 - Begin */
-                Label labelValueTotalGross = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalGross * exchangeRate));
-                Label labelValueDiscountCustomer = new Label(FrameworkUtils.DecimalToString(_articleBag.DiscountGlobal)) { WidthRequest = 100 };
+                Label labelValueTotalGross = new Label(SharedUtils.DecimalToString(_articleBag.TotalGross * exchangeRate));
+                Label labelValueDiscountCustomer = new Label(SharedUtils.DecimalToString(_articleBag.DiscountGlobal)) { WidthRequest = 100 };
 				/* IN009206 */                
-				//Label labelValueDiscountPaymentConditions  = new Label(FrameworkUtils.DecimalToString(0.0m));
-                Label labelValueDiscountTotal = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalDiscount * exchangeRate));
-                Label labelValueTotalNet = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalNet * exchangeRate));
-                Label labelValueTotalTax = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalTax * exchangeRate));
-                Label labelValueTotalFinal = new Label(FrameworkUtils.DecimalToString(_articleBag.TotalFinal * exchangeRate));
+				//Label labelValueDiscountPaymentConditions  = new Label(SharedUtils.DecimalToString(0.0m));
+                Label labelValueDiscountTotal = new Label(SharedUtils.DecimalToString(_articleBag.TotalDiscount * exchangeRate));
+                Label labelValueTotalNet = new Label(SharedUtils.DecimalToString(_articleBag.TotalNet * exchangeRate));
+                Label labelValueTotalTax = new Label(SharedUtils.DecimalToString(_articleBag.TotalTax * exchangeRate));
+                Label labelValueTotalFinal = new Label(SharedUtils.DecimalToString(_articleBag.TotalFinal * exchangeRate));
                 //Add to Titles List 
                 labelsTitle.Add(labelTitleTaxDesignation);
                 labelsTitle.Add(labelTitleTaxValue);
@@ -142,9 +144,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (_debug) _logger.Debug(string.Format("{0}:{1}:{2}:{3}", item.Value.Designation, item.Key, item.Value.TotalBase, item.Value.Total));
                     //Prepare Labels
                     Label labelDesignation = new Label(item.Value.Designation);
-                    Label labelValue = new Label(FrameworkUtils.DecimalToString(item.Key));
-                    Label labelTotalBase = new Label(FrameworkUtils.DecimalToString(item.Value.TotalBase * exchangeRate));
-                    Label labelTotal = new Label(FrameworkUtils.DecimalToString(item.Value.Total * exchangeRate));
+                    Label labelValue = new Label(SharedUtils.DecimalToString(item.Key));
+                    Label labelTotalBase = new Label(SharedUtils.DecimalToString(item.Value.TotalBase * exchangeRate));
+                    Label labelTotal = new Label(SharedUtils.DecimalToString(item.Value.Total * exchangeRate));
                     //Add Row
                     tableTax.Attach(labelDesignation, 0, 1, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
                     tableTax.Attach(labelValue, 1, 2, row, row + 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);

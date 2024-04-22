@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
 
@@ -23,17 +23,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags)
-            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), FrameworkUtils.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), DataLayerUtils.CurrentDateTimeAtomic())
         {
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, string pDialogTitle)
-            : this(pSourceWindow, pDialogFlags, pDialogTitle, FrameworkUtils.CurrentDateTimeAtomic())
+            : this(pSourceWindow, pDialogFlags, pDialogTitle, DataLayerUtils.CurrentDateTimeAtomic())
         {
         }
 
         public PosDatePickerDialog(Window pSourceWindow, DialogFlags pDialogFlags, DateTime pDateTime)
-            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), pDateTime)
+            : this(pSourceWindow, pDialogFlags, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_datepicker"), pDateTime)
         {
         }
 
@@ -45,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Local Vars
             string windowTitle = pDialogTitle;
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_date_picker.png");
             _windowSize = new Size(600, 373);
 
             //Init Content
@@ -72,13 +72,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Init Font Description
-            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(GlobalFramework.Settings["fontEntryBoxValue"]);
+            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(DataLayerFramework.Settings["fontEntryBoxValue"]);
             //Init Calendar
             _calendar = new Calendar();
             _calendar.Date = _dateTime;
             _calendar.ModifyFont(fontDescription);
             _calendar.SetSizeRequest(_windowSize.Width - 13, _windowSize.Height - 120);
-              
+
             _fixedContent.Put(_calendar, 0, 0);
         }
     }

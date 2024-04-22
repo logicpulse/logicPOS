@@ -10,11 +10,13 @@ using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.datalayer.DataLayer.Xpo.Documents;
 using logicpos.Extensions;
 using logicpos.financial.library.Classes.Stocks;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -91,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pTreeView, DialogFlags.Modal, pDialogMode, pXPGuidObject)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
 
             this.Title = windowTitle;
 
@@ -103,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 SetSizeRequest(500, 660);
             }
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png");
             InitUI();
             //InitNotes();
             ValidateDialog();
@@ -124,7 +126,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _articleCollection = new Dictionary<fin_article, Tuple<decimal, Dictionary<EntryValidation, List<fin_articleserialnumber>>, decimal, fin_warehouselocation>>();
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, SettingsApp.RegexGuid, true, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, SharedSettings.RegexGuid, true, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -133,18 +135,18 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), _initialDocumentDate, SettingsApp.RegexDate, true, SettingsApp.DateFormat, true);
+                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), _initialDocumentDate, SharedSettings.RegexDate, true, SharedSettings.DateFormat, true);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
-                _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(SettingsApp.DateFormat);
+                _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(SharedSettings.DateFormat);
                 _entryBoxDocumentDate.EntryValidation.Validate();
                 _entryBoxDocumentDate.EntryValidation.Sensitive = true;
                 _entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
 
                 //DocumentNumber
-                Color colorBaseDialogEntryBoxBackground = GlobalFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
-                string _fileIconListFinanceDocuments = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
+                Color colorBaseDialogEntryBoxBackground = DataLayerFramework.Settings["colorBaseDialogEntryBoxBackground"].StringToColor();
+                string _fileIconListFinanceDocuments = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_toolbar_finance_document.png");
                 HBox hBoxDocument = new HBox(false, 0);
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false, true);
+                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
                 _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 TouchButtonIcon attachPDFButton = new TouchButtonIcon("attachPDFButton", colorBaseDialogEntryBoxBackground, _fileIconListFinanceDocuments, new Size(20, 20), 30, 30);
@@ -167,12 +169,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 _viewport.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _totalCompositeEntrys++;
-                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, SettingsApp.RegexAlfaNumericArticleCode, SettingsApp.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", DataLayerSettings.XpoOidArticleDefaultClass));
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 //SerialNumber
                 HBox hBoxSerialNumber = new HBox(false, 0);
-                _entryBoxSerialNumber1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, false, true);
+                _entryBoxSerialNumber1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, false, true);
                 _entryBoxSerialNumber1.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 _entryBoxSerialNumber1.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
                 _entryBoxSerialNumber1.Sensitive = true;
@@ -180,7 +182,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
                 //Price
-                _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SettingsApp.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                _entryBoxPrice1 = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                 _entryBoxPrice1.EntryValidation.TooltipText = "Ultimo preço inserido";
                 _entryBoxPrice1.WidthRequest = 40;
                 _entryBoxPrice1.Sensitive = true;
@@ -188,21 +190,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //Warehouse
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
-                fin_warehouse defaultWareHouse = (fin_warehouse)GlobalFramework.SessionXpo.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
-                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(GlobalFramework.SessionXpo, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                fin_warehouse defaultWareHouse = (fin_warehouse)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
+                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
 
                 //Location
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) "));
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
-                fin_warehouselocation defaultLocation = (fin_warehouselocation)GlobalFramework.SessionXpo.FindObject(typeof(fin_warehouselocation), criteria);
-                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(GlobalFramework.SessionXpo, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                fin_warehouselocation defaultLocation = (fin_warehouselocation)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouselocation), criteria);
+                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 xpoComboBoxWarehouseLocation.Changed += XpoComboBoxWarehouselocation_Changed;
 
                 //Unique Articles (Have multi S/N)
-                CheckButton _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unique_articles"));
+                CheckButton _checkButtonUniqueArticles = new CheckButton(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unique_articles"));
                 _checkButtonUniqueArticles.Sensitive = false;
                 _checkButtonUniqueArticles.Toggled += CheckButtonUniqueArticles_Toggled;
 
@@ -268,7 +270,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _articleEntryWidgetCollection.Add(_vboxArticles);
 
                 //Notes
-                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false, true);
+                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false, true);
                 _entryBoxNotes.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Final Pack
@@ -413,7 +415,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //_entryBoxPrice1.Sensitive = _articleCollection.Count > 0;
             //_entryBoxSerialNumber1.Sensitive = _articleCollection.Count > 0;
             if (validateEntrys > 0) multiEntrysValidated = false;
-            base.buttonOk.Sensitive = (
+            buttonOk.Sensitive = (
                 _entryBoxSelectSupplier.EntryValidation.Validated &&
                 _entryBoxDocumentDate.EntryValidation.Validated &&
                 _entryBoxDocumentNumber.EntryValidation.Validated &&
@@ -427,20 +429,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _serialNumbersInCache = new Dictionary<EntryValidation, string>();
 
             //Get From Session if Exists
-            object supplier = GlobalFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper());
-            object documentDate = GlobalFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper());
+            object supplier = SharedFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper());
+            object documentDate = SharedFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper());
             //object documentNumber = GlobalFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper());
             //Assign if Valid
             try
             {
-               //if (supplier != null) //_initialSupplier = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
-                var own_customer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidUserRecord);
+               //if (supplier != null) //_initialSupplier = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
+                var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                 if (own_customer != null && string.IsNullOrEmpty(own_customer.Name))
                 {
                     //update owner customer for internal stock moviments                        
                     //own_customer.FiscalNumber = CryptorEngine.Encrypt(GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"], true, SettingsApp.SecretKey);
-                    own_customer.FiscalNumber = GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
-                    own_customer.Name = GlobalFramework.PreferenceParameters["COMPANY_NAME"];
+                    own_customer.FiscalNumber = SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                    own_customer.Name = SharedFramework.PreferenceParameters["COMPANY_NAME"];
                     own_customer.Save();
                     _logger.Debug("Updating own supplier name and fiscal number");
                     //if (supplier == null) { supplier = own_customer; }
@@ -454,7 +456,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             try
             {
-                _initialDocumentDate = (documentDate != null) ? Convert.ToDateTime(documentDate) : FrameworkUtils.CurrentDateTimeAtomic();
+                _initialDocumentDate = (documentDate != null) ? Convert.ToDateTime(documentDate) : DataLayerUtils.CurrentDateTimeAtomic();
             }
             catch (Exception ex)
             {
@@ -475,10 +477,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             try
             {
-                GlobalFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper(), _entryBoxSelectSupplier.Value.Oid);
-                GlobalFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper(), _entryBoxDocumentDate.Value);
-                GlobalFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper(), _entryBoxDocumentNumber.EntryValidation.Text);
-                GlobalFramework.SessionApp.Write();
+                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper(), _entryBoxSelectSupplier.Value.Oid);
+                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper(), _entryBoxDocumentDate.Value);
+                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper(), _entryBoxDocumentNumber.EntryValidation.Text);
+                SharedFramework.SessionApp.Write();
             }
             catch (Exception ex)
             {
@@ -515,17 +517,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (!articleOid.Equals(Guid.Empty))
                 {
                     //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                    fin_article newArticle = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), articleOid);
+                    fin_article newArticle = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), articleOid);
 
                     if (isArticleCode)
                     {
                         pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryCodeValidation.Validate();
 
@@ -537,33 +539,33 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (Customer != null)
                         {
-                            getLastPrice = GlobalFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}' AND Customer = '{1}'", articleOid, Customer.Oid));
+                            getLastPrice = DataLayerFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}' AND Customer = '{1}'", articleOid, Customer.Oid));
                             if (getLastPrice == null)
                             {
-                                getLastPrice = GlobalFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}'", articleOid));
+                                getLastPrice = DataLayerFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}'", articleOid));
                             }
                             pPurchasePrice.EntryValidation.TooltipText = "Ultimo preço inserido do fornecedor";
                         }
                         else
                         {
-                            getLastPrice = GlobalFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}'", articleOid));
+                            getLastPrice = DataLayerFramework.SessionXpo.ExecuteScalar(string.Format("SELECT TOP(1) PurchasePrice FROM fin_articlestock WHERE Article = '{0}'", articleOid));
                             pPurchasePrice.EntryValidation.TooltipText = "Ultimo preço inserido";
                         }
 
-                        pPurchasePrice.EntryValidation.Text = (getLastPrice != null) ? FrameworkUtils.DecimalToString(Convert.ToDecimal(getLastPrice), GlobalFramework.CurrentCultureNumberFormat, "0.00").Replace(".", ",") : FrameworkUtils.StringToDecimal("0,00").ToString();
+                        pPurchasePrice.EntryValidation.Text = (getLastPrice != null) ? SharedUtils.DecimalToString(Convert.ToDecimal(getLastPrice), SharedFramework.CurrentCultureNumberFormat, "0.00").Replace(".", ",") : SharedUtils.StringToDecimal("0,00").ToString();
 
                     
                         return;
                     }
                     pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
-                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.Value = newArticle;
 
@@ -596,7 +598,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         ValidateDialog();
                         return;
@@ -643,7 +645,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
                 if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
-                _dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
+                _dropdownTextCollection = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
 
                 if (_dropdownTextCollection != null)
                 {
@@ -679,34 +681,34 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _totalCompositeEntrys++;
                 //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, SettingsApp.RegexAlfaNumericArticleCode, SettingsApp.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 HBox hBoxArticles = new HBox(false, 0);
 
                 //SerialNumber
-                EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, false, true);
+                EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number"), KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, false, true);
                 NewEntryBoxSerialNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
                 NewEntryBoxSerialNumber.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
                 NewEntryBoxSerialNumber.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
 
                 //Price
-                EntryBoxValidation NewEntryBoxPrice = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SettingsApp.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
+                EntryBoxValidation NewEntryBoxPrice = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), KeyboardMode.None, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, false, true);
                 NewEntryBoxPrice.EntryValidation.Changed += EntryPurchasedPriceValidation_Changed;
                 NewEntryBoxPrice.WidthRequest = 40;
 
                 //Warehouse
                 CriteriaOperator defaultWarehouseCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND IsDefault == '1'"));
-                fin_warehouse defaultWareHouse = (fin_warehouse)GlobalFramework.SessionXpo.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
-                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(GlobalFramework.SessionXpo, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
-                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
+                fin_warehouse defaultWareHouse = (fin_warehouse)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouse), defaultWarehouseCriteria);
+                XPOComboBox xpoComboBoxWarehouse = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouse), defaultWareHouse, "Designation", null);
+                BOWidgetBox boxWareHouse = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_warehouse"), xpoComboBoxWarehouse);
                 xpoComboBoxWarehouse.Changed += XpoComboBoxWarehouse_Changed;
 
                 //Location
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) "));
                 if (defaultWareHouse != null) criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND Warehouse == '{0}'", defaultWareHouse.Oid.ToString()));
-                fin_warehouselocation defaultLocation = (fin_warehouselocation)GlobalFramework.SessionXpo.FindObject(typeof(fin_warehouselocation), criteria);
-                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(GlobalFramework.SessionXpo, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
-                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
+                fin_warehouselocation defaultLocation = (fin_warehouselocation)DataLayerFramework.SessionXpo.FindObject(typeof(fin_warehouselocation), criteria);
+                XPOComboBox xpoComboBoxWarehouseLocation = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_warehouselocation), defaultLocation, "Designation", criteria);
+                BOWidgetBox boxWareHouseLocation = new BOWidgetBox(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ConfigurationDevice_PlaceTerminal"), xpoComboBoxWarehouseLocation);
                 xpoComboBoxWarehouseLocation.Changed += XpoComboBoxWarehouselocation_Changed;
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
@@ -850,7 +852,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (cleanFirstEntry)
                         {
-                            auxArticle = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
+                            auxArticle = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
                         }
                         else
                         {
@@ -892,7 +894,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }
@@ -972,7 +974,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private EntryBoxValidation AddNewSerialNumber()
         {
             //SerialNumber
-            EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, "", KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, false, true);
+            EntryBoxValidation NewEntryBoxSerialNumber = new EntryBoxValidation(this, "", KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, false, true);
             NewEntryBoxSerialNumber.EntryValidation.Changed += EntrySerialNumberValidation_Changed;
             NewEntryBoxSerialNumber.EntryValidation.FocusGrabbed += EntryValidation_FocusGrabbed;
             return NewEntryBoxSerialNumber;
@@ -994,19 +996,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     new SortProperty("SerialNumber", DevExpress.Xpo.DB.SortingDirection.Ascending)
                 };
                 CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL) AND SerialNumber == '{0}'", entrySerialNumber.Text));
-                _collectionSavedArticleSerialNumber = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_articleserialnumber)), criteria, sortCollection, int.MaxValue, false, true);
+                _collectionSavedArticleSerialNumber = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_articleserialnumber)), criteria, sortCollection, int.MaxValue, false, true);
 
                 if((_collectionSavedArticleSerialNumber != null && _collectionSavedArticleSerialNumber.Count > 0) || (_serialNumbersInCache.ContainsValue(entrySerialNumber.Text)))
                 {
                     entrySerialNumber.Validated = false;
-                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number") + " já existe!";
-                    base.buttonOk.Sensitive = false;
+                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number") + " já existe!";
+                    buttonOk.Sensitive = false;
                     return;
                 }
                 else
                 {
                     entrySerialNumber.Validated = true;
-                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_serial_number");
+                    entrySerialNumber.TooltipText = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_serial_number");
                 }
 
                 if (_articleCollection.Count > 0 && entrySerialNumber.Validated)
@@ -1040,17 +1042,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     if (((((((entrySerialNumber.Parent.Parent.Parent.Parent as VBox).Children[1] as HBox).Children[1] as BOWidgetBox).Children[1] as XPOComboBox).Value == null) || (((((entrySerialNumber.Parent.Parent.Parent.Parent as VBox).Children[1] as HBox).Children[0] as BOWidgetBox).Children[1] as XPOComboBox).Value == null)) && !string.IsNullOrEmpty(entrySerialNumber.Text))
                     {
-                        base.buttonOk.Sensitive = false;
+                        buttonOk.Sensitive = false;
                         entrySerialNumber.TooltipText = "Por favor insira um armazém primeiro";
                         return;
                     }
                     else
                     {
-                        base.buttonOk.Sensitive = true;
+                        buttonOk.Sensitive = true;
                     }
                     if (!entrySerialNumber.Validated)
                     {
-                        base.buttonOk.Sensitive = false;
+                        buttonOk.Sensitive = false;
                         return;
                     }
 
@@ -1132,7 +1134,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 var selectedWareHouseLocationCB = sender as XPOComboBox;
                 if(selectedWareHouseLocationCB.Value == null)
                 {
-                    base.buttonOk.Sensitive = false;
+                    buttonOk.Sensitive = false;
                     return;
                 }
 

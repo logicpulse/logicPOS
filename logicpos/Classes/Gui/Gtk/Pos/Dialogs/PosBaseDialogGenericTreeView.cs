@@ -1,12 +1,6 @@
 ﻿using Gtk;
-using logicpos.financial;
-using logicpos.App;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using System;
-using System.Collections.Generic;
-using System.Data;
 using logicpos.Classes.Enums.Dialogs;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -16,14 +10,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Protected Members
         protected DialogMode _dialogMode;
         //Validation Rules
-        protected string _regexAlfa = SettingsApp.RegexAlfa;
-        protected string _regexAlfaNumeric = SettingsApp.RegexAlfaNumeric;
-        protected string _regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
-        protected string _regexDecimal = SettingsApp.RegexDecimal;
-        protected string _regexDecimalGreaterThanZero = SettingsApp.RegexDecimalGreaterThanZero;
-        protected string _regexDecimalGreaterEqualThanZero = SettingsApp.RegexDecimalGreaterEqualThanZero;
-        protected string _regexGuid = SettingsApp.RegexGuid;
-        protected string _regexPercentage = SettingsApp.RegexPercentage;
+        protected string _regexAlfa = SharedSettings.RegexAlfa;
+        protected string _regexAlfaNumeric = SharedSettings.RegexAlfaNumeric;
+        protected string _regexAlfaNumericExtended = SharedSettings.RegexAlfaNumericExtended;
+        protected string _regexDecimal = SharedSettings.RegexDecimal;
+        protected string _regexDecimalGreaterThanZero = SharedSettings.RegexDecimalGreaterThanZero;
+        protected string _regexDecimalGreaterEqualThanZero = SharedSettings.RegexDecimalGreaterEqualThanZero;
+        protected string _regexGuid = SharedSettings.RegexGuid;
+        protected string _regexPercentage = SharedSettings.RegexPercentage;
 
         //Public Properties, to have access to/from TreeView EventHandlers
         protected T _dataSourceRow;

@@ -1,6 +1,7 @@
 ﻿using DevExpress.Xpo.DB;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                 T genericTypeObject;
                 XPSelectData xPSelectData;
 
-                xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlQuery);
+                xPSelectData = SharedUtils.GetSelectedDataFromQuery(sqlQuery);
 
                 PropertyInfo propertyInfo;
                 //Fields Props
@@ -162,7 +163,7 @@ namespace logicpos.financial.library.Classes.Reports.BOs
                                 }
                                 else
                                 {
-                                    fieldValue = FrameworkUtils.GetXPGuidObjectFromCriteria(propertyInfo.PropertyType, string.Format("Oid = '{0}'", fieldValue));
+                                    fieldValue = SharedUtils.GetXPGuidObjectFromCriteria(propertyInfo.PropertyType, string.Format("Oid = '{0}'", fieldValue));
                                 }
                                 // Debug purpose helper
                                 //if(propertyInfo.PropertyType == typeof(sys_userdetail) || propertyInfo.PropertyType == typeof(pos_configurationplaceterminal))

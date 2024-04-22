@@ -25,16 +25,16 @@ namespace logicpos
         public static string Encrypt(string toEncrypt, bool useHashing, string key)
         {
             byte[] keyArray;
-            byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
+            byte[] toEncryptArray = Encoding.UTF8.GetBytes(toEncrypt);
 
             if (useHashing)
             {
                 MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
-                keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
+                keyArray = hashmd5.ComputeHash(Encoding.UTF8.GetBytes(key));
                 hashmd5.Clear();
             }
             else
-                keyArray = UTF8Encoding.UTF8.GetBytes(key);
+                keyArray = Encoding.UTF8.GetBytes(key);
 
             TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
             tdes.Key = keyArray;
@@ -76,12 +76,12 @@ namespace logicpos
                 if (useHashing)
                 {
                     MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
-                    keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(pKey));
+                    keyArray = hashmd5.ComputeHash(Encoding.UTF8.GetBytes(pKey));
                     hashmd5.Clear();
                 }
                 else
                 {
-                    keyArray = UTF8Encoding.UTF8.GetBytes(pKey);
+                    keyArray = Encoding.UTF8.GetBytes(pKey);
                 }
 
                 TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
@@ -93,7 +93,7 @@ namespace logicpos
                 byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
 
                 tdes.Clear();
-                result = UTF8Encoding.UTF8.GetString(resultArray);
+                result = Encoding.UTF8.GetString(resultArray);
             }
             catch (Exception)
             {

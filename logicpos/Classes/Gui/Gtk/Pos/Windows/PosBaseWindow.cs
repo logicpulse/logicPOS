@@ -1,6 +1,7 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Extensions;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
 using System.IO;
@@ -38,7 +39,7 @@ namespace logicpos
 
         private string GetAppIconFileLocation()
         {
-            return FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icos\application.ico"));
+            return SharedUtils.OSSlash(string.Format("{0}{1}", datalayer.App.DataLayerFramework.Path["images"], @"Icos\application.ico"));
         }
 
         private void SetAppIcon()
@@ -146,9 +147,9 @@ namespace logicpos
 
         private int GetMonitorNumber()
         {
-            return string.IsNullOrEmpty(GlobalFramework.Settings["appScreen"])
+            return string.IsNullOrEmpty(datalayer.App.DataLayerFramework.Settings["appScreen"])
                     ? 0
-                    : Convert.ToInt32(GlobalFramework.Settings["appScreen"]);
+                    : Convert.ToInt32(datalayer.App.DataLayerFramework.Settings["appScreen"]);
         }
 
         protected void CheckMonitorGeometry(int width, int height)
@@ -165,8 +166,8 @@ namespace logicpos
                         DialogFlags.Modal, 
                         MessageType.Error, 
                         ButtonsType.Ok, 
-                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
-                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_low_resolution_detected"), 
+                        resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), 
+                        string.Format(resources.CustomResources.GetCustomResources(datalayer.App.DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_low_resolution_detected"), 
                         width, 
                         height));
                     Environment.Exit(0);

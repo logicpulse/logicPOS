@@ -1,13 +1,11 @@
 ﻿using Gtk;
-using logicpos.financial;
-using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.resources.Resources.Localization;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.shared;
-using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -47,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             set { _amount = value; }
         }
 
-		//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+        //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
         private decimal _totalOrder = 0.0m;
         public decimal TotalOrder
         {
@@ -62,11 +60,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle;
             if (pTotalOrder > 0)
             {
-                windowTitle = string.Format("{0} - {1} : {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_table_tickets"), FrameworkUtils.DecimalToStringCurrency(pTotalOrder));
+                windowTitle = string.Format("{0} - {1} : {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_table_tickets"), SharedUtils.DecimalToStringCurrency(pTotalOrder));
             }
             else
             {
-                windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad");
+                windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_moneypad");
             }
 
             this.InitObject(pSourceWindow, pDialogFlags, windowTitle, pInitialValue, pTotalOrder);
@@ -82,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void InitObject(Window pSourceWindow, DialogFlags pDialogFlags, string pWindowTitle, decimal pInitialValue = 0.0m, decimal pTotalOrder = 0.0m)
         {
             Size windowSize = new Size(524, 497);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_payments.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_payments.png");
 
             //Init MoneyPad
             _moneyPad = new MoneyPad(pSourceWindow, pInitialValue);
@@ -142,7 +140,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             ResponseType resultResponse;
             decimal resultValue = -1.0m;
-            string defaultValue = FrameworkUtils.DecimalToString(pInitialValue);
+            string defaultValue = SharedUtils.DecimalToString(pInitialValue);
 
             PosMoneyPadDialog dialog;
 

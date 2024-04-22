@@ -1,10 +1,10 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.Extensions;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using System;
 using System.Collections.Generic;
@@ -48,11 +48,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Local Vars
             // Title will be Overrided in CalculateTotalPerSplit
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_split_payment");
             Size windowSize = new Size(600, 460);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_split_payments.png");
-            string fileAddSplitIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_nav_new.png");
-            string fileRemoveSplitIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_split_payments.png");
+            string fileAddSplitIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_new.png");
+            string fileRemoveSplitIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\icon_pos_nav_delete.png");
 
             //Init Content : ViewPort
             _vbox = new VBox(false, 2);
@@ -71,9 +71,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
             _buttonOk.Sensitive = false;
 
-            _buttonTableAddSplit = new TouchButtonIconWithText("touchButtonTableIncrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_add"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileAddSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
+            _buttonTableAddSplit = new TouchButtonIconWithText("touchButtonTableIncrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_add"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileAddSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
             { Sensitive = true };
-            _buttonTableRemoveSplit = new TouchButtonIconWithText("touchButtonTableDecrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_remove"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileRemoveSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
+            _buttonTableRemoveSplit = new TouchButtonIconWithText("touchButtonTableDecrementSplit_DialogActionArea", _colorBaseDialogActionAreaButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_remove"), _fontBaseDialogActionAreaButton, _colorBaseDialogActionAreaButtonFont, fileRemoveSplitIcon, _sizeBaseDialogActionAreaButtonIcon, _sizeBaseDialogActionAreaButton.Width, _sizeBaseDialogActionAreaButton.Height)
             { Sensitive = true };
 
             //ActionArea
@@ -105,7 +105,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : fontSplitPaymentTouchButtonSplitPayment
             try
             {
-                _fontSplitPaymentTouchButtonSplitPayment = GlobalFramework.Settings["fontSplitPaymentTouchButtonSplitPayment"];
+                _fontSplitPaymentTouchButtonSplitPayment = DataLayerFramework.Settings["fontSplitPaymentTouchButtonSplitPayment"];
             }
             catch (Exception)
             {
@@ -116,7 +116,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : intSplitPaymentTouchButtonSplitPaymentHeight
             try
             {
-                _intSplitPaymentTouchButtonSplitPaymentHeight = Convert.ToInt16(GlobalFramework.Settings["intSplitPaymentTouchButtonSplitPaymentHeight"]);
+                _intSplitPaymentTouchButtonSplitPaymentHeight = Convert.ToInt16(DataLayerFramework.Settings["intSplitPaymentTouchButtonSplitPaymentHeight"]);
             }
             catch (Exception)
             {
@@ -127,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : colorSplitPaymentTouchButtonFilledDataBackground
             try
             {
-                _colorSplitPaymentTouchButtonFilledDataBackground = GlobalFramework.Settings["colorSplitPaymentTouchButtonFilledDataBackground"].StringToColor();
+                _colorSplitPaymentTouchButtonFilledDataBackground = DataLayerFramework.Settings["colorSplitPaymentTouchButtonFilledDataBackground"].StringToColor();
             }
             catch (Exception)
             {
@@ -138,11 +138,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : intSplitPaymentStartClients
             try
             {
-                _intSplitPaymentStartClients = Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"]);
+                _intSplitPaymentStartClients = Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"]);
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_START_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_START_CLIENTS: [{0}]", Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_START_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentStartClients = 2;
             }
@@ -150,11 +150,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : intSplitPaymentMinClients
             try
             {
-                _intSplitPaymentMinClients = Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"]);
+                _intSplitPaymentMinClients = Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"]);
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MIN_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MIN_CLIENTS: [{0}]", Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_MIN_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentMinClients = 2;
             }
@@ -162,11 +162,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Settings : intSplitPaymentMaxClients
             try
             {
-                _intSplitPaymentMaxClients = Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"]);
+                _intSplitPaymentMaxClients = Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"]);
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MAX_CLIENTS: [{0}]", Convert.ToInt16(GlobalFramework.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"])));
+                _logger.Debug(string.Format("Error in Config value SPLIT_PAYMENT_MAX_CLIENTS: [{0}]", Convert.ToInt16(SharedFramework.PreferenceParameters["SPLIT_PAYMENT_MAX_CLIENTS"])));
                 // Use Defaults
                 _intSplitPaymentMaxClients = 10;
             }

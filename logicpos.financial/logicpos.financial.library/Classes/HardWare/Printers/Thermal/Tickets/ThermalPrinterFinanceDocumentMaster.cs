@@ -10,6 +10,8 @@ using System.Data;
 using SkiaSharp;
 using SkiaSharp.QrCode.Image;
 using System.IO;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 {
@@ -50,13 +52,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 //Call base PrintDocumentMaster();
-                base.PrintDocumentMaster(_documentFinanceMasterList[0].DocumentTypeResourceString, _documentFinanceMasterList[0].DocumentNumber, _documentFinanceMasterList[0].DocumentDate);
+                PrintDocumentMaster(_documentFinanceMasterList[0].DocumentTypeResourceString, _documentFinanceMasterList[0].DocumentNumber, _documentFinanceMasterList[0].DocumentDate);
 
                 //Call 
                 PrintDocumentMasterDocumentType();
 
                 //Call base PrintCustomer();
-                base.PrintCustomer(
+                PrintCustomer(
                     _documentFinanceMasterList[0].EntityName,
                     _documentFinanceMasterList[0].EntityAddress,
                     _documentFinanceMasterList[0].EntityZipCode,
@@ -71,22 +73,22 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 PrintDocumenWayBillDetails();
 
                 //Call base PrintDocumentPaymentDetails();
-                base.PrintDocumentPaymentDetails(string.Empty, _documentFinanceMasterList[0].PaymentMethodDesignation, _documentFinanceMasterList[0].CurrencyAcronym); /* IN009055 */
+                PrintDocumentPaymentDetails(string.Empty, _documentFinanceMasterList[0].PaymentMethodDesignation, _documentFinanceMasterList[0].CurrencyAcronym); /* IN009055 */
 
                 //Call base PrintNotes();
                 //IN009279 Wont print notes on ticket mode 
-                if (_documentFinanceMasterList[0].Notes != null && !GlobalFramework.AppUseParkingTicketModule) base.PrintNotes(_documentFinanceMasterList[0].Notes.ToString());
+                if (_documentFinanceMasterList[0].Notes != null && !SharedFramework.AppUseParkingTicketModule) PrintNotes(_documentFinanceMasterList[0].Notes.ToString());
 
                 //Only Print if is in Portugal ex "Os artigos faturados...."
                 //Call base PrintDocumentTypeFooterString();
                 try
                 {
-                    if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal || SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryAngola)
+                    if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal || DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryAngola)
                     {
-                        base.PrintDocumentTypeFooterString(_documentFinanceMasterList[0].DocumentTypeResourceStringReport);
+                        PrintDocumentTypeFooterString(_documentFinanceMasterList[0].DocumentTypeResourceStringReport);
                         //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
                         //Print QRCode
-                        if (Convert.ToBoolean(GlobalFramework.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.ATDocQRCode))
+                        if (Convert.ToBoolean(SharedFramework.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.ATDocQRCode))
                         {
                             //PrintQRCode with buffer
                             //base.PrintQRCode(_documentMaster.ATDocQRCode);
@@ -102,7 +104,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                                 bitmap.Save(@"temp/qrcode.Bmp");
                             }
 
-                            base.PrintQRCodeImage(new System.Drawing.Bitmap(@"temp/qrcode.Bmp"));
+                            PrintQRCodeImage(new System.Drawing.Bitmap(@"temp/qrcode.Bmp"));
 
 
                         }
@@ -112,7 +114,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Get Hash4Chars from Hash
                 string hash4Chars = ProcessFinanceDocument.GenDocumentHash4Chars(_documentMaster.Hash);
                 //Call Base CertificationText 
-                base.PrintCertificationText(hash4Chars);
+                PrintCertificationText(hash4Chars);
             }
             catch (Exception ex)
             {
@@ -128,14 +130,14 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             _thermalPrinterGeneric.SetAlignCenter();
 
             /* IN008024 */
-            //string appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"].ToLower();
+            //string appOperationModeToken = DataLayerFramework.Settings["appOperationModeToken"].ToLower();
 
             //ConferenceDocument : Show Table if in ConferenceDocument and in default AppMode
-            if (_documentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument && SettingsApp.IsDefaultTheme)
+            if (_documentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument && DataLayerSettings.IsDefaultTheme)
             {
                 //Table|Order #2|Name/Zone
                 string tableZone = string.Format("{0} : #{1}/{2}"
-                    , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", SettingsApp.CustomAppOperationMode.AppOperationTheme.ToLower())) /* IN008024 */
+                    , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme.ToLower())) /* IN008024 */
                     , _documentMaster.SourceOrderMain.PlaceTable.Designation
                     , _documentMaster.SourceOrderMain.PlaceTable.Place.Designation
                 );
@@ -153,34 +155,34 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 List<TicketColumn> columns = new List<TicketColumn>();
-                //columns.Add(new TicketColumn("Article", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_acronym, 0, TicketColumnsAlign.Right, typeof(string), "{0:0.00}"));
+                //columns.Add(new TicketColumn("Article", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_acronym, 0, TicketColumnsAlign.Right, typeof(string), "{0:0.00}"));
                 /* IN009211 block - begin 
                  * 
                  * We opt for "(%)" symbol to be added to value itself because of column title lenght limit, and for this, we changed from Decimal to String here.
-                 * The conversion will be done when printing the DataRow for VatRate and Discount fields (FrameworkUtils.DecimalToString(pFinanceDetail.Vat)).
+                 * The conversion will be done when printing the DataRow for VatRate and Discount fields (SharedUtils.DecimalToString(pFinanceDetail.Vat)).
                  */
                 //Colum
-                if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal){
-                    columns.Add(new TicketColumn("VatRate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "IVA") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal){
+                    columns.Add(new TicketColumn("VatRate", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "IVA") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
                 }
                 else
                 {
-                    columns.Add(new TicketColumn("VatRate", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
+                    columns.Add(new TicketColumn("VatRate", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rate") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:00.00}"));
                 }                
-                columns.Add(new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-                columns.Add(new TicketColumn("UnitMeasure", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
-                if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal)
+                columns.Add(new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                columns.Add(new TicketColumn("UnitMeasure", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right));
+                if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal)
                 {
-                    columns.Add(new TicketColumn("UnitPrice", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_short_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                    columns.Add(new TicketColumn("UnitPrice", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_short_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 }
                 else
                 {
-                    columns.Add(new TicketColumn("Price", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                    columns.Add(new TicketColumn("Price", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), 11, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
                 }
 
-                columns.Add(new TicketColumn("Discount", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount_acronym") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-                //columns.Add(new TicketColumn("TotalNet", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_totalnet_acronym, 9, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-                columns.Add(new TicketColumn("TotalFinal", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_per_item"), 0, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));//Dynamic
+                columns.Add(new TicketColumn("Discount", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount_acronym") + "%", 6, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                //columns.Add(new TicketColumn("TotalNet", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_totalnet_acronym, 9, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
+                columns.Add(new TicketColumn("TotalFinal", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_per_item"), 0, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));//Dynamic
                 /* IN009211 - end */
 
                 //Prepare Table with Padding
@@ -239,7 +241,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 //Item Details
                 DataRow dataRow = pTicketTable.NewRow();
                 /* IN009211 block - begin 
-                 * Method "FrameworkUtils.DecimalToString(pFinanceDetail.Vat)" is safe for "%" format
+                 * Method "SharedUtils.DecimalToString(pFinanceDetail.Vat)" is safe for "%" format
                  */
 				dataRow[0] = pFinanceDetail.Vat;
                 dataRow[1] = pFinanceDetail.Quantity;
@@ -286,16 +288,16 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 if (_documentFinanceMasterList[0].Discount > 0.0m)
                 {
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format("{0} (%)", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_discount_customer")); /* IN009211 */
-                    dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].Discount);
+                    dataRow[0] = string.Format("{0} (%)", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_discount_customer")); /* IN009211 */
+                    dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].Discount);
                     dataTable.Rows.Add(dataRow);
                 }
                 //Add Row : TotalDiscount
                 if (_documentFinanceMasterList[0].TotalDiscount > 0.0m)
                 {
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_total_discount"); /* IN009211 */
-                    dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].TotalDiscount * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_total_discount"); /* IN009211 */
+                    dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].TotalDiscount * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
                 
@@ -305,23 +307,23 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Add Row : TotalNet
                 dataRow = dataTable.NewRow();
-                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_totalnet"); /* IN009211 */
-                //dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].TotalGross * _documentFinanceMasterList[0].ExchangeRate);
-                dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].TotalNet * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_totalnet"); /* IN009211 */
+                //dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].TotalGross * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].TotalNet * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
                 //Add Row : TotalTax
                 dataRow = dataTable.NewRow();
-                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax"); /* IN009211 */
-                dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].TotalTax * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax"); /* IN009211 */
+                dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].TotalTax * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
                 //Add Row : TotalFinal
                 dataRow = dataTable.NewRow();
-                dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totalfinal");
-                dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * _documentFinanceMasterList[0].ExchangeRate);
+                dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totalfinal");
+                dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * _documentFinanceMasterList[0].ExchangeRate);
                 dataTable.Rows.Add(dataRow);
 
                 //If Simplified Invoice, Payment Method MONEY and has Total Change, add it
-                if (new Guid(_documentFinanceMasterList[0].DocumentType) == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                if (new Guid(_documentFinanceMasterList[0].DocumentType) == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                     && _documentFinanceMasterList[0].PaymentMethodToken == "MONEY"
                     && _documentFinanceMasterList[0].TotalChange > 0
                     )
@@ -333,28 +335,28 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                     dataTable.Rows.Add(dataRow);
                     //TotalDelivery
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_deliver");
-                    dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].TotalDelivery * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_deliver");
+                    dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].TotalDelivery * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                     //TotalChange
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_change");
-                    dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].TotalChange * _documentFinanceMasterList[0].ExchangeRate);
+                    dataRow[0] = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_change");
+                    dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].TotalChange * _documentFinanceMasterList[0].ExchangeRate);
                     dataTable.Rows.Add(dataRow);
                 }
 
                 /* IN009055 - related to IN005976 for Mozambique deployment */
-                if (SettingsApp.XpoOidConfigurationCountryMozambique.Equals(SettingsApp.ConfigurationSystemCountry.Oid))
+                if (SharedSettings.XpoOidConfigurationCountryMozambique.Equals(DataLayerSettings.ConfigurationSystemCountry.Oid))
                 {
                     cfg_configurationcurrency defaultCurrencyForExchangeRate =
-                        (cfg_configurationcurrency)FrameworkUtils.GetXPGuidObject(
-                            GlobalFramework.SessionXpo,
+                        (cfg_configurationcurrency)DataLayerUtils.GetXPGuidObject(
+                            DataLayerFramework.SessionXpo,
                             typeof(cfg_configurationcurrency),
-                            SettingsApp.XpoOidConfigurationCurrencyUSDollar);
+                            SharedSettings.XpoOidConfigurationCurrencyUSDollar);
 
                     dataRow = dataTable.NewRow();
-                    dataRow[0] = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);
-                    dataRow[1] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * defaultCurrencyForExchangeRate.ExchangeRate);/* TO DO : IN009055 - this causes total equals 0,00 when low product price */
+                    dataRow[0] = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printer_thermal_total_default_currency"), defaultCurrencyForExchangeRate.Acronym);
+                    dataRow[1] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].TotalFinal * defaultCurrencyForExchangeRate.ExchangeRate);/* TO DO : IN009055 - this causes total equals 0,00 when low product price */
                     dataTable.Rows.Add(dataRow);
                 }
 
@@ -410,19 +412,19 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 {
                     dataRow = dataTable.NewRow();
                     dataRow[0] = item.Designation;
-                    dataRow[1] = string.Format("{0}%", FrameworkUtils.DecimalToString(item.Value));
-                    dataRow[2] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.TotalBase);
-                    dataRow[3] = FrameworkUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.Total);
+                    dataRow[1] = string.Format("{0}%", SharedUtils.DecimalToString(item.Value));
+                    dataRow[2] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.TotalBase);
+                    dataRow[3] = SharedUtils.DecimalToString(_documentFinanceMasterList[0].ExchangeRate * item.Total);
                     dataTable.Rows.Add(dataRow);
                 }
 
                 //Configure Ticket Column Properties
                 List<TicketColumn> columns = new List<TicketColumn>
                 {
-                    new TicketColumn("Designation", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left),
-                    new TicketColumn("Tax", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_tax"), 8, TicketColumnsAlign.Right),
-                    new TicketColumn("TotalBase", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_tax_base"), 12, TicketColumnsAlign.Right),
-                    new TicketColumn("Total", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlign.Right)
+                    new TicketColumn("Designation", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left),
+                    new TicketColumn("Tax", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_tax"), 8, TicketColumnsAlign.Right),
+                    new TicketColumn("TotalBase", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_tax_base"), 12, TicketColumnsAlign.Right),
+                    new TicketColumn("Total", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlign.Right)
                 };
 
                 //TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
@@ -448,25 +450,25 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                 if (_documentFinanceMasterList[0].DocumentTypeWayBill)
                 {
                     //WayBill Local Load
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipFromAddressDetail, _documentFinanceMasterList[0].ShipFromCity));
                     _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipFromPostalCode, _documentFinanceMasterList[0].ShipFromRegion, _documentFinanceMasterList[0].ShipFromCountry));
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_from_delivery_date_report"), FrameworkUtils.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_from_delivery_id_report"), _documentFinanceMasterList[0].ShipFromDeliveryID);
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_from_warehouse_id_report"), _documentFinanceMasterList[0].ShipFromWarehouseID);
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_from_location_id_report"), _documentFinanceMasterList[0].ShipFromLocationID);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_from_delivery_date_report"), SharedUtils.DateTimeToString(_documentFinanceMasterList[0].ShipFromDeliveryDate));
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_from_delivery_id_report"), _documentFinanceMasterList[0].ShipFromDeliveryID);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_from_warehouse_id_report"), _documentFinanceMasterList[0].ShipFromWarehouseID);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_from_location_id_report"), _documentFinanceMasterList[0].ShipFromLocationID);
 
                     //Separate with Blank Line
                     _thermalPrinterGeneric.LineFeed();
 
                     //WayBill Local Download
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_waybill_local_download"), WriteLineTextMode.Bold);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_waybill_local_download"), WriteLineTextMode.Bold);
                     _thermalPrinterGeneric.WriteLine(string.Format("{0} {1}", _documentFinanceMasterList[0].ShipToAddressDetail, _documentFinanceMasterList[0].ShipToCity));
                     _thermalPrinterGeneric.WriteLine(string.Format("{0} {1} [{2}]", _documentFinanceMasterList[0].ShipToPostalCode, _documentFinanceMasterList[0].ShipToRegion, _documentFinanceMasterList[0].ShipToCountry));
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date_report"), FrameworkUtils.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_id_report"), _documentFinanceMasterList[0].ShipToDeliveryID);
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_warehouse_id_report"), _documentFinanceMasterList[0].ShipToWarehouseID);
-                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_ship_to_location_id_report"), _documentFinanceMasterList[0].ShipToLocationID);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_date_report"), SharedUtils.DateTimeToString(_documentFinanceMasterList[0].ShipToDeliveryDate));
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_delivery_id_report"), _documentFinanceMasterList[0].ShipToDeliveryID);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_warehouse_id_report"), _documentFinanceMasterList[0].ShipToWarehouseID);
+                    _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_ship_to_location_id_report"), _documentFinanceMasterList[0].ShipToLocationID);
 
                     //Line Feed
                     _thermalPrinterGeneric.LineFeed();
@@ -478,7 +480,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
                         _thermalPrinterGeneric.SetAlignCenter();
 
                         //WayBill Local Load
-                        _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_at_atdoccodeid"), WriteLineTextMode.Bold);
+                        _thermalPrinterGeneric.WriteLine(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_at_atdoccodeid"), WriteLineTextMode.Bold);
                         _thermalPrinterGeneric.WriteLine(_documentFinanceMasterList[0].ATDocCodeID, WriteLineTextMode.DoubleHeight);
 
                         //Reset Align 

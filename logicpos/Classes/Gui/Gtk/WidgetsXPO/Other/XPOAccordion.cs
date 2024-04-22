@@ -1,9 +1,10 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System.Collections.Generic;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
@@ -36,7 +37,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
 
             //Get XPSelectData for Parent and Child
-            XPSelectData xPSelectDataParent = FrameworkUtils.GetSelectedDataFromQuery(sqlTableParent);
+            XPSelectData xPSelectDataParent = SharedUtils.GetSelectedDataFromQuery(sqlTableParent);
             XPSelectData xPSelectDataChild;
             Dictionary<string, AccordionNode> _accordionChilds = new Dictionary<string, AccordionNode>();
 
@@ -52,11 +53,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     //Bypass default db label with Resources Localization Label
                     if (Resx
                         .ResourceManager.GetString(parentResource) != null)
-                        parentLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], parentResource);
+                        parentLabel = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], parentResource);
                 }
 
                 //Get Child Data
-                xPSelectDataChild = FrameworkUtils.GetSelectedDataFromQuery(string.Format(sqlTableChild, parentId));
+                xPSelectDataChild = SharedUtils.GetSelectedDataFromQuery(string.Format(sqlTableChild, parentId));
                 //Init Childs        
                 _accordionChilds = new Dictionary<string, AccordionNode>();
 
@@ -69,8 +70,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     {
                         string childResource = childRow.Values[xPSelectDataChild.GetFieldIndex("resource")].ToString();
                         //Bypass default db label with Resources Localization Label
-                        if (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], childResource) != null)
-                            childLabel = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], childResource);
+                        if (resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], childResource) != null)
+                            childLabel = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], childResource);
                     }
                     _accordionChilds.Add(string.Format("childId_{0}", childId), new AccordionNode(childLabel) { Content = new Button(childLabel) });
                 }

@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using PCComm;
 using System;
@@ -27,7 +28,7 @@ namespace logicpos.Classes.Logic.Hardware
         {
             //string baud, string par, string sBits, string dBits, string name
             _communicationManager = new CommunicationManager(baudRate, parity, stopBits, dataBits, portName);
-            _communicationManager.CurrentTransmissionType = PCComm.CommunicationManager.TransmissionType.Hex;
+            _communicationManager.CurrentTransmissionType = CommunicationManager.TransmissionType.Hex;
             // Start With OpenPort
             OpenPort();
         }
@@ -40,8 +41,8 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                logicpos.Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
+                logicpos.Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                    string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), DataLayerFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
                     );
                 _logger.Error(ex.Message, ex);
                 return false;

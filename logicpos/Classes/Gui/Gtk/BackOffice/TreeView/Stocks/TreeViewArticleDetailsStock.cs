@@ -2,16 +2,15 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Formatters;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.financial.library.Classes.Stocks;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.GenericTreeView;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.financial.library.Classes.Stocks;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -47,21 +46,21 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 //FontDesc = new Pango.FontDescription() { Size = fontGenericTreeViewColumn },
                 //Alignment = Pango.Alignment.Right,
                 //Xalign = 1.0F,
-                Editable = true,                
+                Editable = true,
             };
             MinStockCellRender.Edited += MinStockCellRender_Edited;
             //Config
-            int fontGenericTreeViewColumn = Convert.ToInt16(GlobalFramework.Settings["fontGenericTreeViewColumn"]);
+            int fontGenericTreeViewColumn = Convert.ToInt16(DataLayerFramework.Settings["fontGenericTreeViewColumn"]);
 
             //Configure columnProperties
             List<GenericTreeViewColumnProperty> columnProperties = new List<GenericTreeViewColumnProperty>
             {
-                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article_code"), MinWidth = 100 },
-                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("Code") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article_code"), MinWidth = 100 },
+                new GenericTreeViewColumnProperty("Designation") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
                 new GenericTreeViewColumnProperty("Accounting")
                 {
                     Query = "SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;",
-                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_stock"),
+                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_stock"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
                     FormatProvider = new FormatterDecimal(),
@@ -70,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 },
                 new GenericTreeViewColumnProperty("MinimumStock")
                 {
-                    Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock"),
+                    Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_minimum_stock"),
                     MinWidth = 100,
                     //Alignment = 1.0F,
                     FormatProvider = new FormatterDecimal(),
@@ -82,8 +81,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //    Xalign = 1.0F
                     //}
                 },
-                new GenericTreeViewColumnProperty("UnitMeasure") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure"), ChildName = "Designation", Expand = true },
-                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
+                new GenericTreeViewColumnProperty("UnitMeasure") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unit_measure"), ChildName = "Designation", Expand = true },
+                new GenericTreeViewColumnProperty("UpdatedAt") { Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_date_updated"), MinWidth = 150, MaxWidth = 150 }
             };
 
 
@@ -103,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             SortProperty[] sortProperty = new SortProperty[2];
             sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Ascending);
             sortProperty[1] = new SortProperty("Ord", SortingDirection.Ascending);
-            xpoCollection = new XPCollection(GlobalFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
+            xpoCollection = new XPCollection(DataLayerFramework.SessionXpo, xpoGuidObjectType, criteria, sortProperty);
 
             //Call Base Initializer
             base.InitObject(
@@ -120,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void MinStockCellRender_Edited(object o, EditedArgs args)
         {
             try
-            {                
+            {
                 if (_dataSourceRow != null && (_dataSourceRow as fin_article).MinimumStock != Convert.ToDecimal(args.NewText))
                 {
                     (_dataSourceRow as fin_article).MinimumStock = Convert.ToDecimal(args.NewText);
@@ -170,26 +169,26 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     decimal getArticleStock = Convert.ToDecimal(_dataSourceRow.Session.ExecuteScalar(stockQuery).ToString());
                     if (getArticleStock != (_dataSourceRow as fin_article).Accounting)
                     {
-                        var own_customer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SettingsApp.XpoOidUserRecord);
+                        var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
                         if (own_customer != null)
                         {
                             if (string.IsNullOrEmpty(own_customer.Name))
                             {
                                 //update owner customer for internal stock moviments
-                                own_customer.FiscalNumber = GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
-                                own_customer.Name = GlobalFramework.PreferenceParameters["COMPANY_NAME"];
+                                own_customer.FiscalNumber = SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                                own_customer.Name = SharedFramework.PreferenceParameters["COMPANY_NAME"];
                                 own_customer.Save();
                             }
                         }
                         if ((_dataSourceRow as fin_article).Accounting > getArticleStock)
                         {
                             decimal quantity = (_dataSourceRow as fin_article).Accounting - getArticleStock;
-                            ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, own_customer, 1, DateTime.Now, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+                            ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, own_customer, 1, DateTime.Now, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
                         }
                         else
                         {
                             decimal quantity = getArticleStock - (_dataSourceRow as fin_article).Accounting;
-                            ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.Out, own_customer, 1, DateTime.Now, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+                            ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.Out, own_customer, 1, DateTime.Now, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), quantity, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
                         }
                     }
                     xpoCollection.Reload();
@@ -199,7 +198,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //New article
             catch
             {
-                ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, null, 1, DateTime.Now, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), (_dataSourceRow as fin_article).Accounting, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
+                ProcessArticleStock.Add(datalayer.Enums.ProcessArticleStockMode.In, null, 1, DateTime.Now, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"), (_dataSourceRow as fin_article), (_dataSourceRow as fin_article).Accounting, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_internal_document_footer1"));
                 xpoCollection.Reload();
                 this.Refresh();
             }

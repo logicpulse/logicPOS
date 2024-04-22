@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
 using logicpos.Extensions;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         //Private Fields
         private HBox _navigator;
-        private readonly Color _colorPagePadHotButtonBackground = GlobalFramework.Settings["colorPagePadHotButtonBackground"].StringToColor();
+        private readonly Color _colorPagePadHotButtonBackground = DataLayerFramework.Settings["colorPagePadHotButtonBackground"].StringToColor();
 
         //Public Properties
         private TouchButtonIconWithText _buttonPrev;
@@ -67,18 +67,18 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public void Init(List<PagePadPage> pPages)
         {
-            string fontPagePadNavigatorButton = GlobalFramework.Settings["fontPagePadNavigatorButton"];
-            Size sizePagesPadNavigatorButton = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePagesPadNavigatorButton"]);
-            Size sizePagesPadNavigatorButtonIcon = logicpos.Utils.StringToSize(GlobalFramework.Settings["sizePagesPadNavigatorButtonIcon"]);
-            string iconPrev = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_pagepad_prev.png"));
-            string iconNext = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_pagepad_next.png"));
+            string fontPagePadNavigatorButton = DataLayerFramework.Settings["fontPagePadNavigatorButton"];
+            Size sizePagesPadNavigatorButton = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePagesPadNavigatorButton"]);
+            Size sizePagesPadNavigatorButtonIcon = logicpos.Utils.StringToSize(DataLayerFramework.Settings["sizePagesPadNavigatorButtonIcon"]);
+            string iconPrev = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_prev.png"));
+            string iconNext = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_pagepad_next.png"));
 
             //Parameters
             _pages = pPages;
 
             HBox navigatorButtons = new HBox(true, 0);
-            _buttonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
-            _buttonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
+            _buttonPrev = new TouchButtonIconWithText("buttonPrev", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_prev_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconPrev, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height) { Sensitive = false };
+            _buttonNext = new TouchButtonIconWithText("buttonNext", _colorPagePadHotButtonBackground, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "pos_button_label_next_pages_toolbar"), fontPagePadNavigatorButton, Color.White, iconNext, sizePagesPadNavigatorButtonIcon, sizePagesPadNavigatorButton.Width, sizePagesPadNavigatorButton.Height);
 
             //Events
             _buttonPrev.Clicked += buttonPrev_Clicked;
@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 page.NavigatorButton.Sensitive = (i == 1);
                 // Change color of current Button
                 if ((i == 1)) page.NavigatorButton.ModifyBg(
-                    StateType.Normal, 
+                    StateType.Normal,
                     _colorPagePadHotButtonBackground.ToGdkColor());
                 // Pack
                 navigatorButtons.PackStart(page.NavigatorButton, true, true, 2);

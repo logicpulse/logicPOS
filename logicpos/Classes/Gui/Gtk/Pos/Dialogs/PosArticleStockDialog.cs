@@ -1,23 +1,22 @@
 ﻿using DevExpress.Data.Filtering;
+using DevExpress.Xpo;
 using Gtk;
 using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial;
-using logicpos.financial.library.Classes.Stocks;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
-using System;
-using System.Drawing;
-using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Enums.Keyboard;
-using System.Collections.Generic;
-using DevExpress.Xpo;
-using System.Collections;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
+using logicpos.financial.library.Classes.Stocks;
+using logicpos.shared.App;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -83,9 +82,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_article_stock");
             Size windowSize = new Size(500, 580);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_stocks.png");
 
             InitUI();
 
@@ -119,7 +118,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _articleCollection = new Dictionary<fin_article, decimal>();
                 //Supplier
                 CriteriaOperator criteriaOperatorSupplier = CriteriaOperator.Parse("(Supplier = 1)");
-                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, SettingsApp.RegexGuid, true);
+                _entryBoxSelectSupplier = new XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_supplier"), "Name", "Oid", _initialSupplier, criteriaOperatorSupplier, SharedSettings.RegexGuid, true);
                 _entryBoxSelectSupplier.EntryValidation.IsEditable = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.PopupCompletion = true;
                 _entryBoxSelectSupplier.EntryValidation.Completion.InlineCompletion = false;
@@ -128,15 +127,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxSelectSupplier.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //DocumentDate
-                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), _initialDocumentDate, SettingsApp.RegexDate, true, SettingsApp.DateFormat);
+                _entryBoxDocumentDate = new EntryBoxValidationDatePickerDialog(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), _initialDocumentDate, SharedSettings.RegexDate, true, SharedSettings.DateFormat);
                 //_entryBoxDocumentDate.EntryValidation.Sensitive = true;
-                _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(SettingsApp.DateFormat);
+                _entryBoxDocumentDate.EntryValidation.Text = _initialDocumentDate.ToString(SharedSettings.DateFormat);
                 _entryBoxDocumentDate.EntryValidation.Validate();
                 _entryBoxDocumentDate.EntryValidation.Sensitive = true;
                 _entryBoxDocumentDate.ClosePopup += delegate { ValidateDialog(); };
 
                 //DocumentNumber
-                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+                _entryBoxDocumentNumber = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_number"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
                 if (_initialDocumentNumber != string.Empty) _entryBoxDocumentNumber.EntryValidation.Text = _initialDocumentNumber;
                 _entryBoxDocumentNumber.EntryValidation.Changed += delegate { ValidateDialog(); };
 
@@ -148,8 +147,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _scrolledWindowView.ModifyBg(StateType.Normal, Color.White.ToGdkColor());
                 _scrolledWindowView.ShadowType = ShadowType.Out;
                 _totalCompositeEntrys++;
-                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
-                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, SettingsApp.RegexAlfaNumericArticleCode, SettingsApp.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", DataLayerSettings.XpoOidArticleDefaultClass));
+                _entryBoxSelectArticle1 = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
                 _entryBoxSelectArticle1.EntryValidation.IsEditable = true;
                 _entryBoxSelectArticle1.EntryQtdValidation.IsEditable = true;
                 _entryBoxSelectArticle1.Value = null;
@@ -197,16 +196,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 //SelectArticle
                 //CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Class = '{0}')", SettingsApp.XpoOidArticleDefaultClass));
-                //_entryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, SettingsApp.RegexGuid, true);
+                //_entryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, SettingsApp.RegexGuid, true);
                 //_entryBoxSelectArticle.EntryValidation.IsEditable = false;
                 //_entryBoxSelectArticle.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 ////Quantity
-                //_entryBoxQuantity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity"), KeyboardMode.Numeric, SettingsApp.RegexDecimalPositiveAndNegative, true);
+                //_entryBoxQuantity = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity"), KeyboardMode.Numeric, SettingsApp.RegexDecimalPositiveAndNegative, true);
                 //_entryBoxQuantity.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Notes
-                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+                _entryBoxNotes = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
                 _entryBoxNotes.EntryValidation.Changed += delegate { ValidateDialog(); };
 
                 //Final Pack
@@ -228,12 +227,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void ValidateDialog()
         {
             int validateEntrys = 0;
-            foreach(var item in _entryCompositeLinesCollection)
+            foreach (var item in _entryCompositeLinesCollection)
             {
                 item.EntryCodeValidation.Validate();
                 item.EntryQtdValidation.Validate();
                 item.EntryValidation.Validate();
-                if(!item.EntryCodeValidation.Validated || !item.EntryQtdValidation.Validated || !item.EntryValidation.Validated)
+                if (!item.EntryCodeValidation.Validated || !item.EntryQtdValidation.Validated || !item.EntryValidation.Validated)
                 {
                     validateEntrys++;
                 }
@@ -252,19 +251,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void Load()
         {
             //Get From Session if Exists
-            object supplier = GlobalFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper());
-            object documentDate = GlobalFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper());
-            object documentNumber = GlobalFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper());
+            object supplier = SharedFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper());
+            object documentDate = SharedFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper());
+            object documentNumber = SharedFramework.SessionApp.GetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper());
             //Assign if Valid
             try
             {
-                if (supplier != null) _initialSupplier = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
-                var own_customer = (erp_customer)GlobalFramework.SessionXpo.GetObjectByKey(typeof(erp_customer),SettingsApp.XpoOidUserRecord);
-                if(own_customer != null)
+                if (supplier != null) _initialSupplier = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), new Guid(supplier.ToString()));
+                var own_customer = (erp_customer)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(erp_customer), SharedSettings.XpoOidUserRecord);
+                if (own_customer != null)
                 {
                     //update owner customer for internal stock moviments                        
-                    own_customer.FiscalNumber = GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
-                    own_customer.Name = GlobalFramework.PreferenceParameters["COMPANY_NAME"];
+                    own_customer.FiscalNumber = SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"];
+                    own_customer.Name = SharedFramework.PreferenceParameters["COMPANY_NAME"];
                     own_customer.Save();
 
                     if (supplier == null) { supplier = own_customer; }
@@ -278,7 +277,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             try
             {
-                _initialDocumentDate = (documentDate != null) ? Convert.ToDateTime(documentDate) : FrameworkUtils.CurrentDateTimeAtomic();
+                _initialDocumentDate = (documentDate != null) ? Convert.ToDateTime(documentDate) : DataLayerUtils.CurrentDateTimeAtomic();
             }
             catch (Exception ex)
             {
@@ -299,10 +298,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             try
             {
-                GlobalFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper(), _entryBoxSelectSupplier.Value.Oid);
-                GlobalFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper(), _entryBoxDocumentDate.Value);
-                GlobalFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper(), _entryBoxDocumentNumber.EntryValidation.Text);
-                GlobalFramework.SessionApp.Write();
+                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "supplier").ToUpper(), _entryBoxSelectSupplier.Value.Oid);
+                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentDate").ToUpper(), _entryBoxDocumentDate.Value);
+                SharedFramework.SessionApp.SetToken(string.Format("{0}_{1}", this.GetType().Name, "documentNumber").ToUpper(), _entryBoxDocumentNumber.EntryValidation.Text);
+                SharedFramework.SessionApp.Write();
             }
             catch (Exception ex)
             {
@@ -339,17 +338,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (!articleOid.Equals(Guid.Empty))
                 {
                     //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                    fin_article newArticle = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), articleOid);
+                    fin_article newArticle = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), articleOid);
 
                     if (isArticleCode)
                     {
                         pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                        pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                         pXPOEntry.EntryCodeValidation.Validate();
 
@@ -363,13 +362,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     }
                     pXPOEntry.EntryValidation.Changed -= delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryValidation.Text = (newArticle != null) ? newArticle.Designation.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.EntryValidation.Changed += delegate { pXPOEntry.EntryValidation.Validate(); };
 
-                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryCodeValidation.Text = (newArticle != null) ? newArticle.Code.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
-                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pXPOEntry.EntryQtdValidation.Text = (newArticle != null) ? string.Format("{0:0.##}", newArticle.DefaultQuantity) : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
                     pXPOEntry.Value = newArticle;
 
@@ -398,7 +397,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pXPOEntry.Value == _article)
                     {
                         pXPOEntry.Value = null;
-                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                        logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                         pXPOEntry.EntryValidation.Text = "";
                         ValidateDialog();
                         return;
@@ -427,7 +426,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 };
                 if (ReferenceEquals(pCriteria, null)) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
-                _dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
+                _dropdownTextCollection = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(typeof(fin_article)), pCriteria, sortCollection, int.MaxValue, false, true);
 
                 if (_dropdownTextCollection != null)
                 {
@@ -461,7 +460,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _totalCompositeEntrys++;
                 //var entrySelected = (XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>)sender;
                 CriteriaOperator criteriaOperatorSelectArticle = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)"));
-                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, Enums.Keyboard.KeyboardMode.None, SettingsApp.RegexAlfaNumericExtended, true, true, SettingsApp.RegexAlfaNumericArticleCode, SettingsApp.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
+                XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle> NewEntryBoxSelectArticle = new XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_article"), "Designation", "Oid", null, criteriaOperatorSelectArticle, KeyboardMode.None, SharedSettings.RegexAlfaNumericExtended, true, true, SharedSettings.RegexAlfaNumericArticleCode, SharedSettings.RegexDecimalPositiveAndNegative, _totalCompositeEntrys);
 
                 NewEntryBoxSelectArticle.EntryValidation.IsEditable = true;
                 NewEntryBoxSelectArticle.Value = null;
@@ -585,7 +584,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (cleanFirstEntry)
                         {
-                            auxArticle = (fin_article)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
+                            auxArticle = (fin_article)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_article), articleToDeleteAux);
                         }
                         else
                         {
@@ -627,7 +626,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (entrySelected.Value == _article)
                 {
                     entrySelected.Value = null;
-                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
+                    logicpos.Utils.ShowMessageNonTouch(this, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_composite_article_same"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_composite_article"));
                     entrySelected.EntryValidation.Text = "";
                     return;
                 }

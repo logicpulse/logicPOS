@@ -1,15 +1,15 @@
 ﻿using Gtk;
-using logicpos.App;
+using logicpos.Classes.Enums.GenericTreeView;
+using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using logicpos.Classes.Enums.GenericTreeView;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -39,17 +39,17 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 /*00*/
                 new GenericTreeViewColumnProperty("Oid") { Type = typeof(Guid), Visible = false },
                 /*01*/
-                new GenericTreeViewColumnProperty("Code") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
+                new GenericTreeViewColumnProperty("Code") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code") },
                 /*02*/
-                new GenericTreeViewColumnProperty("Designation") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
+                new GenericTreeViewColumnProperty("Designation") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), Expand = true },
                 /*03*/
-                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("PriceFinal") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_price"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, CellRenderer = cellRendererCurrency },
                 /*04*/
-                new GenericTreeViewColumnProperty("Vat") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("Vat") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_vat_rate"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*05*/
-                new GenericTreeViewColumnProperty("Discount") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
+                new GenericTreeViewColumnProperty("Discount") { Type = typeof(decimal), Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_discount"), MinWidth = decimalsColumnWidth, MaxWidth = decimalsColumnWidth, Alignment = 1.0F, CellRenderer = cellRendererCurrency },
                 /*06*/
-                new GenericTreeViewColumnProperty("Place") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_placetable_place") },
+                new GenericTreeViewColumnProperty("Place") { Type = typeof(string), Title = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_placetable_place") },
                 //Other Invisible Fields
                 /*07*/
                 new GenericTreeViewColumnProperty("Price") { Type = typeof(decimal), Visible = false },
@@ -95,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             DataTable resultDataTable = new DataTable();
             Type dataTableColumnType;
             fin_article article;
-            OrderMain orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
             ArticleBag articleBag = ArticleBag.TicketOrderToArticleBag(orderMain);
             pos_configurationplace configurationPlace;
 
@@ -112,16 +112,16 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Start Loop
             foreach (var item in articleBag)
             {
-				//Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+                //Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
                 decimal remainQuantity = item.Value.Quantity;
-                article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
+                article = (fin_article)DataLayerUtils.GetXPGuidObject(typeof(fin_article), item.Key.ArticleOid);
                 if (article.Type.HavePrice)
                 {
-                    configurationPlace = (pos_configurationplace)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplace), item.Value.PlaceOid);
+                    configurationPlace = (pos_configurationplace)DataLayerUtils.GetXPGuidObject(typeof(pos_configurationplace), item.Value.PlaceOid);
 
                     for (int i = 0; i < item.Value.Quantity; i++)
                     {
-                        if(remainQuantity >= 1)
+                        if (remainQuantity >= 1)
                         {
                             //Column Fields
                             dataRow[0] = item.Key.ArticleOid;

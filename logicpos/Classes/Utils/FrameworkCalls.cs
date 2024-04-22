@@ -13,6 +13,8 @@ using logicpos.Classes.Enums.Finance;
 using logicpos.Classes.Enums.Tickets;
 using logicpos.datalayer.Enums;
 using logicpos.financial.service.Objects.Modules.AT;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 //Class to Link Project LogicPos to FrameWork API, used to Show Common Messages for LogicPos
 
@@ -66,7 +68,7 @@ namespace logicpos
                         }                 
                     }
                     /* TK013134 - Parking Ticket Module */
-                    foreach (var item in GlobalFramework.PendentPayedParkingTickets)
+                    foreach (var item in SharedFramework.PendentPayedParkingTickets)
                     {
                         _logger.Debug("[PARKING TICKET] Informing Access.Track that the parking ticket has been payed...");
                         AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
@@ -92,14 +94,14 @@ namespace logicpos
                     }
                     //IN009279 Parking ticket Service - implementar Cartão cliente 
                     int i = 0;
-                    foreach (var item in GlobalFramework.PendentPayedParkingCards)
+                    foreach (var item in SharedFramework.PendentPayedParkingCards)
                     {
                         _logger.Debug("[PARKING TICKET] Informing Access.Track that the parking card has been payed...");
                         AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
 
                         //Number of months paid is passed by document notes
                         string sql = string.Format("SELECT Notes FROM fin_documentfinancemaster where SourceOrderMain = '{0}'", item.Value);
-                        var sqlResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                        var sqlResult = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                         string sqlResultquantity = sqlResult.ToString();
 
                         string[] quantity = sqlResultquantity.Trim().Split(' ');
@@ -130,15 +132,15 @@ namespace logicpos
                             DialogFlags.Modal,
                             MessageType.Question,
                             ButtonsType.YesNo,
-                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance"),
-                            resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation")
+                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance"),
+                            resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_print_document_confirmation")
                         );
 
                         if (responseType == ResponseType.No) printDocument = false;
                     }
 
                     //Print Document
-                    fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), documentFinanceMaster.Oid);
+                    fin_documentfinancemaster documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), documentFinanceMaster.Oid);
                     //documentFinanceMaster.Reload();
                     if (printDocument) PrintFinanceDocument(pSourceWindow, documentMaster);
                 }
@@ -149,17 +151,17 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_INVALID_DOCUMENT_NUMBER":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_invalid_documentnumber"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_invalid_documentnumber"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_commit_session"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_commit_session"));
                         break;
                     //TODO: NEW CLASS FinanceDocumentValidate : IMPLEMENT HERE THE RESULT EXCEPTION FOR VALIDATE_SIMPLIFIED_INVOICE
                     default:
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -168,7 +170,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                  resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
                   errorMessage
                 );
             }
@@ -183,10 +185,10 @@ namespace logicpos
             bool result = false;
 
             //Check if SystemCountry is Portugal and is a valid WsAtDocument
-            if (SettingsApp.ConfigurationSystemCountry.Oid == SettingsApp.XpoOidConfigurationCountryPortugal && documentFinanceMaster.DocumentType.WsAtDocument)
+            if (DataLayerSettings.ConfigurationSystemCountry.Oid == SharedSettings.XpoOidConfigurationCountryPortugal && documentFinanceMaster.DocumentType.WsAtDocument)
             {
                 //Documents
-                if (!documentFinanceMaster.DocumentType.WayBill || documentFinanceMaster.DocumentType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill)
+                if (!documentFinanceMaster.DocumentType.WayBill || documentFinanceMaster.DocumentType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill)
                 {
                     //If Enabled in Config
                     result = false; //(SettingsApp.ServiceATSendDocuments);
@@ -197,7 +199,7 @@ namespace logicpos
                     //If Enabled in Config and is not a FinalConsumer
                     //É obrigatório comunicar um documento de transporte à AT cujo destinatário seja um consumidor final?
                     //Não. Estão excluídos das obrigações de comunicação os documentos de transporte em que o destinatário ou adquirente seja consumidor final.
-                    result = (/*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity);
+                    result = (/*SettingsApp.ServiceATSendDocumentsWayBill &&*/ documentFinanceMaster.EntityOid != SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity);
                 }
             }
 
@@ -219,8 +221,8 @@ namespace logicpos
 
                 if (sendDocumentResult == null || sendDocumentResult.ReturnCode != "0")
                 {
-                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
+                    dialogResponse = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                        string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
                     );
                     /* IN009083 - returns true when WS call fails and user opts to do not retry */
                     if (ResponseType.No.Equals(dialogResponse))
@@ -369,11 +371,11 @@ namespace logicpos
                 switch (ex.Message)
                 {
                     case "ERROR_MISSING_SERIE":
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_missing_series"));
                         break;
                     case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                     default:
-                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Exception.Message);
+                        errorMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document"), ex.Exception.Message);
                         break;
                 }
                 Utils.ShowMessageTouch(
@@ -382,7 +384,7 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                  resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
                   errorMessage
                 );
             }
@@ -395,7 +397,7 @@ namespace logicpos
         public static string ExportSaft(Window pSourceWindow, ExportSaftPtMode pExportSaftPtMode)
         {
             string result = string.Empty;
-            DateTime dateCurrent = FrameworkUtils.CurrentDateTimeAtomic();
+            DateTime dateCurrent = DataLayerUtils.CurrentDateTimeAtomic();
             DateTime dateStart, dateEnd;
 
             switch (pExportSaftPtMode)
@@ -412,7 +414,7 @@ namespace logicpos
                     result = ExportSaft(pSourceWindow, dateStart, dateEnd);
                     break;
                 case ExportSaftPtMode.Custom:
-                    PosDatePickerStartEndDateDialog dialog = new PosDatePickerStartEndDateDialog(pSourceWindow, Gtk.DialogFlags.DestroyWithParent);
+                    PosDatePickerStartEndDateDialog dialog = new PosDatePickerStartEndDateDialog(pSourceWindow, DialogFlags.DestroyWithParent);
                     ResponseType response = (ResponseType)dialog.Run();
                     if (response == ResponseType.Ok)
                     {
@@ -466,8 +468,8 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Info,
                   ButtonsType.Close,
-                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
-                  string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_successfully"), result)
+                  resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"),
+                  string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_successfully"), result)
                 );
             }
             catch (Exception ex)
@@ -478,8 +480,8 @@ namespace logicpos
                   _sizeDefaultWindowSize,
                   MessageType.Error,
                   ButtonsType.Close,
-                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                  resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_error")
+                  resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                  resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_saftpt_exported_error")
                 );
                 _logger.Error(ex.Message, ex);
             }
@@ -521,25 +523,25 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                 return false;
             }
 			//TK016249 - Impressoras - Diferenciação entre Tipos
             //Deteta janela de origem de forma a escolher qual impressora usar - TicketList -> ThermalPrinter | PosDocumentFinanceDialog -> Printer
             sys_configurationprinters printer;
             sys_configurationprinters printerDoc;            
-            if (GlobalFramework.UsingThermalPrinter)
+            if (SharedFramework.UsingThermalPrinter)
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
-                printer = (pPrinter != null) ? pPrinter : GlobalFramework.LoggedTerminal.ThermalPrinter;
+                printer = (pPrinter != null) ? pPrinter : DataLayerFramework.LoggedTerminal.ThermalPrinter;
                 printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
             }
             else
             {
                 //Both printer can be the same, if not Defined in DocumentType
                 //Printer for Drawer and Document, if not defined in DocumentType
-                printer = (pPrinter != null) ? pPrinter : GlobalFramework.LoggedTerminal.Printer;
+                printer = (pPrinter != null) ? pPrinter : DataLayerFramework.LoggedTerminal.Printer;
                 printerDoc = (pDocumentFinanceMaster.DocumentType.Printer != null) ? pDocumentFinanceMaster.DocumentType.Printer : printer;
             }
 
@@ -551,7 +553,7 @@ namespace logicpos
                     //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                     if (printerDoc == null)
                     {
-                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], pDocumentFinanceMaster.DocumentType.ResourceString));
+                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], pDocumentFinanceMaster.DocumentType.ResourceString));
                     }
                     else
                     {
@@ -563,7 +565,7 @@ namespace logicpos
                 else
                 {
                     bool validFiles = true;
-                    string extraMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
+                    string extraMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinanceMaster.DocumentNumber);
 
                     //Printer Drawer : Set openDrawer
                     switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
@@ -583,15 +585,15 @@ namespace logicpos
                         case "THERMAL_PRINTER_WINDOWS":
                         case "THERMAL_PRINTER_LINUX":
                         case "THERMAL_PRINTER_SOCKET":
-                            //validFiles = IsValidProtectedFile(FrameworkUtils.OSSlash(template.FileTemplate), extraMessage);
+                            //validFiles = IsValidProtectedFile(SharedUtils.OSSlash(template.FileTemplate), extraMessage);
                             break;
                         //FastReport : Report Files
                         case "GENERIC_PRINTER_WINDOWS":
                         case "REPORT_EXPORT_PDF":
                             //Required both Template Files ReportDocumentFinance and ReportDocumentFinanceWayBill
                             //validFiles = (
-                            //    IsValidProtectedFile(FrameworkUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinance.frx"), extraMessage) &&
-                            //    IsValidProtectedFile(FrameworkUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinanceWayBill.frx"), extraMessage)
+                            //    IsValidProtectedFile(SharedUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinance.frx"), extraMessage) &&
+                            //    IsValidProtectedFile(SharedUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinanceWayBill.frx"), extraMessage)
                             //);
                             break;
                         case "VIRTUAL_SCREEN":
@@ -615,16 +617,16 @@ namespace logicpos
                         //OpenDoor use Printer Drawer
                         if (openDrawer && pDocumentFinanceMaster.DocumentType.PrintOpenDrawer && !response.SecondCopy) 
                         {
-                            var resultOpenDoor = PrintRouter.OpenDoor(GlobalFramework.LoggedTerminal.Printer);
+                            var resultOpenDoor = PrintRouter.OpenDoor(DataLayerFramework.LoggedTerminal.Printer);
                             if (!resultOpenDoor)
                             {
-                                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
+                                Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "open_cash_draw_permissions")));
                             }
                             else
                             {
-                                FrameworkUtils.Audit("CASHDRAWER_OUT", string.Format(
-                                resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
-                                GlobalFramework.LoggedTerminal.Designation,
+                                SharedUtils.Audit("CASHDRAWER_OUT", string.Format(
+                                resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_out"),
+                                DataLayerFramework.LoggedTerminal.Designation,
                                 "Button Open Door"));
                             }
                           
@@ -656,26 +658,26 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
                 return false;
             }
 
             sys_configurationprinters printer = (pPrinter != null)
               ? pPrinter :
-              GlobalFramework.LoggedTerminal.Printer;
+              DataLayerFramework.LoggedTerminal.Printer;
 
             try
             {
                 //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                 if (printer == null)
                 {
-                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc"));
+                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(pSourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentfinance_type_title_rc"));
                 }
                 else
                 {
                     //ProtectedFiles Protection
                     bool validFiles = true;
-                    string extraMessage = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
+                    string extraMessage = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
                     switch (PrintRouter.GetPrinterToken(printer.PrinterType.Token))
                     {
                         //ThermalPrinter : Ticket Files
@@ -686,7 +688,7 @@ namespace logicpos
                         //FastReport : Report Files
                         case "GENERIC_PRINTER_WINDOWS":
                         case "REPORT_EXPORT_PDF":
-                            //validFiles = (IsValidProtectedFile(FrameworkUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinancePayment.frx"), extraMessage));
+                            //validFiles = (IsValidProtectedFile(SharedUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinancePayment.frx"), extraMessage));
                             break;
                         case "VIRTUAL_SCREEN":
                             break;
@@ -694,14 +696,14 @@ namespace logicpos
                     //ProtectedFiles Protection
                     if (!validFiles) return false;
                     //Recibos com impressão em impressora térmica
-                    if (GlobalFramework.LoggedTerminal.ThermalPrinter != null)
+                    if (DataLayerFramework.LoggedTerminal.ThermalPrinter != null)
                     {
-                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_edit_DialogConfigurationPrintersType_tab1_label"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printer_choose_printer")); 
+                        ResponseType responseType = Utils.ShowMessageTouch(pSourceWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_edit_DialogConfigurationPrintersType_tab1_label"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printer_choose_printer")); 
 
                         if (responseType == ResponseType.Yes)
                         {
                             //Call Print Document thermal
-                            result = PrintRouter.PrintFinanceDocumentPayment(GlobalFramework.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
+                            result = PrintRouter.PrintFinanceDocumentPayment(DataLayerFramework.LoggedTerminal.ThermalPrinter, pDocumentFinancePayment);
                         }
                         else
                         {
@@ -732,7 +734,7 @@ namespace logicpos
 
             if (!LicenceManagement.IsLicensed || !LicenceManagement.CanPrint)
             {
-                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
+                Utils.ShowMessageTouchErrorUnlicencedFunctionDisabled(pSourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printing_function_disabled"));
             }
             else
             {
@@ -745,16 +747,16 @@ namespace logicpos
                         switch (pTicketType)
                         {
                             case TicketType.TableOrder:
-                                ticketTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_tt");
+                                ticketTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_tt");
                                 break;
                             case TicketType.ArticleOrder:
-                                ticketTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_ar");
+                                ticketTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_ar");
                                 break;
                             case TicketType.WorkSession:
-                                ticketTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_ws");
+                                ticketTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_ws");
                                 break;
                             case TicketType.CashDrawer:
-                                ticketTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs");
+                                ticketTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documentticket_type_title_cs");
                                 break;
                             default:
                                 break;
@@ -826,7 +828,7 @@ namespace logicpos
         public static bool PrintWorkSessionMovement(Window pSourceWindow, sys_configurationprinters pPrinter, pos_worksessionperiod pWorkSessionPeriod)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)FrameworkUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SettingsApp.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)DataLayerUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateWorkSessionMovement);
 
             try
             {
@@ -850,7 +852,7 @@ namespace logicpos
         public static bool PrintCashDrawerOpenAndMoneyInOut(Window pSourceWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
         {
             bool result = false;
-            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)FrameworkUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SettingsApp.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
+            sys_configurationprinterstemplates template = (sys_configurationprinterstemplates)DataLayerUtils.GetXPGuidObject(typeof(sys_configurationprinterstemplates), SharedSettings.XpoOidConfigurationPrintersTemplateCashDrawerOpenAndMoneyInOut);
 
             try
             {
@@ -879,7 +881,7 @@ namespace logicpos
         public static bool IsValidProtectedFile(string pFilePath, string pExtraMessage)
         {
             //Always valid if ProtectedFilesUse not Enabled and ProtectedFilesIgnoreProtection equal to true, this skip Validation
-            if (!SettingsApp.ProtectedFilesUse && SettingsApp.ProtectedFilesIgnoreProtection) return true;
+            if (!POSSettings.ProtectedFilesUse && POSSettings.ProtectedFilesIgnoreProtection) return true;
 
             bool result = true;
 
@@ -891,9 +893,9 @@ namespace logicpos
 
             if (!result)
             {
-                string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
+                string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
                 if (pExtraMessage != string.Empty) message = string.Format("{1}{0}{0}{2}", Environment.NewLine, message, pExtraMessage);
-                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+                Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
             }
 
             return result;

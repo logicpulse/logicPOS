@@ -11,6 +11,8 @@ using logicpos.shared.Enums.ThermalPrinter;
 using System;
 using System.Collections.Generic;
 using logicpos.shared.Classes.Utils;
+using logicpos.shared.App;
+using logicpos.datalayer.App;
 
 
 namespace logicpos.financial.library.Classes.Hardware.Printers
@@ -28,7 +30,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             string result = pPrinterToken;
 
             //Check if Developer Enabled PDF Printer
-            if (SettingsApp.PrintPDFEnabled)
+            if (SharedSettings.PrintPDFEnabled)
             {
                 result = "REPORT_EXPORT_PDF";
             }
@@ -43,24 +45,24 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
         private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string PrinterDesignation)
         {
             List<int> copyNames = CustomReport.CopyNames(pDocumentFinanceMaster.DocumentType.PrintCopies);
-            return SystemPrintInsert(pDocumentFinanceMaster, null, PrinterDesignation, 1, copyNames, false, string.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
+            return SystemPrintInsert(pDocumentFinanceMaster, null, PrinterDesignation, 1, copyNames, false, string.Empty, DataLayerFramework.LoggedUser, DataLayerFramework.LoggedTerminal);
         }
 
         private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive)
         {
-            return SystemPrintInsert(pDocumentFinanceMaster, null, pPrinterDesignation, pPrintCopies, pCopyNames, pSecondPrint, pPrintMotive, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
+            return SystemPrintInsert(pDocumentFinanceMaster, null, pPrinterDesignation, pPrintCopies, pCopyNames, pSecondPrint, pPrintMotive, DataLayerFramework.LoggedUser, DataLayerFramework.LoggedTerminal);
         }
 
         //OverLoads DocumentFinancePayment
         private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string PrinterDesignation)
         {
             List<int> copyNames = CustomReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
-            return SystemPrintInsert(null, pDocumentFinancePayment, PrinterDesignation, 1, copyNames, false, string.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
+            return SystemPrintInsert(null, pDocumentFinancePayment, PrinterDesignation, 1, copyNames, false, string.Empty, DataLayerFramework.LoggedUser, DataLayerFramework.LoggedTerminal);
         }
 
         private static bool SystemPrintInsert(fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames)
         {
-            return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, string.Empty, GlobalFramework.LoggedUser, GlobalFramework.LoggedTerminal);
+            return SystemPrintInsert(null, pDocumentFinancePayment, pPrinterDesignation, pPrintCopies, pCopyNames, false, string.Empty, DataLayerFramework.LoggedUser, DataLayerFramework.LoggedTerminal);
         }
 
         private static bool SystemPrintInsert(fin_documentfinancemaster pDocumentFinanceMaster, fin_documentfinancepayment pDocumentFinancePayment, string pPrinterDesignation, int pPrintCopies, List<int> pCopyNames, bool pSecondPrint, string pPrintMotive, sys_userdetail pUserDetail, pos_configurationplaceterminal pConfigurationPlaceTerminal)
@@ -74,8 +76,8 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                 {
                     string designation = string.Empty;
                     //Get Objects into Current UOW Session
-                    sys_userdetail userDetail = (sys_userdetail)FrameworkUtils.GetXPGuidObject(uowSession, typeof(sys_userdetail), pUserDetail.Oid);
-                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
+                    sys_userdetail userDetail = (sys_userdetail)DataLayerUtils.GetXPGuidObject(uowSession, typeof(sys_userdetail), pUserDetail.Oid);
+                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)DataLayerUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pConfigurationPlaceTerminal.Oid);
 
                     //Convert CopyNames List to Comma Delimited String
                     string copyNamesCommaDelimited = CustomReport.CopyNamesCommaDelimited(pCopyNames);
@@ -83,7 +85,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     //SystemPrint
                     sys_systemprint systemPrint = new sys_systemprint(uowSession)
                     {
-                        Date = FrameworkUtils.CurrentDateTimeAtomic(),
+                        Date = DataLayerUtils.CurrentDateTimeAtomic(),
                         Designation = designation,
                         PrintCopies = pPrintCopies,
                         CopyNames = copyNamesCommaDelimited,
@@ -96,18 +98,18 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                     //Mode: DocumentFinanceMaster
                     if (pDocumentFinanceMaster != null)
                     {
-                        fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
+                        fin_documentfinancemaster documentFinanceMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), pDocumentFinanceMaster.Oid);
                         systemPrint.DocumentMaster = documentFinanceMaster;
-                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
+                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printed"), documentFinanceMaster.DocumentType.Designation, documentFinanceMaster.DocumentNumber);
                         //Update DocumentFinanceMaster
                         if (!documentFinanceMaster.Printed) documentFinanceMaster.Printed = true;
                     }
                     //Mode: DocumentFinancePayment
                     if (pDocumentFinancePayment != null)
                     {
-                        fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
+                        fin_documentfinancepayment documentFinancePayment = (fin_documentfinancepayment)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancepayment), pDocumentFinancePayment.Oid);
                         systemPrint.DocumentPayment = documentFinancePayment;
-                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                        designation = string.Format("{0} {1} : {2}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_printed"), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                     }
                     systemPrint.Designation = designation;
 
@@ -116,7 +118,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                         //Commit UOW Changes : Before get current OrderMain
                         uowSession.CommitChanges();
                         //Audit
-                        FrameworkUtils.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
+                        SharedUtils.Audit("SYSTEM_PRINT_FINANCE_DOCUMENT", designation);
                         result = true;
                     }
                     catch (Exception ex)
@@ -190,7 +192,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
 
         public static bool PrintFinanceDocument(fin_documentfinancemaster pDocumentFinanceMaster)
         {
-            return PrintFinanceDocument(GlobalFramework.SessionXpo, pDocumentFinanceMaster);
+            return PrintFinanceDocument(DataLayerFramework.SessionXpo, pDocumentFinanceMaster);
         }
 
         public static bool PrintFinanceDocument(Session pSession, fin_documentfinancemaster pDocumentFinanceMaster)
@@ -211,12 +213,12 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             {
                 //Finish Payment with Print Job + Open Drawer (If Not TableConsult)
                 fin_documentfinanceyearserieterminal xDocumentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(pSession, pDocumentFinanceMaster.DocumentType.Oid);
-                PrintFinanceDocument(GlobalFramework.LoggedTerminal.Printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
+                PrintFinanceDocument(DataLayerFramework.LoggedTerminal.Printer, pDocumentFinanceMaster, pCopyNames, pSecondCopy, pMotive);
 
                 //Open Door if Has Valid Payment
                 if (pDocumentFinanceMaster.PaymentMethod != null)
                 {
-                    OpenDoor(GlobalFramework.LoggedTerminal.ThermalPrinter);
+                    OpenDoor(DataLayerFramework.LoggedTerminal.ThermalPrinter);
                 }
                 result = true;
             }
@@ -302,7 +304,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
                             thermalPrinterInternalDocumentWorkSession.Print();
                             //CurrentAcount
                             //Use Config to print this
-                            if(Convert.ToBoolean(GlobalFramework.PreferenceParameters["USE_CC_DAILY_TICKET"]))
+                            if(Convert.ToBoolean(SharedFramework.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                             {
                                 thermalPrinterInternalDocumentWorkSession = new ThermalPrinterInternalDocumentWorkSession(pPrinter, pWorkSessionPeriod, SplitCurrentAccountMode.CurrentAcount);
                                 thermalPrinterInternalDocumentWorkSession.Print();
@@ -403,36 +405,36 @@ namespace logicpos.financial.library.Classes.Hardware.Printers
             try
             {
                 bool result = false;
-                if (GlobalFramework.LoggedTerminal.ThermalPrinter != null)
+                if (DataLayerFramework.LoggedTerminal.ThermalPrinter != null)
                 {                    
-                    bool hasPermission = FrameworkUtils.HasPermissionTo("HARDWARE_DRAWER_OPEN");
-                    int m = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
-                    int t1 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
-                    int t2 = GlobalFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
+                    bool hasPermission = SharedUtils.HasPermissionTo("HARDWARE_DRAWER_OPEN");
+                    int m = DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueM;
+                    int t1 = DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT1;
+                    int t2 = DataLayerFramework.LoggedTerminal.ThermalPrinter.ThermalOpenDrawerValueT2;
                     PrintObject printObjectSINOCAN = new PrintObject(0);
-                    if (GlobalFramework.LoggedTerminal.ThermalPrinter != null && hasPermission)
+                    if (DataLayerFramework.LoggedTerminal.ThermalPrinter != null && hasPermission)
                     {
                         try
                         {
-                            switch (GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token)
+                            switch (DataLayerFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token)
                             {
                                 //Impressora SINOCAN em ambiente Windows
                                 case "THERMAL_PRINTER_WINDOWS":
-                                    printObjectSINOCAN.OpenDoor(GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, GlobalFramework.LoggedTerminal.ThermalPrinter.Designation, m, t1, t2);
+                                    printObjectSINOCAN.OpenDoor(DataLayerFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, DataLayerFramework.LoggedTerminal.ThermalPrinter.Designation, m, t1, t2);
                                     break;
                                 //Impressora SINOCAN em ambiente Linux
                                 case "THERMAL_PRINTER_LINUX":
                                 //Impressora SINOCAN em ambiente WindowsLinux/Socket
                                 case "THERMAL_PRINTER_SOCKET":
                                     // Deprecated
-                                    //int m = Convert.ToInt32(GlobalFramework.Settings["DoorValueM"]);
-                                    //int t1 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT1"]);
-                                    //int t2 = Convert.ToInt32(GlobalFramework.Settings["DoorValueT2"]);
+                                    //int m = Convert.ToInt32(DataLayerFramework.Settings["DoorValueM"]);
+                                    //int t1 = Convert.ToInt32(DataLayerFramework.Settings["DoorValueT1"]);
+                                    //int t2 = Convert.ToInt32(DataLayerFramework.Settings["DoorValueT2"]);
                                     // Open Drawer
                                     //TK016249 - Impressoras - Diferenciação entre Tipos
-                                    printObjectSINOCAN.OpenDoor(GlobalFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, GlobalFramework.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
+                                    printObjectSINOCAN.OpenDoor(DataLayerFramework.LoggedTerminal.ThermalPrinter.PrinterType.Token, DataLayerFramework.LoggedTerminal.ThermalPrinter.NetworkName, m, t1, t2);
                                     //Audit
-                                    FrameworkUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
+                                    SharedUtils.Audit("CASHDRAWER_OPEN", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_cashdrawer_open"));
 
                                     break;
                             }

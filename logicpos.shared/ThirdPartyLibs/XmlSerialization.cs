@@ -95,8 +95,8 @@ namespace DansCSharpLibrary.XMLSerialization
     //Test With:
     //using DansCSharpLibrary.XMLSerialization;
     //..
-    //TestSerialization.Write(GlobalFramework.Path["temp"].ToString());
-    //TestSerialization.Read(GlobalFramework.Path["temp"].ToString());
+    //TestSerialization.Write(DataLayerFramework.Path["temp"].ToString());
+    //TestSerialization.Read(DataLayerFramework.Path["temp"].ToString());
     public static class TestSerialization
     {
         //Log4Net

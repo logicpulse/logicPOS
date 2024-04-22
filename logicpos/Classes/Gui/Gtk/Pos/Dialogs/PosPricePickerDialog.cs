@@ -1,18 +1,14 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.datalayer.Enums;
+using logicpos.shared.App;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -25,7 +21,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly XPOComboBox _priceComboBox;
         //Public Properties
         private fin_article _article;
-        
+
         public fin_article Article
         {
             get { return _article; }
@@ -44,9 +40,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _article = pArticle;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"));
+            string windowTitle = string.Format("{0}", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_filepicker"));
             _windowSize = new Size(300, 473);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_select_record.png");
 
             //Init Content
             _fixedContent = new Fixed();
@@ -74,21 +70,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Init Font Description
-                Pango.FontDescription fontDescription = Pango.FontDescription.FromString(GlobalFramework.Settings["fontEntryBoxValue"]);
+                Pango.FontDescription fontDescription = Pango.FontDescription.FromString(DataLayerFramework.Settings["fontEntryBoxValue"]);
                 //Init Picker
                 VBox _vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
                 //Get PriceType Collection : Require Criteria to exclude SettingsApp.XpoOidUndefinedRecord, else we get a Price0 here
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SettingsApp.XpoOidUndefinedRecord));
-                XPCollection xpcConfigurationPriceType = new XPCollection(GlobalFramework.SessionXpo, typeof(fin_configurationpricetype), criteriaOperator);
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) OR (Oid <> '{0}')", SharedSettings.XpoOidUndefinedRecord));
+                XPCollection xpcConfigurationPriceType = new XPCollection(DataLayerFramework.SessionXpo, typeof(fin_configurationpricetype), criteriaOperator);
 
-                xpcConfigurationPriceType.Sorting = FrameworkUtils.GetXPCollectionDefaultSortingCollection();
+                xpcConfigurationPriceType.Sorting = SharedUtils.GetXPCollectionDefaultSortingCollection();
                 //Define Max 5 Rows : 5 Prices
                 int priceTypeCount = (xpcConfigurationPriceType.Count > 5) ? 5 : xpcConfigurationPriceType.Count;
 
                 if (xpcConfigurationPriceType.Count > 0)
                 {
-                    XPOComboBox _priceComboBox = new XPOComboBox(GlobalFramework.SessionXpo, typeof(fin_configurationpricetype), null, "Designation", criteriaOperator, null, 0);
+                    XPOComboBox _priceComboBox = new XPOComboBox(DataLayerFramework.SessionXpo, typeof(fin_configurationpricetype), null, "Designation", criteriaOperator, null, 0);
 
                     _vbox.PackStart(_priceComboBox, false, false, 0);
                 }
@@ -129,7 +125,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _fixedContent.Put(_vbox, 0, 0);
                 //Events
                 //_priceComboBox.Changed += _priceComboBox_Changed;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
             }
@@ -137,7 +134,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void _priceComboBox_Changed(object sender, EventArgs e)
         {
-            
+
         }
 
         public static string RequestPriceTypeValue(Window pSourceWindow, DialogFlags pDialogFlags, fin_article pArticle)

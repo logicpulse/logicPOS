@@ -12,10 +12,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
-            TemplateTicket = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(SettingsApp.XpoOidConfigurationPrintersTemplateTicket);
-            TemplateTablesConsult = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(SettingsApp.XpoOidConfigurationPrintersTemplateTableConsult);
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplaceterminal), "Code");
+            TemplateTicket = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(DataLayerSettings.XpoOidConfigurationPrintersTemplateTicket);
+            TemplateTablesConsult = this.Session.GetObjectByKey<sys_configurationprinterstemplates>(DataLayerSettings.XpoOidConfigurationPrintersTemplateTableConsult);
             InputReaderTimerInterval = 200;
         }
 

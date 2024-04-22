@@ -1,14 +1,12 @@
 ﻿using Gtk;
-using logicpos.financial;
-using logicpos.App;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.resources.Resources.Localization;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using logicpos.shared;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -60,7 +58,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _vbox = new VBox(false, 0);
 
             //Init AddFile
-            _entryBoxAddFile = new EntryBoxValidationFilePickerDialog(pSourceWindow, pLabelText, SettingsApp.RegexAlfaNumericFilePath, false, pFileFilter);
+            _entryBoxAddFile = new EntryBoxValidationFilePickerDialog(pSourceWindow, pLabelText, SharedSettings.RegexAlfaNumericFilePath, false, pFileFilter);
             _entryBoxAddFile.EntryValidation.Validate();
             _entryBoxAddFile.ClosePopup += _entryBoxAddFile_ClosePopup;
 
@@ -93,7 +91,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_fileList.Contains(_entryBoxAddFile.Value))
             {
-                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
+                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
             }
             else
             {
@@ -109,12 +107,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //if AddFileNameToList true, add the File to the list, else skip add, usefull when we Initialize List from Constructor pInitialFileList
         private void AddFileEntry(string pFileName, bool pAddFileNameToList)
         {
-            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_file_image"), _fileList.Count + 1), KeyboardMode.None, SettingsApp.RegexAlfaNumericFilePath, true);
+            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_file_image"), _fileList.Count + 1), KeyboardMode.None, SharedSettings.RegexAlfaNumericFilePath, true);
             entryBoxValidationButton.EntryValidation.Validate();
             entryBoxValidationButton.EntryValidation.Sensitive = false;
 
             //Add Aditional Button to EntryBoxValidationFilePickerDialog
-            string iconFileNameDelete = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+            string iconFileNameDelete = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
             TouchButtonIcon buttonDelete = new TouchButtonIcon("touchButtonIcon_Delete", Color.Transparent, iconFileNameDelete, new Size(20, 20), 30, 30);
             entryBoxValidationButton.Hbox.PackStart(buttonDelete, false, false, 0);
 
@@ -124,7 +122,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Assign Initial FileName
             entryBoxValidationButton.EntryValidation.Text = pFileName;
-            
+
             //Pack
             _vbox.PackStart(entryBoxValidationButton, false, false, 0);
             entryBoxValidationButton.ShowAll();
@@ -162,12 +160,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else if (_fileList.Contains(dialog.FilePicker.Filename))
                     {
-                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
+                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_filepicker_existing_file_error"));
                     }
                     else
                     {
                         //Update fileList with Changed Value
-                        _fileList[currentFileListIndexPosition] =  dialog.FilePicker.Filename;
+                        _fileList[currentFileListIndexPosition] = dialog.FilePicker.Filename;
                         //Update and Validate Entry
                         entryBoxValidationButton.EntryValidation.Text = dialog.FilePicker.Filename;
                         entryBoxValidationButton.EntryValidation.Validate();

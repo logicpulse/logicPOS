@@ -1,18 +1,17 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.financial;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.App;
+using logicpos.Classes.Enums.Dialogs;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.shared.App;
 using System;
 using System.Drawing;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.shared;
-using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Enums.Dialogs;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -75,14 +74,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _noOfInvoices = pNoOfInvoices;
 
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices");
             _windowSize = new Size(480, 444);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_pay_invoice.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_pay_invoice.png");
 
             //ActionArea Buttons
             _buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok);
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Cancel);
-			_buttonOk.Sensitive = false;
+            _buttonOk.Sensitive = false;
 
             //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -104,9 +103,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Initial Values
-            fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), SettingsApp.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
-            cfg_configurationcurrency intialValueConfigurationCurrency = SettingsApp.ConfigurationSystemCurrency;
-            string initialPaymentDate = FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateTimeFormat);
+            fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(typeof(fin_configurationpaymentmethod), POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
+            cfg_configurationcurrency intialValueConfigurationCurrency = SharedSettings.ConfigurationSystemCurrency;
+            string initialPaymentDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(SharedSettings.DateTimeFormat);
 
             /* IN009142
             * 
@@ -128,35 +127,36 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     Token = 'MONEY' OR 
     Token = 'BANK_TRANSFER'
 )";
-            CriteriaOperator criteriaOperatorConfigurationPaymentMethod = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)  AND Oid <> '{0}' AND {1}", SettingsApp.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(), filterValidPaymentMethod));
-            _entryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_method"), "Designation", "Oid", initialValueConfigurationPaymentMethod, criteriaOperatorConfigurationPaymentMethod, SettingsApp.RegexGuid, true);
+            CriteriaOperator criteriaOperatorConfigurationPaymentMethod = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1)  AND Oid <> '{0}' AND {1}", SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount.ToString(), filterValidPaymentMethod));
+            _entryBoxSelectConfigurationPaymentMethod = new XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_method"), "Designation", "Oid", initialValueConfigurationPaymentMethod, criteriaOperatorConfigurationPaymentMethod, SharedSettings.RegexGuid, true);
             _entryBoxSelectConfigurationPaymentMethod.EntryValidation.Changed += delegate { Validate(); };
             _entryBoxSelectConfigurationPaymentMethod.EntryValidation.IsEditable = false;
 
             //ConfigurationCurrency
-            CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", SettingsApp.ConfigurationSystemCurrency.Oid.ToString()));
-            _entryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, SettingsApp.RegexGuid, false);
+            CriteriaOperator criteriaOperatorConfigurationCurrency = CriteriaOperator.Parse(string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (ExchangeRate IS NOT NULL OR Oid = '{0}')", SharedSettings.ConfigurationSystemCurrency.Oid.ToString()));
+            _entryBoxSelectConfigurationCurrency = new XPOEntryBoxSelectRecordValidation<cfg_configurationcurrency, TreeViewConfigurationCurrency>(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_currency"), "Designation", "Oid", intialValueConfigurationCurrency, criteriaOperatorConfigurationCurrency, SharedSettings.RegexGuid, false);
             _entryBoxSelectConfigurationCurrency.EntryValidation.Changed += _entryBoxSelectConfigurationCurrency_Changed;
             _entryBoxSelectConfigurationCurrency.EntryValidation.IsEditable = false;
 
             //PaymentAmount
             /* IN009183 */
-            _entryPaymentAmount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"), KeyboardMode.Numeric, SettingsApp.RegexDecimalGreaterEqualThanZeroFinancial, true);
-            _entryPaymentAmount.EntryValidation.Text = FrameworkUtils.DecimalToString(_paymentAmountTotal);
+            _entryPaymentAmount = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"), KeyboardMode.Numeric, SharedSettings.RegexDecimalGreaterEqualThanZeroFinancial, true);
+            _entryPaymentAmount.EntryValidation.Text = SharedUtils.DecimalToString(_paymentAmountTotal);
             _entryPaymentAmount.EntryValidation.Validate();
-            _entryPaymentAmount.EntryValidation.Changed += delegate {
+            _entryPaymentAmount.EntryValidation.Changed += delegate
+            {
                 Validate();
-                UpdateTitleBar(); 
+                UpdateTitleBar();
             };
 
             //PaymentDate
-            _entryBoxPaymentDate = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), KeyboardMode.Alfa, SettingsApp.RegexDateTime, true);
+            _entryBoxPaymentDate = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), KeyboardMode.Alfa, SharedSettings.RegexDateTime, true);
             _entryBoxPaymentDate.EntryValidation.Text = initialPaymentDate;
             _entryBoxPaymentDate.EntryValidation.Validate();
             _entryBoxPaymentDate.EntryValidation.Changed += delegate { Validate(); };
 
             //PaymentNotes
-            _entryBoxDocumentPaymentNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SettingsApp.RegexAlfaNumericExtended, false);
+            _entryBoxDocumentPaymentNotes = new EntryBoxValidation(_sourceWindow, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"), KeyboardMode.Alfa, SharedSettings.RegexAlfaNumericExtended, false);
             _entryBoxDocumentPaymentNotes.EntryValidation.Changed += delegate { Validate(); };
 
             //Pack VBOX
@@ -177,10 +177,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void Validate()
         {
             //Settings
-            int decimalRoundTo = SettingsApp.DecimalRoundTo;
+            int decimalRoundTo = SharedSettings.DecimalRoundTo;
 
             //Check if Has More than one Invoice and the Input is The Full Payment
-            _paymentAmountEntry = FrameworkUtils.StringToDecimal(_entryPaymentAmount.EntryValidation.Text);
+            _paymentAmountEntry = SharedUtils.StringToDecimal(_entryPaymentAmount.EntryValidation.Text);
 
             //Calc Diference in selected Currency
             _diference = Math.Round((_paymentAmountTotal * _exchangeRate) - _paymentAmountEntry, decimalRoundTo);
@@ -196,7 +196,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Update Payed amount in default currency, must divided by ExchangeRate, inputs are always in selected Currency 
             _payedAmount = _paymentAmountEntry / _exchangeRate;
-            if (_debug) _logger.Debug(string.Format("_payedAmount/_paymentAmountTotal: [{0}/{1}]", FrameworkUtils.DecimalToStringCurrency(_payedAmount), FrameworkUtils.DecimalToStringCurrency(_paymentAmountTotal)));
+            if (_debug) _logger.Debug(string.Format("_payedAmount/_paymentAmountTotal: [{0}/{1}]", SharedUtils.DecimalToStringCurrency(_payedAmount), SharedUtils.DecimalToStringCurrency(_paymentAmountTotal)));
 
             //Block Change of Currency to prevent conversion problems
             _entryBoxSelectConfigurationCurrency.EntryValidation.Sensitive = _entryPaymentAmount.EntryValidation.Validated;
@@ -204,7 +204,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             /* IN009183 */
             logicpos.Utils.ValidateUpdateColors(_entryPaymentAmount.EntryValidation, _entryPaymentAmount.Label, (_validated && _diference >= 0));
-            //_entryPaymentAmount.EntryValidation.Text = FrameworkUtils.DecimalToString(_paymentAmountEntry, GlobalFramework.CurrentCulture, SettingsApp.DecimalFormat); //FrameworkUtils.DecimalToString(_paymentAmountEntry);
+            //_entryPaymentAmount.EntryValidation.Text = SharedUtils.DecimalToString(_paymentAmountEntry, SharedFramework.CurrentCulture, SettingsApp.DecimalFormat); //SharedUtils.DecimalToString(_paymentAmountEntry);
             // _paymentAmountEntry = Math.Round(_paymentAmountEntry, decimalRoundTo);
 
             _buttonOk.Sensitive = _validated;
@@ -226,16 +226,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                     WindowTitle = string.Format(
                         "{0}: {1} / {2}{3}",
-                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices"),
-                        FrameworkUtils.DecimalToStringCurrency(_diference, _entryBoxSelectConfigurationCurrency.Value.Acronym),
-                        FrameworkUtils.DecimalToStringCurrency(_paymentAmountTotal * _exchangeRate, _entryBoxSelectConfigurationCurrency.Value.Acronym),
+                        resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices"),
+                        SharedUtils.DecimalToStringCurrency(_diference, _entryBoxSelectConfigurationCurrency.Value.Acronym),
+                        SharedUtils.DecimalToStringCurrency(_paymentAmountTotal * _exchangeRate, _entryBoxSelectConfigurationCurrency.Value.Acronym),
                         //Show only if above 100%
-                        (paymentPercentage < 100) ? string.Format(" / {0}%", FrameworkUtils.DecimalToString(paymentPercentage)) : string.Empty
+                        (paymentPercentage < 100) ? string.Format(" / {0}%", SharedUtils.DecimalToString(paymentPercentage)) : string.Empty
                      );
                 }
                 else
                 {
-                    WindowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices");
+                    WindowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_pay_invoices");
                 }
             }
             catch (Exception ex)
@@ -249,7 +249,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Update ExchangeRate Reference
             _exchangeRate = _entryBoxSelectConfigurationCurrency.Value.ExchangeRate;
             //Always Update Entry Value too paymentAmountTotal to prevent round values, this way when we change currency, we always assign to default paymentAmountTotal value 
-            _entryPaymentAmount.EntryValidation.Text = FrameworkUtils.DecimalToString(_paymentAmountTotal * _exchangeRate);
+            _entryPaymentAmount.EntryValidation.Text = SharedUtils.DecimalToString(_paymentAmountTotal * _exchangeRate);
             //Call Validate
             Validate();
             //Call Update Title Bar

@@ -1,12 +1,10 @@
-﻿using Gtk;
-using LibUsbDotNet;
+﻿using LibUsbDotNet;
 using LibUsbDotNet.Main;
-using logicpos.App;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
 using PCComm;
 using System;
-using System.Drawing;
 using System.Globalization;
 using System.Text;
 
@@ -66,10 +64,10 @@ namespace logicpos.Classes.Logic.Hardware
 
                     //string baud, string par, string sBits, string dBits, string name
                     _communicationManager = new CommunicationManager();
-                    _communicationManager.CurrentTransmissionType = PCComm.CommunicationManager.TransmissionType.Hex;
+                    _communicationManager.CurrentTransmissionType = CommunicationManager.TransmissionType.Hex;
                     _communicationManager.PortName = COM;
                     // Start With OpenPort
-					//Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
+                    //Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
                     try
                     {
                         OpenPort();
@@ -78,7 +76,7 @@ namespace logicpos.Classes.Logic.Hardware
                     {
                         _logger.Error("Error opening Port: " + COM + ": " + ex.Message);
                     }
-                    
+
 
                     //message = string.Format("UsbDisplayDevice: Device Not Found VID:{0} PID:{1}", pVid, pPid);
                     //_logger.Error(message);
@@ -140,8 +138,8 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"),
-                //    string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), GlobalFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
+                //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                //    string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_initializing_weighing_balance"), DataLayerFramework.LoggedTerminal.WeighingMachine.Designation, ex.Message)
                 //    );
                 _logger.Error(ex.Message, ex);
                 return false;
@@ -199,7 +197,7 @@ namespace logicpos.Classes.Logic.Hardware
                         //throw new Exception(UsbDevice.LastErrorString);
                     }
                 }
-                else if(_communicationManager != null)
+                else if (_communicationManager != null)
                 {
                     _communicationManager.WriteData(ByteToHex(pOutput));
                 }
@@ -471,14 +469,14 @@ namespace logicpos.Classes.Logic.Hardware
         public static byte[] GetBytes(string str)
         {
             byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+            Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
         }
 
         public static string GetString(byte[] bytes)
         {
             char[] chars = new char[bytes.Length / sizeof(char)];
-            System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
+            Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
             return new string(chars);
         }
 
@@ -529,16 +527,16 @@ namespace logicpos.Classes.Logic.Hardware
             {
                 //Init
                 UsbDisplayDevice displayDevice = new UsbDisplayDevice(
-                    GlobalFramework.LoggedTerminal.PoleDisplay.VID,
-                    GlobalFramework.LoggedTerminal.PoleDisplay.PID,
-                    GlobalFramework.LoggedTerminal.PoleDisplay.EndPoint,
-                    GlobalFramework.LoggedTerminal.PoleDisplay.COM
+                    DataLayerFramework.LoggedTerminal.PoleDisplay.VID,
+                    DataLayerFramework.LoggedTerminal.PoleDisplay.PID,
+                    DataLayerFramework.LoggedTerminal.PoleDisplay.EndPoint,
+                    DataLayerFramework.LoggedTerminal.PoleDisplay.COM
                 );
                 //Initializers
-                displayDevice._charactersPerLine = Convert.ToInt16(GlobalFramework.LoggedTerminal.PoleDisplay.DisplayCharactersPerLine);
-                displayDevice._standByInSeconds = GlobalFramework.LoggedTerminal.PoleDisplay.GoToStandByInSeconds;
-                displayDevice._standByLine1 = GlobalFramework.LoggedTerminal.PoleDisplay.StandByLine1;
-                displayDevice._standByLine2 = GlobalFramework.LoggedTerminal.PoleDisplay.StandByLine2;
+                displayDevice._charactersPerLine = Convert.ToInt16(DataLayerFramework.LoggedTerminal.PoleDisplay.DisplayCharactersPerLine);
+                displayDevice._standByInSeconds = DataLayerFramework.LoggedTerminal.PoleDisplay.GoToStandByInSeconds;
+                displayDevice._standByLine1 = DataLayerFramework.LoggedTerminal.PoleDisplay.StandByLine1;
+                displayDevice._standByLine2 = DataLayerFramework.LoggedTerminal.PoleDisplay.StandByLine2;
                 result = displayDevice;
             }
             catch (Exception ex)
@@ -578,18 +576,18 @@ namespace logicpos.Classes.Logic.Hardware
 
         public void ShowOrder(string pArticle, decimal pQuantity, decimal pPrice, decimal pTotal)
         {
-            string article = string.Format("{0} x {1}", FrameworkUtils.DecimalToString(pQuantity), pArticle);
-            string price = string.Format("{0}", FrameworkUtils.DecimalToString(pPrice));
+            string article = string.Format("{0} x {1}", SharedUtils.DecimalToString(pQuantity), pArticle);
+            string price = string.Format("{0}", SharedUtils.DecimalToString(pPrice));
             string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
             Write(RemoveAccents(line1), 1);
-            WriteJustified(RemoveAccents(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_pole_display_global_total")), FrameworkUtils.DecimalToString(pTotal), 2);
+            WriteJustified(RemoveAccents(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_pole_display_global_total")), SharedUtils.DecimalToString(pTotal), 2);
             EnableStandBy();
         }
 
         public void ShowPayment(string pPaymentType, decimal pTotalDelivery, decimal pTotalChange)
         {
             Write(pPaymentType, 1);
-            WriteJustified(FrameworkUtils.DecimalToString(pTotalDelivery), FrameworkUtils.DecimalToString(pTotalChange), 2);
+            WriteJustified(SharedUtils.DecimalToString(pTotalDelivery), SharedUtils.DecimalToString(pTotalChange), 2);
             EnableStandBy();
         }
 

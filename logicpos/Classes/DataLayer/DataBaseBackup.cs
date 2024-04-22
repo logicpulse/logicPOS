@@ -7,9 +7,12 @@ using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Finance;
+using logicpos.shared.App;
 using MySql.Data.MySqlClient;
 using System;
 using System.Drawing;
@@ -77,7 +80,7 @@ namespace logicpos.Classes.DataLayer
         //Settings
         private static string _backupConnectionString;
         private static string _fileExtension;
-        private static readonly string _pathBackups = GlobalFramework.Path["backups"].ToString();
+        private static readonly string _pathBackups = DataLayerFramework.Path["backups"].ToString();
         //Private Vars
         private static readonly Size _sizeDialog = new Size(800, 300);
 
@@ -85,7 +88,7 @@ namespace logicpos.Classes.DataLayer
         //Shared for All DataBaseTypes
         public static void Init()
         {
-            switch (GlobalFramework.DatabaseType)
+            switch (DataLayerFramework.DatabaseType)
             {
                 case DatabaseType.SQLite:
                 case DatabaseType.MonoLite:
@@ -95,20 +98,20 @@ namespace logicpos.Classes.DataLayer
                     _fileExtension = "bak";
                     _backupConnectionString = (string.Format(
                       "Data Source={0};Initial Catalog={1};User ID={2};Password={3};Persist Security Info=true;Integrated Security=SSPI;Pooling=false"
-                      , GlobalFramework.DatabaseServer
-                      , GlobalFramework.DatabaseName
-                      , GlobalFramework.DatabaseUser
-                      , GlobalFramework.DatabasePassword
+                      , SharedFramework.DatabaseServer
+                      , SharedFramework.DatabaseName
+                      , SharedFramework.DatabaseUser
+                      , SharedFramework.DatabasePassword
                     ));
                     break;
                 case DatabaseType.MySql:
                     _fileExtension = "sql";
                     _backupConnectionString = string.Format(
                         "server={0};database={1};user={2};pwd={3};"
-                        , GlobalFramework.DatabaseServer
-                        , GlobalFramework.DatabaseName
-                        , GlobalFramework.DatabaseUser
-                        , GlobalFramework.DatabasePassword
+                        , SharedFramework.DatabaseServer
+                        , SharedFramework.DatabaseName
+                        , SharedFramework.DatabaseUser
+                        , SharedFramework.DatabasePassword
                       );
                     break;
                 default:
@@ -136,7 +139,7 @@ namespace logicpos.Classes.DataLayer
                 Init();
 
                 /* IN009164 - Begin */
-                string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
+                string xpoConnectionString = string.Format(DataLayerFramework.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
 
                 XpoDefault.DataLayer = XpoDefault.GetDataLayer(xpoConnectionString, AutoCreateOption.None);
                 Session SessionXpoForBackupPurposes = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
@@ -148,14 +151,14 @@ namespace logicpos.Classes.DataLayer
                 {
                     FileName = Path.GetRandomFileName(),
                     FileNamePacked = Path.GetRandomFileName(),
-                    DataBaseType = GlobalFramework.DatabaseType,
-                    Version = FrameworkUtils.GetNextTableFieldID("sys_systembackup", "Version", false),
-                    Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid)
+                    DataBaseType = DataLayerFramework.DatabaseType,
+                    Version = DataLayerUtils.GetNextTableFieldID("sys_systembackup", "Version", false),
+                    Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), DataLayerFramework.LoggedTerminal.Oid)
                 };
                 systemBackup.Save();
-                string backupProcess = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_database_backup");
+                string backupProcess = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_database_backup");
 
-                switch (GlobalFramework.DatabaseType)
+                switch (DataLayerFramework.DatabaseType)
                 {
                     case DatabaseType.MonoLite:
                     case DatabaseType.SQLite:
@@ -186,9 +189,9 @@ namespace logicpos.Classes.DataLayer
                         break;
                 }
                 /* IN007007 */
-                _logger.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", GlobalFramework.DatabaseType, fileName, backupResult));
+                _logger.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", DataLayerFramework.DatabaseType, fileName, backupResult));
 
-                if (_debug) _logger.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", GlobalFramework.DatabaseType, fileName, backupResult));
+                if (_debug) _logger.Debug(string.Format("Backup DatabaseType: [ {0} ] to FileName: [ {1} ], resultBackup:[ {2} ]", DataLayerFramework.DatabaseType, fileName, backupResult));
 
                 if (backupResult)
                 {
@@ -197,21 +200,21 @@ namespace logicpos.Classes.DataLayer
                     systemBackup.FilePath = Path.GetDirectoryName(fileName);
 
                     //Extra Protection for System Automatic Backups, with unlogged users
-                    sys_userdetail userDetail = (GlobalFramework.LoggedUser != null) ? (sys_userdetail)SessionXpoForBackupPurposes.GetObjectByKey(typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid) : null;
+                    sys_userdetail userDetail = (DataLayerFramework.LoggedUser != null) ? (sys_userdetail)SessionXpoForBackupPurposes.GetObjectByKey(typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid) : null;
                     if (userDetail != null) systemBackup.User = userDetail;
 
                     //Non MSSqlServer Work: Cant Get Remote File Sizes, Hash etc from LPDev Backups
-                    if (GlobalFramework.DatabaseType != DatabaseType.MSSqlServer)
+                    if (DataLayerFramework.DatabaseType != DatabaseType.MSSqlServer)
                     {
                         //systemBackup.FileSize = new FileInfo(fileName).Length;
-                        systemBackup.FileNamePacked = Path.ChangeExtension(systemBackup.FileName, SettingsApp.BackupExtension);
+                        systemBackup.FileNamePacked = Path.ChangeExtension(systemBackup.FileName, POSSettings.BackupExtension);
                         //Compress File : Required OSSlash
-                        fullFileNamePacked = FrameworkUtils.OSSlash(string.Format(@"{0}\{1}", systemBackup.FilePath, systemBackup.FileNamePacked));
+                        fullFileNamePacked = SharedUtils.OSSlash(string.Format(@"{0}\{1}", systemBackup.FilePath, systemBackup.FileNamePacked));
                         // Old Method before PluginSoftwareVendor Implementation
                         //backupResult = Utils.ZipPack(new string[] { fileName }, fullFileNamePacked);
-                        backupResult = GlobalFramework.PluginSoftwareVendor.BackupDatabase(SettingsApp.SecretKey, new string[] { fileName }, fullFileNamePacked);
+                        backupResult = SharedFramework.PluginSoftwareVendor.BackupDatabase(FinancialLibrarySettings.SecretKey, new string[] { fileName }, fullFileNamePacked);
                         // Add FileHash
-                        if (backupResult) systemBackup.FileHash = FrameworkUtils.MD5HashFile(fullFileNamePacked);
+                        if (backupResult) systemBackup.FileHash = SharedUtils.MD5HashFile(fullFileNamePacked);
                     }
                     //MSSqlServer
                     else
@@ -231,12 +234,12 @@ namespace logicpos.Classes.DataLayer
                         //catch (Exception ex) { _logger.Error(ex.Message, ex); }
 
                         //Post Backup
-                        FrameworkUtils.Audit("DATABASE_BACKUP", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_database_backup"),
+                        SharedUtils.Audit("DATABASE_BACKUP", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_database_backup"),
                             (fullFileNamePacked != string.Empty) ? fullFileNamePacked : systemBackup.FileNamePacked
                         ));
 
                         //Moved to Thread Outside > Only Show if not in Silence Mode
-                        if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
+                        if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
                     }
                     else
                     {
@@ -246,23 +249,23 @@ namespace logicpos.Classes.DataLayer
                          * IN007007
                          * 
                          * This implementation covers only "non-DatabaseType.MSSqlServer" database, when calling the method to secure-compact database file:
-                         * > GlobalFramework.PluginSoftwareVendor.BackupDatabase...Utils.ZipPack
+                         * > SharedFramework.PluginSoftwareVendor.BackupDatabase...Utils.ZipPack
                          * 
                          * Please note that variable "backupResult" never changes its value when "DatabaseType.MSSqlServer", therefore is not being covered by this.
                          */
                         // Show only when "Silent Mode" is on
                         if (pSourceWindow != null)
                         {
-                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
+                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
                         }
 
-                        _logger.Debug($"DataBaseBackup.Backup(Window pSourceWindow): {string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
+                        _logger.Debug($"DataBaseBackup.Backup(Window pSourceWindow): {string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
                     }
                 }
                 else
                 {
                     //Moved to Thread Outside > Only Show if not in Silence Mode
-                    if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error"), Path.GetFileName(fileName)));
+                    if (pSourceWindow != null) logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_backup_error"), Path.GetFileName(fileName)));
                 }
                 /* IN009164 */
                 SessionXpoForBackupPurposes.Disconnect();
@@ -308,8 +311,8 @@ namespace logicpos.Classes.DataLayer
                         if (fileInfo.Response != ResponseType.Cancel && !fileInfo.FileHashValid)
                         {
                             //#EQUAL#1
-                            string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+                            string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
+                            logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                             return false;
                         }
                         break;
@@ -335,7 +338,7 @@ namespace logicpos.Classes.DataLayer
                         break;
                 }
 
-                if (GlobalFramework.DatabaseType != DatabaseType.MSSqlServer)
+                if (DataLayerFramework.DatabaseType != DatabaseType.MSSqlServer)
                 {
                     fileName = Path.ChangeExtension(fileNamePacked, _fileExtension);
                 }
@@ -349,22 +352,22 @@ namespace logicpos.Classes.DataLayer
                 if (fileName != string.Empty)
                 {
                     if (_debug) _logger.Debug(string.Format("Restore Filename:[{0}] to pathBackups[{1}]", fileNamePacked, pathBackups));
-                    if (GlobalFramework.DatabaseType != DatabaseType.MSSqlServer)
+                    if (DataLayerFramework.DatabaseType != DatabaseType.MSSqlServer)
                     {
                         // Old Method before PluginSoftwareVendor Implementation
                         //restoreResult = Utils.ZipUnPack(fileNamePacked, pathBackups, true);
-                        restoreResult = GlobalFramework.PluginSoftwareVendor.RestoreBackup(SettingsApp.SecretKey, fileNamePacked, pathBackups, true);
+                        restoreResult = SharedFramework.PluginSoftwareVendor.RestoreBackup(FinancialLibrarySettings.SecretKey, fileNamePacked, pathBackups, true);
                         if (_debug) _logger.Debug(string.Format("RestoreBackup: unpackResult:[{0}]", restoreResult));
                     }
 
-                    if (restoreResult || GlobalFramework.DatabaseType == DatabaseType.MSSqlServer)
+                    if (restoreResult || DataLayerFramework.DatabaseType == DatabaseType.MSSqlServer)
                     {
                         //Get properties from SystemBackup Object before Restore, to Assign Properties after Restore (FilePath,FileHash,User,Terminal)
                         sql = string.Format("SELECT Oid FROM sys_systembackup WHERE fileNamePacked = '{0}';", Path.GetFileName(fileNamePacked));
-                        systemBackupGuid = FrameworkUtils.GetGuidFromQuery(sql);
+                        systemBackupGuid = SharedUtils.GetGuidFromQuery(sql);
                         if (systemBackupGuid != Guid.Empty)
                         {
-                            systemBackup = (sys_systembackup)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_systembackup), systemBackupGuid);
+                            systemBackup = (sys_systembackup)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_systembackup), systemBackupGuid);
                             currentFileName = systemBackup.FileName;
                             currentFileNamePacked = systemBackup.FileNamePacked;
                             currentFilePath = systemBackup.FilePath;
@@ -376,9 +379,9 @@ namespace logicpos.Classes.DataLayer
                         if (Restore(pSourceWindow, fileName, fileNamePacked, systemBackup))
                         {
                             //Audit DATABASE_RESTORE
-                            FrameworkUtils.Audit("DATABASE_RESTORE", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_database_restore"), fileNamePacked));
+                            SharedUtils.Audit("DATABASE_RESTORE", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_database_restore"), fileNamePacked));
                             //Required to DropIdentity before get currentDocumentFinanceYear Object, else it exists in old non restored Session
-                            GlobalFramework.SessionXpo.DropIdentityMap();
+                            DataLayerFramework.SessionXpo.DropIdentityMap();
                             //Get Current Active FinanceYear
                             fin_documentfinanceyears currentDocumentFinanceYear = ProcessFinanceDocumentSeries.GetCurrentDocumentFinanceYear();
 
@@ -389,9 +392,9 @@ namespace logicpos.Classes.DataLayer
                             if (systemBackupGuid != Guid.Empty)
                             {
                                 //ReFresh UserDetail from Repository
-                                currentUserDetail = (currentUserDetail != null) ? (sys_userdetail)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userdetail), currentUserDetail.Oid) : null;
+                                currentUserDetail = (currentUserDetail != null) ? (sys_userdetail)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userdetail), currentUserDetail.Oid) : null;
                                 //Get Current Restored systemBackup Object
-                                systemBackup = (sys_systembackup)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_systembackup), systemBackupGuid);
+                                systemBackup = (sys_systembackup)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_systembackup), systemBackupGuid);
                                 systemBackup.FileName = currentFileName;
                                 systemBackup.FileNamePacked = currentFileNamePacked;
                                 systemBackup.FilePath = currentFilePath;
@@ -403,11 +406,11 @@ namespace logicpos.Classes.DataLayer
                             else
                             {
                                 sql = "DELETE FROM sys_systembackup WHERE FilePath IS NULL AND FileHash IS NULL AND User IS NULL;";
-                                GlobalFramework.SessionXpo.ExecuteNonQuery(sql);
+                                DataLayerFramework.SessionXpo.ExecuteNonQuery(sql);
                             }
 
                             //Audit
-                            FrameworkUtils.Audit("APP_CLOSE");
+                            SharedUtils.Audit("APP_CLOSE");
                             //Call QuitWithoutConfirmation without Audit
                             LogicPos.QuitWithoutConfirmation(false);
 
@@ -421,8 +424,8 @@ namespace logicpos.Classes.DataLayer
                     else
                     {
                         //#EQUAL#1
-                        string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                        logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+                        string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
+                        logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                         return false;
                     }
                 }
@@ -446,9 +449,9 @@ namespace logicpos.Classes.DataLayer
         {
             Thread thread;
             bool resultRestore = false;
-            string backupProcess = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_database_restore");
+            string backupProcess = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_database_restore");
 
-            switch (GlobalFramework.DatabaseType)
+            switch (DataLayerFramework.DatabaseType)
             {
                 case DatabaseType.MonoLite:
                 case DatabaseType.SQLite:
@@ -480,11 +483,11 @@ namespace logicpos.Classes.DataLayer
 
             if (resultRestore)
             {
-                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_successfully"), pFileNamePacked));
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_successfully"), pFileNamePacked));
             }
             else
             {
-                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error"), pFileNamePacked));
+                logicpos.Utils.ShowMessageTouch(pSourceWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_database_restore_error"), pFileNamePacked));
             }
 
             return resultRestore;
@@ -493,15 +496,15 @@ namespace logicpos.Classes.DataLayer
         private static string GetBackupFileName(string pFileExtension, uint pFileVersion, string pFilename)
         {
             //Settings
-            string pathBackups = GlobalFramework.Path["backups"].ToString();
-            string fileDataBaseBackup = SettingsApp.FileFormatDataBaseBackup;
-            string dateTimeFileFormat = SettingsApp.FileFormatDateTime;
+            string pathBackups = DataLayerFramework.Path["backups"].ToString();
+            string fileDataBaseBackup = POSSettings.FileFormatDataBaseBackup;
+            string dateTimeFileFormat = SharedSettings.FileFormatDateTime;
             //Local Vars
-            string dateTime = FrameworkUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
+            string dateTime = DataLayerUtils.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
 
             //Override Default pathBackups
             /* ERR201810#15 - Database backup issues */
-            if (GlobalFramework.DatabaseType == DatabaseType.MSSqlServer)
+            if (DataLayerFramework.DatabaseType == DatabaseType.MSSqlServer)
             {
                 /* IN007007 */
                 if (Directory.Exists(pathBackups))
@@ -521,7 +524,7 @@ namespace logicpos.Classes.DataLayer
             //Override default LocalPath with MSSqlServer.BackupDirectory
             if (GlobalFramework.DatabaseType == "MSSqlServer")
             {
-              _backupConnectionString = string.Format(GlobalFramework.Settings["backupConnectionString"], GlobalFramework.DatabaseServer);
+              _backupConnectionString = string.Format(DataLayerFramework.Settings["backupConnectionString"], GlobalFramework.DatabaseServer);
               ServerConnection connection = new ServerConnection(_backupConnectionString);
               Server server = new Server(connection);
 
@@ -548,7 +551,7 @@ namespace logicpos.Classes.DataLayer
             */
             if (pFilename == "")
             {
-                return pathBackups + string.Format(fileDataBaseBackup, GlobalFramework.DatabaseType, GlobalFramework.DatabaseName, pFileVersion, dateTime, pFileExtension).ToLower();
+                return pathBackups + string.Format(fileDataBaseBackup, DataLayerFramework.DatabaseType, SharedFramework.DatabaseName, pFileVersion, dateTime, pFileExtension).ToLower();
             }
             else
             {
@@ -559,7 +562,7 @@ namespace logicpos.Classes.DataLayer
         private static string GetLatestValidBackupFileName()
         {
             string sql = @"SELECT FileName FROM sys_systembackup ORDER BY Version DESC;";
-            SelectedData xpoSelectedDataSystemBackup = GlobalFramework.SessionXpo.ExecuteQuery(sql);
+            SelectedData xpoSelectedDataSystemBackup = DataLayerFramework.SessionXpo.ExecuteQuery(sql);
 
             foreach (SelectStatementResultRow item in xpoSelectedDataSystemBackup.ResultSet[0].Rows)
             {
@@ -579,13 +582,13 @@ namespace logicpos.Classes.DataLayer
 
             try
             {
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("DataBaseType = '{0}' && FileName IS NOT NULL", GlobalFramework.DatabaseType));
+                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("DataBaseType = '{0}' && FileName IS NOT NULL", DataLayerFramework.DatabaseType));
 
                 PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewSystemBackup>
                   dialogSystemBackup = new PosSelectRecordDialog<XPCollection, XPGuidObject, TreeViewSystemBackup>(
                     pSourceWindow,
-                    Gtk.DialogFlags.DestroyWithParent,
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_select_backup_filename"),
+                    DialogFlags.DestroyWithParent,
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_select_backup_filename"),
                     new Size(780, 580),
                     null, //XpoDefaultValue
                     criteriaOperator,
@@ -602,17 +605,17 @@ namespace logicpos.Classes.DataLayer
                     sys_systembackup systemBackup = (sys_systembackup)dialogSystemBackup.GenericTreeView.DataSourceRow;
                     if (systemBackup != null)
                     {
-                        if (GlobalFramework.DatabaseType == DatabaseType.MSSqlServer)
+                        if (DataLayerFramework.DatabaseType == DatabaseType.MSSqlServer)
                         {
                             resultFileInfo.FileName = systemBackup.FileName;
                             resultFileInfo.FileHashValid = true;
                         }
                         else
                         {
-                            resultFileInfo.FileName = FrameworkUtils.OSSlash(string.Format(@"{0}{1}", _pathBackups, systemBackup.FileName));
-                            resultFileInfo.FileNamePacked = FrameworkUtils.OSSlash(string.Format(@"{0}{1}", _pathBackups, systemBackup.FileNamePacked));
+                            resultFileInfo.FileName = SharedUtils.OSSlash(string.Format(@"{0}{1}", _pathBackups, systemBackup.FileName));
+                            resultFileInfo.FileNamePacked = SharedUtils.OSSlash(string.Format(@"{0}{1}", _pathBackups, systemBackup.FileNamePacked));
                             resultFileInfo.FileHashDB = systemBackup.FileHash;
-                            resultFileInfo.FileHashFile = FrameworkUtils.MD5HashFile(resultFileInfo.FileNamePacked);
+                            resultFileInfo.FileHashFile = SharedUtils.MD5HashFile(resultFileInfo.FileNamePacked);
                         }
                     }
                 }
@@ -633,8 +636,8 @@ namespace logicpos.Classes.DataLayer
               DialogFlags.Modal,
               MessageType.Question,
               ButtonsType.YesNo,
-              resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"),
-              resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_backup")
+              resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"),
+              resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_request_backup")
             );
 
             if (responseType == ResponseType.Yes)
@@ -647,7 +650,7 @@ namespace logicpos.Classes.DataLayer
         //SQLite
         private static bool BackupSQLite(string pFileName)
         {
-            string filenameSource = string.Format("{0}.db", GlobalFramework.DatabaseName);
+            string filenameSource = string.Format("{0}.db", SharedFramework.DatabaseName);
             string filenameTarget = pFileName;
             if (_debug) _logger.Debug(string.Format("BackupSQLite filenameSource: [{0}] to filenameSource: [{1}]", filenameSource, filenameTarget));
 
@@ -671,13 +674,13 @@ namespace logicpos.Classes.DataLayer
         private static bool RestoreSQLite(string pFileName)
         {
             string filenameSource = pFileName;
-            string filenameTarget = string.Format("{0}.db", GlobalFramework.DatabaseName);
+            string filenameTarget = string.Format("{0}.db", SharedFramework.DatabaseName);
             if (_debug) _logger.Debug(string.Format("BackupSQLite filenameSource: [{0}] to filenameSource: [{1}]", filenameSource, filenameTarget));
 
             try
             {
                 //Disconnect From Database
-                GlobalFramework.SessionXpo.Disconnect();
+                DataLayerFramework.SessionXpo.Disconnect();
                 File.Copy(filenameSource, filenameTarget, true);
                 return true;
             }
@@ -708,7 +711,7 @@ namespace logicpos.Classes.DataLayer
 
                 string sql = string.Format(@"
                   BACKUP DATABASE {0} TO DISK='{1}';"
-                  , GlobalFramework.DatabaseName
+                  , SharedFramework.DatabaseName
                   , pFileName
                 );
                 SessionXpoForBackupPurposes.ExecuteScalar(sql);
@@ -740,12 +743,12 @@ namespace logicpos.Classes.DataLayer
                   ALTER DATABASE {0} SET MULTI_USER;
                   USE {0};
                   "
-                  , GlobalFramework.DatabaseName
+                  , SharedFramework.DatabaseName
                   , pFileName
                 );
                 //_logger.Debug(string.Format("RestoreMSSqlServer.sql: [{0}]", sql));
 
-                GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                DataLayerFramework.SessionXpo.ExecuteScalar(sql);
 
                 //Direct Connection
                 //SqlConnection connection = new SqlConnection(pConnectionString);
@@ -794,7 +797,7 @@ namespace logicpos.Classes.DataLayer
             }
             Backup source = new Backup();
             source.Action = BackupActionType.Database;
-            source.Database = GlobalFramework.DatabaseName;
+            source.Database = SharedFramework.DatabaseName;
             BackupDeviceItem destination = new BackupDeviceItem(pFileName, DeviceType.File);
             source.Devices.Add(destination);
             source.SqlBackup(server);
@@ -826,10 +829,10 @@ namespace logicpos.Classes.DataLayer
               server.ConnectionContext.Password = GlobalFramework.DatabasePassword;
             }
             //Deletes the specified database and drops any active connection
-            server.KillDatabase(GlobalFramework.DatabaseName);
+            server.KillDatabase(SharedFramework.DatabaseName);
             Restore destination = new Restore();
             destination.Action = RestoreActionType.Database;
-            destination.Database = GlobalFramework.DatabaseName;
+            destination.Database = SharedFramework.DatabaseName;
             BackupDeviceItem source = new BackupDeviceItem(pFileName, DeviceType.File);
             destination.Devices.Add(source);
             destination.ReplaceDatabase = true;
@@ -927,7 +930,7 @@ namespace logicpos.Classes.DataLayer
             /* IN009068 - logs to track the cause of the issue. #TODO: pending implementation to solve the issue definitively */
             try
             {
-                //string xpoConnectionString = string.Format(GlobalFramework.Settings["xpoConnectionString"], GlobalFramework.DatabaseName.ToLower());
+                //string xpoConnectionString = string.Format(DataLayerFramework.Settings["xpoConnectionString"], SharedFramework.DatabaseName.ToLower());
                 //AutoCreateOption xpoAutoCreateOption = AutoCreateOption.None;
                 //
                 ////XpoDefault.TrackPropertiesModifications = true;
@@ -940,7 +943,7 @@ namespace logicpos.Classes.DataLayer
                 //result = Convert.ToDateTime(createdAt);
 
                 string sql = "SELECT CreatedAt FROM sys_systembackup ORDER BY CreatedAt DESC";
-                var createdAt = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                var createdAt = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                 //DateTime result = Convert.ToDateTime(createdAt);
                 result = Convert.ToDateTime(createdAt);
             }

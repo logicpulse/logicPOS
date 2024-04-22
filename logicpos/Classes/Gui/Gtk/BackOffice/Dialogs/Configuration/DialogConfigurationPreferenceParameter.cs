@@ -1,15 +1,14 @@
-﻿using DevExpress.Data.Filtering;
-using Gtk;
+﻿using Gtk;
 using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
-using logicpos.Classes.Gui.Gtk.WidgetsXPO;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.resources;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using System;
 using System.Configuration;
 
@@ -24,9 +23,9 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         public static void SaveSettings(string fieldName)
         {
             try
-            {              
+            {
 
-                Configuration config =  ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 config.AppSettings.Settings["customCultureResourceDefinition"].Value = fieldName;
                 config.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection("appSettings");
@@ -42,13 +41,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             : base(pSourceWindow, pTreeView, pFlags, pDialogMode, pXPGuidObject)
         {
             _XPGuidObject = pXPGuidObject;
-            this.Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
+            this.Title = logicpos.Utils.GetWindowTitle(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_edit_configurationpreferenceparameter"));
             // Default windowHeight, InputTypes can Override this in Switch             
             if (logicpos.Utils.IsLinux)
             {
                 _windowHeight = 391;
             }
-            else 
+            else
             {
                 _windowHeight = _windowHeightForTextComponent;
             }
@@ -68,8 +67,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 cfg_configurationpreferenceparameter dataSourceRow = (cfg_configurationpreferenceparameter)_dataSourceRow;
 
                 //Define Label for Value
-                string valueLabel = (resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], dataSourceRow.ResourceString) != null)
-                    ? resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], dataSourceRow.ResourceString)
+                string valueLabel = (CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], dataSourceRow.ResourceString) != null)
+                    ? CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], dataSourceRow.ResourceString)
                     : "LABEL NOT DEFINED IN Field  [ResourceString]";
 
                 //Define RegEx for Value
@@ -77,7 +76,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (dataSourceRow.RegEx != null)
                 {
                     //Try to get Value
-                    object objectValueRegEx = FrameworkUtils.GetFieldValueFromType(typeof(SettingsApp), dataSourceRow.RegEx);
+                    object objectValueRegEx = SharedUtils.GetFieldValueFromType(typeof(POSSettings), dataSourceRow.RegEx);
                     if (objectValueRegEx != null) valueRegEx = objectValueRegEx.ToString();
                 }
 
@@ -86,29 +85,29 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 && dataSourceRow.Required;
 
                 //Override Db Regex with ConfigurationSystemCountry RegExZipCode and RegExFiscalNumber
-                if (dataSourceRow.Token == "COMPANY_POSTALCODE") valueRegEx = SettingsApp.ConfigurationSystemCountry.RegExZipCode;
-                if (dataSourceRow.Token == "COMPANY_FISCALNUMBER") valueRegEx = SettingsApp.ConfigurationSystemCountry.RegExFiscalNumber;
+                if (dataSourceRow.Token == "COMPANY_POSTALCODE") valueRegEx = DataLayerSettings.ConfigurationSystemCountry.RegExZipCode;
+                if (dataSourceRow.Token == "COMPANY_FISCALNUMBER") valueRegEx = DataLayerSettings.ConfigurationSystemCountry.RegExFiscalNumber;
 
                 //Tab1
                 VBox vboxTab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
                 //Ord
                 Entry entryOrd = new Entry();
-                BOWidgetBox boxLabel = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
+                BOWidgetBox boxLabel = new BOWidgetBox(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_order"), entryOrd);
                 vboxTab1.PackStart(boxLabel, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SettingsApp.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxLabel, _dataSourceRow, "Ord", SharedSettings.RegexIntegerGreaterThanZero, true));
 
                 //Code
                 Entry entryCode = new Entry();
-                BOWidgetBox boxCode = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
+                BOWidgetBox boxCode = new BOWidgetBox(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_code"), entryCode);
                 vboxTab1.PackStart(boxCode, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SettingsApp.RegexIntegerGreaterThanZero, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxCode, _dataSourceRow, "Code", SharedSettings.RegexIntegerGreaterThanZero, true));
 
                 //Token
                 Entry entryToken = new Entry();
-                BOWidgetBox boxToken = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_token"), entryToken);
+                BOWidgetBox boxToken = new BOWidgetBox(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_token"), entryToken);
                 vboxTab1.PackStart(boxToken, false, false, 0);
-                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxToken, _dataSourceRow, "Token", SettingsApp.RegexAlfaNumericExtended, true));
+                _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxToken, _dataSourceRow, "Token", SharedSettings.RegexAlfaNumericExtended, true));
 
                 //Get InputType
                 PreferenceParameterInputType inputType = (PreferenceParameterInputType)Enum.Parse(typeof(PreferenceParameterInputType), dataSourceRow.InputType.ToString(), true);
@@ -128,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         // ValueTip
                         if (!string.IsNullOrEmpty(dataSourceRow.ValueTip))
                         {
-                            entryValue.TooltipText = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_prefparam_value_tip_format"), dataSourceRow.ValueTip);
+                            entryValue.TooltipText = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_prefparam_value_tip_format"), dataSourceRow.ValueTip);
                         }
                         break;
                     case PreferenceParameterInputType.Multiline:
@@ -136,7 +135,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         entryMultiline.Value.Text = dataSourceRow.Value;
                         entryMultiline.ScrolledWindow.BorderWidth = 1;
                         entryMultiline.HeightRequest = 122;
-                        Label labelMultiline = new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_notes"));
+                        Label labelMultiline = new Label(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_notes"));
                         boxValue = new BOWidgetBox(valueLabel, entryMultiline);
                         vboxTab1.PackStart(boxValue, false, false, 0);
                         _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", valueRegEx, valueRequired));
@@ -157,11 +156,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         try
                         {
                             string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                            getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                            getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
                         }
                         catch
                         {
-                            getCultureFromDB = GlobalFramework.Settings["customCultureResourceDefinition"];
+                            getCultureFromDB = DataLayerFramework.Settings["customCultureResourceDefinition"];
                         }
 
                         string[] getCulturesValues = new string[8];
@@ -192,7 +191,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         }
 
                         ComboBox xpoComboBoxInputType = new ComboBox(getCulturesLabels);
-                        
+
                         xpoComboBoxInputType.Model.GetIterFirst(out iter);
                         int cbox = 0;
                         do
@@ -205,10 +204,10 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                                 xpoComboBoxInputType.SetActiveIter(iter);
                                 break;
                             }
-                            cbox++;  
+                            cbox++;
                         } while (xpoComboBoxInputType.Model.IterNext(ref iter));
 
-                        ComboboxValue = new BOWidgetBox(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), xpoComboBoxInputType);
+                        ComboboxValue = new BOWidgetBox(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_language"), xpoComboBoxInputType);
                         vboxTab1.PackStart(ComboboxValue, false, false, 0);
 
                         entryValue.Text = getCulturesValues[xpoComboBoxInputType.Active];
@@ -221,13 +220,13 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             {
                                 SaveSettings(getCulturesValues[xpoComboBoxInputType.Active].ToString());
                             }
-                            //GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCulturesValues[xpoComboBoxInputType.Active]);
-                            //GlobalFramework.Settings["customCultureResourceDefinition"] = getCulturesValues[xpoComboBoxInputType.Active];
+                            //SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCulturesValues[xpoComboBoxInputType.Active]);
+                            //DataLayerFramework.Settings["customCultureResourceDefinition"] = getCulturesValues[xpoComboBoxInputType.Active];
                             //CustomResources.UpdateLanguage(getCulturesValues[xpoComboBoxInputType.Active]);
                             //_crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));
                         };
-                        boxValue = new BOWidgetBox(valueLabel, entryValue);         
-                        _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));             
+                        boxValue = new BOWidgetBox(valueLabel, entryValue);
+                        _crudWidgetList.Add(new GenericCRUDWidgetXPO(boxValue, _dataSourceRow, "Value", string.Empty, false));
                         break;
                     case PreferenceParameterInputType.FilePicker:
                     case PreferenceParameterInputType.DirPicker:
@@ -245,7 +244,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                             {
                                 fileChooser.Filter = logicpos.Utils.GetFileFilterImages();
                             }
-                           
+
                         }
                         else
                         {
@@ -260,7 +259,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
 
                 //Append Tab
-                _notebook.AppendPage(vboxTab1, new Label(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
+                _notebook.AppendPage(vboxTab1, new Label(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_record_main_detail")));
 
                 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 

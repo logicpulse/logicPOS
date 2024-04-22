@@ -1,14 +1,15 @@
 ﻿using DevExpress.Xpo.DB;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.financial.service.App;
 using logicpos.financial.service.Objects.Modules.AT;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Security;
 using System.Text;
 using System.Xml.Linq;
-using System.Security;
 
 namespace logicpos.financial.service.Objects
 {
@@ -39,7 +40,7 @@ namespace logicpos.financial.service.Objects
                 }
             }
         }
-        
+
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         public static string GetDocumentsQuery(bool pWayBillMode)
@@ -121,7 +122,7 @@ namespace logicpos.financial.service.Objects
                     AND (fm.EntityOid <> '{0}')
                 )"
                 // Skip FinalConsumer
-                , SettingsApp.XpoOidDocumentFinanceMasterFinalConsumerEntity
+                , SharedSettings.XpoOidDocumentFinanceMasterFinalConsumerEntity
                 );
             }
 
@@ -265,7 +266,7 @@ namespace logicpos.financial.service.Objects
                     , pDocumentMaster.Oid
                 );
 
-                DataTable dtResult = FrameworkUtils.GetDataTableFromQuery(sql);
+                DataTable dtResult = SharedUtils.GetDataTableFromQuery(sql);
 
                 //Init StringBuilder
                 StringBuilder sb = new StringBuilder();
@@ -287,10 +288,10 @@ namespace logicpos.financial.service.Objects
     </Line>
 "
                         , nodeName
-                        , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["TotalNet"]), GlobalFramework.CurrentCultureNumberFormat)
+                        , SharedUtils.DecimalToString(Convert.ToDecimal(item["TotalNet"]), SharedFramework.CurrentCultureNumberFormat)
                         , item["TaxType"]
                         , item["TaxCountryRegion"]
-                        , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["Vat"]), GlobalFramework.CurrentCultureNumberFormat)
+                        , SharedUtils.DecimalToString(Convert.ToDecimal(item["Vat"]), SharedFramework.CurrentCultureNumberFormat)
                         , taxExemptionReason
                     ));
 
@@ -307,9 +308,9 @@ namespace logicpos.financial.service.Objects
       <ns2:NetTotal>{1}</ns2:NetTotal>
       <ns2:GrossTotal>{2}</ns2:GrossTotal>
     </DocumentTotals>"
-                    , FrameworkUtils.DecimalToString(taxPayable, GlobalFramework.CurrentCultureNumberFormat)
-                    , FrameworkUtils.DecimalToString(netTotal, GlobalFramework.CurrentCultureNumberFormat)
-                    , FrameworkUtils.DecimalToString(grossTotal, GlobalFramework.CurrentCultureNumberFormat)
+                    , SharedUtils.DecimalToString(taxPayable, SharedFramework.CurrentCultureNumberFormat)
+                    , SharedUtils.DecimalToString(netTotal, SharedFramework.CurrentCultureNumberFormat)
+                    , SharedUtils.DecimalToString(grossTotal, SharedFramework.CurrentCultureNumberFormat)
                 ));
 
                 result = sb.ToString();
@@ -361,7 +362,7 @@ namespace logicpos.financial.service.Objects
                     , pDocumentMaster.Oid
                 );
 
-                DataTable dtResult = FrameworkUtils.GetDataTableFromQuery(sql);
+                DataTable dtResult = SharedUtils.GetDataTableFromQuery(sql);
 
                 //Init StringBuilder
                 StringBuilder sb = new StringBuilder();
@@ -384,9 +385,9 @@ namespace logicpos.financial.service.Objects
 "
                         , orderReferences
                         , SecurityElement.Escape(item["ProductDescription"].ToString())
-                        , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]), GlobalFramework.CurrentCultureNumberFormat)
+                        , SharedUtils.DecimalToString(Convert.ToDecimal(item["Quantity"]), SharedFramework.CurrentCultureNumberFormat)
                         , item["UnitOfMeasure"]
-                        , FrameworkUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]), GlobalFramework.CurrentCultureNumberFormat)
+                        , SharedUtils.DecimalToString(Convert.ToDecimal(item["UnitPrice"]), SharedFramework.CurrentCultureNumberFormat)
                     ));
                 }
 
@@ -442,16 +443,16 @@ namespace logicpos.financial.service.Objects
                 Guid key;
                 fin_documentfinancemaster documentMaster;
                 //Invoice Documents
-                if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocuments"]))
+                if (Convert.ToBoolean(DataLayerFramework.Settings["ServiceATSendDocuments"]))
                 {
                     string sqlDocuments = GetDocumentsQuery(false);
                     //_logger.Debug(String.Format("sqlDocuments: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocuments)));
 
-                    XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlDocuments);
+                    XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sqlDocuments);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
+                        documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
 
@@ -468,16 +469,16 @@ namespace logicpos.financial.service.Objects
                 }
 
                 //WayBill Documents
-                if (Convert.ToBoolean(GlobalFramework.Settings["ServiceATSendDocumentsWayBill"]))
+                if (Convert.ToBoolean(DataLayerFramework.Settings["ServiceATSendDocumentsWayBill"]))
                 {
                     string sqlDocumentsWayBill = GetDocumentsQuery(true);
                     //_logger.Debug(String.Format("sqlDocumentsWayBill: [{0}]", FrameworkUtils.RemoveCarriageReturnAndExtraWhiteSpaces(sqlDocumentsWayBill)));
 
-                    XPSelectData xPSelectData = FrameworkUtils.GetSelectedDataFromQuery(sqlDocumentsWayBill);
+                    XPSelectData xPSelectData = SharedUtils.GetSelectedDataFromQuery(sqlDocumentsWayBill);
                     foreach (SelectStatementResultRow row in xPSelectData.Data)
                     {
                         key = new Guid(row.Values[xPSelectData.GetFieldIndex("Oid")].ToString());
-                        documentMaster = (fin_documentfinancemaster)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
+                        documentMaster = (fin_documentfinancemaster)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentfinancemaster), key);
                         //SendDocument
                         soapResult = SendDocument(documentMaster);
                         result.Add(documentMaster, soapResult);

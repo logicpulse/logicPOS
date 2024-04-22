@@ -58,7 +58,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 
         public void SetBackgroundColor(System.Drawing.Color pColor, EventBox pTargetEventBox)
         {
-            if (pColor == System.Drawing.Color.Transparent)
+            if (pColor == Color.Transparent)
             {
                 pTargetEventBox.VisibleWindow = false;
             }

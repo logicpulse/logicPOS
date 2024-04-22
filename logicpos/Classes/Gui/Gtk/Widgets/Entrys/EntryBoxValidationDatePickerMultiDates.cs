@@ -1,12 +1,10 @@
 ﻿using Gtk;
-using logicpos.App;
-using logicpos.financial;
+using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.resources.Resources.Localization;
-using logicpos.shared;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
-using logicpos.Classes.Enums.Keyboard;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -71,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public EntryBoxValidationDatePickerMultiDates(Window pSourceWindow, string pLabelText, string pWindowTitle, List<DateTime> pInitialDatesList)
         {
-            string initialDate = FrameworkUtils.CurrentDateTimeAtomic().ToString(SettingsApp.DateFormat);
+            string initialDate = DataLayerUtils.CurrentDateTimeAtomic().ToString(SharedSettings.DateFormat);
 
             //Parameters
             _sourceWindow = pSourceWindow;
@@ -82,7 +80,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _vbox = new VBox(false, 0);
 
             //Init DateEntry
-            _entryBoxAddDate = new EntryBoxValidationDatePickerDialog(pSourceWindow, pLabelText, pWindowTitle, SettingsApp.RegexDate, false);
+            _entryBoxAddDate = new EntryBoxValidationDatePickerDialog(pSourceWindow, pLabelText, pWindowTitle, SharedSettings.RegexDate, false);
             _entryBoxAddDate.EntryValidation.Text = initialDate;
             _entryBoxAddDate.EntryValidation.Validate();
             _entryBoxAddDate.ClosePopup += _entryBoxAddDate_ClosePopup;
@@ -102,7 +100,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 for (int i = 0; i < _datesList.Count; i++)
                 {
                     //Assign current fileName to _entryBoxAddFile, the last added is the Visible One
-                    _entryBoxAddDate.EntryValidation.Text = _datesList[i].ToString(SettingsApp.DateFormat);
+                    _entryBoxAddDate.EntryValidation.Text = _datesList[i].ToString(SharedSettings.DateFormat);
                     AddDateTimeEntry(_datesList[i], false);
                 }
             }
@@ -116,7 +114,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (_datesList.Contains(_entryBoxAddDate.Value))
             {
-                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error"));
+                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error"));
             }
             else
             {
@@ -137,10 +135,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Failled: Invalid Date Range
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), 
-                        string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error_outside_range"), 
-                            _allowedPeriodBegin.ToString(SettingsApp.DateFormat),
-                            _allowedPeriodEnd.ToString(SettingsApp.DateFormat)
+                    logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"),
+                        string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_datepicker_existing_date_error_outside_range"),
+                            _allowedPeriodBegin.ToString(SharedSettings.DateFormat),
+                            _allowedPeriodEnd.ToString(SharedSettings.DateFormat)
                         )
                     );
                 }
@@ -149,13 +147,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         private void AddDateTimeEntry(DateTime pDateTime, bool pAddDateTimeToList)
         {
-            string iconFileName = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
-            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_date"), _datesList.Count + 1), KeyboardMode.None, SettingsApp.RegexDate, true, iconFileName);
+            string iconFileName = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_date"), _datesList.Count + 1), KeyboardMode.None, SharedSettings.RegexDate, true, iconFileName);
             entryBoxValidation.EntryValidation.Validate();
             entryBoxValidation.EntryValidation.Sensitive = false;
             //Remove Event
             entryBoxValidation.Button.Clicked += Button_Clicked;
-            entryBoxValidation.EntryValidation.Text = pDateTime.ToString(SettingsApp.DateFormat);
+            entryBoxValidation.EntryValidation.Text = pDateTime.ToString(SharedSettings.DateFormat);
             _vbox.PackStart(entryBoxValidation, false, false, 0);
             _vbox.ShowAll();
             if (pAddDateTimeToList) _datesList.Add(_entryBoxAddDate.Value);

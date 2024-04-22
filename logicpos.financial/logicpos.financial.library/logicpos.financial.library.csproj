@@ -60,8 +60,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App\GlobalFramework.cs" />
-    <Compile Include="App\SettingsApp.cs" />
+    <Compile Include="App\FinancialLibraryFramework.cs" />
+    <Compile Include="App\FinancialLibrarySettings.cs" />
     <Compile Include="Classes\Finance\ExtendValue.cs" />
     <Compile Include="Classes\Finance\IStockManagementModule.cs" />
     <Compile Include="Classes\Finance\ProcessFinanceDocument.cs" />
@@ -133,7 +133,7 @@
     <Compile Include="Classes\WorkSession\ProcessWorkSessionMovement.cs" />
     <Compile Include="Classes\WorkSession\ProcessWorkSessionPeriod.cs" />
     <Compile Include="Classes\Results\FrameworkCallsResult.cs" />
-    <Compile Include="App\FrameworkUtils.cs" />
+    <Compile Include="App\FinancialLibraryUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

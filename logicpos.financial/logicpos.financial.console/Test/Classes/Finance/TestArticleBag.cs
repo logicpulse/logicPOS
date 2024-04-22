@@ -4,6 +4,8 @@ using logicpos.datalayer.Enums;
 using logicpos.shared.Classes.Finance;
 using System;
 using System.Collections.Generic;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.financial.console.Test.Classes
 {
@@ -15,8 +17,8 @@ namespace logicpos.financial.console.Test.Classes
         public static ArticleBag GetArticleBag(bool pForceErrors)
         {
             ArticleBag articleBag = new ArticleBag(10);
-            Guid xpoOidConfigurationPlaceDefault = new Guid(GlobalFramework.Settings["xpoOidConfigurationPlaceDefault"]);
-            Guid xpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(GlobalFramework.Settings["xpoOidConfigurationPlaceTableDefaultOpenTable"]);
+            Guid xpoOidConfigurationPlaceDefault = new Guid(DataLayerFramework.Settings["xpoOidConfigurationPlaceDefault"]);
+            Guid xpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(DataLayerFramework.Settings["xpoOidConfigurationPlaceTableDefaultOpenTable"]);
             ArticleBagKey articleBagKey;
             ArticleBagProperties articleBagProps;
 
@@ -48,7 +50,7 @@ namespace logicpos.financial.console.Test.Classes
 
             foreach (var item in mockArticles)
             {
-                fin_article article = (fin_article)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_article), item.Key);
+                fin_article article = (fin_article)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_article), item.Key);
 
                 articleBagKey = new ArticleBagKey(
                   article.Oid,
@@ -71,7 +73,7 @@ namespace logicpos.financial.console.Test.Classes
                     //Detect and Add TaxExceptionReason if Miss to Prevent Errors
                     if (articleBagKey.Vat == 0.0m && articleBagKey.VatExemptionReasonOid == Guid.Empty)
                     {
-                        articleBagKey.VatExemptionReasonOid = SettingsApp.XpoOidConfigurationVatExemptionReasonM99;
+                        articleBagKey.VatExemptionReasonOid = SharedSettings.XpoOidConfigurationVatExemptionReasonM99;
                     }
 
                     //Add Price to Services, else we have Error with Price 0
@@ -117,7 +119,7 @@ namespace logicpos.financial.console.Test.Classes
             Guid articleClassProducts = new Guid("6924945d-f99e-476b-9c4d-78fb9e2b30a3");
             Guid articleClassServices = new Guid("7622e5d2-2d52-4be9-bb8b-e5efae5ec791");
 
-            ArticleBag articleBag = TestArticleBag.GetArticleBag(false);
+            ArticleBag articleBag = GetArticleBag(false);
 
             foreach (var item in articleBag)
             {

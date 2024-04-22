@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace logicpos.App
 {
-    public class GlobalApp
+    public static class GlobalApp
     {
         public static StartupWindow StartupWindow;
         public static PosMainWindow PosMainWindow;

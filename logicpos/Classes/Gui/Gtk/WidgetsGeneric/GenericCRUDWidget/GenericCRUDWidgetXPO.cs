@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -60,7 +60,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     _fieldProperty = prop;
 
                     //Return GetUnderlyingType when is Nullable ex Int16? | [System.Nullable1[System.Int16]]
-                    if (FrameworkUtils.IsNullable(prop.PropertyType))
+                    if (SharedUtils.IsNullable(prop.PropertyType))
                     {
                         //Required Nullable.GetUnderlyingType, else Type is item.FieldType:[System.Nullable1[System.Int16]], this returns item.FieldType:[System.Int16]
                         _fieldType = Nullable.GetUnderlyingType(prop.PropertyType);

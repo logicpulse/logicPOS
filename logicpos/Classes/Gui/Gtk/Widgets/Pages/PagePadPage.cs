@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using System;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System.IO;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -74,8 +74,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _pageName = pPageName;
             _pageIcon = (pPageIcon != string.Empty && File.Exists(pPageIcon))
               ? pPageIcon
-                //DefaultIcon
-              : FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_default.png"));
+              //DefaultIcon
+              : SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_default.png"));
             if (pWidget != null) PackStart(pWidget);
             _enabled = pEnabled;
         }

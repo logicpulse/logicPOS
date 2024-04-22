@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using System;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -25,7 +25,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             : base(pSourceWindow, pLabelText, pBOSource)
         {
             //Settings
-            string iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
+            string iconSelectRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
             string iconFile = (pIconFile != string.Empty) ? pIconFile : iconSelectRecord;
 
             //Init Button
@@ -41,7 +41,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _hbox.PackStart(_entryValidation, true, true, 0);
             _hbox.PackStart(_button, false, false, 0);
             //Init Keyboard
-            if(!pBOSource) InitKeyboard(_entryValidation);
+            if (!pBOSource) InitKeyboard(_entryValidation);
         }
     }
 }

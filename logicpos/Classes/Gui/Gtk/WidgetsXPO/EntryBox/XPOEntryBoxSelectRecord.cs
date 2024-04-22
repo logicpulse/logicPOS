@@ -18,6 +18,9 @@ using logicpos.Classes.Enums.Dialogs;
 using System.Collections;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
 using logicpos.Classes.Gui.Gtk.BackOffice;
+using logicpos.financial.library.App;
+using logicpos.shared.App;
+using logicpos.datalayer.App;
 
 //Note: This component dont have Validation, is used to be the Base XPOEntryBoxSelectRecordValidation 
 //and to be used with CrudWidgetList Validation
@@ -151,9 +154,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _codeEntry = pCodeEntry;
             ListStore store = null;
             //Settings
-            string iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
-            string iconClearRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
-            string iconAddRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
+            string iconSelectRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
+            string iconClearRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_delete_record.png"));
+            string iconAddRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/icon_pos_nav_new.png"));
             //Init Button
             _buttonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             _buttonClearValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconClearRecord, new Size(20, 20), 30, 30);
@@ -240,7 +243,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _entry = pEntry;
             ListStore store = null;
             //Settings
-            string iconSelectRecord = FrameworkUtils.OSSlash(string.Format("{0}{1}", GlobalFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
+            string iconSelectRecord = SharedUtils.OSSlash(string.Format("{0}{1}", DataLayerFramework.Path["images"], @"Icons/Windows/icon_window_select_record.png"));
             //Init Button
             _buttonSelectValue = new TouchButtonIcon("touchButtonIcon", Color.Transparent, iconSelectRecord, new Size(20, 20), 30, 30);
             //UI/Pack
@@ -333,7 +336,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 };
                 if(pCriteria == null) pCriteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
 
-                dropdownTextCollection = GlobalFramework.SessionXpo.GetObjects(GlobalFramework.SessionXpo.GetClassInfo(value), pCriteria, sortCollection, int.MaxValue, false, true);
+                dropdownTextCollection = DataLayerFramework.SessionXpo.GetObjects(DataLayerFramework.SessionXpo.GetClassInfo(value), pCriteria, sortCollection, int.MaxValue, false, true);
 
                 if (dropdownTextCollection != null)
                 {
@@ -403,7 +406,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (!articleOid.Equals(Guid.Empty))
             {
                 //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                _value = (T1)FrameworkUtils.GetXPGuidObject(typeof(T1), articleOid);
+                _value = (T1)DataLayerUtils.GetXPGuidObject(typeof(T1), articleOid);
                 propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
                 fin_article value = null;
@@ -420,10 +423,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 
 
-                pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
 
-                pEntryCode.Text = (value != null) ? value.Code.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
-                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntryCode.Text = (value != null) ? value.Code.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
+                pEntryQtd.Text = (value != null) ? value.DefaultQuantity.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
                 
                 OnClosePopup();
             }
@@ -500,7 +503,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             if (!articleOid.Equals(Guid.Empty))
             {
                 //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-                _value = (T1)FrameworkUtils.GetXPGuidObject(typeof(T1), articleOid);
+                _value = (T1)DataLayerUtils.GetXPGuidObject(typeof(T1), articleOid);
                 propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
                 object value;
@@ -525,13 +528,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 }
                 else
                 {
-                    pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                    pEntry.Text = (value != null) ? value.ToString() : resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
                 }           
                 OnClosePopup();
             }
             //else if (typeof(T2) == typeof(TreeViewArticleSerialNumber))
             //{
-            //    var articleSerialNumber = (fin_articleserialnumber)FrameworkUtils.GetXPGuidObject(typeof(fin_article), (_value as fin_articleserialnumber).Article.Oid);
+            //    var articleSerialNumber = (fin_articleserialnumber)DataLayerUtils.GetXPGuidObject(typeof(fin_article), (_value as fin_articleserialnumber).Article.Oid);
             //    pEntry.Text = articleSerialNumber.SerialNumber;
             //}
             else {
@@ -557,7 +560,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                   dialog = new PosSelectRecordDialog<XPCollection, XPGuidObject, T2>(
                     _sourceWindow,
                     DialogFlags.DestroyWithParent,
-                    resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
+                    resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_select_record"),
                     _dialogSize,
                     _value,
                     _criteriaOperator,
@@ -599,7 +602,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _previousValue = _value;
             object value = null;
             //Get Object from dialog else Mixing Sessions, Both belong to diferente Sessions
-            _value = (T1)FrameworkUtils.GetXPGuidObject(typeof(T1), dialog.GenericTreeView.DataSourceRow.Oid);
+            _value = (T1)DataLayerUtils.GetXPGuidObject(typeof(T1), dialog.GenericTreeView.DataSourceRow.Oid);
             propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
 
             if (typeof(T2) == typeof(TreeViewArticleSerialNumber))
@@ -609,7 +612,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
             if (typeof(T2) == typeof(TreeViewArticleWarehouse))
             {
-                _value = (T1)FrameworkUtils.GetXPGuidObject(typeof(T1), (dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
+                _value = (T1)DataLayerUtils.GetXPGuidObject(typeof(T1), (dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
                 propertyInfo = typeof(T1).GetProperty(_fieldDisplayValue);
                 if(propertyInfo == null) { propertyInfo = typeof(T1).GetProperty("Warehouse"); }
             }
@@ -632,19 +635,19 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             }
             else
             {
-                if(_value != null && _value.Oid == SettingsApp.XpoOidUserRecord)
+                if(_value != null && _value.Oid == SharedSettings.XpoOidUserRecord)
                 {
-                    pEntry.Text = (value != null) ? CryptorEngine.Decrypt(value.ToString(), true, SettingsApp.SecretKey) : "";
+                    pEntry.Text = (value != null) ? CryptorEngine.Decrypt(value.ToString(), true, FinancialLibrarySettings.SecretKey) : "";
                 }
                 else
                 {
                     pEntry.Text = (value != null) ? value.ToString() : "";
                 }
-                 //resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error");
+                 //resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error");
             }
             if (typeof(T2) == typeof(TreeViewArticleWarehouse))
             {
-                var articleWarehouse = (fin_articlewarehouse)FrameworkUtils.GetXPGuidObject(typeof(fin_articlewarehouse), (dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
+                var articleWarehouse = (fin_articlewarehouse)DataLayerUtils.GetXPGuidObject(typeof(fin_articlewarehouse), (dialog.GenericTreeView.DataSourceRow as fin_articlewarehouse).Oid);
                 if((articleWarehouse as fin_articlewarehouse).ArticleSerialNumber != null)
                 {
                     pEntry.Text = (articleWarehouse as fin_articlewarehouse).ArticleSerialNumber.SerialNumber;
@@ -679,7 +682,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             //Pagination response 
             if (DialogResponseType.LoadMore.Equals(response))
             {
-                dialog.GenericTreeView.DataSource.TopReturnedObjects = (SettingsApp.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber);
+                dialog.GenericTreeView.DataSource.TopReturnedObjects = (POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber);
                 dialog.GenericTreeView.Refresh();
                 PopuDialogMore(pEntry, dialog);
             }
@@ -697,7 +700,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
 
                 List<string> result = new List<string>();
 				//Titulo nas janelas de filtro de relatório [IN:014328]
-                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
+                PosReportsQueryDialog dialogFilter = new PosReportsQueryDialog(dialog, DialogFlags.DestroyWithParent, ReportsQueryDialogMode.FILTER_DOCUMENTS_PAGINATION, "fin_documentfinancemaster", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_report_filter"));
                 DialogResponseType responseFilter = (DialogResponseType)dialogFilter.Run();
 
                 //If button Clean Filter Clicked
@@ -705,7 +708,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 {
                     dialog.GenericTreeView.CurrentPageNumber = 1;
                     dialog.GenericTreeView.DataSource.Criteria = CriteriaOperatorLastFilter;
-                    dialog.GenericTreeView.DataSource.TopReturnedObjects = SettingsApp.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                    dialog.GenericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                     dialog.GenericTreeView.Refresh();
                     dialogFilter.Destroy();
                     PopuDialogMore(pEntry, dialog);
@@ -737,19 +740,19 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     //string addFilter = FilterValue;
 
                     CriteriaOperator criteriaOperatorLast = dialog.GenericTreeView.DataSource.Criteria;
-                    CriteriaOperator criteriaOperator = GroupOperator.And(CriteriaOperatorLastFilter, CriteriaOperator.Parse(result[0]));
+                    CriteriaOperator criteriaOperator = CriteriaOperator.And(CriteriaOperatorLastFilter, CriteriaOperator.Parse(result[0]));
 
                     //lastData = dialog.GenericTreeView.DataSource;
 
                     dialog.GenericTreeView.DataSource.Criteria = criteriaOperator;
-                    dialog.GenericTreeView.DataSource.TopReturnedObjects = SettingsApp.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                    dialog.GenericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                     dialog.GenericTreeView.Refresh();
 
                     //se retornar zero resultados apresenta dados anteriores ao filtro
                     if (dialog.GenericTreeView.DataSource.Count == 0)
                     {
                         dialog.GenericTreeView.DataSource.Criteria = criteriaOperatorLast;
-                        dialog.GenericTreeView.DataSource.TopReturnedObjects = SettingsApp.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                        dialog.GenericTreeView.DataSource.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                         dialog.GenericTreeView.Refresh();
                     }
                     dialogFilter.Destroy();

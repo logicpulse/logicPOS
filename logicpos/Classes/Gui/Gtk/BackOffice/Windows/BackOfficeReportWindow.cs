@@ -1,6 +1,6 @@
 ﻿using logicpos.App;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -11,7 +11,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Info
             _logger.Debug("ReportsMainWindow(): Create object ReportsMainWindow");
 
-            Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_reports"));
+            Title = logicpos.Utils.GetWindowTitle(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_reports"));
             InitUI();
             ShowAll();
         }
@@ -19,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         private void InitUI()
         {
             //Init XPOAccordion
-            XPOAccordion _accordion = new XPOAccordion("reporttype", "report", "ReportType", SettingsApp.PrivilegesReportDialogFormat) { WidthRequest = _widthAccordion };
+            XPOAccordion _accordion = new XPOAccordion("reporttype", "report", "ReportType", POSSettings.PrivilegesReportDialogFormat) { WidthRequest = _widthAccordion };
             _fixAccordion.Add(_accordion);
             _accordion.Clicked += accordion_Clicked;
             //Define Start Content

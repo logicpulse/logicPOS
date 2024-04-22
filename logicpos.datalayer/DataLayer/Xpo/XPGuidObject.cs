@@ -13,7 +13,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
     public abstract class XPGuidObject : XPCustomObject
     {
         //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly bool debug = false;
 
         public XPGuidObject() : base() { }
@@ -124,27 +124,27 @@ namespace logicpos.datalayer.DataLayer.Xpo
             }
 
             //Global Updates
-            UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
-            if (GlobalFramework.LoggedUser != null)
+            UpdatedAt = DataLayerUtils.CurrentDateTimeAtomic();
+            if (DataLayerFramework.LoggedUser != null)
             {
-                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(GlobalFramework.LoggedUser.Oid);
+                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
             }
-            if (GlobalFramework.LoggedTerminal != null)
+            if (DataLayerFramework.LoggedTerminal != null)
             {
-                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
+                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
             }
 
             if (_isNewRecord)
             {
                 //Global Updates
-                CreatedAt = FrameworkUtils.CurrentDateTimeAtomic();
-                if (GlobalFramework.LoggedUser != null)
+                CreatedAt = DataLayerUtils.CurrentDateTimeAtomic();
+                if (DataLayerFramework.LoggedUser != null)
                 {
-                    CreatedBy = this.Session.GetObjectByKey<sys_userdetail>(GlobalFramework.LoggedUser.Oid);
+                    CreatedBy = this.Session.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
                 }
-                if (GlobalFramework.LoggedTerminal != null)
+                if (DataLayerFramework.LoggedTerminal != null)
                 {
-                    CreatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
+                    CreatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
                 }
                 // Call EncryptProperties to be used when we create Objects outside BO, 
                 // this will trigger Encrypted Automatically
@@ -163,21 +163,21 @@ namespace logicpos.datalayer.DataLayer.Xpo
             base.AfterConstruction();
 
             Disabled = false;
-            DateTime dateTime = FrameworkUtils.CurrentDateTimeAtomic();
+            DateTime dateTime = DataLayerUtils.CurrentDateTimeAtomic();
             CreatedAt = dateTime;
             UpdatedAt = dateTime;
 
-            if (GlobalFramework.LoggedUser != null)
+            if (DataLayerFramework.LoggedUser != null)
             {
-                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(GlobalFramework.LoggedUser.Oid);
+                UpdatedBy = this.Session.GetObjectByKey<sys_userdetail>(DataLayerFramework.LoggedUser.Oid);
                 // This Prevent : DevExpress.Xpo.DB.Exceptions.LockingException: Cannot persist the object. It was modified or deleted (purged) by another application.
                 // Created to prevent Creating Year Series problems
                 UpdatedBy.Reload();
             }
 
-            if (GlobalFramework.LoggedTerminal != null)
+            if (DataLayerFramework.LoggedTerminal != null)
             {
-                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(GlobalFramework.LoggedTerminal.Oid);
+                UpdatedWhere = this.Session.GetObjectByKey<pos_configurationplaceterminal>(DataLayerFramework.LoggedTerminal.Oid);
                 // This Prevent : DevExpress.Xpo.DB.Exceptions.LockingException: Cannot persist the object. It was modified or deleted (purged) by another application.
                 // Created to prevent Creating Year Series problems
                 UpdatedWhere.Reload();
@@ -335,7 +335,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
             Type propertyType;
 
             // If has Model has encryptedAttributes and has valid PluginSoftwareVendor to Encrypt
-            if (_encryptedAttributes != null && SettingsApp.PluginSoftwareVendor != null)
+            if (_encryptedAttributes != null && DataLayerSettings.PluginSoftwareVendor != null)
             {
                 foreach (var attr in _encryptedAttributes)
                 {
@@ -357,12 +357,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
                                 if (encrypt)
                                 {
                                     // Encrypt Property Value
-                                    targetPropertValue = SettingsApp.PluginSoftwareVendor.Encrypt(sourcePropertValue);
+                                    targetPropertValue = DataLayerSettings.PluginSoftwareVendor.Encrypt(sourcePropertValue);
                                 }
                                 else
                                 {
                                     // DeEncrypt Property Value
-                                    targetPropertValue = SettingsApp.PluginSoftwareVendor.Decrypt(sourcePropertValue);
+                                    targetPropertValue = DataLayerSettings.PluginSoftwareVendor.Decrypt(sourcePropertValue);
                                 }
 
                                 // Set Value value to PropertyInfo
@@ -396,7 +396,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         /// <returns></returns>
         public static Dictionary<string, PropertyInfo> GetXPGuidObjectAttributes(Type type, bool forceLowerCaseKeys, bool onlyEncrypted = true)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
             Dictionary<string, PropertyInfo> result = new Dictionary<string, PropertyInfo>();
             try
@@ -469,7 +469,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
                             if ((row.Values[i] != null))
                             {
                                 columnValue = row.Values[i].ToString();
-                                columnValueDecrypted = SettingsApp.PluginSoftwareVendor.Decrypt(columnValue);
+                                columnValueDecrypted = DataLayerSettings.PluginSoftwareVendor.Decrypt(columnValue);
                                 if (debug) log.Debug($"Detected Encrypted Column ColumName: [{columnName}], ColumnValue: [{columnValue}], ColumnValueDecrypted: [{columnValueDecrypted}]");
                                 // Replace Original Value
                                 row.Values[i] = columnValueDecrypted;
@@ -495,9 +495,9 @@ namespace logicpos.datalayer.DataLayer.Xpo
             try
             {
                 // Decrypt Properties
-                if (SettingsApp.PluginSoftwareVendor != null && source != null)
+                if (DataLayerSettings.PluginSoftwareVendor != null && source != null)
                 {
-                    result = SettingsApp.PluginSoftwareVendor.Decrypt(source.ToString());
+                    result = DataLayerSettings.PluginSoftwareVendor.Decrypt(source.ToString());
                 }
             }
             catch (Exception ex)

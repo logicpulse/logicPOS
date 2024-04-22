@@ -1,5 +1,7 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -19,8 +21,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Initialize Members
             _connected = pIsConnected;
-            _pixbufStatusOn = logicpos.Utils.FileToPixBuf(FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Other\connection_status_on.png"));
-            _pixbufStatusOff = logicpos.Utils.FileToPixBuf(FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Other\connection_status_off.png"));
+            _pixbufStatusOn = logicpos.Utils.FileToPixBuf(SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Other\connection_status_on.png"));
+            _pixbufStatusOff = logicpos.Utils.FileToPixBuf(SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Other\connection_status_off.png"));
 
             _connectionStatusImage = new Image();
 

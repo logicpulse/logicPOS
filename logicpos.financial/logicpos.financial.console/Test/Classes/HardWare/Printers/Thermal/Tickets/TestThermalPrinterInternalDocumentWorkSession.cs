@@ -1,6 +1,8 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.console.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
+using logicpos.shared.App;
 using logicpos.shared.Enums.ThermalPrinter;
 using System;
 
@@ -16,7 +18,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
             try
             {
                 //Parameters
-                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_worksessionperiod), SettingsApp.XpoPrintWorkSessionPeriod);
+                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_worksessionperiod), ConsoleSettings.XpoPrintWorkSessionPeriod);
 
                 //Print WorkSession
                 if (workSessionPeriod != null)
@@ -36,11 +38,11 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
                     ";
 
                     //Generate Queries
-                    string sqlNonCurrentAccount = string.Format(sqlShared, periodField, workSessionPeriod.Oid, "<>", SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput);
-                    string sqlCurrentAccount = string.Format(sqlShared, periodField, workSessionPeriod.Oid, "=", SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput);
+                    string sqlNonCurrentAccount = string.Format(sqlShared, periodField, workSessionPeriod.Oid, "<>", SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
+                    string sqlCurrentAccount = string.Format(sqlShared, periodField, workSessionPeriod.Oid, "=", SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput);
                     //Get Queries Results
-                    object totRecsNonCurrentAccount = GlobalFramework.SessionXpo.ExecuteScalar(sqlNonCurrentAccount);
-                    object totRecsCurrentAccount = GlobalFramework.SessionXpo.ExecuteScalar(sqlCurrentAccount);
+                    object totRecsNonCurrentAccount = DataLayerFramework.SessionXpo.ExecuteScalar(sqlNonCurrentAccount);
+                    object totRecsCurrentAccount = DataLayerFramework.SessionXpo.ExecuteScalar(sqlCurrentAccount);
                     //Shared
                     ThermalPrinterInternalDocumentWorkSession thermalPrinterInternalDocumentWorkSession;
                     //Tests

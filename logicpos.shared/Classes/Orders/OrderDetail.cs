@@ -63,8 +63,8 @@ namespace logicpos.shared.Classes.Orders
 
         public void Insert(Guid pArticleId, decimal pQuantity, TaxSellType pTaxSellType)
         {
-            fin_article article = (fin_article)FrameworkUtils.GetXPGuidObject(typeof(fin_article), pArticleId);
-            PriceProperties priceProperties = FrameworkUtils.GetArticlePrice(article, pTaxSellType);
+            fin_article article = (fin_article) datalayer.App.DataLayerUtils.GetXPGuidObject(typeof(fin_article), pArticleId);
+            PriceProperties priceProperties = SharedUtils.GetArticlePrice(article, pTaxSellType);
             priceProperties.Quantity = pQuantity;
             Insert(article.Oid, article.Designation, priceProperties);
         }
@@ -120,7 +120,7 @@ namespace logicpos.shared.Classes.Orders
                 _totalFinal += line.Properties.TotalFinal;
                 _totalItems += line.Properties.Quantity;
             }
-            GlobalFramework.SessionApp.Write();
+            SharedFramework.SessionApp.Write();
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Gtk;
 using logicpos.App;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.Extensions;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 
@@ -256,7 +258,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             accordionParentButton.ChildBox.PackStart(accordionChildButton, false, false, 2);
 
                             //If have (Content | Events | ExternalApp) & Privileges or the Button is Enabled, Else is Disabled
-                            accordionChildButton.Sensitive = (FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null) && (childLevel.Value.Sensitive));
+                            accordionChildButton.Sensitive = (SharedUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null) && (childLevel.Value.Sensitive));
 
                             //EventHandler, Redirected to public Clicked, this way we have ouside Access
                             accordionChildButton.Clicked += accordionChildButton_Clicked;
@@ -281,9 +283,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string currentNodePrivilegesToken;
 
             //Required to Reload Object before Get New Permissions
-            GlobalFramework.LoggedUser = (sys_userdetail)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
+            DataLayerFramework.LoggedUser = (sys_userdetail)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid);
             //Update Session Privileges
-            GlobalFramework.LoggedUserPermissions = FrameworkUtils.GetUserPermissions(GlobalFramework.LoggedUser);
+            SharedFramework.LoggedUserPermissions = SharedUtils.GetUserPermissions(DataLayerFramework.LoggedUser);
 
             //Update Backoffice Menu
             if (_accordionDefinition != null && _accordionDefinition.Count > 0)
@@ -297,7 +299,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                             currentNodePrivilegesToken = string.Format(_nodePrivilegesTokenFormat, childLevel.Key.ToUpper());
                             //_logger.Debug(string.Format("[{0}]=[{1}] [{2}]=[{3}]", childLevel.Value.NodeButton.Sensitive, childLevel.Value.NodeButton.Name, currentNodePrivilegesToken, FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken)));
                             //If have (Content | Events | ExternalApp) & Privileges or the Button is Enabled, Else is Disabled
-                            if (FrameworkUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null))
+                            if (SharedUtils.HasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null))
                             {
                                 childLevel.Value.NodeButton.Sensitive = true;
                             }
@@ -352,10 +354,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             System.Drawing.Color colInsensitive = colNormal.Darken();
             System.Drawing.Color colSelected = System.Drawing.Color.FromArgb(125, 0, 0);
 
-            string _fontPosBackOfficeParent = GlobalFramework.Settings["fontPosBackOfficeParent"];
-            string _fontPosBackOfficeChild = GlobalFramework.Settings["fontPosBackOfficeChild"];
-            string _fontPosBackOfficeParentLowRes = GlobalFramework.Settings["fontPosBackOfficeParentLowRes"];
-            string _fontPosBackOfficeChildLowRes = GlobalFramework.Settings["fontPosBackOfficeChildLowRes"];
+            string _fontPosBackOfficeParent = DataLayerFramework.Settings["fontPosBackOfficeParent"];
+            string _fontPosBackOfficeChild = DataLayerFramework.Settings["fontPosBackOfficeChild"];
+            string _fontPosBackOfficeParentLowRes = DataLayerFramework.Settings["fontPosBackOfficeParentLowRes"];
+            string _fontPosBackOfficeChildLowRes = DataLayerFramework.Settings["fontPosBackOfficeChildLowRes"];
 
             Pango.FontDescription fontPosBackOfficeparentLowRes = Pango.FontDescription.FromString(_fontPosBackOfficeParentLowRes);
             Pango.FontDescription fontPosBackOfficeParent = Pango.FontDescription.FromString(_fontPosBackOfficeParent);

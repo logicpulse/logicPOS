@@ -1,20 +1,19 @@
 ﻿using DevExpress.Xpo;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
-using logicpos.resources.Resources.Localization;
 using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using static logicpos.datalayer.App.DataLayerFramework;
+using static logicpos.datalayer.App.DataLayerUtils;
 
 namespace logicpos.shared.Classes.Orders
 {
     public class OrderMain
     {
-        //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //Public Properties
@@ -141,7 +140,7 @@ namespace logicpos.shared.Classes.Orders
             _persistentOid = new Guid();
             _orderStatus = OrderStatus.Null;
             _table = new OrderMainTable(pOrderMainOid, pTableOid);
-            _dateStart = FrameworkUtils.CurrentDateTimeAtomic();
+            _dateStart = CurrentDateTimeAtomic();
             _orderTickets = new Dictionary<int, OrderTicket>();
         }
 
@@ -168,36 +167,36 @@ namespace logicpos.shared.Classes.Orders
             bool isInUOW = (_sessionXpo.GetType() == typeof(UnitOfWork));
 
             //Get current Working Order from SessionApp
-            OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
             OrderTicket currentOrderTicket = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId];
 
             //Get Place Object to extract TaxSellType Normal|TakeWay
-            pos_configurationplace configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
+            pos_configurationplace configurationPlace = (pos_configurationplace)SessionXpo.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
             //Use VatDirectSelling if in Retail or in TakeWay mode
-            TaxSellType taxSellType = (SettingsApp.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
+            TaxSellType taxSellType = (datalayer.App.DataLayerSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
 
             //Open Table on First Finish OrderTicket
-            pos_configurationplacetable xTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), _table.Oid);
-			//Proteção para mesas vazias, escolhe a primeira
+            pos_configurationplacetable xTable = (pos_configurationplacetable)GetXPGuidObject(_sessionXpo, typeof(pos_configurationplacetable), _table.Oid);
+            //Proteção para mesas vazias, escolhe a primeira
             if (xTable == null)
             {
                 //Order #1 by default
-				//TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
-                xTable = ((pos_configurationplacetable)FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable);
+                //TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
+                xTable = ((pos_configurationplacetable)SharedUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Code = '{0}')", "10")) as pos_configurationplacetable);
             }
             xTable.Reload();
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), xTable.Designation));
-                xTable.DateTableOpen = FrameworkUtils.CurrentDateTimeAtomic();
+                SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(Settings["customCultureResourceDefinition"], "audit_message_table_open"), xTable.Designation));
+                xTable.DateTableOpen = CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }
 
             //Get Current _persistentOid and _from Database
             _persistentOid = GetOpenTableFieldValueGuid(_table.Oid, "Oid");
             _orderStatus = (OrderStatus)GetOpenTableFieldValue(_table.Oid, "OrderStatus");
-            _updatedAt = FrameworkUtils.CurrentDateTimeAtomic();
+            _updatedAt = CurrentDateTimeAtomic();
             //Insert
             if (_persistentOid == Guid.Empty)
             {
@@ -208,7 +207,7 @@ namespace logicpos.shared.Classes.Orders
                     DateStart = currentDateTime,//currentOrderMain.DateStart,
                     OrderStatus = OrderStatus.Open,
                     PlaceTable = xTable,
-                    UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic()
+                    UpdatedAt = CurrentDateTimeAtomic()
                 };
                 if (!isInUOW) xOrderMain.Save();
                 //After Save, Get Oid
@@ -219,12 +218,12 @@ namespace logicpos.shared.Classes.Orders
             //Update
             else
             {
-                xOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
+                xOrderMain = (fin_documentordermain)GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
                 if (xOrderMain.PlaceTable != xTable) xOrderMain.PlaceTable = xTable;
                 //Force Changes in Record, else UpdatedAt dont Update
-                xOrderMain.UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
+                xOrderMain.UpdatedAt = CurrentDateTimeAtomic();
                 //TODO: Check if User was Automatically Updated
-                //if (xOrderMain.UpdatedBy != GlobalFramework.LoggedUser) xOrderMain.UpdatedBy = GlobalFramework.LoggedUser;
+                //if (xOrderMain.UpdatedBy != DataLayerFramework.LoggedUser) xOrderMain.UpdatedBy = DataLayerFramework.LoggedUser;
                 if (!isInUOW) xOrderMain.Save();
             }
 
@@ -235,11 +234,11 @@ namespace logicpos.shared.Classes.Orders
             //_logger.Debug(string.Format("sql: [{0}]", sql));
             string sql = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);
             //_logger.Debug(string.Format("sql: [{0}]", sql));
-            Guid orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql);
+            Guid orderTicketOid = SharedUtils.GetGuidFromQuery(sql);
             //Result
-            fin_documentorderticket xOrderTicket = (fin_documentorderticket)datalayer.App.GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
+            fin_documentorderticket xOrderTicket = (fin_documentorderticket)SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), orderTicketOid);
 
-            //xOrderTicket = (fin_documentorderticket)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
+            //xOrderTicket = (fin_documentorderticket)DataLayerUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderticket), currentOrderMain._persistentOid);
             if (xOrderTicket != null)
             {
                 xOrderTicket.TicketId = currentOrderMain.CurrentTicketId;
@@ -248,7 +247,7 @@ namespace logicpos.shared.Classes.Orders
                 xOrderTicket.Discount = xTable.Discount;
                 xOrderTicket.OrderMain = xOrderMain;
                 xOrderTicket.PlaceTable = xTable;
-                xOrderTicket.UpdatedAt = FrameworkUtils.CurrentDateTimeAtomic();
+                xOrderTicket.UpdatedAt = CurrentDateTimeAtomic();
                 if (!isInUOW) xOrderTicket.Save();
             }
 
@@ -276,20 +275,20 @@ namespace logicpos.shared.Classes.Orders
             {
                 //Use Order in print tickets etc
                 itemOrd++;
-                xArticle = (fin_article)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_article), line.ArticleOid);
+                xArticle = (fin_article)GetXPGuidObject(_sessionXpo, typeof(fin_article), line.ArticleOid);
                 //Get PriceTax from TaxSellType
                 decimal priceTax = (taxSellType == TaxSellType.Normal) ? xArticle.VatOnTable.Value : xArticle.VatDirectSelling.Value;
                 //Edit/cancel orders lindote 10/07/2020
                 //Get order ticket Oid from DB
-                string sql3 = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);                
-                orderTicketOid = FrameworkUtils.GetGuidFromQuery(sql3);
-                
+                string sql3 = string.Format(@"SELECT Oid FROM fin_documentorderticket WHERE OrderMain = '{0}' AND TicketId = '{1}';", currentOrderMain.PersistentOid, currentOrderMain.CurrentTicketId);
+                orderTicketOid = SharedUtils.GetGuidFromQuery(sql3);
+
                 //Get order detail Oid from DB
-                string sql4 = string.Format(@"SELECT Oid FROM fin_documentorderdetail WHERE OrderTicket = '{0}' AND Article = '{1}' AND Price = '{2}'  AND TotalDiscount = '{3}'  AND Vat = '{4}';", 
+                string sql4 = string.Format(@"SELECT Oid FROM fin_documentorderdetail WHERE OrderTicket = '{0}' AND Article = '{1}' AND Price = '{2}'  AND TotalDiscount = '{3}'  AND Vat = '{4}';",
                              orderTicketOid, line.ArticleOid, line.Properties.PriceNet.ToString().Replace(",", "."),
                                                               line.Properties.TotalDiscount.ToString().Replace(",", "."),
-                                                              line.Properties.Vat.ToString().Replace(",", "."));                
-                Guid orderDetailOid = FrameworkUtils.GetGuidFromQuery(sql4);
+                                                              line.Properties.Vat.ToString().Replace(",", "."));
+                Guid orderDetailOid = SharedUtils.GetGuidFromQuery(sql4);
 
                 string pToken2 = "";
                 if (pTicketDrecrease)
@@ -333,11 +332,11 @@ namespace logicpos.shared.Classes.Orders
                 }
                 else
                 {
-                    xOrderDetailLine = (fin_documentorderdetail)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentorderdetail), orderDetailOid);
+                    xOrderDetailLine = (fin_documentorderdetail)GetXPGuidObject(_sessionXpo, typeof(fin_documentorderdetail), orderDetailOid);
 
                     if (xOrderDetailLine.Token2 != "decreased" && !pTicketDrecrease)
                     {
-                       
+
                         xOrderDetailLine.Ord = itemOrd;
                         xOrderDetailLine.Code = xArticle.Code;
                         xOrderDetailLine.Designation = line.Designation;
@@ -441,7 +440,7 @@ namespace logicpos.shared.Classes.Orders
 
 
             //Finish Writing Session
-            GlobalFramework.SessionApp.Write();
+            SharedFramework.SessionApp.Write();
 
             return xOrderTicket;
 
@@ -473,7 +472,7 @@ namespace logicpos.shared.Classes.Orders
                 ;"
                  , this.PersistentOid
                  );
-                var totalTickets = GlobalFramework.SessionXpo.ExecuteScalar(sqlTotalTickets);
+                var totalTickets = SessionXpo.ExecuteScalar(sqlTotalTickets);
 
                 //Assign Totals
                 _globalTotalTickets = (totalTickets != null) ? Convert.ToInt32(totalTickets) : 0;
@@ -483,9 +482,9 @@ namespace logicpos.shared.Classes.Orders
                 _globalTotalFinal = articleBag.TotalFinal;
                 _globalTotalQuantity = articleBag.TotalQuantity;
                 //Persist Final TotalOpen
-                pos_configurationplacetable currentTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(typeof(pos_configurationplacetable), _table.Oid);
+                pos_configurationplacetable currentTable = (pos_configurationplacetable)GetXPGuidObject(typeof(pos_configurationplacetable), _table.Oid);
 
-                if(currentTable != null)
+                if (currentTable != null)
                 {
                     //Required Reload, after ProcessFinanceDocument uowSession, else we get cached object, and apply changes to old object, ex we get a OpenedTable vs a ClosedTable by uowSession
                     currentTable.Reload();
@@ -546,8 +545,8 @@ namespace logicpos.shared.Classes.Orders
 
             try
             {
-              XPSelectData sdTotalViewOrders = FrameworkUtils.GetSelectedDataFromQuery(sqlTotalViewOrders);
-              XPSelectData sdTotalViewDocumentFinance = FrameworkUtils.GetSelectedDataFromQuery(sqlTotalViewDocumentFinance);
+              XPSelectData sdTotalViewOrders = SharedUtils.GetSelectedDataFromQuery(sqlTotalViewOrders);
+              XPSelectData sdTotalViewDocumentFinance = SharedUtils.GetSelectedDataFromQuery(sqlTotalViewDocumentFinance);
 
               if (sdTotalViewOrders.Data.Length > 0 && sdTotalViewDocumentFinance.Data.Length > 0)
               {
@@ -574,11 +573,11 @@ namespace logicpos.shared.Classes.Orders
               }
 
               //sqlTotalTickets
-              var totalTickets = GlobalFramework.SessionXpo.ExecuteScalar(sqlTotalTickets);
+              var totalTickets = DataLayerFramework.SessionXpo.ExecuteScalar(sqlTotalTickets);
               _globalTotalTickets = (totalTickets != null) ? Convert.ToInt32(totalTickets) : 0;
 
               //Persist Final TotalOpen 
-              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
+              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)DataLayerUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
               currentTable.TotalOpen = _globalTotalFinal;
               currentTable.Save();
             }
@@ -607,7 +606,7 @@ namespace logicpos.shared.Classes.Orders
             if (_persistentOid != Guid.Empty)
             {
               CriteriaOperator binaryOperator = new BinaryOperator("OrderMain", _persistentOid, BinaryOperatorType.Equal);
-              XPCollection _xpcDocumentOrderTicket = new XPCollection(GlobalFramework.SessionXpo, typeof(DocumentOrderTicket), binaryOperator);
+              XPCollection _xpcDocumentOrderTicket = new XPCollection(DataLayerFramework.SessionXpo, typeof(DocumentOrderTicket), binaryOperator);
 
               //Required to ByPass Cache
               _xpcDocumentOrderTicket.Reload();
@@ -638,7 +637,7 @@ namespace logicpos.shared.Classes.Orders
 
               //Process PartialPayed Items and Discount its Totals
               CriteriaOperator binaryOperatorDocumentFinanceMaster = new BinaryOperator("SourceOrderMain", _persistentOid, BinaryOperatorType.Equal);
-              XPCollection _xpcDocumentFinanceMaster = new XPCollection(GlobalFramework.SessionXpo, typeof(DocumentFinanceMaster), binaryOperatorDocumentFinanceMaster);
+              XPCollection _xpcDocumentFinanceMaster = new XPCollection(DataLayerFramework.SessionXpo, typeof(DocumentFinanceMaster), binaryOperatorDocumentFinanceMaster);
               if (_xpcDocumentFinanceMaster.Count > 0)
               {
                 foreach (DocumentFinanceMaster master in _xpcDocumentFinanceMaster)
@@ -659,7 +658,7 @@ namespace logicpos.shared.Classes.Orders
               }
 
               //Persist Final TotalOpen 
-              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)FrameworkUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
+              ConfigurationPlaceTable currentTable = (ConfigurationPlaceTable)DataLayerUtils.GetXPGuidObjectFromSession(typeof(ConfigurationPlaceTable), _table.Oid);
               currentTable.TotalOpen = _globalTotalFinal;
               currentTable.Save();
 
@@ -680,7 +679,7 @@ namespace logicpos.shared.Classes.Orders
         {
             int iResult;
             string sql = string.Format("SELECT {1} FROM fin_documentordermain WHERE PlaceTable = '{0}' and OrderStatus = {2};", pTableOid, pField, Convert.ToInt16(OrderStatus.Open));
-            var oResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+            var oResult = SessionXpo.ExecuteScalar(sql);
             iResult = (oResult != null) ? Convert.ToInt16(oResult) : -1;
 
             //Debug
@@ -693,7 +692,7 @@ namespace logicpos.shared.Classes.Orders
         {
             Guid iResult;
             string sql = string.Format("SELECT {1} FROM fin_documentordermain WHERE PlaceTable = '{0}' and OrderStatus = {2};", pTableOid, pField, Convert.ToInt16(OrderStatus.Open));
-            var oResult = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+            var oResult = SessionXpo.ExecuteScalar(sql);
             iResult = (oResult != null) ? new Guid(Convert.ToString(oResult)) : Guid.Empty;
 
             //Debug
@@ -718,7 +717,7 @@ namespace logicpos.shared.Classes.Orders
             {
                 { _currentTicketId, new OrderTicket(this, _table.PriceType) }
             };
-            GlobalFramework.SessionApp.Write();
+            SharedFramework.SessionApp.Write();
         }
 
         /// <summary>
@@ -734,7 +733,7 @@ namespace logicpos.shared.Classes.Orders
             _globalTotalFinal = 0;
             _globalTotalTickets = 0;
             _orderTickets.Add(_currentTicketId, new OrderTicket(this, _table.PriceType));
-            GlobalFramework.SessionApp.Write();
+            SharedFramework.SessionApp.Write();
         }
 
         /// <summary>
@@ -755,10 +754,10 @@ namespace logicpos.shared.Classes.Orders
             _logger.Debug("OrderMain.CheckForDuplicatedArticleInArticleBag(Session session)");
 
             Session _sessionXpo = session;
-            fin_documentordermain xOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
+            fin_documentordermain xOrderMain = (fin_documentordermain)GetXPGuidObject(_sessionXpo, typeof(fin_documentordermain), _persistentOid);
 
             //Get current Working Order from SessionApp
-            OrderMain currentOrderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+            OrderMain currentOrderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
             OrderTicket currentOrderTicket = currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId];
 
             OrderDetailLine[] orderDetailsLines = currentOrderTicket.OrderDetails.Lines.ToArray();

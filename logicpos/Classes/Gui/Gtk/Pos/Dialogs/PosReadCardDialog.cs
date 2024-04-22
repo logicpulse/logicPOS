@@ -9,6 +9,8 @@ using System;
 using System.Drawing;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
+using logicpos.shared.App;
+using logicpos.datalayer.App;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -29,15 +31,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             : base(pSourceWindow, pDialogFlags)
         {
             //Settings
-            string regexAlfaNumericExtended = SettingsApp.RegexAlfaNumericExtended;
+            string regexAlfaNumericExtended = SharedSettings.RegexAlfaNumericExtended;
 
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_readcard");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_readcard");
             Size windowSize = new Size(462, 320);//400 With Other Payments
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_read_card.png");
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_read_card.png");
 
             //EntryDescription
-            _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
+            _entryBoxMovementDescription = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_read_card"), KeyboardMode.AlfaNumeric, regexAlfaNumericExtended, false);
             //_entryBoxMovementDescription.EntryValidation.Changed += delegate { ValidateDialog(); };
             //VBox
             VBox vbox = new VBox(true, 0);

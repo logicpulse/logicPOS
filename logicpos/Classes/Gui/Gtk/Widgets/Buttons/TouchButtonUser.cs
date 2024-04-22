@@ -19,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
         {
             _buttonColor = pColor;
             InitObject(pName, pLabelText, pFont, pLogged);
-            base.InitObject(pName, _buttonColor, _widget, pWidth, pHeight);
+            InitObject(pName, _buttonColor, _widget, pWidth, pHeight);
         }
 
         public void InitObject(string pName, string pLabelText, string pFont, bool pLogged)
@@ -29,13 +29,13 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
 
             if (pLogged)
             {
-                base.ChangeFont(pFont, Color.Green);
+                ChangeFont(pFont, Color.Green);
                 //Override default button color
                 if (_buttonColor != Color.Transparent) _buttonColor = _buttonColor.Lighten(0.50F);
             }
             else
             {
-                base.ChangeFont(pFont, Color.Black);
+                ChangeFont(pFont, Color.Black);
                 //Override default button color
                 if (_buttonColor != Color.Transparent) _buttonColor = _buttonColor.Darken(0.50F);
             }

@@ -88,12 +88,12 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         public object GetXPGuidObjectFromField(Type pType, string pSearchField, string pSearchValue)
         {
-            return GetXPGuidObjectFromField(GlobalFramework.SessionXpo, pType, pSearchField, pSearchValue);
+            return GetXPGuidObjectFromField(DataLayerFramework.SessionXpo, pType, pSearchField, pSearchValue);
         }
 
         public object GetXPGuidObjectFromField(Session pSession, Type pType, string pSearchField, string pSearchValue)
         {
-            return FrameworkUtils.GetXPGuidObject(pSession, pType, new Guid(GetValueFromField(pSearchField, "Oid", pSearchValue).ToString()));
+            return DataLayerUtils.GetXPGuidObject(pSession, pType, new Guid(GetValueFromField(pSearchField, "Oid", pSearchValue).ToString()));
         }
 
         public string GenMetaCsv(bool pLogOutput = false)

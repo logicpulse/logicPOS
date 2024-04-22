@@ -1,11 +1,11 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,28 +37,28 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             // Init Local Vars
             string windowTitle = pWindowTitle;
             Size windowSize = pSize;
-            string windowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_send_email.png");
+            string windowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_send_email.png");
 
             _attachmentFileNames = attachmentFileNames;
 
             // EntryBoxValidationSubject
-            _entryBoxValidationSubject = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_subject"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericEmail, false);
+            _entryBoxValidationSubject = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email_subject"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericEmail, false);
             if (!string.IsNullOrEmpty(pSubject))
             {
                 _entryBoxValidationSubject.EntryValidation.Text = pSubject;
             }
             // EntryBoxValidationTo
-            _entryBoxValidationTo = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_to"), KeyboardMode.AlfaNumeric, SettingsApp.RegexEmail, false);
+            _entryBoxValidationTo = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email_to"), KeyboardMode.AlfaNumeric, SharedSettings.RegexEmail, false);
             if (!string.IsNullOrEmpty(pTo))
             {
                 _entryBoxValidationTo.EntryValidation.Text = pTo;
             }
             // EntryBoxValidationCc
-            _entryBoxValidationCc = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_cc"), KeyboardMode.AlfaNumeric, SettingsApp.RegexEmail, false);
+            _entryBoxValidationCc = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email_cc"), KeyboardMode.AlfaNumeric, SharedSettings.RegexEmail, false);
             // EntryBoxValidationBcc
-            _entryBoxValidationBcc = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_bcc"), KeyboardMode.AlfaNumeric, SettingsApp.RegexEmail, false);
+            _entryBoxValidationBcc = new EntryBoxValidation(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email_bcc"), KeyboardMode.AlfaNumeric, SharedSettings.RegexEmail, false);
 
-            _entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(this, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_email_body"), KeyboardMode.AlfaNumeric, SettingsApp.RegexAlfaNumericEmail, true) { HeightRequest = 280 };
+            _entryBoxValidationMultiLine = new EntryBoxValidationMultiLine(this, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_email_body"), KeyboardMode.AlfaNumeric, SharedSettings.RegexAlfaNumericEmail, true) { HeightRequest = 280 };
             if (!string.IsNullOrEmpty(pBody))
             {
                 _entryBoxValidationMultiLine.EntryMultiline.Value.Text = pBody;
@@ -123,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 try
                 {
-                    logicpos.Utils.SendMail(
+                    shared.Classes.Utils.Utils.SendMail(
                         //Logicpulse STMP
                         //"mail.logicpulse.com",
                         //"mario.monteiro@logicpulse.com",
@@ -144,12 +144,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         Body,
                         _attachmentFileNames
                         );
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_mail_sent_successfully"));
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_mail_sent_successfully"));
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex.Message, ex);
-                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
+                    logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), ex.Message);
                     // Keep Running
                     this.Run();
                 }

@@ -1,4 +1,5 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Enums;
 using logicpos.resources.Resources.Localization;
@@ -12,7 +13,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
     {
         //Private Members
         /* IN008024 */
-        //private string _appOperationModeToken = GlobalFramework.Settings["appOperationModeToken"];
+        //private string _appOperationModeToken = DataLayerFramework.Settings["appOperationModeToken"];
         private readonly fin_documentorderticket _orderTicket;
         private readonly bool _enableArticlePrinter;
 
@@ -30,13 +31,13 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
 
                 //Order Request #1/3
                 _ticketTitle = string.Format("{0}: #{1}"
-                    , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_order_request")
+                    , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_order_request")
                     , _orderTicket.TicketId
                 );
 
                 //Table|Order #2|Name/Zone
                 _ticketSubTitle = string.Format("{0}: #{1}/{2}"
-                    , resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", SettingsApp.CustomAppOperationMode.AppOperationTheme).ToLower()) /* IN008024 */
+                    , resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], string.Format("global_table_appmode_{0}", DataLayerSettings.CustomAppOperationMode.AppOperationTheme).ToLower()) /* IN008024 */
                     , _orderTicket.OrderMain.PlaceTable.Designation
                     , _orderTicket.OrderMain.PlaceTable.Place.Designation
                 );
@@ -53,7 +54,7 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
             try
             {
                 //Call Base Template PrintHeader
-                base.PrintTitles();
+                PrintTitles();
 
                 //Align Center
                 _thermalPrinterGeneric.SetAlignCenter();
@@ -76,9 +77,9 @@ namespace logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets
         {
             List<TicketColumn> columns = new List<TicketColumn>
             {
-                new TicketColumn("Designation", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left),
-                new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"),
-                new TicketColumn("UnitMeasure", resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right)
+                new TicketColumn("Designation", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_designation"), 0, TicketColumnsAlign.Left),
+                new TicketColumn("Quantity", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_quantity_acronym"), 8, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("UnitMeasure", resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_unit_measure_acronym"), 3, TicketColumnsAlign.Right)
             };
 
             //Prepare Table with Padding

@@ -2,8 +2,10 @@
 using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Orders;
 using System;
 using System.Linq;
@@ -40,17 +42,17 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
 			//TicketPad - Modo Retalho - Mesa/ordem por defeito [IN:016529]
             OrderMain currentOrderMain = null;
-			if(pTableOid == SettingsApp.XpoOidConfigurationPlaceTableDefaultOpenTable){
-            	var configurationPlace = (pos_configurationplace)GlobalFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), SettingsApp.XpoOidConfigurationPlaceTableDefaultOpenTable);
+			if(pTableOid == POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable){
+            	var configurationPlace = (pos_configurationplace)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
             	if (configurationPlace == null) { 
-                    pTableOid = ((pos_configurationplacetable)FrameworkUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid; 
+                    pTableOid = ((pos_configurationplacetable)SharedUtils.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid; 
                 }
 			}
             //Try to Get OrderMain Object From TableId Parameter
-            if (GlobalFramework.SessionApp.OrdersMain.Count > 0)
+            if (SharedFramework.SessionApp.OrdersMain.Count > 0)
             {
                 //Get OrderMain Object from CurrentTableId with LINQ
-                currentOrderMain = GlobalFramework.SessionApp.OrdersMain.Values.Where<OrderMain>(key => key.Table.Oid == pTableOid).FirstOrDefault<OrderMain>();
+                currentOrderMain = SharedFramework.SessionApp.OrdersMain.Values.Where<OrderMain>(key => key.Table.Oid == pTableOid).FirstOrDefault<OrderMain>();
             }
 
             //Always start in OrderMain Mode, when we change Table, IF WE HAVE Tickets, else leave it in TicketMode, Else Alt.List button may be OFF, and we cant Toggle Mode, Only occur if we dont have Tickets or Items in OrderMain
@@ -67,8 +69,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (currentOrderMain == null)
             {
                 Guid newOrderMainOid = Guid.NewGuid();
-                GlobalFramework.SessionApp.OrdersMain.Add(newOrderMainOid, new OrderMain(newOrderMainOid, pTableOid));
-                OrderMain newOrderMain = GlobalFramework.SessionApp.OrdersMain[newOrderMainOid];
+                SharedFramework.SessionApp.OrdersMain.Add(newOrderMainOid, new OrderMain(newOrderMainOid, pTableOid));
+                OrderMain newOrderMain = SharedFramework.SessionApp.OrdersMain[newOrderMainOid];
                 OrderTicket orderTicket = new OrderTicket(newOrderMain, (PriceType)newOrderMain.Table.PriceType);
                 //Create Reference to SessionApp OrderMain with Open Ticket, Ready to Add Details
                 newOrderMain.OrderTickets.Add(1, orderTicket);
@@ -81,8 +83,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             currentOrderMain.OrderStatus = (OrderStatus)currentOrderMain.GetOpenTableFieldValue(pTableOid, "OrderStatus");
 
             //Shared Code
-            GlobalFramework.SessionApp.CurrentOrderMainOid = currentOrderMain.Table.OrderMainOid;
-            GlobalFramework.SessionApp.Write();
+            SharedFramework.SessionApp.CurrentOrderMainOid = currentOrderMain.Table.OrderMainOid;
+            SharedFramework.SessionApp.Write();
             _ticketList.UpdateModel();
 
             //Update PosMainWindow Components

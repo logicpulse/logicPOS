@@ -1,4 +1,5 @@
-﻿using logicpos.datalayer.DataLayer.Xpo;
+﻿using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.console.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal.Tickets;
 using System;
@@ -15,7 +16,7 @@ namespace logicpos.financial.console.Test.Classes.HardWare.Printer
         {
             try
             {
-                fin_documentorderticket orderTicket = (fin_documentorderticket)GlobalFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), SettingsApp.XpoPrintDocumentOrderTicket);
+                fin_documentorderticket orderTicket = (fin_documentorderticket)DataLayerFramework.SessionXpo.GetObjectByKey(typeof(fin_documentorderticket), ConsoleSettings.XpoPrintDocumentOrderTicket);
 
                 //Print Document
                 if (orderTicket != null)

@@ -2,7 +2,9 @@
 using Gtk;
 using logicpos.App;
 using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.shared.App;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
@@ -50,10 +52,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
             //Parameters
             _sourceWindow = pSourceWindow;
             //Init Private Vars 
-            _session = GlobalFramework.SessionXpo;
+            _session = DataLayerFramework.SessionXpo;
             //Init Other
-            _dateTimeFormat = SettingsApp.DateTimeFormat;
-            _initalDateTime = FrameworkUtils.CurrentDateTimeAtomic();
+            _dateTimeFormat = SharedSettings.DateTimeFormat;
+            _initalDateTime = DataLayerUtils.CurrentDateTimeAtomic();
         }
     }
 }

@@ -14,10 +14,10 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
             //In Retail Mode VatDirectSelling is always true;
-            if (SettingsApp.AppMode == AppOperationMode.Retail)
+            if (DataLayerSettings.AppMode == AppOperationMode.Retail)
             {
                 VatDirectSelling = true;
             }

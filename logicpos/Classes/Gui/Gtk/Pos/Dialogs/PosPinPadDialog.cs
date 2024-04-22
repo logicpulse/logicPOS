@@ -1,13 +1,13 @@
 ﻿using Gtk;
-using logicpos.App;
-using logicpos.datalayer.DataLayer.Xpo;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
-using logicpos.resources.Resources.Localization;
-using System;
-using System.Drawing;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Widgets;
+using logicpos.Classes.Gui.Gtk.Widgets;
+using logicpos.Classes.Gui.Gtk.Widgets.Buttons;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
+using logicpos.shared.App;
+using System;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -27,17 +27,17 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars Parameters
             _selectedUserDetail = pUserDetail;
             //Init Local Vars
-            string windowTitle = resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_request_user_pin");
+            string windowTitle = resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
-            string fileDefaultWindowIcon = FrameworkUtils.OSSlash(GlobalFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
-            string fontNumberPadPinButtonKeysTextAndLabel = GlobalFramework.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
+            string fileDefaultWindowIcon = SharedUtils.OSSlash(DataLayerFramework.Path["images"] + @"Icons\Windows\icon_window_users.png");
+            string fontNumberPadPinButtonKeysTextAndLabel = DataLayerFramework.Settings["fontNumberPadPinButtonKeysTextAndLabel"];
             ActionAreaButtons actionAreaButtons;
 
             //Init Content
             Fixed fixedContent = new Fixed();
 
             //NumberPadPin
-            _numberPadPin = new NumberPadPin(pSourceWindow, "numberPadPin", System.Drawing.Color.Transparent, fontNumberPadPinButtonKeysTextAndLabel, "12" ,Color.White, Color.Black, 100, 67, _notLoginAuth);
+            _numberPadPin = new NumberPadPin(pSourceWindow, "numberPadPin", Color.Transparent, fontNumberPadPinButtonKeysTextAndLabel, "12", Color.White, Color.Black, 100, 67, _notLoginAuth);
             _numberPadPin.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
 
             fixedContent.Put(_numberPadPin, 0, 0);
@@ -59,7 +59,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
 
             //Init Mode
-            _numberPadPin.Mode = (_selectedUserDetail.PasswordReset) ? NumberPadPinMode.PasswordOld : 
+            _numberPadPin.Mode = (_selectedUserDetail.PasswordReset) ? NumberPadPinMode.PasswordOld :
                 NumberPadPinMode.Password;
 
             //Events

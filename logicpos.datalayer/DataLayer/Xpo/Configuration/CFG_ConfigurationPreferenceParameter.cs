@@ -13,8 +13,8 @@ namespace logicpos.datalayer.DataLayer.Xpo
 
         protected override void OnAfterConstruction()
         {
-            Ord = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Ord");
-            Code = FrameworkUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Code");
+            Ord = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Ord");
+            Code = DataLayerUtils.GetNextTableFieldID(nameof(cfg_configurationpreferenceparameter), "Code");
         }
 
         private uint fOrd;
@@ -113,7 +113,7 @@ namespace logicpos.datalayer.DataLayer.Xpo
         {
             get {
                 string sql = "SELECT Value FROM cfg_configurationpreferenceparameter WHERE (Disabled IS NULL OR Disabled  <> 1) AND (Token = 'COMPANY_COUNTRY_CODE2')";
-                var getCountryCode2 = GlobalFramework.SessionXpo.ExecuteScalar(sql);
+                var getCountryCode2 = DataLayerFramework.SessionXpo.ExecuteScalar(sql);
                 return getCountryCode2;
             }
         }//IN:009268 ENDS

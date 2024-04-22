@@ -16,6 +16,8 @@ using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.datalayer.Enums;
 using logicpos.datalayer.DataLayer.Xpo.Articles;
+using logicpos.datalayer.App;
+using logicpos.shared.App;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -24,7 +26,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
     internal abstract class GenericTreeView<T1, T2> : Box, IGenericTreeView
     {
         //Log4Net
-        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected bool _debug = false;
 
         //Parameters
@@ -303,7 +305,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if (_showStatusBar)
             {
                 _statusbar = new Statusbar() { HasResizeGrip = false };
-                _statusbar.Push(0, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_statusbar"));
+                _statusbar.Push(0, CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_statusbar"));
             };
 
             //1) Add Model to TreeModelFilter
@@ -372,7 +374,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             if (_showStatusBar)
             {
                 _statusbar = new Statusbar() { HasResizeGrip = false };
-                _statusbar.Push(0, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_statusbar"));
+                _statusbar.Push(0, CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_statusbar"));
             };
 
             //Navigator
@@ -513,7 +515,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public object[] DataSourceRowToModelRow(T2 pDataSourceRow)
         {
             //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
             //Used to Store all PropertyInfos of TreeViewColumnProperty Object 
             PropertyInfo[] pisTreeViewColumnProperties;
@@ -689,13 +691,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         //Fire Event 
                         OnRecordAfterInsert();
 
-                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Inserted***");
+                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Inserted***");
                     };
                 }
                 catch (Exception ex)
                 {
                     _logger.Error(ex.Message, ex);
-                    //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Insert Record***");
+                    //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Insert Record***");
                 }
             }
         }
@@ -746,12 +748,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (pDialogMode == DialogMode.Insert) OnRecordAfterInsert();
                         if (pDialogMode == DialogMode.View) OnRecordAfterView();
 
-                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Updated***");
+                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Updated***");
                     }
                     catch (Exception ex)
                     {
                         _logger.Error(ex.Message, ex);
-                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
+                        //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), "***Cant Update Record ***");
                     }
                 }
             }
@@ -774,8 +776,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                       MessageType.Question,
                       ButtonsType.YesNo,
-                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_delete_record"),
-                      resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"))
+                      CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_delete_record"),
+                      CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record"))
                     ;
 
                 if (response == ResponseType.Yes)
@@ -795,7 +797,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             //    foreach (var item in (_dataSourceRow as fin_article).ArticleComposition)
                             //    {
                             //        string sqlDelete = string.Format("DELETE FROM [fin_articlecomposition] WHERE [ArticleChild] = '{0}';", item.ArticleChild);
-                            //        GlobalFramework.SessionXpo.ExecuteQuery(sqlDelete);
+                            //        DataLayerFramework.SessionXpo.ExecuteQuery(sqlDelete);
                             //        _logger.Debug("Delete() :: articles composition '" + "' : " + item.ArticleChild);
                             //    }
                             //}
@@ -837,7 +839,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             //_listStoreModel.Remove(ref _treeIterModel);
 
                  
-                            //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Deleted***");
+                            //Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_information"), "***Record Deleted***");
                         }
                         //Update ModelFilter after changes in Base Model
                         UpdateChildModelsAfterCRUDChanges();
@@ -851,8 +853,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     catch (Exception ex)
                     {
                         _logger.Error("void Delete() :: Class '" + _dataSourceRow.GetType().Name + "' : " + ex.Message, ex);
-                        string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
-                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
+                        string message = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"), _dataSourceRow.GetType().Name);
+                        logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), message);
                     }
                 }
             }
@@ -887,7 +889,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         oid = customer.Oid;
                         code = string.Format("fin_documentfinancemaster");
 
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[EntityOid] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[EntityOid] = ?", oid));
                         break;
 
                     case "fin_articlefamily":
@@ -895,7 +897,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.fin_articlefamily articleFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlefamily);
                         oid = articleFamily.Oid;
                         code = "fin_articlesubfamily";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Family] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Family] = ?", oid));
                         break;
 
                     case "fin_articlesubfamily":
@@ -903,7 +905,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily articleSubFamily = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily);
                         oid = articleSubFamily.Oid;
                         code = "fin_article";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[SubFamily] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[SubFamily] = ?", oid));
                         break;
 
                     case "fin_article":
@@ -911,20 +913,20 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.fin_article article = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_article);
                         oid = article.Oid;
                         code = "fin_article";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancedetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articleserialnumber), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[ArticleChild] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(fin_articlestock), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancedetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articleserialnumber), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[ArticleChild] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Articles.fin_articlecomposition), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(fin_articlestock), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Article] = ?", oid));
                         break;
 
                     case "fin_warehouse":
                         /* Has an article an invoice issued for it? */
                         logicpos.datalayer.DataLayer.Xpo.fin_warehouse warehouse = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_warehouse);
                         oid = warehouse.Oid;
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Documents.fin_warehouselocation), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Warehouse] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(fin_articlewarehouse), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Warehouse] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(datalayer.DataLayer.Xpo.Documents.fin_warehouselocation), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Warehouse] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(fin_articlewarehouse), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Warehouse] = ?", oid));
                         break;
 
                     case "fin_articleclass":
@@ -932,7 +934,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.fin_articleclass articleClass = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_articleclass);
                         oid = articleClass.Oid;
                         code = "fin_article";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Class] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Class] = ?", oid));
                         break;
 
                     case "fin_documentfinancetype":
@@ -940,8 +942,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.fin_documentfinancetype docType = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_documentfinancetype);
                         oid = docType.Oid;
                         code = "fin_documentfinancemaster / fin_documentfinancepayment";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DocumentType] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DocumentType] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DocumentType] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DocumentType] = ?", oid));
                         break;
                     case "pos_configurationplace":
                         /* Has an place an invoice issued for it? */
@@ -951,10 +953,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                            code = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
                             break;
                         }
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplacetable), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Place] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplacetable), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Place] = ?", oid));
                         code = "pos_configurationplacetable";
                         break;
 
@@ -966,10 +968,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                            code = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
                             break;
                         }
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentordermain), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PlaceTable] = ?"));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentordermain), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PlaceTable] = ?"));
                         code = "fin_documentordermain";
                         break;
 
@@ -978,15 +980,15 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         oid = terminal.Oid;
                         code = terminal.Code.ToString();
                         /* If logged terminal is the same, cannot delete */
-                        if (GlobalFramework.LoggedTerminal.Oid == oid)
+                        if (DataLayerFramework.LoggedTerminal.Oid == oid)
                         {
                             countResult = 1;
-                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
+                            code = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
                             break;
                         }
                         /* If logged terminal is referenced on documents */
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CreatedWhere] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CreatedWhere] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CreatedWhere] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancepayment), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CreatedWhere] = ?", oid));
                         code = "fin_documentfinancemaster / fin_documentfinancepayment";
                         break;
 
@@ -994,9 +996,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         /* If templates are referenced on articles */
                         logicpos.datalayer.DataLayer.Xpo.sys_configurationprinterstemplates printerTemplate = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationprinterstemplates);
                         oid = printerTemplate.Oid;
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Template] = ?", oid));
                         code = "fin_article / fin_articlesubfamily / fin_articlefamily";
                         break;
 
@@ -1004,17 +1006,17 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         /* If templates are referenced on articles / documents / terminals */
                         logicpos.datalayer.DataLayer.Xpo.sys_configurationprinters printer = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationprinters);
                         oid = printer.Oid;
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancetype), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancetype), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
                         if (!printer.PrinterType.ThermalPrinter)
                         {
-                            countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
+                            countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Printer] = ?", oid));
                         }
                         else
                         {
-                            countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[ThermalPrinter] = ?", oid));
+                            countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[ThermalPrinter] = ?", oid));
                         }
                         code = "fin_article / fin_articlesubfamily / fin_articlefamily / pos_configurationplaceterminal";
                         break;
@@ -1024,22 +1026,22 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.sys_configurationpoledisplay poleDisplay = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationpoledisplay);
                         oid = poleDisplay.Oid;
                         code = "pos_configurationplaceterminal";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PoleDisplay] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PoleDisplay] = ?", oid));
                         break;
 
                     case "sys_configurationweighingmachine":
                         /* If weighing machine are referenced on terminals */
                         logicpos.datalayer.DataLayer.Xpo.sys_configurationweighingmachine weighingMachine = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationweighingmachine);
                         oid = weighingMachine.Oid;
-                        code = "pos_configurationplaceterminal"; countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[WeighingMachine] = ?", oid));
+                        code = "pos_configurationplaceterminal"; countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[WeighingMachine] = ?", oid));
                         break;
 
                     case "sys_configurationinputreader":
                         /* If input reader device are referenced on terminals */
                         logicpos.datalayer.DataLayer.Xpo.sys_configurationinputreader inputReader = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_configurationinputreader);
                         oid = inputReader.Oid;
-                        code = "pos_configurationplaceterminal"; countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[BarcodeReader] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CardReader] = ?", oid));
+                        code = "pos_configurationplaceterminal"; countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[BarcodeReader] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.pos_configurationplaceterminal), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CardReader] = ?", oid));
                         break;
 
                     case "sys_userprofile":
@@ -1047,8 +1049,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.sys_userprofile userProfile = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_userprofile);
                         oid = userProfile.Oid;
                         code = "sys_userdetail / sys_userpermissionprofile";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_userdetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Profile] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_userpermissionprofile), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[UserProfile] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_userdetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[Profile] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_userpermissionprofile), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[UserProfile] = ?", oid));
                         break;
 
                     case "erp_customertype":
@@ -1059,11 +1061,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
+                            code = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
                             break;
                         }
                         /* If Customer type are referenced on Customer */
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.erp_customer), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CustomerType] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.erp_customer), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CustomerType] = ?", oid));
                         code = "erp_customer";
                         break;
 
@@ -1075,11 +1077,11 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
+                            code = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record")); ;
                             break;
                         }
                         /* If Payment Condition is referenced on creted documents*/
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PaymentCondition] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PaymentCondition] = ?", oid));
                         code = "fin_documentfinancemaster";
                         break;
 
@@ -1091,14 +1093,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         if (code == "10")
                         {
                             countResult = 1;
-                            code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                            code = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
                             break;
                         }
                         /* If Vat Rate is referenced on creted articles / subfamily*/
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatOnTable] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatDirectSelling] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatOnTable] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatDirectSelling] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatOnTable] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatDirectSelling] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatOnTable] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatDirectSelling] = ?", oid));
                         code = "fin_article / fin_articlesubfamily";
                         break;
 
@@ -1107,8 +1109,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.fin_configurationvatexemptionreason cfgVateExReason = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.fin_configurationvatexemptionreason);
                         oid = cfgVateExReason.Oid;
                         code = cfgVateExReason.Code.ToString();
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatExemptionReason] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentorderdetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatExemptionReason] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatExemptionReason] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentorderdetail), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[VatExemptionReason] = ?", oid));
                         code = "fin_article / fin_documentorderdetail";
                         break;
 
@@ -1126,12 +1128,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             case "90":
                             case "300":
                                 countResult = 1;
-                                code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                                code = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
                                 break;
                             default: break;
                         }
                         /* If payment Method is referenced on documents */
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PaymentMethod] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_documentfinancemaster), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[PaymentMethod] = ?", oid));
                         code = "fin_documentfinancemaster";
                         break;
 
@@ -1140,7 +1142,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.sys_userdetail userDetail = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.sys_userdetail);
                         oid = userDetail.Oid;
                         code = "sys_systemprint";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_systemprint), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[UserDetail] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.sys_systemprint), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[UserDetail] = ?", oid));
                         break;
 
                     case "pos_usercommissiongroup":
@@ -1148,9 +1150,9 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.pos_usercommissiongroup commissionGrp = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.pos_usercommissiongroup);
                         oid = commissionGrp.Oid;
                         code = "fin_article / fin_articlesubfamily / fin_articlefamily";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
-                        countResult += (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlefamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
+                        countResult += (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_articlesubfamily), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[CommissionGroup] = ?", oid));
                         break;
 
                     case "erp_customerdiscountgroup":
@@ -1158,7 +1160,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         logicpos.datalayer.DataLayer.Xpo.erp_customerdiscountgroup discountGrp = (_dataSourceRow as logicpos.datalayer.DataLayer.Xpo.erp_customerdiscountgroup);
                         oid = discountGrp.Oid;
                         code = "fin_article";
-                        countResult = (int)GlobalFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DiscountGroup] = ?", oid));
+                        countResult = (int)DataLayerFramework.SessionXpo.Evaluate(typeof(logicpos.datalayer.DataLayer.Xpo.fin_article), CriteriaOperator.Parse("Count()"), CriteriaOperator.Parse("[DiscountGroup] = ?", oid));
                         break;
 
                     case "cfg_configurationcountry":
@@ -1167,7 +1169,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                     case "cfg_configurationunitmeasure":
                     case "cfg_configurationunitsize":
                         /* Tables protected records */
-                        code = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
+                        code = string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_protected_record"));
                         countResult = 1;
                         break;
 
@@ -1178,8 +1180,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     registerHasReferences = true;
 
-                    _logger.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"));
-                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_referenced_record_message"), className, code));
+                    _logger.Error("void bool CheckItemForReferences() :: '" + _dataSourceRow.GetType().FullName + "' [" + oid + "] : " + CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_constraint_violation_exception"));
+                    logicpos.Utils.ShowMessageTouch(_sourceWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_error"), string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_delete_record_show_referenced_record_message"), className, code));
                 }
                 return registerHasReferences;
             }
@@ -1265,7 +1267,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                 // Reflection : Get Property from Column.Name and Update its Value with reflection propertyInfo
                                 // This is the Trick to update Column display ResourceString after we Change/Update records
                                 string columnValue = pDataObject.GetType().GetProperty(column.Name).GetValue(pDataObject).ToString();
-                                pDataObject.GetType().GetProperty(column.Name).SetValue(pDataObject, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], columnValue).ToString());
+                                pDataObject.GetType().GetProperty(column.Name).SetValue(pDataObject, CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], columnValue).ToString());
                                 if (Debugger.IsAttached)
                                 {
                                     _logger.Debug($"GenericTreeView: Replaced ResourceString column name [{column.Name}] with value [{columnValue}] after Update Record...");
@@ -1277,26 +1279,26 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                                     try
                                     {
                                         string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                                        getCultureFromDB = GlobalFramework.SessionXpo.ExecuteScalar(sql).ToString();
+                                        getCultureFromDB = DataLayerFramework.SessionXpo.ExecuteScalar(sql).ToString();
                                     }
                                     catch
                                     {
-                                        getCultureFromDB = GlobalFramework.Settings["customCultureResourceDefinition"];
+                                        getCultureFromDB = DataLayerFramework.Settings["customCultureResourceDefinition"];
 
                                     }
                                     if (!logicpos.Utils.getCultureFromOS(getCultureFromDB))
                                     {
-                                        GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
-                                        GlobalFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
+                                        SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
+                                        DataLayerFramework.Settings["customCultureResourceDefinition"] = ConfigurationManager.AppSettings["customCultureResourceDefinition"];
                                         CustomResources.UpdateLanguage(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
                                     }
                                     else
                                     {
-                                        GlobalFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
-                                        GlobalFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
+                                        SharedFramework.CurrentCulture = new System.Globalization.CultureInfo(getCultureFromDB);
+                                        DataLayerFramework.Settings["customCultureResourceDefinition"] = getCultureFromDB;
                                         CustomResources.UpdateLanguage(getCultureFromDB);
                                     }
-                                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), GlobalFramework.Settings["customCultureResourceDefinition"]));
+                                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Warning, ButtonsType.Ok, CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_language"), string.Format(CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_culture_change"), DataLayerFramework.Settings["customCultureResourceDefinition"]));
 
                                 }
                                 //IN009296 ENDS
@@ -1811,8 +1813,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         public void FormatColumnPropertiesForTouch()
         {
             //Settings
-            string fontGenericTreeViewSelectRecordColumnTitle = GlobalFramework.Settings["fontGenericTreeViewSelectRecordColumnTitle"];
-            string fontGenericTreeViewSelectRecordColumn = GlobalFramework.Settings["fontGenericTreeViewSelectRecordColumn"];
+            string fontGenericTreeViewSelectRecordColumnTitle = DataLayerFramework.Settings["fontGenericTreeViewSelectRecordColumnTitle"];
+            string fontGenericTreeViewSelectRecordColumn = DataLayerFramework.Settings["fontGenericTreeViewSelectRecordColumn"];
 
             FormatColumnPropertiesForTouch(fontGenericTreeViewSelectRecordColumnTitle, fontGenericTreeViewSelectRecordColumn);
         }
@@ -1844,7 +1846,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             try
             {
                 string sql = string.Format(pSql, pKey);
-                result = Convert.ToString(GlobalFramework.SessionXpo.ExecuteScalar(sql));
+                result = Convert.ToString(DataLayerFramework.SessionXpo.ExecuteScalar(sql));
             }
             catch (Exception ex)
             {

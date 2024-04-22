@@ -123,8 +123,7 @@
   </ItemGroup>
   -->
   <ItemGroup>
-    <Compile Include="App\FrameworkUtils.cs" />
-    <Compile Include="App\GlobalFramework.cs" />
+    <Compile Include="App\POSFramework.cs" />
     <Compile Include="Classes\Enums\App\AppMode.cs" />
     <Compile Include="Classes\Enums\App\ScreenSize.cs" />
     <Compile Include="Classes\Enums\DataBaseRestoreFrom.cs" />
@@ -192,7 +191,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="App\LicenceManagement.cs" />
-    <Compile Include="App\SettingsApp.cs" />
+    <Compile Include="App\POSSettings.cs" />
     <Compile Include="App\Theme.cs" />
     <Compile Include="Classes\Enums\ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.cs" />
     <Compile Include="Classes\Enums\TicketList\TicketListColumns.cs" />
@@ -416,7 +415,7 @@
     <Compile Include="Classes\Logic\Pos\Dialogs\PosReportsDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosTablesDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosReadCardDialog.cs" />
-    <Compile Include="Classes\Logic\StartupWindow.cs" />
+    <Compile Include="Classes\Gui\Gtk\Pos\Windows\StartupWindowEvents.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosPaymentsDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Dialogs\PosSystemDialog.cs" />
     <Compile Include="Classes\Logic\Pos\Windows\PosMainWindow.cs" />

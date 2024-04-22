@@ -1,17 +1,17 @@
 ﻿using DevExpress.Xpo;
+using logicpos.datalayer.App;
 using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.datalayer.Enums;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Reports;
 using logicpos.financial.library.Classes.Stocks;
 using logicpos.financial.library.Classes.WorkSession;
-using logicpos.resources.Resources.Localization;
+using logicpos.shared.App;
 using logicpos.shared.Classes.Finance;
 using logicpos.shared.Classes.Orders;
 using logicpos.shared.Enums;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 
@@ -24,8 +24,8 @@ namespace logicpos.financial.library.Classes.Finance
 
         public static fin_documentfinancemaster PersistFinanceDocument(ProcessFinanceDocumentParameter pParameters, bool pIgnoreWarning = false)
         {
-            Guid userDetailGuid = (GlobalFramework.LoggedUser != null) ? GlobalFramework.LoggedUser.Oid : Guid.Empty;
-            Guid terminalGuid = (GlobalFramework.LoggedTerminal != null) ? GlobalFramework.LoggedTerminal.Oid : Guid.Empty;
+            Guid userDetailGuid = (DataLayerFramework.LoggedUser != null) ? DataLayerFramework.LoggedUser.Oid : Guid.Empty;
+            Guid terminalGuid = (DataLayerFramework.LoggedTerminal != null) ? DataLayerFramework.LoggedTerminal.Oid : Guid.Empty;
 
             return (PersistFinanceDocument(pParameters, userDetailGuid, terminalGuid, pIgnoreWarning));
         }
@@ -54,11 +54,11 @@ namespace logicpos.financial.library.Classes.Finance
                 }
 
                 //Settings
-                //string dateTimeFormatDocumentDate = (GlobalFramework.PluginSoftwareVendor != null) ? GlobalFramework.PluginSoftwareVendor.GetDateTimeFormatDocumentDate() : null;//SettingsApp.DateTimeFormatDocumentDate;
-                //string dateTimeFormatCombinedDateTime = (GlobalFramework.PluginSoftwareVendor != null) ? GlobalFramework.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
+                //string dateTimeFormatDocumentDate = (SharedFramework.PluginSoftwareVendor != null) ? SharedFramework.PluginSoftwareVendor.GetDateTimeFormatDocumentDate() : null;//SettingsApp.DateTimeFormatDocumentDate;
+                //string dateTimeFormatCombinedDateTime = (SharedFramework.PluginSoftwareVendor != null) ? SharedFramework.PluginSoftwareVendor.GetDateTimeFormatCombinedDateTime() : null;//SettingsApp.DateTimeFormatCombinedDateTime;
 
                 //If has DocumentDateTime from Parameters use it, else use Current Atomic DateTime : This is Optional, Now DocumentDateTime is assigned on Parameter Constructor
-                DateTime documentDateTime = (pParameters.DocumentDateTime != DateTime.MinValue) ? pParameters.DocumentDateTime : FrameworkUtils.CurrentDateTimeAtomic();
+                DateTime documentDateTime = (pParameters.DocumentDateTime != DateTime.MinValue) ? pParameters.DocumentDateTime : DataLayerUtils.CurrentDateTimeAtomic();
                 //Init Local Vars
                 OrderMain orderMain = null;
 
@@ -66,15 +66,15 @@ namespace logicpos.financial.library.Classes.Finance
                 using (UnitOfWork uowSession = new UnitOfWork())
                 {
                     //Get Objects, To Prevent XPO Stress of Deleted Objects inside UOW
-                    //WorkSessionPeriod workSessionPeriod = (WorkSessionPeriod)FrameworkUtils.GetXPGuidObjectFromSession(uowSession, typeof(WorkSessionPeriod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
-                    sys_userdetail userDetail = (sys_userdetail)FrameworkUtils.GetXPGuidObject(uowSession, typeof(sys_userdetail), pLoggedUser);
-                    pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pTerminal);
+                    //WorkSessionPeriod workSessionPeriod = (WorkSessionPeriod)DataLayerUtils.GetXPGuidObjectFromSession(uowSession, typeof(WorkSessionPeriod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
+                    sys_userdetail userDetail = (sys_userdetail)DataLayerUtils.GetXPGuidObject(uowSession, typeof(sys_userdetail), pLoggedUser);
+                    pos_configurationplaceterminal terminal = (pos_configurationplaceterminal)DataLayerUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplaceterminal), pTerminal);
 
                     //Prepare Modes
                     fin_documentordermain documentOrderMain = null;
                     if (pParameters.SourceMode == PersistFinanceDocumentSourceMode.CurrentOrderMain)
                     {
-                        orderMain = GlobalFramework.SessionApp.OrdersMain[GlobalFramework.SessionApp.CurrentOrderMainOid];
+                        orderMain = SharedFramework.SessionApp.OrdersMain[SharedFramework.SessionApp.CurrentOrderMainOid];
                         //Get Persistent Oid from orderMain
                         documentOrderMain = (fin_documentordermain)uowSession.GetObjectByKey(typeof(fin_documentordermain), orderMain.PersistentOid);
                     }
@@ -148,19 +148,19 @@ namespace logicpos.financial.library.Classes.Finance
                         {
                             //Source Document Document Status: SourceDocument was Invoiced|InvoiceAndPayment|SimplifiedInvoice > change SourceDocument Status to F (Invoiced/Faturado)
                             if (
-                                documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoice ||
-                                documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                                documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice
+                                documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
+                                documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                                documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice
                             )
                             {
                                 documentFinanceMasterParentDocument.DocumentStatusStatus = "F";
                             }
 
                             //Detected in Certification : Credit Notes dont Change Status Details like other Documents
-                            if (documentFinanceType.Oid != SettingsApp.XpoOidDocumentFinanceTypeCreditNote)
+                            if (documentFinanceType.Oid != SharedSettings.XpoOidDocumentFinanceTypeCreditNote)
                             {
                                 //Assign Date and User for all Other
-                                documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
+                                documentFinanceMasterParentDocument.DocumentStatusDate = documentDateTime.ToString(SharedSettings.DateTimeFormatCombinedDateTime);
                                 documentFinanceMasterParentDocument.DocumentStatusUser = userDetail.CodeInternal;
                             }
                             //_logger.Debug(String.Format("DocumentNumber: [{0}], DocumentStatusStatus: [{1}], DocumentStatusDate: [{2}], DocumentStatusUser: [{3}]", pParameters.OrderReferences[0].DocumentNumber, pParameters.OrderReferences[0].DocumentStatusStatus, pParameters.OrderReferences[0].DocumentStatusDate, pParameters.OrderReferences[0].DocumentStatusUser));
@@ -174,7 +174,7 @@ namespace logicpos.financial.library.Classes.Finance
                         documentFinanceMaster.EntityOid = customer.Oid;
                         //Store CodeInternal to use in SAF-T
                         documentFinanceMaster.EntityInternalCode = customer.CodeInternal;
-                        documentFinanceMaster.EntityFiscalNumber = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.FiscalNumber); /* IN009075 */
+                        documentFinanceMaster.EntityFiscalNumber = SharedFramework.PluginSoftwareVendor.Encrypt(customer.FiscalNumber); /* IN009075 */
                         //Always Update EntityCountryOid, usefull to AT WebServices to detect Country
                         if (customer.Country != null)
                         {
@@ -186,13 +186,13 @@ namespace logicpos.financial.library.Classes.Finance
                         if (
                             (
                                 // documentFinanceMaster.DocumentType.Oid != SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice && /* IN009076 - FS is not saving customer data */
-                                customer.Oid != FrameworkUtils.GetFinalConsumerEntity().Oid
+                                customer.Oid != FinancialLibraryUtils.GetFinalConsumerEntity().Oid
                             )
                             ||
                             //Or If not in Portugal AND (! FinalConsumer (in Invoices for ex))
                             (
-                                SettingsApp.XpoOidConfigurationCountryPortugal != SettingsApp.ConfigurationSystemCountry.Oid &&
-                                customer.Oid != FrameworkUtils.GetFinalConsumerEntity().Oid
+                                SharedSettings.XpoOidConfigurationCountryPortugal != DataLayerSettings.ConfigurationSystemCountry.Oid &&
+                                customer.Oid != FinancialLibraryUtils.GetFinalConsumerEntity().Oid
                             )
                             //Required Oids for Equallity Check
                             //Commented to save details if is a Hidden Customer, Diferent from FinalConsumerEntity
@@ -200,11 +200,11 @@ namespace logicpos.financial.library.Classes.Finance
                             )
                         {
                             /* IN009075 - encrypting customer datum when persisting finance document */
-                            documentFinanceMaster.EntityName        = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.Name);
-                            documentFinanceMaster.EntityAddress     = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.Address);
-                            documentFinanceMaster.EntityLocality    = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.Locality);
-                            documentFinanceMaster.EntityZipCode     = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.ZipCode);
-                            documentFinanceMaster.EntityCity        = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.City);
+                            documentFinanceMaster.EntityName = SharedFramework.PluginSoftwareVendor.Encrypt(customer.Name);
+                            documentFinanceMaster.EntityAddress = SharedFramework.PluginSoftwareVendor.Encrypt(customer.Address);
+                            documentFinanceMaster.EntityLocality = SharedFramework.PluginSoftwareVendor.Encrypt(customer.Locality);
+                            documentFinanceMaster.EntityZipCode = SharedFramework.PluginSoftwareVendor.Encrypt(customer.ZipCode);
+                            documentFinanceMaster.EntityCity = SharedFramework.PluginSoftwareVendor.Encrypt(customer.City);
                             //Deprecated Now Always assign Country, usefull to AT WebServices to detect Country 
                             //if (customer.Country != null)
                             //{
@@ -213,9 +213,9 @@ namespace logicpos.financial.library.Classes.Finance
                             //}
                         }
                         //Persist Name if is has a FinalConsumer NIF and Name (Hidden Customer)
-                        else if (FrameworkUtils.IsFinalConsumerEntity(customer.FiscalNumber) && customer.Name != string.Empty)
+                        else if (FinancialLibraryUtils.IsFinalConsumerEntity(customer.FiscalNumber) && customer.Name != string.Empty)
                         {
-                            documentFinanceMaster.EntityName = GlobalFramework.PluginSoftwareVendor.Encrypt(customer.Name); /* IN009075 */
+                            documentFinanceMaster.EntityName = SharedFramework.PluginSoftwareVendor.Encrypt(customer.Name); /* IN009075 */
                         }
                     }
 
@@ -228,7 +228,7 @@ namespace logicpos.financial.library.Classes.Finance
                     documentFinanceMaster.ExchangeRate = pParameters.ExchangeRate;
 
                     //Currency Congo K
-                    if(System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
+                    if (System.Configuration.ConfigurationManager.AppSettings["cultureFinancialRules"] == "fr-CF")
                     {
                         documentFinanceMaster.Currency = (cfg_configurationcurrency)uowSession.GetObjectByKey(typeof(cfg_configurationcurrency), Guid.Parse("c96b971b-5d6a-40dd-be1a-8d1ef408a25c"));
                         //ExchangeRate
@@ -242,8 +242,8 @@ namespace logicpos.financial.library.Classes.Finance
                         paymentMethod = (fin_configurationpaymentmethod)uowSession.GetObjectByKey(typeof(fin_configurationpaymentmethod), pParameters.PaymentMethod);
                     }
                     //Assign Only it was not Null
-					// Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
-                    if (paymentMethod != null && paymentMethod.Oid != SettingsApp.XpoOidConfigurationPaymentMethodCurrentAccount)
+                    // Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
+                    if (paymentMethod != null && paymentMethod.Oid != SharedSettings.XpoOidConfigurationPaymentMethodCurrentAccount)
                     {
                         documentFinanceMaster.PaymentMethod = paymentMethod;
                     }
@@ -258,13 +258,13 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         documentFinanceMaster.PaymentCondition = paymentCondition;
                     }
-                    
+
                     // UserDetail
                     if (userDetail != null && userDetail.Oid != new Guid())
                     {
                         documentFinanceMaster.CreatedBy = userDetail;
                     }
-                    
+
                     // Terminal
                     if (terminal != null && terminal.Oid != new Guid())
                     {
@@ -273,14 +273,14 @@ namespace logicpos.financial.library.Classes.Finance
 
                     //Assign Document Status for FT | FS | FR | DC | NC | CC | WorkingDocuments, else Ignore DocumentStatusStatus
                     if (
-                        documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoice ||
-                        documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceWayBill ||
-                        documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
-                        documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
-                        documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeCreditNote ||
-                        documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeBudget ||
-                        documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice ||
-                        documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput ||
+                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoice ||
+                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceWayBill ||
+                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice ||
+                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment ||
+                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCreditNote ||
+                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeBudget ||
+                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice ||
+                        documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput ||
                         documentFinanceType.SaftDocumentType == SaftDocumentType.WorkingDocuments ||
                         documentFinanceType.SaftDocumentType == SaftDocumentType.MovementOfGoods
                     )
@@ -288,7 +288,7 @@ namespace logicpos.financial.library.Classes.Finance
                         documentFinanceMaster.DocumentStatusStatus = "N";
                     }
                     //Always assign DocumentStatusDate
-                    documentFinanceMaster.DocumentStatusDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
+                    documentFinanceMaster.DocumentStatusDate = documentDateTime.ToString(SharedSettings.DateTimeFormatCombinedDateTime);
 
                     //Notes
                     if (pParameters.Notes != string.Empty)
@@ -356,9 +356,9 @@ namespace logicpos.financial.library.Classes.Finance
                             //Get Article
                             article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
                             //Get VatRate formated for filter, in sql server gives error without this it filters 23,0000 and not 23.0000 resulting in null vatRate
-                            string filterVat = FrameworkUtils.DecimalToString(item.Key.Vat, GlobalFramework.CurrentCultureNumberFormat);
+                            string filterVat = SharedUtils.DecimalToString(item.Key.Vat, SharedFramework.CurrentCultureNumberFormat);
                             string executeSql = string.Format(@"SELECT Oid FROM fin_configurationvatrate WHERE Value = '{0}';", filterVat);
-                            vatRateOid = FrameworkUtils.GetGuidFromQuery(executeSql);
+                            vatRateOid = SharedUtils.GetGuidFromQuery(executeSql);
                             vatRate = (fin_configurationvatrate)uowSession.GetObjectByKey(typeof(fin_configurationvatrate), vatRateOid);
 
                             //If Type dont Have Price it Creates an Empty Details document, always use HavePrice, Only Type : Informative Created by Muga dont use HavePrice
@@ -471,12 +471,12 @@ namespace logicpos.financial.library.Classes.Finance
                             }
 
                             // TK013134
-                            if (GlobalFramework.AppUseParkingTicketModule)
+                            if (SharedFramework.AppUseParkingTicketModule)
                             {
                                 //Add to PendentPayedParkingTickets
                                 //if (item.Key.ArticleOid.Equals(SettingsApp.XpoOidArticleParkingTicket))
                                 //Get Original Designation from Fresh Object
-                                fin_article articleForDesignation = (fin_article)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleOid);
+                                fin_article articleForDesignation = (fin_article)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_article), item.Key.ArticleOid);
                                 // Extract Ean from Designation 
                                 string ticketEan = item.Key.Designation
                                     .Replace($"{articleForDesignation.Designation} [", string.Empty)
@@ -500,10 +500,10 @@ namespace logicpos.financial.library.Classes.Finance
                                     int quantity = Convert.ToInt32(item.Value.Quantity);
                                     documentFinanceMaster.Notes += string.Format("{0} ", quantity.ToString());
                                     //documentOrderMain.Notes = item.Value.Quantity.ToString();
-                                    GlobalFramework.PendentPayedParkingCards.Add(output, documentOrderMain.Oid);
+                                    SharedFramework.PendentPayedParkingCards.Add(output, documentOrderMain.Oid);
                                 }
                                 //IN009279 If Card
-                                else GlobalFramework.PendentPayedParkingTickets.Add(output, documentOrderMain.Oid);
+                                else SharedFramework.PendentPayedParkingTickets.Add(output, documentOrderMain.Oid);
                             }
                         }
                     }
@@ -531,8 +531,8 @@ namespace logicpos.financial.library.Classes.Finance
                     //Global Document Date
                     documentFinanceMaster.Date = documentDateTime;
                     //SAF-T(PT)
-                    documentFinanceMaster.DocumentDate = documentDateTime.ToString(SettingsApp.DateTimeFormatDocumentDate);
-                    documentFinanceMaster.SystemEntryDate = documentDateTime.ToString(SettingsApp.DateTimeFormatCombinedDateTime);
+                    documentFinanceMaster.DocumentDate = documentDateTime.ToString(SharedSettings.DateTimeFormatDocumentDate);
+                    documentFinanceMaster.SystemEntryDate = documentDateTime.ToString(SharedSettings.DateTimeFormatCombinedDateTime);
                     documentFinanceMaster.DocumentNumber = documentNumber;
                     documentFinanceMaster.TotalNet = pParameters.ArticleBag.TotalNet;
                     documentFinanceMaster.TotalGross = pParameters.ArticleBag.TotalGross;
@@ -544,7 +544,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (pParameters.ArticleBag.DiscountGlobal > 0) documentFinanceMaster.Discount = pParameters.ArticleBag.DiscountGlobal;
                     //HASH
                     documentFinanceMaster.Hash = GenDocumentHash(uowSession, documentFinanceType, documentFinanceSerie, documentFinanceMaster);
-                    documentFinanceMaster.HashControl = SettingsApp.HashControl.ToString();
+                    documentFinanceMaster.HashControl = SharedSettings.HashControl.ToString();
                     documentFinanceMaster.SourceBilling = "P";
                     documentFinanceMaster.SelfBillingIndicator = 0;
                     documentFinanceMaster.CashVatSchemeIndicator = 0;
@@ -552,13 +552,13 @@ namespace logicpos.financial.library.Classes.Finance
                     //Store CodeInternals to use in SAF-T
                     documentFinanceMaster.DocumentStatusUser = userDetail.CodeInternal;
                     documentFinanceMaster.DocumentCreatorUser = userDetail.CodeInternal;
-					//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+                    //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
                     documentFinanceMaster.ATCUD = "0"; //A preencher pelo WS da AT Julho 2021?
                     documentFinanceMaster.ATDocQRCode = GenDocumentQRCode(uowSession, documentFinanceType, documentFinanceSerie, documentFinanceMaster, true);
                     //CAE is Deprecated, this will prevent triggering Errors
-                    if (GlobalFramework.PreferenceParameters.ContainsKey("COMPANY_CAE") && ! string.IsNullOrEmpty(GlobalFramework.PreferenceParameters["COMPANY_CAE"].ToString()))
+                    if (SharedFramework.PreferenceParameters.ContainsKey("COMPANY_CAE") && !string.IsNullOrEmpty(SharedFramework.PreferenceParameters["COMPANY_CAE"].ToString()))
                     {
-                        documentFinanceMaster.EACCode = GlobalFramework.PreferenceParameters["COMPANY_CAE"];
+                        documentFinanceMaster.EACCode = SharedFramework.PreferenceParameters["COMPANY_CAE"];
                     }
 
                     //Currency Congo K
@@ -585,7 +585,7 @@ namespace logicpos.financial.library.Classes.Finance
                     {
                         //Get Article
                         article = (fin_article)uowSession.GetObjectByKey(typeof(fin_article), item.Key.ArticleOid);
-                        if (article.Type.Oid == SettingsApp.XpoOidArticleClassCustomerCard)
+                        if (article.Type.Oid == SharedSettings.XpoOidArticleClassCustomerCard)
                         {
                             customer.CardCredit = customer.CardCredit + item.Value.TotalFinal;
                         }
@@ -598,7 +598,7 @@ namespace logicpos.financial.library.Classes.Finance
                     if (!documentFinanceType.Payed) paymentMethod = null;
 
                     //PersistFinanceDocumentWorkSession if document is Payed or if it is a CurrentAccount (Splited in Prints with SplitCurrentAccountMode Enum)
-                    if (GlobalFramework.WorkSessionPeriodTerminal != null && (paymentMethod != null || documentFinanceType.Oid == SettingsApp.XpoOidDocumentFinanceTypeCurrentAccountInput))
+                    if (SharedFramework.WorkSessionPeriodTerminal != null && (paymentMethod != null || documentFinanceType.Oid == SharedSettings.XpoOidDocumentFinanceTypeCurrentAccountInput))
                     {
                         //Call PersistFinanceDocumentWorkSession to do WorkSession Job
                         PersistFinanceDocumentWorkSession(uowSession, documentFinanceMaster, pParameters, paymentMethod);
@@ -610,7 +610,7 @@ namespace logicpos.financial.library.Classes.Finance
                     try
                     {
                         //Working on OrderMain Mode, if Not TableConsult or CreditNote
-                        if (pParameters.SourceMode == PersistFinanceDocumentSourceMode.CurrentOrderMain && documentFinanceType.Oid != SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument)
+                        if (pParameters.SourceMode == PersistFinanceDocumentSourceMode.CurrentOrderMain && documentFinanceType.Oid != SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument)
                         {
                             //Commit UOW Changes : Before get current OrderMain
                             uowSession.CommitChanges();
@@ -640,17 +640,17 @@ namespace logicpos.financial.library.Classes.Finance
 
                                 //Change Table Status to Free
                                 pos_configurationplacetable placeTable;
-                                placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplacetable), orderMain.Table.Oid);
-                                if(placeTable != null)
+                                placeTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(uowSession, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                if (placeTable != null)
                                 {
                                     placeTable.TableStatus = TableStatus.Free;
-                                    FrameworkUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
+                                    SharedUtils.Audit("TABLE_OPEN", string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "audit_message_table_open"), placeTable.Designation));
                                     placeTable.DateTableClosed = documentDateTime;
                                     placeTable.TotalOpen = 0;
                                     //Required to Reload Objects after has been changed in Another Session(uowSession)
-                                    if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
+                                    if (documentOrderMain != null) documentOrderMain = (fin_documentordermain)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(fin_documentordermain), orderMain.PersistentOid);
                                     if (documentOrderMain != null) documentOrderMain.Reload();
-                                    placeTable = (pos_configurationplacetable)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
+                                    placeTable = (pos_configurationplacetable)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(pos_configurationplacetable), orderMain.Table.Oid);
                                     placeTable.Reload();
                                 }
                                 //Clean Session if Commited without problems
@@ -679,40 +679,40 @@ namespace logicpos.financial.library.Classes.Finance
                         //Finnaly Commit Changes
                         uowSession.CommitChanges();
 
-// TK013134
-if (GlobalFramework.AppUseParkingTicketModule)
-//{
-//    foreach (var item in GlobalFramework.PendentPayedParkingTickets)
-//    {
-//        // Call #Ws Part 2 : Send Payed Cached Tickets
-//        _logger.Debug($"TicketId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
-//    }
+                        // TK013134
+                        if (SharedFramework.AppUseParkingTicketModule)
+                            //{
+                            //    foreach (var item in GlobalFramework.PendentPayedParkingTickets)
+                            //    {
+                            //        // Call #Ws Part 2 : Send Payed Cached Tickets
+                            //        _logger.Debug($"TicketId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
+                            //    }
 
-//    foreach (var item in GlobalFramework.PendentPayedParkingCards)
-//    {
-//        // Call #Ws Part 3 : Send Payed Cached Cards
-//        _logger.Debug($"CardId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
-//    }
-//}
+                            //    foreach (var item in GlobalFramework.PendentPayedParkingCards)
+                            //    {
+                            //        // Call #Ws Part 3 : Send Payed Cached Cards
+                            //        _logger.Debug($"CardId: [{item.Key}], documentOrderMain.Oid: [{item.Value}]");
+                            //    }
+                            //}
 
-                        //Always Assign DocumentChild Reference to DocumentParent
-                        if (documentFinanceMasterParentDocument != null)
-                        {
-                            //documentFinanceMaster.DocumentParent = (DocumentFinanceMaster)uowSession.GetObjectByKey(typeof(DocumentFinanceMaster), pParameters.DocumentParent);
-                            documentFinanceMasterParentDocument.DocumentChild = documentFinanceMaster;
-                            uowSession.CommitChanges();
-                        }
+                            //Always Assign DocumentChild Reference to DocumentParent
+                            if (documentFinanceMasterParentDocument != null)
+                            {
+                                //documentFinanceMaster.DocumentParent = (DocumentFinanceMaster)uowSession.GetObjectByKey(typeof(DocumentFinanceMaster), pParameters.DocumentParent);
+                                documentFinanceMasterParentDocument.DocumentChild = documentFinanceMaster;
+                                uowSession.CommitChanges();
+                            }
 
                         //Audit
-                        FrameworkUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_document_created"), documentFinanceMaster.DocumentNumber));
+                        SharedUtils.Audit("FINANCE_DOCUMENT_CREATED", string.Format("{0} {1}: {2}", documentFinanceMaster.DocumentType.Designation, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_document_created"), documentFinanceMaster.DocumentNumber));
 
                         //Process Stock
                         try
                         {
-                            GlobalFramework.StockManagementModule = (GlobalFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
-                            if (GlobalFramework.LicenceModuleStocks && GlobalFramework.StockManagementModule != null)
+                            FinancialLibraryFramework.StockManagementModule = (SharedFramework.PluginContainer.GetFirstPluginOfType<IStockManagementModule>());
+                            if (SharedFramework.LicenseModuleStocks && FinancialLibraryFramework.StockManagementModule != null)
                             {
-                                GlobalFramework.StockManagementModule.Add(documentFinanceMaster);
+                                FinancialLibraryFramework.StockManagementModule.Add(documentFinanceMaster);
                             }
                             else
                             {
@@ -729,13 +729,13 @@ if (GlobalFramework.AppUseParkingTicketModule)
                         result = documentFinanceMaster;
 
                         // Call Generate GenerateDocument
-						//POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
+                        //POS front-end - Consulta Mesa + Impressão Ticket's + Gerar PDF em modo Thermal Printer [IN009344]
                         // If is Thermal Print doc don't create PDF + Lindote(06/02/2020)
-                        if (!GlobalFramework.UsingThermalPrinter)
+                        if (!SharedFramework.UsingThermalPrinter)
                         {
                             GenerateDocumentFinanceMasterPDFIfNotExists(documentFinanceMaster);
                         }
-                        
+
                     }
                     catch (Exception ex)
                     {
@@ -769,8 +769,8 @@ if (GlobalFramework.AppUseParkingTicketModule)
             bool debug = false;
             fin_documentfinancemaster doc = pDocumentFinanceMaster;
             //Required to ALways use "." and not Culture Decimal separator, ex ","
-            //string TotalFinalRound = FrameworkUtils.DecimalToString(doc.TotalFinalRound).Replace(',', '.');
-            string TotalFinalRound = FrameworkUtils.DecimalToString(Convert.ToDecimal(doc.TotalFinalRound), GlobalFramework.CurrentCultureNumberFormat);
+            //string TotalFinalRound = SharedUtils.DecimalToString(doc.TotalFinalRound).Replace(',', '.');
+            string TotalFinalRound = SharedUtils.DecimalToString(Convert.ToDecimal(doc.TotalFinalRound), SharedFramework.CurrentCultureNumberFormat);
             //Hash must be the first, to use first field has value for ExecuteScalar
             string sql = string.Format(@"SELECT Hash, HashControl, Date AS InvoiceDate, SystemEntryDate, DocumentNumber AS InvoiceNo, TotalFinalRound FROM fin_documentfinancemaster WHERE DocumentType = '{0}' and  DocumentSerie = '{1}' ORDER BY Date DESC;", pDocType.Oid, pDocSerie.Oid);
             var olastDocumentHash = pSession.ExecuteScalar(sql);
@@ -781,9 +781,9 @@ if (GlobalFramework.AppUseParkingTicketModule)
             // Old Method without Plugin
             //resultSignedHash = FrameworkUtils.SignDataToSHA1Base64(signTargetString, debug);
             // Sign Document if has a valid PluginSoftwareVendor 
-            if (GlobalFramework.PluginSoftwareVendor != null)
+            if (SharedFramework.PluginSoftwareVendor != null)
             {
-                resultSignedHash = GlobalFramework.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
+                resultSignedHash = SharedFramework.PluginSoftwareVendor.SignDataToSHA1Base64(FinancialLibrarySettings.SecretKey, signTargetString, debug);
             }
             else
             {
@@ -801,7 +801,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
             return resultSignedHash;
         }
 
-		//ATCUD Documentos - Criação do QRCode e ATCUD IN016508
+        //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
         //Na criação da mensagem a incorporar no código QR devem ser observadas as
         //seguintes regras:
         //a) Cada campo será formado pela concatenação do valor da coluna “Código”,
@@ -817,7 +817,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
         //deverão ser previamente convertidos em euros;
         //d) Os campos assinalados com «+» são de criação obrigatória;
         //e) Os campos assinalados com «++», são opcionais, mas deverão ser criados
-    
+
         //f) Nos campos opcionais, na ausência de informação não deverá ser criado o
         //respetivo campo;
         //g) Na criação dos campos com os códigos I1 a I8, J1 a J8 e K1 a K8,
@@ -861,30 +861,30 @@ if (GlobalFramework.AppUseParkingTicketModule)
             //R Nº do certificado Exemplo R:9999 +
             //S Outras informações Exemplo S: NU; 0.80 ++
 
-            string A = "A:" + GlobalFramework.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
-            string B = "B:" + GlobalFramework.PluginSoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
+            string A = "A:" + SharedFramework.PreferenceParameters["COMPANY_FISCALNUMBER"] + "*";
+            string B = "B:" + SharedFramework.PluginSoftwareVendor.Decrypt(doc.EntityFiscalNumber) + "*";
             string C = "C:" + doc.EntityCountry + "*";
             string D = "D:" + pDocType.Acronym + "*";
             string E = "E:" + doc.DocumentStatusStatus + "*";
-            string F = "F:" + doc.DocumentDate.Replace("-","") + "*";
+            string F = "F:" + doc.DocumentDate.Replace("-", "") + "*";
             string G = "G:" + doc.DocumentNumber + "*";
-            string H = "H:" + doc.ATCUD + "*"; 
+            string H = "H:" + doc.ATCUD + "*";
             string I1 = "I1:PT*";
             string I7 = "";
             string I8 = "";
-            string N = "N:" + FrameworkUtils.DecimalToString(doc.TotalTax).Replace(",",".") + "*";
-            string O = "O:" + FrameworkUtils.DecimalToString(doc.TotalFinal).Replace(",", ".") + "*";
+            string N = "N:" + SharedUtils.DecimalToString(doc.TotalTax).Replace(",", ".") + "*";
+            string O = "O:" + SharedUtils.DecimalToString(doc.TotalFinal).Replace(",", ".") + "*";
             string Q = "Q:" + GenDocumentHash4Chars(doc.Hash) + "*";
-            string R = "R:" + SettingsApp.SaftSoftwareCertificateNumber + "*";
+            string R = "R:" + SharedSettings.SaftSoftwareCertificateNumber + "*";
             string S = "";
             //Debug
             if (debug) _logger.Debug(string.Format("GenDocumentQRCode(): " + A + B + C + D + E + F + G + H + I1 + I7 + I8 + N + O + Q + R + S));
 
             //byte[] resultQRCode = new byte[64]; 
             string resultQRCode;
-            if (GlobalFramework.PluginSoftwareVendor != null && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
+            if (SharedFramework.PluginSoftwareVendor != null && (pDocType.SaftDocumentType == SaftDocumentType.SalesInvoices || pDocType.SaftDocumentType == SaftDocumentType.Payments))
             {
-                //resultSignedHash = GlobalFramework.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
+                //resultSignedHash = SharedFramework.PluginSoftwareVendor.SignDataToSHA1Base64(SettingsApp.SecretKey, signTargetString, debug);
 
                 //A elaboração do código de barras bidimensional (código QR) deve obedecer àsseguintes especificações:
                 //a) Taxa de Recuperação de Erro(ECC): “M”;
@@ -922,11 +922,11 @@ if (GlobalFramework.AppUseParkingTicketModule)
 
             try
             {
-                string formatNumber = new string('0', SettingsApp.DocumentsPadLength);
+                string formatNumber = new string('0', SharedSettings.DocumentsPadLength);
                 string publicDocID = pDocType.DocumentType.Acronym; ;
                 string serieID = pDocType.Acronym; ;
                 string seqNumber = "" + pDocType.NextDocumentNumber;
-                
+
 
                 //2018-05-08 : Old Format : [FT005012018S1] : Search GenDocumentNumber in ProcessFinanceDocument
                 //string tmpInvoiceFormat = "{0} {1}/{2}";
@@ -953,7 +953,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
             // Protection In case of bad hash, ex when we dont have SoftwareVendorPlugin Registered
             if (string.IsNullOrEmpty(pHash))
             {
-                throw new Exception(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_bad_hash_detected"));
+                throw new Exception(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_creating_financial_document_bad_hash_detected"));
             }
             else
             {
@@ -991,9 +991,9 @@ if (GlobalFramework.AppUseParkingTicketModule)
             }
 
             //Settings
-            string dateTimeFormatDocumentDate = SettingsApp.DateTimeFormatDocumentDate;
-            string dateTimeFormatCombinedDateTime = SettingsApp.DateTimeFormatCombinedDateTime;
-            int decimalRoundTo = SettingsApp.DecimalRoundTo;
+            string dateTimeFormatDocumentDate = SharedSettings.DateTimeFormatDocumentDate;
+            string dateTimeFormatCombinedDateTime = SharedSettings.DateTimeFormatCombinedDateTime;
+            int decimalRoundTo = SharedSettings.DecimalRoundTo;
 
             //Init Local Vars  
             bool debug = false;
@@ -1014,7 +1014,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
             string sql = string.Empty;
             string extended = string.Empty;
             //CurrentDateTime
-            DateTime currentDateTime = FrameworkUtils.CurrentDateTimeAtomic();
+            DateTime currentDateTime = DataLayerUtils.CurrentDateTimeAtomic();
             //XpoObjects
             fin_documentfinancemaster documentMaster = null;
             fin_documentfinancepayment documentFinancePayment = null;
@@ -1026,19 +1026,19 @@ if (GlobalFramework.AppUseParkingTicketModule)
                 try
                 {
                     //Get DocumentType
-                    fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)uowSession.GetObjectByKey(typeof(fin_documentfinancetype), SettingsApp.XpoOidDocumentFinanceTypePayment);
+                    fin_documentfinancetype documentFinanceType = (fin_documentfinancetype)uowSession.GetObjectByKey(typeof(fin_documentfinancetype), SharedSettings.XpoOidDocumentFinanceTypePayment);
                     if (documentFinanceType == null)
                     {
                         throw new Exception("ERROR_MISSING_DOCUMENT_TYPE");
                     }
 
                     //Get UserDetail
-                    sys_userdetail userDetail = (sys_userdetail)uowSession.GetObjectByKey(typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
+                    sys_userdetail userDetail = (sys_userdetail)uowSession.GetObjectByKey(typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid);
                     //Get Document Serie
                     fin_documentfinanceseries documentFinanceSerie = null;
                     fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
                     //Get Document Serie for current Terminal
-                    documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(uowSession, SettingsApp.XpoOidDocumentFinanceTypePayment);
+                    documentFinanceYearSerieTerminal = ProcessFinanceDocumentSeries.GetDocumentFinanceYearSerieTerminal(uowSession, SharedSettings.XpoOidDocumentFinanceTypePayment);
                     if (documentFinanceYearSerieTerminal != null)
                     {
                         documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
@@ -1064,8 +1064,8 @@ if (GlobalFramework.AppUseParkingTicketModule)
                     if (debug) _logger.Debug(string.Format("documentNumber: [{0}]", documentNumber));
 
                     //Get Fresh UOW Objects
-                    erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(uowSession, typeof(erp_customer), pCustomer);
-                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_configurationpaymentmethod), pPaymentMethod);
+                    erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(uowSession, typeof(erp_customer), pCustomer);
+                    fin_configurationpaymentmethod paymentMethod = (fin_configurationpaymentmethod)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_configurationpaymentmethod), pPaymentMethod);
 
                     //Initialize Payment/Recibo (Many(Invoices&CreditNotes) 2 One(Payment))
                     if (pInvoices.Count > 0)
@@ -1099,10 +1099,10 @@ if (GlobalFramework.AppUseParkingTicketModule)
                     }
 
                     //Get Default defaultCurrency
-                    cfg_configurationcurrency defaultCurrency = SettingsApp.ConfigurationSystemCurrency;
+                    cfg_configurationcurrency defaultCurrency = SharedSettings.ConfigurationSystemCurrency;
                     //Currency - If Diferent from Default System Currency, get Currency Object from Parameter
                     cfg_configurationcurrency configurationCurrency;
-                    if (SettingsApp.ConfigurationSystemCurrency.Oid != pConfigurationCurrency)
+                    if (SharedSettings.ConfigurationSystemCurrency.Oid != pConfigurationCurrency)
                     {
                         configurationCurrency = (cfg_configurationcurrency)uowSession.GetObjectByKey(typeof(cfg_configurationcurrency), pConfigurationCurrency);
                     }
@@ -1131,7 +1131,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
                         //if (Math.Round(totalCredit, decimalRoundTo) > Math.Round(item.TotalFinal, decimalRoundTo))
                         //{
                         //Get Fresh Object in UOW
-                        documentMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
+                        documentMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
                         //Persist DocumentFinanceMaster Payment 
                         documentMaster.Payed = true;
                         documentMaster.PayedDate = currentDateTime;
@@ -1153,7 +1153,7 @@ if (GlobalFramework.AppUseParkingTicketModule)
                     {
                         if (Math.Round(totalCredit, decimalRoundTo) > 0)
                         {
-							/* IN009182 - making this flow the same as Document presentation */
+                            /* IN009182 - making this flow the same as Document presentation */
                             string stringFormatIndexZero = "{0}";
                             /* The following document types has no debit amount:
                              * Orçamento
@@ -1173,17 +1173,17 @@ SELECT
 (
 	CASE  
 		WHEN DFM.DocumentType IN (
-            '{SettingsApp.XpoOidDocumentFinanceTypeBudget}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeConferenceDocument}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeConsignmentGuide}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeCreditNote}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeDeliveryNote}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeProformaInvoice}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeReturnGuide}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
-            '{SettingsApp.XpoOidDocumentFinanceTypeTransportationGuide}'
+            '{SharedSettings.XpoOidDocumentFinanceTypeBudget}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeConferenceDocument}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeConsignmentGuide}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeCreditNote}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeDeliveryNote}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeInvoiceAndPayment}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeOwnAssetsDriveGuide}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeProformaInvoice}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeReturnGuide}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeSimplifiedInvoice}', 
+            '{SharedSettings.XpoOidDocumentFinanceTypeTransportationGuide}'
         ) THEN NULL 
 		ELSE (
 			DFM.TotalFinal - (COALESCE(
@@ -1232,7 +1232,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             //sql = string.Format("SELECT fmaTotalFinal - SUM(fmpCreditAmount) as Result FROM view_documentfinancepayment WHERE fmaOid = '{0}' AND fpaPaymentStatus <> 'A' GROUP BY fmaOid,fmaTotalFinal;", item.Oid);
                             /* IN009182 - option #2 */
                             sql = string.Format(queryForTotalDebit, item.Oid);
-                            documentDebit = Convert.ToDecimal(GlobalFramework.SessionXpo.ExecuteScalar(sql));
+                            documentDebit = Convert.ToDecimal(DataLayerFramework.SessionXpo.ExecuteScalar(sql));
                             //Get current Document remain value to Pay
                             documentTotalPayRemain = (documentDebit > 0) ? documentDebit : item.TotalFinal;
 
@@ -1257,7 +1257,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             if (debug) _logger.Debug(string.Format("[{0}] PayRemain: [{1}], PayInCurrent: [{2}], RemainToPay: [{3}], Credit: [{4}], totalPayed: [{5}], PartialPayed: [{6}], FullPayed: [{7}]", item.DocumentNumber, documentTotalPayRemain, totalToPayInCurrentInvoice, (documentTotalPayRemain - totalToPayInCurrentInvoice), totalCredit, totalPayed, documentPartialPayed, documentFullPayed));
 
                             //Always Get Fresh Object in UOW, used to Assign to Full and Partial Payments, need to be Outside FullPayed
-                            documentMaster = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
+                            documentMaster = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.Oid);
 
                             //Persist DocumentFinanceMaster Payment if FullPayed
                             if (documentFullPayed)
@@ -1266,13 +1266,13 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                                 documentMaster.PayedDate = currentDateTime;
 
                                 //On Full Invoice Payment Call ChangePayedInvoiceAndRelatedDocumentsStatus (Change status of Parent Document to F)
-                                string statusReason = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
+                                string statusReason = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_documents_status_document_invoiced"), documentMaster.DocumentNumber);
                                 //Get Fresh Object in UOW
                                 fin_documentfinancemaster documentParent = null;
                                 //Send with UOW Objects
                                 if (item.DocumentParent != null)
                                 {
-                                    documentParent = (fin_documentfinancemaster)FrameworkUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.DocumentParent.Oid);
+                                    documentParent = (fin_documentfinancemaster)DataLayerUtils.GetXPGuidObject(uowSession, typeof(fin_documentfinancemaster), item.DocumentParent.Oid);
                                     ChangePayedInvoiceRelatedDocumentsStatus(uowSession, documentParent, statusReason, documentMaster.DocumentStatusDate, userDetail);
                                 }
                             }
@@ -1291,23 +1291,23 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                             }
                             /* IN009182 - adding related documents for reference */
                             string relatedDocumentsQuery = GenerateRelatedDocumentsQueryByDocumentType(documentMaster.Oid.ToString());
-                            string relatedDocuments = Convert.ToString(datalayer.App.GlobalFramework.SessionXpo.ExecuteScalar(relatedDocumentsQuery));
+                            string relatedDocuments = Convert.ToString(DataLayerFramework.SessionXpo.ExecuteScalar(relatedDocumentsQuery));
                             if (!string.IsNullOrEmpty(relatedDocuments))
                             {
                                 if (!string.IsNullOrEmpty(documentFinancePayment.Notes))
                                 {
-                                    if (documentFinancePayment.Notes.Contains(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc")))
+                                    if (documentFinancePayment.Notes.Contains(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc")))
                                     {
                                         documentFinancePayment.Notes += "; [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                     }
                                     else
                                     {
-                                        documentFinancePayment.Notes += Environment.NewLine + resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                        documentFinancePayment.Notes += Environment.NewLine + resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                     }
                                 }
                                 else
                                 {
-                                    documentFinancePayment.Notes += resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
+                                    documentFinancePayment.Notes += resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_document_finance_column_related_doc") + ": [" + documentMaster.DocumentNumber + "] " + relatedDocuments;
                                 }
                             }
                         }
@@ -1327,7 +1327,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     documentFinancePayment.ExtendedValue = extended;
 
                     //TK016319 - Certificação Angola - Alterações para teste da AGT 
-					//Calculo da taxa de imposto para recibos
+                    //Calculo da taxa de imposto para recibos
                     decimal calcTax = ((documentFinancePayment.PaymentAmount * documentMaster.TotalTax) / documentMaster.TotalFinal);
                     documentFinancePayment.TaxPayable = Math.Round(calcTax, decimalRoundTo);
 
@@ -1346,7 +1346,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     _logger.Error(ex.Message, ex);
                     //2016-01-05 apmuga passar erro para cima e não mascarar com outro erro
                     //throw new Exception("ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT", ex.InnerException);
-                   // throw ex;
+                    // throw ex;
 
                 }
             }
@@ -1404,12 +1404,12 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             try
             {
                 //Get Period WorkSessionPeriodTerminal, UserDetail and Terminal
-                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)FrameworkUtils.GetXPGuidObject(pSession, typeof(pos_worksessionperiod), GlobalFramework.WorkSessionPeriodTerminal.Oid);
-                sys_userdetail userDetail = (sys_userdetail)FrameworkUtils.GetXPGuidObject(pSession, typeof(sys_userdetail), GlobalFramework.LoggedUser.Oid);
-                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid);
+                pos_worksessionperiod workSessionPeriod = (pos_worksessionperiod)DataLayerUtils.GetXPGuidObject(pSession, typeof(pos_worksessionperiod), SharedFramework.WorkSessionPeriodTerminal.Oid);
+                sys_userdetail userDetail = (sys_userdetail)DataLayerUtils.GetXPGuidObject(pSession, typeof(sys_userdetail), DataLayerFramework.LoggedUser.Oid);
+                pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)DataLayerUtils.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), DataLayerFramework.LoggedTerminal.Oid);
 
                 //Variables to diferent Document Types : DocumentFinanceMaster or DocumentFinancePayment
-                DateTime documentDate = FrameworkUtils.CurrentDateTimeAtomic();
+                DateTime documentDate = DataLayerUtils.CurrentDateTimeAtomic();
                 decimal movementAmount = 0m;
                 string movementDescriptionDocument = string.Empty;
                 string movementDescriptionTotalDelivery = string.Empty;
@@ -1421,9 +1421,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 {
                     documentDate = pDocumentFinanceMaster.Date;
                     movementAmount = pDocumentFinanceMaster.TotalFinal;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_finance_document"));
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"));
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_change"));
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_finance_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinanceMaster.DocumentNumber, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_change"));
                     if (pParameters.TotalDelivery > 0) totalDelivery = pParameters.TotalDelivery;
                     if (pParameters.TotalChange > 0) totalChange = pParameters.TotalChange;
                 }
@@ -1431,9 +1431,9 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 {
                     documentDate = pDocumentFinancePayment.CreatedAt;//.PaymentDate
                     movementAmount = pDocumentFinancePayment.PaymentAmount;
-                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_payment_document"));
-                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"));
-                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "global_total_change"));
+                    movementDescriptionDocument = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_payment_document"));
+                    movementDescriptionTotalDelivery = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_deliver"));
+                    movementDescriptionTotalChange = string.Format("{0} : {1}", pDocumentFinancePayment.PaymentRefNo, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "global_total_change"));
                     //TODO: Improve with Payment TotalChange Functionality
                     totalDelivery = movementAmount;
                 }
@@ -1446,7 +1446,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 ProcessWorkSessionMovement.PersistWorkSessionMovement(
                     pSession,
                     workSessionPeriod,
-                    (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "FINANCE_DOCUMENT"),
+                    (pos_worksessionmovementtype)SharedUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "FINANCE_DOCUMENT"),
                     pDocumentFinanceMaster,
                     pDocumentFinancePayment,
                     userDetail,
@@ -1464,7 +1464,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                     ProcessWorkSessionMovement.PersistWorkSessionMovement(
                         pSession,
                         workSessionPeriod,
-                        (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_IN"),
+                        (pos_worksessionmovementtype)SharedUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_IN"),
                         pDocumentFinanceMaster,
                         pDocumentFinancePayment,
                         userDetail,
@@ -1480,7 +1480,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                         if (pParameters.TotalChange > 0) ProcessWorkSessionMovement.PersistWorkSessionMovement(
                             pSession,
                             workSessionPeriod,
-                            (pos_worksessionmovementtype)FrameworkUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_OUT"),
+                            (pos_worksessionmovementtype)SharedUtils.GetXPGuidObjectFromField(pSession, typeof(pos_worksessionmovementtype), "Token", "CASHDRAWER_OUT"),
                             pDocumentFinanceMaster,
                             pDocumentFinancePayment,
                             userDetail,
@@ -1509,12 +1509,12 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
         public static DateTime GetLastDocumentDateTime()
         {
-            return GetLastDocumentDateTime(GlobalFramework.SessionXpo, null);
+            return GetLastDocumentDateTime(DataLayerFramework.SessionXpo, null);
         }
 
         public static DateTime GetLastDocumentDateTime(string pFilter)
         {
-            return GetLastDocumentDateTime(GlobalFramework.SessionXpo, pFilter);
+            return GetLastDocumentDateTime(DataLayerFramework.SessionXpo, pFilter);
         }
 
         public static DateTime GetLastDocumentDateTime(Session pSesssion)
@@ -1566,7 +1566,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 //Check if CommissionGroup has Commission
                 if (commissionGroup != null && commissionGroup.Commission > 0 && commissionGroup == pUserDetail.CommissionGroup)
                 {
-                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)FrameworkUtils.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), GlobalFramework.LoggedTerminal.Oid);
+                    pos_configurationplaceterminal configurationPlaceTerminal = (pos_configurationplaceterminal)DataLayerUtils.GetXPGuidObject(pSession, typeof(pos_configurationplaceterminal), DataLayerFramework.LoggedTerminal.Oid);
                     decimal totalCommission = (pDocumentFinanceDetail.TotalNet * pUserDetail.CommissionGroup.Commission) / 100;
 
                     fin_documentfinancecommission documentFinanceCommission = new fin_documentfinancecommission(pSession)
@@ -1595,16 +1595,16 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
         public static string GenerateDocumentFinanceMasterPDFIfNotExists(fin_documentfinancemaster documentFinanceMaster)
         {
             string result = string.Empty;
-            
+
             try
             {
                 //Generate Documents Filename
-                if (!string.IsNullOrEmpty(GlobalFramework.Settings["generatePdfDocuments"]))
+                if (!string.IsNullOrEmpty(DataLayerFramework.Settings["generatePdfDocuments"]))
                 {
                     bool generatePdfDocuments = false;
                     try
                     {
-                        generatePdfDocuments = Convert.ToBoolean(GlobalFramework.Settings["generatePdfDocuments"]);
+                        generatePdfDocuments = Convert.ToBoolean(DataLayerFramework.Settings["generatePdfDocuments"]);
                     }
                     catch (Exception ex)
                     {
@@ -1613,16 +1613,16 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
                     if (generatePdfDocuments)
                     {
-                        string entityName = (!string.IsNullOrEmpty(documentFinanceMaster.EntityName)) 
-                            ? string.Format("_{0}", GlobalFramework.PluginSoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
+                        string entityName = (!string.IsNullOrEmpty(documentFinanceMaster.EntityName))
+                            ? string.Format("_{0}", SharedFramework.PluginSoftwareVendor.Decrypt(documentFinanceMaster.EntityName).ToLower().Replace(' ', '_')) /* IN009075 */
                             : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
-                            GlobalFramework.Path["documents"],
+                            DataLayerFramework.Path["documents"],
                             documentFinanceMaster.DocumentNumber.Replace('/', '-').Replace(' ', '_'),
                             entityName
                         );
                         //Canceled documents with "Canceled" Text on PDF
-                        if (! File.Exists(reportFilename) || documentFinanceMaster.DocumentStatusStatus == "A")
+                        if (!File.Exists(reportFilename) || documentFinanceMaster.DocumentStatusStatus == "A")
                         {
                             result = CustomReport.DocumentMasterCreatePDF(CustomReportDisplayMode.ExportPDFSilent, documentFinanceMaster, reportFilename);
                         }
@@ -1630,7 +1630,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                         {
                             result = reportFilename;
                         }
-                        
+
                         return result;
                     }
                 }
@@ -1646,16 +1646,16 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
         public static string GenerateDocumentFinancePaymentPDFIfNotExists(fin_documentfinancepayment documentFinancePayment)
         {
             string result = string.Empty;
-            
+
             try
             {
                 //Generate Documents Filename
-                if (!string.IsNullOrEmpty(GlobalFramework.Settings["generatePdfDocuments"]))
+                if (!string.IsNullOrEmpty(DataLayerFramework.Settings["generatePdfDocuments"]))
                 {
                     bool generatePdfDocuments = false;
                     try
                     {
-                        generatePdfDocuments = Convert.ToBoolean(GlobalFramework.Settings["generatePdfDocuments"]);
+                        generatePdfDocuments = Convert.ToBoolean(DataLayerFramework.Settings["generatePdfDocuments"]);
                     }
                     catch (Exception ex)
                     {
@@ -1664,15 +1664,15 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
 
                     if (generatePdfDocuments)
                     {
-                        erp_customer customer = (erp_customer)FrameworkUtils.GetXPGuidObject(GlobalFramework.SessionXpo, typeof(erp_customer), documentFinancePayment.EntityOid);
+                        erp_customer customer = (erp_customer)DataLayerUtils.GetXPGuidObject(DataLayerFramework.SessionXpo, typeof(erp_customer), documentFinancePayment.EntityOid);
                         string entityName = (customer != null && !string.IsNullOrEmpty(customer.Name)) ? string.Format("_{0}", customer.Name.ToLower().Replace(' ', '_')) : string.Empty;
                         string reportFilename = string.Format("{0}/{1}{2}.pdf",
-                            GlobalFramework.Path["documents"],
+                            DataLayerFramework.Path["documents"],
                             documentFinancePayment.PaymentRefNo.Replace('/', '-').Replace(' ', '_'),
                             entityName
                         );
-                        
-                        if (! File.Exists(reportFilename))
+
+                        if (!File.Exists(reportFilename))
                         {
                             result = CustomReport.DocumentPaymentCreatePDF(CustomReportDisplayMode.ExportPDFSilent, documentFinancePayment, reportFilename);
                         }
@@ -1680,7 +1680,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                         {
                             result = reportFilename;
                         }
-                        
+
                         return result;
                     }
                 }
@@ -1709,11 +1709,11 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
                 andDocumentType = $" AND DocFinMaster.DocumentType = '{documentType}'";
             }
 
-            switch (GlobalFramework.DatabaseType)
+            switch (DataLayerFramework.DatabaseType)
             {
-                case datalayer.Enums.DatabaseType.MySql:
-                case datalayer.Enums.DatabaseType.SQLite:
-                case datalayer.Enums.DatabaseType.MonoLite:
+                case DatabaseType.MySql:
+                case DatabaseType.SQLite:
+                case DatabaseType.MonoLite:
 
                     {
                         relatedDocumentsQuery = @"
@@ -1765,7 +1765,7 @@ FROM(
 ";
                     }
                     break;
-                case datalayer.Enums.DatabaseType.MSSqlServer:
+                case DatabaseType.MSSqlServer:
                     {
                         relatedDocumentsQuery = @"
 DECLARE @RelatedDocuments VARCHAR(MAX);

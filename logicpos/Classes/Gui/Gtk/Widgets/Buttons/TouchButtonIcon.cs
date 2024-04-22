@@ -12,7 +12,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets.Buttons
             : base(name)
         {
             InitObject(name, color, icon, sizeIcon, width, height);
-            base.InitObject(name, color, widget, width, height);
+            InitObject(name, color, widget, width, height);
         }
 
         public void InitObject(string name, System.Drawing.Color color, string image, System.Drawing.Size sizeIcon, int width, int height)

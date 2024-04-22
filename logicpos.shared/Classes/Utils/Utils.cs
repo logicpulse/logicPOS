@@ -49,7 +49,7 @@ namespace logicpos.shared.Classes.Utils
                         if (File.Exists(pFiles[i]))
                         {
                             if (debug) _logger.Debug(string.Format("Add File:[{0}] to Zip:[{1}]", pFiles[i], pDestinationFileName));
-                            zip.AddFile(pFiles[i], System.IO.Path.GetDirectoryName(pFiles[i]));
+                            zip.AddFile(pFiles[i], Path.GetDirectoryName(pFiles[i]));
                         }
                         else
                         {
@@ -163,13 +163,13 @@ namespace logicpos.shared.Classes.Utils
             int timeOut = 5
             )
         {
-            // Get Defaults from GlobalFramework.PreferenceParameters
-            string smtpServer = GlobalFramework.PreferenceParameters["SEND_MAIL_SMTP_SERVER"];
-            string username  = GlobalFramework.PreferenceParameters["SEND_MAIL_SMTP_USERNAME"];
-            string password  = GlobalFramework.PreferenceParameters["SEND_MAIL_SMTP_PASSWORD"];
-            int port  = Convert.ToInt16(GlobalFramework.PreferenceParameters["SEND_MAIL_SMTP_PORT"]);
-            bool enableSsl  = Convert.ToBoolean(GlobalFramework.PreferenceParameters["SEND_MAIL_SMTP_ENABLE_SSL"]);
-            bool useHtmlBody = Convert.ToBoolean(GlobalFramework.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_HTML_BODY"]);
+            // Get Defaults fromSharedFramework.PreferenceParameters
+            string smtpServer = SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_SERVER"];
+            string username  = SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_USERNAME"];
+            string password  = SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_PASSWORD"];
+            int port  = Convert.ToInt16(SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_PORT"]);
+            bool enableSsl  = Convert.ToBoolean(SharedFramework.PreferenceParameters["SEND_MAIL_SMTP_ENABLE_SSL"]);
+            bool useHtmlBody = Convert.ToBoolean(SharedFramework.PreferenceParameters["SEND_MAIL_FINANCE_DOCUMENTS_HTML_BODY"]);
 
             SendMail(smtpServer, username, password, port, enableSsl, deliveryMethod, to, cc, bcc, subject, body, useHtmlBody, attachmentFileNames, timeOut);
         }
@@ -223,7 +223,7 @@ namespace logicpos.shared.Classes.Utils
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Tokens
 
-        // Override method to use more that on Dictionary, ex GlobalFramework.PreferenceParameters and Others 
+        // Override method to use more that on Dictionary, exSharedFramework.PreferenceParameters and Others 
         public static string replaceTextTokens(string input, List<Dictionary<string,string>> tokensDictionaryList)
         {
             Dictionary<string,string> tokensDictionary = new Dictionary<string, string>();

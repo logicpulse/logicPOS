@@ -1,8 +1,8 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
-using logicpos.datalayer.DataLayer.Xpo;
 using logicpos.App;
-using logicpos.resources.Resources.Localization;
+using logicpos.datalayer.App;
+using logicpos.datalayer.DataLayer.Xpo;
 using System;
 using System.Diagnostics;
 
@@ -69,8 +69,8 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 if (ex.InnerException.HResult == -2146232060)
                 {
                     string data = getBetween(ex.InnerException.Message, "(", ")");
-                    string message = string.Format(resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_duplicated_key"), data);
-                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), message);
+                    string message = string.Format(resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "dialog_message_error_duplicated_key"), data);
+                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOfficeMainWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"), message);
                 }
                 //END IN009220
                 else
@@ -80,10 +80,10 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         GlobalApp.BackOfficeMainWindow,
                         DialogFlags.DestroyWithParent | DialogFlags.Modal,
                         MessageType.Warning, ButtonsType.Close,
-                        resources.CustomResources.GetCustomResources(GlobalFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"),
+                        resources.CustomResources.GetCustomResources(DataLayerFramework.Settings["customCultureResourceDefinition"], "window_title_dialog_exception_error"),
                         (ex.InnerException.Message != null) ? ex.InnerException.Message : ex.Message
                         );
-                }                
+                }
                 //RollbackTransaction
                 //_logger.Debug("UpdateRecord(): RollbackTransaction");
                 try

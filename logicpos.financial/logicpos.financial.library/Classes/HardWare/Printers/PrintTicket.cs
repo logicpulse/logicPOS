@@ -1,6 +1,8 @@
 ﻿using DansCSharpLibrary.JsonSerialization;
+using logicpos.datalayer.App;
 using logicpos.financial.library.App;
 using logicpos.financial.library.Classes.Hardware.Printers.Thermal;
+using logicpos.shared.App;
 using System;
 using System.Data;
 
@@ -37,21 +39,21 @@ namespace logicpos.financial.library.Classes.Hardware.Printer
                 ORDER BY
                     Ord
             ";
-            DataTable resultDataTable = FrameworkUtils.GetDataTableFromQuery(sql);
+            DataTable resultDataTable = SharedUtils.GetDataTableFromQuery(sql);
             resultDataTable.Columns[0].ColumnName = "token";
             resultDataTable.Columns[0].Unique = true;
             resultDataTable.PrimaryKey = new DataColumn[] { resultDataTable.Columns["token"] };
 
             //Add extra data to dataCompany DataTable
             //license
-            resultDataTable.Rows.Add("COMPANY_NAME", GlobalFramework.LicenceCompany);
-            resultDataTable.Rows.Add("COMPANY_FISCALNUMBER", GlobalFramework.LicenceNif);
-            resultDataTable.Rows.Add("COMPANY_ADDRESS", GlobalFramework.LicenceAddress);
-            resultDataTable.Rows.Add("COMPANY_TELEPHONE", GlobalFramework.LicenceTelephone);
-            resultDataTable.Rows.Add("COMPANY_EMAIL", GlobalFramework.LicenceEmail);
+            resultDataTable.Rows.Add("COMPANY_NAME", SharedFramework.LicenseCompany);
+            resultDataTable.Rows.Add("COMPANY_FISCALNUMBER", SharedFramework.LicenseNif);
+            resultDataTable.Rows.Add("COMPANY_ADDRESS", SharedFramework.LicenseAddress);
+            resultDataTable.Rows.Add("COMPANY_TELEPHONE", SharedFramework.LicenseTelephone);
+            resultDataTable.Rows.Add("COMPANY_EMAIL", SharedFramework.LicenseEmail);
             //User/Terminal      
-            resultDataTable.Rows.Add("TERMINAL_NAME", GlobalFramework.LoggedTerminal.Designation);
-            resultDataTable.Rows.Add("TERMINAL_USERNAME", GlobalFramework.LoggedUser.Name);
+            resultDataTable.Rows.Add("TERMINAL_NAME", DataLayerFramework.LoggedTerminal.Designation);
+            resultDataTable.Rows.Add("TERMINAL_USERNAME", DataLayerFramework.LoggedUser.Name);
             //Footer Lines : Deprecated
             //resultDataTable.Rows.Add("FOOTER_LINE1", SettingsApp.TicketFooterLine1);
             //resultDataTable.Rows.Add("FOOTER_LINE2", SettingsApp.TicketFooterLine2);
@@ -81,10 +83,10 @@ namespace logicpos.financial.library.Classes.Hardware.Printer
                 string externalApp = "ConsoleApplication.exe";//SettingsApp.ExecutableReports
                 //Filename
                 Guid guidParameter = Guid.NewGuid();
-                string fileName = string.Format("{0}{1}.tob", GlobalFramework.Path["temp"].ToString(), guidParameter.ToString());
+                string fileName = string.Format("{0}{1}.tob", DataLayerFramework.Path["temp"].ToString(), guidParameter.ToString());
                 JsonSerialization.WriteToJsonFile<PrintTransportObject>(fileName, pTransportObject);
                 //Call External Application
-                FrameworkUtils.ExecuteExternalProcess(externalApp, string.Format("printpreview {0}", fileName));
+                SharedUtils.ExecuteExternalProcess(externalApp, string.Format("printpreview {0}", fileName));
 
                 result = true;
             }
